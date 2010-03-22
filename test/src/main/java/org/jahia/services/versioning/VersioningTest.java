@@ -178,8 +178,8 @@ public class VersioningTest extends TestCase {
 
         // now let's check the child objects.
         JCRNodeWrapper mainContentNode = versionNode.getNode("pagecontent/row1/col1/mainContent");
-        assertEquals("Child node has incorrect value", MAIN_CONTENT_TITLE + index, mainContentNode.getProperty("jcr:title").getString());
-        assertEquals("Child node has incorrect value", MAIN_CONTENT_BODY + index, mainContentNode.getProperty("body").getString());
+        assertEquals("Child node has incorrect value", MAIN_CONTENT_TITLE + (index*2), mainContentNode.getProperty("jcr:title").getString());
+        assertEquals("Child node has incorrect value", MAIN_CONTENT_BODY + (index*2), mainContentNode.getProperty("body").getString());
 
     }
 

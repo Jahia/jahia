@@ -61,12 +61,10 @@ var iNettuts = {
                             });
                         });
                         var data = {};
-                        data["action"] = "delete";
+                        data["methodToCall"] = "delete";
                         data["source"] = this.parentNode.parentNode.id;
-                        url = this.baseURI.substr(0,this.baseURI.lastIndexOf("/"));
-                        node = this.baseURI.substr(this.baseURI.lastIndexOf("/"),this.baseURI.substr(this.baseURI.lastIndexOf("/")).indexOf("."));
-                        $.post(url+node+".delete.do", data, function(result) {
-                            alert("node is deleted");
+                        $.post(baseUrl+this.parentNode.parentNode.id, data, function(result) {
+                            alert("node " + this.parentNode.parentNode.id + "is deleted");
                         }, "json");
                     }
                     return false;

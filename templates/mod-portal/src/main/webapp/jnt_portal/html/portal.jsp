@@ -6,8 +6,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <template:addResources type="css" resources="portal.css,slide.css"/>
+<template:addResources type="inlinejavascript">
+       var baseUrl = '${url.base}';
+</template:addResources>
 <template:addResources type="javascript" resources="jquery.js,ui.core.js,inettuts.js"/>
 <script type="text/javascript">
+    var baseUrl = '${url.base}'
     $(document).ready(function() {
 
 	// Expand Panel

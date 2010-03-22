@@ -95,10 +95,12 @@
         animatedcollapse.init();
     </script>
     <c:if test="${types != null}">
+    <div class="listEditToolbar">
         <c:forEach items="${types}" var="type" varStatus="status">
             <jcr:nodeType name="${type.string}" var="nodeType"/>
-            <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');">${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</button>
+            <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><img title="" alt="" src="${url.currentModule}/images/toolbar-add.png"/>${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</button>
         </c:forEach>
+    </div>
 
         <c:forEach items="${types}" var="type" varStatus="status">
             <div style="display:none;" id="add${currentNode.identifier}-${status.index}">

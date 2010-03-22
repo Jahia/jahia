@@ -149,7 +149,7 @@ public class CreatePageTabItem extends EditEngineTabItem {
     }
 
     public String getContentTitle() {
-        return titleField.getValue().toString();
+        return (titleField.getValue() != null)?titleField.getValue().toString():"";
     }
 
     public List<GWTJahiaNode> getReusableComponent() {

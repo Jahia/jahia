@@ -225,14 +225,17 @@ public class CreateContentEngine extends AbstractContentEngine {
                         props.addAll(pe.getProperties());
                     }
                 }
-
                 if (item instanceof ContentTabItem) {
                     if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                         String nodeNameValue = ((ContentTabItem) item).getName().getValue();
                         nodeName = "Automatically Created (you can type your name here if you want)".equals(nodeNameValue) ? targetName : nodeNameValue;
                     }
                 }
-            } else if (item instanceof RightsTabItem) {
+            } else if (item instanceof CreatePageTabItem) {
+                String  title = ((CreatePageTabItem) item).getContentTitle();
+                nodeName = title.equals("")?"page":title;
+            }
+            else if (item instanceof RightsTabItem) {
                 AclEditor acl = ((RightsTabItem) item).getRightsEditor();
                 if (acl != null) {
                     newNodeACL = acl.getAcl();

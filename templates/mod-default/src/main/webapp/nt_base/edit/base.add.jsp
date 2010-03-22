@@ -75,8 +75,8 @@
                 </c:if>
             </c:forEach>
             <div class="divButton">
-                <input class="button" type="submit" value="<fmt:message key="label.add.new.content.submit"/>"/>
-                <input class="button" type="reset" value="<fmt:message key="label.add.new.content.reset"/>"/>
+                <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message key="label.add.new.content.submit"/></button>
+                <button type="reset"><span class="icon-contribute icon-cancel"></span><fmt:message key="label.add.new.content.reset"/></button>
             </div>
         </fieldset>
     </form>

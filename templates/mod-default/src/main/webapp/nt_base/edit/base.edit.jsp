@@ -32,7 +32,7 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<div>
+<div class="FormContribute">
     <c:set var="type" value="${currentNode.primaryNodeType}"/>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
         <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem}">

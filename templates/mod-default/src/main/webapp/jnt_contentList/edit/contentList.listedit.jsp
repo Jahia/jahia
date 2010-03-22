@@ -25,32 +25,32 @@
         <c:if test="${child.locked ne 'true'}">
              <button
                    onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields(\'${child.identifier}\')')">
-            <img title="" alt="" src="${url.currentModule}/images/toolbar-edit.png"/>Edit</button>
+            <span class="icon-contribute icon-edit"></span>Edit</button>
         </c:if>
         <c:if test="${child.locked eq 'true'}">
             <button>
-                <img title="" alt="" src="${url.currentModule}/images/toolbar-lock.png"/>Locked</button>
+                <span class="icon-contribute icon-locked"></span>Locked</button>
         </c:if>
         <button
                onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.html?ajaxcall=true', '')">
-            <img title="" alt="" src="${url.currentModule}/images/toolbar-preview.png"/>Preview</button>
+            <span class="icon-contribute icon-preview"></span>Preview</button>
 
         <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean}">
             <c:if test="${not status.first}">
                  <button id="moveUp-${currentNode.identifier}-${status.index}"
                        onclick="invert('${child.path}','${previousChild.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
-                     <img title="" alt="" src="${url.currentModule}/images/toolbar-moveup.png"/>Move up</button>
+                     <span class="icon-contribute icon-moveup"></span>Move up</button>
             </c:if>
             <c:if test="${not status.last}">
                 <button
                        onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()">
-                    <img title="" alt="" src="${url.currentModule}/images/toolbar-movedown.png"/>Move down</button>
+                    <span class="icon-contribute icon-movedown"></span>Move down</button>
             </c:if>
         </c:if>
         <c:if test="${child.locked ne 'true'}">
             <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
                 <button onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
-                    <img title="" alt="" src="${url.currentModule}/images/toolbar-delete.png"/>Delete</button>
+                    <span class="icon-contribute icon-delete"></span>Delete</button>
             </c:if>
 
             <workflow:workflowsForNode workflowAction="publish" var="workflows" node="${child}"/>
@@ -98,7 +98,7 @@
     <div class="listEditToolbar">
         <c:forEach items="${types}" var="type" varStatus="status">
             <jcr:nodeType name="${type.string}" var="nodeType"/>
-            <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><img title="" alt="" src="${url.currentModule}/images/toolbar-add.png"/>${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</button>
+            <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span class="icon-contribute icon-add"></span>${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</button>
         </c:forEach>
     </div>
 

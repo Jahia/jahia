@@ -12,8 +12,8 @@ function initEditFields(id) {
     }, {
         type    : 'text',
         onblur : 'ignore',
-        submit : 'OK',
-        cancel : 'Cancel',
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
         tooltip : 'Click to edit'
     });
 
@@ -28,8 +28,8 @@ function initEditFields(id) {
     }, {
         type : 'ckeditor',
         onblur : 'ignore',
-        submit : 'OK',
-        cancel : 'Cancel',
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
         tooltip : 'Click to edit'
     });
 
@@ -45,8 +45,8 @@ function initEditFields(id) {
     }, {
         type : 'datetimepicker',
         onblur : 'ignore',
-        submit : 'OK',
-        cancel : 'Cancel',
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
         tooltip : 'Click to edit'
     });
 
@@ -64,16 +64,16 @@ function initEditFields(id) {
             return $(this).attr('jcr:options');
         },
         onblur : 'ignore',
-        submit : 'OK',
-        cancel : 'Cancel',
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
         tooltip : 'Click to edit'
     });
 
     $(".file" + id).editable('', {
         type : 'ajaxupload',
         onblur : 'ignore',
-        submit : 'OK',
-        cancel : 'Cancel',
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
         tooltip : 'Click to edit',
         target : function() {
             return $(this).attr('jcr:url');

@@ -1,6 +1,39 @@
 /******************************************************************************
 * FormContribute
 ******************************************************************************/
+#bodywrapper .FormContribute {
+	background:#fff url(img/toolbar-input.png) repeat-x left top;
+    color: #000;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+	padding:10px;
+	border:1px solid #b7cbd8;
+	font-family:Arial,Verdana,Helvetica,sans-serif;
+	font-size:11px !important;
+	margin-bottom:5px;
+	margin:1em 0 0 0;
+	overflow:hidden;
+}
+#bodywrapper .FormContribute fieldset {
+	border:1px solid #b7cbd8;
+	margin:5px;
+	padding:5px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+#bodywrapper .FormContribute legend {
+	background:#fff url(img/toolbar-input.png) repeat-x left bottom;
+	border:1px solid #b7cbd8;
+	color:#000;
+	display:inline;
+	font-weight:bold;
+	padding:0 0.5em;
+	text-transform:uppercase;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
 #bodywrapper .FormContribute input,
 #bodywrapper .FormContribute textarea {
 	width:97%
@@ -10,11 +43,7 @@
 	margin:0.5em 0;
 	padding:0px
 }
-#bodywrapper .FormContribute { 
-	margin:1em 0 0 0;
-	overflow:hidden;
-}
-#bodywrapper .formMarginLeft{ 
+#bodywrapper .FormContribute .formMarginLeft{ 
 	margin:0.5em 0 0.5em 0;
 	padding:0;
 }
@@ -23,7 +52,74 @@
 	display:block;
 	font-weight:bold
 }
-#bodywrapper input.button, #bodywrapper button{
-	width:auto
+#bodywrapper .FormContribute input, #bodywrapper .FormContribute select, #bodywrapper .FormContribute textarea {
+	background:none;
+	border:1px inset #b7cbd8;
+	color:#000;
+	padding:4px;
+	margin-right:5px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 }
-
+#bodywrapper .FormContribute input.button, #bodywrapper .FormContribute button{
+	width:auto;
+	background:#fff url(img/toolbar-input.png) repeat-x left bottom;
+    color: #000;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+	padding:2px;
+	vertical-align: middle;
+	display:inline;
+	border:1px solid #b7cbd8;
+	font-family:Arial,Verdana,Helvetica,sans-serif;
+	font-size:11px !important;
+	line-height:14px;
+	margin-bottom:5px;
+	margin-top:2px
+}
+#bodywrapper .FormContribute input.button:hover, #bodywrapper .FormContribute button:hover{
+    background:#fff url(img/toolbar-input-on.png) repeat-x left bottom;
+    color: #333;
+	cursor: pointer;
+	text-decoration:none;
+}
+#bodywrapper .FormContribute button img{
+	vertical-align: text-bottom;
+	margin-right:2px
+}
+#bodywrapper button span.icon-contribute{
+	width:16px;
+	height:16px;
+	display:block;
+	float:left;
+	margin-right:3px;
+}
+#bodywrapper button span.icon-locked{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px 0px;
+}
+#bodywrapper button span.icon-edit{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -16px;
+}
+#bodywrapper button span.icon-preview{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -32px;
+}
+#bodywrapper button span.icon-moveup{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -48px;
+}
+#bodywrapper button span.icon-movedown{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -64px;
+}
+#bodywrapper button span.icon-delete{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -80px;
+}
+#bodywrapper button span.icon-add{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -96px;
+}
+#bodywrapper button span.icon-accept{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -112px;
+}
+#bodywrapper button span.icon-cancel{
+ 	background:url(img/toolbar-contribute.png) no-repeat 0px -128px;
+}

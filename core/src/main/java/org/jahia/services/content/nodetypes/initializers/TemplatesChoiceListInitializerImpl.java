@@ -113,19 +113,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     for (String s : nodeTypesList) {
                         final SortedSet<Template> templateSortedSet = RenderService.getInstance().getTemplatesSet(
                                 NodeTypeRegistry.getInstance().getNodeType(s));
-                        if (templates.isEmpty()) {
-                            templates.addAll(templateSortedSet);
-                        } else {
-                            SortedSet<Template> commonTemplateSortedSet = new TreeSet<Template>();
-                            for (Template template : templateSortedSet) {
-                                for (Template template1 : templates) {
-                                    if (template1.getKey().equals(template.getKey())) {
-                                        commonTemplateSortedSet.add(template);
-                                    }
-                                }
-                            }
-                            templates = commonTemplateSortedSet;
-                        }
+                        templates.addAll(templateSortedSet);
                     }
                 }
             } else {

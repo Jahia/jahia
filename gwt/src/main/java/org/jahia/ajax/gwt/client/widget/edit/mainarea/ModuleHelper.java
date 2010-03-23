@@ -102,12 +102,16 @@ public class ModuleHelper {
                 list.add(s);
             }
         }
-        Log.info("all pathes "+list);
+        if (Log.isDebugEnabled()) {
+            Log.debug("all pathes "+list);
+        }
         JahiaContentManagementService.App.getInstance().getNodesWithPublicationInfo(list,new AsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 for (GWTJahiaNode gwtJahiaNode : result) {
                     for (Module module : modulesByPath.get(gwtJahiaNode.getPath())) {
-                        Log.info("set object for "+module.getModuleId());
+                        if (Log.isDebugEnabled()) {
+                            Log.debug("set object for "+module.getModuleId());
+                        }
                         module.setNode(gwtJahiaNode);
                     }
                 }
@@ -115,7 +119,7 @@ public class ModuleHelper {
             }
 
             public void onFailure(Throwable caught) {
-                Log.error("Unbale to get node with publication info due to:",caught);
+                Log.error("Unable to get node with publication info due to:",caught);
 
             }
         });

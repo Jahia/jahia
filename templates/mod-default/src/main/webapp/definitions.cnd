@@ -121,7 +121,7 @@
 //---------------------------------------------------------
 [jmix:navMenuItem] mixin
 
-[jnt:navMenu] > jnt:content, mix:title, jmix:interactiveContent
+[jnt:navMenu] > jnt:content, mix:title, jmix:navMenuItem, jmix:interactiveContent
  + * (jmix:navMenuItem)
 
 [jnt:navMenuExternalLink] > jnt:externalLink, jmix:navMenuItem, jmix:interactiveContent

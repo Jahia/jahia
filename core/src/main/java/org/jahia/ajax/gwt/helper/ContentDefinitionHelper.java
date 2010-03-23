@@ -548,10 +548,9 @@ public class ContentDefinitionHelper {
 
     private void addGWTJahiaNodeType(ProcessingContext ctx, ArrayList<GWTJahiaNodeType> res, Set<String> foundTypes, ExtendedNodeType realType, String nodeType) throws NoSuchNodeTypeException {
         ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType(nodeType);
-        NodeTypeIterator it = baseMixin.getSubtypes();
-        while (it.hasNext()) {
-            ExtendedNodeType nt = (ExtendedNodeType) it.next();
-            if (nt.isMixin() && !foundTypes.contains(nt.getName())) {
+        ExtendedNodeType[] mixins = baseMixin.getMixinSubtypes();
+        for (ExtendedNodeType nt : mixins) {
+            if (!foundTypes.contains(nt.getName())) {
                 res.add(getGWTJahiaNodeType(ctx, nt, realType));
                 foundTypes.add(nt.getName());
             }

@@ -369,10 +369,10 @@
 // References and links
 //---------------------------------------------------------
 
-[jmix:link] > mix:title mixin
+[jmix:link] > mix:title, jmix:contentItem mixin
  - j:target (string, choicelist[resourceBundle]) nofulltext < '_blank','_parent','_self','_top'
 
-[jnt:nodeReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata
+[jnt:nodeReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem
  - j:node (weakreference)
 
 [jmix:shareable] > mix:shareable mixin
@@ -383,7 +383,7 @@
 
 [jnt:nodeLink] > jnt:nodeReference, jmix:link
 
-[jnt:externalLink] > nt:base, jmix:hierarchyNode, jmix:link, jmix:basemetadata
+[jnt:externalLink] > nt:base, jmix:hierarchyNode, jmix:link, jmix:basemetadata, jmix:contentItem
  - j:url (string)
 
 [jnt:referenceInField] > nt:base
@@ -425,6 +425,8 @@
 [jmix:templateMixin] mixin
 
 [jmix:observable] mixin
+
+[jmix:contentItem] mixin
 
 //---------------------------------------------------------
 // Caches

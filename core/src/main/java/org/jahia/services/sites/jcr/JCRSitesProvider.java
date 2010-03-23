@@ -145,9 +145,14 @@ public class JCRSitesProvider {
                     if (!node.isCheckedOut()) {
                         session.checkout(node);
                     }
-                    JCRNodeWrapper s = node.getNode(site.getSiteKey());
-                    node.setProperty("j:defaultSite", s);
-                    session.save();
+                    if (site != null) {
+                        JCRNodeWrapper s = node.getNode(site.getSiteKey());
+                        node.setProperty("j:defaultSite", s);
+                        session.save();
+                    } else if (node.hasProperty("j:defaultSite")) {
+                        node.getProperty("j:defaultSite").remove();
+                        session.save();
+                    }
                     return null;
                 }
             });

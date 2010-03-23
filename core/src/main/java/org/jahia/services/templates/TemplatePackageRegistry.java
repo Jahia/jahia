@@ -291,6 +291,9 @@ class TemplatePackageRegistry {
             	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.DefaultJahiaTemplates");
             	sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
                 sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
+            } else {
+                sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
+                sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
             }
         }
         

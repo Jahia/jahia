@@ -64,6 +64,14 @@
                             <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
                                 <%@include file="formelements/richtext.jsp" %>
                             </c:when>
+                            <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BOOLEAN}">
+                                <label class="left"
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
+                                <input type="radio" value="true" class="radio" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                                       name="${propertyDefinition.name}" checked="true" /><fmt:message key="label.yes"/>
+                                <input type="radio" value="false" class="radio" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                                       name="${propertyDefinition.name}"/><fmt:message key="label.no"/>
+                            </c:when>
                             <c:otherwise>
                                 <label class="left"
                                        for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>

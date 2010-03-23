@@ -61,6 +61,9 @@
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 }
+#bodywrapper .FormContribute input.radio, #bodywrapper .FormContribute input.checkbox {
+	width:auto;
+}
 #bodywrapper .FormContribute input.button, #bodywrapper .FormContribute button{
 	width:auto;
 	background:#fff url(img/toolbar-input.png) repeat-x left bottom;

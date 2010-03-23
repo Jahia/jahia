@@ -45,7 +45,7 @@
                     <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
                         <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
                              jcr:url="${url.base}${currentNode.path}">
-                            <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
+                            <span><fmt:message key="add.file"/> </span>
                         </div>
                         <template:module node="${prop.node}" template="default" templateType="html"/>
                     </c:if>

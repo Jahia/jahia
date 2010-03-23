@@ -24,7 +24,7 @@
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 
 <div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
-    <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
+    <span><fmt:message key="add.file"/></span>
 </div>
 <script>
     $(document).ready(function() {

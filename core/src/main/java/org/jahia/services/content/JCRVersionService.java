@@ -6,6 +6,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.Version;
@@ -59,11 +60,11 @@ public class JCRVersionService extends JahiaService {
         while (versions.hasNext()) {
             Version v = versions.nextVersion();
             JCRNodeWrapper versionNode = node.getFrozenVersion(v.getName());
-            long versionRevisionNumber = -1;
-            if (versionNode.hasProperty("j:revisionNumber")) {
-                versionRevisionNumber = versionNode.getProperty("j:revisionNumber").getLong();
+            Calendar checkinDate = null;
+            if (versionNode.hasProperty("j:checkinDate")) {
+                checkinDate = versionNode.getProperty("j:checkinDate").getDate();
             }
-            VersionInfo versionInfo = new VersionInfo(v, versionRevisionNumber, "", 0);
+            VersionInfo versionInfo = new VersionInfo(v, checkinDate, "", 0);
             if (versionList.contains(versionInfo)) {
                 versionList.remove(versionInfo); // we remove to keep only the latest one.
             }
@@ -72,21 +73,21 @@ public class JCRVersionService extends JahiaService {
         return new ArrayList<VersionInfo>(versionList);
     }
 
-    public long incrementRevisionNumber(Node node) throws RepositoryException {
+    public Calendar setNodeCheckinDate(Node node, Calendar checkinDate) throws RepositoryException {
         if (!node.isNodeType("jmix:versionInfo")) {
-            return 0;
+            return null;
         }
-        long currentRevision = 0;
-        if (node.hasProperty("j:revisionNumber")) {
-            currentRevision = node.getProperty("j:revisionNumber").getLong();
+        if (node.hasProperty("j:checkinDate")) {
+            Calendar currentDate = node.getProperty("j:checkinDate").getDate();
         }
-        node.setProperty("j:revisionNumber", currentRevision+1);
-        return currentRevision+1;
+
+        node.setProperty("j:checkinDate", checkinDate);
+        return checkinDate;
     }
 
 
-    public void checkin(Session session, JCRNodeWrapper node) throws RepositoryException {
-        incrementRevisionNumber(node);
+    public void checkin(Session session, JCRNodeWrapper node, Calendar checkinDate) throws RepositoryException {
+        setNodeCheckinDate(node, checkinDate);
         session.getWorkspace().getVersionManager().checkin(node.getPath());
     }
 
@@ -103,10 +104,18 @@ public class JCRVersionService extends JahiaService {
         Version closestVersion = null;
         while (vi.hasNext()) {
             Version v = vi.nextVersion();
-            if (v.getCreated().getTime().compareTo(versionDate) > 0) {
+            Node frozenNode = v.getFrozenNode();
+            Date checkinDate = null;
+            if (frozenNode.hasProperty("j:checkinDate")) {
+                Property checkinDateProperty = frozenNode.getProperty("j:checkinDate");
+                checkinDate = checkinDateProperty.getDate().getTime();
+            } else {
+                checkinDate = v.getCreated().getTime();
+            }
+            if (checkinDate.compareTo(versionDate) > 0) {
                 closestVersion = lastVersion;
                 break;
-            } else if (v.getCreated().getTime().compareTo(versionDate) == 0) {
+            } else if (checkinDate.compareTo(versionDate) == 0) {
                 closestVersion = v;
                 break;
             }

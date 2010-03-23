@@ -393,7 +393,7 @@ public class JCRPublicationService extends JahiaService {
                 node.setProperty("j:lastPublished", c);
                 node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
 
-            jcrVersionService.incrementRevisionNumber(node);
+            jcrVersionService.setNodeCheckinDate(node, c);
 //            }
         }
         if (modified.isEmpty()) {
@@ -650,7 +650,7 @@ public class JCRPublicationService extends JahiaService {
             node.setProperty("j:lastPublished", c);
             node.setProperty("j:lastPublishedBy", userID);
         }
-        jcrVersionService.incrementRevisionNumber(node);
+        jcrVersionService.setNodeCheckinDate(node, c);
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();

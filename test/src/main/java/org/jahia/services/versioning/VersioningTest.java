@@ -154,7 +154,7 @@ public class VersioningTest extends TestCase {
     private void validateVersionedNode(int index, VersionInfo curVersionInfo, String versionName, JCRNodeWrapper versionNode) throws RepositoryException {
         String versionTitle = versionNode.getPropertyAsString("jcr:title");
         String title = "title" + index;
-        logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " revisionNumber=" + Long.toString(curVersionInfo.getRevisionNumber()));
+        logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " checkinDate=" + curVersionInfo.getCheckinDate());
         assertEquals(title, versionTitle);
         // let's check the version node's path
         assertEquals("Versioned node path is invalid !", SITECONTENT_ROOT_NODE + "/home/home_subpage1", versionNode.getPath());

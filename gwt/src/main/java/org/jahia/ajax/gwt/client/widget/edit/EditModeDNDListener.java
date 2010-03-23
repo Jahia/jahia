@@ -84,6 +84,7 @@ public class EditModeDNDListener extends DNDListener {
             String parentPath = parent.getPath();
 
             if (parent.getNodeTypes().contains("jnt:navMenu") && !CREATE_CONTENT_SOURCE_TYPE.equals(sourceType)) {
+                e.getStatus().setData(OPERATION_CALLED, "true");
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
                 final GWTJahiaNode selectedNode = nodes.get(0);
                 JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:navMenuNodeLink", new AsyncCallback<GWTJahiaNodeType>() {
@@ -94,7 +95,8 @@ public class EditModeDNDListener extends DNDListener {
                                 caught);
                     }
                     public void onSuccess(GWTJahiaNodeType result) {
-                        Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>();
+                        Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
+                        props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(selectedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
                         props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(selectedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
                         new CreateContentEngine(editLinker, parent, result, props, targetPath.substring(targetPath.lastIndexOf("/") + 1), false).show();
                     }

@@ -165,27 +165,10 @@ public class ContentTypeTree extends LayoutContainer {
             treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
             treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent baseEvent) {
-                    ContentTypeModelData contentTypeModelData = (ContentTypeModelData) (((TreeGridEvent) baseEvent).getModel());
-                    final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData.getGwtJahiaNodeType();
-                    final GWTJahiaNode gwtJahiaNode = contentTypeModelData.getGwtJahiaNode();
+                    GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) (((TreeGridEvent) baseEvent).getModel());
                     if (gwtJahiaNodeType != null && linker != null) {
                         new CreateContentEngine(linker, parentNode, gwtJahiaNodeType, null, false).show();
                         window.hide();
-                    } else if (gwtJahiaNode != null) {
-                        final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
-
-                        instance.paste(Arrays.asList(gwtJahiaNode.getPath() + "/j:target"), parentNode.getPath(), gwtJahiaNode.getName(), false, new AsyncCallback() {
-                            public void onFailure(Throwable caught) {
-                                //To change body of implemented methods use File | Settings | File Templates.
-                            }
-
-                            public void onSuccess(Object result) {
-                                hide();
-                                if (linker != null) {
-                                    linker.refreshMainComponent();
-                                }
-                            }
-                        });
                     }
                 }
             });

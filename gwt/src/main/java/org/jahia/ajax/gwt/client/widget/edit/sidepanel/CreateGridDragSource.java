@@ -1,9 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.event.DNDEvent;
-import org.jahia.ajax.gwt.client.data.definition.ContentTypeModelData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeGridDragSource;

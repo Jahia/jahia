@@ -29,16 +29,18 @@ public class AreaModule extends ContentPanel implements Module {
     private String scriptInfo;
     private Module parentModule;
     private MainModule mainModule;
+    private String nodeTypes;
     private boolean isDraggable = true;
     private int depth;
     private boolean selectable;
 
-    public AreaModule(String id, String path, String s, String template, String scriptInfo, boolean locked, MainModule mainModule) {
+    public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, MainModule mainModule) {
         this.id = id;
         this.path = path;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.mainModule = mainModule;
+        this.nodeTypes = nodeTypes;
         if (path.contains("/")) {
             setHeading(Messages.getResource("em_area")+" : "+ path.substring(path.lastIndexOf('/')+1));
         } else {
@@ -131,6 +133,10 @@ public class AreaModule extends ContentPanel implements Module {
 
     public Module getParentModule() {
         return parentModule;
+    }
+
+    public String getNodeTypes() {
+        return nodeTypes;
     }
 
     public void setParentModule(Module parentModule) {

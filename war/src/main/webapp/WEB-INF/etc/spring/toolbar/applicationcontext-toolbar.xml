@@ -774,6 +774,7 @@
                 <ref bean="org.jahia.toolbar.item.unlock"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.saveAsSharedComponent"/>
+                <ref bean="org.jahia.toolbar.item.switchLockComponentInTemplate"/>
                 <ref bean="org.jahia.toolbar.item.saveAsPortalComponent"/>
             </list>
         </property>
@@ -2369,6 +2370,15 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SaveAsSharedComponentActionItem"/>
         </property>
         <property name="titleKey" value="label.saveAsSharedComponent"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-saveAsSharedComponent"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-saveAsSharedComponent"/>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.switchLockComponentInTemplate" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchLockComponentInTemplateActionItem"/>
+        </property>
+        <property name="titleKey" value="label.switchLockComponentInTemplate"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-saveAsSharedComponent"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-saveAsSharedComponent"/>
     </bean>

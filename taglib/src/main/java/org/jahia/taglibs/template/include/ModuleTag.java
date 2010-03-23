@@ -319,8 +319,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     protected void printModuleStart(String type, boolean templateLocked, String path, String resolvedTemplate, String scriptInfo) throws IOException {
-        Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-        String constrainedNodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
+        String nodeTypes;
+        if ("list".equals(type) || "placeholder".equals(type)) {
+            Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+            nodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
+        } else {
+            nodeTypes = this.nodeTypes;
+        }
 
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
                 .append("id=\"module")
@@ -332,7 +337,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
                 .append("path=\"").append(path)
                 .append("\" ")
-                .append((constrainedNodeTypes != null) ? "nodetypes=\"" + constrainedNodeTypes + "\"" : "")
+                .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "")
                 .append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "")
                 .append(">");
         if (var == null) {
@@ -396,7 +401,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         if (renderContext.isEditMode()) {
             boolean templateLocked = currentResource.getNode().isNodeType("jmix:templateLocked");
-            if (!templateLocked) {
+            boolean isTemplateMode = pageContext.getAttribute("isTemplate", PageContext.REQUEST_SCOPE) != null && (Boolean) pageContext.getAttribute("isTemplate", PageContext.REQUEST_SCOPE);
+            if (!templateLocked || isTemplateMode) {
                 printModuleStart("placeholder", templateLocked, path, null, null);
                 printModuleEnd();
             }

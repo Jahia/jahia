@@ -1,6 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -41,7 +40,7 @@ public class MainModule extends ContentPanel implements Module {
     private boolean selectable = true;
     private String originalHtml;
     private EditLinker editLinker;
-    private ActionMenu contexMenu;
+    private ActionMenu contextMenu;
 
 
     Map<Element, Module> m;
@@ -82,14 +81,14 @@ public class MainModule extends ContentPanel implements Module {
         addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, editLinker));
 
         // contextMenu
-        contexMenu = new ActionMenu("contextmenu-editmode", editLinker) {
+        contextMenu = new ActionMenu("contextmenu-editmode", editLinker) {
             @Override
             public void beforeShow() {
                 makeSelected();
                 super.beforeShow();
             }
         };
-        setContextMenu(contexMenu);
+//        setContextMenu(contextMenu);
 
 
     }

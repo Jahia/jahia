@@ -11,7 +11,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -36,19 +35,19 @@ public class SimpleModule extends LayoutContainer implements Module {
     private String scriptInfo;
     private Module parentModule;
     private MainModule mainModule;
-    private String nodetypes;
+    private String nodeTypes;
     private boolean isDraggable=false;
     private int depth;
     private boolean selectable;
 
-    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodetypes, boolean locked, final MainModule mainModule) {
+    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, final MainModule mainModule) {
         this.id = id;
         setBorders(false);
         this.path = path;
         this.mainModule = mainModule;
         this.template = template;
         this.scriptInfo = scriptInfo;
-        this.nodetypes = nodetypes;
+        this.nodeTypes = nodeTypes;
 
         html = new HTML(s);
         add(html);
@@ -181,7 +180,7 @@ public class SimpleModule extends LayoutContainer implements Module {
         protected void onDragEnter(DNDEvent e) {
             super.onDragEnter(e);
             if (getModule().getParentModule().getNode().isWriteable() && !getModule().getParentModule().getNode().isLocked()) {
-                boolean allowed = checkNodeType(e, nodetypes);
+                boolean allowed = checkNodeType(e, nodeTypes);
                 if (allowed) {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
                     e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());

@@ -50,15 +50,13 @@ public class ModuleHelper {
                 String scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
                 Module module = null;
                 if (type.equals("area")) {
-                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, m);
+                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, templateLocked.length()>0, m);
                 } else if (type.equals("list")) {
                     module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, m);
                 } else if (type.equals("existingNode")) {
                     module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, m);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, nodetypes, m);
-//                } else if (type.equals("text")) {
-//                    module = new TextModule(path, divElement.getInnerHTML(), editManager);
                 }
                 if (module != null) {
                     if (!modulesByPath.containsKey(path)) {

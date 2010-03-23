@@ -73,7 +73,7 @@ import java.util.Map;
  *        Created : 21 déc. 2009
  */
 public class ContentTypeTree extends LayoutContainer {
-    private TreeGrid<ContentTypeModelData> treeGrid;
+    private TreeGrid<GWTJahiaNodeType> treeGrid;
     private Linker linker;
     private final GWTJahiaNodeType nodeType;
     private final String baseType;
@@ -83,7 +83,7 @@ public class ContentTypeTree extends LayoutContainer {
     private final int rowHeight;
     private final boolean popup;
     private final Window window;
-    private TreeStore<ContentTypeModelData> store;
+    private TreeStore<GWTJahiaNodeType> store;
 
     public ContentTypeTree(Linker linker, GWTJahiaNodeType nodeType, String baseType, GWTJahiaNode parentNode,
                            int width, int height, int rowHeight,
@@ -107,8 +107,8 @@ public class ContentTypeTree extends LayoutContainer {
 
 
     public void createUI() {
-        store = new TreeStore<ContentTypeModelData>();
-        ContentTypeModelData rootEmptyContent = null;
+        store = new TreeStore<GWTJahiaNodeType>();
+        GWTJahiaNodeType rootEmptyContent = null;
         if (nodeType == null) {
             if (linker != null) {
                 if (parentNode != null) {
@@ -118,7 +118,7 @@ public class ContentTypeTree extends LayoutContainer {
                 }
             }
         } else {
-            rootEmptyContent = new ContentTypeModelData(nodeType);
+            rootEmptyContent = nodeType;
             store.add(rootEmptyContent, false);
         }
         ColumnConfig name = new ColumnConfig("label", "Label", width - 40);
@@ -127,16 +127,15 @@ public class ContentTypeTree extends LayoutContainer {
             public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
                                     ListStore listStore, Grid grid) {
                 Label label = new Label((String) modelData.get(s));
-                ContentTypeModelData gwtJahiaNode = (ContentTypeModelData) modelData;
+                GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) modelData;
                 HorizontalPanel panel = new HorizontalPanel();
                 panel.setWidth(width - 40);
                 panel.setTableWidth("100%");
                 TableData tableData;
-                if (gwtJahiaNode.getGwtJahiaNodeType() != null || gwtJahiaNode.getGwtJahiaNode() != null) {
+                if (gwtJahiaNodeType != null) {
                     tableData = new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("5%");
-                    panel.add(ContentModelIconProvider.getInstance().getIcon(
-                            gwtJahiaNode.getGwtJahiaNodeType()).createImage());
+                    panel.add(ContentModelIconProvider.getInstance().getIcon(gwtJahiaNodeType).createImage());
                     tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
                     tableData.setWidth("95%");
                     panel.add(label, tableData);
@@ -150,7 +149,7 @@ public class ContentTypeTree extends LayoutContainer {
             }
         });
         ColumnConfig author = new ColumnConfig("author", "Author", 40);
-        treeGrid = new TreeGrid<ContentTypeModelData>(store, new ColumnModel(Arrays.asList(name, author)));
+        treeGrid = new TreeGrid<GWTJahiaNodeType>(store, new ColumnModel(Arrays.asList(name, author)));
         treeGrid.setBorders(true);
         if (height > 0) {
             treeGrid.setHeight(height);
@@ -220,11 +219,9 @@ public class ContentTypeTree extends LayoutContainer {
 
                     public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
                         for (Map.Entry<GWTJahiaNodeType, List<GWTJahiaNodeType>> entry : result.entrySet()) {
-                            final ContentTypeModelData rootData = new ContentTypeModelData(entry.getKey());
-                            store.add(rootData, true);
+                            store.add(entry.getKey(), true);
                             for (GWTJahiaNodeType gwtJahiaNodeType : entry.getValue()) {
-                                final ContentTypeModelData data = new ContentTypeModelData(gwtJahiaNodeType);
-                                store.add(rootData, data, true);
+                                store.add(entry.getKey(), gwtJahiaNodeType, true);
                             }
                         }
                         store.sort("label", Style.SortDir.ASC);
@@ -245,12 +242,9 @@ public class ContentTypeTree extends LayoutContainer {
                     public void onSuccess(
                             Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
                         for (Map.Entry<GWTJahiaNodeType, List<GWTJahiaNodeType>> entry : result.entrySet()) {
-                            final ContentTypeModelData rootData = new ContentTypeModelData(
-                                    entry.getKey());
-                            store.add(rootData, true);
+                            store.add(entry.getKey(), true);
                             for (GWTJahiaNodeType gwtJahiaNodeType : entry.getValue()) {
-                                final ContentTypeModelData data = new ContentTypeModelData(gwtJahiaNodeType);
-                                store.add(rootData, data, true);
+                                store.add(entry.getKey(), gwtJahiaNodeType, true);
                             }
                         }
                         store.sort("label", Style.SortDir.ASC);
@@ -258,7 +252,7 @@ public class ContentTypeTree extends LayoutContainer {
                 });
     }
 
-    public TreeGrid<ContentTypeModelData> getTreeGrid() {
+    public TreeGrid<GWTJahiaNodeType> getTreeGrid() {
         return treeGrid;
     }
 

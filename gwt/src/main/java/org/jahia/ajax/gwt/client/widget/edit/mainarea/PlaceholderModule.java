@@ -22,16 +22,16 @@ public class PlaceholderModule extends LayoutContainer implements Module {
     private String path;
     private Module parentModule;
     private MainModule mainModule;
-    private String nodetypes;
+    private String nodeTypes;
     private int depth;
     private boolean selectable;
 
-    public PlaceholderModule(String id, String path, String nodetypes, MainModule mainModule) {
+    public PlaceholderModule(String id, String path, String nodeTypes, MainModule mainModule) {
         super(new FlowLayout());
         this.id = id;
         this.path = path;
         this.mainModule = mainModule;
-        this.nodetypes = nodetypes;
+        this.nodeTypes = nodeTypes;
         if (path.endsWith("*")) {
             setBorders(false);
         } else {
@@ -112,7 +112,7 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         @Override
         protected void onDragEnter(DNDEvent e) {
             if (parentModule.getNode().isWriteable() && !parentModule.getNode().isLocked()) {
-                boolean allowed = checkNodeType(e, nodetypes);
+                boolean allowed = checkNodeType(e, nodeTypes);
                 if (allowed) {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
                     e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());

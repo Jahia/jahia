@@ -217,21 +217,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
             if (node != null) {
                 Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+                String constrainedNodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
 
-                // add externalLinks
-                String constrainedNodeTypes = null;
-                Integer level = (Integer) pageContext.getAttribute("areaNodeTypesRestrictionLevel", PageContext.REQUEST_SCOPE);
-                if (level != null && currentLevel != null && currentLevel == level + 1) {
-                    constrainedNodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction", PageContext.REQUEST_SCOPE);
-                }
-                if (node.getPath().endsWith("/*")) {
-                    if (renderContext.isEditMode() && editable) {
-                        printModuleStart("placeholder", false, node.getPath(), null, null);
-                        printModuleEnd();
-                    }
-
-                    return EVAL_PAGE;
-                }
                 if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
                     StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
                     boolean found = false;
@@ -293,15 +280,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             printModuleStart(type, templateLocked, node.getPath(), resource.getResolvedTemplate(), "Script not found");
                         }
 
-                        if (nodeTypes != null) {
-                            pageContext.setAttribute("areaNodeTypesRestriction", nodeTypes, PageContext.REQUEST_SCOPE);
-                            pageContext.setAttribute("areaNodeTypesRestrictionLevel", pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE), PageContext.REQUEST_SCOPE);
-                        }
                         render(renderContext, resource);
-                        if (nodeTypes != null) {
-                            pageContext.removeAttribute("areaNodeTypesRestriction", PageContext.REQUEST_SCOPE);
-                            pageContext.removeAttribute("areaNodeTypesRestrictionLevel", PageContext.REQUEST_SCOPE);
-                        }
 
                         printModuleEnd();
                     } else {
@@ -327,16 +306,21 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             nodeTypes = null;
             var = null;
             buffer = null;
-            parameters.clear();
 
-            Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-            pageContext.setAttribute("org.jahia.modules.level", level != null ? level - 1 : 1, PageContext.REQUEST_SCOPE);
+            if (!"true".equals(parameters.get("isInclude"))) {
+                Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+                pageContext.setAttribute("org.jahia.modules.level", level != null ? level - 1 : 1, PageContext.REQUEST_SCOPE);
+            }
+
+            parameters.clear();
 
         }
         return EVAL_PAGE;
     }
 
     protected void printModuleStart(String type, boolean templateLocked, String path, String resolvedTemplate, String scriptInfo) throws IOException {
+        Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+        String constrainedNodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
 
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
                 .append("id=\"module")
@@ -348,7 +332,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
                 .append("path=\"").append(path)
                 .append("\" ")
-                .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "")
+                .append((constrainedNodeTypes != null) ? "nodetypes=\"" + constrainedNodeTypes + "\"" : "")
                 .append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "")
                 .append(">");
         if (var == null) {
@@ -368,12 +352,19 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected void render(RenderContext renderContext, Resource resource) throws IOException {
         try {
+            final Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+            if (nodeTypes != null) {
+                pageContext.setAttribute("areaNodeTypesRestriction" + level, nodeTypes, PageContext.REQUEST_SCOPE);
+            }
             if (renderContext.isIncludeSubModules()) {
                 buffer.append(RenderService.getInstance().render(resource, renderContext));
                 if (var == null) {
                     pageContext.getOut().print(buffer);
                     buffer.delete(0, buffer.length());
                 }
+            }
+            if (nodeTypes != null) {
+                pageContext.removeAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE);
             }
         } catch (TemplateNotFoundException io) {
             buffer.append(io);
@@ -395,7 +386,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return type;
     }
 
-    protected void missingResource(RenderContext renderContext, Resource currentResource) throws IOException {
+    protected void missingResource(RenderContext renderContext, Resource currentResource) throws RepositoryException, IOException {
         String currentPath = currentResource.getNode().getPath();
         if (path.startsWith(currentPath + "/") && path.substring(currentPath.length() + 1).indexOf('/') == -1) {
             currentResource.getMissingResources().add(path.substring(currentPath.length() + 1));
@@ -404,8 +395,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
         if (renderContext.isEditMode()) {
-            printModuleStart("placeholder", false, path, null, null);
-            printModuleEnd();
+            boolean templateLocked = currentResource.getNode().isNodeType("jmix:templateLocked");
+            if (!templateLocked) {
+                printModuleStart("placeholder", templateLocked, path, null, null);
+                printModuleEnd();
+            }
         }
     }
 

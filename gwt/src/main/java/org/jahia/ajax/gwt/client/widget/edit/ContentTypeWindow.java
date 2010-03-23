@@ -116,28 +116,12 @@ public class ContentTypeWindow extends Window {
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                final ContentTypeModelData contentTypeModelData = contentTypeTree.getTreeGrid().getSelectionModel().getSelectedItem();
+                final GWTJahiaNodeType contentTypeModelData = contentTypeTree.getTreeGrid().getSelectionModel().getSelectedItem();
                 if (contentTypeModelData != null) {
-                    final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData.getGwtJahiaNodeType();
-                    final GWTJahiaNode gwtJahiaNode = contentTypeModelData.getGwtJahiaNode();
+                    final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData;
                     if (gwtJahiaNodeType != null) {
                         new CreateContentEngine(linker, parentNode, gwtJahiaNodeType, null, false).show();
                         window.hide();
-                    } else if (gwtJahiaNode != null) {
-                        final JahiaContentManagementServiceAsync instance = JahiaContentManagementService.App.getInstance();
-                        instance.paste(Arrays.asList(gwtJahiaNode.getPath() + "/j:target"), parentNode.getPath(), gwtJahiaNode.getName(), false, new AsyncCallback() {
-                            public void onFailure(Throwable caught) {
-                                //To change body of implemented methods use File | Settings | File Templates.
-                            }
-
-                            public void onSuccess(Object result) {
-                                hide();
-                                linker.refreshMainComponent();
-                                if (baseType.equals("jnt:page")) {
-                                    linker.refreshLeftPanel();
-                                }
-                            }
-                        });
                     }
                 }
             }

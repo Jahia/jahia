@@ -4,6 +4,7 @@ import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import org.jahia.ajax.gwt.client.data.definition.ContentTypeModelData;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeGridDragSource;
 
@@ -15,7 +16,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeGridDragSource;
  * To change this template use File | Settings | File Templates.
  */
 public class CreateGridDragSource extends EditModeGridDragSource {
-    public CreateGridDragSource(Grid<ContentTypeModelData> grid) {
+    public CreateGridDragSource(Grid<GWTJahiaNodeType> grid) {
         super(grid);
     }
 

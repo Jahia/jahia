@@ -122,6 +122,7 @@
 [jmix:navMenuItem] mixin
 
 [jnt:navMenu] > jnt:content, mix:title, jmix:navMenuItem, jmix:interactiveContent
+ orderable
  + * (jmix:navMenuItem)
 
 [jnt:navMenuExternalLink] > jnt:externalLink, jmix:navMenuItem, jmix:interactiveContent

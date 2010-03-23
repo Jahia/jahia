@@ -1472,10 +1472,8 @@
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="url"/>
-                    <property name="classProvider"
-                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
-                    <property name="inputProvider" value="mysettings"/>
+                    <property name="name" value="js.url"/>
+                    <property name="value" value="userUrl"/>
                 </bean>
             </list>
         </property>

@@ -59,6 +59,7 @@ public class JahiaGWTParameters {
     public static final String PREVIEW_URL = "previewUrl";
     public static final String COMPARE_URL = "compareUrl";
     public static final String BASE_URL = "baseUrl";
+    public static final String USER_URL = "userUrl";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 

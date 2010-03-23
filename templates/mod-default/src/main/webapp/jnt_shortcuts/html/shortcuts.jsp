@@ -26,7 +26,7 @@
                 <a href="${url.edit}"><fmt:message key="edit"/></a>
             </li>
             <li class="topshortcuts-edit">
-                <a href="${url.contribute}"><fmt:message key="edit"/></a>
+                <a href="${url.contribute}"><fmt:message key="contribute"/></a>
             </li>
         </c:if>
         <li class="topshortcuts-print"><a href="base.wrapper.bodywrapper.jsp#"

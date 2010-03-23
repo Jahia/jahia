@@ -137,7 +137,7 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.LIVE_URL, url.getLive());
             params.put(JahiaGWTParameters.EDIT_URL, url.getEdit());
             params.put(JahiaGWTParameters.PREVIEW_URL, url.getPreview());
-            params.put(JahiaGWTParameters.COMPARE_URL, null);
+            params.put(JahiaGWTParameters.USER_URL, url.getUserProfile());
             addLanguageSwitcherLinks(renderContext,params,url);
         }
 

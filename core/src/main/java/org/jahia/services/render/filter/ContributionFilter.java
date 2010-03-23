@@ -1,5 +1,6 @@
 package org.jahia.services.render.filter;
 
+import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
  * Time: 3:28:13 PM
  */
 public class ContributionFilter extends AbstractFilter {
+    private static Logger logger = Logger.getLogger(ContributionFilter.class);
+
     public String execute(RenderContext context, Resource resource, RenderChain chain) throws Exception {
 
         JCRNodeWrapper node = resource.getNode();
@@ -33,7 +36,7 @@ public class ContributionFilter extends AbstractFilter {
                 resource.setTemplate("listedit");
             }
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e,e);
         }
 
         return chain.doFilter(context, resource);

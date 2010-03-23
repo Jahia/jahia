@@ -125,6 +125,8 @@
  orderable
  + * (jmix:navMenuItem)
 
+[jnt:navMenuText] > jnt:text, jmix:navMenuItem, jmix:interactiveContent
+
 [jnt:navMenuExternalLink] > jnt:externalLink, jmix:navMenuItem, jmix:interactiveContent
 
 [jnt:navMenuNodeLink] > jnt:nodeLink, jmix:navMenuItem, jmix:interactiveContent

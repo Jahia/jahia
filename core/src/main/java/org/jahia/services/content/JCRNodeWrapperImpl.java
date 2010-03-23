@@ -1350,9 +1350,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     if (uuidMapping.containsKey(source.getIdentifier())) {
                         // ugly save because to make node really shareable
                         session.save();
-                        copy = copy.clone(session.getNodeByUUID(uuidMapping.get(source.getIdentifier())), source.getName());
+                        copy.clone(session.getNodeByUUID(uuidMapping.get(source.getIdentifier())), source.getName());
                     } else if (allowsExternalSharedNodes) {
-                        copy = copy.clone(source, source.getName());                        
+                        copy.clone(source, source.getName());
                     } else {
                         source.copy(copy, source.getName(), allowsExternalSharedNodes);
                     }
@@ -2334,7 +2334,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             NodeImpl node = (NodeImpl) getRealNode();
 
-            return provider.getNodeWrapper(node.clone((NodeImpl) sharedNode.getRealNode(), jrname), session);
+            try {
+                return provider.getNodeWrapper(node.clone((NodeImpl) sharedNode.getRealNode(), jrname), session);
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
         throw new UnsupportedRepositoryOperationException();
     }

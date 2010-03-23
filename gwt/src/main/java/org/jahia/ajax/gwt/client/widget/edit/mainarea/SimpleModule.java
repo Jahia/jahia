@@ -41,7 +41,7 @@ public class SimpleModule extends LayoutContainer implements Module {
     private int depth;
     private boolean selectable;
 
-    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodetypes, final MainModule mainModule) {
+    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodetypes, boolean locked, final MainModule mainModule) {
         this.id = id;
         setBorders(false);
         this.path = path;

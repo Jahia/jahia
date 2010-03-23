@@ -729,6 +729,12 @@ background-color:#E1E9EE;
 	display:inline;
 }
 
+.x-panel-header-lockedmodule {
+    background-image: none;
+    background-color: #ff9999;
+    color: #333 !important;
+}
+
 .selection-top-list {
     border-top: 1px solid #cc0033;
 }

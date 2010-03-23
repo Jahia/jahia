@@ -34,29 +34,11 @@ package org.jahia.taglibs.template.include;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.jahia.data.JahiaData;
-import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.render.*;
-import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.version.VersionException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.util.*;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.

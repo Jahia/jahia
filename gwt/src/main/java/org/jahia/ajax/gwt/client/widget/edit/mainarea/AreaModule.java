@@ -33,8 +33,9 @@ public class AreaModule extends ContentPanel implements Module {
     private int depth;
     private boolean selectable;
     private String nodeTypes;
+    private boolean locked;
 
-    public AreaModule(String id, String path, String s, String template, String scriptInfo,String nodeTypes, MainModule mainModule) {
+    public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, MainModule mainModule) {
         this.id = id;
         this.path = path;
         this.template = template;
@@ -49,6 +50,9 @@ public class AreaModule extends ContentPanel implements Module {
         setBorders(false);
         setBodyBorder(false);
         getHeader().addStyleName("x-panel-header-areamodule");
+        if (locked) {
+            getHeader().addStyleName("x-panel-header-lockedmodule");
+        }
         html = new HTML(s);
         add(html);
     }

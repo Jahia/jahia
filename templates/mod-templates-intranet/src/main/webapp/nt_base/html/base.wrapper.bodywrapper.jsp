@@ -41,7 +41,7 @@
     <div id="topheader"><!--start topheader-->
         <div class="container container_16">
             <div class="grid_16">
-                <div class="logotop"><a href="#"><template:area path="${rootPage.path}/logo"/></a></div>
+                <div class="logotop"><a href="#"><template:area path="logo"/></a></div>
             </div>
         </div>
         <div class="clear"></div>
@@ -71,44 +71,6 @@
                 <div class="clear"></div>
                 <div id="navigation">
                     <template:area path="topMenu"/>
-
-
-                    <div id="shortcuts">
-                        <h3><a title="Shortcuts" href="navBar.dropDown.jsp#">Shortcuts</a></h3>
-                        <ul>
-                            <c:if test="${requestScope.renderContext.loggedIn}">
-                                <li class="more-shortcuts">
-                                    <a class="loginFormTopLogoutShortcuts"
-                                       href='${url.logout}'><span>logout</span></a>
-                                </li>
-                                <li>
-                                    <span class="currentUser"><utility:userProperty/></span>
-                                </li>
-                                <li class="more-shortcuts">
-                                    <a href="${url.userProfile}">my settings</a>
-                                </li>
-                                <li class="more-shortcuts">
-                                    <a href="${url.edit}"><fmt:message key="edit"/></a>
-                                </li>
-                                <li class="more-shortcuts">
-                                    <a href="${url.contribute}"><fmt:message key="contribute"/></a>
-                                </li>
-                            </c:if>
-                            <li class="more-shortcuts"><a href="base.wrapper.bodywrapper.jsp#"
-                                                          onclick="javascript:window.print()">
-                                print</a>
-                            </li>
-                            <li class="more-shortcuts">
-                                <a href="${url.base}${rootPage.path}.html">home</a>
-                            </li>
-                            <li class="more-shortcuts">
-                                <a href="${url.base}${rootPage.path}.sitemap.html">sitemap</a>
-                            </li>
-                        </ul>
-                        <div class="clear"></div>
-                    </div>
-
-
                 </div>
             </div>
         </div>
@@ -128,7 +90,7 @@
 <div class="container container_16">
 
 <div class="container container_16"> <!--start container_16-->
-	<template:area path="${rootPage.path}/top footer"/>
+	<template:area path="${rootPage.path}/top footer" nodeTypes="jnt:row" />
 <div class="clear"></div></div> <!--stop container_16-->
 <div class="clear"></div>
         
@@ -140,17 +102,10 @@
         <div class="container container_16">
 
             <div class="grid_16">
-                <div class="copyright">
-					<template:area path="${rootPage.path}/copyright"/>
-                </div>
-                <div class="footerlinks">
-					<template:area path="${rootPage.path}/footer links"/>
-                </div>
-                <template:area path="${rootPage.path}/footer"/>
+                <template:area path="footer" nodeTypes="jnt:row" />
             </div>
 
             <div class='clear'></div>
-
         </div>
 
         <div class="clear"></div>

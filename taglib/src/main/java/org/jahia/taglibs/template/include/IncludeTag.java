@@ -24,7 +24,7 @@ public class IncludeTag extends ModuleTag {
         setNode((JCRNodeWrapper) pageContext.getAttribute("currentNode", PageContext.REQUEST_SCOPE));
         setEditable(false);
         setForcedTemplate(getTemplate());
-        return super.doStartTag();
+        return EVAL_BODY_BUFFERED;
     }
 
 }

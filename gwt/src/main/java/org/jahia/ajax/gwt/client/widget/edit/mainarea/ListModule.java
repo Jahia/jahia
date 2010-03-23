@@ -41,6 +41,7 @@ public class ListModule extends ContentPanel implements Module {
     private boolean isDraggable = true;
     private int depth;
     private boolean selectable;
+    private boolean locked;
 
     public ListModule(String id, String path, String s, String template, String scriptInfo, MainModule mainModule) {
         this.id = id;
@@ -56,6 +57,9 @@ public class ListModule extends ContentPanel implements Module {
         setBorders(false);
         setBodyBorder(false);
         getHeader().addStyleName("x-panel-header-listmodule");
+        if (locked) {
+            getHeader().addStyleName("x-panel-header-lockedmodule");
+        }
         html = new HTML(s);
         add(html);
     }

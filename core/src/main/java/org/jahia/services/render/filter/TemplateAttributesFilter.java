@@ -10,6 +10,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.jstl.core.Config;
@@ -58,6 +59,24 @@ public class TemplateAttributesFilter extends AbstractFilter {
         Script script = (Script) request.getAttribute("script");
         chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request",
                 new LocalizationContext(new JahiaResourceBundle(resource.getLocale(), script.getTemplate().getModule().getName()), resource.getLocale()));
+
+        if (context.isEditMode()) {
+            if (request.getAttribute("isTemplate") == null) {
+                JCRNodeWrapper current = resource.getNode();
+                while (true) {
+                    try {
+                        if (current.isNodeType("jnt:templatesFolder")) {
+                            request.setAttribute("isTemplate", Boolean.TRUE);
+                            break;
+                        }
+                        current = current.getParent();
+                    } catch (ItemNotFoundException e) {
+                        request.setAttribute("isTemplate", Boolean.FALSE);
+                        break;
+                    }
+                }
+            }
+        }
 
         String out;
         out = chain.doFilter(context, resource);

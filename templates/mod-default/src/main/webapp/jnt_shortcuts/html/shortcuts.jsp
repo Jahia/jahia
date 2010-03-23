@@ -8,12 +8,13 @@
     <ui:langBar display="horizontal" linkDisplay="flag" rootPage="${rootPage}"/>
 </div>
 
-<div id="topshortcuts">
+<div id="shortcuts">
+    <h3><a title="Shortcuts" href="navBar.dropDown.jsp#">Shortcuts</a></h3>
     <ul>
-        <c:if test="${requestScope.currentRequest.logged}">
+        <c:if test="${renderContext.loggedIn}">
             <li class="topshortcuts-login">
                 <a class="loginFormTopLogoutShortcuts"
-                   href="<template:composePageURL page="logout"/>"><span><fmt:message
+                   href='${url.logout}'><span><fmt:message
                         key="web_templates.logout"/></span></a>
             </li>
             <li>

@@ -457,6 +457,11 @@
  - j:allowedTypes (string, choicelist[nodetypes]) multiple
  + * (nt:base) = nt:base version
 
+[jnt:templatesFolder] > nt:base, jmix:hierarchyNode
+ + * (jnt:page)
+
+[jmix:templateLocked] mixin
+
 [jnt:reusableComponentsRoot] > nt:base, jmix:hierarchyNode, jmix:collection
  + * (jnt:reusableComponentsFolder)
 

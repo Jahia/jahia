@@ -1,5 +1,6 @@
 package org.jahia.services.render.filter;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 

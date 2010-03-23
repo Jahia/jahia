@@ -33,19 +33,25 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.UUID;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -220,7 +226,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
                 if (node.getPath().endsWith("/*")) {
                     if (renderContext.isEditMode() && editable) {
-                        printModuleStart("placeholder", node.getPath(), null, null);
+                        printModuleStart("placeholder", false, node.getPath(), null, null);
                         printModuleEnd();
                     }
 
@@ -272,15 +278,19 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     }
                 }
 
-                if (renderContext.isEditMode() && editable) {
-                    try {
+                try {
+                    boolean templateLocked = resource.getNode().isNodeType("jmix:templateLocked");
+                    boolean isTemplateMode = pageContext.getAttribute("isTemplate", PageContext.REQUEST_SCOPE) != null && (Boolean) pageContext.getAttribute("isTemplate", PageContext.REQUEST_SCOPE);
+
+                    if (renderContext.isEditMode() && editable && (isTemplateMode || !templateLocked)) {
                         String type = getModuleType();
+
                         Script script = null;
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
-                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
+                            printModuleStart(type, templateLocked, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
                         } catch (TemplateNotFoundException e) {
-                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found");
+                            printModuleStart(type, templateLocked, node.getPath(), resource.getResolvedTemplate(), "Script not found");
                         }
 
                         if (nodeTypes != null) {
@@ -294,11 +304,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         }
 
                         printModuleEnd();
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
+                    } else {
+                        render(renderContext, resource);
                     }
-                } else {
-                    render(renderContext, resource);
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
                 }
             }
         } catch (IOException ex) {
@@ -326,7 +336,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return EVAL_PAGE;
     }
 
-    protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo) throws IOException {
+    protected void printModuleStart(String type, boolean templateLocked, String path, String resolvedTemplate, String scriptInfo) throws IOException {
 
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
                 .append("id=\"module")
@@ -334,6 +344,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append("\" type=\"")
                 .append(type)
                 .append("\" ")
+                .append((templateLocked) ? " templateLocked=\"true\"" : "")
                 .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
                 .append("path=\"").append(path)
                 .append("\" ")
@@ -393,7 +404,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
         if (renderContext.isEditMode()) {
-            printModuleStart("placeholder", path, null, null);
+            printModuleStart("placeholder", false, path, null, null);
             printModuleEnd();
         }
     }

@@ -14,7 +14,7 @@
 
     <themes jcr:primaryType="jnt:folder"/>
 
-    <templates jcr:primaryType="jnt:folder"/>
+    <templates jcr:primaryType="jnt:templatesFolder"/>
 
     <tags jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl">

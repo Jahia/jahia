@@ -6,6 +6,8 @@
 
 [jnt:simpleSearchForm] > jnt:content, mix:title, jmix:searchFormContent
 
+[jnt:searchUsers] > jnt:content, mix:title, jmix:searchFormContent
+
 [jnt:advancedSearchForm] > jnt:content, mix:title, jmix:searchFormContent
 
 [jnt:searchResults] > jnt:content, mix:title, jmix:pager, jmix:searchFormContent

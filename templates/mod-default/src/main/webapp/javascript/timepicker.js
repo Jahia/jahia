@@ -173,7 +173,10 @@ jQuery.fn.datetime = function() {
 
             $('#pickerplug').css({
                 left: left + 'px',
-                top: top + 'px'
+                top: top + 'px',
+                position:'absolute',
+                "z-index":9999
+
             }).show('normal');
 
             if ($(this).data('userLang') != 'en' && lang[$(this).data('userLang')]) {

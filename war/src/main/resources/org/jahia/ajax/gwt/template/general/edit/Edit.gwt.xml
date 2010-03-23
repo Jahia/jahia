@@ -1,5 +1,0 @@
-
-<module>
-    <inherits name="org.jahia.ajax.gwt.template.common.edit.Edit"/>
-    <entry-point class='org.jahia.ajax.gwt.template.general.edit.client.EditModeEntryPoint'/>
-</module>

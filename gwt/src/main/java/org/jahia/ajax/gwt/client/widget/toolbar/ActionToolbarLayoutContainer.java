@@ -1,22 +1,18 @@
 package org.jahia.ajax.gwt.client.widget.toolbar;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbar;
-import org.jahia.ajax.gwt.client.util.URL;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Action toolbar container widget.
@@ -39,9 +35,8 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
      * Load toolbar
      */
     private void loadToolbars() {
-        GWTJahiaPageContext gwtJahiaPageContext = getJahiaGWTPageContext();
         // load toolbars
-        ToolbarService.App.getInstance().getGWTToolbars(toolbarGroup, gwtJahiaPageContext, new AsyncCallback<GWTJahiaToolbarSet>() {
+        ToolbarService.App.getInstance().getGWTToolbars(toolbarGroup, new AsyncCallback<GWTJahiaToolbarSet>() {
             public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
                 long begin = System.currentTimeMillis();
                 if (gwtJahiaToolbarSet != null) {
@@ -106,19 +101,6 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         if (actionToolbars != null && !actionToolbars.isEmpty()) {
             actionToolbars.get(0).insert(item, index);
         }
-    }
-
-    /**
-     * Get the jahia page context
-     *
-     * @return
-     */
-    public GWTJahiaPageContext getJahiaGWTPageContext() {
-        // init panel
-        GWTJahiaPageContext page = new GWTJahiaPageContext(URL.getRelativeURL());
-        page.setPid(JahiaGWTParameters.getPID());
-        page.setMode(JahiaGWTParameters.getOperationMode());
-        return page;
     }
 
     /**

@@ -32,11 +32,10 @@
 package org.jahia.ajax.gwt.client.service.toolbar;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
 import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParameter;
-import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 
 import java.util.Map;
@@ -48,11 +47,11 @@ import java.util.Map;
  */
 public interface ToolbarServiceAsync {
 
-    public void getGWTToolbars(String toolbarGroup, GWTJahiaPageContext pageContext, AsyncCallback<GWTJahiaToolbarSet> async);
+    public void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbarSet> async);
 
-    public void execute(GWTJahiaPageContext pageContext, Map<String, GWTJahiaProperty> gwtPropertiesMap, AsyncCallback<GWTJahiaAjaxActionResult> async);
+    public void execute(Map<String, GWTJahiaProperty> gwtPropertiesMap, AsyncCallback<GWTJahiaAjaxActionResult> async);
 
-    public void updateGWTJahiaStateInfo(GWTJahiaPageContext pageContext,GWTJahiaStateInfo gwtJahiaStateInfo, AsyncCallback<GWTJahiaStateInfo> async);
+    public void updateGWTJahiaStateInfo(GWTJahiaStateInfo gwtJahiaStateInfo, AsyncCallback<GWTJahiaStateInfo> async);
 
     public void getGAdata(GWTJahiaAnalyticsParameter p,AsyncCallback<Map<String, String>> async);
 

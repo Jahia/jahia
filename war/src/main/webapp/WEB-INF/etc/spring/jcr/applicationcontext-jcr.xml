@@ -96,8 +96,6 @@
                 <entry key="jnt:simplePreference"
                        value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
                 <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>
-                <entry key="jnt:toolbarPreference"
-                       value="org.jahia.services.preferences.toolbar.ToolbarJahiaPreference"/>
                 <entry key="jnt:bookmarkPreference"
                        value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference"/>
                 <entry key="jnt:portletPreference"

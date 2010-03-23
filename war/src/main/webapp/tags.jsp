@@ -39,7 +39,6 @@
 <ui:loginPassword/>
 <ui:loginRememberMe/>
 <ui:loginUsername/>
-<ui:loginRedirectChoice/>
 <utility:applicationResources/>
 <ui:folderSelector fieldId=""/>
 <ui:categorySelector fieldId=""/>
@@ -48,7 +47,6 @@
 <ui:treeItemSelector fieldId=""/>
 <ui:rssButton targetURL=""/>
 <ui:subscribeButton source=""/>
-<ui:mediaGallery name="" inputName=""/>
 <ui:userGroupSelector/>
 <s:date/>
 <s:created/>

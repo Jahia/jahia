@@ -316,23 +316,6 @@
 
 
     <tag>
-        <description>Generate an html form defined by a specific CND node type</description>
-        <name>formFromDefinition</name>
-        <tag-class>org.jahia.taglibs.template.form.FormFromDefinition</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>nodeType</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>target</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
         <description>Retrieves a category from the backend and gives access to
             category child objects
         </description>

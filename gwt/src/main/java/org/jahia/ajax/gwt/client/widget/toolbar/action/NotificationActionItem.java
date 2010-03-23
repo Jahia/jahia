@@ -98,7 +98,7 @@ public class NotificationActionItem extends BaseActionItem {
         Log.debug("create notification Info timer");
         final Timer timer = new Timer() {
             public void run() {
-                ToolbarService.App.getInstance().updateGWTJahiaStateInfo(getJahiaGWTPageContext(), gwtJahiaStateInfo, new AsyncCallback<GWTJahiaStateInfo>() {
+                ToolbarService.App.getInstance().updateGWTJahiaStateInfo(gwtJahiaStateInfo, new AsyncCallback<GWTJahiaStateInfo>() {
                     public void onFailure(Throwable throwable) {
                         Log.error("Unable to update pdisplay info timer", throwable);
                         toolbarItem.setIconStyle("gwt-toolbar-icon-notification-error");
@@ -176,7 +176,7 @@ public class NotificationActionItem extends BaseActionItem {
 
     @Override
     public void onComponentSelection() {
-        ToolbarService.App.getInstance().updateGWTJahiaStateInfo(getJahiaGWTPageContext(), gwtJahiaStateInfo, new AsyncCallback<GWTJahiaStateInfo>() {
+        ToolbarService.App.getInstance().updateGWTJahiaStateInfo(gwtJahiaStateInfo, new AsyncCallback<GWTJahiaStateInfo>() {
             public void onFailure(Throwable throwable) {
                 Log.error("Unable to update pdisplay info timer", throwable);
             }

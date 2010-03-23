@@ -125,19 +125,9 @@ public class ContentApplicationField extends ContentField {
                     id = Integer.parseInt(contextId);
                 }
 
-                if (jParams.settings().isPortletAJAXRenderingActivated() &&
-                    !jParams.getUser().getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
-                    tmpValue = "<div id=\""+ uniqueValue++ +"\" windowID=\""+id+
-                            "\" entryPointInstanceID=\""+appID+"\" " +
-                            JahiaType.JAHIA_TYPE + "=\"" + JahiaType.PORTLET_RENDER +
-                            "\" pathInfo=\""+jParams.getPathInfo()+
-                            "\" queryString=\""+jParams.getQueryString()+
-                            "\"></div>";
-                } else {
                     tmpValue = ServicesRegistry.getInstance ().
                             getApplicationsDispatchService ().
                             getAppOutput (id, appID, jParams.getUser(), ((ParamBean)jParams).getRealRequest(), ((ParamBean)jParams).getResponse(), ((ParamBean)jParams).getContext());
-                }
 
             } else {
                 // we are not in the context of an HTTP request, so we cannot dispatch

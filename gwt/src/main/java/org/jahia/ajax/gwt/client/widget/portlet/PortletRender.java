@@ -38,8 +38,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPortletOutputBean;
 import org.jahia.ajax.gwt.client.service.JahiaService;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,9 +49,9 @@ import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
 public class PortletRender extends HTML {
     private GWTJahiaPortletOutputBean gwtPortletOutputBean;
 
-    public PortletRender(GWTJahiaPageContext page, String windowID, String entryPointInstanceID, String pathInfo, String queryString) {
+    public PortletRender(String windowID, String entryPointInstanceID, String pathInfo, String queryString) {
         setHTML("Loading...");
-        JahiaService.App.getInstance().drawPortletInstanceOutput(page, windowID, entryPointInstanceID, pathInfo, queryString, new AsyncCallback<GWTJahiaPortletOutputBean>() {
+        JahiaService.App.getInstance().drawPortletInstanceOutput(windowID, entryPointInstanceID, pathInfo, queryString, new AsyncCallback<GWTJahiaPortletOutputBean>() {
             public void onSuccess(GWTJahiaPortletOutputBean result) {
                 gwtPortletOutputBean = result;
                 if (gwtPortletOutputBean.isInIFrame()) {
@@ -92,10 +90,6 @@ public class PortletRender extends HTML {
                         eval(curScriptCode);
                     }
 
-                }
-
-                if (gwtPortletOutputBean.isInContentPortlet()) {
-                    JahiaPageEntryPoint.instance.loadJahiaModules(getElement());
                 }
 
                 Log.info("Portlet HTML successfully retrieved.");

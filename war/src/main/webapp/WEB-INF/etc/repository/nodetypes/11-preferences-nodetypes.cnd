@@ -11,15 +11,6 @@
 [jnt:preferenceProvider] > nt:base, jmix:hierarchyNode, jmix:collection
 + * (nt:base) multiple
 
-[jnt:toolbarPreference] > nt:base, jmix:hierarchyNode, jmix:collection
-- j:toolbarName (string) nofulltext
-- j:type (string) nofulltext
-- j:state (long)
-- j:toolbarIndex (long)
-- j:positionX (long)
-- j:positionY (long)
-- j:display (boolean)
-
 [jnt:simplePreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:prefName (string) nofulltext
 - j:prefValue (string)

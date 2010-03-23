@@ -148,12 +148,6 @@
             <type>org.jahia.services.content.JCRNodeWrapper</type>
         </attribute>
         <attribute>
-            <name>ajaxRendering</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
             <name>windowId</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -292,58 +286,6 @@
             <name>styleClass</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Displays a collection of images thumbnails from a webdav path</description>
-        <name>thumbView</name>
-        <tag-class>org.jahia.taglibs.uicomponents.mediagallery.ThumbViewTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>path</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Display the entire sitemap</description>
-        <name>sitemap</name>
-        <tag-class>org.jahia.taglibs.uicomponents.sitemap.SitemapTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>startPid</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <name>maxDepth</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <name>showRoot</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>ajax</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>enableDescription</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
         </attribute>
     </tag>
     <tag>
@@ -572,85 +514,6 @@
     </tag>
 
     <tag>
-        <description>Displays a date field selector.</description>
-        <name>dateTimeSelector</name>
-        <tag-class>org.jahia.taglibs.uicomponents.dateselector.GWTDateTimePickerTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>datePattern</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>displayTime</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>templateUsage</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>readOnly</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>shadow</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>fieldName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>value</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
-        <description>Displays a calendar</description>
-        <name>calendar</name>
-        <tag-class>org.jahia.taglibs.uicomponents.calendar.GWTCalendarTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>templateUsage</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>cssClassName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>callback</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>activeDate</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
         <description>Prints out the title of categories given by their keys.</description>
         <name>displayCategoryTitle</name>
         <tag-class>org.jahia.taglibs.template.category.DisplayCategoryTitleTag</tag-class>
@@ -684,12 +547,6 @@
         <description>Renders the link to the folder path selection engine (as a popup window)</description>
         <name>folderSelector</name>
         <path>/META-INF/tags/folderSelector.tag</path>
-    </tag-file>
-
-    <tag-file>
-        <description>Renders a media gallery displaying image thumbnails</description>
-        <name>mediaGallery</name>
-        <path>/META-INF/tags/mediaGallery.tag</path>
     </tag-file>
 
     <tag-file>

@@ -247,7 +247,7 @@ public class AjaxActionActionItem extends BaseActionItem {
      * @param gwtToolbarItem
      */
     protected void execute(final GWTJahiaToolbarItem gwtToolbarItem) {
-        ToolbarService.App.getInstance().execute(getJahiaGWTPageContext(), gwtToolbarItem.getProperties(), new AsyncCallback<GWTJahiaAjaxActionResult>() {
+        ToolbarService.App.getInstance().execute(gwtToolbarItem.getProperties(), new AsyncCallback<GWTJahiaAjaxActionResult>() {
             public void onSuccess(GWTJahiaAjaxActionResult result) {
                 // depending on "onSuccess" property , display info, notify, redirect or refresh
                 final Map properties = gwtToolbarItem.getProperties();

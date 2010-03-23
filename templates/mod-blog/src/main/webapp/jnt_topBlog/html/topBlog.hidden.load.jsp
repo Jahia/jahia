@@ -13,4 +13,4 @@
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
     <c:set var="end" value="${fn:length(result.nodes)}" scope="request"/>
     <c:set var="listTotalSize" value="${end}" scope="request"/>
-    <c:set var="forcedTemplate" value="hidden.blog.short" scope="request"/>
+    <c:set var="subNodesTemplate" value="hidden.blog.short" scope="request"/>

@@ -73,26 +73,6 @@ public class ModuleHelper {
                     modulesByPath.get(path).add(module);
                     modulesById.put(id, module);
                 }
-            } else if (JahiaType.DATE_FIELD.equals(jahiatype)) {
-                String datePattern = DOM.getElementAttribute(divElement, "datepattern");
-                boolean displayTime = Boolean.parseBoolean(DOM.getElementAttribute(divElement, "displaytime"));
-                boolean readOnly = Boolean.parseBoolean(DOM.getElementAttribute(divElement, "readonly"));
-                boolean shadow = Boolean.parseBoolean(DOM.getElementAttribute(divElement, "shadow"));
-                String fieldName = DOM.getElementAttribute(divElement, "fieldname");
-                String valueString = DOM.getElementAttribute(divElement, "value");
-                Date value = null;
-                if (valueString != null && valueString.length() > 0) {
-                    value = new Date(Long.parseLong(valueString));
-                }
-                final CalendarField calendarField = new CalendarField(datePattern, displayTime, readOnly, fieldName,
-                                                                      shadow, value);
-                final Element div = divElement;
-                calendarField.addListener(Events.Render,new Listener<BaseEvent>() {
-                    public void handleEvent(BaseEvent be) {
-                        DOM.appendChild(div,calendarField.getElement());
-                    }
-                });
-                RootPanel.get().add(calendarField);
             }
         }
 

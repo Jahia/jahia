@@ -31,23 +31,8 @@
  */
 package org.jahia.ajax.gwt.commons.server;
 
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.data.JahiaData;
 import org.jahia.engines.EngineMessage;
@@ -59,13 +44,17 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.context.ServletContextAware;
 
-import com.google.gwt.user.client.rpc.RemoteService;
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.MessageFormat;
+import java.util.Locale;
 
 /**
  * Base class for Jahia GWT services.
@@ -86,12 +75,10 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * build JahiaData
      *
      * @deprecated
-     * @param pid
-     * @param mode
      * @return
      */
-    private JahiaData buildJahiaData(int pid, String mode) {
-        return buildJahiaData(pid, mode, false);
+    private JahiaData buildJahiaData() {
+        return buildJahiaData(false);
     }
 
     /**
@@ -136,12 +123,10 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * build JahiaData
      *
      * @deprecated
-     * @param pid
-     * @param mode
      * @return
      */
-    private JahiaData buildJahiaData(int pid, String mode, boolean doBuildData) {
-        ProcessingContext jParams = retrieveParamBean(pid, mode);
+    private JahiaData buildJahiaData(boolean doBuildData) {
+        ProcessingContext jParams = retrieveParamBean();
         JahiaData jData = null;
         try {
             jData = new JahiaData(jParams, doBuildData);
@@ -332,14 +317,13 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * Retrieve JahiaData object corresponding to the current request
      *
      * @deprecated
-     * @param page
      * @return
      */
-    protected JahiaData retrieveJahiaData(GWTJahiaPageContext page) {
+    protected JahiaData retrieveJahiaData() {
         final HttpServletRequest request = getThreadLocalRequest();
         JahiaData jData = (JahiaData) request.getAttribute(ORG_JAHIA_DATA_JAHIA_DATA);
         if (jData == null) {
-            ProcessingContext jParams = retrieveParamBean(page);
+            ProcessingContext jParams = retrieveParamBean();
 
             // put jdata
             try {
@@ -348,9 +332,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             } catch (JahiaException e) {
                 // this can happen if the url doesn't contain enought parameter to create the JahiData
                 request.removeAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN);
-                int pid = page.getPid();
-                String mode = page.getMode();
-                jData = buildJahiaData(pid, mode);
+                jData = buildJahiaData();
             } catch (Exception e) {
                 logger.error(e, e);
             }
@@ -371,37 +353,8 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @return
      */
     protected ParamBean retrieveParamBean() {
-        HttpSession session = getThreadLocalRequest().getSession();
-        Integer pidInteger = ((Integer) session.getAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID));
-        int pid = -1;
-        if (pidInteger != null) {
-            pid = pidInteger;
-        }
-//        String mode = (String) session.getAttribute(ProcessingContext.OPERATION_MODE_PARAMETER);
-        return retrieveParamBean(pid, null);
-    }
-
-    /**
-     * Get param bean by pageContext
-     *
-     * @deprecated
-     * @param page
-     * @return
-     */
-    protected ParamBean retrieveParamBean(GWTJahiaPageContext page) {
-        return retrieveParamBean(page.getPid(), page.getMode());
-    }
-
-    /**
-     * Get a param bean by pid/mode
-     *
-     * @deprecated
-     * @param pid
-     * @param mode
-     * @return
-     */
-    protected ParamBean retrieveParamBean(int pid, String mode) {
         final HttpServletRequest request = getThreadLocalRequest();
+
         ParamBean jParams = getParamBeanRequestAttr();
         if (jParams == null) {
             logger.debug("Init processing context");
@@ -412,7 +365,6 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             final ProcessingContextFactory pcf = (ProcessingContextFactory) bf.getBean(ProcessingContextFactory.class.getName());
             try {
                 // build jParam
-                JahiaSite site = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
                 jParams = pcf.getContext(request, response, context, null);
                 request.setAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN, jParams);
                 return jParams;
@@ -430,7 +382,6 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             logger.debug("jParam: " + jParams);
         }
         return jParams;
-
     }
 
     public void setRequest(HttpServletRequest request) {

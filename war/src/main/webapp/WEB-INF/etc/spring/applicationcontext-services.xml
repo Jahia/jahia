@@ -54,7 +54,6 @@
             <map>
                 <entry key="simple" value="jnt:simplePreference" />
                 <entry key="page" value="jnt:pagePreference"  />
-                <entry key="toolbar" value="jnt:toolbarPreference"  />
                 <entry key="portlet" value="jnt:portletPreference"  />
                 <entry key="layoutmanager" value="jnt:layout"  />
                 <entry key="bookmarks" value="jnt:bookmarkPreference"  />

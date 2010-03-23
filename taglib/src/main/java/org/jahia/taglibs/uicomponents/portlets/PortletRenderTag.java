@@ -34,15 +34,9 @@ package org.jahia.taglibs.uicomponents.portlets;
 
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
-import org.jahia.ajax.gwt.client.core.JahiaType;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.gui.HTMLToolBox;
-import org.jahia.gui.GuiBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.JCRNodeWrapper;
 
@@ -64,7 +58,6 @@ public class PortletRenderTag extends AbstractJahiaTag {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PortletRenderTag.class);
 
     private Node mashupNode;
-    private boolean ajaxRendering = true;
     private int windowId;
 
     public int doStartTag() {
@@ -85,7 +78,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
                         PageContext.REQUEST_SCOPE);
                 windowId = globalId;
             }
-            drawMashup(new JCRPortletNode((JCRNodeWrapper) mashupNode), ajaxRendering, windowId, pageContext.getOut(), pageContext.getServletContext());
+            drawMashup(new JCRPortletNode((JCRNodeWrapper) mashupNode), windowId, pageContext.getOut(), pageContext.getServletContext());
 
         } catch (Exception e) {
             logger.error(e, e);
@@ -98,7 +91,6 @@ public class PortletRenderTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         super.doEndTag();
         mashupNode = null;
-        ajaxRendering = true;
         windowId=-1;
         return EVAL_PAGE;
     }
@@ -109,14 +101,6 @@ public class PortletRenderTag extends AbstractJahiaTag {
 
     public void setMashupNode(Node mashupNode) {
         this.mashupNode = mashupNode;
-    }
-
-    public boolean isAjaxRendering() {
-        return ajaxRendering;
-    }
-
-    public void setAjaxRendering(boolean ajaxRendering) {
-        this.ajaxRendering = ajaxRendering;
     }
 
     public int getWindowId() {
@@ -131,12 +115,9 @@ public class PortletRenderTag extends AbstractJahiaTag {
      * draw mashup node
      *
      * @param jcrPortletNode
-     * @param ajaxRendering
      * @return
      */
-    public void drawMashup(JCRPortletNode jcrPortletNode, boolean ajaxRendering, int windowId, final JspWriter out, ServletContext servletContext) throws JahiaException, IOException {
-
-        boolean computedAjaxRendering = ajaxRendering && Jahia.getSettings().isPortletAJAXRenderingActivated();
+    public void drawMashup(JCRPortletNode jcrPortletNode, int windowId, final JspWriter out, ServletContext servletContext) throws JahiaException, IOException {
 
         String appID = null;
         try {
@@ -148,17 +129,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
 
         logger.debug("Dispatching to portlet for appID=" + appID + "...");
 
-        String portletOutput = "";
-        if (computedAjaxRendering) {
-            portletOutput = "<div id=\"" + windowId + "\" windowID=\"" + windowId +
-                    "\" entryPointInstanceID=\"" + appID + "\" " +
-                    JahiaType.JAHIA_TYPE + "=\"" + JahiaType.PORTLET_RENDER +
-                    "\" pathInfo=\"" + getRenderContext().getRequest().getPathInfo() +
-                    "\" queryString=\"" + getRenderContext().getRequest().getQueryString() +
-                    "\"></div>";
-        } else {
-            portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(windowId, appID, getRenderContext().getUser(), getRenderContext().getRequest(), getRenderContext().getResponse(), servletContext);
-        }
+        String portletOutput = ServicesRegistry.getInstance().getApplicationsDispatchService().getAppOutput(windowId, appID, getRenderContext().getUser(), getRenderContext().getRequest(), getRenderContext().getResponse(), servletContext);
 
         // remove <html> tags that can break the page
         if (portletOutput != null) {

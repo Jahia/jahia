@@ -39,15 +39,5 @@ package org.jahia.ajax.gwt.client.core;
  */
 public class JahiaType {
 
-    public final static String CALENDAR = "calendar";
-    public final static String DATE_FIELD = "dateField";
-    public final static String FORM = "form";
-    public final static String INLINE_EDITING = "inlineediting";
     public final static String JAHIA_TYPE = "jahiatype";
-    public final static String MEDIA_GALLERY = "mediaGallery";
-    public final static String PORTLET_RENDER = "portletrender";
-    public final static String SITEMAP = "sitemap";
-    public final static String SUBSCRIPTION = "subscription";
-    public final static String TOOLBARS_MANAGER = "toolsbars";
-    public final static String USER_GROUP = "usergroup";
 }

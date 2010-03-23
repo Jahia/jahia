@@ -1,5 +1,0 @@
-
-<module>
-    <inherits name="org.jahia.ajax.gwt.template.common.live.Live"/>
-    <entry-point class='org.jahia.ajax.gwt.template.general.live.client.LiveModeEntryPoint'/>
-</module>

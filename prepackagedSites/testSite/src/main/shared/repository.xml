@@ -34,10 +34,6 @@
                     <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"></DENY_jcr_read_g_guest>
                     <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"></DENY_jcr_write_g_guest>
                 </j:acl>
-                <toolbar jcr:primaryType="jnt:preferenceProvider" jcr:uuid="7c2dbc16-6b0a-4bfd-b978-2f2321d88b50">
-                    <preference j:positionX="0" j:type="org.jahia.toolbar.caches" j:toolbarName="caches" j:state="0" j:positionY="0" j:toolbarIndex="0" j:display="true" jcr:primaryType="jnt:toolbarPreference" jcr:uuid="5f2f797d-8403-4726-8cd6-cab6dfc922f8"></preference>
-                    <preference j:positionX="0" j:type="org.jahia.toolbar.workflow" j:toolbarName="workflow" j:state="0" j:positionY="0" j:toolbarIndex="0" j:display="true" jcr:primaryType="jnt:toolbarPreference" jcr:uuid="7be14bd4-32e6-4d88-bd75-39535667ddd3"></preference>
-                </toolbar>
             </preferences>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_u_root j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:root" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_root>

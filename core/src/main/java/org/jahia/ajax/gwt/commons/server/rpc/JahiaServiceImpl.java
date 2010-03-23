@@ -37,7 +37,6 @@ import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
@@ -71,11 +70,11 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
     private static final Logger logger = Logger.getLogger(JahiaServiceImpl.class);
 
-    public GWTJahiaPortletOutputBean drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString) {
+    public GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString) {
         GWTJahiaPortletOutputBean result = new GWTJahiaPortletOutputBean();
         try {
             int fieldId = Integer.parseInt(windowID);
-            ParamBean jParams = retrieveParamBean(page);
+            ParamBean jParams = retrieveParamBean();
             jParams.setQueryString(queryString);
             jParams.setPathInfo(pathInfo);
             jParams.setAttribute("org.jahia.data.JahiaData", new JahiaData(jParams));

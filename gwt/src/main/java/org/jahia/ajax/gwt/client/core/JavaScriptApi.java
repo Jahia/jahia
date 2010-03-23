@@ -31,16 +31,14 @@
  */
 package org.jahia.ajax.gwt.client.core;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.Info;
-import org.jahia.ajax.gwt.client.service.JahiaService;
-import org.jahia.ajax.gwt.client.data.GWTJahiaPortletOutputBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaInlineEditingResultBean;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.client.data.GWTJahiaPortletOutputBean;
+import org.jahia.ajax.gwt.client.service.JahiaService;
 
 /**
  * Exposes GWT methods into the page scope to be used from native JavaScript functions.
@@ -115,10 +113,7 @@ public class JavaScriptApi {
 
 
     static void renderPortlet(final Element e, String windowID, String entryPointInstanceID, String pathInfo, String queryString) {
-        GWTJahiaPageContext page = new GWTJahiaPageContext(URL.getRelativeURL());
-        page.setPid(JahiaGWTParameters.getPID());
-        page.setMode(JahiaGWTParameters.getOperationMode());
-        JahiaService.App.getInstance().drawPortletInstanceOutput(page, windowID, entryPointInstanceID, pathInfo, queryString, new AsyncCallback<GWTJahiaPortletOutputBean>() {
+        JahiaService.App.getInstance().drawPortletInstanceOutput(windowID, entryPointInstanceID, pathInfo, queryString, new AsyncCallback<GWTJahiaPortletOutputBean>() {
             public void onSuccess(GWTJahiaPortletOutputBean result) {
                 e.setInnerHTML(result.getHtmlOutput());
                 Log.info("Portlet successfully loaded.");

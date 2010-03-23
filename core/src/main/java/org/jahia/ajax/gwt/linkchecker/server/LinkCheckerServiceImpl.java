@@ -36,7 +36,6 @@ import java.util.List;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.log4j.Logger;
 import org.jahia.admin.AdministrationModule;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaLinkCheckerStatus;
 import org.jahia.ajax.gwt.client.service.linkchecker.LinkCheckerService;
@@ -203,8 +202,7 @@ public class LinkCheckerServiceImpl extends JahiaRemoteService implements LinkCh
                 }
             }
             try {
-                JahiaData jData = retrieveJahiaData(new GWTJahiaPageContext(ctx
-                        .getPageID(), ctx.getOperationMode()));
+                JahiaData jData = retrieveJahiaData();
                 for (Object[] processedLink : invalidLinks) {
                     status.getLinks().add(
                             getGWTViewObject((Link) processedLink[0],

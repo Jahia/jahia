@@ -34,7 +34,7 @@ public class ActionMenu extends Menu {
     public ActionMenu(final String toolbar, final Linker linker) {
         super();
         this.linker = linker;
-        ToolbarService.App.getInstance().getGWTToolbars(toolbar, JahiaGWTParameters.getGWTJahiaPageContext(),
+        ToolbarService.App.getInstance().getGWTToolbars(toolbar, 
                 new AsyncCallback<GWTJahiaToolbarSet>() {
                     public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
                         if (gwtJahiaToolbarSet != null && !gwtJahiaToolbarSet.getToolbarList().isEmpty()) {

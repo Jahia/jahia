@@ -38,9 +38,6 @@
                         <j:item j:portlet="db316cf8-8d89-4d9a-b06d-2c76407c9a3a" j:rowIndex="1" j:status="normalState" j:columnIndex="0" jcr:primaryType="jnt:layoutItem" jcr:uuid="3fe02fed-364b-4ea9-91a0-a6d9d32c6926"></j:item>
                     </preference>
                 </layoutmanager>
-                <toolbar jcr:primaryType="jnt:preferenceProvider" jcr:uuid="e6a3220c-61bf-4a70-a319-16681552d788">
-                    <preference j:positionX="0" j:type="org.jahia.toolbar.workflow" j:toolbarName="workflow" j:state="0" j:positionY="0" j:toolbarIndex="0" j:display="true" jcr:primaryType="jnt:toolbarPreference" jcr:uuid="bcfc752c-b6c1-47cd-8213-8215488a9948"></preference>
-                </toolbar>
                 <simple jcr:primaryType="jnt:preferenceProvider" jcr:uuid="20c70af6-1f6c-46f1-9ea4-577fc106a8f8">
                     <preference j:prefValue="/sites/ACME/mashups/Google Gadgets" jcr:primaryType="jnt:simplePreference" j:prefName="org.jahia.preferences.filemanager.savedopenpaths.websiteMashupRepository" jcr:uuid="20c64a21-6f44-4ddb-82fb-980f9263264e"></preference>
                     <preference j:prefValue="false" jcr:primaryType="jnt:simplePreference" j:prefName="inlineediting.activated" jcr:uuid="7844918f-ca4b-4d9d-9f5e-629886644e91"></preference>

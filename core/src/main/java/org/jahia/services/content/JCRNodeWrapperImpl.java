@@ -1670,17 +1670,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             } else {
                 permsAsMap.put(Constants.JCR_READ_RIGHTS, "DENY");
             }
-            if (perm.charAt(1) == 'w') {
+            if (perm.charAt(2) == 'w') {
                 permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "GRANT");
             } else {
                 permsAsMap.put(Constants.JCR_WRITE_RIGHTS, "DENY");
             }
-            if (perm.charAt(1) == 'a') {
+            if (perm.charAt(3) == 'a') {
                 permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, "GRANT");
             } else {
                 permsAsMap.put(Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, "DENY");
             }
-            if (perm.charAt(1) == 'p') {
+            if (perm.charAt(4) == 'p') {
                 permsAsMap.put(Constants.JCR_WRITE_RIGHTS_LIVE, "GRANT");
             } else {
                 permsAsMap.put(Constants.JCR_WRITE_RIGHTS_LIVE, "DENY");

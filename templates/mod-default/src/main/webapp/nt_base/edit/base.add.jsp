@@ -39,37 +39,30 @@
                     <p class="field">
                         <c:choose>
                             <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
-                                <label class="left">Reference
-                                    : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
                                 <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
-                                    <%@include file="formelements/file.jsp" %>
+                                    <%@include file="formelements/file.jsp"%>
+                                </c:if>
+                                <c:if test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                                    <%@include file="formelements/select.jsp"%>
                                 </c:if>
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
-                                <%@include file="formelements/datepicker.jsp" %>
+                                <%@include file="formelements/datepicker.jsp"%>
                             </c:when>
                             <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                                <label class="left">${selectorType.valueToName[propertyDefinition.selector]}
-                                    : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
-                                <jcr:propertyInitializers var="options" nodeType="${type.name}"
-                                                          name="${propertyDefinition.name}"/>
-                                <select name="${propertyDefinition.name}"
-                                        id="${fn:replace(propertyDefinition.name,':','_')}">
-                                    <c:forEach items="${options}" var="option">
-                                        <option value="${option.value.string}"
-                                                style="background:url(${option.properties.image}) no-repeat top left;padding-left:25px">${option.displayName}</option>
-                                    </c:forEach>
-                                </select>
+                                <%@include file="formelements/select.jsp"%>
                             </c:when>
                             <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
-                                <%@include file="formelements/richtext.jsp" %>
+                                <%@include file="formelements/richtext.jsp"%>
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BOOLEAN}">
                                 <label class="left"
                                        for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
-                                <input type="radio" value="true" class="radio" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
-                                       name="${propertyDefinition.name}" checked="true" /><fmt:message key="label.yes"/>
-                                <input type="radio" value="false" class="radio" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                                <input type="radio" value="true" class="radio"
+                                       id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                                       name="${propertyDefinition.name}" checked="true"/><fmt:message key="label.yes"/>
+                                <input type="radio" value="false" class="radio"
+                                       id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                        name="${propertyDefinition.name}"/><fmt:message key="label.no"/>
                             </c:when>
                             <c:otherwise>
@@ -83,8 +76,10 @@
                 </c:if>
             </c:forEach>
             <div class="divButton">
-                <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message key="label.add.new.content.submit"/></button>
-                <button type="reset"><span class="icon-contribute icon-cancel"></span><fmt:message key="label.add.new.content.reset"/></button>
+                <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message
+                        key="label.add.new.content.submit"/></button>
+                <button type="reset"><span class="icon-contribute icon-cancel"></span><fmt:message
+                        key="label.add.new.content.reset"/></button>
             </div>
         </fieldset>
     </form>
@@ -92,7 +87,9 @@
         var options${currentNode.name}${scriptTypeName} = {
             success: function() {
                 replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', '');
-                $.each(richTextEditors, function(key, value) {value.setData("");});
+                $.each(richTextEditors, function(key, value) {
+                    value.setData("");
+                });
             },
             dataType: "json",
             resetForm : true

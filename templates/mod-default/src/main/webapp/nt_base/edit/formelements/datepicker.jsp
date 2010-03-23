@@ -24,7 +24,7 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,jquery-ui.slider.min.js"/>
 <c:set var="dateTimePicker" value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
 <jsp:useBean id="now" class="java.util.Date"/>
-<label class="left" for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">Date : ${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
+<label class="left" for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <input type="text" id="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" readonly="readonly" value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
 <ui:dateSelector fieldId="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" time="${dateTimePicker}">

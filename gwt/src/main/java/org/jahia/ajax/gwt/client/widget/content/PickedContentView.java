@@ -294,7 +294,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
         if (selection != null && selection.size() > 0) {
             boolean found = false;
             for (String s : nt) {
-                if ((selection.get(0).getNodeTypes().contains(s) || selection.get(0).getInheritedNodeTypes().contains(s))) {
+                if (config.getNodeTypes().length() == 0 || selection.get(0).getNodeTypes().contains(s) || selection.get(0).getInheritedNodeTypes().contains(s)) {
                     found = true;
                     break;
                 }

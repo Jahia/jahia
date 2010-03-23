@@ -48,6 +48,7 @@ public class ManagerConfigurationFactory {
     public static final String TAGMANAGER = "tagmanager";
     public static final String PORTLETDEFINITIONMANAGER = "portletdefinitionmanager";
     public static final String FILEPICKER = "filepicker";
+    public static final String CONTENTPICKER = "contentpicker";
     public static final String LINKPICKER = "linkpicker";
     public static final String MASHUPPICKER = "mashuppicker";
     public static final String CATEGORYPICKER = "categorypicker";
@@ -96,6 +97,9 @@ public class ManagerConfigurationFactory {
             }
             if (config.contains(LINKPICKER)) {
                 return getPagePickerConfiguration(linker);
+            }
+            if (config.contains(CONTENTPICKER)) {
+                return getContentPickerConfiguration(linker);
             }
         }
         return getCompleteManagerConfiguration(linker);
@@ -192,6 +196,29 @@ public class ManagerConfigurationFactory {
         configuration.setDisplaySearchInPage(false);
         configuration.setDisplaySearchInContent(false);
         configuration.setDisplaySearchInFile(false);
+        configuration.setDisplaySearchInTag(true);
+
+        return configuration;
+    }
+
+    public static ManagerConfiguration getContentPickerConfiguration(final ManagerLinker linker) {
+        ManagerConfiguration configuration = new ManagerConfiguration();
+        configuration.setEnableTextMenu(false);
+        configuration.setToolbarGroup("content-picker");
+        configuration.setHideLeftPanel(true);
+        configuration.addTab(JCRClientUtils.INFO);
+        configuration.addTab(JCRClientUtils.AUTHORIZATIONS);
+        configuration.addTab(JCRClientUtils.USAGE);
+        configuration.addTab(JCRClientUtils.VERSIONING);
+        //configuration.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.SITE_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
+        configuration.addAccordion(JCRClientUtils.MY_REPOSITORY);
+        configuration.setNodeTypes("");
+        configuration.setFolderTypes("");
+        configuration.setDisplaySearchInContent(true);
+        configuration.setDisplaySearchInFile(true);
         configuration.setDisplaySearchInTag(true);
 
         return configuration;

@@ -71,6 +71,14 @@
         </property>
     </bean>
 
+    <bean id="content-picker" class="org.jahia.services.toolbar.bean.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.content.shortcuts"/>
+            </list>
+        </property>
+    </bean>
+    
     <bean id="mashup-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
         <property name="toolbars">
             <list>

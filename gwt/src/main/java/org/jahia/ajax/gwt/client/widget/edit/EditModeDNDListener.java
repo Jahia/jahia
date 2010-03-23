@@ -83,8 +83,23 @@ public class EditModeDNDListener extends DNDListener {
             final GWTJahiaNode parent = e.getStatus().getData(TARGET_NODE);
             String parentPath = parent.getPath();
 
-            // Drop into empty placeholder
-            if (CONTENT_SOURCE_TYPE.equals(sourceType)) {
+            if (parent.getNodeTypes().contains("jnt:navMenu") && !CREATE_CONTENT_SOURCE_TYPE.equals(sourceType)) {
+                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
+                final GWTJahiaNode selectedNode = nodes.get(0);
+                JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:navMenuNodeLink", new AsyncCallback<GWTJahiaNodeType>() {
+                    public void onFailure(Throwable caught) {
+                        Window.alert(
+                                "Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage());
+                        Log.error("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage(),
+                                caught);
+                    }
+                    public void onSuccess(GWTJahiaNodeType result) {
+                        Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>();
+                        props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(selectedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
+                        new CreateContentEngine(editLinker, parent, result, props, targetPath.substring(targetPath.lastIndexOf("/") + 1), false).show();
+                    }
+                });
+            } else if (CONTENT_SOURCE_TYPE.equals(sourceType)) {
                 // Existing item from content list
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
 
@@ -152,22 +167,6 @@ public class EditModeDNDListener extends DNDListener {
                 } else {
                     JahiaContentManagementService.App.getInstance().saveSearch(q, parentPath, name, callback);
                 }
-            } else if (parent.getNodeTypes().contains("jnt:navMenu") && (PAGETREE_TYPE.equals(sourceType) || CONTENT_SOURCE_TYPE.equals(sourceType))) {
-                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
-                final GWTJahiaNode selectedNode = nodes.get(0);
-                JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:navMenuNodeLink", new AsyncCallback<GWTJahiaNodeType>() {
-                    public void onFailure(Throwable caught) {
-                        Window.alert(
-                                "Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage());
-                        Log.error("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage(),
-                                caught);
-                    }
-                    public void onSuccess(GWTJahiaNodeType result) {
-                        Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>();
-                        props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(selectedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
-                        new CreateContentEngine(editLinker, parent, result, props, targetPath.substring(targetPath.lastIndexOf("/") + 1), false).show();
-                    }
-                });
             }
         } else if (SIMPLEMODULE_TYPE.equals(targetType)) {
             String targetPath = e.getStatus().getData(TARGET_PATH);

@@ -2,6 +2,8 @@
 
 [jnt:docFilesList] > jnt:content, jmix:list, jmix:pager
 
+[jnt:searchUsers] > jnt:content, mix:title, jmix:searchFormContent
+
 [jnt:docspace] > jnt:content, mix:title, jmix:tagged
 + filesList (jnt:docFilesList)
 + searchUsers (jnt:searchUsers)

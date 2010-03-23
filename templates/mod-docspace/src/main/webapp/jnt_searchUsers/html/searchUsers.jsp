@@ -57,56 +57,44 @@
          * @param node
          */
         function getText(node) {
-            if (node.matchingProperties.length > 0) {
-                var firstMatchingProperty = node.matchingProperties[0];
-                return node[firstMatchingProperty];
-            }
-            if (node["jcr:title"] != null) {
-                return node["jcr:title"];
-            } else if (node["text"] != null) {
-                return node["text"];
+            if (node["j:firstName"] != '' || node["j:lastName"] != '') {
+                return node["j:firstName"] + ' ' + node["j:lastName"];
             } else if (node["j:nodename"] != null) {
                 return node["j:nodename"];
             }
         }
 
-        function format(result) {
-            return getText(result["node"]);
-        }
-
-        $("#searchTerm").autocomplete("${url.find}", {
+        $("#searchUser").autocomplete("${url.find}", {
             dataType: "json",
-            cacheLength: 1,
+            cacheLength: 1,                 
             parse: function parse(data) {
                 return $.map(data, function(row) {
 				    return {
 					    data: row,
-					    value: getText(row["node"]),
-					    result: getText(row["node"])
+					    value: getText(row),
+					    result: getText(row)
 				    }
 			    });
             },
             formatItem: function(item) {
-			    return format(item);
+			    return getText(item);
 		    },
             extraParams: {
-                query : "/jcr:root/users//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
-                language : "xpath",
-                propertyMatchRegexp : "{$q}.*",
+                query : "SELECT * FROM [jnt:user] AS user WHERE user.[j:nodename] LIKE '%{$q}%' OR user.[j:lastName] LIKE '%{$q}%' OR user.[j:firstName] LIKE '%{$q}%'",
+                language : "JCR-SQL2",
                 removeDuplicatePropValues : "true"
             }
         });
     });
 </script>
-<s:form method="get" class="simplesearchform">
+<form method="post" action="${url.base}${currentResource.node.parent.path}.setAcl.do" class="simplesearchform">
 
 		<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 		<c:if test="${not empty title.string}">
 		<label for="searchTerm">${fn:escapeXml(title.string)}:&nbsp;</label>
 		</c:if>
 		<fmt:message key='search.users.defaultText' var="startSearching"/>
-       	<s:term id="searchTerm" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
-       	<s:site value="${renderContext.siteNode.name}" display="false"/>
-    	<input type="submit"  title="<fmt:message key='search.submit'/>"/>
-
-</s:form><br class="clear"/>
+       	<input type="text" name="user" id="searchUser" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
+       	<input type="submit"  title="<fmt:message key='search.submit'/>"/>
+        <input type="hidden" name="acl" value="rew--"/>
+</form><br class="clear"/>

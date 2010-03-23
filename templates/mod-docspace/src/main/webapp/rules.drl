@@ -1,0 +1,28 @@
+###############################################################################
+package org.jahia.modules.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.*
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global ImageService imageService
+global ExtractionService extractionService
+global Logger logger
+global JCRStoreProvider provider
+###############################################################################
+
+rule "Create docspace"
+   when
+       A new node is created
+	   - the node has the type jnt:docspace
+   then
+       Assign permissions "re---" on the node to the group "users"
+       Assign permissions "rewap" on the node to the current user
+end

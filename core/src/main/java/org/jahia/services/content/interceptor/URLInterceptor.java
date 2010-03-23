@@ -392,7 +392,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
     }
 
 
-    String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs) throws RepositoryException {
+    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs) throws RepositoryException {
 
         String pathPart = originalValue;
         if (logger.isDebugEnabled()) {
@@ -459,7 +459,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         dmsContext = Jahia.getContextPath() + "/files/";
         cmsContext = Jahia.getContextPath() + "/cms/";
 
-        String pattern = "(((render|edit|live)/[a-zA-Z]+)|" + 
+        String pattern = "(((render|edit|live|contribute)/[a-zA-Z]+)|" +
                 escape(ContextPlaceholdersReplacer.CURRENT_CONTEXT_PLACEHOLDER) + ")/([a-zA-Z_]+|" +
                 escape(ContextPlaceholdersReplacer.LANG_PLACEHOLDER) + ")/(.*)";
 

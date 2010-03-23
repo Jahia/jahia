@@ -23,10 +23,16 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
     
     public String visit(String value, RenderContext context, Resource resource) {
         if (value != null) {
+            String contextPath = null;
+            if(context.isEditMode()){
+               contextPath = "edit";
+            } else if(context.isContributionMode()){
+               contextPath = "contribute";
+            } else{
+               contextPath = "render";
+            }
             value = LANG_PATTERN.matcher(
-                    CTX_PATTERN.matcher(value).replaceAll(
-                            context.isEditMode() ? "edit/" + resource.getWorkspace() : "render/"
-                                    + resource.getWorkspace())).replaceAll(resource.getLocale().toString());
+                    CTX_PATTERN.matcher(value).replaceAll(contextPath+"/"+resource.getWorkspace())).replaceAll(resource.getLocale().toString());
         }
         
         return value;

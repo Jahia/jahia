@@ -88,7 +88,7 @@ public class MainModule extends ContentPanel implements Module {
                 super.beforeShow();
             }
         };
-//        setContextMenu(contextMenu);
+        setContextMenu(contextMenu);
 
 
     }

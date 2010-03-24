@@ -79,8 +79,11 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
                     final File imagePath = new File(
                             template.getFilePath() + File.separator + "img" + File.separator + value.getValue().getString() + "." + param);
                     if (imagePath.exists()) {
-                        value.addProperty("image",
-                                          context.getContextPath() + "/" + template.getRootFolderPath() + "/img/" + value.getValue().getString() + "." + param);
+                        String s = context.getContextPath();
+                        if (s.equals("/")) {
+                            s = "";
+                        }
+                        value.addProperty("image", s + "/" + template.getRootFolderPath() + "/img/" + value.getValue().getString() + "." + param);
                     }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);

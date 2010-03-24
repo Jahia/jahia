@@ -192,13 +192,25 @@ public class EditLinker implements Linker {
      */
     protected void registerLinker() {
         if (mainModule != null) {
-            mainModule.initWithLinker(this);
+            try {
+                mainModule.initWithLinker(this);
+            } catch (Exception e) {
+                Log.error("Error on init linker",e);
+            }
         }
         if (sidePanel != null) {
-            sidePanel.initWithLinker(this);
+            try {
+                sidePanel.initWithLinker(this);
+            } catch (Exception e) {
+                Log.error("Error on init linker",e);
+            }
         }
         if (toolbar != null) {
-            toolbar.initWithLinker(this);
+            try {
+                toolbar.initWithLinker(this);
+            } catch (Exception e) {
+                Log.error("Error on init linker",e);
+            }
         }
     }
 

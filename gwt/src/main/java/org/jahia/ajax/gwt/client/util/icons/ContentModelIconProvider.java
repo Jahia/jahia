@@ -101,6 +101,8 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
 
     private static final String SANDBOX = "icon-sandbox";
 
+    private static final String TEMPLATE = "icon-template";
+
     public static final String INTERACTIVE = "icon-interactive";
 
     public static final String STRUCTURED = "icon-structured";
@@ -337,6 +339,8 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.formcontent();
             }   else if (ext.equalsIgnoreCase(SANDBOX)) {
                 return CONTENT_ICONS.sandbox();
+            }   else if (ext.equalsIgnoreCase(TEMPLATE)) {
+                return CONTENT_ICONS.template();
             }
         }
         return CONTENT_ICONS.file();

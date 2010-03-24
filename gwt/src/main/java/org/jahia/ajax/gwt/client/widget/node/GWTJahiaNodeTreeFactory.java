@@ -63,18 +63,16 @@ public class GWTJahiaNodeTreeFactory {
 
     public GWTJahiaNodeTreeGrid getTreeGrid(ColumnModel cm) {
         GWTJahiaNodeTreeGrid grid = new GWTJahiaNodeTreeGrid(getStore(),cm);
-        if (saveOpenPath) {
-            initOpenPathSaver(grid);
-        }
+
+        initOpenPathSaverTreeGrid(grid);
 
         return grid;
     }
 
     public GWTJahiaNodeTreePanel getTreePanel() {
         GWTJahiaNodeTreePanel panel = new GWTJahiaNodeTreePanel(getStore());
-        if (saveOpenPath) {
-            initOpenPathSaver(panel);
-        }
+
+        initOpenPathSaverTreePanel(panel);
 
         return panel;
     }
@@ -122,7 +120,7 @@ public class GWTJahiaNodeTreeFactory {
     /**
      * init method()
      */
-    public void initOpenPathSaver(final Component widget) {
+    public void initOpenPathSaverTreePanel(final Component widget) {
         // add listener after rendering
         DeferredCommand.addCommand(new Command() {
             public void execute() {
@@ -136,7 +134,9 @@ public class GWTJahiaNodeTreeFactory {
                         Log.debug("Save Path on expand " + openPath);
                         gwtJahiaNode.setExpandOnLoad(true);
 //                        refresh(gwtJahiaNode);
-                        savePaths();
+                        if (saveOpenPath) {
+                            savePaths();
+                        }
                     }
                 });
 
@@ -148,7 +148,46 @@ public class GWTJahiaNodeTreeFactory {
                         Log.debug("Save Path on collapse " + openPath);
                         gwtJahiaNode.setExpandOnLoad(false);
 //                        refresh(gwtJahiaNode);
-                        savePaths();
+                        if (saveOpenPath) {
+                            savePaths();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    public void initOpenPathSaverTreeGrid(final Component widget) {
+        // add listener after rendering
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                widget.addListener(Events.Expand, new Listener<TreeGridEvent>() {
+                    public void handleEvent(TreeGridEvent le) {
+                        GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) le.getModel();
+                        String path = gwtJahiaNode.getPath();
+                        if (!openPath.contains(path)) {
+                            openPath.add(path);
+                        }
+                        Log.debug("Save Path on expand " + openPath);
+                        gwtJahiaNode.setExpandOnLoad(true);
+//                        refresh(gwtJahiaNode);
+                        if (saveOpenPath) {
+                            savePaths();
+                        }
+                    }
+                });
+
+                widget.addListener(Events.Collapse, new Listener<TreeGridEvent>() {
+                    public void handleEvent(TreeGridEvent el) {
+                        GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) el.getModel();
+                        String path = gwtJahiaNode.getPath();
+                        openPath.remove(path);
+                        Log.debug("Save Path on collapse " + openPath);
+                        gwtJahiaNode.setExpandOnLoad(false);
+//                        refresh(gwtJahiaNode);
+                        if (saveOpenPath) {
+                            savePaths();
+                        }
                     }
                 });
             }

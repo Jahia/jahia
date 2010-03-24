@@ -16,6 +16,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class EditModeDNDListener extends DNDListener {
     public static final String QUERY_SOURCE_TYPE = "query";
 
     public static final String PAGETREE_TYPE = "pageTree";
+    public static final String TEMPLATETREE_TYPE = "templateTree";
     public static final String BROWSETREE_TYPE = "browseTree";
     public static final String SIMPLEMODULE_TYPE = "simpleModule";
     public static final String PLACEHOLDER_TYPE = "placeholder";
@@ -233,12 +235,19 @@ public class EditModeDNDListener extends DNDListener {
                         JahiaContentManagementService.App.getInstance().moveOnTopOf(source.getPath(), node.getPath(), callback);
                     }
                 }
-//
-//                if ("append".equals(e.getStatus().getData("type"))) {
-//                } else if ("insert".equals(e.getStatus().getData("type"))) {
-//                    Window.alert("insert");
-//                }
-//                JahiaContentManagementService.App.getInstance().moveOnTopOf(nodes.get(0).getPath(), targetPath, new DropAsyncCallback());
+            } else if (TEMPLATETREE_TYPE.equals(sourceType)) {
+                final GWTJahiaNode node = (GWTJahiaNode) e.getStatus().getData(TARGET_NODE);
+                JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new AsyncCallback<GWTJahiaNodeType>() {
+                    public void onFailure(Throwable throwable) {
+                        Log.error("", throwable);
+                        com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
+                    }
+
+                    public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
+                        new CreatePageContentEngine(editLinker, node, gwtJahiaNodeType, null).show();
+                    }
+                });
+
             }
         } else if (BROWSETREE_TYPE.equals(targetType)) {
             String targetPath = e.getStatus().getData(TARGET_PATH);

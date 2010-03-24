@@ -816,8 +816,11 @@ public class NavigationHelper {
                 } catch (RepositoryException e) {
                     n.setExt("icon-portlet");
                 }
+            } else if (f.isNodeType("jnt:page") && f.getParent().isNodeType("jnt:templatesFolder")) {
+                n.setExt("icon-template");
             } else {
                 Map<String, String> map = getNodetypeIcons();
+
                 for (String nt : map.keySet()) {
                     if (f.isNodeType(nt)) {
                         n.setExt("icon-" + map.get(nt));

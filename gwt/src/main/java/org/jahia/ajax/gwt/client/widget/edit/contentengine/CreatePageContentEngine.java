@@ -51,51 +51,10 @@ public class CreatePageContentEngine extends CreateContentEngine {
         tabs.add(new RightsTabItem(this));
     }
 
-    @Override
-    protected void save(final boolean closeAfterSave) {
+    protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
         if (createPageTab.getTemplate().isEmpty()) {
-            super.save(closeAfterSave);
+            super.doSave(nodeName, props, langCodeProperties, mixin, newNodeACL, closeAfterSave);
         } else {
-            String nodeName = null;
-            final List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
-            final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
-            final List<String> mixin = new ArrayList<String>();
-
-            // new acl
-            GWTJahiaNodeACL newNodeACL = null;
-
-            for (TabItem item : tabs.getItems()) {
-                if (item instanceof PropertiesTabItem) {
-                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
-                    PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
-                    if (pe != null) {
-                        // props.addAll(pe.getProperties());
-                        mixin.addAll(pe.getAddedTypes());
-                        mixin.addAll(pe.getTemplateTypes());
-                    }
-
-                    // handle multilang
-                    if (propertiesTabItem.isMultiLang()) {
-                        // for now only contentTabItem  has multilang. properties
-                        langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap(false));
-                        if (pe != null) {
-                            props.addAll(pe.getProperties(false, true, false));
-                        }
-                    } else {
-                        if (pe != null) {
-                            props.addAll(pe.getProperties());
-                        }
-                    }
-                } else if (item instanceof RightsTabItem) {
-                    AclEditor acl = ((RightsTabItem) item).getRightsEditor();
-                    if (acl != null) {
-                        newNodeACL = acl.getAcl();
-                    }
-                } else if (item instanceof ClassificationTabItem) {
-                    ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(((ClassificationTabItem) item).getClassificationEditor(), props, mixin);
-                }
-            }
-
             final GWTJahiaNode gwtJahiaNode = createPageTab.getTemplate().get(0);
             contentService.copyAndSaveProperties(Arrays.asList(gwtJahiaNode.getPath()), parentNode.getPath(), mixin , newNodeACL, langCodeProperties, props, new AsyncCallback() {
                 public void onFailure(Throwable caught) {

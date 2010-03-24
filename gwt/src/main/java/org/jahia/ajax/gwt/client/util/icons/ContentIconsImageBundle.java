@@ -141,6 +141,9 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("icon-formcontent.png")
     public AbstractImagePrototype formcontent();
 
+    @Resource("icon-template.png")
+    public AbstractImagePrototype template();
+
     @Resource("sandbox.png")
     public AbstractImagePrototype sandbox();
 

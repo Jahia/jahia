@@ -101,4 +101,36 @@ public class SidePanel extends ContentPanel {
     public void refreshWorkflowTabItem() {
         workflowTabItem.refresh();
     }
+
+    public PagesTabItem getPagesTabItem() {
+        return pagesTabItem;
+    }
+
+    public CreateContentTabItem getCreateContentTabItem() {
+        return createContentTabItem;
+    }
+
+    public ContentBrowseTabItem getContentBrowseTabItem() {
+        return contentBrowseTabItem;
+    }
+
+    public ImagesBrowseTabItem getImagesBrowseTabItem() {
+        return imagesBrowseTabItem;
+    }
+
+    public FilesBrowseTabItem getFilesBrowseTabItem() {
+        return filesBrowseTabItem;
+    }
+
+    public MashupBrowseTabItem getMashupBrowseTabItem() {
+        return mashupBrowseTabItem;
+    }
+
+    public SearchTabItem getSearchTabItem() {
+        return searchTabItem;
+    }
+
+    public WorkflowTabItem getWorkflowTabItem() {
+        return workflowTabItem;
+    }
 }

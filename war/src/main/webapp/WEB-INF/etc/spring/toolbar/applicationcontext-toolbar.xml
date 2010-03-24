@@ -745,6 +745,7 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.createPage"/>
+                <ref bean="org.jahia.toolbar.item.createTemplate"/>
                 <ref bean="org.jahia.toolbar.item.createContent"/>
             </list>
         </property>
@@ -2097,6 +2098,16 @@
         </property>
         <property name="titleKey" value="label.newPage"/>
         <property name="descriptionKey" value="label.newPage"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-newpage"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-newpage"/>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.createTemplate" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CreateTemplateActionItem"/>
+        </property>
+        <property name="titleKey" value="label.newTemplate"/>
+        <property name="descriptionKey" value="label.newTemplate"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newpage"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newpage"/>
     </bean>

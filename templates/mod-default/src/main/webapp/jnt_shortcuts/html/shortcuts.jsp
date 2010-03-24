@@ -3,9 +3,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <template:addResources type="javascript" resources="jquery.min.js"/>
-<div id="languages">
-    <ui:langBar display="horizontal" linkDisplay="flag" rootPage="${rootPage}"/>
-</div>
+
 <!-- shortcuts -->
 <script type="text/javascript">
     $(document).ready(function() {

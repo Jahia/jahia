@@ -1,0 +1,93 @@
+/*shortcuts*/
+
+#bodywrapper div.shortcuts-inline {
+    display: inline;
+    float: right;
+    text-align: right;
+    font-size: 80%;
+    line-height: 2em;
+    line-height: normal;
+    padding: 10px;
+}
+
+#bodywrapper div.shortcuts-inline a,
+#bodywrapper div.shortcuts-inline a:link,
+#bodywrapper div.shortcuts-inline a:visited {
+    color: #333333;
+    text-decoration: none;
+    background: none;
+}
+
+#bodywrapper div.shortcuts-inline a:hover,
+#bodywrapper div.shortcuts-inline a:active {
+    color: #333333;
+    text-decoration: underline;
+    background: none;
+}
+
+#bodywrapper .shortcuts-inline ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#bodywrapper .shortcuts-inline li {
+    display: inline;
+    padding: 0 5px;
+    background: none;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-print {
+    background: transparent url( img/shortcuts-print.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-typoincrease {
+    background: transparent url( img/shortcuts-typoincrease.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-typoreduce {
+    background: transparent url( img/shortcuts-typoreduce.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-home {
+    background: transparent url( img/shortcuts-home.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-contact {
+    background: transparent url( img/shortcuts-contact.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-sitemap {
+    background: transparent url( img/shortcuts-sitemap.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-mysettings {
+    background: transparent url( img/shortcuts-mysettings.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper .shortcuts-inline .shortcuts-login a {
+    background: transparent url( img/shortcuts-login.png ) no-repeat left top;
+    padding-left: 20px;
+    text-transform: uppercase;
+}
+
+#bodywrapper .shortcuts-inline .shortcuts-login a:hover {
+    background: transparent url( img/shortcuts-login.png ) no-repeat 0px -13px;
+}
+
+#bodywrapper .shortcuts-inline .shortcuts-login a span {
+    background: transparent url( img/shortcuts-login.png ) no-repeat right top;
+    padding-right: 16px;
+}
+
+#bodywrapper .shortcuts-inline .shortcuts-login a span:hover {
+    background: transparent url( img/shortcuts-login.png ) no-repeat right -13px;
+    padding-right: 16px;
+}

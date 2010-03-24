@@ -217,7 +217,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
             if (node != null) {
                 Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-                String constrainedNodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
+                String constrainedNodeTypes = null;
+                if (currentLevel != null) {
+                    constrainedNodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
+                }
 
                 if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
                     StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");

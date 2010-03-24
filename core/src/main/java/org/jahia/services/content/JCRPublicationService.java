@@ -453,7 +453,7 @@ public class JCRPublicationService extends JahiaService {
                         }
                     }
                     if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
-                        recurseCheckin(destinationNode, prunedDestPath, destinationVersionManager);
+                        recurseCheckin(destinationSession, destinationNode, prunedDestPath, destinationVersionManager, c);
 //                        node.update(destinationSession.getWorkspace().getName()); // do not update live in reverse publish
                     }
                 }
@@ -488,9 +488,10 @@ public class JCRPublicationService extends JahiaService {
     void cloneToDestinationWorkspace(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
 
-        recurseSetPublicationDate(sourceNode, pruneNodes, new GregorianCalendar(), sourceSession.getUserID());
+        Calendar calendar = new GregorianCalendar();
+        recurseSetPublicationDate(sourceNode, pruneNodes, calendar, sourceSession.getUserID());
         sourceSession.save();
-        recurseCheckin(sourceNode, pruneNodes, sourceVersionManager);
+        recurseCheckin(sourceSession, sourceNode, pruneNodes, sourceVersionManager, calendar);
 
         doClone(sourceNode, pruneNodes, sourceSession, destinationSession);
 
@@ -650,7 +651,6 @@ public class JCRPublicationService extends JahiaService {
             node.setProperty("j:lastPublished", c);
             node.setProperty("j:lastPublishedBy", userID);
         }
-        jcrVersionService.setNodeCheckinDate(node, c);
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();
@@ -660,15 +660,17 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    private void recurseCheckin(Node node, List<String> prune, VersionManager versionManager) throws RepositoryException {
+    private void recurseCheckin(Session session, Node node, List<String> prune, VersionManager versionManager, Calendar calendar) throws RepositoryException {
         if (node.isNodeType("mix:versionable") && node.isCheckedOut() && !node.hasProperty("jcr:mergeFailed")) {
+            jcrVersionService.setNodeCheckinDate(node, calendar);
+            session.save();
             versionManager.checkin(node.getPath());
         }
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();
             if (prune == null || !prune.contains(sub.getPath())) {
-                recurseCheckin(sub, prune, versionManager);
+                recurseCheckin(session, sub, prune, versionManager, calendar);
             }
         }
     }

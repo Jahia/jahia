@@ -110,6 +110,10 @@ public class JCRVersionService extends JahiaService {
         VersionIterator vi = vh.getAllLinearVersions();
         Version lastVersion = null;
         Version closestVersion = null;
+        if (vi.hasNext()) {
+            Version v = vi.nextVersion();
+            // the first is the root version, which has no properties, so we will ignore it.
+        }
         while (vi.hasNext()) {
             Version v = vi.nextVersion();
             Node frozenNode = v.getFrozenNode();
@@ -126,6 +130,13 @@ public class JCRVersionService extends JahiaService {
             } else if (checkinDate.compareTo(versionDate) == 0) {
                 closestVersion = v;
                 break;
+            } else if (v.getCreated().getTime().compareTo(versionDate) > 0) {
+                // this can happen if we have a checkinDate, but try to resolve using the creation date.
+                closestVersion = lastVersion;
+                break;
+            } else if (v.getCreated().getTime().compareTo(versionDate) == 0) {
+                closestVersion = v;
+                break;                
             }
             lastVersion = v;
         }

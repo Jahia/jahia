@@ -35,7 +35,7 @@
  - j:newTag (string) hidden indexed=no
 
 [jmix:versionInfo] > jmix:metadata mixin
-- j:checkinDate (date) protected onconflict=ignore
+- j:checkinDate (date)
 
 [jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo mixin
 

@@ -65,7 +65,7 @@ public class VersionInfo implements Comparable {
         if (checkinDate != null) {
             return checkinDate.hashCode();
         } else {
-            return version.hashCode();
+            return 31*version.hashCode();
         }
     }
 

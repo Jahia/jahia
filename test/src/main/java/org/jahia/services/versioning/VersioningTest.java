@@ -19,6 +19,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -122,29 +124,42 @@ public class VersioningTest extends TestCase {
             // let's do some validation checks, first for the live workspace...
 
             // check number of versions
+
+            List<VersionInfo> editVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(editSession, stagedSubPage);
+            int index = 0;
+            for (VersionInfo curVersionInfo : editVersionInfos) {
+                String versionName = curVersionInfo.getVersion().getName();
+                JCRNodeWrapper versionNode = null;
+                if (curVersionInfo.getCheckinDate() != null) {
+                    versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getCheckinDate().getTime());
+                } else {
+                    versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getVersion().getCreated().getTime());
+                }
+                validateVersionedNode(index, curVersionInfo, versionName, versionNode);
+                index++;
+            }
+            logger.debug("number of version: " + index);
+            assertEquals(11, index);
+
+
             JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
 
             List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
-            int index = 0;
+            index = 0;
             for (VersionInfo curVersionInfo : liveVersionInfos) {
                 String versionName = curVersionInfo.getVersion().getName();
-                JCRNodeWrapper versionNode = subPagePublishedNode.getFrozenVersionAsRegular(curVersionInfo.getVersion().getCreated().getTime());
+                JCRNodeWrapper versionNode = null;
+                if (curVersionInfo.getCheckinDate() != null) {
+                    versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getCheckinDate().getTime());
+                } else {
+                    versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getVersion().getCreated().getTime());
+                }
                 validateVersionedNode(index, curVersionInfo, versionName, versionNode);
                 index++;
             }
             logger.debug("number of version: " + index);                                                        
             assertEquals(11, index);
 
-            List<VersionInfo> editVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(editSession, stagedSubPage);
-            index = 0;
-            for (VersionInfo curVersionInfo : editVersionInfos) {
-                String versionName = curVersionInfo.getVersion().getName();
-                JCRNodeWrapper versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getVersion().getCreated().getTime());
-                validateVersionedNode(index, curVersionInfo, versionName, versionNode);
-                index++;
-            }
-            logger.debug("number of version: " + index);
-            assertEquals(11, index);
 
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
@@ -153,9 +168,15 @@ public class VersioningTest extends TestCase {
     }
 
     private void validateVersionedNode(int index, VersionInfo curVersionInfo, String versionName, JCRNodeWrapper versionNode) throws RepositoryException {
+        assertNotNull("Version node is null !!", versionNode);
         String versionTitle = versionNode.getPropertyAsString("jcr:title");
         String title = "title" + index;
-        logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " checkinDate=" + curVersionInfo.getCheckinDate());
+        Calendar checkinCalendar = curVersionInfo.getCheckinDate();
+        Date checkinDate = null;
+        if (checkinCalendar != null) {
+            checkinDate = checkinCalendar.getTime();
+        }
+        logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " checkinDate=" + checkinDate);
         assertEquals("Title does not match !", title, versionTitle);
         // let's check the version node's path
         assertEquals("Versioned node path is invalid !", SITECONTENT_ROOT_NODE + "/home/home_subpage1", versionNode.getPath());

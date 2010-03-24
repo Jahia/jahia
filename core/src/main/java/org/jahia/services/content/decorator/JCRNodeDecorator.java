@@ -55,11 +55,9 @@ import java.util.*;
 import java.math.BigDecimal;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Dec 4, 2008
  * Time: 10:21:11 AM
- * To change this template use File | Settings | File Templates.
  */
 public class JCRNodeDecorator implements JCRNodeWrapper {
     protected JCRNodeWrapper node;
@@ -706,5 +704,9 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public JahiaSite resolveSite() throws RepositoryException {
         return node.resolveSite();
+    }
+
+    public List<VersionInfo> getVersionInfos() throws RepositoryException {
+        return node.getVersionInfos();
     }
 }

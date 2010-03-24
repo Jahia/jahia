@@ -13,4 +13,16 @@
         </property>
     </bean>
 
+    <bean name="converterMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/convert">
+                    <bean class="org.jahia.bin.DocumentConverter">
+                        <property name="converterService" ref="org.jahia.services.transform.DocumentConverterService"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
 </beans>

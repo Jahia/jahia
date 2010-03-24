@@ -53,17 +53,20 @@ public class VersionInfo implements Comparable {
 
         VersionInfo that = (VersionInfo) o;
 
-        if (checkinDate != null ? !checkinDate.equals(that.checkinDate) : that.checkinDate != null) return false;
-        if (version != null ? !version.equals(that.version) : that.version != null) return false;
-
-        return true;
+        if (checkinDate != null) {
+            return checkinDate.equals(that.checkinDate);
+        } else {
+            return version.equals(that.version);
+        }
     }
 
     @Override
     public int hashCode() {
-        int result = version != null ? version.hashCode() : 0;
-        result = 31 * result + (checkinDate != null ? checkinDate.hashCode() : 0);
-        return result;
+        if (checkinDate != null) {
+            return checkinDate.hashCode();
+        } else {
+            return version.hashCode();
+        }
     }
 
     public int compareTo(Object o) {
@@ -74,6 +77,15 @@ public class VersionInfo implements Comparable {
             return 0;
         }
 
-        return this.checkinDate.compareTo(that.checkinDate);
+        if (checkinDate != null) {
+            return this.checkinDate.compareTo(that.checkinDate);
+        } else {
+            try {
+                return this.version.getCreated().compareTo(that.version.getCreated());
+            } catch (RepositoryException re) {
+                logger.error("Error while comparing versions ", re);
+                return 0;
+            }
+        }
     }
 }

@@ -93,9 +93,6 @@ public class VersioningTest extends TestCase {
             jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
 
             for (int i = 1; i < 11; i++) {
-                editSession.checkout(stagedSubPage);
-                stagedSubPage.setProperty("jcr:title", "title" + i);
-                editSession.save();
 
                 for (int j = 0; j < 2; j++) {
                     editSession.checkout(mainContent);
@@ -104,6 +101,10 @@ public class VersioningTest extends TestCase {
                     mainContent.setProperty("body", MAIN_CONTENT_BODY + updateNumber);
                     jcrService.publish(mainContent.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
                 }
+
+                editSession.checkout(stagedSubPage);
+                stagedSubPage.setProperty("jcr:title", "title" + i);
+                editSession.save();
 
                 // each time the node i published, a new version should be created
                 jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
@@ -155,7 +156,7 @@ public class VersioningTest extends TestCase {
         String versionTitle = versionNode.getPropertyAsString("jcr:title");
         String title = "title" + index;
         logger.debug("version number:"+versionName +", jcr:title: " + versionTitle + " created=" + curVersionInfo.getVersion().getCreated().getTime() + " checkinDate=" + curVersionInfo.getCheckinDate());
-        assertEquals(title, versionTitle);
+        assertEquals("Title does not match !", title, versionTitle);
         // let's check the version node's path
         assertEquals("Versioned node path is invalid !", SITECONTENT_ROOT_NODE + "/home/home_subpage1", versionNode.getPath());
         // let's check the node type

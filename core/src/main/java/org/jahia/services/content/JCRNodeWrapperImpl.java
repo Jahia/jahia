@@ -1607,6 +1607,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    public List<VersionInfo> getVersionInfos() throws RepositoryException {
+        return ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(session, this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public JCRNodeWrapper getFrozenVersion(String name) {
         try {
             Version v = objectNode.getVersionHistory().getVersion(name);

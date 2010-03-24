@@ -49,6 +49,14 @@ public class JCRVersionService extends JahiaService {
     public void stop() throws JahiaException {
     }
 
+    /**
+     * Retrieves the list of versions, ignoring internal version created in the publication process.
+     * @param session the session to use to retrieve the versions
+     * @param node the node for which to retrieve the versions
+     * @return a List of VersionInfo objects containing the resolved versions, as well as extra information such as the
+     * checkinDate if available.
+     * @throws RepositoryException happens if there was a problem retrieving the list of versions.
+     */
     public List<VersionInfo> getVersionInfos(Session session, JCRNodeWrapper node) throws RepositoryException {
         VersionHistory versionHistory = session.getWorkspace().getVersionManager().getVersionHistory(node.getPath());
         VersionIterator versions = versionHistory.getAllLinearVersions();

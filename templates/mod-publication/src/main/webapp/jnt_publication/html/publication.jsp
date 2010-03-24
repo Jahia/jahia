@@ -4,7 +4,8 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
 <div class="box4-text">
-
+    <jcr:nodeProperty var="file" node="${currentNode}" name="file"/>
+    <jcr:nodeProperty var="preview" node="${currentNode}" name="preview"/>
 	<div class="publicationListItem"><!--start publicationListItem -->
 		<div class="publicationListSpace"><!--start publicationListSpace -->
 			<div class="publicationPhoto">

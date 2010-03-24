@@ -33,41 +33,65 @@ border-left:1px solid #666;
 #bodywrapper #toppanel ul.panellist {
 border:1px solid #666;
 }
+
 /******************************************************************************
-* Topshortcuts
+shortcuts
 ******************************************************************************/
+#bodywrapper #shortcuts{
+	height:38px;
+}
+#bodywrapper #shortcuts h3 {
+	background-image:url(img/mod/shortcuts-bg.png);
+	padding:8px 10px 10px 10px;
+	width:82px;
+	height:20px;
+	display:block;
+	font-size:1.2em;
+	bottom:0;
+	position:absolute;
+	right:0;
+	color:#fff;
+	margin:0;
+	text-decoration:none
+}
+#bodywrapper #shortcuts h3:hover {
+	background-image:url(img/mod/shortcuts-bg-on.png);
+}
+#bodywrapper #shortcuts h3 a,
+#bodywrapper #shortcuts h3 a:link,
+#bodywrapper #shortcuts h3 a:visited {
+	color:#fff
+}
+#bodywrapper #shortcuts h3 a:hover,
+#bodywrapper #shortcuts h3 a:active{
+	text-decoration:none;
+	color:#fff
+}
 
-#bodywrapper #topshortcuts li.topshortcuts-print  {
-	background:transparent url(img/mod/topshortcuts-print.png) no-repeat 0% 50%;
+#bodywrapper #shortcuts ul {
+	background-color:#F4F4F4;
+	border:1px solid #A7A7A7;
+	display:none;
+	right:0;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	padding:10px 4px;
+	position:absolute;
+	top:30px;
+	margin:0;
+	width:138px;
+	z-index:9999;
 }
-#bodywrapper #topshortcuts li.topshortcuts-typoincrease  {
-	background:transparent url(img/mod/topshortcuts-typoincrease.png) no-repeat 0% 50%;
+#bodywrapper #shortcuts li {
+	font-size:1.1em;
+	line-height:20px;
+	padding:5px 5px 5px 10px;
 }
-#bodywrapper #topshortcuts li.topshortcuts-typoreduce  {
-	background:transparent url(img/mod/topshortcuts-typoreduce.png) no-repeat 0% 50%;
+#bodywrapper #shortcuts li a {
+	color: #333;
 }
-#bodywrapper #topshortcuts li.topshortcuts-home  {
-	background:transparent url(img/mod/topshortcuts-home.png) no-repeat 0% 50%;
-}
-#bodywrapper #topshortcuts li.topshortcuts-contact  {
-	background:transparent url(img/mod/topshortcuts-contact.png) no-repeat 0% 50%;
-}
-#bodywrapper #topshortcuts li.topshortcuts-sitemap  {
-	background:transparent url(img/mod/topshortcuts-sitemap.png) no-repeat 0% 50%;
-}
-#bodywrapper #topshortcuts li.topshortcuts-mysettings  {
-	background:transparent url(img/mod/topshortcuts-mysettings.png) no-repeat 0% 50%;
-}
-
-#bodywrapper #topshortcuts .topshortcuts-login a  {
-	background:transparent url(img/mod/topshortcuts-login.png) no-repeat left top;
-}
-#bodywrapper #topshortcuts .topshortcuts-login a:hover  {
-	background:transparent url(img/mod/topshortcuts-login.png) no-repeat 0px -13px;
-}
-#bodywrapper #topshortcuts .topshortcuts-login a span  {
-	background:transparent url(img/mod/topshortcuts-login.png) no-repeat right top;
-}
-#bodywrapper #topshortcuts .topshortcuts-login a span:hover  {
-	background:transparent url(img/mod/topshortcuts-login.png) no-repeat right -13px;
+#bodywrapper #shortcuts li a:hover {
+	color: #3366cc;
+	text-decoration:none
 }

@@ -51,9 +51,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.JahiaTools;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.jcr.RangeIterator;
 import javax.servlet.jsp.JspTagException;
@@ -370,6 +368,19 @@ public class Functions {
     public static long length(Object obj) throws JspTagException {
         return (obj != null && obj instanceof RangeIterator) ? JCRContentUtils.size((RangeIterator) obj)
                 : org.apache.taglibs.standard.functions.Functions.length(obj);
+    }
+
+    /**
+     * Reverse the content of a list. Only works with some List.
+     *
+     * @param list List<T> list to be reversed.
+     * @return <code>java.util.List</code> the reversed list.
+     */
+    public static <T extends Object> List<T> reverse(List<T> list) {
+        List<T> copy = new ArrayList<T>();
+        copy.addAll(list);
+        Collections.reverse(copy);
+        return copy;
     }
 
 }

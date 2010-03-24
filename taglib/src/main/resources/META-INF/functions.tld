@@ -313,4 +313,15 @@
             Tag usage count: ${functions:length(tag.weakReferences)}
         </example>
     </function>
+    <function>
+        <description>
+			Reverse a List
+        </description>
+        <name>reverse</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.util.List reverse(java.util.List)</function-signature>
+        <example>
+            Tag usage reverse: ${functions:reverse(mylist)}
+        </example>
+    </function>
 </taglib>

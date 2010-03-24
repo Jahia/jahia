@@ -1,4 +1,21 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="acl" type="java.lang.String"--%>
+<template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css"/>
+<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
 
 <div class='grid_12'><!--start grid_12-->
 <div class="boxdocspace "><!--start boxdocspace -->
@@ -194,36 +211,18 @@
     </div>
 </div><!--stop boxdocspace -->
 
-<h4 class="boxdocspace-title">Versions</h4>
-<ul class="docspacelist docspacelistversion">
-<li>
-          <span class="public floatright"><input name="" type="checkbox" value="" /> public</span><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png" /><a href="#" >Version 1</a><p class="docspacedate"> du 10/02/2010</p>
-          <div class='clear'></div></li>
-<li>
-          <span class="public floatright"><input name="" type="checkbox" value="" />
-          public</span><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png" /><a href="#" >Version 2</a><p class="docspacedate"> du 10/02/2010</p>
-          <div class='clear'></div></li>
-<li>
-          <span class="public floatright"><input name="" type="checkbox" value="" />
-          public</span><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png" /><a href="#" >Version 3</a><p class="docspacedate"> du 10/02/2010</p>
-            <div class='clear'></div></li>
-<li>
-          <span class="public floatright"><input name="" type="checkbox" value="" />
-          public</span><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png" /><a href="#" >Version 4</a><p class="docspacedate"> du 10/02/2010</p>
-            <div class='clear'></div></li>
-<li>
-          <span class="public floatright"><input name="" type="checkbox" value="" />
-          public</span><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png" /><a href="#" >Version 5</a><p class="docspacedate"> du 10/02/2010</p>
-            <div class='clear'></div></li>
-<li>
-          <span class="public floatright"><input name="" type="checkbox" value="" />
-          public</span><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png" /><a href="#" >Version 6</a><p class="docspacedate"> du 10/02/2010</p>
-          <div class='clear'></div></li>
-<li class="last">
-          <span class="public floatright"><input name="" type="checkbox" value="" />
-          public</span><img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png" /><a href="#" >Version 7</a><p class="docspacedate"> du 10/02/2010</p>
-          <div class='clear'></div></li>
-</ul>
-
+    <h4 class="boxdocspace-title">Versions</h4>
+    <ul class="docspacelist docspacelistversion">
+        <c:forEach items="${functions:reverse(currentNode.versionInfos)}" var="version">
+            <li>
+                <span class="public floatright">
+                    <input name="" type="checkbox" value="" /> restore
+                </span>
+                <img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png" />
+                <a href="#" >Version ${version.version.name}</a><p class="docspacedate"><span class="timestamp"><fmt:formatDate
+                    value="${version.checkinDate.time}" pattern="yyyy/MM/dd HH:mm"/></span></p>
+                <div class='clear'></div></li>
+        </c:forEach>
+    </ul>
 </div><!--stop grid_4-->
 

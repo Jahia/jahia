@@ -140,6 +140,14 @@ public class JCRVersionService extends JahiaService {
             }
             lastVersion = v;
         }
+        if (logger.isDebugEnabled()) {
+            Date checkinDate = null;
+            if (closestVersion.getFrozenNode().hasProperty("j:checkinDate")) {
+                Property checkinDateProperty = closestVersion.getFrozenNode().getProperty("j:checkinDate");
+                checkinDate = checkinDateProperty.getDate().getTime();
+            }
+            logger.debug("Resolved date " + versionDate + " to closest version " + closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime() + " checkinDate=" + checkinDate);
+        }
         return closestVersion;
     }
 

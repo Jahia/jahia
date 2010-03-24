@@ -4,20 +4,25 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
-<c:if test="${jcr:isNodeType(renderContext.mainResource.node, 'jnt:page')}">
-    <c:set var="page" value="${renderContext.mainResource.node}" />
-</c:if>
-<c:if test="${!jcr:isNodeType(renderContext.mainResource.node, 'jnt:page')}">
-    <c:set var="page" value="${jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}" />
-</c:if>
+<c:choose>
+    <c:when test="${jcr:isNodeType(renderContext.mainResource.node, 'jnt:page')}">
+        <c:set var="page" value="${renderContext.mainResource.node}" />
+    </c:when>
+    <c:otherwise>
+        <c:set var="page" value="${jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}" />
+    </c:otherwise>
+</c:choose>
+<c:set var="outerMenu" value="${jcr:getParentOfType(currentNode, 'jnt:navMenu')}"/>
 
 <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 <jcr:navigationMenu node="${page}" var="menu" startLevel="${currentNode.properties['j:startLevel'].long}" maxDepth="${currentNode.properties['j:maxDepth'].long}" />
 <c:if test="${not empty menu}">
-	<c:if test="${not empty title.string}">
+	<c:if test="${not empty title.string && empty outerMenu}">
 		<h2>${fn:escapeXml(title.string)}</h2>
 	</c:if>
+	<c:if test="${empty outerMenu}">
     <div id="navigationN2">
+    </c:if>
 
         <c:forEach items="${menu}" var="navMenuBean">
             <jcr:nodeProperty node="${navMenuBean.node}" name="jcr:title" var="title"/>
@@ -41,7 +46,9 @@
                 </ul>
             </c:if>
         </c:forEach>
+	<c:if test="${empty outerMenu}">        
     </div>
+    </c:if>
 </c:if>
 <c:if test="${empty menu && renderContext.editMode}">
 	<fieldset>

@@ -13,16 +13,24 @@
 	<c:if test="${not empty title.string}">
 		<h2><c:out value="${title.string}"/></h2>
 	</c:if>
-    <c:forEach items="${currentNode.nodes}" var="menuItem">
-        <template:module node="${menuItem}" editable="true">
-        	<template:param name="subNodesTemplate" value="navMenuItem"/>
-        </template:module>
-    </c:forEach>
-    <c:if test="${renderContext.editMode}">
-    	<div class="addelements">
-        	<span>???Add your menu items here???</span>
-        	<template:module path="*"/>
-        </div>
+	<c:if test="${empty outerMenues}">
+    <div id="navigationN2">	
+    </c:if>
+        <ul class="level_${fn:length(outerMenues) + 1}">
+        <c:forEach items="${currentNode.nodes}" var="menuItem">
+            <template:module node="${menuItem}" editable="true">
+        	    <template:param name="subNodesTemplate" value="navMenuItem"/>
+            </template:module>
+        </c:forEach>
+        <c:if test="${renderContext.editMode}">
+    	    <div class="addelements">
+        	    <span>???Add your menu items here???</span>
+        	    <template:module path="*"/>
+            </div>
+        </c:if>
+        </ul>
+	<c:if test="${empty outerMenues}">        
+    </div>
     </c:if>
 <c:if test="${renderContext.editMode}">
 </fieldset>

@@ -132,4 +132,6 @@
 [jnt:navMenuNodeLink] > jnt:nodeLink, jmix:navMenuItem, jmix:interactiveContent
 
 [jnt:navMenuQuery] > jnt:query, jmix:navMenuItem, jmix:interactiveContent
+
+[jnt:navMenuMultilevel] > jnt:navBar, jmix:navMenuItem, jmix:interactiveContent
 //---------------------------------------------------------

@@ -134,7 +134,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
     private final static transient Logger logger = Logger.getLogger(TemplateBodyTag.class);
 
-    private final static String DEFAULT_CONTENT = "actualContent";
     private transient Map<String, Object> attributes = new HashMap<String, Object>();
     private String gwtScript;
     boolean useGwt = false;
@@ -209,7 +208,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 //                    }
 //                }
 //            }
-            buf.append("\t<div id=\"").append(DEFAULT_CONTENT).append("\">");
 
             pageContext.getOut().println(buf.toString());
 
@@ -237,7 +235,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
 
     public int doEndTag() {
-        final StringBuilder buf = new StringBuilder("\n\t</div>\n");
+        final StringBuilder buf = new StringBuilder();
 
         ServletRequest request = pageContext.getRequest();
         try {

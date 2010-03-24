@@ -80,6 +80,7 @@
 
 #bodywrapper .shortcuts-inline .shortcuts-login a:hover {
     background: transparent url( img/shortcuts-login.png ) no-repeat 0px -13px;
+	padding-left: 20px;
 }
 
 #bodywrapper .shortcuts-inline .shortcuts-login a span {

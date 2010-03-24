@@ -31,7 +31,9 @@
  */
 package org.jahia.bin;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -100,6 +102,7 @@ public class Render extends HttpServlet implements Controller,
     public static final String NODE_NAME = "nodeName";
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
     public static final String REDIRECT_TO = "redirectTo";
+    public static final String REDIRECT_HTTP_RESPONSE_CODE = "redirectResponseCode";
     public static final String METHOD_TO_CALL = "methodToCall";
     public static final String AUTO_CHECKIN = "autoCheckin";
     public static final String CAPTCHA = "captcha";
@@ -426,9 +429,11 @@ public class Render extends HttpServlet implements Controller,
         return false;
     }
 
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
-                            URLResolver urlResolver) throws RepositoryException, IOException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp,
+            RenderContext renderContext, URLResolver urlResolver)
+            throws RepositoryException, IOException {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(urlResolver.getWorkspace(),
                         urlResolver.getLocale());
         Node node = session.getNode(urlResolver.getPath());
         Node parent = node.getParent();
@@ -437,8 +442,8 @@ public class Render extends HttpServlet implements Controller,
         String url = parent.getPath();
         session.save();
         final String requestWith = req.getHeader("x-requested-with");
-        if (req.getHeader("accept").contains("application/json") && requestWith != null && requestWith.equals(
-                "XMLHttpRequest")) {
+        if (req.getHeader("accept").contains("application/json")
+                && requestWith != null && requestWith.equals("XMLHttpRequest")) {
             resp.setStatus(HttpServletResponse.SC_OK);
             try {
                 new JSONObject().write(resp.getWriter());
@@ -446,37 +451,56 @@ public class Render extends HttpServlet implements Controller,
                 logger.error(e.getMessage(), e);
             }
         } else {
-        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        performRedirect(url, urlResolver.getPath(), req, resp,toParameterMapOfListOfString(req));
-    }
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            performRedirect(url, urlResolver.getPath(), req, resp,
+                    toParameterMapOfListOfString(req));
+        }
     }
 
     public static void performRedirect(String url, String path,
-            HttpServletRequest req, HttpServletResponse resp,Map<String, List<String>> parameters)
-            throws IOException {
+            HttpServletRequest req, HttpServletResponse resp,
+            Map<String, List<String>> parameters) throws IOException {
         String renderedURL = null;
+
         List<String> stringList = parameters.get(NEW_NODE_OUTPUT_FORMAT);
-        String outputFormat = (stringList!=null&& stringList.size()>0)?stringList.get(0):null;
-        if (outputFormat == null || "".equals(outputFormat.trim())) {
-            outputFormat = "html";
-        }
-        if (url != null) {
-            String requestedURL = req.getRequestURL().toString();
-            renderedURL = requestedURL.substring(0, requestedURL
-                    .indexOf(URLEncoder.encode(path, "UTF-8").replace("%2F",
-                            "/").replace("+", "%20")))
-                    + url + "." + outputFormat;
-        }
+        String outputFormat = !CollectionUtils.isEmpty(stringList)
+                && stringList.get(0) != null ? stringList.get(0)
+                : "html";
+
+        stringList = parameters.get(REDIRECT_HTTP_RESPONSE_CODE);
+        int responseCode = !CollectionUtils.isEmpty(stringList)
+                && !StringUtils.isBlank(stringList.get(0)) ? Integer
+                .parseInt(stringList.get(0)) : HttpServletResponse.SC_FOUND;
+
         stringList = parameters.get(REDIRECT_TO);
-        String stayOnPage = (stringList!=null&& stringList.size()>0)?stringList.get(0):null;
-        if (stayOnPage != null && "".equals(stayOnPage.trim())) {
-            stayOnPage = null;
+        String stayOnPage = !CollectionUtils.isEmpty(stringList)
+                && !StringUtils.isBlank(stringList.get(0)) ? stringList.get(0)
+                : "";
+                
+        if (!StringUtils.isEmpty(stayOnPage)) {
+            renderedURL = stayOnPage
+                    + (!StringUtils.isEmpty(outputFormat) ? "." + outputFormat
+                            : "");
+        } else if (!StringUtils.isEmpty(url)) {
+            String requestedURL = req.getRequestURL().toString();
+            String encodedPath = URLEncoder.encode(path, "UTF-8").replace(
+                    "%2F", "/").replace("+", "%20");
+            int index = requestedURL.indexOf(encodedPath);
+                
+            renderedURL = requestedURL.substring(0, index)
+                    + url
+                    + (!StringUtils.isEmpty(outputFormat) ? "." + outputFormat
+                            : "");
         }
-        if (renderedURL != null && stayOnPage == null) {
-            resp.setHeader("Location", renderedURL);
-            resp.sendRedirect(renderedURL);
-        } else if (stayOnPage != null) {
-            resp.sendRedirect(stayOnPage + "." + outputFormat);
+        if (!StringUtils.isEmpty(renderedURL)) {
+            if (StringUtils.isEmpty(stayOnPage)) {
+                resp.setHeader("Location", renderedURL);
+            }
+            if (responseCode == HttpServletResponse.SC_FOUND) {
+                resp.sendRedirect(renderedURL);
+            } else {
+                resp.setStatus(responseCode);
+            }
         }
     }
 
@@ -533,33 +557,50 @@ public class Render extends HttpServlet implements Controller,
                     urlResolver.getLocale());
 
             if (method.equals(METHOD_GET)) {
-                Resource resource = urlResolver.getResource(getVersionDate(req));
-                final JahiaSite site = paramBean.getSite();
-                renderContext.setMainResource(resource);
-                renderContext.setSite(site);
-                renderContext.setSiteNode(JCRSessionFactory.getInstance()
-                        .getCurrentUserSession(urlResolver.getWorkspace(),
-                                urlResolver.getLocale()).getNode(
-                                "/sites/" + site.getSiteKey()));
-                resource.pushWrapper("wrapper.fullpage");
-                resource.pushWrapper("wrapper.bodywrapper");
+                if (!StringUtils.isEmpty(urlResolver.getRedirectUrl())) {
+                    Map<String, List<String>> parameters = new HashMap<String, List<String>>();
+                    parameters.put(NEW_NODE_OUTPUT_FORMAT, new ArrayList(Arrays
+                            .asList(new String[] { StringUtils.EMPTY })));
+                    parameters.put(REDIRECT_HTTP_RESPONSE_CODE,
+                            new ArrayList(Arrays.asList(new String[] { String
+                            .valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY) })));
 
-                long lastModified = getLastModified(resource, renderContext);
-
-                if (lastModified == -1) {
-                    // servlet doesn't support if-modified-since, no reason
-                    // to go through further expensive logic
-                    doGet(req, resp, renderContext, resource);
+                    performRedirect(urlResolver.getRedirectUrl(), StringUtils
+                            .isEmpty(urlResolver.getVanityUrl()) ? "/"
+                            + urlResolver.getLocale().toString()
+                            + urlResolver.getPath() : urlResolver
+                            .getVanityUrl(), req, resp, parameters);
                 } else {
-                    long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
-                    if (ifModifiedSince < (lastModified / 1000 * 1000)) {
-                        // If the servlet mod time is later, call doGet()
-                        // Round down to the nearest second for a proper compare
-                        // A ifModifiedSince of -1 will always be less
-                        maybeSetLastModified(resp, lastModified);
+                    Resource resource = urlResolver
+                            .getResource(getVersionDate(req));
+                    final JahiaSite site = paramBean.getSite();
+                    renderContext.setMainResource(resource);
+                    renderContext.setSite(site);
+                    renderContext.setSiteNode(JCRSessionFactory.getInstance()
+                            .getCurrentUserSession(urlResolver.getWorkspace(),
+                                    urlResolver.getLocale()).getNode(
+                                    "/sites/" + site.getSiteKey()));
+                    resource.pushWrapper("wrapper.fullpage");
+                    resource.pushWrapper("wrapper.bodywrapper");
+
+                    long lastModified = getLastModified(resource, renderContext);
+
+                    if (lastModified == -1) {
+                        // servlet doesn't support if-modified-since, no reason
+                        // to go through further expensive logic
                         doGet(req, resp, renderContext, resource);
                     } else {
-                        resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                        long ifModifiedSince = req
+                                .getDateHeader(HEADER_IFMODSINCE);
+                        if (ifModifiedSince < (lastModified / 1000 * 1000)) {
+                            // If the servlet mod time is later, call doGet()
+                            // Round down to the nearest second for a proper compare
+                            // A ifModifiedSince of -1 will always be less
+                            maybeSetLastModified(resp, lastModified);
+                            doGet(req, resp, renderContext, resource);
+                        } else {
+                            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                        }
                     }
                 }
             } else if (method.equals(METHOD_HEAD)) {

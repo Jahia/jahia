@@ -57,6 +57,7 @@ import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
 /**
@@ -85,6 +86,9 @@ public class URLResolver {
     private String path;
     private String siteKey;
     private boolean mappable = false;
+    
+    private String redirectUrl;
+    private String vanityUrl;    
 
     /**
      * Initializes an instance of this class. This constructor is mainly used when
@@ -96,10 +100,23 @@ public class URLResolver {
     public URLResolver(String urlPathInfo, String siteKey) {
         super();
         this.urlPathInfo = urlPathInfo;
-        this.siteKey = siteKey;
+        setSiteKey(siteKey);
         path = StringUtils.substringAfter(getUrlPathInfo().substring(1), "/");
         if (!resolveUrlMapping()) {
             init();
+            if (isMappable()
+                    && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
+                try {
+                    VanityUrl defaultVanityUrl = getVanityUrlService()
+                            .getVanityUrlForWorkspaceAndLocale(getNode(),
+                                    workspace, locale);
+                    if (defaultVanityUrl != null) {
+                        setRedirectUrl(defaultVanityUrl.getUrl());
+                    }
+                } catch (RepositoryException e) {
+                    logger.warn("Error when trying to check whether there is a vanity URL mapping", e);
+                }        
+            }
         }
     }
 
@@ -178,6 +195,17 @@ public class URLResolver {
                                 .languageCodeToLocale(resolvedVanityUrl
                                         .getLanguage());
                 path = StringUtils.substringBeforeLast(resolvedVanityUrl.getPath(), "/") + ".html";
+                setVanityUrl(resolvedVanityUrl.getUrl());
+                if (SettingsBean.getInstance().isPermanentMoveForVanityURL()
+                        && !resolvedVanityUrl.isDefaultMapping()) {
+                    VanityUrl defaultVanityUrl = getVanityUrlService()
+                            .getVanityUrlForWorkspaceAndLocale(getNode(),
+                                    workspace, locale);
+                    if (defaultVanityUrl != null
+                            && !resolvedVanityUrl.equals(defaultVanityUrl)) {
+                        setRedirectUrl(defaultVanityUrl.getUrl());
+                    }
+                }
                 mappingResolved = true;
             }
         } catch (RepositoryException e) {
@@ -505,5 +533,31 @@ public class URLResolver {
      */
     public void setSiteKey(String siteKey) {
         this.siteKey = siteKey;
+    }
+
+    /**
+     * If value is not null, then URL resolving encountered that the URL has
+     * permanently been changed and thus a server-side redirect to the new
+     * location should be triggered.
+     * @return URL for the new location
+     */
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    /**
+     * Set the URL location for a redirection suggestion.
+     * @param redirectUrl suggested vanity URL to redirect to 
+     */
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+
+    public String getVanityUrl() {
+        return vanityUrl;
+    }
+
+    public void setVanityUrl(String vanityUrl) {
+        this.vanityUrl = vanityUrl;
     }
 }

@@ -73,6 +73,11 @@ siteIDInURL                                            =   false
 # site/page mismatch
 performSiteAndPageIDMatchCheck                         =   false
 
+# This parameter will control, that if vanity URLs exists for a node and if
+# it has been accessed with a non-default vanity URL, we inform the client that
+# the resource has permanently moved (HTTP status code 301)
+permanentMoveForVanityURL                              = true
+
 ######################################################################
 ### Mail Service Configuration #######################################
 ######################################################################

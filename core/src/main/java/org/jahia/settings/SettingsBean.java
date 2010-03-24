@@ -251,6 +251,8 @@ public class SettingsBean {
     // preferences related settings
     private int historySize;
     private boolean historyUrlBased;
+    
+    private boolean permanentMoveForVanityURL = true;    
 
     /**
      * Default constructor.
@@ -521,6 +523,8 @@ public class SettingsBean {
             checkAclInPagePath = getBoolean("checkAclInPagePath", true) ;
 
             jahiaPreparePortletJCRPath = getString("prepare.portlet.jcr.path");
+            
+            permanentMoveForVanityURL = getBoolean("permanentMoveForVanityURL", true);
 
             try {
                 DatabaseScripts scriptsManager = new DatabaseScripts();
@@ -1473,5 +1477,9 @@ public class SettingsBean {
 
 	public void setMail_paranoia(String mailParanoia) {
     	mail_paranoia = mailParanoia;
+    }
+
+    public boolean isPermanentMoveForVanityURL() {
+        return permanentMoveForVanityURL;
     }
 }

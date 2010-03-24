@@ -35,10 +35,7 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
@@ -46,6 +43,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,6 +126,14 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                             if (listValues != null) {
                                 pageContext.setAttribute(var, listValues);
                             }
+                        } else if (definition instanceof ExtendedPropertyDefinition) {
+                            final ExtendedPropertyDefinition propertyDefinition = (ExtendedPropertyDefinition) definition;
+                            propertyDefinition.getValueConstraints();
+                            List<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
+                            for (String value : propertyDefinition.getValueConstraints()) {
+                                listValues.add(new ChoiceListValue(value, null, new ValueImpl(value, propertyDefinition.getRequiredType())));
+                            }
+                            pageContext.setAttribute(var, listValues);
                         }
                     }
                 }

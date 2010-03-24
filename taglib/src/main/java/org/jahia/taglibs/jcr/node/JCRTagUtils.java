@@ -50,6 +50,7 @@ import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -237,35 +238,62 @@ public class JCRTagUtils {
         return props;
     }
 
-	/**
-	 * Returns the first parent of the current node that has the specified node
-	 * type. If no matching node is found, <code>null</code> is returned.
-	 * 
-	 * @param node
-	 *            the current node to start the lookup from
-	 * @param type
-	 *            the required type of the parent node
-	 * @return the first parent of the current node that has the specified node
-	 *         type. If no matching node is found, <code>null</code> is returned
-	 */
-	public static JCRNodeWrapper getParentOfType(JCRNodeWrapper node, String type) {
-		JCRNodeWrapper matchingParent = null;
-		try {
-			JCRNodeWrapper parent = node.getParent();
-			while (parent != null) {
-				if (parent.isNodeType(type)) {
-					matchingParent = parent;
-					break;
-				}
-				parent = parent.getParent();
-			}
-		} catch (ItemNotFoundException e) {
-			// we reached the hierarchy top
-		} catch (RepositoryException e) {
-			logger.error("Error while retrieving nodes parent node. Cause: " + e.getMessage(), e);
-		}
-		return matchingParent;
-	}
+    /**
+     * Returns all the parents of the current node that have the specified node type. If no matching node is found, an
+     * empty list.
+     * 
+     * @param node
+     *            the current node to start the lookup from
+     * @param type
+     *            the required type of the parent node(s)
+     * @return the parents of the current node that have the specified node type. If no matching node is found, an
+     *         empty list is returned
+     */
+    public static List<JCRNodeWrapper> getParentsOfType(JCRNodeWrapper node,
+            String type) {
+        
+        List<JCRNodeWrapper> parents = new ArrayList<JCRNodeWrapper>();
+        do {
+            node = getParentOfType(node, type);
+            if (node != null) {
+                parents.add(node);
+            }
+        } while (node != null);
+
+        return parents;
+    }    
+    
+    /**
+     * Returns the first parent of the current node that has the specified node type. If no matching node is found, <code>null</code> is
+     * returned.
+     * 
+     * @param node
+     *            the current node to start the lookup from
+     * @param type
+     *            the required type of the parent node
+     * @return the first parent of the current node that has the specified node type. If no matching node is found, <code>null</code> is
+     *         returned
+     */
+    public static JCRNodeWrapper getParentOfType(JCRNodeWrapper node,
+            String type) {
+        JCRNodeWrapper matchingParent = null;
+        try {
+            JCRNodeWrapper parent = node.getParent();
+            while (parent != null) {
+                if (parent.isNodeType(type)) {
+                    matchingParent = parent;
+                    break;
+                }
+                parent = parent.getParent();
+            }
+        } catch (ItemNotFoundException e) {
+            // we reached the hierarchy top
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving nodes parent node. Cause: "
+                    + e.getMessage(), e);
+        }
+        return matchingParent;
+    }
 
     public static Map<String, JahiaGroup> getUserMembership(JCRNodeWrapper user) {
         Map<String, JahiaGroup> map = new LinkedHashMap<String, JahiaGroup>();

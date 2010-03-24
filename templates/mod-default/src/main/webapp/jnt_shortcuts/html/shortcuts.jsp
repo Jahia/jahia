@@ -2,14 +2,23 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<template:addResources type="css" resources="shortcuts.css" />
-
+<template:addResources type="javascript" resources="jquery.min.js"/>
 <div id="languages">
     <ui:langBar display="horizontal" linkDisplay="flag" rootPage="${rootPage}"/>
 </div>
-
+<!-- shortcuts -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#shortcuts').children('ul').hide();
+        $('#shortcuts').mouseover(function() {
+            $(this).children('ul').show();
+        }).mouseout(function() {
+            $(this).children('ul').hide();
+        });
+    });
+</script>
 <div id="shortcuts">
-    <h3><a title="Shortcuts" href="navBar.dropDown.jsp#">Shortcuts</a></h3>
+    <h3><a title="Shortcuts" href="#">Shortcuts</a></h3>
     <ul>
         <c:if test="${renderContext.loggedIn}">
             <li class="topshortcuts-login">

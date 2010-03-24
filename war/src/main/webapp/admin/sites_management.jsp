@@ -35,6 +35,7 @@
 <%@page import="org.jahia.bin.JahiaAdministration" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
 <%@ page import="org.jahia.services.pages.ContentPage" %>
+<%@page import="org.jahia.settings.SettingsBean" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
@@ -46,6 +47,7 @@
 <%@ page import="org.jahia.admin.sites.ManageSites" %>
 <%@ page import="java.io.File" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     Iterator sitesList = (Iterator) request.getAttribute("sitesList");
     String warningMsg = (String) request.getAttribute("warningMsg");
@@ -268,12 +270,11 @@
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
-                        <%
-                            File[] files = new File(org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles();
-                            pageContext.setAttribute("files", files);
-                        %>
+                        <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
                         <c:forEach var="file" items="${files}">
-                            <option value='${file.path}'>${file.name}</option>
+                            <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
+                            <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
+                            <option value='${file.path}'>${fn:escapeXml(label)}</option>
                         </c:forEach>
                     </select>
                     </td>
@@ -414,12 +415,11 @@ else { %>
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
-                        <%
-                            File[] files = new File(org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles();
-                            pageContext.setAttribute("files", files);
-                        %>
+                        <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
                         <c:forEach var="file" items="${files}">
-                            <option value='${file.path}'>${file.name}</option>
+                            <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
+                            <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
+                            <option value='${file.path}'>${fn:escapeXml(label)}</option>
                         </c:forEach>
                     </select>
                     </td>
@@ -511,12 +511,11 @@ else { %>
                         </td>
                         <td>
                             &nbsp;<select name="importpath">
-                            <%
-                                File[] files = new File(org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles();
-                                pageContext.setAttribute("files", files);
-                            %>
+                            <% pageContext.setAttribute("files", new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles()); %>
                             <c:forEach var="file" items="${files}">
-                                <option value='${file.path}'>${file.name}</option>
+                                <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
+                                <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
+                                <option value='${file.path}'>${fn:escapeXml(label)}</option>
                             </c:forEach>
                         </select>
                         </td>

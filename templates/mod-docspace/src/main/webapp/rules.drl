@@ -1,5 +1,5 @@
 ###############################################################################
-package org.jahia.modules.rules
+package org.jahia.modules.docspace.rules
 
 #list any import classes here.
 import org.jahia.services.content.rules.*

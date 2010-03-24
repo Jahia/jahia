@@ -39,6 +39,7 @@ shortcuts
 ******************************************************************************/
 #bodywrapper #shortcuts{
 	height:38px;
+	position:relative;
 }
 #bodywrapper #shortcuts h3 {
 	background-image:url(img/mod/shortcuts-bg.png);

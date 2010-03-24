@@ -47,12 +47,12 @@
 #bodywrapper #forum-body .forum-buttons a,
 #bodywrapper #forum-body .forum-buttons a:link,
 #bodywrapper #forum-body .forum-buttons a:visited{
-	background:#043b9d url(img//mod/bg-button.png) repeat-x top left;
+	background:#043b9d url(img/mod/bg-button.png) repeat-x top left;
 	border:1px solid #003399;
 }
 #bodywrapper #forum-body .forum-buttons a:hover,
 #bodywrapper #forum-body .forum-buttons a:active {
-	background:#043b9d url(img/bg-button-on.png) repeat-x bottom left;
+	background:#043b9d url(img/mod/bg-button-on.png) repeat-x bottom left;
 	border:1px solid #003399;
 }
 /******************************************************************************
@@ -61,12 +61,12 @@
 #bodywrapper #forum-body ul.forum-profile-icons li a,
 #bodywrapper #forum-body ul.forum-profile-icons li a:link,
 #bodywrapper #forum-body ul.forum-profile-icons li a:visited{
-	background:#043b9d url(img//mod/bg-button.png) repeat-x top left;
+	background:#043b9d url(img/mod/bg-button.png) repeat-x top left;
 	border:1px solid #003399;
 }
 #bodywrapper #forum-body ul.forum-profile-icons li a:hover,
 #bodywrapper #forum-body ul.forum-profile-icons li a:active {
-	background:#043b9d url(img/bg-button-on.png) repeat-x bottom left;
+	background:#043b9d url(img/mod/bg-button-on.png) repeat-x bottom left;
 	border:1px solid #003399;
 }
 /******************************************************************************
@@ -117,4 +117,72 @@ color:#fff
 	-webkit-box-shadow: 0 1px 2px #999;
     width: 50px;
     height: 50px;
+}
+/******************************************************************************
+shortcuts
+******************************************************************************/
+#bodywrapper #shortcuts{
+}
+#bodywrapper #shortcuts h3 {
+	background-image:url(img/mod/shortcuts-bg.png);
+	padding:8px 10px 10px 10px;
+	width:82px;
+	height:20px;
+	display:block;
+	font-size:1.2em;
+	bottom:0;
+	position:absolute;
+	right:0;
+	color:#fff;
+	margin:0;
+}
+#bodywrapper #shortcuts h3:hover {
+	background-image:url(img/mod/shortcuts-bg-on.png);
+}
+#bodywrapper #shortcuts h3 a,
+#bodywrapper #shortcuts h3 a:link,
+#bodywrapper #shortcuts h3 a:visited {
+	color:#fff
+}
+#bodywrapper #shortcuts h3 a:hover,
+#bodywrapper #shortcuts h3 a:active{
+	text-decoration:none;
+	color:#fff
+}
+
+#bodywrapper #shortcuts ul {
+	background-color:#F4F4F4;
+	border:1px solid #A7A7A7;
+	display:none;
+	right:0;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	padding:10px 4px;
+	position:absolute;
+	top:30px;
+	margin:0;
+	width:138px;
+	z-index:100;
+}
+#bodywrapper #shortcuts li {
+	font-size:1.1em;
+	line-height:20px;
+	padding:5px 5px 5px 10px;
+}
+#bodywrapper #shortcuts li a {
+	color: #333;
+}
+#bodywrapper #shortcuts li a:hover {
+	color: #3366cc;
+	text-decoration:none
+}
+/******************************************************************************
+Search form top
+******************************************************************************/
+#bodywrapper #search-bar form.simplesearchform .text-input {
+	width:304px !important;
+}
+#bodywrapper #search-bar form.simplesearchform {
+	width:340px !important;
 }

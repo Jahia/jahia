@@ -23,7 +23,7 @@ public class ConflictResolver {
 
 
     private static List<String> ignore = Arrays.asList(Constants.JCR_UUID, Constants.JCR_PRIMARYTYPE, Constants.JCR_MIXINTYPES, Constants.JCR_FROZENUUID, Constants.JCR_FROZENPRIMARYTYPE, Constants.JCR_FROZENMIXINTYPES,
-            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS, Constants.JCR_ACTIVITY);
+            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS, Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE);
     
     // Constants.JCR_LASTMODIFIED, "jcr:lastModifiedBy",
     // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");
@@ -35,7 +35,6 @@ public class ConflictResolver {
     private Calendar targetDate = null;
 
     private List<String> prunedSourcePath;
-    private List<String> prunedTargetPath;
 
     private List<Diff> differences;
     private List<Diff> resolvedDifferences;
@@ -55,10 +54,6 @@ public class ConflictResolver {
 
     public void setPrunedSourcePath(List<String> prunedSourcePath) {
         this.prunedSourcePath = prunedSourcePath;
-    }
-
-    public void setPrunedTargetPath(List<String> prunedTargetPath) {
-        this.prunedTargetPath = prunedTargetPath;
     }
 
     public List<Diff> getDifferences() {

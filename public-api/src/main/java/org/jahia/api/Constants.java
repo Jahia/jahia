@@ -227,4 +227,5 @@ public class Constants {
     public static final String SESSION_UI_LOCALE = "org.jahia.services.multilang.uilocale";
 
     public static final String REVISION_NUMBER = "j:revisionNumber";
+    public static final String CHECKIN_DATE = "j:checkinDate";
 }

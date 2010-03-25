@@ -76,7 +76,7 @@ public abstract class DefaultEventListener implements EventListener {
         propertiesToIgnore.add(Constants.PROCESSID);
         propertiesToIgnore.add(Constants.JCR_MERGEFAILED);
         propertiesToIgnore.add(Constants.REVISION_NUMBER);
-
+        propertiesToIgnore.add(Constants.CHECKIN_DATE);
     }
 
     public void setWorkspace(String workspace) {

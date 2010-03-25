@@ -259,6 +259,7 @@ public class JCRPublicationService extends JahiaService {
 
     private void publish(final JCRNodeWrapper sourceNode, JCRSessionWrapper destinationSession, Set<String> languages,
                          boolean allSubTree, boolean publishParent, Set<String> pathes) throws RepositoryException {
+        final Calendar calendar = new GregorianCalendar();
         pathes.add(sourceNode.getPath());
 
         final String destinationWorkspace = destinationSession.getWorkspace().getName();
@@ -273,7 +274,7 @@ public class JCRPublicationService extends JahiaService {
                         public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
                             return JCRTemplate.getInstance().doExecute(true, sourceNode.getUser().getUsername(), destinationWorkspace, new JCRCallback() {
                                 public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
-                                    cloneParents(sourceSession.getNode(parentPath), sourceSession, destinationSession);
+                                    cloneParents(sourceSession.getNode(parentPath), sourceSession, destinationSession, calendar);
                                     sourceSession.save();
                                     destinationSession.save();
                                     return null;
@@ -282,7 +283,7 @@ public class JCRPublicationService extends JahiaService {
                         }
                     });
                 } else {
-                    cloneParents(sourceNode.getParent(), sourceNode.getSession(), destinationSession);
+                    cloneParents(sourceNode.getParent(), sourceNode.getSession(), destinationSession, calendar);
                 }
             } else {
                 return;
@@ -342,24 +343,23 @@ public class JCRPublicationService extends JahiaService {
                 prunedDestPath.add(node.getPath());
             }
 
-            mergeToDestinationWorkspace(toPublish, prunedSourcePath, prunedDestPath, sourceNode.getSession(), destinationSession);
+            mergeToDestinationWorkspace(toPublish, prunedSourcePath, prunedDestPath, sourceNode.getSession(), destinationSession, calendar);
         } catch (PathNotFoundException e) {
-            cloneToDestinationWorkspace(toPublish.iterator().next(), prunedSourcePath, sourceNode.getSession(), destinationSession);
+            cloneToDestinationWorkspace(toPublish.iterator().next(), prunedSourcePath, sourceNode.getSession(), destinationSession, calendar);
         }
     }
 
-    private void cloneParents(JCRNodeWrapper node, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
+    private void cloneParents(JCRNodeWrapper node, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession, Calendar calendar) throws RepositoryException {
         try {
             String path = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
-            doClone(node, null, sourceSession, destinationSession);
-            destinationSession.getWorkspace().getVersionManager().checkin(path);
+            JCRNodeWrapper destinationNode = doClone(node, null, sourceSession, destinationSession);
+            checkin(destinationSession, destinationSession.getNode(path), destinationSession.getWorkspace().getVersionManager(), calendar);
         } catch (ItemNotFoundException e) {
-            cloneParents(node.getParent(), sourceSession, destinationSession);
+            cloneParents(node.getParent(), sourceSession, destinationSession, calendar);
         }
     }
 
-    void mergeToDestinationWorkspace(final List<JCRNodeWrapper> toPublish, final List<String> prunedSourcePath, final List<String> prunedDestPath, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession) throws RepositoryException {
-        Calendar c = new GregorianCalendar();
+    void mergeToDestinationWorkspace(final List<JCRNodeWrapper> toPublish, final List<String> prunedSourcePath, final List<String> prunedDestPath, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession, Calendar calendar) throws RepositoryException {
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
@@ -384,20 +384,22 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
         }
+
+        if (modified.isEmpty()) {
+            return;
+        }
+
         for (JCRNodeWrapper node : modified) {
             logger.debug("Setting last published : "+node.getPath());
 //            if (!sourceSession.getWorkspace().getName().equals("live")) {
                 if (!node.isCheckedOut()) {
                     node.checkout();
                 }
-                node.setProperty("j:lastPublished", c);
+                node.setProperty("j:lastPublished", calendar);
                 node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
 
-            jcrVersionService.setNodeCheckinDate(node, c);
+            jcrVersionService.setNodeCheckinDate(node, calendar);
 //            }
-        }
-        if (modified.isEmpty()) {
-            return;
         }
 
         sourceSession.save();
@@ -439,7 +441,6 @@ public class JCRPublicationService extends JahiaService {
 
                         ConflictResolver resolver = new ConflictResolver(node, destNode);
                         resolver.setPrunedSourcePath(prunedSourcePath);
-                        resolver.setPrunedTargetPath(prunedDestPath);
                         try {
                             resolver.applyDifferences();
 
@@ -452,10 +453,10 @@ public class JCRPublicationService extends JahiaService {
                             e.printStackTrace();
                         }
                     }
-                    if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
-                        recurseCheckin(destinationSession, destinationNode, prunedDestPath, destinationVersionManager, c);
+//                    if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
+                    recurseCheckin(destinationSession, destinationNode, prunedDestPath, destinationVersionManager, calendar);
 //                        node.update(destinationSession.getWorkspace().getName()); // do not update live in reverse publish
-                    }
+//                    }
                 }
 
                 if (oldPath != null) {
@@ -479,27 +480,29 @@ public class JCRPublicationService extends JahiaService {
 
             } catch (ItemNotFoundException e) {
                 // Item does not exist yet in live space
-                doClone(node, prunedSourcePath, sourceSession, destinationSession);
+                JCRNodeWrapper destinationNode = doClone(node, prunedSourcePath, sourceSession, destinationSession);
                 destinationVersionManager.checkin(node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName()));
+                recurseCheckin(destinationSession, destinationNode, null, destinationVersionManager, calendar);
             }
         }
     }
 
-    void cloneToDestinationWorkspace(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
+    void cloneToDestinationWorkspace(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession, Calendar calendar) throws RepositoryException {
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
 
-        Calendar calendar = new GregorianCalendar();
         recurseSetPublicationDate(sourceNode, pruneNodes, calendar, sourceSession.getUserID());
         sourceSession.save();
+        checkin(sourceSession, sourceNode, sourceVersionManager, calendar);
         recurseCheckin(sourceSession, sourceNode, pruneNodes, sourceVersionManager, calendar);
 
-        doClone(sourceNode, pruneNodes, sourceSession, destinationSession);
+        JCRNodeWrapper destinationNode = doClone(sourceNode, pruneNodes, sourceSession, destinationSession);
 
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
         destinationVersionManager.checkin(sourceNode.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName()));
+        recurseCheckin(destinationSession, destinationNode, null, destinationVersionManager, calendar);
     }
 
-    void doClone(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
+    JCRNodeWrapper doClone(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
         JCRNodeWrapper parent = sourceNode.getParent();
 //                destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
 
@@ -509,6 +512,8 @@ public class JCRPublicationService extends JahiaService {
         logger.info("Cloning node : " + sourceNode.getPath() + " source v=" + sourceNode.getBaseVersion().getName() +
                 " , source parent v=" + sourceNode.getParent().getBaseVersion().getName() +
                 " , dest parent v=" + destinationSession.getNode(destinationParentPath).getBaseVersion().getName());
+
+        final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
         try {
             Set<String> denied = new HashSet<String>();
@@ -521,7 +526,6 @@ public class JCRPublicationService extends JahiaService {
             }
             JahiaAccessManager.setDeniedPathes(denied);
 
-            final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
             if (!destinationVersionManager.isCheckedOut(destinationParentPath)) {
                 destinationVersionManager.checkout(destinationParentPath);
             }
@@ -607,14 +611,15 @@ public class JCRPublicationService extends JahiaService {
                     }
                 }
             }
-            destinationNode.checkin();
-        } else {
-            destinationNode.checkpoint();
+//            destinationNode.checkin();
+//        } else {
+//            destinationNode.checkpoint();
         }
         logger.info("Cloning node end : " + sourceNode.getPath() + " source v=" + sourceNode.getBaseVersion().getName() +
                 " , dest node v=" + destinationNode.getBaseVersion().getName() +
                 " , source parent v=" + sourceNode.getBaseVersion().getName() +
                 " , dest parent v=" + destinationSession.getNode(destinationParentPath).getBaseVersion().getName());
+        return destinationNode;
     }
 
     private String handleSharedMove(JCRSessionWrapper sourceSession, JCRNodeWrapper sourceNode, String destinationPath) throws RepositoryException {
@@ -660,11 +665,15 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
+    private void checkin(Session session, Node node, VersionManager versionManager, Calendar calendar) throws RepositoryException {
+        jcrVersionService.setNodeCheckinDate(node, calendar);
+        session.save();
+        versionManager.checkin(node.getPath());
+    }
+
     private void recurseCheckin(Session session, Node node, List<String> prune, VersionManager versionManager, Calendar calendar) throws RepositoryException {
         if (node.isNodeType("mix:versionable") && node.isCheckedOut() && !node.hasProperty("jcr:mergeFailed")) {
-            jcrVersionService.setNodeCheckinDate(node, calendar);
-            session.save();
-            versionManager.checkin(node.getPath());
+            checkin(session, node, versionManager, calendar);
         }
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {

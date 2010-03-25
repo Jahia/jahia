@@ -33,6 +33,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.query.QueryManagerImpl;
@@ -53,6 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -211,6 +213,11 @@ public class JCRWorkspaceWrapper implements Workspace {
                         values.add(getSession().getValueFactory().createValue(v));
                         sourceNode.setProperty("j:movedFrom", values.toArray(new Value[values.size()]));
                         sourceNode.removeShare();
+                        if (parentNode.isNodeType("mix:lastModified")) {
+                            parentNode.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
+                            parentNode.setProperty(Constants.JCR_LASTMODIFIEDBY, session.getUser().getUsername());
+                        }
+
                         if (!sessionMove) {
                             session.save();
                         }

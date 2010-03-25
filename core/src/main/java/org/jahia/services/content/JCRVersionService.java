@@ -157,7 +157,7 @@ public class JCRVersionService extends JahiaService {
             }
             lastVersion = v;
         }
-        if (closestVersion == null) {
+        if (closestVersion == null && lastVersion != null) {
             // if we haven't found anything, maybe it's the last version that we should be using ?
             Date checkinDate;            
             Node frozenNode = lastVersion.getFrozenNode();

@@ -33,12 +33,6 @@
 --%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ include file="declarations.jspf"%>
-<template:module path="${rootPage.path}/sideMenu">
-  <template:import>
-    <sideMenu xmlns:j='http://www.jahia.org/jahia/1.0' xmlns:jcr='http://www.jcp.org/jcr/1.0'
-        jcr:primaryType='jnt:navBar' j:nodename='jnt_navBar' j:startLevel='1' jcr:mixinTypes='jmix:renderable'
-        j:template='sideMenu'/>
-  </template:import>
-</template:module>
+<template:module path="${rootPage.path}/sideMenu"/>
 
 <jsp:include page="../modules/login/loginForm.jsp"/>

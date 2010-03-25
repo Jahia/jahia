@@ -37,7 +37,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cluster.ClusterListener;
 import org.jahia.services.cluster.ClusterMessage;
 import org.jahia.services.cluster.ClusterService;
-import org.jahia.services.lock.LockService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jgroups.Address;
@@ -66,7 +65,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
     //private List executingProcesses;
 
     private ClusterService clusterService;
-    private LockService lockService;
 
     private static final String[] JOBTYPES = {"import", "copypaste", "pickercopy", "workflow", "picked", "propagate1", "propagate2", "production"};
     //last job's time
@@ -262,10 +260,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
         this.clusterService = clusterService;
     }
 
-    public void setLockService(LockService lockService) {
-        this.lockService = lockService;
-    }
-
     public void startSchedulers() throws SchedulerException {
         // here we remove the zombies process
         // maybe we can flag them as stopped later?
@@ -280,7 +274,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
                     data.put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_FAILED);
                     scheduler.addJob(jd, true);
                     unscheduleJob(jd);
-                    lockService.purgeLockForContext(jd.getName());
                 }
                 if (BackgroundJob.STATUS_WAITING.equalsIgnoreCase(data.getString(BackgroundJob.JOB_STATUS)) &&
                         (data.getString(BackgroundJob.JOB_SERVER) == null || data.getString(BackgroundJob.JOB_SERVER).equals(clusterService.getServerId()))) {

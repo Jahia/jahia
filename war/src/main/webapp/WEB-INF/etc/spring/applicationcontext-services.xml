@@ -58,7 +58,7 @@
                 <entry key="layoutmanager" value="jnt:layout"  />
                 <entry key="bookmarks" value="jnt:bookmarkPreference"  />
             </map>
-        </property>
+        </property>        
     </bean>
     <bean id="JahiaPageTemplateService" parent="proxyTemplate" depends-on="org.jahia.hibernate.manager.JahiaTemplateManager,org.jahia.hibernate.manager.JahiaLinkManager">
         <property name="target">
@@ -172,15 +172,6 @@
     <bean id="JahiaHtmlEditorsService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.htmleditors.HtmlEditorsBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-            </bean>
-        </property>
-    </bean>
-    <bean id="LockService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.lock.LockRegistry" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="cacheService" ref="JahiaCacheService" />
-                <property name="lockManager" ref="org.jahia.hibernate.manager.JahiaLockManager" />
-                <property name="serverId" value="${cluster.node.serverId}" />
             </bean>
         </property>
     </bean>

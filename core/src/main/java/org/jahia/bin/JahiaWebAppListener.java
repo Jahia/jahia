@@ -94,16 +94,6 @@ public class JahiaWebAppListener implements HttpSessionListener, ServletContextL
                 logger.error("Error getting user for session ID '" + sessionId
                         + "'", e);
             }
-            if (u != null) {
-                try {
-                    servReg.getLockService()
-                            .purgeLockForContext(u.getUserKey());
-                } catch (Exception e) {
-                    logger.error("Error purging locks for user '"
-                            + u.getUserKey() + "' and session ID '" + sessionId
-                            + "'", e);
-                }                
-            }
         }
     }
 

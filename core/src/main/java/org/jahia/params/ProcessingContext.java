@@ -124,8 +124,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -431,9 +429,6 @@ public class ProcessingContext {
 
             if (getSite() != null) {
                 resolveLocales();
-
-                processLockAction();
-
             }
 
             // last engine name
@@ -1631,17 +1626,6 @@ public class ProcessingContext {
         return encodeURL(theUrl.toString());
     }
 
-    private String composeLockURL(final LockKey lockKey, String lockAction)
-            throws JahiaException {
-        final StringBuffer theURL = new StringBuffer();
-        theURL.append(getRequestURI());
-        theURL.append("/" + lockAction + "/");
-        theURL.append(lockKey.toString());
-        theURL.append("?");
-        theURL.append(getQueryString());
-        return encodeURL(theURL.toString());
-    }
-
     // #endif
 
     // -------------------------------------------------------------------------
@@ -2007,27 +1991,6 @@ public class ProcessingContext {
      */
     final public long getCacheExpirationDelay() {
         return delayFromNow;
-    }
-
-    protected String processLockAction() {
-        // #ifdef LOCK
-        // let's unlock the object
-        final LockService lockRegistry = REGISTRY.getLockService();
-        String lockKeyStr = getParameter(ProcessingContext.STEAL_LOCK);
-        LockKey lockKey;
-        final JahiaUser user = getUser();
-        if (lockKeyStr != null) {
-            lockKey = LockKey.composeLockKey(lockKeyStr);
-            lockRegistry.steal(lockKey, user, user.getUserKey());
-        } else {
-            lockKeyStr = getParameter(ProcessingContext.RELEASE_LOCK);
-            if (lockKeyStr != null) {
-                lockKey = LockKey.composeLockKey(lockKeyStr);
-                lockRegistry.release(lockKey, user, user.getUserKey());
-            }
-        }
-        return lockKeyStr;
-        // #endif
     }
 
     protected void resolveLocales() throws JahiaException {

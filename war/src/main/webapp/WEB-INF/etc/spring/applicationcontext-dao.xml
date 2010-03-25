@@ -27,7 +27,6 @@
     <bean id="jahiaGroupDAO" class="org.jahia.hibernate.dao.JahiaGroupDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaGroupAccessDAO" class="org.jahia.hibernate.dao.JahiaGroupAccessDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaUserDAO" class="org.jahia.hibernate.dao.JahiaUserDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaLockDAO" class="org.jahia.hibernate.dao.JahiaLockDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaResourceDAO" class="org.jahia.hibernate.dao.JahiaResourceDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaSiteLanguageListDAO" class="org.jahia.hibernate.dao.JahiaSiteLanguageListDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaSiteLanguageMappingDAO" class="org.jahia.hibernate.dao.JahiaSiteLanguageMappingDAO" parent="abstractGeneratorDAO"/>

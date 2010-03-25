@@ -129,11 +129,6 @@ public class ManageStatus extends AbstractAdministrationModule {
                                   HttpSession session)
             throws IOException, ServletException {
 
-        if (request.getParameter ("flushLocks") != null) {
-            logger.debug ("Flushing Locks");
-            ServicesRegistry.getInstance ().getLockService().purgeLocks();
-        }
-
         if (request.getParameter ("flushAllCaches") != null) {
             logger.debug ("Flushing all caches");
             ServicesRegistry.getInstance().getCacheService().flushAllCaches();

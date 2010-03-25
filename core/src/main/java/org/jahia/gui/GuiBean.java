@@ -46,7 +46,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
-import org.jahia.services.lock.LockKey;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageService;
@@ -179,11 +178,6 @@ public class GuiBean {
             throws JahiaException {
 
         return drawUrl("workflow", key);
-    }
-
-    public String drawLockUrl(final LockKey lockKey)
-            throws JahiaException {
-        return drawUrl("lock", lockKey);
     }
 
     public String drawUpdateCategoryUrl(final Category category)

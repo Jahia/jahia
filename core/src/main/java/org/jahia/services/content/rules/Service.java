@@ -44,12 +44,13 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapperImpl;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
@@ -137,7 +138,6 @@ public class Service extends JahiaService {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
         String uri = node.getPath();
         String name = node.getName();
-        LockRegistry lockRegistry = LockRegistry.getInstance();
 
         StringTokenizer st = new StringTokenizer(name, "_");
 
@@ -174,25 +174,6 @@ public class Service extends JahiaService {
 
                 JobDataMap jobDataMap;
                 jobDataMap = jobDetail.getJobDataMap();
-
-                if (dest != null) {
-                    Set<LockKey> locks = new HashSet<LockKey>();
-                    LockKey lock = LockKey.composeLockKey(LockKey.ADD_ACTION + "_" + dest.getObjectKey().getType(),
-                            dest.getID());
-                    locks.add(lock);
-                    synchronized (lockRegistry) {
-                        if (lockRegistry.isAlreadyAcquiredInContext(lock, jParams.getUser(),
-                                jParams.getUser().getUserKey())) {
-                            lockRegistry.release(lock, jParams.getUser(), jParams.getUser().getUserKey());
-                        }
-                        if (!lockRegistry.acquire(lock, jParams.getUser(), jobDetail.getName(),
-                                BackgroundJob.getMaxExecutionTime())) {
-                            logger.info("Cannot acquire lock, do not import");
-                            return;
-                        }
-                    }
-                    jobDataMap.put(BackgroundJob.JOB_LOCKS, locks);
-                }
 
                 jobDataMap.put(ImportJob.TARGET, destKey);
                 jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, site.getID());

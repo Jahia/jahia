@@ -132,11 +132,6 @@ public class SimpleAjaxActionImpl extends AjaxAction {
             String cacheType = fluschTypeProp.getValue();
             if (cacheType != null) {
 
-                if (cacheType.equalsIgnoreCase("Locks")) {
-                    logger.debug("Flushing Locks");
-                    ServicesRegistry.getInstance().getLockService().purgeLocks();
-                }
-
                 if (cacheType.equalsIgnoreCase("AllCaches")) {
                     logger.debug("Flushing all caches");
                     ServicesRegistry.getInstance().getCacheService().flushAllCaches();

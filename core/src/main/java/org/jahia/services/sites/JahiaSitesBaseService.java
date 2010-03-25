@@ -54,8 +54,6 @@ import org.jahia.services.importexport.ExtendedImportResult;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.pages.JahiaPageBaseService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.jcr.JCRSitesProvider;
@@ -446,11 +444,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         jobDataMap.put(ImportJob.FILENAME, initialZipName);
                     }
                     jobDataMap.put(ImportJob.CONTENT_TYPE, "application/zip");
-                    Set<LockKey> locks = new HashSet<LockKey>();
-                    LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_SITE", site.getID());
-                    locks.add(lock);
-                    LockRegistry.getInstance().acquire(lock, jParams.getUser(), jobDetail.getName(), BackgroundJob.getMaxExecutionTime(), false);
-                    jobDataMap.put(BackgroundJob.JOB_LOCKS, locks);
                     jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, site.getID());
                     jobDataMap.put(BackgroundJob.JOB_TYPE,ImportJob.IMPORT_TYPE);
                     jobDataMap.put(ImportJob.DELETE_FILE, Boolean.TRUE);

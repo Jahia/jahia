@@ -43,7 +43,6 @@
         <property name="target">
             <bean class="org.jahia.services.scheduler.SchedulerServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="clusterService" ref="clusterService" />
-                <property name="lockService" ref="LockService" />
                 <property name="scheduler" ref="scheduler"/>
                 <property name="ramscheduler" ref="ramScheduler"/>
             </bean>

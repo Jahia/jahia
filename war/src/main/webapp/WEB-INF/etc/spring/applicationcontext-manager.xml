@@ -144,14 +144,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaLockManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaLockManager">
-                <property name="jahiaLockDAO" ref="jahiaLockDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
     <bean id="org.jahia.hibernate.manager.JahiaObjectManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaObjectManager">

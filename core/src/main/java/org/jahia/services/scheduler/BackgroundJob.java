@@ -42,8 +42,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.URLGenerator;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
@@ -51,7 +49,9 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -258,24 +258,8 @@ public abstract class BackgroundJob implements StatefulJob {
     }
 
     private void updateAllLocks(JobDetail jobDetail) {
-        LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
-        Set<LockKey> locks = (Set<LockKey>) jobDetail.getJobDataMap().get(JOB_LOCKS);
-        if (locks != null) {
-            for (Iterator<LockKey> iterator = locks.iterator(); iterator.hasNext();) {
-                LockKey lockKey = iterator.next();
-                lockRegistry.setServerId(lockKey, jobDetail.getName());
-            }
-        }
     }
 
     private void releaseAllLocks(ProcessingContext processingContext, JobDetail jobDetail) {
-        LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
-        Set<LockKey> locks = (Set<LockKey>) jobDetail.getJobDataMap().get(JOB_LOCKS);
-        if (locks != null) {
-            for (Iterator<LockKey> iterator = locks.iterator(); iterator.hasNext();) {
-                LockKey lockKey = iterator.next();
-                lockRegistry.release(lockKey, processingContext.getUser(),jobDetail.getName());
-            }
-        }
     }
 }

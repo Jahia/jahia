@@ -548,15 +548,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             }
         }
         try {
-            // Flush locks for this server
-            ServicesRegistry.getInstance().getLockService().purgeLocksForServer();
-        } catch (Exception je) {
-            logger.debug("Error while flushing locks", je);
-            if (!logger.isDebugEnabled()) {
-                logger.debug("Unable to flush locks");
-            }
-        }
-        try {
             ServicesRegistry.getInstance().shutdown();
         } catch (Exception je) {
             logger.debug("Error while shutting down services", je);

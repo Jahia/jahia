@@ -67,11 +67,7 @@ public class FlushAjaxActionImpl extends AjaxAction {
         GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
         if (action != null) {
 
-            if (action.equalsIgnoreCase("flushLocks")) {
-                result.setValue(flushLocks(jahiaData, gwtPropertiesMap));
-            }
-
-            else if (action.equalsIgnoreCase("flushAllCaches")) {
+            if (action.equalsIgnoreCase("flushAllCaches")) {
                 result.setValue(flushAllCaches(jahiaData, gwtPropertiesMap));
             }
             
@@ -110,19 +106,6 @@ public class FlushAjaxActionImpl extends AjaxAction {
         ServicesRegistry.getInstance().getCacheService().flushAllCaches();
         JahiaBatchingClusterCacheHibernateProvider.flushAllCaches();
         return "flushAllCaches";
-    }
-
-    /**
-     * Flusch locks
-     *
-     * @param jahiaData
-     * @param gwtPropertiesMap
-     * @return
-     */
-    public String flushLocks(JahiaData jahiaData, Map gwtPropertiesMap) {
-        logger.debug("Flushing Locks");
-        ServicesRegistry.getInstance().getLockService().purgeLocks();
-        return "Flushing Locks";
     }
 
     /**

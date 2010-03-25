@@ -145,8 +145,6 @@ public class LoginEngineAuthValveImpl implements Valve {
                     }
                 }
                 
-                ServicesRegistry.getInstance().getLockService().purgeLockForContext(theUser.getUserKey());
-
                 String useCookie = jParams.getParameter(USE_COOKIE);
                 if ((useCookie != null) && ("on".equals(useCookie))) {
                     // the user has indicated he wants to use cookie authentication

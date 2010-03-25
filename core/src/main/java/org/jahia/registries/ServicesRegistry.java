@@ -50,7 +50,6 @@ import org.jahia.services.files.JahiaTextFileService;
 import org.jahia.services.htmleditors.HtmlEditorsService;
 import org.jahia.services.htmlparser.HtmlParserService;
 import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.lock.LockService;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.metadata.MetadataService;
 import org.jahia.services.notification.SubscriptionService;
@@ -378,9 +377,6 @@ public class ServicesRegistry {
         return (MailService) getService(MAIL_SERVICE);
     }
 
-    public LockService getLockService() {
-        return (LockService) getService(LOCK_SERVICE);
-    }
     public CategoryService getCategoryService() {
         return (CategoryService) getService(CATEGORY_SERVICE);
     }

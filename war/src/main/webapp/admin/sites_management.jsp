@@ -48,6 +48,7 @@
 <%@ page import="java.io.File" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="defaultSet" value="webtemplates65.zip"/>
 <%
     Iterator sitesList = (Iterator) request.getAttribute("sitesList");
     String warningMsg = (String) request.getAttribute("warningMsg");
@@ -274,7 +275,7 @@
                         <c:forEach var="file" items="${files}">
                             <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
                             <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
-                            <option value='${file.path}'>${fn:escapeXml(label)}</option>
+                            <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
                         </c:forEach>
                     </select>
                     </td>
@@ -419,7 +420,7 @@ else { %>
                         <c:forEach var="file" items="${files}">
                             <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
                             <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
-                            <option value='${file.path}'>${fn:escapeXml(label)}</option>
+                            <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
                         </c:forEach>
                     </select>
                     </td>
@@ -515,7 +516,7 @@ else { %>
                             <c:forEach var="file" items="${files}">
                                 <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.${file.name}" var="label"/>
                                 <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
-                                <option value='${file.path}'>${fn:escapeXml(label)}</option>
+                                <option value='${file.path}'${file.name == defaultSet ? ' selected="selected"' : ''}>${fn:escapeXml(label)}</option>
                             </c:forEach>
                         </select>
                         </td>

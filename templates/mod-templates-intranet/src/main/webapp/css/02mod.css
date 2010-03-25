@@ -124,6 +124,10 @@ shortcuts
 #bodywrapper #shortcuts{
 	height:38px;
 	position:relative;
+	width:82px;
+}
+#bodywrapper #navigation #shortcuts{
+	float:right;
 }
 #bodywrapper #shortcuts h3 {
 	background-image:url(img/mod/shortcuts-bg.png);

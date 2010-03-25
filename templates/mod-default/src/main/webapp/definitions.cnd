@@ -133,5 +133,8 @@
 
 [jnt:navMenuQuery] > jnt:query, jmix:navMenuItem, jmix:interactiveContent
 
-[jnt:navMenuMultilevel] > jnt:navBar, jmix:navMenuItem, jmix:interactiveContent
+[jnt:navMenuMultilevel] > jnt:content, jmix:navMenuItem, jmix:interactiveContent
+ - j:startLevel (long) = 1
+ - j:maxDepth (long) = 3
+ - j:relativeToCurrentNode (boolean)
 //---------------------------------------------------------

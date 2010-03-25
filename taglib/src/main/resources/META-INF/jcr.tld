@@ -326,6 +326,12 @@
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>        
+        <attribute>
+            <name>relativeToCurrentNode</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>                
     </tag>
         <tag>
         <description>display a navigation menu</description>

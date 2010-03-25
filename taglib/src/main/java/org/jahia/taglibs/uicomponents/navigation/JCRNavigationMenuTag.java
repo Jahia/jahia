@@ -31,20 +31,18 @@
  */
 package org.jahia.taglibs.uicomponents.navigation;
 
+import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.taglibs.jcr.node.JCRTagUtils;
-import org.jahia.utils.DateUtils;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -54,11 +52,12 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
 
     private static transient final Category logger = Logger.getLogger(JCRNavigationMenuTag.class);
     private String kind = null;
-    private int startLevel = -1;
-    private int maxDepth = -1;
+    private int startLevel = Integer.MIN_VALUE;
+    private int maxDepth = Integer.MIN_VALUE;
     private boolean expandOnlyPageInPath = true;
     private boolean onlyTop = false;
     private boolean display = true;
+    private boolean relativeToCurrentNode = false;    
     private String var;
     private JCRNodeWrapper node;
 
@@ -102,21 +101,33 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
         this.node = node;
     }
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
-
     public int doStartTag() throws JspException {
 
         try {
-            Set<NavMenuItemBean> navMenuUItemsBean = new LinkedHashSet<NavMenuItemBean>();
+            Set<NavMenuItemBean> navMenuUItemsBeans = new LinkedHashSet<NavMenuItemBean>();
             settings();
-            if (node != null) {
-                JCRNodeWrapper siteNode = node.getParent();
-                while (!siteNode.isNodeType("jnt:virtualsite")) {
-                    siteNode = siteNode.getParent();
-                }
-                generateMenuAsFlatList(siteNode, 0, navMenuUItemsBean, 0, null, siteNode.getPath());
-                pageContext.setAttribute(var, navMenuUItemsBean);
+            JCRNodeWrapper baseNode = node;
+            int realStartLevel = startLevel;           
+            if (isRelativeToCurrentNode() && baseNode != null) {
+                baseNode = baseNode.getParent();
             }
+            while (baseNode != null && !baseNode.isNodeType("jnt:virtualsite")
+                    && (!isRelativeToCurrentNode() || realStartLevel < 0)) {
+                baseNode = baseNode.getParent();
+                if (isRelativeToCurrentNode()) {
+                    realStartLevel++;
+                }
+            }
+            if (realStartLevel < 0) {
+                realStartLevel = 0;
+            }
+
+            generateMenuAsFlatList(realStartLevel, baseNode, 1,
+                    navMenuUItemsBeans, 0, null, baseNode.getPath());
+            if (!StringUtils.isEmpty(var)) {
+                pageContext.setAttribute(var, navMenuUItemsBeans);
+            }
+
             return EVAL_BODY_BUFFERED;
 
         } catch (IOException e) {
@@ -146,14 +157,14 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                     cssClassName = "topTabs"; // default name
                 }
                 onlyTop = true;
-                if (startLevel == -1) {
+                if (startLevel == Integer.MIN_VALUE) {
                     startLevel = 1; // default start level
                 }
             } else if ("sideMenu".equals(kind)) {
                 if (cssClassName == null) {
                     cssClassName = "sideMenu";
                 }
-                if (startLevel == -1) {
+                if (startLevel == Integer.MIN_VALUE) {
                     startLevel = 2; // default start level
                 }
             }
@@ -164,33 +175,33 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
      * Recursive method to go through pages hierarchy using a specific container list (attribute containerListName)
      * to fill a set (attribute navMenuItemsBean) containing all entries of the menu.
      *
-     * @param startNode        the start node for recursion
+     * @param realStartLevel   the start level relative to the base node
+     * @param currentNode        the start node for recursion
      * @param level            the current depth level
      * @param navMenuItemsBean Set of navMenuItemBean containing informations of current menu item.
      * @param loopIt           index of current iteration
      * @param parentItem       parent item in subtree
-     * @param sitePath         the sitepath of the current iste
+     * @param basePath         the basepath of the current site/node
      * @throws java.io.IOException           JSP writer exception
      * @throws javax.jcr.RepositoryException In case of JCR error
      */
-    private void generateMenuAsFlatList(JCRNodeWrapper startNode, int level, Set<NavMenuItemBean> navMenuItemsBean,
-                                        int loopIt, NavMenuItemBean parentItem, String sitePath)
+    private void generateMenuAsFlatList(int realStartLevel, JCRNodeWrapper currentNode, int level, Set<NavMenuItemBean> navMenuItemsBean,
+                                        int loopIt, NavMenuItemBean parentItem, String basePath)
             throws IOException, RepositoryException {
-        Resource res = (Resource) pageContext.getRequest().getAttribute("currentResource");
-
-        if (node == null) {
-            logger.error("Incorrect node : " + node);
-            // throw new IllegalArgumentException("attribute pageID cannot be < 1 (is " + pageId + ")");
+        if (currentNode == null) {
+            logger.error("Incorrect node : " + currentNode);
             return;
         }
-
+        Resource res = (Resource) pageContext.getRequest().getAttribute("currentResource");
+        
         boolean begin = true;
-//        final NodeIterator iterator = JCRTagUtils.getNodes(startNode, "jnt:page");
-        final NodeIterator iterator = startNode.getNodes();
+
+        final NodeIterator iterator = currentNode.getNodes();
 
         // if the list empty, add a navMenuItem for the action menu
-        if (maxDepth == -1 || level <= startLevel + maxDepth) {
+        if (maxDepth == Integer.MIN_VALUE || level <= realStartLevel + maxDepth) {
             int itemCount = 0;
+            NavMenuItemBean navMenuItemBean = null;
             while (iterator.hasNext()) {
                 JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) iterator.nextNode();
                 if (!nodeWrapper.isNodeType("jnt:page")) {
@@ -198,32 +209,30 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                 }
                 res.getDependencies().add(nodeWrapper);
                 
-                NavMenuItemBean navMenuItemBean = new NavMenuItemBean();
+                navMenuItemBean = new NavMenuItemBean();
                 navMenuItemBean.setNode(nodeWrapper);
                 navMenuItemBean.setParentItem(parentItem);
-                itemCount++;
-                navMenuItemBean.setItemCount(itemCount);
-                logger.debug("level = " + level);
-                // Set level
-                navMenuItemBean.setLevel(level);
-                // set class = "selected" on the link
+                navMenuItemBean.setItemCount(++itemCount);
                 // First container
                 if (begin) {
                     navMenuItemBean.setFirstInLevel(true);
                     begin = false;
                 }
-                // Last container
-                if (!iterator.hasNext()) {
-                    navMenuItemBean.setLastInLevel(true);
-                }
+ 
                 boolean isInPath = true;
-                if (level >= startLevel) {
-                    final String path = nodeWrapper.getPath().replaceAll(sitePath + "/", "");
-                    final String currentPath = this.node.getPath().replaceAll(sitePath + "/", "");
+                if (level > realStartLevel) {
+                    logger.debug("level = " + level);
+                    // Set level
+                    navMenuItemBean.setLevel(level - realStartLevel);
+                    
+                    final String path = nodeWrapper.getPath().replaceAll(basePath + "/", "");
+                    final String currentPath = node.getPath().replaceAll(basePath + "/", "");
                     final String[] pathElement = path.split("/");
                     final String[] currentPathElement = currentPath.split("/");
                     try {
-                        isInPath = startLevel == 0 || pathElement[startLevel - 1].equals(currentPathElement[startLevel - 1]);
+                        isInPath = realStartLevel == 0
+                                || pathElement[realStartLevel - 1]
+                                        .equals(currentPathElement[realStartLevel - 1]);
 
                         if (isInPath) {
                             if (currentPath.equals(path)) {
@@ -231,7 +240,8 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                             } else {
                                 for (int i = 0; i < pathElement.length; i++) {
                                     String s = pathElement[i];
-                                    if(i < currentPathElement.length && s.equals(currentPathElement[i])) {
+                                    if (i < currentPathElement.length
+                                            && s.equals(currentPathElement[i])) {
                                         navMenuItemBean.setInPath(true);
                                     } else {
                                         navMenuItemBean.setInPath(false);
@@ -247,9 +257,13 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                 }
 
                 if (!onlyTop && (!expandOnlyPageInPath || isInPath)) {
-                    generateMenuAsFlatList(nodeWrapper, level + 1, navMenuItemsBean, loopIt + 1, navMenuItemBean,
-                                           sitePath);
+                    generateMenuAsFlatList(realStartLevel, nodeWrapper, level + 1, navMenuItemsBean, loopIt + 1, navMenuItemBean,
+                                           basePath);
                 }
+            }
+            // Last container
+            if (navMenuItemBean != null) {
+                navMenuItemBean.setLastInLevel(true);
             }
         }
     }
@@ -260,8 +274,8 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
         kind = null;
         expandOnlyPageInPath = true;
         onlyTop = false;
-        startLevel = -1;
-        maxDepth = -1;
+        startLevel = Integer.MIN_VALUE;
+        maxDepth = Integer.MIN_VALUE;
         bodyContent = null;
         super.resetState();
         return EVAL_PAGE;
@@ -387,5 +401,13 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                 return -1;
             }
         }
+    }
+
+    public boolean isRelativeToCurrentNode() {
+        return relativeToCurrentNode;
+    }
+
+    public void setRelativeToCurrentNode(boolean relativeToCurrentNode) {
+        this.relativeToCurrentNode = relativeToCurrentNode;
     }
 }

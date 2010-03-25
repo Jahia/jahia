@@ -16,7 +16,8 @@ import java.util.Map;
  */
 public class ReferencesHelper {
 
-    public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, String> uuidMapping, Map<String, List<String>> references) throws RepositoryException {
+    public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references) throws RepositoryException {
+        Map<String, String> uuidMapping = session.getUuidMapping();
         JCRNodeWrapper refRoot = session.getNode("/referencesKeeper");
         NodeIterator ni = refRoot.getNodes();
         while (ni.hasNext()) {

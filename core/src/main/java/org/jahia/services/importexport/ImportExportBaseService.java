@@ -426,7 +426,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Map<String, Long> sizes = new HashMap<String, Long>();
         List<String> fileList = new ArrayList<String>();
 
-        Map<String, String> uuidMapping = new HashMap<String, String>();
         Map<String, List<String>> references = new HashMap<String, List<String>>();
 
         NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
@@ -598,7 +597,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         usersImportHandler.setUuidProps(userProps);
 
 //        session.save();
-        ReferencesHelper.resolveCrossReferences(session, uuidMapping, references);
+        ReferencesHelper.resolveCrossReferences(session, references);
         session.save();
     }
 

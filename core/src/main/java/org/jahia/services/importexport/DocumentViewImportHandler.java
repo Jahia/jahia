@@ -420,7 +420,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         }
         try {
             if (resolveReferenceAtEnd) {
-                ReferencesHelper.resolveCrossReferences(session, uuidMapping, references);
+                ReferencesHelper.resolveCrossReferences(session, references);
             }
         } catch (RepositoryException e) {
             throw new SAXException(e);

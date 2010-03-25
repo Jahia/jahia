@@ -31,10 +31,7 @@
  */
 package org.jahia.services.fields;
 
-import org.jahia.content.ObjectKey;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaFieldsDataManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
@@ -55,7 +52,6 @@ public class ContentFieldTools {
 
     private Map<Integer, Class<? extends ContentField>> fieldClassNames;
     private Map<Integer, Constructor<? extends ContentField>> fieldClassConstructor = new ConcurrentHashMap<Integer, Constructor<? extends ContentField>>(53);
-    private JahiaFieldsDataManager fieldsDataManager = null;
 
     /**
      * Default constructor, creates a new <code>ContentFieldTools</code> instance.
@@ -64,7 +60,6 @@ public class ContentFieldTools {
         // get the Map which give the class name
         // which correspond to the field type.
         fieldClassNames = ContentFieldTypes.getInstance ().getFieldClassNames ();
-        fieldsDataManager = (JahiaFieldsDataManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldsDataManager.class.getName());
     }
 
     /**
@@ -116,7 +111,7 @@ public class ContentFieldTools {
      */
     protected void preloadActiveOrStagedFieldsByPageID (int pageID)
             throws JahiaException {
-        fieldsDataManager.preloadActiveOrStagedFieldsByPageID (pageID);
+
     }
 
     /**
@@ -129,43 +124,6 @@ public class ContentFieldTools {
      */
     protected void preloadActiveOrStagedFieldsByContainerID (int containerID)
             throws JahiaException {
-        fieldsDataManager.preloadActiveOrStagedFieldsByContainerID (containerID);
-    }
-
-    /**
-     * Preloads all the active or staged fields for a given metadata owner key into the
-     * field cache.
-     *
-     * @param metadataOwnerKey
-     * @throws JahiaException thrown if there was an error while loading the fields from the database.
-     */
-    public void preloadActiveOrStagedFieldsByMetadataOwner (ObjectKey metadataOwnerKey)
-            throws JahiaException {
-        fieldsDataManager.preloadActiveOrStagedFieldsByMetadataOwner (metadataOwnerKey);
-    }
-
-    /**
-     * Preloads all the staged fields for a given metadata owner key into the
-     * field cache.
-     *
-     * @param metadataOwnerKey
-     * @throws JahiaException thrown if there was an error while loading the fields from the database.
-     */
-    public void preloadStagedFieldsByMetadataOwner (ObjectKey metadataOwnerKey)
-            throws JahiaException {
-        fieldsDataManager.preloadStagedFieldsByMetadataOwner (metadataOwnerKey);
-    }
-
-    /**
-     * loads all the staged fields for a given metadata owner key into the
-     * field cache.
-     *
-     * @param metadataOwnerKey
-     * @throws JahiaException thrown if there was an error while loading the fields from the database.
-     */
-    public void findStagedFieldsByMetadataOwner(ObjectKey metadataOwnerKey)
-            throws JahiaException {
-        fieldsDataManager.findStagedFieldsByMetadataOwner(metadataOwnerKey);
     }
 
     /**
@@ -181,16 +139,6 @@ public class ContentFieldTools {
     }
 
     /**
-     * Get a ContentField from its ID , look in cache only
-     *
-     * @param fieldId
-     *
-     */
-    public ContentField getFieldFromCacheOnly (int fieldId) {
-        return fieldsDataManager.loadContentFieldFromCacheOnly(fieldId);
-    }
-
-    /**
      * Get a ContentField from its ID
      *
      * @param fieldID
@@ -200,7 +148,7 @@ public class ContentFieldTools {
      */
     public ContentField getField (int fieldID, boolean forceLoadFromDB)
             throws JahiaException {
-        return fieldsDataManager.loadContentField(fieldID, forceLoadFromDB);
+        return null;
     }
     
     /**
@@ -213,7 +161,7 @@ public class ContentFieldTools {
      */
     public List<ContentField> getFields (List<Integer> fieldIDs, EntryLoadRequest loadVersion, boolean forceLoadFromDB)
             throws JahiaException {
-        return fieldsDataManager.loadContentFields(fieldIDs, loadVersion, forceLoadFromDB);
+        return null;
     }    
 
     /**

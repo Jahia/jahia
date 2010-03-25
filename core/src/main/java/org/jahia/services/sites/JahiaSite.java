@@ -44,25 +44,23 @@ package org.jahia.services.sites;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaSitePropertyManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
-
-import static org.jahia.services.sites.SitesSettings.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.*;
+
+import static org.jahia.services.sites.SitesSettings.*;
 
 
 /**
@@ -406,78 +404,11 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
 
     /**
-     * Site's Settings stored in jahia_site_prop table
-     *
-     * Khue : better to store in a XML config file. TODO
-     *
-     */
-
-    /**
-     * set the default homepage definition for users
-     */
-    public boolean setUserDefaultHomepageDef (int id) {
-
-        try {
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String value = Integer.toString(id);
-            manager.save(this,
-                         USER_DEFAULT_HOMEPAGE_DEF,
-                         value);
-            this.mSettings.setProperty(USER_DEFAULT_HOMEPAGE_DEF,value);
-            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(this);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * returns the default homepage definition for users
      * -1 : undefined
      */
     public int getUserDefaultHomepageDef () {
-
-        try {
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String value = manager.getProperty (this,
-                            USER_DEFAULT_HOMEPAGE_DEF);
-            if (value == null || value.trim ().equals ("")) {
-                return -1;
-            }
-            return Integer.parseInt (value);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
         return -1;
-
-    }
-
-    /**
-     * set the default homepage definition for groups
-     */
-    public boolean setGroupDefaultHomepageDef (int id) {
-
-        try {
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String value = Integer.toString(id);
-            manager.save (this,
-                          GROUP_DEFAULT_HOMEPAGE_DEF,
-                          value);
-            mSettings.setProperty(GROUP_DEFAULT_HOMEPAGE_DEF, value);
-            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(this);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
 
     }
 
@@ -485,234 +416,10 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * returns the default homepage definition for groups
      */
     public int getGroupDefaultHomepageDef () {
-
-        try {
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String value = manager.getProperty (this,
-                            GROUP_DEFAULT_HOMEPAGE_DEF);
-            if (value == null || value.trim ().equals ("")) {
-                return -1;
-            }
-            return Integer.parseInt (value);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
         return -1;
 
     }
 
-
-    /**
-     * set the default homepage definition for users activation
-     */
-    public boolean setUserDefaultHomepageDefActiveState (boolean active) {
-
-        try {
-            int value = 0; // not active;
-            if (active)
-                value = 1;
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String bool = Integer.toString(value);
-            manager.save(this,
-                         USER_DEFAULT_HOMEPAGE_DEF_ACTIVE,
-                         bool);
-            mSettings.setProperty(USER_DEFAULT_HOMEPAGE_DEF_ACTIVE,bool);
-            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(this);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return true;
-
-    }
-
-    /**
-     * returns the default homepage definition for users activation,
-     * -1: if not defined
-     * 0: not active
-     * 1. active
-         */
-    public int getUserDefaultHomepageDefActiveState () {
-
-        try {
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String value = manager.getProperty (this,
-                            USER_DEFAULT_HOMEPAGE_DEF_ACTIVE);
-            if (value == null || value.trim ().equals ("")) {
-                return -1;
-            }
-
-            return Integer.parseInt (value);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return -1;
-
-    }
-
-
-    /**
-     * set the default homepage definition for groups activation
-     */
-    public boolean setGroupDefaultHomepageDefActiveState (boolean active) {
-
-        try {
-            int value = 0; // not active;
-            if (active)
-                value = 1;
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String bool = Integer.toString(value);
-            manager.save(this, GROUP_DEFAULT_HOMEPAGE_DEF_ACTIVE, bool);
-            mSettings.setProperty(GROUP_DEFAULT_HOMEPAGE_DEF_ACTIVE, bool);
-            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(this);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
-
-    }
-
-    /**
-     * returns the default homepage definition for users activation,
-     * -1: if not defined
-     * 0: not active
-     * 1. active
-     */
-    public int getGroupDefaultHomepageDefActiveState () {
-
-        try {
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String value = manager.getProperty (this,
-                            GROUP_DEFAULT_HOMEPAGE_DEF_ACTIVE);
-            if (value == null || value.trim ().equals ("")) {
-                return -1;
-            }
-
-            return Integer.parseInt (value);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return -1;
-
-    }
-
-    /**
-     * set the default homepage definition for users at creation only state
-     */
-    public boolean setUserDefaultHomepageDefAtCreationOnly (boolean active) {
-
-        try {
-            int value = 0; // not active;
-            if (active)
-                value = 1;
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String bool = Integer.toString(value);
-            manager.save(this,
-                         USER_DEFAULT_HOMEPAGE_DEF_ATCREATION,
-                         bool);
-            mSettings.setProperty(USER_DEFAULT_HOMEPAGE_DEF_ATCREATION,bool);
-            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(this);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
-
-    }
-
-    /**
-     * returns the default homepage definition for users at creation only,
-     * -1: if not defined
-     * 0: false
-     * 1. true
-     */
-    public int getUserDefaultHomepageDefAtCreationOnly () {
-
-        try {
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String value = manager.getProperty (this,
-                            USER_DEFAULT_HOMEPAGE_DEF_ATCREATION);
-            if (value == null || value.trim ().equals ("")) {
-                return -1;
-            }
-
-            return Integer.parseInt (value);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return -1;
-
-    }
-
-    /**
-     * set the default homepage definition for groups at creation only state
-     */
-    public boolean setGroupDefaultHomepageDefAtCreationOnly (boolean active) {
-
-        try {
-            int value = 0; // not active;
-            if (active)
-                value = 1;
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String bool = Integer.toString(value);
-            manager.save (this,
-                          GROUP_DEFAULT_HOMEPAGE_DEF_ATCREATION,
-                          bool);
-            mSettings.setProperty(GROUP_DEFAULT_HOMEPAGE_DEF_ATCREATION,bool);
-            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(this);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
-
-    }
-
-    /**
-     * returns the default homepage definition for groups activation,
-     * -1: if not defined
-     * 0: false
-     * 1. true
-     */
-    public int getGroupDefaultHomepageDefAtCreationOnly () {
-
-        try {
-            JahiaSitePropertyManager manager = (JahiaSitePropertyManager) SpringContextSingleton.
-                getInstance().getContext().
-                getBean(JahiaSitePropertyManager.class.getName());
-            String value = manager.getProperty (this,
-                            GROUP_DEFAULT_HOMEPAGE_DEF_ATCREATION);
-            if (value == null || value.trim ().equals ("")) {
-                return -1;
-            }
-
-            return Integer.parseInt (value);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return -1;
-
-    }
 
     /**
      * Returns a List of site language settings. The order of this List

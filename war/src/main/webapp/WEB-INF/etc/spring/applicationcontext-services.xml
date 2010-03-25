@@ -17,33 +17,9 @@
       <property name="settingsBean" ref="settingsBean"/>
    </bean>
 
-    <bean id="JahiaTextFileService" parent="proxyTemplate">
-        <property name="target" ref="${bigtext.service}" />
-    </bean>
-
-    <bean id="DBJahiaText" class="org.jahia.services.files.JahiaTextFileDBBaseService" factory-method="getInstance">
-        <property name="bigTextDataManager" ref="org.jahia.hibernate.manager.JahiaBigTextDataManager" />
-    </bean>
-
-    <bean id="FileJahiaText" class="org.jahia.services.files.JahiaTextFileBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="cacheService" ref="JahiaCacheService" />
-    </bean>
-
     <bean id="JahiaPageService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.pages.JahiaPageBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="templateService" ref="JahiaPageTemplateService" />
-                <property name="pageManager" ref="org.jahia.hibernate.manager.JahiaPagesManager" />
-                <property name="cacheService" ref="JahiaCacheService" />
-                <property name="jahiaObjectManager" ref="org.jahia.hibernate.manager.JahiaObjectManager" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="JahiaPageUserPropService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.pagesusers.JahiaPageUserPropService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="pagesUsersPropManager" ref="org.jahia.hibernate.manager.JahiaPagesUsersPropManager" />
-                <property name="cacheService" ref="JahiaCacheService" />
             </bean>
         </property>
     </bean>
@@ -60,12 +36,9 @@
             </map>
         </property>        
     </bean>
-    <bean id="JahiaPageTemplateService" parent="proxyTemplate" depends-on="org.jahia.hibernate.manager.JahiaTemplateManager,org.jahia.hibernate.manager.JahiaLinkManager">
+    <bean id="JahiaPageTemplateService" parent="proxyTemplate" >
         <property name="target">
             <bean class="org.jahia.services.pages.JahiaPageTemplateBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="templateManager" ref="org.jahia.hibernate.manager.JahiaTemplateManager" />
-                <property name="cacheService" ref="JahiaCacheService" />
-                <property name="groupManagerService" ref="JahiaGroupManagerService" />
             </bean>
         </property>
     </bean>
@@ -151,13 +124,11 @@
             <bean parent="txProxyTemplate">
                 <property name="target">
                     <bean class="org.jahia.services.sites.jcr.JCRSitesProvider">
-                        <property name="sitePropertyDAO" ref="jahiaSitePropertyDAO" />
                         <property name="jcrTemplate" ref="jcrTemplate"/>
                     </bean>
                 </property>
             </bean>
         </property>
-        <property name="sitePropertyManager" ref="org.jahia.hibernate.manager.JahiaSitePropertyManager"/>
         <property name="fileWatcherService" ref="JahiaFileWatcherService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
@@ -180,7 +151,6 @@
             <bean class="org.jahia.services.categories.CategoryServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="categoryProvider" ref="org.jahia.services.categories.jcr.JCRCategoryProvider" />
-                <property name="fieldsDataManager" ref="org.jahia.hibernate.manager.JahiaFieldsDataManager" />
             </bean>
         </property>
     </bean>

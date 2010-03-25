@@ -71,18 +71,6 @@ public class ContentFieldTypes {
 
     private ContentFieldTypes () {
         fieldClassNames = new HashMap<Integer, Class<? extends ContentField>> ();
-        fieldClassNames.put (new Integer (INTEGER), ContentIntegerField.class);
-        fieldClassNames.put (new Integer (SMALLTEXT), ContentSmallTextField.class);
-        fieldClassNames.put (new Integer (BIGTEXT), ContentBigTextField.class);
-        fieldClassNames.put (new Integer (PAGE), ContentPageField.class);
-        fieldClassNames.put (new Integer (FILE), ContentFileField.class);
-        fieldClassNames.put (new Integer (APPLICATION), ContentApplicationField.class);
-        fieldClassNames.put (new Integer (FLOAT), ContentFloatField.class);
-        fieldClassNames.put (new Integer (BOOLEAN), ContentBooleanField.class);
-        fieldClassNames.put (new Integer (DATE), ContentDateField.class);
-        fieldClassNames.put (new Integer (COLOR), ContentColorField.class);
-        fieldClassNames.put (new Integer (CATEGORY), ContentCategoryField.class);
-        fieldClassNames.put (new Integer (SMALLTEXT_SHARED_LANG), ContentSmallTextSharedLangField.class);
     }
 
     /**

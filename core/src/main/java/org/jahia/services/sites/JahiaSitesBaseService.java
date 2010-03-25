@@ -41,7 +41,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaSitePropertyManager;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
@@ -92,7 +91,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     private Cache<String, JahiaSite> siteCacheByKey = null;
 
     protected JCRSitesProvider siteProvider = null;
-    private JahiaSitePropertyManager sitePropertyManager = null;
 
     private CacheService cacheService;
 
@@ -106,10 +104,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     public void setSiteProvider(JCRSitesProvider siteProvider) {
         this.siteProvider = siteProvider;
-    }
-
-    public void setSitePropertyManager(JahiaSitePropertyManager sitePropertyManager) {
-        this.sitePropertyManager = sitePropertyManager;
     }
 
     public void setGroupService(JahiaGroupManagerService groupService) {
@@ -493,7 +487,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         for (String group : groups) {
             groupManagerService.deleteGroup(groupService.lookupGroup(group));
         }
-        sitePropertyManager.remove(site);
         siteProvider.deleteSite(site.getSiteKey());
 
         siteCacheByID.remove (new Integer (site.getID ()));
@@ -522,7 +515,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 //        siteManager.updateJahiaSite(site);
         siteProvider.updateSite(site);
         site.setSettings(props);
-        sitePropertyManager.save(site);
         siteCacheByName.flush();
         siteCacheByID.flush();
         siteCacheByKey.flush();
@@ -534,13 +526,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      * @param site the site bean object
      */
     public synchronized void updateSiteProperties (JahiaSite site, Properties props) throws JahiaException {
-        sitePropertyManager.save(site, props);
         site.getSettings().putAll(props);
         addToCache(site);
     }
 
     public synchronized void removeSiteProperties (JahiaSite site, List<String> propertiesToBeRemoved) throws JahiaException {
-        sitePropertyManager.remove(site,propertiesToBeRemoved);
         for (String key : propertiesToBeRemoved) {
             site.getSettings().remove(key);
         }

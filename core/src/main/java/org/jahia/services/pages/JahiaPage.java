@@ -33,16 +33,14 @@
 
 package org.jahia.services.pages;
 
+import name.fraser.neil.plaintext.DiffMatchPatch;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.jahia.bin.Jahia;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateNotFoundException;
-import org.jahia.hibernate.manager.JahiaPagesManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -54,13 +52,12 @@ import org.jahia.services.version.ActivationTestResults;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.JahiaSaveVersion;
 import org.jahia.services.version.StateModificationContext;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.textdiff.HunkTextDiffVisitor;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
-
-import name.fraser.neil.plaintext.DiffMatchPatch;
 
 
 /**
@@ -95,7 +92,6 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
     private JahiaPageDefinition mTempPageTemplate;
     private Map<String, PageProperty> mProperties = null;
 
-    private transient JahiaPagesManager pageManager;
     private String title;
     private String rawTitle;
 //    private Map checkAccesses = new HashMap(64);
@@ -150,7 +146,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
         }
 
         mTempPageTemplate = mPageTemplate;
-        pageManager = (JahiaPagesManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaPagesManager.class.getName());
+
     }
 
     /**
@@ -1001,10 +997,6 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
     private boolean checkPropertiesAvailability ()
             throws JahiaException {
         if (mProperties == null) {
-            // properties never yet loaded, let's do it as quickly as we can.
-            mProperties = pageManager.getPageProperties (getID ());
-        }
-        if (mProperties == null) {
             logger.debug ("Error while loading page properties !");
             return false;
         }
@@ -1136,7 +1128,6 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
             return false;
         }
         targetProperty.setValue (value);
-        pageManager.setPageProperty (targetProperty);
         if (mProperties != null) {
             mProperties.put (name, targetProperty);
         }
@@ -1167,7 +1158,6 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
             targetProperty = new PageProperty (getID (), name);
         }
         targetProperty.setValue (value, languageCode);
-        pageManager.setPageProperty (targetProperty);
         if (mProperties != null) {
             mProperties.put (name, targetProperty);
         }
@@ -1190,7 +1180,6 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
             targetProperty = getPageLocalProperty(name);
             if (targetProperty != null) {
                 mProperties.remove(name);
-                pageManager.removePageProperty(targetProperty);
                 return true;
             }
         }
@@ -1314,7 +1303,6 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      private void readObject(java.io.ObjectInputStream in)
          throws IOException, ClassNotFoundException {
          in.defaultReadObject();
-         pageManager = (JahiaPagesManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaPagesManager.class.getName());
      }
 
     public int getSiteID() {

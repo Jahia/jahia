@@ -56,7 +56,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.DateUtils;
-import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.Value;
@@ -335,23 +334,6 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
 //        subDefs.put( new Integer(theSubDef.getPageDefID()), theSubDef );
 //        return theSubDef;
 //    } // end createSubDef
-
-
-    /**
-     * Returns the alias names ( container definition names )
-     * @return
-     */
-    public String[] getAliasNames
-    (){
-        if ( props == null ){
-            return new String[]{};
-        }
-        String strVal = (String) props.get(ALIAS_PROP_NAME);
-        if ( strVal == null || "".equals(strVal.trim()) ){
-            return new String[]{};
-        }
-        return JahiaTools.getTokens(strVal, " *+, *+");
-    }
 
 
     /**

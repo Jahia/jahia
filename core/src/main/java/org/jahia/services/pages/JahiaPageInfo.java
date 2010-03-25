@@ -36,7 +36,6 @@
 package org.jahia.services.pages;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaPagesManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.version.EntryStateable;
 
@@ -87,7 +86,6 @@ public class JahiaPageInfo implements PageInfoInterface, EntryStateable, Seriali
     private int mHashCode = -1; // used to avoid recalculating hash code if
     // nothing has changed.
 
-    private transient JahiaPagesManager pageManager;
 
     private transient String cacheToString = null;
     /*
@@ -101,47 +99,6 @@ public class JahiaPageInfo implements PageInfoInterface, EntryStateable, Seriali
     */
 
     //-------------------------------------------------------------------------
-    /**
-     * constructor
-     */
-    public JahiaPageInfo(int ID, int jahiaID, int parentID, int pageType,
-                         String title, int pageTemplateID, String remoteURL,
-                         int pageLinkID,
-                         int aclID,
-                         int versionID, int versionStatus, String languageCode,
-                         JahiaPagesManager pageManager) {
-        mID = ID;
-        mSiteID = jahiaID;
-        mParentID = parentID;
-        mTitle = title;
-        mAclID = aclID;
-        mPageType = pageType;
-        mPageTemplateID = pageTemplateID;
-        mVersionID = versionID;
-        mVersionStatus = versionStatus;
-        mLanguageCode = languageCode;
-
-        if (remoteURL == null) {
-            mRemoteURL = NO_REMOTE_URL;
-        } else {
-            mRemoteURL = remoteURL;
-        }
-
-        mPageLinkID = pageLinkID;
-
-        // temporary variables
-        mTempParentID = mParentID;
-        mTempAclID = mAclID;
-        mTempPageType = mPageType;
-        mTempTitle = mTitle;
-        mTempPageTemplateID = pageTemplateID;
-        mTempRemoteURL = mRemoteURL;
-        mTempPageLinkID = mPageLinkID;
-        mDataChanged = false;
-        mTemplateChanged = false;
-        this.pageManager = pageManager;
-        cacheToString = null;
-    } // end constructor
 
 
     public boolean equals (Object obj) {
@@ -393,52 +350,16 @@ public class JahiaPageInfo implements PageInfoInterface, EntryStateable, Seriali
      * @throws JahiaException Throws a JahiaException if the data could not
      *                        be saved successfully into the database.
      */
-    public synchronized void commitChanges () throws JahiaException
-    {
-        commitChanges(true);
+    public synchronized void commitChanges () throws JahiaException {
     }
 
-    //-------------------------------------------------------------------------
-    /** Commit into the database all the previous changes on the page.
-     *
-     * @param commitToDB, if true, store in db, else only copy temporary change
-     * to effective values.
-     *
-     * @exception   JahiaException Throws a JahiaException if the data could not
-     *              be saved successfully into the database.
-     */
     public synchronized void commitChanges (boolean commitToDB)
-    throws JahiaException
-    {
-        // commit only if the data has really changed
-        if (mDataChanged) {
-            // commit the modified changes.
-            mParentID = mTempParentID;
-            mAclID = mTempAclID;
-            mPageType = mTempPageType;
-            mTitle = mTempTitle;
-            mPageTemplateID = mTempPageTemplateID;
-            mRemoteURL      = mTempRemoteURL;
-            mPageLinkID     = mTempPageLinkID;
-            mRemoteURL = mTempRemoteURL;
-            mPageLinkID = mTempPageLinkID;
-
-            // commit the changes into the database.
-            if (commitToDB)
-                pageManager.updatePageInfo(this, mVersionID, mVersionStatus);
-            mDataChanged = false;
-            mTemplateChanged = false;
-            cacheToString = null;
-        }
+    throws JahiaException {
     }
 
     protected JahiaPageInfo clonePageInfo (int versionID, int versionStatus,
                                            String languageCode) {
-        return new JahiaPageInfo (mID, mSiteID, mParentID, mPageType,
-                mTitle, mPageTemplateID, mRemoteURL,
-                mPageLinkID,
-                mAclID, versionID, versionStatus,
-                languageCode, pageManager);
+        return null;
     }
 
     public String getLanguageCode () {
@@ -494,16 +415,6 @@ public class JahiaPageInfo implements PageInfoInterface, EntryStateable, Seriali
         }
         return cacheToString;
     }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-    }
-
-     private void readObject(java.io.ObjectInputStream in)
-         throws IOException, ClassNotFoundException {
-         in.defaultReadObject();
-         pageManager = (JahiaPagesManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaPagesManager.class.getName());
-     }
 
      public boolean hasChanged() {
          return mDataChanged;

@@ -85,9 +85,6 @@ public abstract class ContentObject extends JahiaObject {
     public static final String PAGEPATH_PAGEID_PREFIX = "jcpid";
 
 
-    private static transient JahiaLinkManager linkManager;
-    private static transient JahiaObjectManager jahiaObjectManager;
-    private static transient JahiaFieldsDataManager jahiaFieldsDataManager;
     private ContentObject pickedObject = null;
     private String pickedObjectType = null;
 
@@ -95,17 +92,12 @@ public abstract class ContentObject extends JahiaObject {
 
     protected ContentObject(ObjectKey objectKey) {
         super(objectKey);
-        linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        jahiaObjectManager = (JahiaObjectManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaObjectManager.class.getName());
-        jahiaFieldsDataManager = (JahiaFieldsDataManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldsDataManager.class.getName());
     }
 
     /**
      * No arg constructor to support serialization
      */
     protected ContentObject() {
-        linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        jahiaFieldsDataManager = (JahiaFieldsDataManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldsDataManager.class.getName());
     }
 
     /**
@@ -1511,7 +1503,7 @@ public abstract class ContentObject extends JahiaObject {
      * @return a JahiaObject
      */
     public ContentField getMetadata(String name, boolean forceLoadFromDB) throws JahiaException {
-        return jahiaFieldsDataManager.loadMetadataByOwnerAndName(name,this.getObjectKey(), forceLoadFromDB);
+        return null;
     }
     
     /**
@@ -1522,8 +1514,7 @@ public abstract class ContentObject extends JahiaObject {
     public Map<String, ContentField> getMetadatas(String[] names,
             EntryLoadRequest loadVersion, boolean forceLoadFromDB)
             throws JahiaException {
-        return jahiaFieldsDataManager.loadMetadataByOwnerAndNames(names, this
-                .getObjectKey(), loadVersion, forceLoadFromDB);
+        return null;
     }    
 
     /**
@@ -1732,51 +1723,7 @@ public abstract class ContentObject extends JahiaObject {
      * @return List of JahiaObject
      */
     public static List<ContentField> getMetadatas(ObjectKey objectKey, boolean withOldEntryStates, boolean stagedOnly) {
-        List<ContentField> objects = new ArrayList<ContentField>();
-        List<Integer> ids;
-        if (stagedOnly) {
-            ids = jahiaFieldsDataManager.findStagedFieldsByMetadataOwner(objectKey);
-        } else {
-            ids = jahiaFieldsDataManager.findMetadatasByOwner(objectKey);
-        }
-        if ( ids.isEmpty() ){
-            return objects;
-        }
-
-        Map<Integer, List<ContentObjectEntryState>> oldEntryStates = new HashMap<Integer, List<ContentObjectEntryState>>();
-        if ( withOldEntryStates ){
-            oldEntryStates = jahiaFieldsDataManager.findOldEntryStateForMetadatas(objectKey);
-        }
-        Integer id = ids.get(0);
-        if ( ContentFieldTools.getInstance().getFieldFromCacheOnly(id.intValue()) == null ){
-            try {
-                if (stagedOnly) {
-                    ContentFieldTools.getInstance().preloadStagedFieldsByMetadataOwner(objectKey);
-                } else {
-                    ContentFieldTools.getInstance().preloadActiveOrStagedFieldsByMetadataOwner(objectKey);
-                }
-            } catch ( Exception t ){
-                logger.debug("Error preloading metadatas for object " + objectKey,t);
-            }
-        }
-        for (Integer fieldId : ids) {
-            try {
-                ContentField contentField = ContentField.getField(fieldId.intValue());
-                if ( contentField != null ){
-                    if ( withOldEntryStates ){
-                        List<ContentObjectEntryState> entryStates = oldEntryStates.get(new Integer(contentField.getID()));
-                        if (entryStates == null ){
-                            entryStates = new ArrayList<ContentObjectEntryState>();
-                        }
-                        contentField.setVersioningEntryStates(entryStates);
-                    }
-                    objects.add(contentField);
-                }
-            } catch ( Exception t ){
-                logger.warn("metadata not found fieldId=" + fieldId.intValue());
-            }
-        }
-        return objects;
+        return null;
     }
 
     /**
@@ -1786,11 +1733,7 @@ public abstract class ContentObject extends JahiaObject {
      * @return the contentObject owner of the metadata
      */
     public static ContentObject getContentObjectFromMetadata(ObjectKey metadataObjectKey) {
-        if (!ContentFieldKey.FIELD_TYPE.equals(metadataObjectKey.getType())) {
-            return null;
-        }
-        return jahiaFieldsDataManager.findJahiaObjectByMetadata(
-                new Integer(metadataObjectKey.getIdInType()));
+        return null;
     }
 
     public void addPickerObject(ProcessingContext jParams, ContentObject object, String type) {
@@ -1812,19 +1755,7 @@ public abstract class ContentObject extends JahiaObject {
     }
 
     public Set<ContentObject> getPickerObjects(String type) throws JahiaException {
-        Set<ContentObject> set = new HashSet<ContentObject>();
-        List<ObjectLink> links = linkManager.findByTypeAndLeftObjectKey(type,this.getObjectKey());
-        for (ObjectLink link : links) {        
-            try {
-                ContentObject picker = (ContentObject) ContentObject.getInstance(link.getRightObjectKey());
-                if (picker != null && !picker.isMarkedForDelete() && !picker.isDeleted(new Long(System.currentTimeMillis()/1000).intValue())) {
-                    set.add(picker);
-                }
-            } catch (Exception t) {
-                logger.debug(t);
-            }
-        }
-        return set;
+        return null;
     }
 
     void resetPicked() {
@@ -1849,23 +1780,7 @@ public abstract class ContentObject extends JahiaObject {
     }
 
     public ContentObject getPickedObject(String type) throws JahiaException {
-        if (pickedObjectType == null) {
-            List<ObjectLink> links = linkManager.findByTypeAndRightObjectKey(type, this.getObjectKey());
-            for (ObjectLink link : links) {
-                try {
-                    pickedObject = (ContentObject) ContentObject.getInstance(link.getLeftObjectKey());
-                    pickedObjectType = type;
-                    return pickedObject;
-                } catch (Exception t) {
-                    logger.debug(t);
-                }
-            }
-        } else {
-            if (!type.equals(pickedObjectType)) {
-                return null;
-            }
-        }
-        return pickedObject;
+        return null;
     }
 
     /**
@@ -1924,15 +1839,11 @@ public abstract class ContentObject extends JahiaObject {
      * @see TimeBasedPublishingState
      */
     public boolean isAvailable() {
-        final JahiaObjectDelegate jahiaObject =
-                jahiaObjectManager.getJahiaObjectDelegate(this.getObjectKey());
-        return jahiaObject != null ? jahiaObject.isValid() : true;
+        return false;
     }
 
     public int getTimeBasedPublishingState() {
-        JahiaObjectDelegate jahiaObject =
-                jahiaObjectManager.getJahiaObjectDelegate(this.getObjectKey());
-        return (jahiaObject == null ? TimeBasedPublishingState.IS_VALID_STATE : jahiaObject.getTimeBPState().intValue());
+        return 0;
     }
 
     /**
@@ -2162,10 +2073,6 @@ public abstract class ContentObject extends JahiaObject {
          throws IOException, ClassNotFoundException {
 
          in.defaultReadObject();
-
-         linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-         jahiaObjectManager = (JahiaObjectManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaObjectManager.class.getName());
-         jahiaFieldsDataManager = (JahiaFieldsDataManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldsDataManager.class.getName());
      }
 
     public String getUUID() throws JahiaException {

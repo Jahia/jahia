@@ -52,70 +52,6 @@ import java.util.List;
  */
 public abstract class JahiaPageTemplateService extends JahiaService {
 
-    /**
-     * Create a new page template.
-     *
-     * @param siteID    the site identification number
-     * @param name        The page template name.
-     * @param sourcePath  The page template source path.
-     * @param isAvailable True is the page template is available in edition
-     *                mode or false if it should be hidden.
-     * @param pageType
-     *@param image       Image path.
-     * @param	parentAclID		The parent ACL id
- * @return Return a new page template instantiation.
-     *
-     * @throws JahiaException Throws this exception when any error occurred
-     *                        in the page template creation process.
-     */
-    public abstract JahiaPageDefinition createPageTemplate(
-            int siteID,
-            String name,
-            String sourcePath,
-            boolean isAvailable,
-            String pageType,
-            String description,
-            String image,
-            int parentAclID)
-            throws JahiaException;
-
-
-    /**
-     * Deletes the specified page template.
-     *
-     * @param templateID The page template ID.
-     *
-     * @throws JahiaException Throws this exception if any error occurred in the deletion process.
-     * @throws JahiaException Return this exception if any failure occurred.
-     */
-    public abstract void deletePageTemplate (int templateID)
-            throws JahiaException;
-
-
-    /**
-     * Gets all the page template IDs.
-     *
-     * @return Return a List of page template IDs
-     *
-     * @throws JahiaException Return this exception if any failure occurred.
-     */
-    public abstract List<Integer> getAllPageTemplateIDs ()
-            throws JahiaException;
-
-
-    /**
-     * Check if a page already has the same source path
-     *
-     * @param siteID    the site identification number
-     * @param path      the full path with filename to the template file to check
-     *
-     * @return Return the reference on the page template having the same
-     *         specified source path. Return null if no template exists,
-     *         matching the source path.
-     */
-    public abstract JahiaPageDefinition getPageTemplateBySourcePath (int siteID, String path)
-            throws JahiaException;
-
 
     /**
      * Try to find the specified page template.
@@ -147,38 +83,6 @@ public abstract class JahiaPageTemplateService extends JahiaService {
 
 
     /**
-     * Return a list of all the page templates depending of the site ID and
-     * if there are available or not (according to the passed parameters).
-     *
-     * @param siteID        the site identification number
-     * @param availableOnly Set true to get all the available template, or
-     *                      false to the other ones.
-     *
-     * @return Return an Iterator holding all the page templates matching
-     *         the site ID and the visibility requirements.
-     */
-    public abstract Iterator<JahiaPageDefinition> getPageTemplates (int siteID, boolean availableOnly)
-            throws JahiaException;
-
-
-    /**
-     * Return a list of all the page templates depending of the site ID, the
-     * user and if there are available or not (according to the passed parameters).
-     *
-     * @param user          A Jahia user having access to the page template.
-     * @param siteID        the site identification number
-     * @param availableOnly Set true to get all the available template, or
-     *                      false to the other ones.
-     *
-     * @return Return an Iterator holding all the page templates matching
-     *         the site ID and the visibility requirements.
-     */
-    public abstract Iterator<JahiaPageDefinition> getPageTemplates (JahiaUser user, int siteID,
-                                                  boolean availableOnly)
-            throws JahiaException;
-
-
-    /**
      * Return the number of page templates in the database.
      *
      * @return Return the number of page templates.
@@ -198,34 +102,6 @@ public abstract class JahiaPageTemplateService extends JahiaService {
             throws JahiaException;
 
 
-
-    /**
-     * returns a DOM representation of all page def of a site
-     *
-     * @param siteID    the site identification number
-     */
-    public abstract JahiaDOMObject getPageDefsAsDOM (int siteID)
-            throws JahiaException;
-
-
-    /**
-     * returns a DOM representation of all page def props of a site
-     *
-     * @param siteID    the site identification number
-     */
-    public abstract JahiaDOMObject getPageDefPropsAsDOM (int siteID)
-            throws JahiaException;
-
-
-    /**
-     * Returns a List of all page templates' Acl ID of this site
-     * Need this for site extraction
-     *
-     * @param siteID    the site identification number
-     */
-    public abstract List<Integer> getAclIDs (int siteID)
-            throws JahiaException;
-
     /**
      * Update page template in database and cache.
      * @param thePageTemplate JahiaPageDefinition
@@ -237,16 +113,7 @@ public abstract class JahiaPageTemplateService extends JahiaService {
     // Patch ---------------------------------------------------
     // 30.01.2002 : NK patch for old databases containing templates without ACL
     // 				Do create ACL for them.
-    public abstract void patchTemplateWithoutACL () throws JahiaException;
 
-    /**
-     * Save the page template and create a new Acl if the current is bull
-     * @param thePageTemplate
-     * @throws JahiaException
-     */
-    public abstract void createPageTemplateAcl(JahiaPageDefinition thePageTemplate)
-        throws JahiaException;
-    
 
 }
 

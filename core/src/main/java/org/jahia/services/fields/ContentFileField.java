@@ -33,8 +33,6 @@ package org.jahia.services.fields;
 
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaFieldXRefManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -83,7 +81,11 @@ public class ContentFileField extends ContentField {
         return getDBValue(entryState);
     }
 
-    //--------------------------------------------------------------------------
+    @Override
+    protected ActivationTestResults changeEntryState(ContentObjectEntryState fromEntryState, ContentObjectEntryState toEntryState, ProcessingContext jParams, StateModificationContext stateModifContext) throws JahiaException {
+        return null;
+    }
+//--------------------------------------------------------------------------
     /**
      * This method should call preSet.
      */
@@ -94,59 +96,6 @@ public class ContentFileField extends ContentField {
         }
         preSet(fField.getStorageName(), saveRequest);
         postSet(saveRequest);
-    }
-
-    //--------------------------------------------------------------------------
-    /**
-     * This method is called when there is a workflow state change
-     * Such as  staged mode -> active mode (validation), active -> inactive (for versioning)
-     * and also staged mode -> other staged mode (workflow)
-     * This method should not write/change the DBValue, the service handles that.
-     *
-     * @param fromEntryState the entry state that is currently was in the database
-     * @param toEntryState   the entry state that will be written to the database
-     * @param jParams        ProcessingContext object used to get information about the user
-     *                       doing the request, the current locale, etc...
-     * @return null if the entry state change wasn't an activation, otherwise it
-     *         returns an object that contains the status of the activation (whether
-     *         successfull, partial or failed, as well as messages describing the
-     *         warnings during the activation process)
-     */
-    public ActivationTestResults changeEntryState(ContentObjectEntryState fromEntryState,
-                                                  ContentObjectEntryState toEntryState,
-                                                  ProcessingContext jParams,
-                                                  StateModificationContext stateModifContext)
-            throws JahiaException {
-        JahiaFieldXRefManager fieldLinkManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
-
-        JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(
-                this.getValue(fromEntryState), jParams.getUser());
-
-        int usageCount = fieldLinkManager.countUsages("file:" + file.getPath(), EntryLoadRequest.ACTIVE_WORKFLOW_STATE);
-        boolean wasLocked = fromEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || fromEntryState.getWorkflowState() == EntryLoadRequest.WAITING_WORKFLOW_STATE;
-        boolean wasUnlocked = fromEntryState.getWorkflowState() != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && fromEntryState.getWorkflowState() != EntryLoadRequest.WAITING_WORKFLOW_STATE;
-        boolean shouldBeLocked = toEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE || toEntryState.getWorkflowState() == EntryLoadRequest.WAITING_WORKFLOW_STATE;
-        boolean shouldBeUnlocked = toEntryState.getWorkflowState() != EntryLoadRequest.ACTIVE_WORKFLOW_STATE && toEntryState.getWorkflowState() != EntryLoadRequest.WAITING_WORKFLOW_STATE;
-        if (wasLocked && shouldBeUnlocked) {
-            if (usageCount <= 1) {
-//                file.forceUnlock();
-            }
-        } else if (wasUnlocked && shouldBeLocked && getSite(jParams).isFileLockOnPublicationEnabled()) {
-            if (usageCount == 0) {
-//                file.forceUnlock();
-//                file.lockAsSystemAndStoreToken();
-            }
-        }
-
-        if (toEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-            fieldLinkManager.activateField(getID(), getSiteID(), toEntryState.getLanguageCode());
-        }
-        if (fromEntryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-            fieldLinkManager.deleteReferencesForField(getID(), toEntryState.getLanguageCode(), EntryLoadRequest.ACTIVE_WORKFLOW_STATE);
-        }
-
-
-        return new ActivationTestResults();
     }
 
     //--------------------------------------------------------------------------

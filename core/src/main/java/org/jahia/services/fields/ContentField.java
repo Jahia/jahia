@@ -32,28 +32,21 @@
 package org.jahia.services.fields;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
 import org.jahia.content.*;
-import org.jahia.content.events.ContentUndoStagingEvent;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaFieldsDataManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
-import org.jahia.services.acl.JahiaBaseACL;
-
 import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
 import org.jahia.utils.LanguageCodeConverters;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -92,7 +85,6 @@ public abstract class ContentField extends ContentObject
 
 
     private Map<Object, Object> properties = new HashMap<Object, Object>();
-    private transient JahiaFieldsDataManager fieldsDataManager;
     private ContentObject parent;
 
     private static transient JahiaVersionService jahiaVersionService;
@@ -233,7 +225,6 @@ public abstract class ContentField extends ContentObject
 
         this.loadedDBValues = new HashMap<ContentObjectEntryState, String>(activeAndStagedDBValues);
 
-        fieldsDataManager = (JahiaFieldsDataManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldsDataManager.class.getName());
 
     }
 
@@ -466,215 +457,7 @@ public abstract class ContentField extends ContentObject
             int newVersionID,
             ProcessingContext jParams,
             StateModificationContext stateModifContext, boolean needBackup) throws JahiaException {
-        ActivationTestResults activationResults = new ActivationTestResults ();
-
-        // check that we are not going to create a new version entry that already exist!
-
-        int deletedVersionId = this.getDeleteVersionID();
-        if ( deletedVersionId == newVersionID ){
-            // has been already deleted! Do not activate deletion again
-            activationResults.appendWarning(new NodeOperationResult(getObjectKey(), null, "Field " + getID() +
-                    " is already activated with newVersionID=" + newVersionID));
-            return activationResults;
-        }
-
-
-        boolean versioningEnabled = getJahiaVersionService ().isVersioningEnabled (jahiaID);
-        List<ContentObjectEntryState> stagedEntries = new ArrayList<ContentObjectEntryState> ();
-                          
-        boolean stateModified = false;
-        if (isMarkedForDelete()) {
-            stateModified = true;
-            stateModifContext.pushAllLanguages (true);
-        }
-
-        Set<String> activateLanguageCodes = new HashSet<String> (languageCodes);
-        if (stateModifContext.isAllLanguages ()) {
-            activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguagesAsLocales()));
-        }
-
-        if (isShared())  {
-            if (getStagingLanguages(false,true).isEmpty()) {
-                return activationResults;
-            } else {
-                activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguagesAsLocales()));
-            }
-        } else {
-            activateLanguageCodes.retainAll(getStagingLanguages(false,true));
-            if (activateLanguageCodes.isEmpty()) {
-                return activationResults;
-            }
-        }
-
-
-
-        activationResults.merge (
-                isValidForActivation (activateLanguageCodes, jParams, stateModifContext));
-
-        if ( !this.isMetadata() ){
-            activationResults.merge (
-                isPickedValidForActivation(activateLanguageCodes, stateModifContext));
-        }
-
-        if (activationResults.getStatus () == ActivationTestResults.FAILED_OPERATION_STATUS) {
-            return activationResults;
-        }
-
-        // build the List of only staged entries for the languages we want
-        // to activate.
-        for (ContentObjectEntryState entryState : activeAndStagingEntryStates) {
-            if (entryState.isStaging ()) {
-                if (entryState.getLanguageCode ().equals (ContentField.SHARED_LANGUAGE)
-                        || activateLanguageCodes.contains (entryState.getLanguageCode ())) {
-                    stagedEntries.add (entryState);
-                }
-            }
-        }
-
-        // FIXME NK :
-        // We first backup the active ( create an archive entry , then delete the active) before switching the staging to active,
-        // but we never guaranteed to switch the staging to active (done by calling changeEntryState )
-        // even thought we effectively deleted the active in db.
-        //
-
-        // we backup all active entries that will be replaced
-        for (int i = 0; i < activeAndStagingEntryStates.size (); i++) {
-            ContentObjectEntryState actEntryState = (ContentObjectEntryState) activeAndStagingEntryStates.get (
-                    i);
-            if (actEntryState.isActive ()) {
-                for (ContentObjectEntryState staEntryState : stagedEntries) {
-                    if (actEntryState.getLanguageCode ().equals (
-                            staEntryState.getLanguageCode ())) {
-                        // ok appollo, we catched an active entry here! we handle this..
-                        if (needBackup && versioningEnabled && newVersionID != actEntryState.getVersionID()) {
-                            try {
-                                ContentObjectEntryState backupEntryState = fieldsDataManager.backupField(this,
-                                                                                                        actEntryState); // we backup the active version
-                                // ok we backuped an entry of the field
-                                if (backupEntryState != null) {
-                                    // if the entry state list is loaded, let's update it
-                                    if (versioningEntryStates != null) {
-                                        versioningEntryStates.add (backupEntryState);
-                                    }
-                                    // also we must call the changeEntryState because, like, we changed the version or something hehe..
-                                    this.changeEntryState (actEntryState, backupEntryState,
-                                            jParams, stateModifContext);
-                                }
-
-                            } catch (JahiaException e) {
-                            }
-                        } else {
-                            // if versioning is not enabled, we delete the old value content!
-//                            this.deleteEntry (actEntryState);
-                        }
-                        // we then delete the active entry
-                        this.deleteEntry (actEntryState);
-//                        ContentFieldDB.getInstance ().deleteDBValue (this, actEntryState);
-//                        activeAndStagingEntryStates.remove (i);
-                        i -= 1;
-                    }
-                }
-            }
-        }
-
-        // we activate every staged value
-        // we must take care of doing the "special trick" here, that is, if
-        // versionID = -1 in staged mode, it means we want to delete this entry of
-        // the field. So instead of activate it we must create a BACKUPED entry
-        // of this field with current version ID and versionStatus = -1
-        for (ContentObjectEntryState staEntryState : stagedEntries) {
-            ContentObjectEntryState newEntryState = null;
-            // if it's -1 -> delete flag
-            if (staEntryState.getVersionID () == -1) {
-                // create a new entry state (deleted)
-                newEntryState = new ContentObjectEntryState (
-                        ContentObjectEntryState.WORKFLOW_STATE_VERSIONING_DELETED,
-                        newVersionID,
-                        staEntryState.getLanguageCode ());
-            } else {
-                // create a new entry state
-                newEntryState = new ContentObjectEntryState (
-                        ContentObjectEntryState.WORKFLOW_STATE_ACTIVE,
-                        newVersionID,
-                        staEntryState.getLanguageCode ());
-            }
-
-            // check if we have to delete this field for REAL
-            if ((!versioningEnabled) && (newEntryState.getWorkflowState () <= 1)) {
-                // yes, we must delete this field for real!
-                this.deleteEntry (staEntryState);
-            } else {
-                // no, we must just change it/version it, etc...
-                // we call the field-type-specific changeEntryState
-                activationResults.merge (
-                        this.changeEntryState (staEntryState, newEntryState, jParams,
-                                stateModifContext));
-
-                /* FIXME NK : should we really abort the activation if there are only warning ?
-                 * In case of page field (LINK) created initially without any link, the page field will fail activate
-                 * because there is a warning stating that the Content Page is not valid for activation
-                 */
-                /*
-                if (activationResults.getStatus() == ActivationTestResults.COMPLETED_OPERATION_STATUS) {
-                */
-                if (activationResults.getStatus () != ActivationTestResults.FAILED_OPERATION_STATUS) {
-                    // update staged entry in DB into active or deleted entry state
-                    fieldsDataManager.changeEntryState (this, staEntryState, newEntryState);
-                } else {
-                    if (stateModified) {
-                        stateModifContext.popAllLanguages ();
-                    }
-                    syncClusterOnValidation();
-                    return activationResults;
-                }
-            }
-
-            // we remove the staged version from the tables
-//            String thisValue = getDBValue(staVerInfo); // let's not do that, we never know...
-            activeAndStagingEntryStates.remove (staEntryState); // remove it from the List
-            loadedDBValues.remove (staEntryState);              // remove it from the Map
-
-            // we add the new active version to the tables
-            // if active-staged version
-            if (newEntryState.getWorkflowState () >= 1) {
-                activeAndStagingEntryStates.add (newEntryState);    // add it to the List
-            } else {
-                // versioning version
-                if ((versioningEnabled) && (versioningEntryStates != null)) {
-                    versioningEntryStates.add (newEntryState);
-                }
-            }
-//            loadedDBValues.put(newVerInfo, thisValue);      // add it to the Map
-        }
-
-
-        // check if an active or staged version still exist, and if not, and
-        // if versioning is not enabled, it means the field is REALLY deleted !
-        // so we remove it's ACL etc...
-        if (activeAndStagingEntryStates.isEmpty() && !versioningEnabled) {
-            // true delete...
-            ContentFieldTools.getInstance ().purgeFieldData (this);
-        }
-
-
-        if (stateModified) {
-            stateModifContext.popAllLanguages ();
-        }
-
-        JahiaSaveVersion saveVersion = new JahiaSaveVersion (true,
-                versioningEnabled, newVersionID);
-
-        if (!isMetadata()) {
-            fireContentActivationEvent(activateLanguageCodes,
-                    versioningEnabled,
-                    saveVersion,
-                    jParams,
-                    stateModifContext,
-                    activationResults);
-        } 
-
-        syncClusterOnValidation();
-        return activationResults;
+        return null;
     }
 
     /**
@@ -759,34 +542,7 @@ public abstract class ContentField extends ContentObject
     public synchronized void undoStaging (ProcessingContext jParams)
             throws JahiaException {
 
-        // first we construct a List of all the staging versions
-        List<ContentObjectEntryState> stagedEntryStates = new ArrayList<ContentObjectEntryState> ();
-        for (ContentObjectEntryState entryState : activeAndStagingEntryStates) {
-            // ok huston, we have a staged version here, let's advise...
-            if (entryState.isStaging ()) {
-                stagedEntryStates.add (entryState);
-            }
-        }
-
-        // now let's use that List to destroy all staged versions
-        for (ContentObjectEntryState curEntryState : stagedEntryStates) {
-            // first we call the field to destroy it's related data
-            this.deleteEntry (curEntryState);
-
-
-            // finally let's remove it from the internal tables.
-            activeAndStagingEntryStates.remove (curEntryState); // remove it from the List
-            loadedDBValues.remove (curEntryState);              // remove it from the Map
-
-            // now let's delete the database value
-            fieldsDataManager.deleteJahiaFields (this, curEntryState);
-        }
-
-        notifyFieldUpdate();
-
-        ContentUndoStagingEvent jahiaEvent = new ContentUndoStagingEvent(this, this.getSiteID(), jParams);
-        getJahiaEventService()
-                .fireContentObjectUndoStaging(jahiaEvent);
+       return;
     }
 
     /**
@@ -798,22 +554,6 @@ public abstract class ContentField extends ContentObject
      */
     public synchronized void purge ()
             throws JahiaException {
-        purgeContent ();
-
-        //deleting the parent will automatically delete the acl
-        if ( this.getContainerID() == 0 && !this.isMetadata() && !isAclSameAsParent()){
-            JahiaBaseACL acl = getACL ();
-            acl.delete ();
-            acl = null;
-        }
-
-        this.activeAndStagingEntryStates.clear ();
-        this.loadedDBValues.clear ();
-        if (this.versioningEntryStates != null) {
-            this.versioningEntryStates.clear ();
-        }
-
-        fieldsDataManager.purgeField (this);
     }
 
     /**
@@ -1067,84 +807,7 @@ public abstract class ContentField extends ContentObject
      */
     protected ContentObjectEntryState preSet (String newDBValue, EntrySaveRequest saveRequest)
             throws JahiaException {
-        int currentStatus = ContentObjectEntryState.WORKFLOW_STATE_START_STAGING;
-        // let's see if a currentVerInfo exist
-        for (ContentObjectEntryState thisEntryState : activeAndStagingEntryStates) {
-            if (thisEntryState.isStaging ()) {
-                currentStatus = thisEntryState.getWorkflowState ();
-                break;
-            }
-        }
-
-        int currentVersionID = 0; // always 0 in staging
-        if (newDBValue.equals (NO_VALUE)) {
-            currentVersionID = -1;
-            // let's lookup the previous value.
-            ContentObjectEntryState oldEntryState = null;
-            // let's first look in the active values.
-            for (ContentObjectEntryState thisEntryState : activeAndStagingEntryStates) {
-                if ((!thisEntryState.isStaging ()) &&
-                        (thisEntryState.getLanguageCode ().equals (
-                                saveRequest.getLanguageCode ()))) {
-                    oldEntryState = thisEntryState;
-                    break;
-                }
-            }
-
-            if (oldEntryState == null) {
-                for (ContentObjectEntryState thisEntryState : activeAndStagingEntryStates) {
-                    if ((thisEntryState.isStaging ()) &&
-                            (thisEntryState.getLanguageCode ().equals (
-                                    saveRequest.getLanguageCode ()))) {
-                        oldEntryState = thisEntryState;
-                        break;
-                    }
-                }
-            }
-            // if found we assign the previous value.
-            if (oldEntryState != null) {
-                newDBValue = getDBValue (oldEntryState);
-            }
-        }
-        String currentLanguage = saveRequest.getLanguageCode ();
-        ContentObjectEntryState newEntryState = new ContentObjectEntryState (currentStatus,
-                currentVersionID, currentLanguage);
-        // end get new version info
-
-        ContentObjectEntryState currentEntryState = null; // it will contain the current versionInfo if it exists in DB
-        // let's see if a current entry exists in staging that corresponds to our new value
-        for (ContentObjectEntryState thisEntryState : activeAndStagingEntryStates) {
-            if ((thisEntryState.isStaging ()) &&
-                    (thisEntryState.getLanguageCode ().equals (saveRequest.getLanguageCode ()))) {
-                    currentEntryState = thisEntryState;
-                    break;
-            }
-        }
-
-        // remove old value and version info from the memory tables if it existed
-        if (currentEntryState != null) {
-            // remove the version from the activeAndStagingVersionInfo
-            activeAndStagingEntryStates.remove (currentEntryState);
-            // we must remove it from the Map to change the version ID
-            loadedDBValues.remove (currentEntryState);
-        }
-
-        // we put it back in the Map
-        loadedDBValues.put (newEntryState, newDBValue);
-        // add the new version from the activeAndStagingVersionInfo
-        activeAndStagingEntryStates.add (newEntryState);
-
-        // if the version is new one we create a new EMPTY field version
-        if (currentEntryState == null) {
-            int id = fieldsDataManager.createValue (this, newEntryState, newDBValue);
-            if(id != objectKey.getIdInType())
-                this.objectKey = new ContentFieldKey(id);
-        }
-        else {
-            // we update it with the new value
-            fieldsDataManager.updateValue (this, newEntryState, newDBValue, true);
-        }
-        return newEntryState;
+        return null;
     }
 
     private static Set<String> systemMetadata = new HashSet<String>();
@@ -1205,31 +868,7 @@ public abstract class ContentField extends ContentObject
      * @throws JahiaException If field/version doesn't exist or there is a database error
      */
     protected String getDBValue (EntryStateable entryState) throws JahiaException {
-        // We ensure to check if this content object is Shared or not even though
-        // the entryState is provided with a specific language ( en, fr, ... )
-        if (entryState == null) {
-            return "";
-        }
-
-        String languageCode = entryState.getLanguageCode ();
-        if (this.isShared ()) {
-            languageCode = ContentObject.SHARED_LANGUAGE;
-        }
-        ContentObjectEntryState objectEntryState = new ContentObjectEntryState (
-                entryState.getWorkflowState (), entryState.getVersionID (),
-                languageCode);
-        String theResult = (String) loadedDBValues.get (objectEntryState);
-        // not already in hashmap, let's put it in !
-        if (theResult == null) {
-            theResult = fieldsDataManager.loadValue (this, objectEntryState);
-            if(theResult!=null) {
-                loadedDBValues.put (objectEntryState, theResult);
-            } else {
-                loadedDBValues.put (objectEntryState, org.jahia.data.fields.JahiaField.NULL_STRING_MARKER);
-                return org.jahia.data.fields.JahiaField.NULL_STRING_MARKER;
-            }
-        }
-        return theResult;
+        return null;
     }
 
     /**
@@ -1245,8 +884,7 @@ public abstract class ContentField extends ContentObject
      *                        database error
      */
     protected Map<ContentObjectEntryState, String> getAllDBValues () throws JahiaException {
-        Map<ContentObjectEntryState, String> theResult = fieldsDataManager.loadAllValues (this.getID());
-        return theResult;
+        return null;
     }
 
 
@@ -1369,13 +1007,7 @@ public abstract class ContentField extends ContentObject
      */
     public SortedSet<ContentObjectEntryState> getEntryStates ()
             throws JahiaException {
-        if (versioningEntryStates == null) {
-            versioningEntryStates = fieldsDataManager.loadOldEntryStates (this.getID());
-        }
-        SortedSet<ContentObjectEntryState> entryStates = new TreeSet<ContentObjectEntryState> ();
-        entryStates.addAll (activeAndStagingEntryStates);
-        entryStates.addAll (versioningEntryStates);
-        return entryStates;
+        return null;
     }
 
     /**
@@ -1397,119 +1029,6 @@ public abstract class ContentField extends ContentObject
                                   ProcessingContext jParams,
                                   StateModificationContext stateModifContext)
             throws JahiaException {
-        List<ContentObjectEntryState> newActiveAndStagingEntryStates = new ArrayList<ContentObjectEntryState> ();
-        for (ContentObjectEntryState entryState : activeAndStagingEntryStates) {
-            // ok huston, we have a staged entry here, let's advise...
-            if (entryState.isStaging () &&
-                    (ContentObject.SHARED_LANGUAGE.equals (entryState.getLanguageCode ())
-                    || languageCodes.contains (entryState.getLanguageCode ())) &&
-                    (newWorkflowState >= ContentObjectEntryState.WORKFLOW_STATE_START_STAGING)) {
-                // now we must updates both the internal data and the
-                // database to reflect these changes.
-                ContentObjectEntryState newEntryState =
-                        new ContentObjectEntryState (newWorkflowState,
-                                entryState.getVersionID (),
-                                entryState.getLanguageCode ());
-
-                this.changeEntryState (entryState, newEntryState, jParams, stateModifContext);
-
-                fieldsDataManager.changeEntryState(this, entryState, newEntryState);
-
-                newActiveAndStagingEntryStates.add (newEntryState);
-
-            } else {
-                newActiveAndStagingEntryStates.add (entryState);
-            }
-
-        }
-        activeAndStagingEntryStates = newActiveAndStagingEntryStates;
-
-
-    }
-
-    /**
-     * Change the Field Type. i.e from undefined to another type.
-     *
-     * @param fieldType        the new field type.
-     * @param fieldValue       the field value needed to create a new Staging entry of the new type.
-     * @param entrySaveRequest
-     *
-     * @return a new instance of ContentField of new Field Type.
-     *
-     * @author NK
-     */
-    public synchronized ContentField changeType (int fieldType,
-                                                 String fieldValue,
-                                                 ProcessingContext jParams,
-                                                 EntrySaveRequest entrySaveRequest)
-            throws JahiaException {
-        // 1. versioning active.
-        // 2. delete staged.
-        // 3. create a staged entry with the new type.
-        // 4. return a new Instance of ContentField of new Type from DB.
-
-        boolean versioningEnabled = getJahiaVersionService ().isVersioningEnabled (jahiaID);
-        Set<String> languageCodes = new HashSet<String> ();
-
-        // 1. we backup all active entries that will be replaced
-        for (int i = 0; i < activeAndStagingEntryStates.size (); i++) {
-            ContentObjectEntryState actEntryState =
-                    (ContentObjectEntryState) activeAndStagingEntryStates.get (i);
-            if (actEntryState.isStaging ()) {
-                languageCodes.add (actEntryState.getLanguageCode ());
-            }
-            if (actEntryState.isActive ()) {
-                // ok appollo, we caught an active entry here! we handle this..
-                if (versioningEnabled) {
-                    // we backup the active version
-                    ContentObjectEntryState backupEntryState = fieldsDataManager.backupField (this, actEntryState);
-                    // ok we backuped an entry of the field
-                    if (backupEntryState != null) {
-                        // if the entry state list is loaded, let's update it
-                        if (versioningEntryStates != null) {
-                            versioningEntryStates.add (backupEntryState);
-                        }
-                        // also we must call the changeEntryState because, like, we changed the version or something hehe..
-                        StateModificationContext stateModifContext = new StateModificationContext (
-                                new ContentFieldKey (getID ()), languageCodes);
-                        stateModifContext.setDescendingInSubPages (false);
-                        this.changeEntryState (actEntryState, backupEntryState, jParams,
-                                stateModifContext);
-                    }
-                } else {
-                    // if versioning is not enabled, we delete the old value content!
-                    this.deleteEntry (actEntryState);
-                }
-                activeAndStagingEntryStates.remove (i);
-                // we then delete the active entry
-                fieldsDataManager.deleteJahiaFields (this, actEntryState);
-                i -= 1;
-            }
-        }
-
-        //2. Remove all staging entries
-        this.deleteStagingEntries (languageCodes);
-
-        //3. Create a new staging entry of new field type
-        this.fieldType = fieldType;
-        this.preSet (fieldValue, entrySaveRequest);
-        this.postSet (entrySaveRequest);
-
-        // 4. Return a new instance of correct type.
-        return ContentFieldTools.getInstance ().getField (this.getID (), true);
-
-
-    }
-
-    /**
-     *  It's used for batch loading of old entry states
-     *
-     * @throws JahiaException
-     */
-    public synchronized void setVersioningEntryStates (List<ContentObjectEntryState> entryStates) throws JahiaException {
-        if (entryStates != null) {
-            this.versioningEntryStates = entryStates;
-        }
     }
 
     /**
@@ -1536,9 +1055,7 @@ public abstract class ContentField extends ContentObject
      * @throws JahiaException
      */
     private synchronized void loadVersioningEntryStates () throws JahiaException {
-        if (this.versioningEntryStates == null) {
-            this.versioningEntryStates = fieldsDataManager.loadOldEntryStates (this.getID());
-        }
+
     }
 
     public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest)
@@ -1624,7 +1141,6 @@ public abstract class ContentField extends ContentObject
         } else {
             activeAndStagingEntryStates.add (toE);
         }
-        fieldsDataManager.copyEntry(this, fromE, toE);
         loadedDBValues.put (toE, getDBValue (toE));
     }
 
@@ -1640,13 +1156,6 @@ public abstract class ContentField extends ContentObject
      */
     protected void deleteEntry (EntryStateable deleteEntryState)
             throws JahiaException {
-        if (deleteEntryState.getWorkflowState () < ContentObjectEntryState.WORKFLOW_STATE_ACTIVE) {
-            versioningEntryStates.remove (deleteEntryState);
-        } else {
-            activeAndStagingEntryStates.remove (deleteEntryState);
-        }
-        loadedDBValues.remove (deleteEntryState);
-        fieldsDataManager.deleteEntry (this, deleteEntryState);
     }
 
     /**
@@ -1712,138 +1221,31 @@ public abstract class ContentField extends ContentObject
         return this.properties;
     }
 
-    /**
-     * You need to call storeProperties to really store them in Persistence
-     */
     public void setProperties(Map<Object, Object> properties){
-        this.properties = properties;
-    }
-
-    public void storeProperties() throws JahiaException {
-        fieldsDataManager.saveProperties(this,this.properties);
-    }
-
-  /**
-     * Returns the biggest versionID of the active entry, 0 if doesn't exist
-     *
-     * @return
-     *
-     * @throws JahiaException
-     */
-    public int getActiveVersionID () throws JahiaException {
-        int versionID = 0;
-        for (ContentObjectEntryState entryState : this.getActiveAndStagingEntryStates()) {
-            if ( entryState.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE
-                 && entryState.getVersionID()  > versionID ){
-                     versionID = entryState.getVersionID();
-            }
-        }
-        return versionID;
     }
 
     public boolean isMetadata() {
-        try {
-            return getJahiaFieldService()
-                    .loadFieldDefinition(getFieldDefID()).getJahiaID() == 0;
-        } catch (Exception e) {
-        }
         return false;
     }
 
-    public String toString() {
-        final StringBuffer buff = new StringBuffer();
-        buff.append("ContentField: ID = ").
-                append(getID()).append(", Type: ").
-                append(getObjectKey().getType());
-        return buff.toString();
-    }
-
-    /**
-     * Check if the user has a specified access to the specified content object.
-     * @param user Reference to the user.
-     * @param permission One of READ_RIGHTS, WRITE_RIGHTS or ADMIN_RIGHTS permission
-     * flag.
-     * @return Return true if the user has the specified access to the specified
-     * object, or false in any other case.
-     */
     public boolean checkAccess(JahiaUser user, int permission, boolean checkChilds,boolean forceChildRights) {
-        boolean result = false;
-        try {
-            result = checkAccess(user, permission, false);
-
-            if (result && forceChildRights) {
-                for (ContentObject contentObject : getChilds(user, Jahia.getThreadParamBean().getEntryLoadRequest())) {
-                    result = contentObject.checkAccess(user, permission,checkChilds,forceChildRights);
-                    if (!result) {
-                        break;
-                    }
-                }
-            }
-        } catch (JahiaException ex) {
-            logger.debug("Cannot load ACL ID " + getAclID(), ex);
-        }
-        return result;
+        return false;
     }
 
-
-    public String getPagePathString(ProcessingContext context,
-                                    boolean ignoreMetadata) {
-        return super.getPagePathString(context,ignoreMetadata);
-        /*
-        String pagePath = "";
-        ContentPage contentPage = null;
-        try {
-            if ( this.isMetadata() ){
-                ContentObject contentObject = getContentObjectFromMetadata(this.getObjectKey());
-                if ( contentObject != null ){
-                    pagePath = contentObject.getPagePathString(context,ignoreMetadata);
-                }
-            } else {
-                contentPage = this.getPage();
-                if ( contentPage != null ){
-                    pagePath = contentPage.getPagePathString(context,ignoreMetadata);
-                }
-            }
-        } catch ( Exception t ){
-            logger.debug("Exception occured getting pagePath for contentObject " + this.getObjectKey(),t);
-        }
-        return pagePath;
-        */
-    }
 
     public String getDisplayName(ProcessingContext jParams) {
-        try {
-            return getValue(jParams);
-        } catch (JahiaException e) {
-            e.printStackTrace();
-        }
         return null;
     }
 
     public String getProperty(String name) throws JahiaException {
-        return (String) getProperties().get(name);
+        return null;
     }
 
     public void setProperty(Object name, Object val) throws JahiaException {
-        getProperties().put(name, val);
-        storeProperties();
     }
 
     public void removeProperty(String name) throws JahiaException {
-        getProperties().remove(name);
-        fieldsDataManager.removeFieldProperty(getID(), name);
     }
-
-
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-    }
-
-     private void readObject(java.io.ObjectInputStream in)
-         throws IOException, ClassNotFoundException {
-         in.defaultReadObject();
-         fieldsDataManager = (JahiaFieldsDataManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldsDataManager.class.getName());
-     }
 
     public static JahiaVersionService getJahiaVersionService() {
         if (jahiaVersionService == null) {

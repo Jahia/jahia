@@ -235,29 +235,7 @@ public class ContentPageField extends ContentField {
 
     public JahiaPage getPage(ProcessingContext jParams, EntryLoadRequest loadRequest, boolean withTemplate)
             throws JahiaTemplateNotFoundException, JahiaException {
-        ContentPage contentPage = getContentPage(jParams, loadRequest, withTemplate);
-        if (contentPage == null) {
-            return null;
-        }
-        JahiaPage thePage = contentPage.getPage(loadRequest, (jParams != null) ? jParams.getOperationMode() : null, (jParams != null) ? jParams.getUser() : null);
-        // now we must check whether this page has been moved or not.
-        int movedFrom = contentPage.hasSameParentID();
-        if (movedFrom != ContentPage.SAME_PARENT) {
-            // page has been moved.
-            if (!ProcessingContext.NORMAL.equals(jParams.getOperationMode())
-                    && !ProcessingContext.COMPARE.equals(jParams.getOperationMode())) {
-                // we are in preview or edit mode, let's check where we are
-                // before returning the page, because the page "exists" still
-                // at two locations, but only one should be returned.
-                if (getPageID() == movedFrom) {
-                    // we are at the old location, let's return null for
-                    // the page.
-                    return null;
-                }
-            }
-        }
-
-        return thePage;
+        return null;
     }
 
     /**

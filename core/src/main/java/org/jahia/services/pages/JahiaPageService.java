@@ -60,140 +60,22 @@ public abstract class JahiaPageService extends JahiaService
     public static final int PAGEPATH_BREAK_ON_RESTRICTED = 2;    
 
     //-------------------------------------------------------------------------
-    /**
-     * Create a new page.
-     *
-     * @param siteID      The Jahia ID (site ID).
-     * @param parentID    The parent page ID.
-     * @param pageType    The page type (see constants in JahiaPage).
-     * @param title       The page title.
-     * @param pageDefID   The page defiNition ID.
-     * @param creator     The creators nickname used by Jahia internally.
-     * @param parentAclID The parent ACL ID.
-     * @param jParam      The Jahia parameters.
-     *
-     * @return Return a new JahiaPage instanciated object.
-     *
-     * @throws JahiaException Throws this exception when any error occured in the page
-     *                        creation process.
-     */
-    public abstract JahiaPage createPage (
-            int siteID,
-            int parentID,
-            int pageType,
-            String title,
-            int pageDefID,
-            String remoteURL,
-            int pageLinkID,
-            String creator,
-            int parentAclID,
-            ProcessingContext jParam)
-            throws JahiaException;
 
     //-------------------------------------------------------------------------
-    /**
-     * Finds a page id from a page id, and going up a certain number of levels
-     *
-     * @param pageID  The page id
-     * @param levelNb The number of levels to go up
-     *
-     * @return the page id if found, -1 if not found
-     */
-    public abstract int findPageIDFromLevel (int pageID, int levelNb,
-                                             ProcessingContext jParams)
-            throws JahiaException;
 
     //-------------------------------------------------------------------------
-    /**
-     * Get all pages of the specified "website".
-     * If the submitted user is not null, then this method won't return
-     * pages that the user can't read.
-     *
-     * @param siteID   The jahia site ID
-     * @param loadFlag Mask of page types to be loaded. See
-     *                 {@link org.jahia.services.pages.PageLoadFlags PageLoadFlags}
-     *                 class constants for more informaion.
-     * @param jParam   Jahia parameters. This parameter can be set to
-     *                 null in case no dynamic context is needed.
-     * @param user  The current user, to check rights
-     *
-     * @return a List of JahiaPage objects
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     */
-    public abstract Iterator<JahiaPage> getAllPages (
-            int siteID,
-            int loadFlag,
-            ProcessingContext jParam,
-            JahiaUser user)
-            throws JahiaException;
 
     //-------------------------------------------------------------------------
-    /**
-     * Return all the site IDs.
-     *
-     * @return Return a List holding all the site IDs as Integers.
-     */
-    public abstract List<Integer> getAllSiteIDs ()
-            throws JahiaException;
 
     //--------------------------------------------------------------------------
-    /**
-     * Gets all the page IDs of a specified site.
-     *
-     * @param siteID The jahia site ID.
-     *
-     * @return Return a valid List of page IDs stored as Integers. The List
-     *         might be empty if no page was found.
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     */
-    public abstract List<Integer> getPageIDsInSite (int siteID)
-            throws JahiaException;
 
     //--------------------------------------------------------------------------
-    /**
-     * Gets all the page IDs of a specified site. ordered by id
-     *
-     * @param siteID The jahia site ID.
-     *
-     * @return Return a valid List of page IDs stored as Integers. The List
-     *         might be empty if no page was found.
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     */
-    public abstract List<Integer> getPageIdsInSiteOrderById(int siteID) throws JahiaException;
 
     //--------------------------------------------------------------------------
-    /**
-     * Get the jahia page id in a site corresponding to a specified link type.
-     *
-     * @param siteID   The jahia site ID.
-     * @param linkType One of these TYPE_DIRECT, TYPE_LINK, TYPE_URL links.
-     *
-     * @return Return a valid List of page IDs stored as Integers. The List
-     *         might be empty if no page was found.
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     */
-    public abstract List<Integer> getPageIDsInSite (int siteID, int linkType)
-            throws JahiaException;
 
 
     //--------------------------------------------------------------------------
-    /**
-     * Retrieves all the page IDs that use the specified template
-     *
-     * @param templateID the identifier of the template we want the page IDs
-     *                   for
-     *
-     * @throws JahiaException Return this exception if any failure occurred.
-     * @returns Returns a List of page IDs stored as Integers. The List
-     * might be empty if no page was found.
-     */
-    public abstract List<Integer> getPageIDsWithTemplate (int templateID)
-            throws JahiaException;
-    
+
     /**
      * Retrieves all the page IDs that have the specified ACL-IDs
      *
@@ -219,49 +101,8 @@ public abstract class JahiaPageService extends JahiaService
         throws JahiaException;
 
     //-------------------------------------------------------------------------
-    /**
-     * Returns the active page field id that is parent of the given pageId.
-     *
-     * @param pageID int
-     * @throws JahiaException
-     * @return int
-     */
-    public abstract int getActivePageFieldID (int pageID)
-            throws JahiaException;
 
     //-------------------------------------------------------------------------
-    /**
-     * Returns the staged page field id that is parent of the given pageId.
-     *
-     * @param pageID int
-     * @throws JahiaException
-     * @return int
-     */
-    public abstract int getStagedPageFieldID (int pageID)
-        throws JahiaException;
-
-    /**
-     * In case of a page move, a same page is pointed by both an active page field and a staged page field
-     * This method return a set of theses pages fields.
-     * The ids are sorted by workflows state ( most staged first )
-     *
-     * @param pageID int
-     * @return List
-     */
-    public abstract List<Integer> getStagingAndActivePageFieldIDs (int pageID)
-            throws JahiaException;
-
-    /**
-     * Returns all the different field of type page IDs in staging mode in a given page.
-     *
-     * @param  pageID the page for which to retrieve the field of type page
-     * @return always returns a Set object, but it might be empty. If non
-     * empty it contains Integer objects that represent the page IDs.
-     * @throws JahiaException
-     */
-    public abstract Set<Integer> getStagingPageFieldIDsInPage (int pageID)
-        throws
-    JahiaException;
 
     //-------------------------------------------------------------------------
     /**
@@ -311,37 +152,6 @@ public abstract class JahiaPageService extends JahiaService
      * @throws JahiaException Return this exception if any failure occured.
      */
     public abstract List<JahiaPage> getPageChilds (
-            int pageID,
-            int loadFlag,
-            JahiaUser user)
-            throws JahiaException;
-
-    /**
-     * Return the number of subpages for a given JahiaPage. The returned value concerns only pages
-     * visible to the current user.
-     *
-     * @param pageID page unique identificaiton number
-     * @param loadFlag  mask of page types to include in the count
-     * @param user the current user
-     * @return the number of subpages
-     * @throws JahiaException if any issue occured
-     */
-    public abstract int getPageChildrenCount(
-            int pageID,
-            int loadFlag,
-            JahiaUser user)
-            throws JahiaException;
-
-    /**
-     * Check if a given JahiaPage has children (only list pages available to the current user).
-     *
-     * @param pageID page unique identificaiton number
-     * @param loadFlag  mask of page types to include in the count
-     * @param user the current user
-     * @return the number of subpages
-     * @throws JahiaException if any issue occured
-     */
-    public abstract boolean pageHasChildren(
             int pageID,
             int loadFlag,
             JahiaUser user)
@@ -458,134 +268,12 @@ public abstract class JahiaPageService extends JahiaService
                                      String opMode, JahiaUser user, int command)
             throws JahiaException;
 
-    /**
-     * Retrieve the pids composing the path from the home page to the specified page.
-     * @param jParams processing context
-     * @return an ordered array of PIDs
-     * @throws JahiaException retrieval failed
-     */
-    public abstract int[] getCurrentPagePathAsPIDs(ProcessingContext jParams) throws JahiaException ;
+    //-------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------
-    /**
-     * Return the page path. The page path consist of all the parent pages of
-     * the specified page until the site's root page.
-     *
-     * @param pageID The page id
-     * @param jParams Jahia parameter reference. Specify null if to
-     *               page context is needed.
-     *
-     * @return Return a valid List of JahiaPage objects defining the path.
-     *         The first element will be the root page, and the specified
-     *         page will be the last element in the List. In case the
-     *         specified page is the root page, only this page will be
-     *         present in the List.
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     * @deprecated used getContentPagePath
-     */
-    public abstract List<JahiaPage> getPagePath (int pageID, ProcessingContext jParams)
-            throws JahiaException;
-    
-    /**
-    * @deprecated used getContentPagePath
-    */    
-    public abstract List<JahiaPage> getPagePath (int pageID,
-                                        EntryLoadRequest loadRequest,
-                                        String opMode, JahiaUser user)
-            throws JahiaException;
-
-    /**
-     * List of contentPagePath
-     *
-     * @param pageID
-     * @param jParams
-     *
-     * @return
-     *
-     * @throws JahiaException
-     */
-    public abstract List<ContentPage> getContentPagePath (int pageID, ProcessingContext jParams)
-            throws JahiaException;
 
     //-------------------------------------------------------------------------
-    /**
-     * Return a list of pages pointing on the specified page. Pages can hold
-     * the context information if needed.
-     *
-     * @param pageID the page ID on which the pages should point to.
-     * @param jParam Jahia parameter reference. Specify null if to
-     *               page context is needed.
-     *
-     * @return Return List of page objects
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     */
-    public abstract List<JahiaPage> getPagesPointingOnPage (int pageID, ProcessingContext jParam)
-            throws JahiaException;
 
-    /**
-     * Return a list of pages pointing on the specified page.
-     *
-     * @param pageID      the page ID on which the pages should point to.
-     * @param loadRequest the load request for which to load the pages.
-     *
-     * @return Return List of page objects
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     */
-    public abstract List<JahiaPage> getPagesPointingOnPage (int pageID,
-                                                   EntryLoadRequest loadRequest)
-            throws JahiaException;
-
-    //-------------------------------------------------------------------------
-    /**
-     * Gets complete subtree under page.
-     *
-     * @param pageID   Page unique identification number.
-     * @param loadFlag Mask of page types to be loaded. See
-     *                 {@link PageLoadFlags PageLoadFlags}
-     *                 class constants for more informaion.
-     * @param jParam   Jahia parameters. This parameter can be set to null in case no
-     *                 dynamic context is needed.
-     *
-     * @return Return a List of JahiaPage objects
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     */
-    public abstract List<JahiaPage> getPageSubTree (
-            int pageID,
-            int loadFlag,
-            ProcessingContext jParam)
-            throws JahiaException;
-    
-    /**
-     * Gets page-IDs of complete subtree under page not checked for any rights or workflow status
-     *
-     * @param pageID   Page unique identification number.
-     *
-     * @return Return a Set of page-IDs
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     */
-    public abstract Set<Integer> getUncheckedPageSubTreeIDs(int pageID)
-            throws JahiaException;
-
-    /**
-     * Gets page-IDs of complete subtree under page not checked for any rights or workflow status.
-     *
-     * @param pageID            Page unique identification number.
-     * @param withoutDeleted    If true, deleted or "marked-for-delete" pages are not returned  
-     * @param limitedReturnSize If the given size is reached (or exceeded) the method stops iterating 
-     *                          through the child pages (0=unlimited)
-     * 
-     * @return Return a Set of page-IDs
-     *
-     * @throws JahiaException Return this exception if any failure occured.
-     */    
-    public abstract Set<Integer> getUncheckedPageSubTreeIDs(int pageID, 
-            boolean withoutDeleted, int limitedReturnSize) throws JahiaException;
-    
     // -------------------------------------------------------------------------
     /**
      * Try to find the specified page. Create a new JahiaPage object, in
@@ -613,39 +301,6 @@ public abstract class JahiaPageService extends JahiaService
      *
      * @param pageID int
      * @param loadRequest EntryLoadRequest
-     * @param withTemplates boolean
-     * @return JahiaPage
-     * @throws JahiaException
-     * @throws JahiaPageNotFoundException
-     * @throws JahiaTemplateNotFoundException
-     * @deprecated, use lookupPage (int pageID, EntryLoadRequest loadRequest,
-                                 JahiaUser user, boolean withTemplates) instead, otherwize this is the site's default guest user that is used for permission access
-     */
-    public abstract JahiaPage lookupPage (int pageID, EntryLoadRequest loadRequest,
-                                 boolean withTemplates)
-        throws JahiaException,
-        JahiaPageNotFoundException,
-        JahiaTemplateNotFoundException;
-
-    /**
-     *
-     * @param pageID int
-     * @param loadRequest EntryLoadRequest
-     * @param user JahiaUser
-     * @return JahiaPage
-     */
-    public abstract JahiaPage lookupPage(int pageID,
-                                     EntryLoadRequest loadRequest,
-                                     JahiaUser user,
-                                     boolean withTemplates) throws
-        JahiaException,
-        JahiaPageNotFoundException,
-        JahiaTemplateNotFoundException;
-
-    /**
-     *
-     * @param pageID int
-     * @param loadRequest EntryLoadRequest
      * @return JahiaPage
      * @throws JahiaException
      * @throws JahiaPageNotFoundException
@@ -654,23 +309,6 @@ public abstract class JahiaPageService extends JahiaService
      */
     public abstract JahiaPage lookupPage (int pageID,
                                           EntryLoadRequest loadRequest)
-            throws JahiaException,
-            JahiaPageNotFoundException,
-            JahiaTemplateNotFoundException;
-
-    /**
-     *
-     * @param pageID int
-     * @param loadRequest EntryLoadRequest
-     * @return JahiaPage
-     * @throws JahiaException
-     * @throws JahiaPageNotFoundException
-     * @throws JahiaTemplateNotFoundException
-     * @deprecated, use lookupPage (int pageID, EntryLoadRequest loadRequest, JahiaUser user) instead, otherwize this is the site's default guest user that is used for permission access
-     */
-    public abstract JahiaPage lookupPage (int pageID,
-                                          EntryLoadRequest loadRequest,
-                                          JahiaUser user)
             throws JahiaException,
             JahiaPageNotFoundException,
             JahiaTemplateNotFoundException;
@@ -757,27 +395,6 @@ public abstract class JahiaPageService extends JahiaService
             JahiaTemplateNotFoundException;
 
     //-------------------------------------------------------------------------
-    /**
-     * Try to find the specified page. Create a new JahiaPage object, in
-     * which will be included a reference to the raw page info, a reference
-     * to the page definition associated to the page, a reference to the page's
-     * ACL object and finally a reference to the current Jahia parameters.
-     *
-     * @param pageID The ID of the page to be looked up.
-     *
-     * @return Return a valid instance of a JahiaPage class. If the page does
-     *         not exist, or any of its content is unavailable (ACL, page
-     *         definition) then an exception will be thrown.
-     *
-     * @throws JahiaException             Throws this exception if any error occured in the lookup process.
-     * @throws JahiaPageNotFoundException Throws this exception when the page could not be found in the
-     *                                    database.
-     */
-
-    public abstract JahiaPage lookupPage (int pageID)
-            throws JahiaException,
-            JahiaPageNotFoundException,
-            JahiaTemplateNotFoundException;
 
     /**
      * return a list of content pages matching a property name/value pair
@@ -793,22 +410,8 @@ public abstract class JahiaPageService extends JahiaService
     public abstract List<Object[]> getPagePropertiesByName(String name);
 
     //-------------------------------------------------------------------------
-    /**
-     * Return the number of pages in the database.
-     *
-     * @return Return the number of pages.
-     */
-    public abstract int getNbPages ()
-            throws JahiaException;
 
     //-------------------------------------------------------------------------
-    /**
-     * Return the number of pages in the database.
-     *
-     * @return Return the number of pages.
-     */
-    public abstract int getNbPages (int siteID)
-            throws JahiaException;
 
     //-------------------------------------------------------------------------
     /**
@@ -829,25 +432,8 @@ public abstract class JahiaPageService extends JahiaService
             throws JahiaException;
 
     //--------------------------------------------------------------------------
-    /**
-     * returns a DOM representation of all pages of a site
-     *
-     * @param siteID
-     *
-     * @auhtor NK
-     */
-    public abstract JahiaDOMObject getPagesAsDOM (int siteID)
-            throws JahiaException;
 
     //--------------------------------------------------------------------------
-    /**
-     * Returns a List of all Acl ID used by pages for a site
-     * Need this for site extraction
-     *
-     * @auhtor NK
-     */
-    public abstract List<Integer> getAclIDs (int siteID)
-            throws JahiaException;
 
     /**
      * Invalidate all page related cache info in this service
@@ -896,19 +482,6 @@ public abstract class JahiaPageService extends JahiaService
 
     public abstract int getParentPageFieldId(int pageId,EntryLoadRequest loadRequest);
 
-    /**
-	 * Returns the page ID with the specified URL key value for the given site.
-	 * 
-	 * @param pageURLKey
-	 *            the page URL key value to search for
-	 * @param siteID
-	 *            the target site ID
-	 * @return the page ID with the specified URL key value for the given site
-	 */
-	public abstract int getPageIDByURLKeyAndSiteID(String pageURLKey, int siteID);
-
-    public abstract Map<String, String> getVersions(int site, String lang);
-
-    public abstract void loadPage(int pageID, ProcessingContext jParams) throws JahiaException;    
+    public abstract void loadPage(int pageID, ProcessingContext jParams) throws JahiaException;
 
 }

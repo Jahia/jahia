@@ -46,7 +46,6 @@ import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.fetchers.JahiaFetcherService;
 import org.jahia.services.fields.JahiaFieldService;
-import org.jahia.services.files.JahiaTextFileService;
 import org.jahia.services.htmleditors.HtmlEditorsService;
 import org.jahia.services.htmlparser.HtmlParserService;
 import org.jahia.services.importexport.ImportExportService;
@@ -55,7 +54,6 @@ import org.jahia.services.metadata.MetadataService;
 import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateService;
-import org.jahia.services.pagesusers.JahiaPageUserPropService;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.query.QueryService;
@@ -255,14 +253,6 @@ public class ServicesRegistry {
 
     // @author NK 21.12.2000
     /**
-     * method getJahiaFileTransFerService
-     */
-    public JahiaTextFileService getJahiaTextFileService() {
-        return (JahiaTextFileService) getService(TEXT_FILE_SERVICE);
-    }
-
-    // @author NK 21.12.2000
-    /**
      * method getJahiaPageService
      */
     public JahiaPageService getJahiaPageService() {
@@ -420,10 +410,6 @@ public class ServicesRegistry {
 
     public ImportExportService getImportExportService() {
         return (ImportExportService) getService(IMPORTEXPORT_SERVICE);
-    }
-
-    public JahiaPageUserPropService getJahiaPageUserPropService() {
-        return (JahiaPageUserPropService) getService(PAGEUSERPROP_SERVICE);
     }
 
     public JahiaPreferencesService getJahiaPreferencesService() {

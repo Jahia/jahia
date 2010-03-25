@@ -667,39 +667,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     JCRFileContent getFileContent();
 
     /**
-     * Return a list of <code>UsageEntry</code> objects, to get all cross references of the current node. 
-     * @return a list of <code>UsageEntry</code> objects for cross references of this node
-     */
-    List<UsageEntry> findUsages();
-
-    /**
-     * Return a list of <code>UsageEntry</code> objects, to get all cross references of the current node 
-     * with the ability to specify that only locked usages should be returned.
-     * @param onlyLocked set to true if only locked usages should be returned
-     * @return a list of <code>UsageEntry</code> objects for cross references of this node
-     */
-    List<UsageEntry> findUsages(boolean onlyLocked);
-
-    /**
-     * Return a list of <code>UsageEntry</code> objects, to get all cross references of the current node 
-     * with the ability to specify that only locked usages should be returned.
-     * @param context The Jahia processing context to be passed to the UsageEntry objects
-     * @param onlyLocked set to true if only locked usages should be returned
-     * @return a list of <code>UsageEntry</code> objects for cross references of this node
-     */
-    List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked);
-
-    /**
-     * Return a list of <code>UsageEntry</code> objects, to get all cross references of the current node 
-     * with the ability to specify that only locked usages should be returned.
-     * @param context The Jahia processing context to be passed to the UsageEntry objects
-     * @param onlyLocked set to true if only locked usages should be returned
-     * @param versionName the version name passed to the UsageEntry objects
-     * @return a list of <code>UsageEntry</code> objects for cross references of this node
-     */
-    List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked, String versionName);
-
-    /**
      * Get the property definition object applicable to the given property name 
      * @param propertyName the name of the property to find the corresponding definition
      * @return the <code>ExtendedPropertyDefinition</code> for the given property

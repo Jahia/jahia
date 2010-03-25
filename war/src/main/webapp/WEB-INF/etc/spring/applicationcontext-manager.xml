@@ -49,82 +49,6 @@
         </property>
    </bean>
 
-    <bean id="org.jahia.hibernate.manager.JahiaSitePropertyManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaSitePropertyManager">
-                <property name="jahiaSitePropertyDAO" ref="jahiaSitePropertyDAO" />
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.hibernate.manager.JahiaContainerStructureManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaContainerStructureManager">
-                <property name="jahiaContainerStructureDAO" ref="jahiaContainerStructureDAO" />
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.hibernate.manager.JahiaFieldsDataManager" parent="txProxyTemplate" depends-on="JahiaCacheService">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaFieldsDataManager">
-                <property name="jahiaFieldsDataDAO" ref="jahiaFieldsDataDAO" />
-                <property name="jahiaFieldsDefinitionDAO" ref="jahiaFieldsDefinitionDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-                <property name="jahiaObjectDAO" ref="jahiaObjectDAO" />
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.hibernate.manager.JahiaFieldsDefinitionManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaFieldsDefinitionManager">
-                <property name="jahiaFieldsDefinitionDAO" ref="jahiaFieldsDefinitionDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.hibernate.manager.JahiaPagesManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaPagesManager">
-                <property name="jahiaFieldsDataDAO" ref="jahiaFieldsDataDAO" />
-                <property name="jahiaObjectDAO" ref="jahiaObjectDAO" />
-                <property name="jahiaWorkflowDAO" ref="jahiaWorkflowDAO" />
-                <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager" />
-                <property name="jahiaPagesDAO" ref="jahiaPagesDAO" />
-                <property name="jahiaPagesDefinitionDAO" ref="jahiaPagesDefinitionDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.hibernate.manager.JahiaPagesUsersPropManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaPagesUsersPropManager">
-                <property name="jahiaPagesUsersPropDAO" ref="jahiaPagesUsersPropDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-
-
-    <bean id="org.jahia.hibernate.manager.JahiaTemplateManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaTemplateManager">
-                <property name="jahiaPagesDefinitionDAO" ref="jahiaPagesDefinitionDAO" />
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.hibernate.manager.JahiaLinkManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaLinkManager">
-                <property name="jahiaLinkDAO" ref="jahiaLinkDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
     <bean id="org.jahia.hibernate.manager.JahiaGroupManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaGroupManager">
@@ -141,42 +65,6 @@
             <bean class="org.jahia.hibernate.manager.JahiaUserManager">
                 <property name="jahiaUserDAO" ref="jahiaUserDAO" />
                 <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaObjectManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaObjectManager">
-                <property name="jahiaObjectDAO" ref="jahiaObjectDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaResourceManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaResourceManager">
-                <property name="jahiaResourceDAO" ref="jahiaResourceDAO" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaLanguagesStatesManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaLanguagesStatesManager">
-                <property name="jahiaLanguagesStatesDAO" ref="jahiaLanguagesStatesDAO" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaBigTextDataManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaBigTextDataManager">
-                <property name="jahiaBigTextDataDAO" ref="jahiaBigTextDataDAO" />
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaServerPropertiesManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaServerPropertiesManager">
-                <property name="jahiaServerPropertiesDAO" ref="jahiaServerPropertiesDAO" />
             </bean>
         </property>
     </bean>
@@ -201,14 +89,6 @@
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaInstalledPatchManager">
                 <property name="jahiaInstalledPatchDao" ref="jahiaInstalledPatchDAO" />
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.hibernate.manager.JahiaFieldXRefManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaFieldXRefManager">
-                <property name="jahiaFieldXRefDAO" ref="jahiaFieldXRefDAO" />
             </bean>
         </property>
     </bean>

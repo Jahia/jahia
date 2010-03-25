@@ -76,60 +76,8 @@ public class ContentCategoryField extends ContentField {
                 activeAndStagedDBValues);
     }
 
-    public static synchronized ContentCategoryField createCategoryField (int siteID,
-                                                                                int pageID,
-                                                                                int containerID,
-                                                                                int fieldDefID,
-                                                                                int parentAclID,
-                                                                                int aclID,
-                                                                                String categories,
-                                                                                ProcessingContext jParams)
-            throws JahiaException {
-        ContentCategoryField result =
-                (ContentCategoryField) ContentField.createField (siteID, pageID,
-                        containerID, fieldDefID,
-                        ContentFieldTypes.CATEGORY,
-                        ConnectionTypes.LOCAL,
-                        parentAclID, aclID);
-        // EntrySaveRequest saveRequest = new EntrySaveRequest(jParams.getUser(), jParams.getLocale().toString());
-        EntrySaveRequest saveRequest = new EntrySaveRequest (jParams.getUser (),
-                ContentField.SHARED_LANGUAGE, true);
-        result.setCategories (categories, saveRequest);
-        return result;
-    }
-
-    /**
-     * Gets the String representation of this field. In case of an Application,
-     * it will be the output of the application, in case of a bigtext it will
-     * be the full content of the bigtext, etc. This is called by the public
-     * method getValue of ContentField, which does the entry resolving
-     * This method should call getDBValue to get the DBValue
-     * Note that until setField() is called, getValue returns always the
-     * same value, even if the content was set by a setter such as setText!!
-     */
-    public String getValue (ProcessingContext jParams, ContentObjectEntryState entryState)
-            throws JahiaException {
-        if (entryState == null) {
-            return "";
-        }
-        final JahiaFieldDefinition theDef = JahiaFieldDefinitionsRegistry.
-                getInstance().getDefinition(this.getFieldDefID());
-
-        String result;
-        result = ServicesRegistry.getInstance().getJahiaTextFileService().
-                loadBigTextValue(this.getSiteID(),
-                                 this.getPageID(),
-                                 this.getID(),
-                                 theDef.getDefaultValue(),
-                                 entryState.getVersionID(),
-                                 entryState.getWorkflowState(),
-                                 entryState.getLanguageCode());
-
-        if (result == null || result.equals("<empty>") || result.equals("<text>")) {
-            result = "";
-        }
-
-        return result;
+    public String getValue(ProcessingContext jParams, ContentObjectEntryState entryState) throws JahiaException {
+        return null;
     }
 
     /**
@@ -146,12 +94,6 @@ public class ContentCategoryField extends ContentField {
             if (logger.isDebugEnabled()) {
                 logger.debug("Saving big text field..." + verInfo.toString());
             }
-            ServicesRegistry.getInstance().getJahiaTextFileService().deleteFile(this.getSiteID(),
-                                                                                this.getPageID(),
-                                                                                this.getID(),
-                                                                                verInfo.getVersionID(),
-                                                                                verInfo.getWorkflowState(),
-                                                                                verInfo.getLanguageCode());
 
         } else {
             final ContentObjectEntryState verInfo = preSet("<text>", saveRequest);
@@ -159,14 +101,6 @@ public class ContentCategoryField extends ContentField {
                 logger.debug("Saving big text field..." + verInfo.toString());
             }
 
-            ServicesRegistry.getInstance().getJahiaTextFileService().saveContents(
-                    this.getSiteID(),
-                    this.getPageID(),
-                    this.getID(),
-                    value.replaceAll("<text>",""),
-                    verInfo.getVersionID(),
-                    verInfo.getWorkflowState(),
-                    verInfo.getLanguageCode());
         }
         postSet(saveRequest);
     }
@@ -199,21 +133,6 @@ public class ContentCategoryField extends ContentField {
 
         final ActivationTestResults activationResults = new ActivationTestResults();
         try {
-            ServicesRegistry.getInstance().getJahiaTextFileService().
-                    renameFile(
-                            this.getSiteID(),
-                            this.getPageID(),
-                            this.getID(),
-                            fromEntryState.getVersionID(),
-                            fromEntryState.getWorkflowState(),
-                            fromEntryState.getLanguageCode(),
-                            this.getSiteID(),
-                            this.getPageID(),
-                            this.getID(),
-                            toEntryState.getVersionID(),
-                            toEntryState.getWorkflowState(),
-                            toEntryState.getLanguageCode()
-                    );
             activationResults.setStatus(ActivationTestResults.COMPLETED_OPERATION_STATUS);
         } catch (Exception t) {
             logger.error("Unable to change Entry State !", t);
@@ -318,108 +237,5 @@ public class ContentCategoryField extends ContentField {
         return true;
     }
 
-    /**
-     * This method is called when a entry should be copied into a new entry
-     * it is called when an    old version -> active version   move occurs
-     * This method should not write/change the DBValue, the service handles that.
-     *
-     * @param fromEntryState the entry state that is currently was in the database
-     * @param toEntryState   the entry state that will be written to the database
-     */
-    @Override
-    protected void copyEntry(EntryStateable fromEntryState, EntryStateable toEntryState) throws JahiaException {
-        int fromVersionID = fromEntryState.getVersionID();
 
-        if (fromEntryState.getWorkflowState() ==
-                ContentObjectEntryState.WORKFLOW_STATE_VERSIONING_DELETED) {
-            // lookup for the last archive done before the deleted entryState
-            // and restore it.
-            final ContentObjectEntryState entryState =
-                    new ContentObjectEntryState(fromEntryState);
-            final ContentObjectEntryState archiveEntryState =
-                    getClosestVersionedEntryState(entryState, true);
-            if (archiveEntryState != null) {
-                fromVersionID = archiveEntryState.getVersionID();
-            }
-        }
-
-        ServicesRegistry.getInstance().getJahiaTextFileService().copyFile(
-                this.getSiteID(),
-                this.getPageID(),
-                this.getID(),
-                fromVersionID,
-                fromEntryState.getWorkflowState(),
-                fromEntryState.getLanguageCode(),
-                this.getSiteID(),
-                this.getPageID(),
-                this.getID(),
-                toEntryState.getVersionID(),
-                toEntryState.getWorkflowState(),
-                toEntryState.getLanguageCode()
-        );
-
-        super.copyEntry(fromEntryState, toEntryState);
-    }
-
-    /**
-     * This method is called when an entry should be deleted for real.
-     * It is called when a object is deleted, and versioning is disabled, or
-     * when staging values are undone.
-     * For a bigtext content fields for instance, this method should delete
-     * the text file corresponding to the field entry
-     *
-     * @param deleteEntryState the entry state to delete
-     */
-    @Override
-    protected void deleteEntry(EntryStateable deleteEntryState) throws JahiaException {
-        ServicesRegistry.getInstance().getJahiaTextFileService().deleteFile(
-                this.getSiteID(),
-                this.getPageID(),
-                this.getID(),
-                deleteEntryState.getVersionID(),
-                deleteEntryState.getWorkflowState(),
-                deleteEntryState.getLanguageCode());
-
-        super.deleteEntry(deleteEntryState);
-    }
-
-    /**
-     * Called when marking a language for deletion on a field. This is done
-     * first to allow field implementation to provide a custom behavior when
-     * marking fields for deletion. It isn't abstract because most fields will
-     * not need to redefine this method.
-     *
-     * @param user              the user performing the operation
-     * @param languageCode      the language to mark for deletion.
-     * @param stateModifContext used to detect loops in deletion marking.
-     * @throws org.jahia.exceptions.JahiaException
-     *          in the case there was an error processing the
-     *          marking of the content.
-     */
-    @Override
-    protected void markContentLanguageForDeletion(JahiaUser user, String languageCode, StateModificationContext stateModifContext) throws JahiaException {
-        final List<Locale> locales = new ArrayList<Locale>();
-        locales.add(LanguageCodeConverters.languageCodeToLocale(languageCode));
-        final EntryLoadRequest loadRequest = new EntryLoadRequest(
-                EntryLoadRequest.ACTIVE_WORKFLOW_STATE, 0, locales);
-        final ContentObjectEntryState fromEntryState = getEntryState(loadRequest);
-        final ContentObjectEntryState toEntryState = new ContentObjectEntryState(
-                ContentObjectEntryState.WORKFLOW_STATE_START_STAGING, -1, languageCode);
-        if (fromEntryState != null) {
-            ServicesRegistry.getInstance().getJahiaTextFileService().copyFile(
-                    this.getSiteID(),
-                    this.getPageID(),
-                    this.getID(),
-                    fromEntryState.getVersionID(),
-                    fromEntryState.getWorkflowState(),
-                    fromEntryState.getLanguageCode(),
-                    this.getSiteID(),
-                    this.getPageID(),
-                    this.getID(),
-                    toEntryState.getVersionID(),
-                    toEntryState.getWorkflowState(),
-                    toEntryState.getLanguageCode()
-            );
-        }
-    }
 }

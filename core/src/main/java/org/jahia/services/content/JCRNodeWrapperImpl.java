@@ -38,24 +38,16 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaFieldXRefManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRPlaceholderNode;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.*;
-import org.jahia.services.fields.ContentField;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.webdav.UsageEntry;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -2034,73 +2026,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRFileContent getFileContent() {
         return new JCRFileContent(this, objectNode);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<UsageEntry> findUsages() {
-        return findUsages(false);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<UsageEntry> findUsages(boolean onlyLockedUsages) {
-        return findUsages(Jahia.getThreadParamBean(), onlyLockedUsages);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked) {
-        List<UsageEntry> usageEntryList = null;
-        if (isVersioned()) {
-            try {
-                usageEntryList = findUsages(context, onlyLocked, getBaseVersion().getName());
-                VersionIterator allVersions = getVersionHistory().getAllVersions();
-                while (allVersions.hasNext()) {
-                    Version version = allVersions.nextVersion();
-                    JCRNodeWrapper frozen = (JCRNodeWrapper) version.getNode(Constants.JCR_FROZENNODE);
-                    usageEntryList.addAll(frozen.findUsages(context, onlyLocked, version.getName()));
-                }
-            } catch (RepositoryException e) {
-                e.printStackTrace();
-            }
-        } else {
-            usageEntryList = findUsages(context, onlyLocked, null);
-        }
-        return usageEntryList;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<UsageEntry> findUsages(ProcessingContext jParams, boolean onlyLockedUsages, String versionName) {
-        List<UsageEntry> res = new ArrayList<UsageEntry>();
-        JahiaFieldXRefManager fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
-
-        Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE + getStorageName());
-
-        for (Iterator<JahiaFieldXRef> iterator = c.iterator(); iterator.hasNext();) {
-            JahiaFieldXRef jahiaFieldXRef = iterator.next();
-            try {
-                if (!onlyLockedUsages || jahiaFieldXRef.getComp_id().getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                    int version = 0;
-                    if (jahiaFieldXRef.getComp_id().getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                        version = ContentField.getField(jahiaFieldXRef.getComp_id().getFieldId()).getActiveVersionID();
-                    }
-                    UsageEntry entry = new UsageEntry(jahiaFieldXRef.getComp_id().getFieldId(), version, jahiaFieldXRef.getComp_id().getWorkflow(), jahiaFieldXRef.getComp_id().getLanguage(), jahiaFieldXRef.getComp_id().getTarget().substring(JahiaFieldXRefManager.FILE.length()), jParams);
-                    if (versionName != null) {
-                        entry.setVersionName(versionName);
-                    }
-                    res.add(entry);
-                }
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        return res;
     }
 
 

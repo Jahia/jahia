@@ -41,10 +41,10 @@
 <%@ page import="org.jahia.settings.SettingsBean"%>
 <%@ page import="org.jahia.params.ProcessingContext"%>
 <%@ page import="org.jahia.hibernate.manager.SpringContextSingleton" %>
-<%@ page import="org.jahia.hibernate.dao.JahiaSiteDAO" %>
 <%@ page import="org.hibernate.stat.Statistics" %>
 <%@ page import="org.hibernate.stat.SecondLevelCacheStatistics" %>
 <%@ page import="org.hibernate.stat.EntityStatistics" %>
+<%@ page import="org.springframework.orm.hibernate3.support.HibernateDaoSupport" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 
 <%
@@ -269,7 +269,7 @@
             </tr>
         </thead>
         <%
-            JahiaSiteDAO dao = (JahiaSiteDAO) SpringContextSingleton.getInstance().getContext().getBean("jahiaSiteDAO");
+            HibernateDaoSupport dao = null; // todo put any hibernate dao here
             Statistics statistics = dao.getHibernateTemplate().getSessionFactory().getStatistics();
             if (statistics.isStatisticsEnabled()) {
         %>

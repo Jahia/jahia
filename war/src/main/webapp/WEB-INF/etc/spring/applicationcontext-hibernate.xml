@@ -14,52 +14,18 @@
         </property>
         <property name="mappingResources">
             <list>
-                <value>org/jahia/hibernate/model/JahiaAuditLog.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaBigTextData.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaContainer.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaContainerList.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaCtnDef.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaCtndefProp.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaCtnDefProperty.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaContainerProperty.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaContainerListProperty.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaCtnStruct.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaFieldsData.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaFieldsDef.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaFieldsDefExtprop.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaFieldsProp.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaGrp.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaGrpAccess.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaGrpProp.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaLink.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaLinkMetadata.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaLock.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaObject.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaPagesData.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaPagesDef.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaPagesDefProp.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaPagesProp.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaPwdPolicy.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaPwdPolicyRule.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaPwdPolicyRuleParam.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaResource.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaSite.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaSiteLangList.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaSiteLangMap.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaSiteProp.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaSitesGrp.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaSitesUser.hbm.xml</value>
                 <value>org/jahia/hibernate/model/SubscriptionData.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaUser.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaUserProp.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaWorkflow.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaLanguagesStates.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaXRef.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaVersion.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaInstalledPatch.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaFieldXRef.hbm.xml</value>
-                <value>org/jahia/hibernate/model/jahiaserver/JahiaServerProp.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaPagesUsersProp.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

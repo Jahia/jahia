@@ -654,12 +654,6 @@ public class ContentManagerHelper {
             lockedNodes.add(new StringBuilder(nodeToDelete.getPath()).append(
                     " - locked by ").append(nodeToDelete.getLockOwner()).toString());
         }
-        List<UsageEntry> list = nodeToDelete.findUsages(true);
-        for (UsageEntry usageEntry : list) {
-            lockedNodes.add(new StringBuilder(nodeToDelete.getPath()).append(
-                    " - used on page \"").append(usageEntry.getPageTitle()).append("\"").toString());
-        }
-
         return !lockedNodes.isEmpty();
     }
 

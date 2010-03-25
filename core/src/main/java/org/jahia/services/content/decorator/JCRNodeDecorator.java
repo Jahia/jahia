@@ -32,10 +32,8 @@
 package org.jahia.services.content.decorator;
 
 import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.webdav.UsageEntry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
@@ -304,22 +302,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public JCRFileContent getFileContent() {
         return node.getFileContent();
-    }
-
-    public List<UsageEntry> findUsages() {
-        return node.findUsages();
-    }
-
-    public List<UsageEntry> findUsages(boolean onlyLocked) {
-        return node.findUsages(onlyLocked);
-    }
-
-    public List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked) {
-        return node.findUsages(context, onlyLocked);
-    }
-
-    public List<UsageEntry> findUsages(ProcessingContext context, boolean onlyLocked, String versionName) {
-        return node.findUsages(context, onlyLocked, versionName);
     }
 
     public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws ConstraintViolationException, RepositoryException {

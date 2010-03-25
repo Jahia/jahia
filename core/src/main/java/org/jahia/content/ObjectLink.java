@@ -31,14 +31,11 @@
  */
  package org.jahia.content;
 
-import java.util.Map;
-
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaLinkManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Title: Represents a link between two objects.</p>
@@ -93,87 +90,68 @@ public class ObjectLink implements Serializable {
                                         String type,
                                         Map<String, String> commonMetadata)
         throws JahiaException {
-        ObjectLink link = new ObjectLink( -1, leftObjectKey, rightObjectKey,
-                                         type,
-                commonMetadata);
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        linkManager.createObjectLink(link);
-        return link;
+return null;
     }
 
     static public ObjectLink getLink (int linkID)
         throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        return linkManager.getObjectLink(linkID);
+        return null;
     }
 
     static public List<ObjectLink> findByLeftAndRightObjectKeys (ObjectKey leftObjectKey,
         ObjectKey rightObjectKey)
         throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        return linkManager.findByLeftAndRightObjectKeys(leftObjectKey, rightObjectKey);
+        return null;
     }
 
     static public List<ObjectLink> findByLeftObjectKey (ObjectKey leftObjectKey)
         throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        return linkManager.findByLeftObjectKey(leftObjectKey);
+        return null;
     }
 
     static public List<ObjectLink> findByRightObjectKey (ObjectKey rightObjectKey)
         throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        return linkManager.findByRightObjectKey(rightObjectKey);
+        return null;
     }
 
     static public List<ObjectLink> findByTypeAndLeftAndRightObjectKeys (String type,
         ObjectKey leftObjectKey,
         ObjectKey rightObjectKey)
         throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        return linkManager.findByTypeAndLeftAndRightObjectKeys(type, leftObjectKey, rightObjectKey);
+        return null;
     }
 
     static public List<ObjectLink> findByTypeAndLeftAndLikeRightObjectKeys (String type,
             ObjectKey leftObjectKey,
             String rightObjectKey)
             throws JahiaException {
-    	JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());    	
-        return linkManager.findByTypeAndLeftAndLikeRightObjectKeys(type, leftObjectKey, rightObjectKey);
-    }     
+        return null;
+    }
     
     static public List<ObjectLink> findByTypeAndLeftObjectKey (String type,
         ObjectKey leftObjectKey)
         throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        return linkManager.findByTypeAndLeftObjectKey(type, leftObjectKey);
+        return null;
     }
 
     static public List<ObjectLink> findByTypeAndRightObjectKey (String type,
         ObjectKey rightObjectKey)
         throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        return linkManager.findByTypeAndRightObjectKey(type, rightObjectKey);
+        return null;
     }
 
     static public List<ObjectLink> findByTypeAndRightAndLikeLeftObjectKey(String type,
 			ObjectKey rightObjectKey, String leftObjectKey)
 			throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());    	
-		return linkManager.findByTypeAndRightAndLikeLeftObjectKey(type,
-				rightObjectKey, leftObjectKey);
-	}    
+        return null;
+	}
     
     public void save()
         throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        linkManager.updateObjectLink(this);
     }
 
     public void remove()
         throws JahiaException {
-        JahiaLinkManager linkManager = (JahiaLinkManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaLinkManager.class.getName());
-        linkManager.removeObjectLink(type, leftObjectKey, rightObjectKey, getID());
     }
 
     public void setID(int ID) {

@@ -60,7 +60,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.*;
-import org.jahia.services.files.JahiaTextFileService;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
@@ -1779,17 +1778,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 changeDefaultSite(null);
             }
         }
-
-        // purge options
-//        if (deleteTemplates) {
-//            //logger.debug(" process delete templates ");
-//            JahiaSiteTools.deleteTemplates(theUser, site);
-//        }
-
-        // delete big text
-        JahiaTextFileService textFileServ = ServicesRegistry.getInstance()
-                .getJahiaTextFileService();
-        textFileServ.deleteSiteBigText(site.getID(), theUser);
 
         // switch staging and versioning to false.
         sMgr.updateSite(site);

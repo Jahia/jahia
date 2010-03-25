@@ -74,7 +74,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
-import org.jahia.hibernate.manager.JahiaFieldsDataManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
@@ -398,12 +397,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             Jahia.jSettings = SettingsBean.getInstance();
             
             Jahia.jSettings.setBuildNumber(getBuildNumber());
-            
-            Jahia.jSettings
-                    .setDeprecatedNonContainerFieldsUsed(((JahiaFieldsDataManager) SpringContextSingleton
-                            .getInstance().getContext().getBean(
-                                    JahiaFieldsDataManager.class.getName()))
-                            .hasActiveFieldsWithoutContainer());
+           
         } catch (NullPointerException npe) {
             // error while reading jahia.properties, launch JahiaConfigurationWizard...
             Jahia.runInstaller = true;
@@ -434,10 +428,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                     mInitError = true;
                     return;
                 }
-                // 30.01.2002 NK : Patch for old database with templates without ACL
-                ServicesRegistry.getInstance().
-                    getJahiaPageTemplateService().
-                    patchTemplateWithoutACL();
 
                 ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
 

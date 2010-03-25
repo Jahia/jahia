@@ -3,8 +3,6 @@ package org.jahia.services.sites.jcr;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.hibernate.dao.JahiaSitePropertyDAO;
-import org.jahia.hibernate.model.JahiaSiteProp;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
@@ -26,15 +24,10 @@ import java.util.*;
  */
 public class JCRSitesProvider {
     private static Logger logger = Logger.getLogger(JCRSitesProvider.class);
-    private JahiaSitePropertyDAO sitePropertyDAO = null;
     private JCRTemplate jcrTemplate;
 
     public void setJcrTemplate(JCRTemplate jcrTemplate) {
         this.jcrTemplate = jcrTemplate;
-    }
-
-    public void setSitePropertyDAO(JahiaSitePropertyDAO sitePropertyDAO) {
-        this.sitePropertyDAO = sitePropertyDAO;
     }
 
     public List<JahiaSite> getSites() {
@@ -252,11 +245,6 @@ public class JCRSitesProvider {
         int siteId = (int) node.getProperty("j:siteId").getLong();
 
         Properties props = new Properties();
-
-        for (JahiaSiteProp siteProp : sitePropertyDAO.getSitePropById(siteId)) {
-            props.put(siteProp.getComp_id().getName(),
-                      siteProp.getValue() == null ? "" : siteProp.getValue());
-        }
 
         JahiaSite site = new JahiaSite(siteId, node.getProperty("j:title").getString(), node.getProperty("j:serverName").getString(),
                 node.getName(), node.getProperty("j:description").getString(), props, node.getPath());

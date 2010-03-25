@@ -33,11 +33,9 @@
 
 import org.jahia.bin.Jahia;
 import org.jahia.content.*;
-import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaFieldsDataManager;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.categories.jcr.JCRCategoryProvider;
@@ -74,7 +72,6 @@ public class CategoryServiceImpl extends CategoryService {
     private static CategoryServiceImpl singletonInstance;
 
     private JCRCategoryProvider categoryProvider;
-    private JahiaFieldsDataManager fieldsDataManager;
     // we use a cache in a special way. Basically we use it to synchronize
     // last modification dates on all the nodes of the cluster. For sync
     // messages we use the flush() event.
@@ -169,22 +166,7 @@ public class CategoryServiceImpl extends CategoryService {
 
     public List<ObjectKey> getCategoryChildKeys(Category parentCategory)
             throws JahiaException {
-        final List<Object[]> list = fieldsDataManager.findMetadataObjectKeyByFieldValuesAndType(parentCategory.getKey(), FieldTypes.CATEGORY);
-        list.addAll(fieldsDataManager.findMetadataObjectKeyByFieldValuesAndType("%$$$"+parentCategory.getKey(), FieldTypes.CATEGORY));
-        list.addAll(fieldsDataManager.findMetadataObjectKeyByFieldValuesAndType(parentCategory.getKey()+"$$$%", FieldTypes.CATEGORY));
-        list.addAll(fieldsDataManager.findMetadataObjectKeyByFieldValuesAndType("%$$$"+parentCategory.getKey()+"$$$%", FieldTypes.CATEGORY));
-
         List<ObjectKey> returnList = new ArrayList<ObjectKey>();
-        for (int i = 0; i < list.size(); i++) {
-            Object[] jahiaFieldsData = list.get(i);
-            ContentObjectKey objectKey = null;
-            final int metadataOwnerId = ((Integer) jahiaFieldsData[0]).intValue();
-            final String metadataOwnerType = (String) jahiaFieldsData[1];
-            if(metadataOwnerId >0 && metadataOwnerType.equals(ContentPageKey.PAGE_TYPE))
-                objectKey = new ContentPageKey(metadataOwnerId);
-            if(!returnList.contains(objectKey))
-                returnList.add(objectKey);
-        }
         return returnList;
     }
 
@@ -398,10 +380,6 @@ public class CategoryServiceImpl extends CategoryService {
         // do nothing;
     }
 
-    public void setFieldsDataManager(JahiaFieldsDataManager fieldsDataManager) {
-        this.fieldsDataManager = fieldsDataManager;
-    }
-    
     public List<Category> findCategoriesByPropNameAndValue(String propName, String propValue, JahiaUser user) {
         return categoryProvider.findCategoriesByPropNameAndValue(propName, propValue, user);
     }

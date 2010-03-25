@@ -44,11 +44,8 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaFieldsDataManager;
-import org.jahia.hibernate.manager.JahiaPagesManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.JahiaService;
-import org.jahia.services.files.JahiaTextFileService;
 import org.jahia.services.integrity.Link.Type;
 import org.jahia.services.version.RevisionEntry;
 
@@ -90,12 +87,6 @@ public class LinkValidatorService extends JahiaService {
                 .getBean(LinkValidatorService.class.getName());
     }
 
-    private JahiaFieldsDataManager fieldsDataManager;
-
-    private JahiaPagesManager pagesManager;
-
-    private JahiaTextFileService textFileService;
-
     private Map<Link.Type, LinkValidator> validators = Collections.EMPTY_MAP;
 
     /**
@@ -109,89 +100,10 @@ public class LinkValidatorService extends JahiaService {
     public List<Link> getAllLinks(int siteId) {
         List<Link> links = new LinkedList<Link>();
 
-        links.addAll(getPageLinks(siteId));
-        links.addAll(getBigTextLinks(siteId));
-
         if (logger.isDebugEnabled()) {
             logger.info("Found " + links.size()
                     + " external page links to be validated for site with ID="
                     + siteId);
-        }
-
-        return links;
-    }
-
-    /**
-     * Returns links from fields of type 'BigText' to be validated for the
-     * specified site ID.
-     * 
-     * @param siteId
-     *            the ID of the site, where links will be validated.
-     * @return a list of {@link Link} objects to be validated
-     * @see #validate(List)
-     */
-    private List<Link> getBigTextLinks(int siteId) {
-        List<Link> links = new LinkedList<Link>();
-        List<Object[]> fields = fieldsDataManager.getBigTextFieldIds(siteId);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Found " + fields.size()
-                    + " entries for big text fields in the site with ID="
-                    + siteId);
-        }
-        for (Object[] obj : fields) {
-            RevisionEntry field = (RevisionEntry) obj[0];
-            Integer pageId = (Integer) obj[1];
-            String content = null;
-            try {
-                content = textFileService.loadBigTextValue(siteId, pageId, field
-                        .getObjectKey().getIdInType(), "", field
-                        .getEntryState().getVersionID(), field.getEntryState()
-                        .getWorkflowState(), field.getEntryState()
-                        .getLanguageCode());
-            } catch (JahiaException e) {
-                logger.warn("Error loading BigText field for entry: " + field
-                        + ". Cause: " + e.getMessage(), e);
-            }
-            if (content != null && content.length() > 0) {
-                Source source = new Source(content);
-                addLinks(source, HTMLElementName.A, "href", field, links);
-                addLinks(source, HTMLElementName.IMG, "src", field, links);
-                addLinks(source, HTMLElementName.LINK, "href", field, links);
-                addLinks(source, HTMLElementName.SCRIPT, "src", field, links);
-                addLinks(source, "embed", "src", field, links);
-            }
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger
-                    .debug("Found "
-                            + links.size()
-                            + " external page links in Jahia fields of type 'BigText' for site with ID="
-                            + siteId);
-        }
-
-        return links;
-    }
-
-    /**
-     * Returns links from fields of type 'Page' to be validated for the
-     * specified site ID.
-     * 
-     * @param siteId
-     *            the ID of the site, where links will be validated.
-     * @return a list of {@link Link} objects to be validated
-     * @see #validate(List)
-     */
-    private List<Link> getPageLinks(int siteId) {
-        List<Link> links = new LinkedList<Link>();
-
-        links.addAll(pagesManager.getExternalLinks(siteId));
-        if (logger.isDebugEnabled()) {
-            logger
-                    .debug("Found "
-                            + links.size()
-                            + " external page links in Jahia fields of type 'Page' for site with ID="
-                            + siteId);
         }
 
         return links;
@@ -214,18 +126,6 @@ public class LinkValidatorService extends JahiaService {
         }
 
         return validator;
-    }
-
-    public void setFieldsDataManager(JahiaFieldsDataManager fieldsDataManager) {
-        this.fieldsDataManager = fieldsDataManager;
-    }
-
-    public void setPagesManager(JahiaPagesManager pagesManager) {
-        this.pagesManager = pagesManager;
-    }
-
-    public void setTextFileService(JahiaTextFileService textFileService) {
-        this.textFileService = textFileService;
     }
 
     public void setValidators(Map<Link.Type, LinkValidator> validators) {

@@ -5,10 +5,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
+import javax.jcr.*;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
@@ -115,12 +112,27 @@ public class JCRVersionService extends JahiaService {
             // the first is the root version, which has no properties, so we will ignore it.
         }
         String nodeTitle = null;
+        StringBuffer propertyString = null;
         while (vi.hasNext()) {
             Version v = vi.nextVersion();
             Node frozenNode = v.getFrozenNode();
             if (logger.isDebugEnabled()) {
-                if (frozenNode.hasProperty("jcr:title")) {
-                    nodeTitle = frozenNode.getProperty("jcr:title").getString();
+                propertyString = new StringBuffer();
+                PropertyIterator propertyIterator = frozenNode.getProperties();
+                while (propertyIterator.hasNext()) {
+                    Property property = propertyIterator.nextProperty();
+                    propertyString.append("  ");
+                    propertyString.append(property.getName());
+                    propertyString.append("=");
+                    if (property.isMultiple()) {
+                        for (Value value : property.getValues()) {
+                            propertyString.append(value.getString());
+                            propertyString.append(",");
+                        }
+                    } else {
+                        propertyString.append(property.getValue().getString());
+                    }
+                    propertyString.append("\n");
                 }
             }
             Date checkinDate = null;
@@ -141,7 +153,7 @@ public class JCRVersionService extends JahiaService {
                 }
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Version " + v.getName() + " (title=" + nodeTitle +") checkinDateAvailable=" + checkinDateAvailable + " checkinDate=" + checkinDate + " created=" + v.getCreated().getTime());
+                logger.debug("Version " + v.getName() + " checkinDateAvailable=" + checkinDateAvailable + " checkinDate=" + checkinDate + " created=" + v.getCreated().getTime() + " properties:" + propertyString.toString());
             }
             lastVersion = v;
         }
@@ -152,11 +164,11 @@ public class JCRVersionService extends JahiaService {
             if (frozenNode.hasProperty("j:checkinDate")) {
                 Property checkinDateProperty = frozenNode.getProperty("j:checkinDate");
                 checkinDate = checkinDateProperty.getDate().getTime();
-                if (checkinDate.compareTo(versionDate) == 0) {
+                if (checkinDate.compareTo(versionDate) <= 0) {
                     closestVersion = lastVersion;
                 }
             } else {
-                if (lastVersion.getCreated().getTime().compareTo(versionDate) == 0) {
+                if (lastVersion.getCreated().getTime().compareTo(versionDate) <= 0) {
                     closestVersion = lastVersion;
                 }
             }

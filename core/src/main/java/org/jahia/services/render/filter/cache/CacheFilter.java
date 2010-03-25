@@ -43,6 +43,7 @@ import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.log4j.Logger;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
@@ -65,7 +66,7 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (!renderContext.isEditMode()) {
+        if (!renderContext.isEditMode() && !(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")));
 

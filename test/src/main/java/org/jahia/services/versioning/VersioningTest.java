@@ -35,6 +35,7 @@ public class VersioningTest extends TestCase {
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private static final String MAIN_CONTENT_TITLE = "Main content title update ";
     private static final String MAIN_CONTENT_BODY = "Main content body update ";
+    private static int NUMBER_OF_VERSIONS = 5;
 
     protected void setUp() throws Exception {
         try {
@@ -94,7 +95,7 @@ public class VersioningTest extends TestCase {
             // publish it
             jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
 
-            for (int i = 1; i < 11; i++) {
+            for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
 
                 for (int j = 0; j < 2; j++) {
                     editSession.checkout(mainContent);
@@ -139,7 +140,7 @@ public class VersioningTest extends TestCase {
                 index++;
             }
             logger.debug("number of version: " + index);
-            assertEquals(11, index);
+            assertEquals(NUMBER_OF_VERSIONS, index);
 
 
             JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
@@ -158,7 +159,7 @@ public class VersioningTest extends TestCase {
                 index++;
             }
             logger.debug("number of version: " + index);                                                        
-            assertEquals(11, index);
+            assertEquals(NUMBER_OF_VERSIONS, index);
 
 
         } catch (Exception ex) {

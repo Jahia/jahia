@@ -284,6 +284,9 @@
                         <bean class="org.jahia.services.render.filter.OptionsFilter" >
                             <property name="priority" value="50" />
                         </bean>
+                        <bean class="org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter">
+                            <property name="priority" value="98" />
+                        </bean>
                         <bean class="org.jahia.services.render.filter.TemplateScriptFilter" >
                             <property name="priority" value="99" />
                         </bean>

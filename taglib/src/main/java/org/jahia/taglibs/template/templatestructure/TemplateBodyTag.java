@@ -32,15 +32,18 @@
 package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
+import org.jahia.analytics.GoogleAnalyticsService;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.SitesSettings;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
 
@@ -49,10 +52,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.DynamicAttributes;
 import javax.servlet.jsp.tagext.Tag;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>Title: Defines the body part of a jahia template</p>
@@ -157,9 +157,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
 
             useGwt = renderContext.isEditMode();
-
             ServletRequest request = pageContext.getRequest();
-            // JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
             // check the gwtForGuest attribute from parent tag
             Tag parent = getParent();
@@ -173,41 +171,11 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 buf.append(" ").append(param).append("=\"").append(attributes.get(param)).append("\"");
             }
             buf.append(">");
-            //if (jData.page() != null && jData.page().getContentPage().isMarkedForDelete()) {
-            //    buf.append("<div class=\"markedForDelete\">");
-            //}
-//            if (useGwt) {
-//                if (!isLogged() && gwtForGuest) {
-//                    if (gwtScript.equals("")) {
-//                        gwtScript = "guest";
-//                    }
-//                } else if (gwtScript == null || gwtScript.equals("")) {
-//                    gwtScript = "general";
-//                }
-//                if (isLiveMode()) {
-//                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".live.Live").toString())).append("\n");
-//                } else {
-//
-//                    if (checkGAprofilePresent(jData)) {
-//                        String gviz =
-//                                "<script type='text/javascript' src='http://www.google.com/jsapi'></script>" +
-//                                        "<script type='text/javascript'>" +
-//                                        "google.load('visualization', '1', {packages:['annotatedtimeline','piechart','geomap']});" +
-//                                        "</script>";
-//                        buf.append(gviz);
-//                    }
-//
-//                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".edit.Edit").toString())).append("\n");
-//                }
-//
-//                if (isLogged()) {
-//                    if (renderContext == null || !renderContext.isEditMode()) {
-//                        addToolbarMessageResources();
-//                        // jahia module entry for toolbar
-//                        buf.append("\n\t<div id=\"gwt-jahiatoolbar\" class=\"jahia-admin-gxt " + JahiaType.TOOLBARS_MANAGER + "-gxt\" jahiatype=\"").append(JahiaType.TOOLBARS_MANAGER).append("\" content=\"").append(DEFAULT_CONTENT).append("\"></div>\n");
-//                    }
-//                }
-//            }
+
+            // add google visualizer api if there is at least one active google analytics profile and if its the edit mode
+            if (renderContext.isEditMode() && isGoogleAnalyticsActivated(renderContext.getSite())) {
+                buf.append(GoogleAnalyticsService.getInstance().renderBaseVisualisationCode());
+            }
 
             pageContext.getOut().println(buf.toString());
 
@@ -240,14 +208,14 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         ServletRequest request = pageContext.getRequest();
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-            // JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            //if (jData.page() != null && jData.page().getContentPage().isMarkedForDelete()) {
-            //    buf.append("</div>");
-            //}
+           
+            //if (isGoogleAnaylitcsTrackingActivated(renderContext.getSite()) && isLiveMode()) {
+                buf.append(GoogleAnalyticsService.getInstance().renderBaseTrackingCode());
+                List<JCRNodeWrapper> trackedNodes = (List<JCRNodeWrapper>)renderContext.getRequest().getAttribute(GoogleAnalyticsFilter.GOOGLE_ANALYTICS_TRACKED_NODES);
+                buf.append(GoogleAnalyticsService.getInstance().renderNodeTrackingCode(trackedNodes,renderContext.getSite()));
 
-            if (checkGAprofileOn(renderContext.getSite()) && isLiveMode()) {
-                buf.append(gaTrackingCode(((JahiaData) request.getAttribute("org.jahia.data.JahiaData"))));
-            }
+
+           // }
             if (useGwt) {
                 // Generate jahia_gwt_dictionnary
                 Map<String, String> dictionaryMap = getJahiaGwtDictionary();
@@ -288,11 +256,22 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         return EVAL_PAGE;
     }
 
+    /**
+     * check if it's live mode
+     * @return
+     */
     private boolean isLiveMode() {
         final JahiaBean jBean = (JahiaBean) pageContext.getAttribute("jahia", PageContext.REQUEST_SCOPE);
         return jBean.getRequestInfo().isNormalMode();
     }
 
+    /**
+     * Set dynamic attribute
+     * @param s
+     * @param s1
+     * @param o
+     * @throws JspException
+     */
     public void setDynamicAttribute(String s, String s1, Object o) throws JspException {
         if (attributes == null) {
             attributes = new HashMap<String, Object>();
@@ -300,83 +279,47 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         attributes.put(s1, o);
     }
 
-    // google analytics
+    
 
-    private String gaTrackingCode(JahiaData jData) {
 
-        String GATC = "\n<script type=\"text/javascript\">\n" + "var gaJsHost = ((\"https:\" == document.location.protocol) " +
-                "? \"https://ssl.\" : \"http://www.\");\n" + "document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"" +
-                "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n" + "</script>\n" +
-                "<script type=\"text/javascript\">\ntry{\n";
-
-        JahiaSite currentSite = jData.getProcessingContext().getSite();
-        // get enabled profiles
-        //Map<String, String> enabledProfiles = new HashMap<String, String>();
-        Iterator<?> it = ((currentSite.getSettings()).keySet()).iterator();
-        // check if at list one profile is enabled
-        while (it.hasNext()) {
-            String key = (String) it.next();
-            if (key.startsWith("jahiaGAprofile")) {
-                if (Boolean.valueOf(currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"))) {
-                    // enabledProfiles.put(key, currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key)));
-                    String acc = currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key) + "_" + currentSite.getSiteKey() + "_gaUserAccount");
-                    String tracker = "var " + (currentSite.getSettings().getProperty(key).replace(" ", "")) + "Tracker = _gat._getTracker('" + acc + "');\n";
-                    String trackedUrls = currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key) + "_" + currentSite.getSiteKey() + "_trackedUrls");
-                    String url = "";
-                    if (trackedUrls.equals("virtual")) {
-                        org.jahia.services.importexport.ImportExportService ies = ServicesRegistry.getInstance().getImportExportService();
-                        try {
-                            String uuid = ContentPage.getPage(jData.getProcessingContext().getPageID()).getUUID();
-                            String lang = jData.getProcessingContext().getLocale().toString();
-                            url = "'/Unique_Universal_id/" + uuid + "/" + lang + "/'";
-                        } catch (JahiaException e) {
-                            logger.error("Error in gaTrackingCode", e);
-                        }
-                    }
-                    String trackPageview = (currentSite.getSettings().getProperty(key).replace(" ", "")) + "Tracker._trackPageview(" + url + ");\n";
-                    logger.info(tracker);
-                    GATC = GATC + tracker + trackPageview;
-                }
-            }
-        }
-        GATC = GATC + "\n} catch(err) {}\n</script>";
-        return GATC;
-    }
-
-    // check if there is at least one profile is enabled
-
-    private boolean checkGAprofileOn(JahiaSite jahiaSite) {
+    /**
+     * Check if there is one activated google analytics profile
+     * @param jahiaSite
+     * @return
+     */
+    private boolean isGoogleAnaylitcsTrackingActivated(JahiaSite jahiaSite) {
         boolean atLeast1TPon = false;
         // google analytics
         Iterator<?> it = ((jahiaSite.getSettings()).keySet()).iterator();
         // check if at list one profile is enabled
         while (it.hasNext()) {
             String key = (String) it.next();
-            if (key.startsWith("jahiaGAprofile")) {
-                if (Boolean.valueOf(jahiaSite.getSettings().getProperty(jahiaSite.getSettings().getProperty(key) + "_" + jahiaSite.getSiteKey() + "_trackingEnabled"))) {
-                    atLeast1TPon = true;
-                    break;
+            if (key.startsWith(SitesSettings.JAHIA_GA_PROFILE)) {
+                if (Boolean.valueOf(jahiaSite.getSettings().getProperty(SitesSettings.GA_TRACKING_ENABLED))) {
+                    return true;
                 }
             }
         }
-        return atLeast1TPon;
+        return false;
     }
 
-    // check if there is at least one profile is configured
 
-    private boolean checkGAprofilePresent(JahiaSite jahiaSite) {
-        boolean atLeast1TPconf = false;
+    /**
+     * Check if there is a least one google analytics profile
+     * @param jahiaSite
+     * @return
+     */
+    private boolean isGoogleAnalyticsActivated(JahiaSite jahiaSite) {
         // google analytics
-        Iterator<?> it = ((jahiaSite.getSettings()).keySet()).iterator();
+        Iterator<?> sitePropertiesKey = jahiaSite.getSettings().keySet().iterator();
         // check if at list one profile is enabled
-        while (it.hasNext()) {
-            String key = (String) it.next();
-            if (key.startsWith("jahiaGAprofile")) {
-                logger.info("AT least one profile in the db !!!!");
-                atLeast1TPconf = true;
-                break;
+        while (sitePropertiesKey.hasNext()) {
+            String key = (String) sitePropertiesKey.next();
+            if (key.startsWith(SitesSettings.JAHIA_GA_PROFILE)) {
+                logger.debug("AT least one profile in the db !!!!");
+                return true;
             }
         }
-        return atLeast1TPconf;
+        return false;
     }
 }

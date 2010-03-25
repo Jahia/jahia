@@ -40,6 +40,8 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -257,7 +259,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      * @return a list of URL mapping objects for current node and locale
      * @throws GWTJahiaServiceException in case of an error
      */
-    List<GWTJahiaUrlMapping> getUrlMappings(GWTJahiaNode node, String locale) throws GWTJahiaServiceException;
+    public List<GWTJahiaUrlMapping> getUrlMappings(GWTJahiaNode node, String locale) throws GWTJahiaServiceException;
     
     /**
      * Updates the URL mapping for the specified node. 
@@ -266,7 +268,16 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      * @param mappings URL mapping list to store
      * @throws GWTJahiaServiceException in case of an error
      */
-    void saveUrlMappings(GWTJahiaNode node, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings) throws GWTJahiaServiceException;
+    public void saveUrlMappings(GWTJahiaNode node, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings) throws GWTJahiaServiceException;
+
+
+    /**
+     * Get analytics data
+     * @param query
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query)throws GWTJahiaServiceException;
 
 // -------------------------- INNER CLASSES --------------------------
 

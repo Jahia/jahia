@@ -99,6 +99,7 @@ public class EditContentEngine extends AbstractContentEngine {
         tabs.add(new UsagesTabItem(this));
         tabs.add(new PublicationTabItem(this));
         tabs.add(new SeoTabItem(this));
+        tabs.add(new AnalyticsTabItem(this));
     }
 
     /**

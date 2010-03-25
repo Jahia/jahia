@@ -37,6 +37,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -272,5 +274,12 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      * @param async the callback
      */
     void saveUrlMappings(GWTJahiaNode node, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings, AsyncCallback async);
+
+    /**
+     * Get analytics data
+     * @param query
+     * @param async
+     */
+    void  getAnalyticsData(GWTJahiaAnalyticsQuery query,AsyncCallback<List<GWTJahiaAnalyticsData>> async) ;
 
 }

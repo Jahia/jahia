@@ -622,7 +622,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         return defaultSite != null && defaultSite.equals(this);
     }
 
-    private String getProperty(String key, String defaultValue) {
+    public String getProperty(String key, String defaultValue) {
         String value = mSettings.getProperty(key);
         return value != null ? value : defaultValue;
     }
@@ -636,11 +636,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         mSettings.setProperty(FILE_LOCK_ON_PUBLICATION, String
                 .valueOf(fileLockOnPublicationEnabled));
     }
-     // get a google analyitcs parameter
-    public String getGAproperty(String key, String defaultValue) {
-        String value = mSettings.getProperty(key);
-        return value != null ? value : defaultValue;
-    }
+
 
     public String getJCRLocalPath() {
         return JCRLocalPath;

@@ -1218,6 +1218,42 @@
 	      <artifactId>unoil</artifactId>
 	      <version>3.1.0</version>
 	    </dependency>
+        <!-- Google analytics -->
+        <dependency>
+	      <groupId>com.google.gdata</groupId>
+	      <artifactId>gdata-core</artifactId>
+	      <version>1.0</version>
+	    </dependency>
+        <dependency>
+	      <groupId>com.google.gdata</groupId>
+	      <artifactId>gdata-client-meta</artifactId>
+	      <version>1.0</version>
+	    </dependency>
+        <dependency>
+	      <groupId>com.google.gdata</groupId>
+	      <artifactId>gdata-client</artifactId>
+	      <version>1.0</version>
+	    </dependency>
+        <dependency>
+	      <groupId>com.google.gdata</groupId>
+	      <artifactId>gdata-analytics-meta</artifactId>
+	      <version>2.1</version>
+	    </dependency>
+        <dependency>
+	      <groupId>com.google.gdata</groupId>
+	      <artifactId>gdata-analytics</artifactId>
+	      <version>2.1</version>
+	    </dependency>
+        <dependency>
+	      <groupId>com.google.gdata</groupId>
+	      <artifactId>google-collect</artifactId>
+	      <version>1.0-rc1</version>
+	    </dependency>
+        <dependency>
+	      <groupId>com.google.gdata</groupId>
+	      <artifactId>jsr305</artifactId>
+	      <version>1.0</version>
+	    </dependency>
         <!-- end of JODConverter dependencies -->
     </dependencies>
     <build>

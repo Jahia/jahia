@@ -38,7 +38,9 @@ package org.jahia.services.sites;
 public final class SitesSettings {
 
     //--------------------------------------------------------------------------
-    /** Home page settings */
+    /**
+     * Home page settings
+     */
     public static final String USER_DEFAULT_HOMEPAGE_DEF
             = "user_default_homepage_def";
     public static final String GROUP_DEFAULT_HOMEPAGE_DEF
@@ -55,19 +57,74 @@ public final class SitesSettings {
 
     public static final String STAGING_ENABLED = "staging_enabled";
 
-    /** These checks settings are used for BigText fields */
+    /**
+     * These checks settings are used for BigText fields
+     */
     public static final String HTML_CLEANUP_ENABLED = "html_cleanup_enabled";
 
     public static final String HTML_MARKUP_FILTERING_ENABLED = "html_markup_filtering_enabled";
-    
+
     public static final String HTML_MARKUP_FILTERING_TAGS = "html_markup_filtering_tags";
-    
+
     public static final String URL_INTEGRITY_CHECKING_ENABLED = "url_integrity_checking_enabled";
-    
+
     public static final String WAI_COMPLIANCE_CHECKING_ENABLED = "wai_compliance_checking_enabled";
 
-    /** Language settings */
+    /**
+     * Language settings
+     */
     public static final String MIX_LANGUAGES_ACTIVE = "mix_languages_active";
 
     public static final String FILE_LOCK_ON_PUBLICATION = "fileLockOnPublication";
+
+    public static final String JAHIA_GA_PROFILE = "jahiaGAprofile_";
+
+    /**
+     * google analytics
+     */
+    public static final String GA_TRACKED_URLS = "_trackedUrls";
+
+
+    public static final String GA_TRACKING_ENABLED = "_trackingEnabled";
+
+
+    public static final String GA_PASSWORD = "_gaPassword";
+
+
+    public static final String GA_LOGIN = "_gaLogin";
+
+
+    public static final String GA_PROFILE = "_gaProfile";
+
+
+    public static final String GA_USER_ACCOUNT = "_gaUserAccount";
+
+    public static String getJahiaProfileNameKey(String jahiaProfileName) {
+        return JAHIA_GA_PROFILE + jahiaProfileName;
+    }
+
+    public static String getTrackedUrlKey(String jahiaProfileName) {
+        return jahiaProfileName + GA_TRACKED_URLS;
+    }
+
+    public static String getTrackingEnabledKey(String jahiaProfileName) {
+        return jahiaProfileName + GA_TRACKING_ENABLED;
+    }
+
+    public static String getPasswordKey(String jahiaProfileName) {
+        return jahiaProfileName + GA_PASSWORD;
+    }
+
+    public static String getLoginKey(String jahiaProfileName) {
+        return jahiaProfileName + GA_LOGIN;
+    }
+
+    public static String getProfileKey(String jahiaProfileName) {
+        return jahiaProfileName + GA_PROFILE;
+    }
+
+    public static String getUserAccountPropertyKey(String jahiaProfileName) {
+        return jahiaProfileName + GA_USER_ACCOUNT;
+    }
+
 }

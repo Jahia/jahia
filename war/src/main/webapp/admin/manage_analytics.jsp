@@ -34,6 +34,10 @@
 <%@ include file="/admin/include/header.inc" %>
 <%@ page import="org.jahia.bin.JahiaAdministration,
                  java.util.Properties" %>
+<%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.Set" %>
+<%@ page import="org.jahia.services.sites.*" %>
+
 <%
     Properties settings = currentSite.getSettings();
 %>
@@ -47,7 +51,8 @@
     <h1>Jahia</h1>
 
     <h2 class="edit"><fmt:message key="label.manageAnalytics"/>
-        : <% if (currentSite != null) { %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
+        : <% if (currentSite != null) { %><fmt:message
+                key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
 </div>
 
 <div id="main">
@@ -76,14 +81,16 @@
                                 <div class="object-title">Google analytics tracking settings</div>
                             </div-->
 
-                             <div id="operationMenu">
+                            <div id="operationMenu">
                     <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-delete" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile=all")%>'><fmt:message key="label.delete"/></a>
+                    <a class="ico-delete"
+                       href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile=all")%>'><fmt:message
+                            key="label.delete"/></a>
                   </span>
                 </span>
 
-    </div>
+                            </div>
                             <div class="head headtop">
                                 <div class="object-title">Existing profiles</div>
                             </div>
@@ -97,22 +104,27 @@
                                             &nbsp;
                                         </th>
                                         <th width="35%">
-                                             <fmt:message key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/>
+                                            <fmt:message
+                                                    key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/>
                                         </th>
                                         <th width="35%">
-                                            <fmt:message key="org.jahia.admin.site.ManageAnalytics.gaProfileName.label"/>
+                                            <fmt:message
+                                                    key="org.jahia.admin.site.ManageAnalytics.gaProfileName.label"/>
                                         </th>
                                         <th width="12%" style="white-space: nowrap">
                                             <fmt:message key="org.jahia.admin.site.ManageAnalytics.gaUserAcc.label"/>
                                         </th>
                                         <th width="12%" style="white-space: nowrap">
-                                             <fmt:message key="org.jahia.admin.site.ManageAnalytics.realUrlsTracked.label"/>
+                                            <fmt:message
+                                                    key="org.jahia.admin.site.ManageAnalytics.realUrlsTracked.label"/>
                                         </th>
                                         <th width="12%" style="white-space: nowrap">
-                                            <fmt:message key="org.jahia.admin.site.ManageAnalytics.virtualUrlsTracked.label"/>
+                                            <fmt:message
+                                                    key="org.jahia.admin.site.ManageAnalytics.virtualUrlsTracked.label"/>
                                         </th>
                                         <th width="12%" style="white-space: nowrap">
-                                            <fmt:message key="org.jahia.admin.site.ManageAnalytics.trackingEnabled.label"/>
+                                            <fmt:message
+                                                    key="org.jahia.admin.site.ManageAnalytics.trackingEnabled.label"/>
                                         </th>
                                         <th width="15%" class="lastCol">
                                             <fmt:message key="label.action"/>
@@ -120,21 +132,21 @@
                                     </tr>
                                     </thead>
                                         <%
-                                    int profileCnt = 0;
-                                    if(settings.getProperty("profileCnt_"+currentSite.getSiteKey()) != null){
-                                    profileCnt = Integer.parseInt(settings.getProperty("profileCnt_"+currentSite.getSiteKey()));
-                                    }
-                                    Set profiles  = settings.keySet();
-                                    Iterator it = profiles.iterator();
+                                    
+                                    Set sitePropertiesKey  = settings.keySet();
+                                    Iterator it = sitePropertiesKey.iterator();
                                     String myClass = "evenLine";
                                     int cnt = 0;
                                     while(it.hasNext())
                                     {
                                         String prof = (String)it.next();
 
-                                        if(prof.startsWith("jahiaGAprofile"))
-                                        {
-                                        if(cnt%2 == 0){myClass = "evenLine" ;}else{myClass = "oddLine" ;}
+                                        if(prof.startsWith(SitesSettings.JAHIA_GA_PROFILE)){
+                                        if(cnt%2 == 0){
+                                            myClass = "evenLine" ;
+                                        }else{
+                                            myClass = "oddLine" ;
+                                        }
                                                 String jahiaGAprofile = settings.getProperty(prof);
                                             %>
 
@@ -142,18 +154,18 @@
                                         <td><input type="checkbox"/></td>
                                         <td><%=jahiaGAprofile%>
                                         </td>
-                                        <td><%=settings.getProperty(jahiaGAprofile + "_" + currentSite.getSiteKey() + "_gaProfile")%>
+                                        <td><%= settings.getProperty(SitesSettings.getProfileKey(jahiaGAprofile))%>
                                         </td>
-                                        <td><%=settings.getProperty(jahiaGAprofile + "_" + currentSite.getSiteKey() + "_gaUserAccount")%>
+                                        <td><%=settings.getProperty(SitesSettings.getUserAccountPropertyKey(jahiaGAprofile))%>
                                         </td>
                                         <td><input type="radio" value="real" name="<%=jahiaGAprofile%>TrackedUrls"
-                                                   <% if ((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls").equals("real"))) { %>checked<% } %>
+                                                   <% if ((settings.getProperty(SitesSettings.getTrackedUrlKey(jahiaGAprofile)).equals("real"))) { %>checked<% } %>
                                                    id="<%=jahiaGAprofile%>TrackedUrls"/></td>
                                         <td><input type="radio" value="virtual" name="<%=jahiaGAprofile%>TrackedUrls"
-                                                   <% if ((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls").equals("virtual"))) { %>checked<% } %>
+                                                   <% if ((settings.getProperty(SitesSettings.getTrackedUrlKey(jahiaGAprofile)).equals("virtual"))) { %>checked<% } %>
                                                    id="<%=jahiaGAprofile%>TrackedUrls"/></td>
                                         <td><input type="checkbox" name="<%=jahiaGAprofile%>TrackingEnabled"
-                                                   <% if (Boolean.valueOf(settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackingEnabled"))) { %>checked<% } %>
+                                                   <% if (Boolean.valueOf(settings.getProperty(SitesSettings.getTrackingEnabledKey(jahiaGAprofile)))) { %>checked<% } %>
                                                    id="<%=jahiaGAprofile%>TrackingEnabled"/></td>
                                         <td class="lastCol">
                                             <a href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=displayEdit&profile="+jahiaGAprofile )%>'
@@ -182,7 +194,9 @@
                                 <tbody>
 
                                 <div class="head headtop">
-                                    <div class="object-title"><fmt:message key="org.jahia.admin.site.ManageAnalytics.jahiaAnalyticsProfile.label"/></div>
+                                    <div class="object-title"><fmt:message
+                                            key="org.jahia.admin.site.ManageAnalytics.jahiaAnalyticsProfile.label"/>
+                                    </div>
                                 </div>
                                 <tr>
                                     <td width="88%">
@@ -190,33 +204,46 @@
                                         <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0"
                                                width="100%">
                                             <tr class="evenLine">
-                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/></td>
+                                                <td><fmt:message
+                                                        key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/>
+                                                </td>
                                                 <td>
                                                     <fmt:message key="label.jahiaGAprofileName"/>
-                                                    </td>
+                                                </td>
                                             </tr>
                                             <tr class="oddLine">
-                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.gaUserAcc.label"/></td>
+                                                <td><fmt:message
+                                                        key="org.jahia.admin.site.ManageAnalytics.gaUserAcc.label"/>
+                                                </td>
                                                 <td>
-                                                    <fmt:message key="org.jahia.admin.site.ManageAnalytics.description.gaUserAcc.label"/>
+                                                    <fmt:message
+                                                            key="org.jahia.admin.site.ManageAnalytics.description.gaUserAcc.label"/>
                                                 </td>
                                             </tr>
                                             <tr class="evenLine">
-                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.gaProfileName.label"/></td>
-                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.description.gaProfileName.label"/>
+                                                <td><fmt:message
+                                                        key="org.jahia.admin.site.ManageAnalytics.gaProfileName.label"/>
+                                                </td>
+                                                <td><fmt:message
+                                                        key="org.jahia.admin.site.ManageAnalytics.description.gaProfileName.label"/>
                                                 </td>
                                             </tr>
                                             <tr class="oddLine">
-                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.gaCredentials.label"/>
-                                                    </td>
+                                                <td><fmt:message
+                                                        key="org.jahia.admin.site.ManageAnalytics.gaCredentials.label"/>
+                                                </td>
                                                 <td>
-                                                    <fmt:message key="org.jahia.admin.site.ManageAnalytics.description.gaCredentials.label"/>
+                                                    <fmt:message
+                                                            key="org.jahia.admin.site.ManageAnalytics.description.gaCredentials.label"/>
                                                 </td>
                                             </tr>
                                             <tr class="oddLine">
-                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.trackedUrls.label"/></td>
+                                                <td><fmt:message
+                                                        key="org.jahia.admin.site.ManageAnalytics.trackedUrls.label"/>
+                                                </td>
                                                 <td>
-                                                    <fmt:message key="org.jahia.admin.site.ManageAnalytics.description.trackedUrls.label"/>
+                                                    <fmt:message
+                                                            key="org.jahia.admin.site.ManageAnalytics.description.trackedUrls.label"/>
                                                 </td>
                                             </tr>
                                         </table>
@@ -225,7 +252,8 @@
                                         <span class="dex-PushButton">
                                             <span class="first-child">
                                               <a class="ico-add"
-                                                 href="<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=new")%>"><fmt:message key="label.add"/></a>
+                                                 href="<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=new")%>"><fmt:message
+                                                      key="label.add"/></a>
                                             </span>
                                         </span>
                                     </td>
@@ -233,11 +261,12 @@
                             </table>
 
 
-                          <div id="actionBar">
+                            <div id="actionBar">
                             <span class="dex-PushButton">
                               <span class="first-child">
                                 <a class="ico-back"
-                                   href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="label.backToMenu"/></a>
+                                   href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message
+                                        key="label.backToMenu"/></a>
                               </span>
                             </span>
                            <span class="dex-PushButton">
@@ -246,7 +275,7 @@
                             </span>
                           </span>
 
-                         </div>
-                       </div>
-                   </div>
-<%@include file="/admin/include/footer.inc" %>
+                            </div>
+                        </div>
+                    </div>
+                    <%@include file="/admin/include/footer.inc" %>

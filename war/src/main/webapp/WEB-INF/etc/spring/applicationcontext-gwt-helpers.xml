@@ -102,4 +102,7 @@
     	<property name="urlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
     </bean>
 
+    <bean name="AnalyticsHelper" class="org.jahia.ajax.gwt.helper.AnalyticsHelper" />
+
+
 </beans>

@@ -66,7 +66,7 @@
         <property name="zip" ref="ZipHelper"/>
         <property name="diff" ref="DiffHelper"/>
         <property name="seo" ref="SeoHelper"/>
-
+        <property name="analytics" ref="AnalyticsHelper"/>
     </bean>
 
     <bean name="pdisplayServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">

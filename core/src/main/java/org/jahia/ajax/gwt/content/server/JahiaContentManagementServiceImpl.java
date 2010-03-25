@@ -42,6 +42,8 @@ import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
@@ -61,10 +63,12 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
+
 import javax.jcr.RepositoryException;
 import javax.validation.ConstraintViolationException;
 
@@ -99,6 +103,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ACLHelper acl;
     private DiffHelper diff;
     private SeoHelper seo;
+    private AnalyticsHelper analytics;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
@@ -1031,7 +1036,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      */
     public String getHighlighted(String original, String amendment) {
-        return diff.getHighlighted(original,amendment);
+        return diff.getHighlighted(original, amendment);
     }
 
 
@@ -1050,6 +1055,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /* (non-Javadoc)
      * @see org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService#getUrlMappings(org.jahia.ajax.gwt.client.data.node.GWTJahiaNode, java.lang.String)
      */
+
     public List<GWTJahiaUrlMapping> getUrlMappings(GWTJahiaNode node, String locale) throws GWTJahiaServiceException {
         try {
             return seo.getUrlMappings(node, locale, retrieveCurrentSession());
@@ -1062,6 +1068,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /* (non-Javadoc)
      * @see org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService#saveUrlMappings(org.jahia.ajax.gwt.client.data.node.GWTJahiaNode, java.util.Set, java.util.List)
      */
+
     public void saveUrlMappings(GWTJahiaNode node, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings)
             throws GWTJahiaServiceException {
         try {
@@ -1077,10 +1084,47 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
+     * Get analytics data
+     *
+     * @param query
+     * @return
+     */
+    public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query) throws GWTJahiaServiceException {
+        Properties siteProperties = retrieveParamBean().getSite().getSettings();
+        Enumeration enume = siteProperties.keys();
+        String jahiaProfileName = null;
+        String gaAccount = null;
+        String login = null;
+        String pwd = null;
+
+        while (enume.hasMoreElements()) {
+            String key = (String) enume.nextElement();
+            if (key.indexOf(SitesSettings.JAHIA_GA_PROFILE) == 0) {
+                jahiaProfileName = siteProperties.getProperty(key);
+                gaAccount = siteProperties.getProperty(SitesSettings.getUserAccountPropertyKey(jahiaProfileName));
+                login = siteProperties.getProperty(SitesSettings.getLoginKey(jahiaProfileName));
+                pwd = siteProperties.getProperty(SitesSettings.getPasswordKey(jahiaProfileName));
+            }
+        }
+        // check parameters
+        if (jahiaProfileName == null || gaAccount == null) {
+            logger.error("There is no google analytics account configured");
+            throw new GWTJahiaServiceException("There is no google analytics account configured");
+        }
+
+        // get data
+        return analytics.queryData(jahiaProfileName,login,pwd, gaAccount, query);
+    }
+
+    /**
      * @param seoHelper the seoHelper to set
      */
     public void setSeo(SeoHelper seoHelper) {
         this.seo = seoHelper;
     }
-    
+
+    public void setAnalytics(AnalyticsHelper analyticsHelper) {
+        this.analytics = analyticsHelper;
+    }
+
 }

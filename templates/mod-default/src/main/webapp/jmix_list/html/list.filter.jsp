@@ -45,7 +45,7 @@
 <c:forEach items="${currentList}" var="subchild">
     <p>
         <c:if test="${empty param.categorykey}">
-            <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" >
+            <template:module node="${subchild}" template="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}" >
                 <c:if test="${not empty forcedSkin}">
                     <template:param name="forcedSkin" value="${forcedSkin}"/>
                 </c:if>
@@ -65,7 +65,7 @@
                 </c:if>
             </c:forEach>
             <c:if test="${contains eq true}">
-                <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" >
+                <template:module node="${subchild}" template="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}" >
                     <c:if test="${not empty forcedSkin}">
                         <template:param name="forcedSkin" value="${forcedSkin}"/>
                     </c:if>

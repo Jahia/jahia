@@ -5,7 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:forEach items="${currentNode.children}" var="subchild">
 <p>
-    <template:module node="${subchild}" template="${subNodesTemplate}" />
+    <template:module node="${subchild}" template="${subNodesTemplate}" templateWrapper="${subNodesWrapper}"/>
 </p>
 </c:forEach>
 <c:if test="${renderContext.editMode}">

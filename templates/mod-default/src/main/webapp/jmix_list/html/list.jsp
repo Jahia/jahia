@@ -15,7 +15,7 @@
 
 <template:include template="hidden.header"/>
 <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
-    <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" editable="${editable}">
+    <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}">
         <c:if test="${not empty forcedSkin}">
             <template:param name="forcedSkin" value="${forcedSkin}"/>
         </c:if>
@@ -24,7 +24,7 @@
         </c:if>
     </template:module>
 </c:forEach>
-<div class="clear"></div>
+<c:if test="${not ommitFormatting}"><div class="clear"></div></c:if>
 <c:if test="${editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>

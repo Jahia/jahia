@@ -19,7 +19,7 @@
 <c:if test="${renderContext.editMode || not empty items}">
 <ul>
 <c:forEach items="${items}" var="menuItem">
-    <template:module node="${menuItem}" editable="true" templateWrapper="wrapper.navMenuItem" template="edit">
+    <template:module node="${menuItem}" editable="true" templateWrapper="wrapper.navMenuItem" template="menuDesign">
         <template:param name="subNodesTemplate" value="hidden.navMenuItem"/>
     </template:module>
 </c:forEach>

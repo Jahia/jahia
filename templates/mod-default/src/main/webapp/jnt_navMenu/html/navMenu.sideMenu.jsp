@@ -14,7 +14,7 @@
     </c:if>
         <ul class="level_${fn:length(outerMenues) + 2}">
         <c:forEach items="${currentNode.nodes}" var="menuItem">
-            <template:module node="${menuItem}" editable="true" templateWrapper="wrapper.navMenuItem">
+            <template:module node="${menuItem}" editable="true" templateWrapper="wrapper.navMenuItem" template="sideMenu">
                 <template:param name="omitFormatting" value="true"/>
         	    <template:param name="subNodesTemplate" value="navMenuItem"/>
             </template:module>

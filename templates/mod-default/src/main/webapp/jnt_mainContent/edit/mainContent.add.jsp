@@ -23,18 +23,21 @@
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
-
+<template:addResources type="css" resources="formmaincontent.css"/>
 <div class="maincontent">
-    <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.identifier}jnt_mainContentForm">
+    <form class="FormMainContent" action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.identifier}jnt_mainContentForm">
         <input type="hidden" name="nodeType" value="jnt:mainContent"/>
 
         <h3 class="title"><label for="${currentNode.identifier}jnt_mainContentTitle">Title</label><input type="text"
                                                                                                          name="jcr:title"
                                                                                                          id="${currentNode.identifier}jnt_mainContentTitle"/>
         </h3>
+        <div class="clear"></div>
+        <p>
         <label for="file${currentNode.identifier}jnt_mainContentImage">Image</label>
         <input type="hidden" name="image" id="${currentNode.identifier}jnt_mainContentImage"/>
-
+		<p>
+        <div class="clear"></div>
         <div id="file${currentNode.identifier}jnt_mainContentImage">
             <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
         </div>
@@ -43,8 +46,8 @@
                 $("#file${currentNode.identifier}jnt_mainContentImage").editable('${url.base}${currentNode.path}', {
                     type : 'ajaxupload',
                     onblur : 'ignore',
-                    submit : 'OK',
-                    cancel : 'Cancel',
+					submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
+					cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
                     tooltip : 'Click to edit',
                     callback : function (data, status, original) {
                         $("#${currentNode.identifier}jnt_mainContentImage").val(data.uuids[0]);
@@ -53,6 +56,8 @@
                 });
             });
         </script>
+        <p>
+        <div class="clear"></div>
         <label for="${currentNode.identifier}jnt_mainContentAlign">Image Alignment</label>
         <jcr:propertyInitializers var="options" nodeType="jnt:mainContent" name="align"/>
         <select name="align"
@@ -61,6 +66,7 @@
                 <option value="${option.value.string}">${option.displayName}</option>
             </c:forEach>
         </select>
+        <p>
         <label for="ckeditor${currentNode.identifier}jnt_mainContentBody">Body</label>
         <input type="hidden" name="body" id="${currentNode.identifier}jnt_mainContentBody"/>
         <textarea rows="50" cols="40" id="ckeditor${currentNode.identifier}jnt_mainContentBody"></textarea>

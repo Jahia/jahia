@@ -1,7 +1,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<template:addResources type="css" resources="formmaincontent.css"/>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -13,7 +13,7 @@
 
 <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
 
-<div class="maincontent">
+<div class="FormMainContent">
     <h3 class="title edit${currentNode.identifier}" jcr:id="jcr:title" jcr:url="${url.base}${currentNode.path}">
         <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
     <c:if test="${!empty image}">
@@ -22,12 +22,14 @@
             <img src="${image.node.url}" alt="${image.node.url}"/>
         </div>
     </c:if>
+    <div class="clear"></div>
     <c:if test="${empty image}">
         <div class="imagefloat${currentNode.properties.align.string} file${currentNode.identifier}" jcr:id="image"
              jcr:url="${url.base}${currentNode.path}">
             <span>click here to attach a file</span>
         </div>
     </c:if>
+   <div class="clear"></div>
     <jcr:propertyInitializers var="options" nodeType="jnt:mainContent" name="align"/>
     <span jcr:id="align" class="choicelistEdit${currentNode.identifier}"
                               jcr:url="${url.base}${currentNode.path}"

@@ -1110,7 +1110,8 @@ body {
 }
 #bodywrapper #navigationN2 a,
 #bodywrapper #navigationN2 a:link,
-#bodywrapper #navigationN2 a:visited {
+#bodywrapper #navigationN2 a:visited,
+#bodywrapper #navigationN2 span {
 	display: block;
 	text-decoration: none;
 	height:1%;
@@ -1125,7 +1126,8 @@ body {
 
 #bodywrapper #navigationN2 .level_2 a,
 #bodywrapper #navigationN2 .level_2 a:link,
-#bodywrapper #navigationN2 .level_2 a:visited {
+#bodywrapper #navigationN2 .level_2 a:visited,
+#bodywrapper #navigationN2 .level_2 span {
 	padding:0 2px 0 20px;
 	background: url(img/bg-navigationN2-L1.png) no-repeat 10px 50%;
 	border-bottom:1px solid #cccccc;
@@ -1157,7 +1159,8 @@ body {
 
 #bodywrapper #navigationN2 .level_3 a,
 #bodywrapper #navigationN2 .level_3 a:link,
-#bodywrapper #navigationN2 .level_3 a:visited {
+#bodywrapper #navigationN2 .level_3 a:visited,
+#bodywrapper #navigationN2 .level_3 span {
 	padding:0 2px 0 40px;
 	background: url(img/bg-navigationN2-L2.png) no-repeat 30px 50% ;
 }
@@ -1186,7 +1189,8 @@ body {
 }
 #bodywrapper #navigationN2 .level_4 a,
 #bodywrapper #navigationN2 .level_4 a:link,
-#bodywrapper #navigationN2 .level_4 a:visited {
+#bodywrapper #navigationN2 .level_4 a:visited,
+#bodywrapper #navigationN2 .level_4 span {
 	padding:0 2px 0 60px;
 	background: url(img/bg-navigationN2-L3.png) no-repeat 50px 50% ;
 
@@ -1215,7 +1219,8 @@ body {
 }
 #bodywrapper #navigationN2 .level_5 a,
 #bodywrapper #navigationN2 .level_5 a:link,
-#bodywrapper #navigationN2 .level_5 a:visited {
+#bodywrapper #navigationN2 .level_5 a:visited,
+#bodywrapper #navigationN2 .level_5 span {
 	padding:0 2px 0 80px;
 	background: url(img/bg-navigationN2-L4.png) no-repeat 70px 50%;
 
@@ -1244,7 +1249,8 @@ body {
 }
 #bodywrapper #navigationN2 .level_6 a,
 #bodywrapper #navigationN2 .level_6 a:link,
-#bodywrapper #navigationN2 .level_6 a:visited {
+#bodywrapper #navigationN2 .level_6 a:visited,
+#bodywrapper #navigationN2 .level_6 span {
 	padding:0 2px 0 100px ;
 	background: url(img/bg-navigationN2-L5.png) no-repeat 90px 50% ;
 }

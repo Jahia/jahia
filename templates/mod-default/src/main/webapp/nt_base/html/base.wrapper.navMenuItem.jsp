@@ -1,0 +1,2 @@
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<li>${not fn:contains(wrappedContent, '<a ') ? '<span>' : ''}${wrappedContent}${not fn:contains(wrappedContent, '<a ') ? '</span>' : ''}</li>

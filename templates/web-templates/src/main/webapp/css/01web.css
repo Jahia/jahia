@@ -647,7 +647,7 @@ body {
     padding: 0;
 }
 
-#bodywrapper #navigationN1 li a {
+#bodywrapper #navigationN1 li a, #bodywrapper #navigationN1 li span {
     background: transparent url( img/navigationN1-separator.png ) no-repeat 100% 50%;
     color: #333333;
     display: inline;

@@ -4,24 +4,16 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<div id="navigationN1">
-<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
-<c:set var="outerMenues" value="${jcr:getParentsOfType(currentNode, 'jnt:navMenu')}"/>
-<c:if test="${not empty title.string}">
-    <h2><c:out value="${title.string}"/></h2>
-</c:if>
 <c:set var="items" value="${currentNode.nodes}"/>
 <c:if test="${renderContext.editMode || not empty items}">
-<ul class="level_1">
 <c:forEach items="${items}" var="menuItem">
-    <template:module node="${menuItem}" editable="true" templateWrapper="wrapper.navMenuItem">
-        <template:param name="ommitFormatting" value="true"/>
+    <li class="box-inner-border">
+    <template:module node="${menuItem}" editable="true">
         <template:param name="subNodesTemplate" value="hidden.navMenuItem"/>
     </template:module>
+    </li>
 </c:forEach>
 <c:if test="${renderContext.editMode}">
     <li><fmt:message key="label.add.new.content"/><template:module path="*"/></li>
 </c:if>
-</ul>
 </c:if>
-</div>

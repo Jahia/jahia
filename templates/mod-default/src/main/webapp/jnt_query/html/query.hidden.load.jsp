@@ -3,6 +3,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:statement" var="query"/>
@@ -11,17 +12,16 @@
 <c:if test="${not empty title.string}">
 	<h3>${fn:escapeXml(title.string)}</h3>
 </c:if>
-<c:if test="${renderContext.editMode}">
-	<p>${fn:escapeXml(jcr:label(currentNode.primaryNodeType))} (${lang.string}):&nbsp;${fn:escapeXml(query.string)}</p>
-</c:if>
 <c:choose>
 	<c:when test="${lang.string == 'JCR-SQL2'}">
 		<jcr:sql var="result" sql="${query.string}" limit="${maxItems.long}"/>
 		<c:set var="currentList" value="${result.nodes}" scope="request" />
+        <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
 	</c:when>
 	<c:when test="${lang.string == 'xpath'}">
 		<jcr:xpath var="result" xpath="${query.string}" limit="${maxItems.long}"/>
 		<c:set var="currentList" value="${result.nodes}" scope="request" />
+        <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
 	</c:when>
 	<c:otherwise>
 		<utility:logger level="error" value="Unsupported query language encountered: ${lang}"/>
@@ -30,5 +30,6 @@
 </c:choose>
 <c:set var="editable" value="false" scope="request"/>
 <c:if test="${renderContext.editMode && empty currentList}">
-	<p><fmt:message key="search.results.no.results"/></p>
+    <p><fmt:message key="search.results.no.results"/></p>
 </c:if>
+<c:set var="listTotalSize" value="${end}" scope="request"/>

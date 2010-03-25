@@ -29,17 +29,17 @@
 
     <c:if test="${empty currentList and not empty listQuery}">
         <%-- move that to jmix:orderedList hidden.init tpl --%>
-        <c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">
-            <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
-                <c:forTokens var="prefix" items="first,second,third" delims=",">
-                    <jcr:nodeProperty node="${currentNode}" name="${prefix}Field" var="sortPropertyName"/>
-                    <c:if test="${!empty sortPropertyName}">
-                        <jcr:nodeProperty node="${currentNode}" name="${prefix}Direction" var="order"/>
-                        <query:sortBy propertyName="${sortPropertyName.string}" order="${order.string}"/>
-                    </c:if>
-                </c:forTokens>
-            </query:definition>
-        </c:if>
+        <%--<c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">--%>
+            <%--<query:definition var="listQuery" qomBeanName="listQuery" scope="request" >--%>
+                <%--<c:forTokens var="prefix" items="first,second,third" delims=",">--%>
+                    <%--<jcr:nodeProperty node="${currentNode}" name="${prefix}Field" var="sortPropertyName"/>--%>
+                    <%--<c:if test="${!empty sortPropertyName}">--%>
+                        <%--<jcr:nodeProperty node="${currentNode}" name="${prefix}Direction" var="order"/>--%>
+                        <%--<query:sortBy propertyName="${sortPropertyName.string}" order="${order.string}"/>--%>
+                    <%--</c:if>--%>
+                <%--</c:forTokens>--%>
+            <%--</query:definition>--%>
+        <%--</c:if>--%>
         <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
 
         <%-- pager specific --%>
@@ -48,6 +48,10 @@
 
         <%-- set result --%>
         <c:set value="${result.nodes}" var="currentList" scope="request"/>
+    </c:if>
+
+    <c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">
+        <jcr:sort list="${currentList}" properties="${currentNode.properties.firstField.string},${currentNode.properties.firstDirection.string},${currentNode.properties.secondField.string},${currentNode.properties.secondDirection.string},${currentNode.properties.thirdField.string},${currentNode.properties.thirdDirection.string}" var="currentList" scope="request"/>
     </c:if>
 
     <c:if test="${empty editable}">

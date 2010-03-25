@@ -55,6 +55,36 @@
         </attribute>
     </tag>
     <tag>
+        <description>Exposes a JCR node as a JCRNodeWrapper object</description>
+        <name>sort</name>
+        <tag-class>org.jahia.taglibs.jcr.node.JCRSortTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>the name of the exposed bean</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the list to sort</description>
+            <name>list</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the properties on which we sort</description>
+            <name>properties</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the scope of the bean (see PageContext)</description>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <description>Get a specific version of a node</description>
         <name>nodeVersion</name>
         <tag-class>org.jahia.taglibs.jcr.node.JCRNodeVersionTag</tag-class>

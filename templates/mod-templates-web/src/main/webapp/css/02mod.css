@@ -106,3 +106,39 @@ shortcuts
 	text-decoration:none;
 	color:#990000;
 }
+/******************************************************************************
+shortcuts inline
+******************************************************************************/
+#bodywrapper .shortcuts-inline li.shortcuts-print {
+    background: transparent url( img/mod/shortcuts-print.png ) no-repeat 0% 50% !important;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-typoincrease {
+    background: transparent url( img/mod/shortcuts-typoincrease.png ) no-repeat 0% 50% !important;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-typoreduce {
+    background: transparent url( img/mod/shortcuts-typoreduce.png ) no-repeat 0% 50% !important;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-home {
+    background: transparent url( img/mod/shortcuts-home.png ) no-repeat 0% 50% !important;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-contact {
+    background: transparent url( img/mod/shortcuts-contact.png ) no-repeat 0% 50% !important;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-sitemap {
+    background: transparent url( img/mod/shortcuts-sitemap.png ) no-repeat 0% 50% !important;
+}
+
+#bodywrapper .shortcuts-inline li.shortcuts-mysettings {
+    background: transparent url( img/mod/shortcuts-mysettings.png ) no-repeat 0% 50% !important;
+}
+#bodywrapper .shortcuts-inline li.shortcuts-contribute {
+    background: transparent url( img/mod/shortcuts-contribute.png ) no-repeat 0% 50% !important;
+}
+#bodywrapper .shortcuts-inline li.shortcuts-edit {
+    background: transparent url( img/mod/shortcuts-edit.png ) no-repeat 0% 50% !important;
+}

@@ -181,7 +181,7 @@ public class ImageService {
     private File getThumbFile(NodeWrapper imageNode, int size,boolean square,KnowledgeHelper drools) throws Exception {
         String savePath = org.jahia.settings.SettingsBean.getInstance().getTmpContentDiskPath();
         File Ftemp = new File(savePath);
-        if (!Ftemp.exists()) Ftemp.mkdir();
+        if (!Ftemp.exists()) Ftemp.mkdirs();
         final File f = File.createTempFile("thumb","jpg", Ftemp);
 
         ImageWrapper iw = getImageWrapper(imageNode, drools);

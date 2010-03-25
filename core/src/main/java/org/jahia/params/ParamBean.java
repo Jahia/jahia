@@ -917,7 +917,7 @@ public class ParamBean extends ProcessingContext {
                 final String savePath = settings().getTmpContentDiskPath();
                 final File tmp = new File(savePath);
                 if (!tmp.exists()) {
-                    tmp.mkdir();
+                    tmp.mkdirs();
                 }
                 try {
                     fupload = new FileUpload(request, savePath,

@@ -22,13 +22,13 @@
             <li class="topshortcuts-login">
                 <a class="loginFormTopLogoutShortcuts"
                    href='${url.logout}'><span><fmt:message
-                        key="web_templates.logout"/></span></a>
+                        key="logout"/></span></a>
             </li>
             <li>
                 <span class="currentUser"><utility:userProperty/></span>
             </li>
             <li class="topshortcuts-mysettings">
-                <a href="${url.userProfile}"><fmt:message key="web_templates.mySettings.title"/></a>
+                <a href="${url.userProfile}"><fmt:message key="userProfile.link"/></a>
             </li>
             <li class="topshortcuts-edit">
                 <a href="${url.edit}"><fmt:message key="edit"/></a>
@@ -39,20 +39,20 @@
         </c:if>
         <li class="topshortcuts-print"><a href="base.wrapper.bodywrapper.jsp#"
                                           onclick="javascript:window.print()">
-            <fmt:message key="web_templates.print"/></a>
+            <fmt:message key="print"/></a>
         </li>
         <li class="topshortcuts-typoincrease">
-            <a href="javascript:ts('body',1)"><fmt:message key="web_templates.up"/></a>
+            <a href="javascript:ts('body',1)"><fmt:message key="font.up"/></a>
         </li>
         <li class="topshortcuts-typoreduce">
-            <a href="javascript:ts('body',-1)"><fmt:message key="web_templates.down"/></a>
+            <a href="javascript:ts('body',-1)"><fmt:message key="font.down"/></a>
         </li>
         <li class="topshortcuts-home">
-            <a href="${url.base}${rootPage.path}.html"><fmt:message key="web_templates.home"/></a>
+            <a href="${url.base}${rootPage.path}.html"><fmt:message key="home"/></a>
         </li>
         <li class="topshortcuts-sitemap">
             <a href="${url.base}${rootPage.path}.sitemap.html"><fmt:message
-                    key="web_templates.sitemap"/></a>
+                    key="sitemap"/></a>
         </li>
     </ul>
 </div>

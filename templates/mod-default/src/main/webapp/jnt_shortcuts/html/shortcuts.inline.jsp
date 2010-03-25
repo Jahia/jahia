@@ -10,37 +10,37 @@
             <li class="shortcuts-login">
                 <a class="loginFormTopLogoutShortcuts"
                    href='${url.logout}'><span><fmt:message
-                        key="web_templates.logout"/></span></a>
+                        key="logout"/></span></a>
             </li>
             <li>
                 <span class="currentUser"><utility:userProperty/></span>
             </li>
-            <li class="shortcuts-mysettings">
-                <a href="${url.userProfile}"><fmt:message key="web_templates.mySettings.title"/></a>
+            <li>
+                <a href="${url.userProfile}"><fmt:message key="userProfile.link"/></a>
             </li>
-            <li class="shortcuts-edit">
+            <li>
                 <a href="${url.edit}"><fmt:message key="edit"/></a>
             </li>
-            <li class="shortcuts-edit">
+            <li>
                 <a href="${url.contribute}"><fmt:message key="contribute"/></a>
             </li>
         </c:if>
-        <li class="shortcuts-print"><a href="base.wrapper.bodywrapper.jsp#"
+        <li><a href="base.wrapper.bodywrapper.jsp#"
                                           onclick="javascript:window.print()">
-            <fmt:message key="web_templates.print"/></a>
+            <fmt:message key="print"/></a>
         </li>
-        <li class="shortcuts-typoincrease">
-            <a href="javascript:ts('body',1)"><fmt:message key="web_templates.up"/></a>
+        <li>
+            <a href="javascript:ts('body',1)"><fmt:message key="font.up"/></a>
         </li>
         <li class="shortcuts-typoreduce">
-            <a href="javascript:ts('body',-1)"><fmt:message key="web_templates.down"/></a>
+            <a href="javascript:ts('body',-1)"><fmt:message key="font.down"/></a>
         </li>
-        <li class="shortcuts-home">
-            <a href="${url.base}${rootPage.path}.html"><fmt:message key="web_templates.home"/></a>
+        <li>
+            <a href="${url.base}${rootPage.path}.html"><fmt:message key="home"/></a>
         </li>
         <li class="shortcuts-sitemap">
             <a href="${url.base}${rootPage.path}.sitemap.html"><fmt:message
-                    key="web_templates.sitemap"/></a>
+                    key="sitemap"/></a>
         </li>
     </ul>
 </div>

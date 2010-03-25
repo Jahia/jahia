@@ -99,6 +99,9 @@ Basic Jahia REST API
 |targetDirectory            |no           | If you have multipart form, this will be the                         |
 |                           |             | location where the content is uploaded                               |
 *---------------------------+-------------+----------------------------------------------------------------------+
+|version                    |no           | If "true" activate the versionning on the posted content             |
+|                           |             | (works only for files)                                               |
+*---------------------------+-------------+----------------------------------------------------------------------+
 |jcr:mixinTypes             |no           | Allow you to set a mixin on the new node                             |
 *---------------------------+-------------+----------------------------------------------------------------------+
 

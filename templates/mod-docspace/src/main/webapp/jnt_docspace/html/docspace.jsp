@@ -113,6 +113,7 @@
                             <input type="file" name="file">
                             <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
                             <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
+                            <input type="hidden" name="version" value="true"/>
                             <input type="submit" name="upload"/>
                         </form>
                       </div><!--stop formSearchTop-->

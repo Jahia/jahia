@@ -373,7 +373,6 @@ public class Find extends HttpServlet implements Controller {
             if (removeDuplicatePropertyValues) {
                 alreadyIncludedPropertyValues = new HashMap<String, String>();
             }
-            new HashMap<String, String>();
             if (serializeRows) {
                 RowIterator rows = result.getRows();
                 while (rows.hasNext()) {

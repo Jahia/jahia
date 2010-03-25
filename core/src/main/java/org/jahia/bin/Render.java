@@ -35,6 +35,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
@@ -108,6 +109,7 @@ public class Render extends HttpServlet implements Controller,
     public static final String CAPTCHA = "captcha";
     public static final String TARGETDIRECTORY = "targetDirectory";
     public static final String NORMALIZE_NODE_NAME = "normalizeNodeName";
+    public static final String VERSION = "version";
 
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
@@ -125,6 +127,7 @@ public class Render extends HttpServlet implements Controller,
         reservedParameters.add(TARGETDIRECTORY);
         reservedParameters.add(Constants.JCR_MIXINTYPES);
         reservedParameters.add(NORMALIZE_NODE_NAME);
+        reservedParameters.add(VERSION);
     }
 
     private transient ServletConfig servletConfig;
@@ -380,6 +383,7 @@ public class Render extends HttpServlet implements Controller,
             JCRNodeWrapper userDirectory = ((JCRUser) paramBean.getUser()).getNode(session);
             String target = userDirectory.getPath() + "/files";
             boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
+            boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION)?(fileUpload.getParameterValues(VERSION))[0].equals("true"):false;
             final String requestWith = paramBean.getRealRequest().getHeader("x-requested-with");
             boolean isAjaxRequest = paramBean.getRealRequest().getHeader("accept").contains(
                     "application/json") && requestWith != null && requestWith.equals("XMLHttpRequest") || fileUpload.getParameterMap().isEmpty();
@@ -395,11 +399,25 @@ public class Render extends HttpServlet implements Controller,
             if (isTargetDirectoryDefined || isAjaxRequest) {
                 final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
                 for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
+                    //if node exists, do a checkout before
+                    JCRNodeWrapper fileNode = targetDirectory.hasNode(itemEntry.getValue().getName())?targetDirectory.getNode(itemEntry.getValue().getName()):null;
+                    if (fileNode!=null && isVersionActivated) {
+                        session.checkout(fileNode);
+                    }
                     final JCRNodeWrapper wrapper = targetDirectory.uploadFile(itemEntry.getValue().getName(),
-                                                                              itemEntry.getValue().getInputStream(),
-                                                                              itemEntry.getValue().getContentType());
+                            itemEntry.getValue().getInputStream(),
+                            itemEntry.getValue().getContentType());
                     uuids.add(wrapper.getIdentifier());
                     files.add(itemEntry.getValue().getName());
+                    if (isVersionActivated) {
+                        if (!wrapper.isVersioned()) {
+                            wrapper.versionFile();
+                            session.save();
+                            wrapper.checkpoint();
+                        }
+                        session.save();
+                        wrapper.checkin();
+                  }
                 }
                 fileUpload.markFilesAsConsumed();
                 session.save();

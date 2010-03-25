@@ -114,31 +114,52 @@ public class JCRVersionService extends JahiaService {
             Version v = vi.nextVersion();
             // the first is the root version, which has no properties, so we will ignore it.
         }
+        String nodeTitle = null;
         while (vi.hasNext()) {
             Version v = vi.nextVersion();
             Node frozenNode = v.getFrozenNode();
+            if (logger.isDebugEnabled()) {
+                if (frozenNode.hasProperty("jcr:title")) {
+                    nodeTitle = frozenNode.getProperty("jcr:title").getString();
+                }
+            }
             Date checkinDate = null;
+            boolean checkinDateAvailable = false;
             if (frozenNode.hasProperty("j:checkinDate")) {
                 Property checkinDateProperty = frozenNode.getProperty("j:checkinDate");
                 checkinDate = checkinDateProperty.getDate().getTime();
+                checkinDateAvailable = true;
+                if (checkinDate.compareTo(versionDate) > 0) {
+                    closestVersion = lastVersion;
+                    break;
+                }
             } else {
-                checkinDate = v.getCreated().getTime();
+                if (v.getCreated().getTime().compareTo(versionDate) > 0) {
+                    // this can happen if we have a checkinDate, but try to resolve using the creation date.
+                    closestVersion = lastVersion;
+                    break;
+                }
             }
-            if (checkinDate.compareTo(versionDate) > 0) {
-                closestVersion = lastVersion;
-                break;
-            } else if (checkinDate.compareTo(versionDate) == 0) {
-                closestVersion = v;
-                break;
-            } else if (v.getCreated().getTime().compareTo(versionDate) > 0) {
-                // this can happen if we have a checkinDate, but try to resolve using the creation date.
-                closestVersion = lastVersion;
-                break;
-            } else if (v.getCreated().getTime().compareTo(versionDate) == 0) {
-                closestVersion = v;
-                break;                
+            if (logger.isDebugEnabled()) {
+                logger.debug("Version " + v.getName() + " (title=" + nodeTitle +") checkinDateAvailable=" + checkinDateAvailable + " checkinDate=" + checkinDate + " created=" + v.getCreated().getTime());
             }
             lastVersion = v;
+        }
+        if (closestVersion == null) {
+            // if we haven't found anything, maybe it's the last version that we should be using ?
+            Date checkinDate;            
+            Node frozenNode = lastVersion.getFrozenNode();
+            if (frozenNode.hasProperty("j:checkinDate")) {
+                Property checkinDateProperty = frozenNode.getProperty("j:checkinDate");
+                checkinDate = checkinDateProperty.getDate().getTime();
+                if (checkinDate.compareTo(versionDate) == 0) {
+                    closestVersion = lastVersion;
+                }
+            } else {
+                if (lastVersion.getCreated().getTime().compareTo(versionDate) == 0) {
+                    closestVersion = lastVersion;
+                }
+            }
         }
         if (logger.isDebugEnabled()) {
             Date checkinDate = null;
@@ -146,7 +167,7 @@ public class JCRVersionService extends JahiaService {
                 Property checkinDateProperty = closestVersion.getFrozenNode().getProperty("j:checkinDate");
                 checkinDate = checkinDateProperty.getDate().getTime();
             }
-            logger.debug("Resolved date " + versionDate + " to closest version " + closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime() + " checkinDate=" + checkinDate);
+            logger.debug("Resolved date " + versionDate + " for node title "+nodeTitle + " to closest version " + closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime() + " checkinDate=" + checkinDate);
         }
         return closestVersion;
     }

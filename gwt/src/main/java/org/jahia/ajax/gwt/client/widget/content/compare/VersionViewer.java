@@ -236,7 +236,7 @@ public class VersionViewer extends ContentPanel {
                     }
                 });
             } else {
-                contentService.getNodeURL(version.getNode().getPath(), Long.toString(version.getDate().getTime()), workspace, locale, currentMode, new AsyncCallback<String>() {
+                contentService.getNodeURL(version.getNode().getPath(), Long.toString(version.getCheckinDate().getTime()), workspace, locale, currentMode, new AsyncCallback<String>() {
                     public void onSuccess(String url) {
                         currentFrame = setUrl(url);
                         setHeading(url);

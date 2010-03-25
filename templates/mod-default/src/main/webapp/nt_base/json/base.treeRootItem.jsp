@@ -36,8 +36,8 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<c:set var="nodeTypes" value="${functions:default(renderContext.moduleParams.nodeTypes, param.nodeTypes)}"/>
-<c:set var="selectableNodeTypes" value="${functions:default(renderContext.moduleParams.selectableNodeTypes, param.selectableNodeTypes)}"/>
+<c:set var="nodeTypes" value="${functions:default(currentResource.moduleParams.nodeTypes, param.nodeTypes)}"/>
+<c:set var="selectableNodeTypes" value="${functions:default(currentResource.moduleParams.selectableNodeTypes, param.selectableNodeTypes)}"/>
 <json:array>
 <json:object>
 	<json:property name="id" value="${currentNode.identifier}"/>

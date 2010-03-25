@@ -35,8 +35,8 @@
 <%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<c:set var="nodeTypes" value="${functions:default(renderContext.moduleParams.nodeTypes, param.nodeTypes)}"/>
-<c:set var="selectableNodeTypes" value="${functions:default(renderContext.moduleParams.selectableNodeTypes, param.selectableNodeTypes)}"/>
+<c:set var="nodeTypes" value="${functions:default(currentResource.moduleParams.nodeTypes, param.nodeTypes)}"/>
+<c:set var="selectableNodeTypes" value="${functions:default(currentResource.moduleParams.selectableNodeTypes, param.selectableNodeTypes)}"/>
 <c:if test="${empty nodeTypes || jcr:isNodeType(currentNode, nodeTypes)}">
 <json:object>
 	<json:property name="id" value="${currentNode.identifier}"/>

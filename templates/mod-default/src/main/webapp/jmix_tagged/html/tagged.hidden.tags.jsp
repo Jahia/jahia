@@ -4,7 +4,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 
 <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
-<c:set var="separator" value="${functions:default(renderContext.moduleParams.separator, ', ')}"/>
+<c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
 <jsp:useBean id="filteredTags" class="java.util.LinkedHashMap"/>
 <c:forEach items="${assignedTags}" var="tag" varStatus="status">
 	<c:if test="${not empty tag.node}">

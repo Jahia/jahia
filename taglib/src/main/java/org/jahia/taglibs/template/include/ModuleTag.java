@@ -254,6 +254,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 Resource resource = new Resource(node, templateType, template, forcedTemplate);
+                if (templateWrapper != null && templateWrapper.length() > 0) {
+                    resource.pushWrapper(templateWrapper);
+                }
 
                 String charset = pageContext.getResponse().getCharacterEncoding();
                 for (Map.Entry<String, String> param : parameters.entrySet()) {

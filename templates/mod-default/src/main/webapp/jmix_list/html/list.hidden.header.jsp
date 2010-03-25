@@ -14,7 +14,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:if test="${not ommitFormatting}"><div id="${currentNode.UUID}"></c:if>
+<c:if test="${not omitFormatting}"><div id="${currentNode.UUID}"></c:if>
     <c:remove var="listQuery" scope="request"/>
     <c:remove var="currentList" scope="request"/>
     <c:choose>

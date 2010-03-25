@@ -6,16 +6,15 @@
 
 <div id="navigationN1">
 <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
-<c:set var="outerMenues" value="${jcr:getParentsOfType(currentNode, 'jnt:navMenu')}"/>
 <c:if test="${not empty title.string}">
-    <h2><c:out value="${title.string}"/></h2>
+    <span><c:out value="${title.string}"/></span>
 </c:if>
 <c:set var="items" value="${currentNode.nodes}"/>
 <c:if test="${renderContext.editMode || not empty items}">
 <ul class="level_1">
 <c:forEach items="${items}" var="menuItem">
     <template:module node="${menuItem}" editable="true" templateWrapper="wrapper.navMenuItem">
-        <template:param name="ommitFormatting" value="true"/>
+        <template:param name="omitFormatting" value="true"/>
         <template:param name="subNodesTemplate" value="hidden.navMenuItem"/>
     </template:module>
 </c:forEach>

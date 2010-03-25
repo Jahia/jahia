@@ -6,27 +6,21 @@
 
 <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 <c:set var="outerMenues" value="${jcr:getParentsOfType(currentNode, 'jnt:navMenu')}"/>
-<c:if test="${renderContext.editMode}">
-<fieldset>
-    <legend><c:out value="${not empty title.string ? title.string : jcr:label(currentNode.primaryNodeType)}"/></legend>
+<c:if test="${not empty title.string}">
+	<span><c:out value="${title.string}"/></span>
 </c:if>
-	<c:if test="${not empty title.string}">
-		<h2><c:out value="${title.string}"/></h2>
-	</c:if>
 	<c:if test="${empty outerMenues}">
     <div id="navigationN2">	
     </c:if>
-        <ul class="level_${fn:length(outerMenues) + 1}">
+        <ul class="level_${fn:length(outerMenues) + 2}">
         <c:forEach items="${currentNode.nodes}" var="menuItem">
             <template:module node="${menuItem}" editable="true">
+                <template:param name="omitFormatting" value="true"/>
         	    <template:param name="subNodesTemplate" value="navMenuItem"/>
             </template:module>
         </c:forEach>
         <c:if test="${renderContext.editMode}">
-    	    <div class="addelements">
-        	    <span>???Add your menu items here???</span>
-        	    <template:module path="*"/>
-            </div>
+            <li><fmt:message key="label.add.new.content"/><template:module path="*"/></li>
         </c:if>
         </ul>
 	<c:if test="${empty outerMenues}">        

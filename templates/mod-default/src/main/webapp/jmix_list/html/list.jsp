@@ -24,7 +24,7 @@
         </c:if>
     </template:module>
 </c:forEach>
-<c:if test="${not ommitFormatting}"><div class="clear"></div></c:if>
+<c:if test="${not omitFormatting}"><div class="clear"></div></c:if>
 <c:if test="${editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>

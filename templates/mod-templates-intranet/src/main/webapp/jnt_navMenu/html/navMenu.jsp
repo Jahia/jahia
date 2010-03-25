@@ -31,7 +31,7 @@
         </c:when>
         <c:when test="${jcr:isNodeType(menuItem, 'jmix:list')}">
             <template:module node="${menuItem}" editable="true">
-                <template:param name="ommitFormatting" value="true"/>
+                <template:param name="omitFormatting" value="true"/>
                 <template:param name="subNodesTemplate" value="hidden.navMenuItem"/>
                 <template:param name="subNodesWrapper" value="wrapper.navMenuItem"/>
             </template:module>

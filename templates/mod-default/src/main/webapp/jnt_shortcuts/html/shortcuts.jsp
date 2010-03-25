@@ -19,7 +19,7 @@
     <h3><a title="Shortcuts" href="#">Shortcuts</a></h3>
     <ul>
         <c:if test="${renderContext.loggedIn}">
-            <li class="topshortcuts-login">
+            <li>
                 <a class="loginFormTopLogoutShortcuts"
                    href='${url.logout}'><span><fmt:message
                         key="logout"/></span></a>
@@ -30,27 +30,27 @@
             <li class="topshortcuts-mysettings">
                 <a href="${url.userProfile}"><fmt:message key="userProfile.link"/></a>
             </li>
-            <li class="topshortcuts-edit">
+            <li>
                 <a href="${url.edit}"><fmt:message key="edit"/></a>
             </li>
-            <li class="topshortcuts-edit">
+            <li>
                 <a href="${url.contribute}"><fmt:message key="contribute"/></a>
             </li>
         </c:if>
-        <li class="topshortcuts-print"><a href="base.wrapper.bodywrapper.jsp#"
+        <li><a href="base.wrapper.bodywrapper.jsp#"
                                           onclick="javascript:window.print()">
             <fmt:message key="print"/></a>
         </li>
-        <li class="topshortcuts-typoincrease">
+        <li>
             <a href="javascript:ts('body',1)"><fmt:message key="font.up"/></a>
         </li>
-        <li class="topshortcuts-typoreduce">
+        <li>
             <a href="javascript:ts('body',-1)"><fmt:message key="font.down"/></a>
         </li>
-        <li class="topshortcuts-home">
+        <li>
             <a href="${url.base}${rootPage.path}.html"><fmt:message key="home"/></a>
         </li>
-        <li class="topshortcuts-sitemap">
+        <li>
             <a href="${url.base}${rootPage.path}.sitemap.html"><fmt:message
                     key="sitemap"/></a>
         </li>

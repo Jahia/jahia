@@ -4,7 +4,7 @@
     display: inline;
     float: right;
     text-align: right;
-    font-size: 80%;
+    font-size: 90%;
     line-height: 2em;
     line-height: normal;
     padding: 10px;
@@ -71,24 +71,19 @@
     background: transparent url( img/shortcuts-mysettings.png ) no-repeat 0% 50%;
     padding-left: 16px;
 }
+#bodywrapper .shortcuts-inline li.shortcuts-contribute {
+    background: transparent url( img/shortcuts-contribute.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+#bodywrapper .shortcuts-inline li.shortcuts-edit {
+    background: transparent url( img/shortcuts-edit.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
 
-#bodywrapper .shortcuts-inline .shortcuts-login a {
-    background: transparent url( img/shortcuts-login.png ) no-repeat left top;
-    padding-left: 20px;
+#bodywrapper .shortcuts-inline li.shortcuts-login {
+    background-color: #eaeaea ;
     text-transform: uppercase;
-}
-
-#bodywrapper .shortcuts-inline .shortcuts-login a:hover {
-    background: transparent url( img/shortcuts-login.png ) no-repeat 0px -13px;
-	padding-left: 20px;
-}
-
-#bodywrapper .shortcuts-inline .shortcuts-login a span {
-    background: transparent url( img/shortcuts-login.png ) no-repeat right top;
-    padding-right: 16px;
-}
-
-#bodywrapper .shortcuts-inline .shortcuts-login a span:hover {
-    background: transparent url( img/shortcuts-login.png ) no-repeat right -13px;
-    padding-right: 16px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border:1px solid #ccc;
 }

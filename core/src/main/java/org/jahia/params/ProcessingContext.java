@@ -263,7 +263,6 @@ public class ProcessingContext {
 
     private String characterEncoding;
 
-    private String generatedOutput;
     private String contentType;
 
     private URLGenerator urlGenerator = new BasicURLGeneratorImpl();
@@ -1194,11 +1193,8 @@ public class ProcessingContext {
     }
 
     private boolean findSiteFromSession() {
-        if (!CORE_ENGINE_NAME.equals(getEngineName())) {
-            site = (JahiaSite) getSessionState().getAttribute(SESSION_SITE);
-            return !(site == null || site.getID() <= 0);
-        }
-        return false;
+        site = (JahiaSite) getSessionState().getAttribute(SESSION_SITE);
+        return !(site == null || site.getID() <= 0);
     }
 
     /**

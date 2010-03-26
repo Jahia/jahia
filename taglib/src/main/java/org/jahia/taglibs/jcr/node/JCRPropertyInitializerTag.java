@@ -43,10 +43,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This Tag allows access to specific property of a node.
@@ -119,8 +116,8 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                             for (Map.Entry<String, String> entry : map.entrySet()) {
                                 if (initializers.containsKey(entry.getKey())) {
                                     listValues = initializers.get(entry.getKey()).getChoiceListValues(
-                                            Jahia.getThreadParamBean(), (ExtendedPropertyDefinition) definition,
-                                            type, entry.getValue(), listValues);
+                                            (ExtendedPropertyDefinition) definition, type, entry.getValue(), listValues, Jahia.getThreadParamBean().getLocale(), new HashMap<String, Object>() 
+                                    );
                                 }
                             }
                             if (listValues != null) {

@@ -35,7 +35,6 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -46,6 +45,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Script-based choice list initializer implementation.
@@ -58,8 +59,8 @@ import java.util.List;
 public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
     private transient static Logger logger = Logger.getLogger(ScriptChoiceListInitializerImpl.class);
 
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context
+    ) {
         if(param!=null) {
         ScriptEngineManager manager = new ScriptEngineManager();
         final String extension = param.split("\\.")[1];

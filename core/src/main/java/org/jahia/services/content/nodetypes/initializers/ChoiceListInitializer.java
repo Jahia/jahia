@@ -37,6 +37,8 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Defines the choice list value initializer.
@@ -46,6 +48,5 @@ import java.util.List;
  *        Created : 17 nov. 2009
  */
 public interface ChoiceListInitializer {
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param,
-                                                     List<ChoiceListValue> values);
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context);
 }

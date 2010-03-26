@@ -32,8 +32,8 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -41,6 +41,8 @@ import org.jahia.services.templates.TemplateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Choice list implementation that looks up image files.
@@ -51,10 +53,10 @@ import java.util.List;
  */
 public class ImageChoiceListInitializerImpl implements ChoiceListInitializer {
 
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context
+    ) {
         if (values != null && values.size() > 0) {
-            String templatePackageName = context.getSite().getTemplatePackageName();
+            String templatePackageName = epd.getDeclaringNodeType().getSystemId();
             JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
                     templatePackageName);
             for (ChoiceListValue bean : values) {
@@ -62,7 +64,11 @@ public class ImageChoiceListInitializerImpl implements ChoiceListInitializer {
                 if (path != null) {
                     bean.addProperty("image", path);
                 } else {
-                    bean.addProperty("image", context.getContextPath() + "/css/blank.gif");
+                    String s = Jahia.getContextPath();
+                    if (s.equals("/")) {
+                        s = "";
+                    }
+                    bean.addProperty("image", s + "/css/blank.gif");
                 }
             }
             return values;

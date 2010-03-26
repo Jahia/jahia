@@ -32,7 +32,6 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -53,12 +52,11 @@ import java.util.*;
  */
 public class CountryChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
     
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition,
-                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         String[] iso = Locale.getISOCountries();
         List<ChoiceListValue> l = new ArrayList<ChoiceListValue>(iso.length);
         for (String anIso : iso) {
-            l.add(new ChoiceListValue(new Locale("en", anIso).getDisplayCountry(jParams.getLocale()), null,
+            l.add(new ChoiceListValue(new Locale("en", anIso).getDisplayCountry(locale), null,
                                       new ValueImpl(anIso, PropertyType.STRING, false)));
         }
         Collections.sort(l);

@@ -5,16 +5,17 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
 
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -42,16 +43,17 @@ public class TemplateHelper {
      * @param templateWrapper
      * @param contextParams
      * @param editMode
-     * @param ctx                @return   @throws GWTJahiaServiceException
+     * @param request
+     * @param response
      * @param currentUserSession
      */
-    public GWTRenderResult getRenderedContent(String path, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, ParamBean ctx, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTRenderResult getRenderedContent(String path, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
             Resource r = new Resource(node, "html", null, template);
-            ctx.getRequest().setAttribute("mode", "edit");
-            RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());
+            request.setAttribute("mode", "edit");
+            RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
             renderContext.setMainResource(r);
             if (contextParams != null) {
@@ -63,21 +65,21 @@ public class TemplateHelper {
 
             JahiaSite site = node.resolveSite();
             if (site == null) {
-                site = ctx.getSite();
+                site = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
+            }
+            if (site == null) {
+                try {
+                    site = JahiaSitesBaseService.getInstance().getDefaultSite();
+                } catch (JahiaException e) {
+                    logger.error("Cannot get site",e);
+                }
             }
             if (site != null) {
-                ctx.setSite(site);
-                ctx.setContentPage(site.getHomeContentPage());
-                ctx.setThePage(site.getHomePage());
-                ctx.getSessionState().setAttribute(ProcessingContext.SESSION_SITE, site);
-                ctx.getSessionState().setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, site.getHomePageID());
-
-                renderContext.setSite(ctx.getSite());
-                renderContext.setSiteNode(currentUserSession.getNode("/sites/" + ctx.getSite().getSiteKey()));
+                request.getSession().setAttribute(ProcessingContext.SESSION_SITE, site);
+                renderContext.setSite(site);
+                renderContext.setSiteNode(currentUserSession.getNode("/sites/" + site.getSiteKey()));
             }
 
-
-//            renderContext.setTemplateWrapper(templateWrapper);
             String res = renderService.render(r, renderContext);
             result = new GWTRenderResult(res, new HashMap(renderContext.getStaticAssets()));
         } catch (RepositoryException e) {

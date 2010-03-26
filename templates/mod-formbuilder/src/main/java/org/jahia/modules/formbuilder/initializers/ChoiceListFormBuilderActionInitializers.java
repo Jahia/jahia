@@ -34,7 +34,6 @@ package org.jahia.modules.formbuilder.initializers;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
@@ -43,10 +42,7 @@ import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitial
 import org.jahia.services.templates.JahiaTemplateManagerService;
 
 import javax.jcr.PropertyType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -81,9 +77,8 @@ public class ChoiceListFormBuilderActionInitializers implements ModuleChoiceList
         this.templateService = templateService;
     }
 
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     ExtendedNodeType realNodeType, String param,
-                                                     List<ChoiceListValue> values) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context
+    ) {
         Map<String, Action> map = templateService.getActions();
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
         for (Map.Entry<String, String> action : actionsMap.entrySet()) {

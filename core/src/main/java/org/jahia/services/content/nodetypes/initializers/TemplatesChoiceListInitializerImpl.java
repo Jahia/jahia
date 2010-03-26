@@ -33,7 +33,6 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.log4j.Logger;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -41,6 +40,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
+import org.jahia.services.sites.JahiaSite;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
@@ -57,14 +57,12 @@ import java.util.*;
 public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer {
     private transient static Logger logger = Logger.getLogger(TemplatesChoiceListInitializerImpl.class);
 
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams,
-                                                     ExtendedPropertyDefinition declaringPropertyDefinition,
-                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
-        if (jParams == null) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
+        if (context == null) {
             return new ArrayList<ChoiceListValue>();
         }
 
-        JCRNodeWrapper node = (JCRNodeWrapper) jParams.getAttribute("contextNode");
+        JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
         final List<String> nodeTypeList;
 
         if (node == null && realNodeType == null) {
@@ -86,7 +84,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         }
 
         SortedSet<Template> templates;
-
+        JahiaSite site = null;
         try {
             if ("j:template".equals(declaringPropertyDefinition.getName())) {
                 templates = new TreeSet<Template>();
@@ -119,6 +117,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             } else {
                 templates = RenderService.getInstance().getAllTemplatesSet();
             }
+
+            site = node != null ? node.resolveSite() : null;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             templates = RenderService.getInstance().getAllTemplatesSet();
@@ -130,8 +130,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     && !template.getKey().startsWith("skins.")
                     && !template.getKey().startsWith("debug.")
                     && !template.getKey().contains("hidden.")
-                    && (!"siteLayout".equals(template.getModule().getModuleType()) || template.getModule().getName().equals(jParams.getSite().getTemplatePackageName()))
-                    ) {
+                    && (site == null || !"siteLayout".equals(template.getModule().getModuleType()) || template.getModule().getName().equals(site.getTemplatePackageName()))
+                    ) {           
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 Properties properties = template.getProperties();
                 for (Map.Entry<Object, Object> entry : properties.entrySet()) {

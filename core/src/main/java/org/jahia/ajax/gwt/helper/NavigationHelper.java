@@ -402,21 +402,21 @@ public class NavigationHelper {
                 if (root != null) {
                     userNodes.add(root);
                 }
-            } else if (key.equals(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY)) {
-                GWTJahiaNode root = null;
-                final String s = nodeTypes.replaceAll(":", "_");
-                try {
-                    root = getNode("/reusableComponents/" + s, currentUserSession);
-                } catch (GWTJahiaServiceException e) {
-                    if (forceCreate) {
-                        contentManager.createNode("/reusableComponents", s, "jnt:reusableComponentsFolder", null, new ArrayList<GWTJahiaNodeProperty>(), currentUserSession);
-                        root = getNode("/reusableComponents/" + s, currentUserSession);
-                    }
-                }
-                if (root != null) {
-                    root.setDisplayName("reusableComponents");
-                    userNodes.add(root);
-                }
+//            } else if (key.equals(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY)) {
+//                GWTJahiaNode root = null;
+//                final String s = nodeTypes.replaceAll(":", "_");
+//                try {
+//                    root = getNode("/reusableComponents/" + s, currentUserSession);
+//                } catch (GWTJahiaServiceException e) {
+//                    if (forceCreate) {
+//                        contentManager.createNode("/reusableComponents", s, "jnt:reusableComponentsFolder", null, new ArrayList<GWTJahiaNodeProperty>(), currentUserSession);
+//                        root = getNode("/reusableComponents/" + s, currentUserSession);
+//                    }
+//                }
+//                if (root != null) {
+//                    root.setDisplayName("reusableComponents");
+//                    userNodes.add(root);
+//                }
             }
         }
         List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>(userNodes);

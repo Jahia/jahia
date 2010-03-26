@@ -33,7 +33,6 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -46,10 +45,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Choice list initializer, based on the resource bundle values lookup.
@@ -60,14 +56,12 @@ import java.util.Map;
  */
 public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitializer,  ChoiceListRenderer {
 
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         final JahiaTemplatesPackage tpkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
                     epd.getDeclaringNodeType().getSystemId());
-        String templatePackageName = tpkg != null?tpkg.getName():context.getSite().getTemplatePackageName();
+        String templatePackageName = tpkg != null?tpkg.getName():null;
 
-        JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getLocale(),
-                                                         context.getSite() != null ? templatePackageName : null);
+        JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, templatePackageName);
 
         if (values == null || values.size() == 0) {
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();

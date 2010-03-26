@@ -33,8 +33,8 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.log4j.Logger;
+import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -43,6 +43,8 @@ import javax.jcr.RepositoryException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,15 +64,15 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
      * <p/>
      * This will search for images named img/1col16.png inside the module containing the definition.
      *
-     * @param context
      * @param epd
      * @param realNodeType
      * @param param
      * @param values
-     * @return
+     * @param locale
+     *@param context  @return
      */
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context
+    ) {
         if (values != null && values.size() > 0) {
             final JahiaTemplatesPackage template = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
                     epd.getDeclaringNodeType().getSystemId());
@@ -79,7 +81,7 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
                     final File imagePath = new File(
                             template.getFilePath() + File.separator + "img" + File.separator + value.getValue().getString() + "." + param);
                     if (imagePath.exists()) {
-                        String s = context.getContextPath();
+                        String s = Jahia.getContextPath();
                         if (s.equals("/")) {
                             s = "";
                         }

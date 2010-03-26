@@ -34,7 +34,6 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -55,8 +54,8 @@ import java.util.*;
 public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
     private transient static Logger logger = Logger.getLogger(CountryFlagChoiceListInitializerAndRendererImpl.class);
 
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context
+    ) {
         if (values != null) {
             for (ChoiceListValue value : values) {
                 try {
@@ -67,7 +66,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
                     if (!f.exists()) {
                         flagPath = "/css/blank.gif";
                     }
-                    value.addProperty("image", context.getContextPath() + flagPath);
+                    value.addProperty("image", Jahia.getContextPath() + flagPath);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }

@@ -33,21 +33,20 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.log4j.Logger;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Choice list initializer that looks up child nodes of the specified one
@@ -65,9 +64,8 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd,
-                                                     ExtendedNodeType realNodeType, String param,
-                                                     List<ChoiceListValue> values) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context
+    ) {
         final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
         if (param != null) {
             String[] s = param.split(";");
@@ -76,12 +74,18 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 nodetype = s[1];
             }
             try {
-                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null,
-                                                                                                 context.getLocale(),
-                                                                                                 context.getSite().isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(
-                                                                                                         context.getSite().getDefaultLanguage()) : null);
-                final JCRNodeWrapper node = jcrSessionWrapper.getNode(s[0].replace("$currentSite",
-                                                                                   context.getSiteKey()));
+                JahiaSite site;
+                JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextNode");
+                if (contextNode != null) {
+                    site = contextNode.resolveSite();
+                } else {
+                    site = JahiaSitesBaseService.getInstance().getDefaultSite();
+                }
+
+                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null, locale,
+                                                                                                 site.isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(
+                                                                                                         site.getDefaultLanguage()) : null);
+                final JCRNodeWrapper node = jcrSessionWrapper.getNode(s[0].replace("$currentSite", site.getSiteKey()));
                 final NodeIterator nodeIterator = node.getNodes();
                 while (nodeIterator.hasNext()) {
                     JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
@@ -94,7 +98,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                                 nodeWrapper.getIdentifier(), PropertyType.STRING, false)));
                     }
                 }
-            } catch (RepositoryException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         }

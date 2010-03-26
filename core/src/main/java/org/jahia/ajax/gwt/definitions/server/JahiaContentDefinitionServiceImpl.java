@@ -37,7 +37,6 @@ import org.jahia.ajax.gwt.helper.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.apache.log4j.Logger;
 
@@ -59,15 +58,15 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTJahiaNodeType getNodeType(String name) {
-        return contentDefinition.getNodeType(name, retrieveParamBean());
+        return contentDefinition.getNodeType(name, new HashMap<String, Object>(), getUILocale());
     }
 
     public Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes() throws GWTJahiaServiceException {
-        return contentDefinition.getNodeTypes(retrieveParamBean(), retrieveCurrentSession());
+        return contentDefinition.getNodeTypes(retrieveCurrentSession(), new HashMap<String, Object>(), getUILocale());
     }
 
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names) {
-        return contentDefinition.getNodeTypes(names, retrieveParamBean());
+        return contentDefinition.getNodeTypes(names, new HashMap<String, Object>(), getUILocale());
     }
 
     /**
@@ -82,26 +81,27 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
      *         sub-types of the specified base type
      */
     public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) throws GWTJahiaServiceException {
-        return contentDefinition.getNodeSubtypes(baseType, parentNode, retrieveParamBean(), retrieveCurrentSession());
+        return contentDefinition.getNodeSubtypes(baseType, parentNode, new HashMap<String, Object>(), getUILocale());
     }
 
     public List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException {
-        return contentDefinition.getPageTemplates(retrieveParamBean(), retrieveCurrentSession());
+        return contentDefinition.getPageTemplates(retrieveCurrentSession(), retrieveParamBean().getSite());
     }
 
     public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) {
-        return contentDefinition.getAvailableMixin(type, retrieveParamBean());
+        return contentDefinition.getAvailableMixin(type, new HashMap<String, Object>(), getUILocale());
     }
 
     public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node) throws GWTJahiaServiceException {
-        ParamBean ctx = retrieveParamBean();
         try {
             JCRNodeWrapper nodeWrapper = retrieveCurrentSession().getNode(node.getPath());
-            ctx.setAttribute("contextNode", nodeWrapper);
+            Map<String,Object> context = new HashMap<String,Object>();
+            context.put("contextNode", nodeWrapper);
+            final GWTJahiaNodeType nodeType = contentDefinition.getNodeType(node.getNodeTypes().iterator().next(), context, getUILocale());
+            return contentDefinition.getAvailableMixin(nodeType, context, getUILocale());
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
             throw new GWTJahiaServiceException(e.toString());
         }
-        return contentDefinition.getAvailableMixin(getNodeType(node.getNodeTypes().iterator().next()), ctx);
     }
 }

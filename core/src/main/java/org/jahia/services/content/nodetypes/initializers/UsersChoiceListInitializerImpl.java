@@ -1,12 +1,10 @@
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.render.Template;
 
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.Query;
@@ -14,9 +12,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.PropertyType;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Choice list initializer to provide a selection of all users
@@ -26,7 +22,7 @@ import java.util.HashMap;
  *        Created : 17 nov. 2009
  */
 public class UsersChoiceListInitializerImpl implements ChoiceListInitializer {
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext context, ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
 
         try {

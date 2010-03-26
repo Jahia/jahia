@@ -384,16 +384,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public GWTJahiaGetPropertiesResult getProperties(String path, Locale locale) throws GWTJahiaServiceException {
         final ParamBean jParams = retrieveParamBean();
         final GWTJahiaNode node = navigation.getNode(path, retrieveCurrentSession());
+        final HashMap<String, Object> map = new HashMap<String, Object>();
         try {
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(node.getPath());
-            jParams.setAttribute("contextNode", nodeWrapper);
+            map.put("contextNode", nodeWrapper);
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
         }
 
         // get node type
-        final List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(node.getNodeTypes(), jParams);
+        final List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(node.getNodeTypes(), map, jParams.getUILocale());
 
         // get properties
         final Map<String, GWTJahiaNodeProperty> props = properties.getProperties(path, retrieveCurrentSession(locale));
@@ -803,7 +804,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode) throws GWTJahiaServiceException {
-        return this.template.getRenderedContent(path, template, templateWrapper, contextParams, editMode, retrieveParamBean(), retrieveCurrentSession());
+        return this.template.getRenderedContent(path, template, templateWrapper, contextParams, editMode, getRequest(), getResponse(), retrieveCurrentSession());
     }
 
     public String getNodeURL(String path, String locale, int mode) throws GWTJahiaServiceException {

@@ -42,7 +42,6 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
@@ -60,10 +59,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
@@ -150,8 +146,8 @@ public class Initializers extends HttpServlet implements Controller {
                             for (Map.Entry<String, String> entry : map.entrySet()) {
                                 if (initializers.containsKey(entry.getKey())) {
                                     listValues = initializers.get(entry.getKey()).getChoiceListValues(
-                                            Jahia.getThreadParamBean(), (ExtendedPropertyDefinition) definition, type,
-                                            entry.getValue(), listValues);
+                                            (ExtendedPropertyDefinition) definition, type, entry.getValue(), listValues, locale, new HashMap<String, Object>()
+                                    );
                                 }
                             }
                             if (listValues != null) {

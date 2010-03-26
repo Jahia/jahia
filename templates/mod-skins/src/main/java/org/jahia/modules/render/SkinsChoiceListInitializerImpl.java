@@ -32,13 +32,10 @@
  */
 package org.jahia.modules.render;
 
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
 import org.jahia.services.render.RenderService;
@@ -46,10 +43,7 @@ import org.jahia.services.render.Template;
 
 import javax.jcr.PropertyType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.SortedSet;
+import java.util.*;
 
 /**
  * Choice list initializer to provide a selection of available skins.
@@ -68,12 +62,11 @@ public class SkinsChoiceListInitializerImpl implements ModuleChoiceListInitializ
         return this.key;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List<ChoiceListValue> getChoiceListValues(ProcessingContext jParams, ExtendedPropertyDefinition epd,
-                                                     ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values) {
-        if (jParams == null) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
+        if (context == null) {
             return new ArrayList<ChoiceListValue>();
         }
-        ExtendedNodeType nt = (ExtendedNodeType) jParams.getAttribute("contextDefinition");
+        ExtendedNodeType nt = (ExtendedNodeType) context.get("contextDefinition");
         if (nt == null) {
             return new ArrayList<ChoiceListValue>();
         }

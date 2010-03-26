@@ -2,7 +2,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%-- <jcr:nodeProperty node="${currentNode}" name="flashSource" var="flashSource"/>
+<jcr:nodeProperty node="${currentNode}" name="flashSource" var="flashSource"/>
 <jcr:nodeProperty node="${currentNode}" name="width" var="widthFlash"/>
 <jcr:nodeProperty node="${currentNode}" name="height" var="heightFlash"/>
 <jcr:nodeProperty node="${currentNode}" name="flashPlayer" var="flashPlayer"/>
@@ -19,16 +19,18 @@
 <jcr:nodeProperty node="${currentNode}" name="wmode" var="wmodeFlash"/>
 <jcr:nodeProperty node="${currentNode}" name="bgcolor" var="bgcolorFlash"/>
 <jcr:nodeProperty node="${currentNode}" name="base" var="baseFlash"/>
-<jcr:nodeProperty node="${currentNode}" name="flashvars" var="flashvarsFlash"/>  --%>
+<jcr:nodeProperty node="${currentNode}" name="flashvars" var="flashvarsFlash"/>
 
+<template:addResources type="javascript" resources="swfobject.js"/>
+<template:addResources type="css" resources="flash.css"/>
 	    <div id="flashcontent${currentNode.UUID}">
-            <div id="flashcontent"><!--START FLASH -->
+            <div class="flashcontent"><!--START FLASH -->
                 <strong>You need to upgrade your Flash Player</strong><br />
-                <br />
-                <a href="http://www.adobe.com/go/getflashplayer"><img src="${url.currentModule}/theme/${requestScope.currentTheme}/img/160x41_Get_Flash_Player.jpg" alt="get flash player" /></a>
-                </div></div>
+                <a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="${url.currentModule}/images/160x41_Get_Flash_Player.jpg" alt="get flash player" /></a>
+			</div>
+	    </div>
         <script type="text/javascript">
-            var so = new SWFObject("${flashSource.node.path}", "${nameFlash.string}", "${widthFlash.long}", "${heightFlash.long}", "${flashPlayer.string}", "${bgcolorFlash.string}");
+            var so = new SWFObject("${flashSource.node.url}", "${nameFlash.string}", "${widthFlash.long}", "${heightFlash.long}", "${flashPlayer.string}", "${bgcolorFlash.string}");
                     <c:if test="${not empty wmodeFlash.string}">
                           so.addParam("wmode", "${wmodeFlash.string}");
                     </c:if>

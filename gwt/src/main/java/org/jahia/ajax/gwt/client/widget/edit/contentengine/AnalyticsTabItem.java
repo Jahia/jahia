@@ -39,7 +39,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
             return;
         } else {
             lastQuery = new GWTJahiaAnalyticsQuery();
-            lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:country");
+            lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:country,ga:date");
             lastQuery.setNode(engine.getNode());
             display(locale);
         }
@@ -63,7 +63,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
 
                 @Override
                 public void oneGeoMapSelected() {
-                    lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:country");
+                    lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:country,ga:date");
                     loadData(lastQuery);
                 }
 

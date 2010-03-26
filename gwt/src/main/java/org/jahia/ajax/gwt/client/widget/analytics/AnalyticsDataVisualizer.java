@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
@@ -80,6 +81,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      */
     private void init() {
         setLayout(new FillLayout());
+        setHeaderVisible(false);
         mainContainer = new LayoutContainer();
 
         add(mainContainer);
@@ -194,6 +196,12 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
+        column.setId("date");
+        column.setHeader("date");
+        column.setWidth(300);
+        configs.add(column);
+
+         column = new ColumnConfig();
         column.setId("country");
         column.setHeader("Country");
         column.setWidth(100);
@@ -205,8 +213,13 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         column.setWidth(100);        
         configs.add(column);
         store.groupBy("country");
-        final Grid<GWTJahiaAnalyticsData> grid = new Grid<GWTJahiaAnalyticsData>(store, new ColumnModel(configs));
 
+
+        // Grouping view
+        GroupingView view = new GroupingView();
+        view.setShowGroupedColumn(false);
+        final Grid<GWTJahiaAnalyticsData> grid = new Grid<GWTJahiaAnalyticsData>(store, new ColumnModel(configs));
+        grid.setView(view);
         mainContainer.add(grid);
         mainContainer.layout();
     }

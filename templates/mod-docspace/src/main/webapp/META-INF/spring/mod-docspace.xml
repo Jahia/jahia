@@ -6,4 +6,7 @@
     <bean class="org.jahia.modules.docspace.SetACLAction">
         <property name="name" value="setAcl"/>
     </bean>
+    <bean class="org.jahia.modules.docspace.PublishFile">
+        <property name="name" value="publishFile"/>
+    </bean>
 </beans>

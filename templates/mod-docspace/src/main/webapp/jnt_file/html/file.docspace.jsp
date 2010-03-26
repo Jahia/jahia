@@ -103,7 +103,14 @@
 	<div class="boxdocspacepadding16 boxdocspacemarginbottom16">
 		<div class="boxdocspace-inner">
 			<div class="boxdocspace-inner-border">
-            <p class="clearMaringPadding">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean scelerisque lorem sed metus vehicula non venenatis eros blandit. Donec molestie vestibulum nunc, ac molestie augue semper a. Quisque ut pharetra sem. Ut vitae urna ipsum. Mauris condimentum lobortis turpis, eu porttitor neque ultricies nec.</p>
+            <p class="clearMaringPadding">
+                Download live version : <a href="${url.live}${currentNode.path}">Download</a><br>
+                url : ${currentNode.url}<br>
+                <form method="POST" name="publishFile" action="${url.base}${currentNode.path}.publishFile.do">
+                <input type="submit" name="publish file"/>
+                </form>
+
+            </p>
             <div class="clear"></div>
             </div>
         </div>

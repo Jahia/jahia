@@ -137,4 +137,6 @@
  - j:startLevel (long) = 1
  - j:maxDepth (long) = 3
  - j:relativeToCurrentNode (boolean)
+ 
+[jnt:navMenuChildNodes] > jnt:nodeReference, jmix:navMenuItem, jmix:interactiveContent
 //---------------------------------------------------------

@@ -42,6 +42,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.sites.JahiaSite;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -54,6 +55,7 @@ import java.util.*;
  */
 public class GoogleAnalyticsService {
     final static Logger logger = Logger.getLogger(GoogleAnalyticsService.class);
+    final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-mm-dd");
 
     private Map<String, AnalyticsService> analyticsServiceMap = new HashMap<String, AnalyticsService>();
     private Map<String, AccountEntry> accountEntryMap = new HashMap<String, AccountEntry>();
@@ -139,12 +141,12 @@ public class GoogleAnalyticsService {
             Calendar cal = Calendar.getInstance();
             endDate = cal.getTime();
         }
-
+        dateFormatter.format(startDate);
         if (accountEntry != null) {
             try {
                 DataQuery query = new DataQuery(new URL("https://www.google.com/analytics/feeds/data"));
-                query.setStartDate("2006-04-01");
-                query.setEndDate("2010-04-30");
+                query.setStartDate(dateFormatter.format(startDate));
+                query.setEndDate(dateFormatter.format(endDate));
                 query.setDimensions(dimensions);
                 query.setMetrics("ga:pageviews");
                 query.setSort("-ga:pageviews");

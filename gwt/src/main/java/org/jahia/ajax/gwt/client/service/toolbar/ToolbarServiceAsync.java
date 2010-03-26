@@ -53,11 +53,7 @@ public interface ToolbarServiceAsync {
 
     public void updateGWTJahiaStateInfo(GWTJahiaStateInfo gwtJahiaStateInfo, AsyncCallback<GWTJahiaStateInfo> async);
 
-    public void getGAdata(GWTJahiaAnalyticsParameter p,AsyncCallback<Map<String, String>> async);
 
-    public void getGAsiteProperties(int pid,AsyncCallback<Map<String, String>> async);
-
-    public void isTracked(AsyncCallback<Boolean> async);
 
    
 

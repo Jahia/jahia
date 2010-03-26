@@ -38,7 +38,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
-import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParameter;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -48,17 +47,13 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
-import org.jahia.analytics.data.GAdataCollector;
 import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.pages.ContentPage;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.toolbar.bean.*;
 import org.jahia.services.toolbar.bean.custom.LanguageSwitcherItemsGroup;
 import org.jahia.services.toolbar.resolver.impl.LanguageItemsResolver;
@@ -93,7 +88,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
     /**
      * Get gwt toolbar for the current user
      *
-     * @param pageContext
      * @return
      */
     public GWTJahiaToolbarSet getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException {
@@ -687,113 +681,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             SCHEDULER_SERVICE = ServicesRegistry.getInstance().getSchedulerService();
         }
         return SCHEDULER_SERVICE;
-    }
-
-
-    /*
-   * Google analytics   todo should be adapted to the new version
-   * */
-    public Map<String, String> getGAdata(GWTJahiaAnalyticsParameter p) throws GWTJahiaServiceException {
-        ParamBean paramBean = retrieveParamBean();
-        JahiaSite currentSite = paramBean.getSite();
-        String gaLogin = currentSite.getSettings().getProperty(p.getJahiaGAprofile() + "_" + currentSite.getSiteKey() + "_gaLogin");
-        String gaPassword = currentSite.getSettings().getProperty(p.getJahiaGAprofile() + "_" + currentSite.getSiteKey() + "_gaPassword");
-        String gaAccount = currentSite.getSettings().getProperty(p.getJahiaGAprofile() + "_" + currentSite.getSiteKey() + "_gaUserAccount");
-        String profile = currentSite.getSettings().getProperty(p.getJahiaGAprofile() + "_" + currentSite.getSiteKey() + "_gaProfile");
-
-        String statType = p.getStatType();
-        String dateRange = p.getDateRange();
-        String chartType = p.getChartType();
-        String siteORpage = p.getSiteORpage();
-        //logger.info("getGAdata");
-        Map<String, String> data = (new GAdataCollector()).getData(gaLogin, gaPassword, profile, gaAccount.split("-")[1], dateRange, statType, chartType, siteORpage);
-        //logger.info("Data ok");
-        return data;
-
-    }
-
-    /*
-   * Google analytics
-   *
-   * */
-    public Map<String, String> getGAsiteProperties(int pid) {
-
-        Map<String, String> gaSiteProperties = new HashMap<String, String>();
-        //logger.info("retreive ga parameters");
-        try {
-            org.jahia.services.importexport.ImportExportService ies = SERVICES_REGISTRY.getImportExportService();
-            String uuid = ContentPage.getPage(pid).getUUID();
-            ParamBean paramBean = retrieveParamBean();
-            JahiaSite currentSite = paramBean.getSite();
-
-            String lan = "";
-            Set<String> languages = currentSite.getLanguages();
-            for (String language : languages) {
-                lan = lan + "#" + language;
-            }
-            gaSiteProperties.put("siteLanguages", lan);
-            gaSiteProperties.put("uuid", uuid);
-            /*gaSiteProperties.put("gaProfileCustom", currentSite.getSettings().getProperty("gaProfileCustom"));
-            gaSiteProperties.put("gaProfileDefault", currentSite.getSettings().getProperty("gaProfileDefault"));*/
-            // logger.info("###############################################################################");
-            // logger.info("----------------------GA settings-----------------------");
-            final Properties settings = currentSite.getSettings();
-            for (Object o : (settings.keySet())) {
-                String key = (String) o;
-                if (key.startsWith("jahiaGAprofile")) {
-                    // logger.info("--------------------------------------------------");
-                    //logger.info("profile = " + currentSite.getSettings().get(key));// profile name
-                    gaSiteProperties.put("jahiaGAprofileName" + settings.get(key),
-                                         (String) settings.get(key));
-                    //logger.info("gaUserAccount = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaUserAccount"));
-                    gaSiteProperties.put(settings.get(key) + "#gaUserAccount",
-                                         settings.getProperty(settings.get(
-                                                 key) + "_" + currentSite.getSiteKey() + "_gaUserAccount"));
-                    // logger.info("gaProfile = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaProfile"));
-                    gaSiteProperties.put(settings.get(key) + "#gaProfile",
-                                         settings.getProperty(settings.get(
-                                                 key) + "_" + currentSite.getSiteKey() + "_gaProfile"));
-                    //logger.info("gaLogin = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaLogin"));
-                    gaSiteProperties.put(settings.get(key) + "#gaLogin",
-                                         settings.getProperty(settings.get(
-                                                 key) + "_" + currentSite.getSiteKey() + "_gaLogin"));
-                    //logger.info("gaPassword = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaPassword"));
-                    //gaSiteProperties.put(currentSite.getSettings().get(key)+"#gaPassword", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaPassword"));
-                    //logger.info("trackedUrls = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackedUrls"));
-                    gaSiteProperties.put(settings.get(key) + "#trackedUrls",
-                                         settings.getProperty(settings.get(
-                                                 key) + "_" + currentSite.getSiteKey() + "_trackedUrls"));
-                    //logger.info("trackingEnabled = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"));
-                    gaSiteProperties.put(settings.get(key) + "#trackingEnabled",
-                                         settings.getProperty(settings.get(
-                                                 key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"));
-                    //logger.info("--------------------------------------------------");
-
-                }
-            }
-            //logger.info("###############################################################################");
-        } catch (JahiaException e) {
-            logger.error("ga parameters' retreiving failure");
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return gaSiteProperties;
-    }
-
-    public boolean isTracked() { //todo should be adapted to the new version
-
-        ParamBean paramBean = retrieveParamBean();
-        JahiaSite currentSite = paramBean.getSite();
-        Iterator it = ((currentSite.getSettings()).keySet()).iterator();
-        // check if at least one profile is configured
-        boolean oneConfigured = false;
-        while (it.hasNext()) {
-            String key = (String) it.next();
-            if (key.startsWith("jahiaGAprofile")) {
-                oneConfigured = true;
-                break;
-            }
-        }
-        return oneConfigured;
     }
 
 

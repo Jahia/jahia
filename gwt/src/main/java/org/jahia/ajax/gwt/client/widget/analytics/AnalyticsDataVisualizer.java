@@ -1,7 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.analytics;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
@@ -52,6 +51,19 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         final ToolBar toolbar = new ToolBar();
         final DateField startDate = new DateField();
         final DateField endDate = new DateField();
+
+        startDate.addListener(Events.Change, new Listener<FieldEvent>() {
+            public void handleEvent(FieldEvent p_event) {
+                oneDateChanged(startDate.getValue(),endDate.getValue());
+            }
+        });
+
+        endDate.addListener(Events.Change, new Listener<FieldEvent>() {
+            public void handleEvent(FieldEvent p_event) {
+               oneDateChanged(startDate.getValue(),endDate.getValue());
+            }
+        });
+
 
         final Button textButton = new Button("Text");
         final Button worldMapButton = new Button("Geo map");

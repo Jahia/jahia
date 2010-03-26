@@ -29,29 +29,33 @@ public class AnalyticsHelper {
      * @param jahiaProfileName
      * @return
      */
-    public List<GWTJahiaAnalyticsData> queryData(String jahiaProfileName,String gaLogin,String gaPwd, String gaAccount, GWTJahiaAnalyticsQuery query) {
+    public List<GWTJahiaAnalyticsData> queryData(String jahiaProfileName, String gaLogin, String gaPwd, String gaAccount, GWTJahiaAnalyticsQuery query) {
         List<GWTJahiaAnalyticsData> results = new ArrayList<GWTJahiaAnalyticsData>();
-        List<DataEntry> dataEntries = analyticsService.queryData(query.getStartDate(), query.getEndDate(),query.getDimensions(), jahiaProfileName,gaLogin,gaPwd, gaAccount);
+        List<DataEntry> dataEntries = analyticsService.queryData(query.getStartDate(), query.getEndDate(), query.getDimensions(), jahiaProfileName, gaLogin, gaPwd, gaAccount);
         if (dataEntries != null) {
             for (DataEntry entry : dataEntries) {
                 String pageTitle = entry.stringValueOf("ga:pageTitle");
                 String pagePath = entry.stringValueOf("ga:pagePath");
                 String pageViews = entry.stringValueOf("ga:pageviews");
                 String viewCountry = entry.stringValueOf("ga:country");
+                String viewDateAsStrg = entry.stringValueOf("ga:date");
 
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
                 ParsePosition pos = new ParsePosition(0);
-                Date viewDate   = formatter.parse(entry.stringValueOf("ga:date"),pos);
+                Date viewDate = null;
+                if (viewDateAsStrg != null) {
+                     viewDate = formatter.parse(viewDateAsStrg, pos);
+                }
 
 
-              //  if (query.getNode().getPath().equalsIgnoreCase(pagePath)) {
-                    results.add(new GWTJahiaAnalyticsData(viewCountry,viewDate.toString(),Double.parseDouble(pageViews)));
-              //  }
-                logger.error(
+                //  if (query.getNode().getPath().equalsIgnoreCase(pagePath)) {
+                results.add(new GWTJahiaAnalyticsData(viewCountry, viewDate, Double.parseDouble(pageViews)));
+                //  }
+                logger.debug(
                         "\nPage Title = " + entry.stringValueOf("ga:pageTitle") +
                                 "\nPage Path  = " + entry.stringValueOf("ga:pagePath") +
-                                "\nview Country  = " + entry.stringValueOf("ga:country")+
-                                "\nview date  = " + viewDate+
+                                "\nview Country  = " + entry.stringValueOf("ga:country") +
+                                "\nview date  = " + viewDate +
                                 "\nPageviews  = " + entry.stringValueOf("ga:pageviews"));
             }
         }

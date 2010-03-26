@@ -12,14 +12,14 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaAnalyticsData extends BaseModelData {
-    private String date;
+    private Date date;
     private String country;
     private double value;
 
     public GWTJahiaAnalyticsData() {
     }
 
-    public GWTJahiaAnalyticsData(String country,String date, double value) {
+    public GWTJahiaAnalyticsData(String country,Date date, double value) {
         this.country = country;
         this.value = value;
     }
@@ -40,11 +40,11 @@ public class GWTJahiaAnalyticsData extends BaseModelData {
         this.value = value;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void Date(Date date) {
         this.date = date;
     }
 }

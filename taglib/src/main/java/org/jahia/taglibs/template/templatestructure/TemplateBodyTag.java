@@ -33,8 +33,10 @@ package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.analytics.GoogleAnalyticsService;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
 
@@ -188,8 +190,8 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
             if (renderContext.getSite().hasGoogleAnalyticsProfil() /*&& renderContext.isLiveMode()*/) {
                 buf.append(GoogleAnalyticsService.getInstance().renderBaseTrackingCode(renderContext.getRequest().getProtocol()));
-               // List<JCRNodeWrapper> trackedNodes = (List<JCRNodeWrapper>) renderContext.getRequest().getAttribute(GoogleAnalyticsFilter.GOOGLE_ANALYTICS_TRACKED_NODES);
-               // buf.append(GoogleAnalyticsService.getInstance().renderNodeTrackingCode(trackedNodes, renderContext.getSite()));
+                List<JCRNodeWrapper> trackedNodes = (List<JCRNodeWrapper>) renderContext.getRequest().getAttribute(GoogleAnalyticsFilter.GOOGLE_ANALYTICS_TRACKED_NODES);
+                buf.append(GoogleAnalyticsService.getInstance().renderNodeTrackingCode(trackedNodes, renderContext.getSite()));
 
             }
 

@@ -235,6 +235,13 @@ public class JCRSitesProvider {
                             new String[site.getMandatoryLanguages().size()]));
 
                     // remove deleted profiles
+                    NodeIterator gaProfileNodeIterator = siteNode.getNodes();
+                    while (gaProfileNodeIterator != null && gaProfileNodeIterator.hasNext()) {
+                        JCRNodeWrapper childNode = (JCRNodeWrapper) gaProfileNodeIterator.nextNode();
+                        if (childNode.getNodeTypes().contains(Constants.JAHIANT_GOOGLEANALYTICS) && !site.hasProfile(childNode.getName())) {
+                               childNode.remove(); 
+                        }
+                    }
 
                     // add google analytics
                     Iterator<GoogleAnalyticsProfile> it = site.getGoogleAnalyticsProfil().iterator();

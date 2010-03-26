@@ -197,7 +197,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      */
     public double getValue(int dataIndex) {
         GWTJahiaAnalyticsData data = dataList.get(dataIndex);
-        return data.getValue();
+        return 5;// data.getValue();
     }
 
     /**
@@ -206,7 +206,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      * @param dataIndex
      * @return
      */
-    public String getDate(int dataIndex) {
+    public Date getDate(int dataIndex) {
         GWTJahiaAnalyticsData data = dataList.get(dataIndex);
         return data.getDate();
     }
@@ -252,23 +252,19 @@ public class AnalyticsDataVisualizer extends ContentPanel {
            {
                return;
            }
-        var data     = new $wnd.google.visualization.DataTable();
+        var data  = new $wnd.google.visualization.DataTable();
 
         data.addColumn('date', 'Date');
-        data.addColumn('number', "Views");
+        data.addColumn('number', 'Views');
+
         data.addRows(size);
         for(var i=0; i < size ; i++)
         {
-
             var date = this.@org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer::getDate(I)(i);
+            data.setValue(i, 0, date);
 
-
-            data.setValue(i, 0, new Date(date));
-
-             var value = this.@org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer::getValue(I)(date);
-             data.setValue(i, 1, value);
-
-
+            var value = this.@org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer::getValue(I)(i);
+            data.setValue(i, 1, value);
         }
 
          var options={};

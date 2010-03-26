@@ -274,6 +274,7 @@ public class GoogleAnalyticsService {
      */
     public String renderNodeTrackingCode(List<JCRNodeWrapper> nodes, JahiaSite site) {
         if (nodes == null || nodes.isEmpty()) {
+            logger.debug(" There is no tracking nodes");
             return "";
         }
         StringBuffer result = new StringBuffer();

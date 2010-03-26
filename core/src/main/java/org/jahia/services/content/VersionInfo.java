@@ -77,7 +77,7 @@ public class VersionInfo implements Comparable {
             return 0;
         }
 
-        if (checkinDate != null) {
+        if (checkinDate != null && that.checkinDate != null) {
             return this.checkinDate.compareTo(that.checkinDate);
         } else {
             try {

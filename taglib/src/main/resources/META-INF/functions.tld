@@ -313,6 +313,7 @@
             Tag usage count: ${functions:length(tag.weakReferences)}
         </example>
     </function>
+    
     <function>
         <description>
 			Reverse a List
@@ -324,4 +325,17 @@
             Tag usage reverse: ${functions:reverse(mylist)}
         </example>
     </function>
+    
+    <function>
+        <description>
+            Returns the CSS style name that corresponds to the file extension of the provided file name.
+        </description>
+        <name>fileIcon</name>
+        <function-class>org.jahia.utils.FileUtils</function-class>
+        <function-signature>java.lang.String getFileIcon(java.lang.String)</function-signature>
+        <example>
+            &lt;a href="${currentNode.url}" class="${functions:fileIcon(currentNode.name)}"&gt;My File&lt;a&gt;
+        </example>
+    </function>
+    
 </taglib>

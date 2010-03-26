@@ -1,13 +1,7 @@
-<%@ page import="org.jahia.utils.FileUtils" %>
-<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
-<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="files.css"/>
-
-<jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
-<fmt:formatDate value="${created.time}" dateStyle="full" var="displayDate"/>
-<a class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>" href="${currentNode.url}"
-   title="${displayDate}">${currentNode.name}</a>
+<jsp:include page="/templates/default/nt_base/html/base.link.jsp">
+    <jsp:param name="cssClass" value="${functions:fileIcon(currentNode.name)}"/>
+    <jsp:param name="useNodeNameAsTitle" value="true"/>
+</jsp:include>

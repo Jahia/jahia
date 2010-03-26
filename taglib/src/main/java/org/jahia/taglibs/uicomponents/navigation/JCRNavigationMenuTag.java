@@ -221,7 +221,9 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
  
                 boolean isInPath = true;
                 if (level > realStartLevel) {
-                    logger.debug("level = " + level);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("level = " + level);
+                    }
                     // Set level
                     navMenuItemBean.setLevel(level - realStartLevel);
                     

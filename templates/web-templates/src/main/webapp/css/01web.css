@@ -647,7 +647,7 @@ body {
     padding: 0;
 }
 
-#bodywrapper #navigationN1 li a, #bodywrapper #navigationN1 li span {
+#bodywrapper #navigationN1 li a {
     background: transparent url( img/navigationN1-separator.png ) no-repeat 100% 50%;
     color: #333333;
     display: inline;
@@ -1110,8 +1110,7 @@ body {
 }
 #bodywrapper #navigationN2 a,
 #bodywrapper #navigationN2 a:link,
-#bodywrapper #navigationN2 a:visited,
-#bodywrapper #navigationN2 span {
+#bodywrapper #navigationN2 a:visited {
 	display: block;
 	text-decoration: none;
 	height:1%;
@@ -1124,14 +1123,43 @@ body {
 	color:#990000;
 }
 
-#bodywrapper #navigationN2 .level_2 a,
-#bodywrapper #navigationN2 .level_2 a:link,
-#bodywrapper #navigationN2 .level_2 a:visited,
-#bodywrapper #navigationN2 .level_2 span {
+#bodywrapper #navigationN2 .level_1 a,
+#bodywrapper #navigationN2 .level_1 a:link,
+#bodywrapper #navigationN2 .level_1 a:visited {
 	padding:0 2px 0 20px;
 	background: url(img/bg-navigationN2-L1.png) no-repeat 10px 50%;
 	border-bottom:1px solid #cccccc;
 	margin:1px 0;
+}
+#bodywrapper #navigationN2 .level_1 a.inpath,	
+#bodywrapper #navigationN2 .level_1 a.inpath:link ,
+#bodywrapper #navigationN2 .level_1 a.inpath:visited ,
+#bodywrapper #navigationN2 .level_1 a.inpath:hover ,
+#bodywrapper #navigationN2 .level_1 a.inpath:active{
+	font-weight:bold;
+	background: #eaeaea url(img/bg-navigationN2-L1-on.png) no-repeat 6px 50%;
+}
+
+#bodywrapper #navigationN2 .level_1 a:hover,
+#bodywrapper #navigationN2 .level_1 a:active{
+	color:#990000;
+	background: url(img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
+	background-color:#ddd3ca;
+}
+#bodywrapper #navigationN2 .level_1 a.selected,	
+#bodywrapper #navigationN2 .level_1 a.selected:link ,
+#bodywrapper #navigationN2 .level_1 a.selected:visited ,
+#bodywrapper #navigationN2 .level_1 a.selected:hover,
+#bodywrapper #navigationN2 .level_1 a.selected:active {
+	background: url(img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
+	color:#cc0033;
+}
+
+#bodywrapper #navigationN2 .level_2 a,
+#bodywrapper #navigationN2 .level_2 a:link,
+#bodywrapper #navigationN2 .level_2 a:visited {
+	padding:0 2px 0 40px;
+	background: url(img/bg-navigationN2-L2.png) no-repeat 30px 50% ;
 }
 #bodywrapper #navigationN2 .level_2 a.inpath,	
 #bodywrapper #navigationN2 .level_2 a.inpath:link ,
@@ -1139,30 +1167,29 @@ body {
 #bodywrapper #navigationN2 .level_2 a.inpath:hover ,
 #bodywrapper #navigationN2 .level_2 a.inpath:active{
 	font-weight:bold;
-	background: #eaeaea url(img/bg-navigationN2-L1-on.png) no-repeat 6px 50%;
+	background: #eaeaea url(img/bg-navigationN2-L2-on.png) no-repeat 26px 50% ;
 }
-
 #bodywrapper #navigationN2 .level_2 a:hover,
 #bodywrapper #navigationN2 .level_2 a:active{
 	color:#990000;
-	background: url(img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
+	background: url(img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
 	background-color:#ddd3ca;
 }
+
 #bodywrapper #navigationN2 .level_2 a.selected,	
 #bodywrapper #navigationN2 .level_2 a.selected:link ,
 #bodywrapper #navigationN2 .level_2 a.selected:visited ,
 #bodywrapper #navigationN2 .level_2 a.selected:hover,
 #bodywrapper #navigationN2 .level_2 a.selected:active {
-	background: url(img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
+	background: url(img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
 	color:#cc0033;
 }
-
 #bodywrapper #navigationN2 .level_3 a,
 #bodywrapper #navigationN2 .level_3 a:link,
-#bodywrapper #navigationN2 .level_3 a:visited,
-#bodywrapper #navigationN2 .level_3 span {
-	padding:0 2px 0 40px;
-	background: url(img/bg-navigationN2-L2.png) no-repeat 30px 50% ;
+#bodywrapper #navigationN2 .level_3 a:visited {
+	padding:0 2px 0 60px;
+	background: url(img/bg-navigationN2-L3.png) no-repeat 50px 50% ;
+
 }
 #bodywrapper #navigationN2 .level_3 a.inpath,	
 #bodywrapper #navigationN2 .level_3 a.inpath:link ,
@@ -1170,43 +1197,41 @@ body {
 #bodywrapper #navigationN2 .level_3 a.inpath:hover ,
 #bodywrapper #navigationN2 .level_3 a.inpath:active{
 	font-weight:bold;
-	background: #eaeaea url(img/bg-navigationN2-L2-on.png) no-repeat 26px 50% ;
+	background: #eaeaea url(img/bg-navigationN2-L3-on.png) no-repeat 46px 50% ;
 }
 #bodywrapper #navigationN2 .level_3 a:hover,
 #bodywrapper #navigationN2 .level_3 a:active{
 	color:#990000;
-	background: url(img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
+	background: url(img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
 	background-color:#ddd3ca;
 }
-
 #bodywrapper #navigationN2 .level_3 a.selected,	
 #bodywrapper #navigationN2 .level_3 a.selected:link ,
 #bodywrapper #navigationN2 .level_3 a.selected:visited ,
 #bodywrapper #navigationN2 .level_3 a.selected:hover,
 #bodywrapper #navigationN2 .level_3 a.selected:active {
-	background: url(img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
+	background: url(img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
 	color:#cc0033;
 }
 #bodywrapper #navigationN2 .level_4 a,
 #bodywrapper #navigationN2 .level_4 a:link,
-#bodywrapper #navigationN2 .level_4 a:visited,
-#bodywrapper #navigationN2 .level_4 span {
-	padding:0 2px 0 60px;
-	background: url(img/bg-navigationN2-L3.png) no-repeat 50px 50% ;
+#bodywrapper #navigationN2 .level_4 a:visited {
+	padding:0 2px 0 80px;
+	background: url(img/bg-navigationN2-L4.png) no-repeat 70px 50%;
 
 }
 #bodywrapper #navigationN2 .level_4 a.inpath,	
 #bodywrapper #navigationN2 .level_4 a.inpath:link ,
 #bodywrapper #navigationN2 .level_4 a.inpath:visited ,
-#bodywrapper #navigationN2 .level_4 a.inpath:hover ,
+#bodywrapper #navigationN2 .level_4 a.inpath:hover,
 #bodywrapper #navigationN2 .level_4 a.inpath:active{
 	font-weight:bold;
-	background: #eaeaea url(img/bg-navigationN2-L3-on.png) no-repeat 46px 50% ;
+	background: #eaeaea url(img/bg-navigationN2-L4-on.png) no-repeat 66px 50% ;
 }
 #bodywrapper #navigationN2 .level_4 a:hover,
 #bodywrapper #navigationN2 .level_4 a:active{
 	color:#990000;
-	background: url(img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
+	background: url(img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
 	background-color:#ddd3ca;
 }
 #bodywrapper #navigationN2 .level_4 a.selected,	
@@ -1214,29 +1239,28 @@ body {
 #bodywrapper #navigationN2 .level_4 a.selected:visited ,
 #bodywrapper #navigationN2 .level_4 a.selected:hover,
 #bodywrapper #navigationN2 .level_4 a.selected:active {
-	background: url(img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
+	background: url(img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
 	color:#cc0033;
 }
 #bodywrapper #navigationN2 .level_5 a,
 #bodywrapper #navigationN2 .level_5 a:link,
-#bodywrapper #navigationN2 .level_5 a:visited,
-#bodywrapper #navigationN2 .level_5 span {
-	padding:0 2px 0 80px;
-	background: url(img/bg-navigationN2-L4.png) no-repeat 70px 50%;
-
+#bodywrapper #navigationN2 .level_5 a:visited {
+	padding:0 2px 0 100px ;
+	background: url(img/bg-navigationN2-L5.png) no-repeat 90px 50% ;
 }
 #bodywrapper #navigationN2 .level_5 a.inpath,	
 #bodywrapper #navigationN2 .level_5 a.inpath:link ,
 #bodywrapper #navigationN2 .level_5 a.inpath:visited ,
-#bodywrapper #navigationN2 .level_5 a.inpath:hover,
+#bodywrapper #navigationN2 .level_5 a.inpath:hover ,
 #bodywrapper #navigationN2 .level_5 a.inpath:active{
 	font-weight:bold;
-	background: #eaeaea url(img/bg-navigationN2-L4-on.png) no-repeat 66px 50% ;
+	background: #eaeaea url(img/bg-navigationN2-L5-on.png) no-repeat 86px 50% ;
 }
+
 #bodywrapper #navigationN2 .level_5 a:hover,
 #bodywrapper #navigationN2 .level_5 a:active{
 	color:#990000;
-	background: url(img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
+	background: url(img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
 	background-color:#ddd3ca;
 }
 #bodywrapper #navigationN2 .level_5 a.selected,	
@@ -1244,36 +1268,6 @@ body {
 #bodywrapper #navigationN2 .level_5 a.selected:visited ,
 #bodywrapper #navigationN2 .level_5 a.selected:hover,
 #bodywrapper #navigationN2 .level_5 a.selected:active {
-	background: url(img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
-	color:#cc0033;
-}
-#bodywrapper #navigationN2 .level_6 a,
-#bodywrapper #navigationN2 .level_6 a:link,
-#bodywrapper #navigationN2 .level_6 a:visited,
-#bodywrapper #navigationN2 .level_6 span {
-	padding:0 2px 0 100px ;
-	background: url(img/bg-navigationN2-L5.png) no-repeat 90px 50% ;
-}
-#bodywrapper #navigationN2 .level_6 a.inpath,	
-#bodywrapper #navigationN2 .level_6 a.inpath:link ,
-#bodywrapper #navigationN2 .level_6 a.inpath:visited ,
-#bodywrapper #navigationN2 .level_6 a.inpath:hover ,
-#bodywrapper #navigationN2 .level_6 a.inpath:active{
-	font-weight:bold;
-	background: #eaeaea url(img/bg-navigationN2-L5-on.png) no-repeat 86px 50% ;
-}
-
-#bodywrapper #navigationN2 .level_6 a:hover,
-#bodywrapper #navigationN2 .level_6 a:active{
-	color:#990000;
-	background: url(img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
-	background-color:#ddd3ca;
-}
-#bodywrapper #navigationN2 .level_6 a.selected,	
-#bodywrapper #navigationN2 .level_6 a.selected:link ,
-#bodywrapper #navigationN2 .level_6 a.selected:visited ,
-#bodywrapper #navigationN2 .level_6 a.selected:hover,
-#bodywrapper #navigationN2 .level_6 a.selected:active {
 	background: url(img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
 	color:#cc0033;
 }

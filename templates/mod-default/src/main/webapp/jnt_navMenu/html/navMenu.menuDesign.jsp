@@ -17,10 +17,12 @@
 <legend>${fn:escapeXml(not empty title.string ? title.string : jcr:label(currentNode.primaryNodeType))}</legend>
 <c:set var="items" value="${currentNode.nodes}"/>
 <c:if test="${renderContext.editMode || not empty items}">
-<ul>
+<ul class="navmenu level_${fn:length(jcr:getParentsOfType(currentNode, 'jnt:navMenu')) + 1}">
 <c:forEach items="${items}" var="menuItem">
-    <template:module node="${menuItem}" editable="true" templateWrapper="wrapper.navMenuItem" template="menuDesign">
-        <template:param name="subNodesTemplate" value="hidden.navMenuItem"/>
+    <template:module node="${menuItem}" editable="true" templateWrapper="${jcr:isNodeType(menuItem, 'jmix:list,jnt:navMenuMultilevel') ? '' : 'wrapper.listItem'}" template="menuDesign">
+        <template:param name="subNodesTemplate" value="link"/>
+        <template:param name="subNodesWrapper" value="wrapper.listItem"/>
+        <template:param name="omitFormatting" value="true"/>
     </template:module>
 </c:forEach>
 <c:if test="${renderContext.editMode}">

@@ -1,0 +1,2 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${not empty listItemCssClass}"><c:set var="cssClassToBeUsed">class="${listItemCssClass}"</c:set></c:if><li ${cssClassToBeUsed}>${wrappedContent}</li>

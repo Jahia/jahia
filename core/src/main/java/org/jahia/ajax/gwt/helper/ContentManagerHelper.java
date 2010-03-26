@@ -46,7 +46,6 @@ import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.webdav.UsageEntry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
@@ -251,7 +250,7 @@ public class ContentManagerHelper {
     }
 
     public String findAvailableName(JCRNodeWrapper dest, String name, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
-        return JCRContentUtils.findAvailableNodeName(dest, name, currentUserSession);
+        return JCRContentUtils.findAvailableNodeName(dest, name);
     }
 
     /**

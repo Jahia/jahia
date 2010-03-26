@@ -210,9 +210,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
            
             //if (isGoogleAnaylitcsTrackingActivated(renderContext.getSite()) && isLiveMode()) {
-                buf.append(GoogleAnalyticsService.getInstance().renderBaseTrackingCode());
-                List<JCRNodeWrapper> trackedNodes = (List<JCRNodeWrapper>)renderContext.getRequest().getAttribute(GoogleAnalyticsFilter.GOOGLE_ANALYTICS_TRACKED_NODES);
-                buf.append(GoogleAnalyticsService.getInstance().renderNodeTrackingCode(trackedNodes,renderContext.getSite()));
+              //  buf.append(GoogleAnalyticsService.getInstance().renderBaseTrackingCode());
+              //  List<JCRNodeWrapper> trackedNodes = (List<JCRNodeWrapper>)renderContext.getRequest().getAttribute(GoogleAnalyticsFilter.GOOGLE_ANALYTICS_TRACKED_NODES);
+              //  buf.append(GoogleAnalyticsService.getInstance().renderNodeTrackingCode(trackedNodes,renderContext.getSite()));
 
 
            // }

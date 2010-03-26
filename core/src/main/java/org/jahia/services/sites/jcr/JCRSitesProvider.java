@@ -240,7 +240,12 @@ public class JCRSitesProvider {
                     Iterator<GoogleAnalyticsProfile> it = site.getGoogleAnalyticsProfil().iterator();
                     while (it.hasNext()) {
                         GoogleAnalyticsProfile googleAnalyticsProfile = it.next();
-                        JCRNodeWrapper googleAnalyticsNode = siteNode.addNode(googleAnalyticsProfile.getName(), Constants.JAHIANT_GOOGLEANALYTICS);
+                        JCRNodeWrapper googleAnalyticsNode;
+                        if (siteNode.hasNode(googleAnalyticsProfile.getName())) {
+                            googleAnalyticsNode = siteNode.getNode(googleAnalyticsProfile.getName());
+                        } else {
+                            googleAnalyticsNode = siteNode.addNode(googleAnalyticsProfile.getName(), Constants.JAHIANT_GOOGLEANALYTICS);
+                        }
                         googleAnalyticsNode.setProperty("j:account", googleAnalyticsProfile.getAccount());
                         googleAnalyticsNode.setProperty("j:login", googleAnalyticsProfile.getLogin());
                         googleAnalyticsNode.setProperty("j:password", googleAnalyticsProfile.getPassword());

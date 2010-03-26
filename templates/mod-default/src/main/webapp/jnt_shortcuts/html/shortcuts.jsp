@@ -2,7 +2,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js, textsizer.js"/>
 
 <!-- shortcuts -->
 <script type="text/javascript">

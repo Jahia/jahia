@@ -3,6 +3,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <template:addResources type="css" resources="shortcuts-inline.css"/>
+<template:addResources type="javascript" resources="textsizer.js"/>
 
 <div class="shortcuts-inline">
     <ul>

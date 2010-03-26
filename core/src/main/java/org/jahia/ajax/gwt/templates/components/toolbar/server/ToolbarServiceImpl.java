@@ -47,6 +47,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
+import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
@@ -209,13 +210,12 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         }
 
         JahiaData jData = retrieveJahiaData();
-        ParamBean paramBean = retrieveParamBean();
 
         // create gwtTollbar
         GWTJahiaToolbar gwtToolbar = new GWTJahiaToolbar();
         gwtToolbar.setIndex(toolbar.getIndex());
         gwtToolbar.setName(toolbar.getName());
-        gwtToolbar.setTitle(getResources(paramBean, toolbar.getTitleKey()));
+        gwtToolbar.setTitle(getResources(toolbar.getTitleKey(), getUILocale() != null ? getUILocale() : getLocale(), getSite()));
         gwtToolbar.setType(toolbar.getType());
         gwtToolbar.setDisplayTitle(toolbar.isDisplayTitle());
         gwtToolbar.setContextMenu(toolbar.isContextMenu());
@@ -237,7 +237,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
             // case of Language switcher
             if(itemsGroup instanceof LanguageSwitcherItemsGroup){
-               String langCode = LanguageCodeConverters.localeToLanguageTag(paramBean.getCurrentLocale());
+               String langCode = LanguageCodeConverters.localeToLanguageTag(getLocale());
                itemsGroup.setTitle(LanguageItemsResolver.getDisplayName(langCode));
                itemsGroup.setMinIconStyle(LanguageItemsResolver.getLangIconStyle(langCode));
                itemsGroup.setMinIconStyle(LanguageItemsResolver.getLangIconStyle(langCode));
@@ -275,7 +275,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      */
     private GWTJahiaToolbarItemsGroup createGWTItemsGroup(String toolbarName, int index, ItemsGroup itemsGroup) {
         JahiaData jData = retrieveJahiaData();
-        ParamBean paramBean = retrieveParamBean();
 
         // don't add the items group if  has no items group
         List<Item> list = itemsGroup.getRealItems(jData);
@@ -307,7 +306,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         gwtToolbarItemsGroup.setMediumIconStyle(itemsGroup.getMediumIconStyle());
         gwtToolbarItemsGroup.setMinIconStyle(itemsGroup.getMinIconStyle());
         if (itemsGroup.getTitleKey() != null) {
-            gwtToolbarItemsGroup.setItemsGroupTitle(getResources(paramBean, itemsGroup.getTitleKey()));
+            gwtToolbarItemsGroup.setItemsGroupTitle(getResources(itemsGroup.getTitleKey(), getUILocale() != null ? getUILocale() : getLocale(), getSite()));
         } else {
             gwtToolbarItemsGroup.setItemsGroupTitle(itemsGroup.getTitle());
         }
@@ -413,19 +412,18 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      */
     private GWTJahiaToolbarItem createGWTItem(Item item) {
         JahiaData jData = retrieveJahiaData();
-        ParamBean paramBean = retrieveParamBean();
 
         // GWTJahiaToolbarItem
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
         if (item.getTitleKey() != null) {
-            gwtToolbarItem.setTitle(getResources(paramBean, item.getTitleKey()));
+            gwtToolbarItem.setTitle(getResources(item.getTitleKey(), getUILocale() != null ? getUILocale() : getLocale(), getSite()));
         } else {
             gwtToolbarItem.setTitle(item.getTitle());
         }
         gwtToolbarItem.setType(item.getId());
         gwtToolbarItem.setDisplayTitle(item.isDisplayTitle());
         if (item.getDescriptionKey() != null) {
-            gwtToolbarItem.setDescription(getResources(paramBean, item.getDescriptionKey()));
+            gwtToolbarItem.setDescription(getResources(item.getDescriptionKey(), getUILocale() != null ? getUILocale() : getLocale(), getSite()));
         } else {
             gwtToolbarItem.setDescription(gwtToolbarItem.getTitle());
         }
@@ -557,7 +555,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         String link = null;
         JobDetail lastExecutedJobDetail = getSchedulerService().getLastCompletedJobDetail();
         if (lastExecutedJobDetail != null) {
-            link = retrieveParamBean().getContextPath() + "/processing/jobreport.jsp?name=" + lastExecutedJobDetail.getName() + "&groupName=" + lastExecutedJobDetail.getGroup();
+            link = Jahia.getContextPath() + "/processing/jobreport.jsp?name=" + lastExecutedJobDetail.getName() + "&groupName=" + lastExecutedJobDetail.getGroup();
             JobDataMap lastExecutedJobDataMap = lastExecutedJobDetail.getJobDataMap();
             if (lastExecutedJobDataMap != null) {
 
@@ -637,7 +635,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             gwtProcessJobInfo.setJobFinished(gwtProcessJobInfo.getLastViewTime() < lastExecutedJob);
 
             boolean pageRefresh = false;
-            String value = preferencesService.getGenericPreferenceValue(ProcessDisplayServiceImpl.PREF_PAGE_REFRESH, retrieveParamBean());
+            String value = preferencesService.getGenericPreferenceValue(ProcessDisplayServiceImpl.PREF_PAGE_REFRESH, getRemoteJahiaUser());
             if (value != null && value.length() > 0) {
                 try {
                     pageRefresh = Boolean.parseBoolean(value);
@@ -682,6 +680,5 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         }
         return SCHEDULER_SERVICE;
     }
-
 
 }

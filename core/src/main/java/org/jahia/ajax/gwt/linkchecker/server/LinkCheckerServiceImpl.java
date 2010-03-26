@@ -168,9 +168,8 @@ public class LinkCheckerServiceImpl extends JahiaRemoteService implements LinkCh
     private AdministrationModule linkCheckerAdministrationModule;
     
     public Boolean checkLinks() {
-        ProcessingContext ctx = retrieveParamBean();
-        if (ctx.getUser().isAdminMember(ctx.getSiteID()) || hasAccess(ctx.getUser(), ctx.getSiteKey())) {
-            linkChecker.startCheckingLinks(ctx.getSiteID());
+        if (getRemoteJahiaUser().isAdminMember(getSite().getID()) || hasAccess(getRemoteJahiaUser(), getSite().getSiteKey())) {
+            linkChecker.startCheckingLinks(getSite().getID());
             return Boolean.TRUE;
         } else {
             return Boolean.FALSE;

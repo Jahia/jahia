@@ -53,18 +53,31 @@ public interface ProcessDisplayService extends RemoteService {
      * Use PdisplayServiceAsync.App.getInstance() to access static instance of MyServiceAsync
      */
     public static class App {
-        private static ProcessDisplayServiceAsync ourInstance = null;
+        private static ProcessDisplayServiceAsync app = null;
 
 
         public static synchronized ProcessDisplayServiceAsync getInstance() {
-            if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "pdisplay.gwt";
+            if (app == null) {
+                String relativeServiceEntryPoint = createEntryPointUrl();
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
-                ourInstance = (ProcessDisplayServiceAsync) GWT.create(ProcessDisplayService.class);
-                ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);
+                app = (ProcessDisplayServiceAsync) GWT.create(ProcessDisplayService.class);
+                ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+
+                JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
+                    public void updateEntryPointUrl() {
+                        String relativeServiceEntryPoint = createEntryPointUrl();
+                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                        ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+                    }
+                });
+                
             }
 
-            return ourInstance;
+            return app;
+        }
+
+        private static String createEntryPointUrl() {
+            return JahiaGWTParameters.getServiceEntryPoint() + "pdisplay.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
         }
 
     }

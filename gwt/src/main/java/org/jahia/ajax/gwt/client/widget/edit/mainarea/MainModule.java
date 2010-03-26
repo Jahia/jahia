@@ -243,6 +243,12 @@ public class MainModule extends ContentPanel implements Module {
         module.refresh();
     }
 
+    public void switchLanguage(String language) {
+        mask("Loading", "x-mask-loading");
+        editLinker.setLocale(language);
+        refresh();
+    }
+
     public GWTJahiaNode getNode() {
         return node;
     }

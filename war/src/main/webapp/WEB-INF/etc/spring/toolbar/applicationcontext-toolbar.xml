@@ -691,11 +691,18 @@
     </bean>
 
     <!-- language switcher -->
-    <bean id="org.jahia.toolbar.itemsgroup.LanguageSwitcher"
-          class="org.jahia.services.toolbar.bean.custom.LanguageSwitcherItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="itemsResolver" ref="languageItemsResolver"/>
+    <bean id="org.jahia.toolbar.itemsgroup.LanguageSwitcher" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem"/>
+        </property>
+        <property name="titleKey" value="label.languages"/>
     </bean>
+
+    <!--<bean id="org.jahia.toolbar.itemsgroup.LanguageSwitcher"-->
+          <!--class="org.jahia.services.toolbar.bean.custom.LanguageSwitcherItemsGroup">-->
+        <!--<property name="layout" value="menu"/>-->
+        <!--<property name="itemsResolver" ref="languageItemsResolver"/>-->
+    <!--</bean>-->
 
     <bean id="languageItemsResolver" class="org.jahia.services.toolbar.resolver.impl.LanguageItemsResolver"/>
 

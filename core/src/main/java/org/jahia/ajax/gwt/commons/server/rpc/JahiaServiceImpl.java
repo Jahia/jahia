@@ -48,7 +48,6 @@ import org.jahia.data.beans.SiteBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.gui.GuiBean;
 import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -122,35 +121,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
     }
 
 
-    /**
-     * Retrieve all active languages for the current site.
-     *
-     * @return a list of ordered language codes
-     */
-    public GWTJahiaLanguageSwitcherBean getAvailableLanguagesAndWorkflowStates(boolean displayIsoCode, boolean displayLanguage, boolean inEngine) {
-        ProcessingContext jParams = retrieveParamBean();
-        Locale locale = jParams.getLocale();
-        if (inEngine) {
-            locale = getEngineLocale();
-        }
-//        Map<String, Locale> availableLocaleMap = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite());
-//        Map<String, String> workflowStates = WorkflowServiceHelper.getWorkflowStates(jParams.getContentPage());
-        Map<String, GWTJahiaLanguage> availableLanguages = new HashMap<String, GWTJahiaLanguage>();
-//        Set<Map.Entry<String, Locale>> iterator = availableLocaleMap.entrySet();
-//        for (Map.Entry<String, Locale> stringLocaleEntry : iterator) {
-//            final Locale value = stringLocaleEntry.getValue();
-//            GWTLanguageSwitcherLocaleBean localeBean = new GWTLanguageSwitcherLocaleBean();
-//            String country = value.getDisplayCountry(Locale.ENGLISH).toLowerCase().replace(" ", "_");
-//            localeBean.setCountryIsoCode(country);
-//            if (displayIsoCode) localeBean.setDisplayName(value.getISO3Language());
-//            else if (displayLanguage) localeBean.setDisplayName(StringUtils.capitalize(value.getDisplayName(value)));
-//            else localeBean.setDisplayName(value.getLanguage());
-//            localeBean.setLanguage(value.getLanguage());
-//            availableLanguages.put(stringLocaleEntry.getKey(), localeBean);
-//        }
-        return new GWTJahiaLanguageSwitcherBean(availableLanguages, new HashMap<String,String>());
-    }
-
     public GWTJahiaInlineEditingResultBean inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent) {
         GWTJahiaInlineEditingResultBean resultBean = new GWTJahiaInlineEditingResultBean();
         return resultBean;
@@ -159,8 +129,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
     public Boolean isInlineEditingAllowed(Integer containerID, Integer fieldID) {
         if (logger.isDebugEnabled())
             logger.debug("isInlineEditingAllowed called for containerID=" + containerID + " fieldID=" + fieldID);
-        ProcessingContext jParams = retrieveParamBean();
-        final boolean inlineEditingActivatedPreference = UserPreferencesHelper.isEnableInlineEditing(jParams.getUser());
+        final boolean inlineEditingActivatedPreference = UserPreferencesHelper.isEnableInlineEditing(getRemoteJahiaUser());
         if (!inlineEditingActivatedPreference) {
             return false;
         }
@@ -174,31 +143,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
             logger.error("unable to get process job", e);
         }
         return null;
-    }
-
-    public void changeLocaleForAllPagesAndEngines(String languageSelected) throws GWTJahiaServiceException {
-        ProcessingContext jParams = retrieveParamBean();
-        try {
-            jParams.changeLanguage(LanguageCodeConverters.getLocaleFromCode(languageSelected));
-        } catch (JahiaException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-    }
-
-    public void changeLocaleForCurrentEngine(String languageSelected) {
-        ProcessingContext jParams = retrieveParamBean();
-        if (languageSelected != null)
-            jParams.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE_ENGINE, LanguageCodeConverters.getLocaleFromCode(languageSelected));
-        else jParams.getSessionState().removeAttribute(ProcessingContext.SESSION_LOCALE_ENGINE);
-    }
-
-    public String getLanguageURL(String language) throws GWTJahiaServiceException {
-        ProcessingContext jParams = retrieveParamBean();
-        try {
-            return jParams.composeLanguageURL(language, true);
-        } catch (JahiaException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
     }
 
     public List<GWTJahiaSite> getAvailableSites() {

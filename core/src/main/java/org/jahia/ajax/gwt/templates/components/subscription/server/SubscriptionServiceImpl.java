@@ -39,7 +39,6 @@ import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionInfo;
 import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.Subscription;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -58,10 +57,9 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
     private org.jahia.services.notification.SubscriptionService subscriptionService;
 
     private int getSiteId() {
-        ProcessingContext ctx = retrieveParamBean();
-        int siteId = ctx.getSiteID();
+        int siteId = getSite().getID();
         if (SettingsBean.getInstance().isDevelopmentMode() && siteId <= 0) {
-            String siteIdParameter = getThreadLocalRequest().getParameter(
+            String siteIdParameter = getRequest().getParameter(
                     "site");
             if (siteIdParameter != null) {
                 siteId = Integer.parseInt(siteIdParameter);
@@ -72,7 +70,7 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
 
     public SubscriptionStatus getStatus(String objectKey, String eventType) {
         SubscriptionStatus status = SubscriptionStatus.UNKNOWN;
-        JahiaUser user = getUser();
+        JahiaUser user = getRemoteJahiaUser();
         if (JahiaUserManagerService.isGuest(user)) {
             status = SubscriptionStatus.UNAUTHORIZED;
         } else if (UserPreferencesHelper.getEmailAddress(user) == null) {
@@ -86,24 +84,10 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
         return status;
     }
 
-    private JahiaUser getUser() {
-        ProcessingContext ctx = retrieveParamBean();
-        JahiaUser user = ctx.getUser();
-        if (SettingsBean.getInstance().isDevelopmentMode()
-                && JahiaUserManagerService.isGuest(user)) {
-            String userName = getThreadLocalRequest().getParameter("user");
-            if (userName != null) {
-                user = ServicesRegistry.getInstance()
-                        .getJahiaUserManagerService().lookupUser(userName);
-            }
-        }
-        return user;
-    }
-
     public List<SubscriptionInfo> requestSubscriptionStatus(
             List<SubscriptionInfo> subscriptions) {
 
-        JahiaUser user = getUser();
+        JahiaUser user = getRemoteJahiaUser();
         if (JahiaUserManagerService.isGuest(user)) {
             for (SubscriptionInfo subscription : subscriptions) {
                 subscription.setStatus(SubscriptionStatus.UNAUTHORIZED);
@@ -135,7 +119,7 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
 
         SubscriptionStatus status = SubscriptionStatus.SUBSCRIBED;
 
-        JahiaUser user = getUser();
+        JahiaUser user = getRemoteJahiaUser();
         if (JahiaUserManagerService.isGuest(user)) {
             String email = properties.get("email");
             if (email == null || email.length() == 0
@@ -161,19 +145,18 @@ public class SubscriptionServiceImpl extends JahiaRemoteService implements
 
         SubscriptionStatus status = SubscriptionStatus.NOT_SUBSCRIBED;
 
-        ProcessingContext ctx = retrieveParamBean();
-        if (JahiaUserManagerService.isGuest(ctx.getUser())) {
+        if (JahiaUserManagerService.isGuest(getRemoteJahiaUser())) {
             status = SubscriptionStatus.UNAUTHORIZED;
         } else {
-            subscriptionService.unsubscribe(objectKey, eventType, ctx.getUser()
-                    .getUsername(), ctx.getSiteID());
+            subscriptionService.unsubscribe(objectKey, eventType, getRemoteJahiaUser()
+                    .getUsername(), getSite().getID());
             status = getStatus(objectKey, eventType);
         }
         return status;
     }
 
     public Boolean updateSubscriptionStatus(List<SubscriptionInfo> subscriptions) {
-        JahiaUser user = getUser();
+        JahiaUser user = getRemoteJahiaUser();
         if (JahiaUserManagerService.isGuest(user)) {
             return false;
         } else {

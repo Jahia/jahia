@@ -211,17 +211,6 @@ public class JahiaPreferencesService extends JahiaService {
      * Return the value associated with the given key using the generic preference provider.
      *
      * @param key     the key
-     * @param jParams the processing context
-     * @return the value
-     */
-    public String getGenericPreferenceValue(String key, ProcessingContext jParams) {
-        return getGenericPreferenceValue(key, jParams.getUser());
-    }
-
-    /**
-     * Return the value associated with the given key using the generic preference provider.
-     *
-     * @param key     the key
      * @param principal current principal
      * @return the value
      */

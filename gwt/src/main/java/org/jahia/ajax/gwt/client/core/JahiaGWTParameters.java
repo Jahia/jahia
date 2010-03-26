@@ -35,6 +35,9 @@ import com.google.gwt.i18n.client.Dictionary;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.util.URL;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Jahia.
  * User: ktlili
@@ -47,6 +50,7 @@ public class JahiaGWTParameters {
     public static final String JAHIA_GWT_PARAMETERS = "jahiaGWTParameters";
     public static final String CURRENT_USER_NAME = "currentUser";
     public static final String COPYRIGHT = "copyright";
+    public static final String UI_LANGUAGE = "uilang";
     public static final String LANGUAGE = "lang";
     public static final String SITE_KEY = "siteKey";
     public static final String WORKSPACE = "workspace";
@@ -64,6 +68,8 @@ public class JahiaGWTParameters {
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
     private static Dictionary jahiaParamDictionary = Dictionary.getDictionary(JAHIA_GWT_PARAMETERS);
+    private static String language;
+    private static String siteKey;
 
 
     /**
@@ -107,12 +113,33 @@ public class JahiaGWTParameters {
         return jahiaParamDictionary.get(COPYRIGHT);
     }
 
-    public static String getLanguage() {
-        return jahiaParamDictionary.get(LANGUAGE);
+    public static String getUILanguage() {
+        return jahiaParamDictionary.get(UI_LANGUAGE);
     }
     
+    public static String getLanguage() {
+        if (language == null) {
+            language = jahiaParamDictionary.get(LANGUAGE);
+        }
+        return language;
+    }
+
+    public static void setLanguage(String newLanguage) {
+        language = newLanguage;
+        for (UrlUpdater urlUpdater : updaters) {
+            urlUpdater.updateEntryPointUrl();
+        }
+    }
+
     public static String getSiteKey() {
+        if (siteKey == null) {
+            siteKey = jahiaParamDictionary.get(SITE_KEY);
+        }
         return jahiaParamDictionary.get(SITE_KEY);
+    }
+
+    public static void setSiteKey(String newSiteKey) {
+        siteKey = newSiteKey;
     }
 
     public static String getContextPath() {
@@ -140,5 +167,13 @@ public class JahiaGWTParameters {
         return jahiaParamDictionary.get(name);
     }
 
+    public static void addUpdater(UrlUpdater updater ) {
+        updaters.add(updater);
+    }
 
+    static List<UrlUpdater> updaters = new ArrayList<UrlUpdater>();
+
+    public static interface UrlUpdater {
+        void updateEntryPointUrl();
+    }
 }

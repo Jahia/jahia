@@ -51,16 +51,28 @@ import java.util.List;
 public interface UserManagerService extends RemoteService  {
 
     public static class App {
-        private static UserManagerServiceAsync serv = null;
+        private static UserManagerServiceAsync app = null;
 
         public static synchronized UserManagerServiceAsync getInstance() {
-            if (serv == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"userManager.gwt";
+            if (app == null) {
+                String relativeServiceEntryPoint = createEntryPointUrl();
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
-                serv = (UserManagerServiceAsync) GWT.create(UserManagerService.class);
-                ((ServiceDefTarget) serv).setServiceEntryPoint(serviceEntryPoint);
+                app = (UserManagerServiceAsync) GWT.create(UserManagerService.class);
+                ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+
+                JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
+                    public void updateEntryPointUrl() {
+                        String relativeServiceEntryPoint = createEntryPointUrl();
+                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                        ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+                    }
+                });                
             }
-            return serv;
+            return app;
+        }
+
+        private static String createEntryPointUrl() {
+            return JahiaGWTParameters.getServiceEntryPoint()+"userManager.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
         }
     }
 

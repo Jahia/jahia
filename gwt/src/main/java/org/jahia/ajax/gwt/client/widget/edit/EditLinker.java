@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 
 import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
@@ -101,6 +102,7 @@ public class EditLinker implements Linker {
 
     public void setLocale(String locale) {
         this.locale = locale;
+        JahiaGWTParameters.setLanguage(locale);
     }
 
     public Module getSelectedModule() {

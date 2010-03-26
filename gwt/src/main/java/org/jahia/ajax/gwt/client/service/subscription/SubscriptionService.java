@@ -57,11 +57,25 @@ public interface SubscriptionService extends RemoteService {
             if (app == null) {
                 app = GWT.create(SubscriptionService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(URL
-                        .getAbsolutleURL(JahiaGWTParameters
-                                .getServiceEntryPoint()
-                                + "subscription.gwt"));
+                        .getAbsolutleURL(createEntryPointUrl()
+                ));
+
+                JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
+                    public void updateEntryPointUrl() {
+                        String relativeServiceEntryPoint = createEntryPointUrl();
+                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                        ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+                    }
+                });
+                
             }
             return app;
+        }
+
+        private static String createEntryPointUrl() {
+            return JahiaGWTParameters
+                    .getServiceEntryPoint()
+                    + "subscription.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
         }
     }
 

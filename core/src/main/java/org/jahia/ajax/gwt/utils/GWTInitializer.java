@@ -79,13 +79,14 @@ public class GWTInitializer {
 
     private static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
         StringBuilder buf = new StringBuilder();
-        Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_UI_LOCALE);
-        if (locale == null) {
-            locale = Locale.ENGLISH;
+        Locale uilocale = (Locale) session.getAttribute(ParamBean.SESSION_UI_LOCALE);
+        if (uilocale == null) {
+            uilocale = Locale.ENGLISH;
         }
+        Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
 
         String context = request.getContextPath();
-        buf.append("<meta name=\"gwt:property\" content=\"locale=").append(locale.toString()).append("\"/>");
+        buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor/contents.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
@@ -120,6 +121,7 @@ public class GWTInitializer {
         }
 
         params.put(JahiaGWTParameters.LANGUAGE, locale.toString());
+        params.put(JahiaGWTParameters.UI_LANGUAGE, uilocale.toString());
         if (renderContext != null) {
             params.put(JahiaGWTParameters.WORKSPACE, renderContext
                     .getMainResource().getWorkspace());

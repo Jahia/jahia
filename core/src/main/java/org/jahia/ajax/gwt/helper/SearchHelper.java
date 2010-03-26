@@ -326,8 +326,8 @@ public class SearchHelper {
         }
 
         // language
-        if (gwtQuery.getLanguage() != null && gwtQuery.getLanguage().getCountryIsoCode() != null) {
-            criteria.getLanguages().setValue(gwtQuery.getLanguage().getCountryIsoCode());
+        if (gwtQuery.getLanguage() != null && gwtQuery.getLanguage().getLanguage() != null) {
+            criteria.getLanguages().setValue(gwtQuery.getLanguage().getLanguage());
         }
 
         // query string

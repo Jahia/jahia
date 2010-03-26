@@ -97,6 +97,6 @@ public class JahiaPreferenceResolver implements SelectedResolver, VisibilityReso
      * @return
      */
     private String getGenericPreferenceValue(JahiaData jahiaData, String name) {
-        return JAHIA_PREFERENCES_SERVICE.getGenericPreferenceValue(name, jahiaData.getProcessingContext());
-    }
+       return JAHIA_PREFERENCES_SERVICE.getGenericPreferenceValue(name, jahiaData.getProcessingContext().getUser());
+   }
 }

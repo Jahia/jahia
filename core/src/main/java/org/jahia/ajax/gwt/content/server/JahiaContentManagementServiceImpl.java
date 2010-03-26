@@ -192,7 +192,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
         return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, selectedNodes, openPaths,
-                false, null, retrieveParamBean().getSite(), retrieveCurrentSession());
+                false, null, getSite(), retrieveCurrentSession());
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths, boolean forceCreate) throws GWTJahiaServiceException {
@@ -202,7 +202,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
-        return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, selectedNodes, openPaths, forceCreate, contentManager, retrieveParamBean().getSite(), retrieveCurrentSession());
+        return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, selectedNodes, openPaths, forceCreate, contentManager, getSite(), retrieveCurrentSession());
     }
 
     /**
@@ -218,7 +218,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException {
-        getThreadLocalRequest().getSession().setAttribute(navigation.SAVED_OPEN_PATHS + repositoryType, paths);
+        getRequest().getSession().setAttribute(navigation.SAVED_OPEN_PATHS + repositoryType, paths);
     }
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException {
@@ -240,7 +240,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
         try {
-            return mashup.searchPortlets(match, retrieveParamBean().getUser(), retrieveParamBean().getLocale());
+            return mashup.searchPortlets(match, getRemoteJahiaUser(), getLocale());
         } catch (Exception e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -251,21 +251,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTJahiaNode saveSearch(String searchString, String name) throws GWTJahiaServiceException {
-        return search.saveSearch(searchString, name, retrieveParamBean().getSite(), retrieveCurrentSession());
+        return search.saveSearch(searchString, name, getSite(), retrieveCurrentSession());
     }
 
     public void saveSearch(String searchString, String path, String name) throws GWTJahiaServiceException {
-        ParamBean context = retrieveParamBean();
         final GWTJahiaNode jahiaNode = search.saveSearch(searchString, path, name, retrieveCurrentSession());
     }
 
     public void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name) throws GWTJahiaServiceException {
-        ParamBean context = retrieveParamBean();
         final GWTJahiaNode jahiaNode = search.saveSearch(searchQuery, path, name, retrieveCurrentSession());
     }
 
     public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException {
-        ParamBean context = retrieveParamBean();
         final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());
         final GWTJahiaNode jahiaNode = search.saveSearch(searchString, parentNode.getPath(), name, retrieveCurrentSession());
         try {
@@ -314,7 +311,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void copyAndSaveProperties(List<String> pathsToCopy, String destinationPath, List<String> mixin, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
         try {
             String newName = null;
-            List<GWTJahiaNodeProperty> l = langCodeProperties.get(retrieveParamBean().getSite().getDefaultLanguage());
+            List<GWTJahiaNodeProperty> l = langCodeProperties.get(getSite().getDefaultLanguage());
             if (l == null && langCodeProperties.size() > 0) {
                 l = langCodeProperties.values().iterator().next();
             }
@@ -370,7 +367,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException {
-        return getProperties(path, retrieveParamBean().getLocale());
+        return getProperties(path, getLocale());
     }
 
     /**
@@ -382,7 +379,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaGetPropertiesResult getProperties(String path, Locale locale) throws GWTJahiaServiceException {
-        final ParamBean jParams = retrieveParamBean();
         final GWTJahiaNode node = navigation.getNode(path, retrieveCurrentSession());
         final HashMap<String, Object> map = new HashMap<String, Object>();
         try {
@@ -394,15 +390,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         // get node type
-        final List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(node.getNodeTypes(), map, jParams.getUILocale());
+        final List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(node.getNodeTypes(), map, getUILocale());
 
         // get properties
         final Map<String, GWTJahiaNodeProperty> props = properties.getProperties(path, retrieveCurrentSession(locale));
 
         final GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, props);
         result.setNode(node);
-        result.setAvailabledLanguages(languages.getLanguages(jParams));
-        result.setCurrentLocale(languages.getCurrentLang(jParams));
+        result.setAvailabledLanguages(languages.getLanguages(getSite(),getRemoteJahiaUser(), getLocale()));
+        result.setCurrentLocale(languages.getCurrentLang(getLocale()));
         return result;
     }
 
@@ -414,7 +410,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException {
-        properties.saveProperties(nodes, newProps, retrieveParamBean().getUser(), retrieveCurrentSession());
+        properties.saveProperties(nodes, newProps, getRemoteJahiaUser(), retrieveCurrentSession());
     }
 
     /**
@@ -426,7 +422,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, String local) throws GWTJahiaServiceException {
-        properties.saveProperties(nodes, newProps, retrieveParamBean().getUser(), retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(local)));
+        properties.saveProperties(nodes, newProps, getRemoteJahiaUser(), retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(local)));
     }
 
     /**
@@ -502,10 +498,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
-        ParamBean context = retrieveParamBean();
-
         if (name == null) {
-            List<GWTJahiaNodeProperty> l = langCodeProperties.get(context.getSite().getDefaultLanguage());
+            List<GWTJahiaNodeProperty> l = langCodeProperties.get(getSite().getDefaultLanguage());
             if (l == null && langCodeProperties.size() > 0) {
                 l = langCodeProperties.values().iterator().next();
             }
@@ -543,10 +537,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
-        ParamBean context = retrieveParamBean();
-
         if (name == null) {
-            List<GWTJahiaNodeProperty> l = langCodeProperties.get(context.getSite().getDefaultLanguage());
+            List<GWTJahiaNodeProperty> l = langCodeProperties.get(getSite().getDefaultLanguage());
             if (l == null && langCodeProperties.size() > 0) {
                 l = langCodeProperties.values().iterator().next();
             }
@@ -597,11 +589,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException {
-        return mashup.createRSSPortletInstance(path, name, url, retrieveParamBean().getSite(), retrieveCurrentSession());
+        return mashup.createRSSPortletInstance(path, name, url, getSite(), retrieveCurrentSession());
     }
 
     public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException {
-        return mashup.createGoogleGadgetPortletInstance(path, name, script, retrieveParamBean().getSite(), retrieveCurrentSession());
+        return mashup.createGoogleGadgetPortletInstance(path, name, script, getSite(), retrieveCurrentSession());
     }
 
     public void checkExistence(String path) throws GWTJahiaServiceException {
@@ -639,11 +631,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException {
-        return contentManager.getACL(path, false, retrieveCurrentSession(), retrieveParamBean().getLocale());
+        return contentManager.getACL(path, false, retrieveCurrentSession(), getLocale());
     }
 
     public GWTJahiaNodeACL getNewACL(String parentPath) throws GWTJahiaServiceException {
-        return contentManager.getACL(parentPath, true, retrieveCurrentSession(), retrieveParamBean().getLocale());
+        return contentManager.getACL(parentPath, true, retrieveCurrentSession(), getLocale());
     }
 
     public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException {
@@ -651,7 +643,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand) throws GWTJahiaServiceException {
-        return acl.createUsersGroupACE(permissions, grand, retrieveParamBean().getSite());
+        return acl.createUsersGroupACE(permissions, grand, getSite());
     }
 
     public List<GWTJahiaNodeUsage> getUsages(String path) throws GWTJahiaServiceException {
@@ -804,6 +796,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode) throws GWTJahiaServiceException {
+        if (locale != null) {
+            final Locale value = LanguageCodeConverters.languageCodeToLocale(locale);
+            if (!getLocale().equals(value)) {
+                getRequest().getSession().setAttribute(ProcessingContext.SESSION_LOCALE, value);
+            }
+        }
         return this.template.getRenderedContent(path, template, templateWrapper, contextParams, editMode, getRequest(), getResponse(), retrieveCurrentSession());
     }
 
@@ -862,7 +860,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public void publish(List<String> paths, boolean reverse) throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession();
-        publication.publish(paths, Collections.singleton(session.getLocale().toString()), retrieveParamBean().getUser(), false, session);
+        publication.publish(paths, Collections.singleton(session.getLocale().toString()), getRemoteJahiaUser(), false, session);
     }
 
     /**
@@ -919,7 +917,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException {
-        return languages.getLanguages(retrieveParamBean());
+        return languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale());
     }
 
     /**
@@ -929,8 +927,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException {
-        ProcessingContext ctx = retrieveParamBean();
-        return rolesPermissions.getGrantedPermissions(ctx.getSiteKey(), ctx.getUser());
+        return rolesPermissions.getGrantedPermissions(getSite().getSiteKey(), getRemoteJahiaUser());
     }
 
 
@@ -1042,7 +1039,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     private List<String> getOpenPathsForRepository(String repositoryType) {
-        return (List<String>) getThreadLocalRequest().getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
+        return (List<String>) getRequest().getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
     }
 
     private JahiaUser getUser() {
@@ -1091,12 +1088,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      */
     public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query) throws GWTJahiaServiceException {
-        if(!retrieveParamBean().getSite().hasGoogleAnalyticsProfil()){
+        if(!getSite().hasGoogleAnalyticsProfil()){
             return new ArrayList<GWTJahiaAnalyticsData>();
         }
 
-        Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = retrieveParamBean().getSite().getGoogleAnalyticsProfil().iterator();
-        GoogleAnalyticsProfile googleAnalyticsProfile = retrieveParamBean().getSite().getGoogleAnalyticsProfil().iterator().next();
+        Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = getSite().getGoogleAnalyticsProfil().iterator();
+        GoogleAnalyticsProfile googleAnalyticsProfile = getSite().getGoogleAnalyticsProfil().iterator().next();
 
 
         String jahiaProfileName = googleAnalyticsProfile.getName();

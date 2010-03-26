@@ -42,11 +42,6 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 public class GWTJahiaLanguage extends BaseModelData {
 
 
-    public GWTJahiaLanguage(String displayName, String countryIsoCode) {
-        setDisplayName(displayName);
-        setCountryIsoCode(countryIsoCode);
-    }
-
     public GWTJahiaLanguage() {
 
     }

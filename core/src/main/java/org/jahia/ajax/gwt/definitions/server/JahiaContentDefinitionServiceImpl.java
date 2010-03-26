@@ -85,7 +85,7 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException {
-        return contentDefinition.getPageTemplates(retrieveCurrentSession(), retrieveParamBean().getSite());
+        return contentDefinition.getPageTemplates(retrieveCurrentSession(), getSite());
     }
 
     public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) {

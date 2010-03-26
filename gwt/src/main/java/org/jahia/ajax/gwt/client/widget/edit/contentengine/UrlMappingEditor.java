@@ -131,7 +131,7 @@ public class UrlMappingEditor extends LayoutContainer {
         setBorders(false);
         store = new ListStore<GWTJahiaUrlMapping>();
 
-        JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale.getCountryIsoCode(),
+        JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale.getLanguage(),
                 new AsyncCallback<List<GWTJahiaUrlMapping>>() {
                     public void onFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert(Messages.get("load_url_mappings_failed",
@@ -211,7 +211,7 @@ public class UrlMappingEditor extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 re.stopEditing(false);
-                GWTJahiaUrlMapping mapping = new GWTJahiaUrlMapping("", locale.getCountryIsoCode(),
+                GWTJahiaUrlMapping mapping = new GWTJahiaUrlMapping("", locale.getLanguage(),
                         store.getCount() == 0, true);
                 store.insert(mapping, 0);
                 re.startEditing(store.indexOf(mapping), true);

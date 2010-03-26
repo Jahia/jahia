@@ -81,12 +81,11 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             Properties criterias = new Properties();
             criterias.setProperty("*", match);
 
-            ParamBean jParams = retrieveParamBean();
             List<Integer> sites = siteIds;
             Set<Principal> users;
             if (sites == null || sites.size() == 0) {
                 sites = new ArrayList<Integer>();
-                sites.add(jParams.getSiteID());
+                sites.add(getSite().getID());
             }
             List<GWTJahiaUser> result = new ArrayList<GWTJahiaUser>();
             for (Integer siteId : sites) {
@@ -126,11 +125,10 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             Properties criterias = new Properties();
             criterias.setProperty(JahiaGroupManagerDBProvider.GROUPNAME_PROPERTY_NAME, match);
 
-            ParamBean jParams = retrieveParamBean();
             List<Integer> sites = siteIds;
             if (sites == null || sites.size() == 0) {
                 sites = new ArrayList<Integer>();
-                sites.add(jParams.getSiteID());
+                sites.add(getSite().getID());
             }
 
             List<GWTJahiaGroup> result = new ArrayList<GWTJahiaGroup>();
@@ -192,7 +190,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             List<Integer> list = new ArrayList<Integer>();;
 
             if (context.equals("currentSite")) {
-                JahiaSite site = retrieveParamBean().getSite();
+                JahiaSite site = getSite();
                 if (site != null) {
                     list.add(site.getID());
                 }
@@ -220,7 +218,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             List<Integer> list = new ArrayList<Integer>();;
 
             if (context.equals("currentSite")) {
-                JahiaSite site = retrieveParamBean().getSite();
+                JahiaSite site = getSite();
                 if (site != null) {
                     list.add(site.getID());
                 }

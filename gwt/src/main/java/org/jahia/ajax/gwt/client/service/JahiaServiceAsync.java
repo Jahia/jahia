@@ -48,19 +48,11 @@ public interface JahiaServiceAsync {
 
     void drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
 
-    void getAvailableLanguagesAndWorkflowStates (boolean displayIsoCode,boolean displayLanguage, boolean inEngine, AsyncCallback<GWTJahiaLanguageSwitcherBean> async) ;
-
     void inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent, AsyncCallback<GWTJahiaInlineEditingResultBean> async);
 
     void isInlineEditingAllowed(Integer containerID, Integer fieldID, AsyncCallback<Boolean> async);
 
     void getProcessJob(String name, String groupName, AsyncCallback<GWTJahiaProcessJob> async);
-
-    void changeLocaleForAllPagesAndEngines(String languageSelected, AsyncCallback async) ;
-
-    void changeLocaleForCurrentEngine(String languageSelected, AsyncCallback async);
-
-    void getLanguageURL(String language, AsyncCallback<String> async) ;
 
     void getAvailableSites(AsyncCallback<List<GWTJahiaSite>> asyncCallback);
 }

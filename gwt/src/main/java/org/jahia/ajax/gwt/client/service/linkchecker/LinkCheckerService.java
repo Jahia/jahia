@@ -19,12 +19,25 @@ public interface LinkCheckerService extends RemoteService {
 
         public static synchronized LinkCheckerServiceAsync getInstance() {
             if (app == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint() + "linkchecker.gwt";
+                String relativeServiceEntryPoint = createEntryPointUrl();
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 app = (LinkCheckerServiceAsync) GWT.create(LinkCheckerService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+
+                JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
+                    public void updateEntryPointUrl() {
+                        String relativeServiceEntryPoint = createEntryPointUrl();
+                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                        ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+                    }
+                });
+                
             }
             return app;
+        }
+
+        private static String createEntryPointUrl() {
+            return JahiaGWTParameters.getServiceEntryPoint() + "linkchecker.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
         }
     }
 

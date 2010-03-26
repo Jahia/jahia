@@ -57,12 +57,25 @@ public interface JahiaContentDefinitionService extends RemoteService {
 
         public static synchronized JahiaContentDefinitionServiceAsync getInstance() {
             if (app == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"contentDefinition.gwt";
+                String relativeServiceEntryPoint = createEntryPointUrl();
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                 app = (JahiaContentDefinitionServiceAsync) GWT.create(JahiaContentDefinitionService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+
+                JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
+                    public void updateEntryPointUrl() {
+                        String relativeServiceEntryPoint = createEntryPointUrl();
+                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                        ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+                    }
+                });
+                
             }
             return app;
+        }
+
+        private static String createEntryPointUrl() {
+            return JahiaGWTParameters.getServiceEntryPoint()+"contentDefinition.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
         }
     }
 

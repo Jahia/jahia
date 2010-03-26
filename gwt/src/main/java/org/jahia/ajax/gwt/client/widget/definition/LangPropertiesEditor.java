@@ -114,7 +114,7 @@ public class LangPropertiesEditor extends LayoutContainer {
 
 
             if (locale == null) {
-                locale = displayedLocale.getCountryIsoCode();
+                locale = displayedLocale.getLanguage();
             }
 
             PropertiesEditor langPropertiesEditor = getPropertiesEditorByLang(locale);
@@ -171,8 +171,8 @@ public class LangPropertiesEditor extends LayoutContainer {
         languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
-                if (!event.getSelectedItem().getCountryIsoCode().equalsIgnoreCase(displayedLocale.getCountryIsoCode())) {
-                    onLanguageSelectionChanged(event.getSelectedItem().getCountryIsoCode());
+                if (!event.getSelectedItem().getLanguage().equalsIgnoreCase(displayedLocale.getLanguage())) {
+                    onLanguageSelectionChanged(event.getSelectedItem().getLanguage());
                 }
                 displayedLocale = event.getSelectedItem();
             }

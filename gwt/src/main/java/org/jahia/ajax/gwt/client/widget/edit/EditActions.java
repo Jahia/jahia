@@ -26,9 +26,7 @@ import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * User: toto
@@ -88,7 +86,7 @@ public class EditActions {
     public static void switchMode(final Linker linker,int mode) {
         if (linker.getMainNode() != null) {
             String path = linker.getMainNode().getPath();
-            String locale = JahiaGWTParameters.getLanguage();
+            String locale = JahiaGWTParameters.getUILanguage();
             JahiaContentManagementService.App.getInstance().getNodeURL(path,  locale, mode, new AsyncCallback<String>() {
                 public void onSuccess(String url) {
                     com.google.gwt.user.client.Window.Location.replace(url);
@@ -108,7 +106,7 @@ public class EditActions {
      */
     public static void showCompare(final Linker linker) {
         if (linker.getSelectedNode() != null) {
-            String locale = JahiaGWTParameters.getLanguage();
+            String locale = JahiaGWTParameters.getUILanguage();
             new CompareEngine(linker.getSelectedNode(),locale,linker).show();
         }
 

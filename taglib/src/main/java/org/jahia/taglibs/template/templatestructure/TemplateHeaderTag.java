@@ -43,7 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
@@ -169,7 +168,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
             Map<String, String> params = new HashMap<String, String>(2);
             params.put(JahiaGWTParameters.CONTEXT_PATH, ((HttpServletRequest)request).getContextPath());
             Locale locale =(Locale) pageContext.getAttribute(ParamBean.SESSION_UI_LOCALE, PageContext.SESSION_SCOPE);
-            params.put(JahiaGWTParameters.LANGUAGE, locale != null ? locale.toString() : Locale.ENGLISH.toString());
+            params.put(JahiaGWTParameters.UI_LANGUAGE, locale != null ? locale.toString() : Locale.ENGLISH.toString());
             buf.append(GWTInitializer.getJahiaGWTConfig(params));
             buf.append("\n/* ]]> */\n</script>\n");
             

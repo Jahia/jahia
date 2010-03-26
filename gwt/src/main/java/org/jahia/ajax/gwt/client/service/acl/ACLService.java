@@ -49,17 +49,30 @@ public interface ACLService  extends RemoteService {
      * Use JahiaService.App.getInstance() to access static instance of MyServiceAsync
      */
     public static class App {
-        private static ACLServiceAsync ourInstance = null;
+        private static ACLServiceAsync app = null;
 
         public static synchronized ACLServiceAsync getInstance() {
-            if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"acl.gwt";
+            if (app == null) {
+                String relativeServiceEntryPoint = createEntryPointUrl();
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
-                ourInstance = (ACLServiceAsync) GWT.create(ACLService.class);
-                ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);
+                app = (ACLServiceAsync) GWT.create(ACLService.class);
+                ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+
+                JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
+                    public void updateEntryPointUrl() {
+                        String relativeServiceEntryPoint = createEntryPointUrl();
+                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                        ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+                    }
+                });
+
             }
 
-            return ourInstance;
+            return app;
+        }
+
+        private static String createEntryPointUrl() {
+            return JahiaGWTParameters.getServiceEntryPoint()+"acl.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
         }
     }
 

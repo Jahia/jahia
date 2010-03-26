@@ -55,7 +55,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
             Log.error("Locale is null");
             return null;
         }
-        return langPropertiesEditorMap.get(locale.getCountryIsoCode());
+        return langPropertiesEditorMap.get(locale.getLanguage());
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
         if (langPropertiesEditorMap == null || locale == null) {
             return;
         }
-        langPropertiesEditorMap.put(locale.getCountryIsoCode(), propertiesEditor);
+        langPropertiesEditorMap.put(locale.getLanguage(), propertiesEditor);
     }
 
     @Override

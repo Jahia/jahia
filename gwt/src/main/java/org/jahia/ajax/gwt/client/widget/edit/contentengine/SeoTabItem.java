@@ -91,11 +91,11 @@ public class SeoTabItem extends EditEngineTabItem {
     }
 
     private UrlMappingEditor getEditor(GWTJahiaLanguage locale) {
-        UrlMappingEditor editor = editorsByLanguage.get(locale.getCountryIsoCode());
+        UrlMappingEditor editor = editorsByLanguage.get(locale.getLanguage());
         if (editor == null) {
             editor = new UrlMappingEditor(engine.getNode(), locale);
             editor.setVisible(false);
-            editorsByLanguage.put(locale.getCountryIsoCode(), editor);
+            editorsByLanguage.put(locale.getLanguage(), editor);
             add(editor);
         }
         return editor;

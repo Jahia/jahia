@@ -232,7 +232,7 @@ public abstract class AbstractContentEngine extends Window {
             Log.debug("language switcher value is null");
             return null;
         }
-        return getSelectedLang().getCountryIsoCode();
+        return getSelectedLang().getLanguage();
     }
 
     /**

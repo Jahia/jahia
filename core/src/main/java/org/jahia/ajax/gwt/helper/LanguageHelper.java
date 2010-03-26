@@ -2,9 +2,10 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.params.ParamBean;
+import org.jahia.bin.Jahia;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 
 import java.util.*;
@@ -21,25 +22,27 @@ public class LanguageHelper {
     /**
      * Get available languages for the current site
      *
-     * @param jParams
+     * @param site
+     * @param user
+     * @param currentLocale
      * @return
      */
-    public List<GWTJahiaLanguage> getLanguages(ParamBean jParams) {
+    public List<GWTJahiaLanguage> getLanguages(JahiaSite site, JahiaUser user, Locale currentLocale) {
         List<GWTJahiaLanguage> items = new ArrayList<GWTJahiaLanguage>();
 
         try {
-            final JahiaSite currentSite = jParams.getSite();
+            final JahiaSite currentSite = site;
             final Set<String> languageSettings = currentSite.getLanguages();
             if (languageSettings != null && languageSettings.size() > 0) {
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);
                 for (String langCode : orderedLangs) {
-                    if (jParams.getUser().isPermitted(new PermissionIdentity(langCode, "languages",  currentSite.getSiteKey()))) {
+                    if (user.isPermitted(new PermissionIdentity(langCode, "languages",  currentSite.getSiteKey()))) {
                         GWTJahiaLanguage item = new GWTJahiaLanguage();
-                        item.setCountryIsoCode(langCode);
+                        item.setLanguage(langCode);
                         item.setDisplayName(getDisplayName(langCode));
-                        item.setImage(getLangIcon(jParams.getContextPath(), langCode));
-                        item.setCurrent(langCode.equalsIgnoreCase(jParams.getLocale().toString()));
+                        item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
+                        item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
                         items.add(item);
                     }
                 }
@@ -53,15 +56,15 @@ public class LanguageHelper {
     /**
      * Get current lang
      *
-     * @param jParams
      * @return
+     * @param locale
      */
-    public GWTJahiaLanguage getCurrentLang(ParamBean jParams) {
-        String langCode = jParams.getLocale().toString();
+    public GWTJahiaLanguage getCurrentLang(Locale locale) {
+        String langCode = locale.toString();
         GWTJahiaLanguage item = new GWTJahiaLanguage();
-        item.setCountryIsoCode(langCode);
+        item.setLanguage(langCode);
         item.setDisplayName(getDisplayName(langCode));
-        item.setImage(getLangIcon(jParams.getContextPath(), langCode));
+        item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
         return item;
     }
 

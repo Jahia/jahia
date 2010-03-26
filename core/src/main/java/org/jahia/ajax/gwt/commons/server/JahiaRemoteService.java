@@ -35,7 +35,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.data.JahiaData;
-import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
@@ -44,7 +43,10 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.context.ServletContextAware;
@@ -53,7 +55,6 @@ import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.text.MessageFormat;
 import java.util.Locale;
 
 /**
@@ -136,34 +137,38 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         return jData;
     }
 
-    protected String createExtraParam(String mode, int pid, String siteKey) {
-        return null;
-    }
-
-    protected Locale getEngineLocale() {
-        Locale engineLocale = (Locale) getThreadLocalRequest().getSession().getAttribute(ParamBean.SESSION_LOCALE_ENGINE);
-        Locale locale = (Locale) getThreadLocalRequest().getSession().getAttribute(ParamBean.SESSION_LOCALE);
-        if (engineLocale != null && !engineLocale.equals(locale)) locale = engineLocale;
-        return locale;
-    }
-
     /**
      * Get current locale
      *
      * @return
      */
     protected Locale getLocale() {
-        Locale locale = (Locale) getThreadLocalRequest().getSession().getAttribute(ParamBean.SESSION_LOCALE);
+        Locale locale = LanguageCodeConverters.languageCodeToLocale(request.getParameter("lang"));
         return locale;
     }
-    
+
+    protected JahiaSite getSite() {
+        try {
+            JahiaSite site = JahiaSitesBaseService.getInstance().getSiteByKey(request.getParameter("site"));
+
+            return site;
+        } catch (Exception e) {
+            try {
+                return JahiaSitesBaseService.getInstance().getDefaultSite();
+            } catch (JahiaException e1) {
+                e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+        return null;
+    }
+
     /**
      * Get current UI locale
      *
      * @return
      */
     protected Locale getUILocale() {
-        Locale locale = (Locale) getThreadLocalRequest().getSession().getAttribute(ParamBean.SESSION_UI_LOCALE);
+        Locale locale = (Locale) getRequest().getSession().getAttribute(ParamBean.SESSION_UI_LOCALE);
         return locale;
     }
 
@@ -178,45 +183,12 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
 
 
     /**
-     * Get localized message.
-     *
-     * @param message
-     * @return the localized message
-     */
-    public String getLocaleMessageResource(EngineMessage message) {
-        return message.getValues() == null ? JahiaResourceBundle
-                .getJahiaInternalResource(message.getKey(), getUILocale())
-                : MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource(message.getKey(),
-                getUILocale()), message.getValues());
-    }
-
-    /**
-     * Get local message resource
-     *
-     * @param key
-     * @return
-     */
-    public String getLocaleMessageResource(String key) {
-        return JahiaResourceBundle.getJahiaInternalResource(key, getUILocale());
-    }
-
-    /**
-     * Get local template resources
-     *
-     * @param label
-     * @return
-     */
-    protected String getLocaleTemplateResource(String label) {
-        return getTemplateRessource(label, getLocale());
-    }
-
-    /**
      * Get paramBeam from request attribute.
      *
      * @return
      */
     public ParamBean getParamBeanRequestAttr() {
-        final HttpServletRequest request = getThreadLocalRequest();
+        final HttpServletRequest request = getRequest();
         ParamBean jParams = (ParamBean) request.getAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN);
         if (jParams == null) {
             logger.debug("ParamBean is not set.");
@@ -236,7 +208,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         if (paramBean != null) {
             return paramBean.getUser();
         } else {
-            return (JahiaUser) getThreadLocalRequest().getSession().getAttribute(ParamBean.SESSION_USER);
+            return (JahiaUser) getRequest().getSession().getAttribute(ParamBean.SESSION_USER);
         }
     }
 
@@ -261,19 +233,19 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     /**
      * Get resources
      *
-     * @param paramBean
      * @param key
+     * @param locale
+     * @param site
      * @return
      */
-    public String getResources(ParamBean paramBean, String key) {
+    public String getResources(String key, Locale locale, JahiaSite site) {
         if (logger.isDebugEnabled()) {
             logger.debug("Resources key: " + key);
         }
         if (key == null || key.length() == 0) {
             return key;
         }
-        Locale locale = paramBean.getUILocale() != null ? paramBean.getUILocale() : paramBean.getLocale();  
-        String value = new JahiaResourceBundle(locale, paramBean.getSite() != null ? paramBean.getSite().getTemplatePackageName() : null).get(key, null);
+        String value = new JahiaResourceBundle(locale, site != null ? site.getTemplatePackageName() : null).get(key, null);
         if (value == null || value.length() == 0) {
             value = JahiaResourceBundle.getJahiaInternalResource(key, locale);
         }
@@ -294,33 +266,13 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     }
 
     /**
-     * Get resource from template resource bundle
-     *
-     * @param label
-     * @param l
-     * @return
-     */
-    protected String getTemplateRessource(String label, Locale l) {
-        return new JahiaResourceBundle(getUILocale(), retrieveParamBean()
-                .getSite().getTemplatePackageName()).getString(label, label);
-    }
-
-    protected HttpServletRequest getThreadLocalRequest() {
-        return getRequest();
-    }
-
-    protected HttpServletResponse getThreadLocalResponse() {
-        return getResponse();
-    }
-
-    /**
      * Retrieve JahiaData object corresponding to the current request
      *
      * @deprecated
      * @return
      */
     protected JahiaData retrieveJahiaData() {
-        final HttpServletRequest request = getThreadLocalRequest();
+        final HttpServletRequest request = getRequest();
         JahiaData jData = (JahiaData) request.getAttribute(ORG_JAHIA_DATA_JAHIA_DATA);
         if (jData == null) {
             ProcessingContext jParams = retrieveParamBean();
@@ -353,13 +305,13 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @return
      */
     protected ParamBean retrieveParamBean() {
-        final HttpServletRequest request = getThreadLocalRequest();
+        final HttpServletRequest request = getRequest();
 
         ParamBean jParams = getParamBeanRequestAttr();
         if (jParams == null) {
             logger.debug("Init processing context");
             // build processing context and jParam
-            final HttpServletResponse response = getThreadLocalResponse();
+            final HttpServletResponse response = getResponse();
             final ServletContext context = getServletContext();
             final BeanFactory bf = SpringContextSingleton.getInstance().getContext();
             final ProcessingContextFactory pcf = (ProcessingContextFactory) bf.getBean(ProcessingContextFactory.class.getName());

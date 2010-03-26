@@ -53,36 +53,40 @@ public interface JahiaService extends RemoteService {
      * Use JahiaService.App.getInstance() to access static instance of MyServiceAsync
      */
     public static class App {
-        private static JahiaServiceAsync ourInstance = null;
+        private static JahiaServiceAsync app = null;
 
         public static synchronized JahiaServiceAsync getInstance() {
-            if (ourInstance == null) {
-                String relativeServiceEntryPoint = JahiaGWTParameters.getServiceEntryPoint()+"base.gwt";
+            if (app == null) {
+                String relativeServiceEntryPoint = createEntryPointUrl();
                 String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
-                ourInstance = (JahiaServiceAsync) GWT.create(JahiaService.class);
-                ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);
+                app = (JahiaServiceAsync) GWT.create(JahiaService.class);
+                ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+
+                JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
+                    public void updateEntryPointUrl() {
+                        String relativeServiceEntryPoint = createEntryPointUrl();
+                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                        ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
+                    }
+                });
             }
 
-            return ourInstance;
+            return app;
+        }
+
+        private static String createEntryPointUrl() {
+            return JahiaGWTParameters.getServiceEntryPoint()+"base.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
         }
     }
 
     public GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString);
 
 
-    public GWTJahiaLanguageSwitcherBean getAvailableLanguagesAndWorkflowStates (boolean displayIsoCode,boolean displayLanguage, boolean inEngine);
-
     public GWTJahiaInlineEditingResultBean inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent);
 
     public Boolean isInlineEditingAllowed(Integer containerID, Integer fieldID);
 
     public GWTJahiaProcessJob getProcessJob(String name, String groupName);
-
-    public void changeLocaleForAllPagesAndEngines(String languageSelected) throws GWTJahiaServiceException;
-
-    public void changeLocaleForCurrentEngine(String languageSelected);
-
-    public String getLanguageURL(String language) throws GWTJahiaServiceException;
 
     public List<GWTJahiaSite> getAvailableSites ();
     

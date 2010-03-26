@@ -6,6 +6,8 @@ import org.jahia.services.content.rules.*
 import org.jahia.services.content.*
 import javax.jcr.observation.Event
 import org.apache.log4j.Logger
+import java.util.Date
+import org.jahia.services.content.*
 
 expander rules.dsl
 
@@ -25,4 +27,21 @@ rule "Create docspace"
    then
        Assign permissions "re---" on the node to the group "users"
        Assign permissions "rewap" on the node to the current user
+end
+
+rule "Create file in docspace"
+   when
+      The type jnt:docspaceFile has been assigned to a node
+   then
+       Create a new node post of type jnt:post under the node.getNode("comments")
+       Set the property content of the node.getNode("comments").getNode("post") with the value "file uploaded"
+end
+
+rule "Update file in docspace"
+   when
+      A file content has been modified
+	   - it has the extension type jnt:docspaceFile
+   then
+       Create a new node post of type jnt:post under the node.getNode("comments")
+       Set the property content of the node.getNode("comments").getNode("post") with the value "file updated"
 end

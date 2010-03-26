@@ -128,7 +128,7 @@ public class DefaultPostAction implements Action {
                 } else {
                     nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
                 }
-                nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName, session);
+                nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);
             }
             if (ServletRequestUtils.getBooleanParameter(req, Render.NORMALIZE_NODE_NAME, false)) {
                 nodeName = JCRContentUtils.generateNodeName(nodeName, 255);

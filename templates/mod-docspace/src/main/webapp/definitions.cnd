@@ -1,5 +1,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
+[jnt:docspaceFile] mixin
+
 [jnt:docFilesList] > jnt:content, jmix:list, jmix:pager
 
 [jnt:searchUsers] > jnt:content, mix:title, jmix:searchFormContent

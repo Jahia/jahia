@@ -397,10 +397,9 @@ public final class JCRContentUtils {
      * 
      * @param dest the destination node, where the new one will be created
      * @param name the name of the new node
-     * @param session current JCR session
      * @return the next available name for a node, appending if needed numbers
      */
-    public static String findAvailableNodeName(JCRNodeWrapper dest, String name, JCRSessionWrapper session) {
+    public static String findAvailableNodeName(Node dest, String name) {
         int i = 1;
 
         String basename = name;
@@ -417,7 +416,7 @@ public final class JCRContentUtils {
 
         do {
             try {
-                session.getNode(dest.getPath() + "/" + name);
+                dest.getNode(name);
                 name = basename + "_" + (i++) + ext;
             } catch (RepositoryException e) {
                 break;

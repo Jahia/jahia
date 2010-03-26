@@ -33,6 +33,7 @@ package org.jahia.services.content.rules;
 
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
@@ -69,7 +70,6 @@ public class NodeWrapper implements Updateable {
         Node node = parentNode.getNode();
         parentNodePath = node.getPath();
         this.name = name;
-
         if (type == null) {
             ExtendedNodeDefinition end = ((ExtendedNodeType)node.getPrimaryNodeType()).getChildNodeDefinitionsAsMap().get(name);
             NodeType nodetype = end.getRequiredPrimaryTypes()[0];
@@ -83,7 +83,7 @@ public class NodeWrapper implements Updateable {
             List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
         } else {
-            this.node = node.addNode(name, type);
+            this.node = node.addNode(JCRContentUtils.findAvailableNodeName(node, name), type);
         }
     }
 
@@ -203,6 +203,17 @@ public class NodeWrapper implements Updateable {
 
     Node getNode() {
         return node;
+    }
+
+    public NodeWrapper getNode(String relPath) throws RepositoryException {
+        NodeIterator it = node.getNodes();
+        while (it.hasNext()) {
+            Node n = it.nextNode();
+            if (n.getName().equals(relPath)) {
+                return new NodeWrapper(n);
+            }
+        }
+        throw new PathNotFoundException(relPath);
     }
 
     public String toString() {

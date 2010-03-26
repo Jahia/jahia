@@ -92,7 +92,7 @@ public class TaskService {
             throws RepositoryException {
         JCRNodeWrapper tasksNode = getUserTasksNode(forUser, session);
         session.checkout(tasksNode);
-        JCRNodeWrapper taskNode = tasksNode.addNode(JCRContentUtils.findAvailableNodeName(tasksNode, "task", session),
+        JCRNodeWrapper taskNode = tasksNode.addNode(JCRContentUtils.findAvailableNodeName(tasksNode, "task"),
                 JAHIANT_TASK);
         if (task.getTitle() != null) {
             taskNode.setProperty("jcr:title", task.getTitle());

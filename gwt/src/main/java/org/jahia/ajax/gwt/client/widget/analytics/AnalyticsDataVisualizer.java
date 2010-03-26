@@ -273,7 +273,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      */
     public double getValue(int dataIndex) {
         GWTJahiaAnalyticsData data = dataList.get(dataIndex);
-        return 5;// data.getValue();
+        return data.getValue();
     }
 
     /**

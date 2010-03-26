@@ -1,15 +1,50 @@
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.ajax.gwt.client.widget.analytics;
 
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,13 +89,13 @@ public class AnalyticsDataVisualizer extends ContentPanel {
 
         startDate.addListener(Events.Change, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent p_event) {
-                oneDateChanged(startDate.getValue(),endDate.getValue());
+                oneDateChanged(startDate.getValue(), endDate.getValue());
             }
         });
 
         endDate.addListener(Events.Change, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent p_event) {
-               oneDateChanged(startDate.getValue(),endDate.getValue());
+                oneDateChanged(startDate.getValue(), endDate.getValue());
             }
         });
 
@@ -152,11 +187,27 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      * Display as text view
      */
     private void displayTextView() {
-        mainContainer.setLayout(new RowLayout());
-        for (GWTJahiaAnalyticsData data : dataList) {
-            Html html = new Html("County: " + data.getCountry() + ", Number of views: " + data.getValue());
-            mainContainer.add(html);
-        }
+        mainContainer.setLayout(new FillLayout());
+
+        GroupingStore<GWTJahiaAnalyticsData> store = new GroupingStore<GWTJahiaAnalyticsData>();
+        store.add(dataList);
+        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+
+        ColumnConfig column = new ColumnConfig();
+        column.setId("country");
+        column.setHeader("Country");
+        column.setWidth(100);
+        configs.add(column);
+
+        column = new ColumnConfig();
+        column.setId("value");
+        column.setHeader("Views");
+        column.setWidth(100);        
+        configs.add(column);
+        store.groupBy("country");
+        final Grid<GWTJahiaAnalyticsData> grid = new Grid<GWTJahiaAnalyticsData>(store, new ColumnModel(configs));
+
+        mainContainer.add(grid);
         mainContainer.layout();
     }
 

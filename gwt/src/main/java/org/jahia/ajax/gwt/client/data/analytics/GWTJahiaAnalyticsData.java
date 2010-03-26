@@ -12,39 +12,37 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaAnalyticsData extends BaseModelData {
-    private Date date;
-    private String country;
-    private double value;
-
+   
     public GWTJahiaAnalyticsData() {
     }
 
-    public GWTJahiaAnalyticsData(String country,Date date, double value) {
-        this.country = country;
-        this.value = value;
+    public GWTJahiaAnalyticsData(String country, Date date, double value) {
+        setCountry(country);
+        setDate(date);
+        setValue(value);
     }
 
     public String getCountry() {
-        return country;
+        return get("country");
     }
 
     public void setCountry(String country) {
-        this.country = country;
+        set("country", country);
     }
 
-    public double getValue() {
-        return value;
+    public Double getValue() {
+        return get("value");
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setValue(Double value) {
+        set("value", value);
     }
 
     public Date getDate() {
-        return date;
+        return get("date");
     }
 
-    public void Date(Date date) {
-        this.date = date;
+    public void setDate(Date date) {
+        set("date", date);
     }
 }

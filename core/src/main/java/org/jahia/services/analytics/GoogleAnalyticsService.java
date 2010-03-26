@@ -55,7 +55,8 @@ import java.util.*;
  */
 public class GoogleAnalyticsService {
     final static Logger logger = Logger.getLogger(GoogleAnalyticsService.class);
-    final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-mm-dd");
+    // format must be "2006-04-01"
+    final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     private Map<String, AnalyticsService> analyticsServiceMap = new HashMap<String, AnalyticsService>();
     private Map<String, AccountEntry> accountEntryMap = new HashMap<String, AccountEntry>();
@@ -132,7 +133,7 @@ public class GoogleAnalyticsService {
         // default start date = this date -3 ont
         if (startDate == null) {
             Calendar cal = Calendar.getInstance();
-            cal.roll(Calendar.MONTH, -3);
+            cal.add(Calendar.MONTH, -3);
             startDate = cal.getTime();
         }
 
@@ -141,7 +142,6 @@ public class GoogleAnalyticsService {
             Calendar cal = Calendar.getInstance();
             endDate = cal.getTime();
         }
-        dateFormatter.format(startDate);
         if (accountEntry != null) {
             try {
                 DataQuery query = new DataQuery(new URL("https://www.google.com/analytics/feeds/data"));

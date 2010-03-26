@@ -1239,18 +1239,6 @@ display:none
 	margin-top:1em;
 	margin-bottom:1em
 }
-/******************************************************************************
-* Get Flash
-******************************************************************************/
-#bodywrapper .flashcontent
-{
-	border:1px solid #900;
-	padding:10px;
-	margin-bottom:10px;
-	clear:both;
-	position: relative;
-	height:1%;
-}
 
  /******************************************************************************
 *  video

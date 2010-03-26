@@ -204,6 +204,7 @@ public class Constants {
     public static final String THUMBNAIL = "j:thumbnail";
     public static final String FULLPATH = "j:fullpath";
     public static final String TAGS = "j:tags";
+    public static final String DEFAULT_CATEGORY = "j:defaultCategory";
 
     public static final String JAHIANT_GROUP = "jnt:group";
     public static final String JAHIANT_MEMBERS = "jnt:members";
@@ -228,4 +229,6 @@ public class Constants {
 
     public static final String REVISION_NUMBER = "j:revisionNumber";
     public static final String CHECKIN_DATE = "j:checkinDate";
+    
+    public static final String ALLOWED_TYPES = "j:allowedTypes";    
 }

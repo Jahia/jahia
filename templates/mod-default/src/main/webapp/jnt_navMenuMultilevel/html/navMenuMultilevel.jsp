@@ -7,7 +7,8 @@
 <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 <jcr:nodeProperty name="j:startLevel" node="${currentNode}" var="startLevel"/>
 <jcr:navigationMenu node="${jcr:isNodeType(renderContext.mainResource.node, 'jnt:page') ? renderContext.mainResource.node : jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}" var="menu" startLevel="${startLevel.long}" 
-    maxDepth="${currentNode.properties['j:maxDepth'].long}" relativeToCurrentNode="${currentNode.properties['j:relativeToCurrentNode'].boolean}"/>
+    maxDepth="${currentNode.properties['j:maxDepth'].long}" relativeToCurrentNode="${currentNode.properties['j:relativeToCurrentNode'].boolean}"
+    menuNode="${currentNode}"/>
 <c:if test="${not empty menu}">
 	<c:if test="${not empty title.string}">
 		<span><c:out value="${title.string}"/></span>

@@ -362,6 +362,30 @@
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>                
+        <attribute>
+            <name>menuNode</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
+        </attribute>
+        <attribute>
+            <name>typesToFilterBy</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Set</type>
+        </attribute>            
+        <attribute>
+            <name>categoriesToFilterBy</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Set</type>
+        </attribute>
+        <attribute>
+            <name>tagsToFilterBy</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Set</type>
+        </attribute>                
     </tag>
         <tag>
         <description>display a navigation menu</description>

@@ -32,20 +32,24 @@
 package org.jahia.taglibs.uicomponents.navigation;
 
 import org.apache.axis.utils.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 
 @SuppressWarnings("serial")
 public class JCRNavigationMenuTag extends AbstractJahiaTag {
@@ -60,6 +64,11 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
     private boolean relativeToCurrentNode = false;    
     private String var;
     private JCRNodeWrapper node;
+    private JCRNodeWrapper menuNode;    
+    
+    private Set<String> tagsToFilterBy = null;
+    private Set<String> categoriesToFilterBy = null;
+    private Set<String> typesToFilterBy = null;    
 
     public void setKind(String kind) {
         this.kind = kind;
@@ -123,7 +132,7 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
             }
 
             generateMenuAsFlatList(realStartLevel, baseNode, 1,
-                    navMenuUItemsBeans, 0, null, baseNode.getPath());
+                    navMenuUItemsBeans, null, baseNode != null ? baseNode.getPath() : null);
             if (!StringUtils.isEmpty(var)) {
                 pageContext.setAttribute(var, navMenuUItemsBeans);
             }
@@ -169,6 +178,68 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                 }
             }
         }
+        
+        if (getMenuNode() != null) {
+            if (getTypesToFilterBy() == null) {
+                Set<String> types = new HashSet<String>();
+                try {
+                    JCRPropertyWrapper property = getMenuNode().hasProperty(
+                            Constants.ALLOWED_TYPES) ? getMenuNode()
+                            .getProperty(Constants.ALLOWED_TYPES) : null;
+                    if (property != null && property.getValues().length > 0) {
+                        for (Value type : property.getValues()) {
+                            types.add(type.getString());
+                        }
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                setTypesToFilterBy(types);
+            }
+            if (getTagsToFilterBy() == null) {
+                try {
+                    JCRPropertyWrapper property = getMenuNode().hasProperty(
+                            Constants.TAGS) ? getMenuNode().getProperty(
+                            Constants.TAGS) : null;
+
+                    if (property != null && property.getValues().length > 0) {
+                        Set<String> tags = new HashSet<String>(property
+                                .getValues().length);
+
+                        for (Value tag : property.getValues()) {
+                            tags.add(tag.getString());
+                        }
+                        setTagsToFilterBy(tags);
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            if (getCategoriesToFilterBy() == null) {
+                try {
+                    JCRPropertyWrapper property = getMenuNode().hasProperty(
+                            Constants.DEFAULT_CATEGORY) ? getMenuNode().getProperty(
+                            Constants.DEFAULT_CATEGORY) : null;
+
+                    if (property != null && property.getValues().length > 0) {
+                        Set<String> categories = new HashSet<String>(property
+                                .getValues().length);
+
+                        for (Value category : property.getValues()) {
+                            categories.add(category.getString());
+                        }
+                        setCategoriesToFilterBy(categories);
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        }
+        if (CollectionUtils.isEmpty(getTypesToFilterBy())) {
+            Set<String> types = new HashSet<String>();
+            types.add(Constants.JAHIANT_PAGE);
+            setTypesToFilterBy(types);
+        }
     }
 
     /**
@@ -179,14 +250,13 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
      * @param currentNode        the start node for recursion
      * @param level            the current depth level
      * @param navMenuItemsBean Set of navMenuItemBean containing informations of current menu item.
-     * @param loopIt           index of current iteration
      * @param parentItem       parent item in subtree
      * @param basePath         the basepath of the current site/node
      * @throws java.io.IOException           JSP writer exception
      * @throws javax.jcr.RepositoryException In case of JCR error
      */
     private void generateMenuAsFlatList(int realStartLevel, JCRNodeWrapper currentNode, int level, Set<NavMenuItemBean> navMenuItemsBean,
-                                        int loopIt, NavMenuItemBean parentItem, String basePath)
+                                        NavMenuItemBean parentItem, String basePath)
             throws IOException, RepositoryException {
         if (currentNode == null) {
             logger.error("Incorrect node : " + currentNode);
@@ -203,32 +273,82 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
             int itemCount = 0;
             NavMenuItemBean navMenuItemBean = null;
             while (iterator.hasNext()) {
-                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) iterator.nextNode();
-                if (!nodeWrapper.isNodeType("jnt:page")) {
-                    continue;
-                }
-                res.getDependencies().add(nodeWrapper);
-                
+                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) iterator
+                        .nextNode();
                 navMenuItemBean = new NavMenuItemBean();
                 navMenuItemBean.setNode(nodeWrapper);
                 navMenuItemBean.setParentItem(parentItem);
-                navMenuItemBean.setItemCount(++itemCount);
-                // First container
-                if (begin) {
-                    navMenuItemBean.setFirstInLevel(true);
-                    begin = false;
-                }
- 
+
                 boolean isInPath = true;
                 if (level > realStartLevel) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("level = " + level);
+                    if (!CollectionUtils.isEmpty(getTypesToFilterBy())) {
+                        boolean found = false;
+                        for (String typeValue : getTypesToFilterBy()) {
+                            if (nodeWrapper.isNodeType(typeValue)) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            continue;
+                        }
                     }
+                    if (!CollectionUtils.isEmpty(getTagsToFilterBy())) {
+                        boolean found = false;
+                        for (String filterTag : getTagsToFilterBy()) {
+                            JCRPropertyWrapper property = nodeWrapper
+                                    .hasProperty(Constants.TAGS) ? nodeWrapper
+                                    .getProperty(Constants.TAGS) : null;
+                            if (property != null) {
+                                for (Value setTag : property.getValues()) {
+                                    if (setTag.getString().equals(filterTag)) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (!found) {
+                            continue;
+                        }
+                    }
+                    if (!CollectionUtils.isEmpty(getCategoriesToFilterBy())) {
+                        boolean found = false;
+                        for (String filterCategory : getCategoriesToFilterBy()) {
+                            JCRPropertyWrapper property = nodeWrapper
+                                    .hasProperty(Constants.DEFAULT_CATEGORY) ? nodeWrapper
+                                    .getProperty(Constants.DEFAULT_CATEGORY)
+                                    : null;
+                            if (property != null) {
+                                for (Value setCategory : property.getValues()) {
+                                    if (setCategory.getString().equals(
+                                            filterCategory)) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (!found) {
+                            continue;
+                        }
+                    }
+                    navMenuItemBean.setItemCount(++itemCount);
+                    // First container
+                    if (begin) {
+                        navMenuItemBean.setFirstInLevel(true);
+                        begin = false;
+                    }
+                    res.getDependencies().add(nodeWrapper);
+
+                    logger.debug("level = " + level);
                     // Set level
                     navMenuItemBean.setLevel(level - realStartLevel);
-                    
-                    final String path = nodeWrapper.getPath().replaceAll(basePath + "/", "");
-                    final String currentPath = node.getPath().replaceAll(basePath + "/", "");
+
+                    final String path = nodeWrapper.getPath().replaceAll(
+                            basePath + "/", "");
+                    final String currentPath = node.getPath().replaceAll(
+                            basePath + "/", "");
                     final String[] pathElement = path.split("/");
                     final String[] currentPathElement = currentPath.split("/");
                     try {
@@ -254,13 +374,14 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                             navMenuItemsBean.add(navMenuItemBean);
                         }
                     } catch (ArrayIndexOutOfBoundsException e) {
-                        
+                        logger.warn(e.getMessage(), e);
                     }
                 }
 
                 if (!onlyTop && (!expandOnlyPageInPath || isInPath)) {
-                    generateMenuAsFlatList(realStartLevel, nodeWrapper, level + 1, navMenuItemsBean, loopIt + 1, navMenuItemBean,
-                                           basePath);
+                    generateMenuAsFlatList(realStartLevel, nodeWrapper,
+                            level + 1, navMenuItemsBean, 
+                            navMenuItemBean, basePath);
                 }
             }
             // Last container
@@ -278,6 +399,11 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
         onlyTop = false;
         startLevel = Integer.MIN_VALUE;
         maxDepth = Integer.MIN_VALUE;
+        node = null;
+        menuNode = null;
+        tagsToFilterBy = null;
+        categoriesToFilterBy = null;
+        typesToFilterBy = null;        
         bodyContent = null;
         super.resetState();
         return EVAL_PAGE;
@@ -411,5 +537,37 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
 
     public void setRelativeToCurrentNode(boolean relativeToCurrentNode) {
         this.relativeToCurrentNode = relativeToCurrentNode;
+    }
+
+    public Set<String> getTagsToFilterBy() {
+        return tagsToFilterBy;
+    }
+
+    public void setTagsToFilterBy(Set<String> tagsToFilterBy) {
+        this.tagsToFilterBy = tagsToFilterBy;
+    }
+
+    public Set<String> getCategoriesToFilterBy() {
+        return categoriesToFilterBy;
+    }
+
+    public void setCategoriesToFilterBy(Set<String> categoriesToFilterBy) {
+        this.categoriesToFilterBy = categoriesToFilterBy;
+    }
+
+    public Set<String> getTypesToFilterBy() {
+        return typesToFilterBy;
+    }
+
+    public void setTypesToFilterBy(Set<String> typesToFilterBy) {
+        this.typesToFilterBy = typesToFilterBy;
+    }
+
+    public JCRNodeWrapper getMenuNode() {
+        return menuNode;
+    }
+
+    public void setMenuNode(JCRNodeWrapper menuNode) {
+        this.menuNode = menuNode;
     }
 }

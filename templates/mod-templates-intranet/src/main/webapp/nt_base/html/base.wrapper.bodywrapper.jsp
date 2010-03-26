@@ -100,11 +100,7 @@
 
     <div id="bottomfooter"><!--start bottomfooter-->
         <div class="container container_16">
-
-            <div class="grid_16">
                 <template:area path="footer" nodeTypes="jnt:row" />
-            </div>
-
             <div class='clear'></div>
         </div>
 

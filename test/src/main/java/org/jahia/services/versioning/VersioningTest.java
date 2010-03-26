@@ -102,6 +102,7 @@ public class VersioningTest extends TestCase {
                     int updateNumber = (i-1)*2 + j+1;
                     mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + updateNumber);
                     mainContent.setProperty("body", MAIN_CONTENT_BODY + updateNumber);
+                    editSession.save();
                     jcrService.publish(mainContent.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
                 }
 

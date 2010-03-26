@@ -1,4 +1,35 @@
-package org.jahia.analytics;
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+package org.jahia.services.analytics;
 
 import com.google.gdata.client.analytics.*;
 import com.google.gdata.data.analytics.AccountEntry;
@@ -7,16 +38,9 @@ import com.google.gdata.data.analytics.DataEntry;
 import com.google.gdata.data.analytics.DataFeed;
 import com.google.gdata.util.AuthenticationException;
 import org.apache.log4j.Logger;
-import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SitesSettings;
 
-import javax.jcr.Node;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -249,13 +273,16 @@ public class GoogleAnalyticsService {
      * @return
      */
     public String renderNodeTrackingCode(List<JCRNodeWrapper> nodes, JahiaSite site) {
+        if (nodes == null || nodes.isEmpty()) {
+            return "";
+        }
         StringBuffer result = new StringBuffer();
         result.append("<script type=\"text/javascript\">\n");
         result.append("try{\n");
         boolean initTracker = true;
-        logger.error("Number of tracked nodes: "+nodes.size());
+        logger.error("Number of tracked nodes: " + nodes.size());
         for (JCRNodeWrapper node : nodes) {
-            result.append(renderNodeTrackingCode(node, site,initTracker));
+            result.append(renderNodeTrackingCode(node, site, initTracker));
             initTracker = false;
         }
         result.append("\n} catch(err) {}\n");
@@ -273,42 +300,38 @@ public class GoogleAnalyticsService {
         StringBuffer result = new StringBuffer();
 
 
-
         // get enabled profiles
-        //Map<String, String> enabledProfiles = new HashMap<String, String>();
-        Properties siteProperties = site.getSettings();
-        Iterator sitePropertiesKeyIterator = siteProperties.keySet().iterator();
-        // check if at list one profile is enabled
-        while (sitePropertiesKeyIterator.hasNext()) {
-            String key = (String) sitePropertiesKeyIterator.next();
-            if (key.startsWith(SitesSettings.JAHIA_GA_PROFILE)) {
-                String jahiaProfileName = siteProperties.getProperty(key);
-                if (Boolean.valueOf(siteProperties.getProperty(SitesSettings.getTrackingEnabledKey(jahiaProfileName)))) {
-                    String trackerName = jahiaProfileName.replaceAll(" ","_")+"Tracker";
-                    
-                    // create tracker
-                    String account = siteProperties.getProperty(SitesSettings.getUserAccountPropertyKey(jahiaProfileName));
-                    if (initTracker) {
-                        String tracker = "var " + trackerName + " = _gat._getTracker('" + account + "');\n";
-                        logger.info(tracker);
-                        result.append(tracker);
-                    }
-                    
-                    // add tracked url
-                    String trackedUrls = siteProperties.getProperty(SitesSettings.getTrackedUrlKey(jahiaProfileName));
-                    String url = node.getUrl();
-                    if (trackedUrls.equals("virtual")) {
-                        try {
-                            url = "'/Unique_Universal_id/" + node.getUUID();
-                        } catch (Exception e) {
-                            logger.error("Error in gaTrackingCode", e);
-                        }
-                    }
-                    String trackPageview = trackerName + "._trackPageview('" + url + "');\n";
+        Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfil().iterator();
+        while (googleAnalyticsProfileIterator.hasNext()) {
+            GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
 
-                    result.append(trackPageview);
+            if (googleAnalyticsProfile.isEnabled()) {
+                String jahiaProfileName = googleAnalyticsProfile.getName();
+                String trackerName = jahiaProfileName.replaceAll(" ", "_") + "Tracker";
+
+                // create tracker
+                String account = googleAnalyticsProfile.getAccount();
+                if (initTracker) {
+                    String tracker = "var " + trackerName + " = _gat._getTracker('" + account + "');\n";
+                    logger.info(tracker);
+                    result.append(tracker);
                 }
+
+                // add tracked url
+                String trackedUrls = googleAnalyticsProfile.getTypeUrl();
+                String url = node.getUrl();
+                if (trackedUrls.equals("virtual")) {
+                    try {
+                        url = "'/Unique_Universal_id/" + node.getUUID();
+                    } catch (Exception e) {
+                        logger.error("Error in gaTrackingCode", e);
+                    }
+                }
+                String trackPageview = trackerName + "._trackPageview('" + url + "');\n";
+
+                result.append(trackPageview);
             }
+
         }
 
         return result.toString();
@@ -319,13 +342,9 @@ public class GoogleAnalyticsService {
      *
      * @return
      */
-    public String renderBaseTrackingCode() {
-        StringBuffer result = new StringBuffer();
-        result.append("\n<script type=\"text/javascript\">\n");
-        result.append("var gaJsHost = ((\"https:\" == document.location.protocol)? \"https://ssl.\" : \"http://www.\");");
-        result.append("\ndocument.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");
-        result.append("\n</script>\n");
-        return result.toString();
+    public String renderBaseTrackingCode(String protocol) {
+        String src = (protocol != null && protocol.equalsIgnoreCase("https")) ? "https://ssl.google-analytics.com/ga.js" : "http://www.google-analytics.com/ga.js";
+        return "<script type='text/javascript' src='" + src + "'></script>\n";
     }
 
     /**

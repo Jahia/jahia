@@ -324,6 +324,19 @@
  - j:mixLanguage (boolean) = false
  + * (jmix:hierarchyNode)
 
+ //---------------------------------------------------------
+// Google analytics
+//---------------------------------------------------------
+
+ [jnt:googleanalytics] > nt:base, jmix:hierarchyNode
+ - j:login (string) protected nofulltext
+ - j:password (string) protected nofulltext
+ - j:account (string) protected nofulltext
+ - j:profile (string) protected nofulltext
+ - j:enabled (boolean) = false
+ - j:typeUrl (string) protected nofulltext
+
+
 //---------------------------------------------------------
 // Imports
 //---------------------------------------------------------

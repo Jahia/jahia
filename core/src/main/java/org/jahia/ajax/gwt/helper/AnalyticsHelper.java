@@ -4,8 +4,10 @@ import com.google.gdata.data.analytics.DataEntry;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
-import org.jahia.analytics.GoogleAnalyticsService;
+import org.jahia.services.analytics.GoogleAnalyticsService;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,16 +38,20 @@ public class AnalyticsHelper {
                 String pagePath = entry.stringValueOf("ga:pagePath");
                 String pageViews = entry.stringValueOf("ga:pageviews");
                 String viewCountry = entry.stringValueOf("ga:country");
-                String viewDate = entry.stringValueOf("ga:date");
+
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
+                ParsePosition pos = new ParsePosition(0);
+                Date viewDate   = formatter.parse(entry.stringValueOf("ga:date"),pos);
+
 
               //  if (query.getNode().getPath().equalsIgnoreCase(pagePath)) {
-                    results.add(new GWTJahiaAnalyticsData(viewCountry,viewDate,Double.parseDouble(pageViews)));
+                    results.add(new GWTJahiaAnalyticsData(viewCountry,viewDate.toString(),Double.parseDouble(pageViews)));
               //  }
-                logger.debug(
+                logger.error(
                         "\nPage Title = " + entry.stringValueOf("ga:pageTitle") +
                                 "\nPage Path  = " + entry.stringValueOf("ga:pagePath") +
                                 "\nview Country  = " + entry.stringValueOf("ga:country")+
-                                "\nview date  = " + entry.stringValueOf("ga:date")+
+                                "\nview date  = " + viewDate+
                                 "\nPageviews  = " + entry.stringValueOf("ga:pageviews"));
             }
         }

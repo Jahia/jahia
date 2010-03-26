@@ -79,52 +79,6 @@ public final class SitesSettings {
 
     public static final String JAHIA_GA_PROFILE = "jahiaGAprofile_";
 
-    /**
-     * google analytics
-     */
-    public static final String GA_TRACKED_URLS = "_trackedUrls";
 
-
-    public static final String GA_TRACKING_ENABLED = "_trackingEnabled";
-
-
-    public static final String GA_PASSWORD = "_gaPassword";
-
-
-    public static final String GA_LOGIN = "_gaLogin";
-
-
-    public static final String GA_PROFILE = "_gaProfile";
-
-
-    public static final String GA_USER_ACCOUNT = "_gaUserAccount";
-
-    public static String getJahiaProfileNameKey(String jahiaProfileName) {
-        return JAHIA_GA_PROFILE + jahiaProfileName;
-    }
-
-    public static String getTrackedUrlKey(String jahiaProfileName) {
-        return jahiaProfileName + GA_TRACKED_URLS;
-    }
-
-    public static String getTrackingEnabledKey(String jahiaProfileName) {
-        return jahiaProfileName + GA_TRACKING_ENABLED;
-    }
-
-    public static String getPasswordKey(String jahiaProfileName) {
-        return jahiaProfileName + GA_PASSWORD;
-    }
-
-    public static String getLoginKey(String jahiaProfileName) {
-        return jahiaProfileName + GA_LOGIN;
-    }
-
-    public static String getProfileKey(String jahiaProfileName) {
-        return jahiaProfileName + GA_PROFILE;
-    }
-
-    public static String getUserAccountPropertyKey(String jahiaProfileName) {
-        return jahiaProfileName + GA_USER_ACCOUNT;
-    }
 
 }

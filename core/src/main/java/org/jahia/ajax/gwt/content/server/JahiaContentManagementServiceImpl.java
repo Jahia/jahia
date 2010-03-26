@@ -60,10 +60,10 @@ import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
@@ -1090,22 +1090,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      */
     public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query) throws GWTJahiaServiceException {
-        Properties siteProperties = retrieveParamBean().getSite().getSettings();
-        Enumeration enume = siteProperties.keys();
-        String jahiaProfileName = null;
-        String gaAccount = null;
-        String login = null;
-        String pwd = null;
-
-        while (enume.hasMoreElements()) {
-            String key = (String) enume.nextElement();
-            if (key.indexOf(SitesSettings.JAHIA_GA_PROFILE) == 0) {
-                jahiaProfileName = siteProperties.getProperty(key);
-                gaAccount = siteProperties.getProperty(SitesSettings.getUserAccountPropertyKey(jahiaProfileName));
-                login = siteProperties.getProperty(SitesSettings.getLoginKey(jahiaProfileName));
-                pwd = siteProperties.getProperty(SitesSettings.getPasswordKey(jahiaProfileName));
-            }
+        if(!retrieveParamBean().getSite().hasGoogleAnalyticsProfil()){
+            return new ArrayList<GWTJahiaAnalyticsData>();
         }
+
+        Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = retrieveParamBean().getSite().getGoogleAnalyticsProfil().iterator();
+        GoogleAnalyticsProfile googleAnalyticsProfile = retrieveParamBean().getSite().getGoogleAnalyticsProfil().iterator().next();
+
+
+        String jahiaProfileName = googleAnalyticsProfile.getName();
+        String gaAccount = googleAnalyticsProfile.getAccount();
+        String login = googleAnalyticsProfile.getLogin();
+        String pwd = googleAnalyticsProfile.getPassword();
+
+
         // check parameters
         if (jahiaProfileName == null || gaAccount == null) {
             logger.error("There is no google analytics account configured");
@@ -1113,7 +1111,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         // get data
-        return analytics.queryData(jahiaProfileName,login,pwd, gaAccount, query);
+        return analytics.queryData(jahiaProfileName, login, pwd, gaAccount, query);
     }
 
     /**

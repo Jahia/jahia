@@ -37,6 +37,7 @@
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="org.jahia.services.sites.*" %>
+<%@ page import="org.jahia.services.analytics.GoogleAnalyticsProfile" %>
 
 <%
     Properties settings = currentSite.getSettings();
@@ -133,39 +134,38 @@
                                     </thead>
                                         <%
                                     
-                                    Set sitePropertiesKey  = settings.keySet();
-                                    Iterator it = sitePropertiesKey.iterator();
+                                    Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = currentSite.getGoogleAnalyticsProfil().iterator();
                                     String myClass = "evenLine";
                                     int cnt = 0;
-                                    while(it.hasNext())
+                                    while(googleAnalyticsProfileIterator.hasNext())
                                     {
-                                        String prof = (String)it.next();
+                                        GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
 
-                                        if(prof.startsWith(SitesSettings.JAHIA_GA_PROFILE)){
+
                                         if(cnt%2 == 0){
                                             myClass = "evenLine" ;
                                         }else{
                                             myClass = "oddLine" ;
                                         }
-                                                String jahiaGAprofile = settings.getProperty(prof);
-                                            %>
+                                        String jahiaGAprofile = googleAnalyticsProfile.getProfile();
 
+                                            %>
                                     <tr class="<%=myClass%>" id="<%=jahiaGAprofile%>">
                                         <td><input type="checkbox"/></td>
                                         <td><%=jahiaGAprofile%>
                                         </td>
-                                        <td><%= settings.getProperty(SitesSettings.getProfileKey(jahiaGAprofile))%>
+                                        <td><%= googleAnalyticsProfile.getProfile()%>
                                         </td>
-                                        <td><%=settings.getProperty(SitesSettings.getUserAccountPropertyKey(jahiaGAprofile))%>
+                                        <td><%=googleAnalyticsProfile.getAccount()%>
                                         </td>
                                         <td><input type="radio" value="real" name="<%=jahiaGAprofile%>TrackedUrls"
-                                                   <% if ((settings.getProperty(SitesSettings.getTrackedUrlKey(jahiaGAprofile)).equals("real"))) { %>checked<% } %>
+                                                   <% if (googleAnalyticsProfile.getTypeUrl().equals("real")) { %>checked<% } %>
                                                    id="<%=jahiaGAprofile%>TrackedUrls"/></td>
                                         <td><input type="radio" value="virtual" name="<%=jahiaGAprofile%>TrackedUrls"
-                                                   <% if ((settings.getProperty(SitesSettings.getTrackedUrlKey(jahiaGAprofile)).equals("virtual"))) { %>checked<% } %>
+                                                   <% if (googleAnalyticsProfile.getTypeUrl().equals("virtual")) { %>checked<% } %>
                                                    id="<%=jahiaGAprofile%>TrackedUrls"/></td>
                                         <td><input type="checkbox" name="<%=jahiaGAprofile%>TrackingEnabled"
-                                                   <% if (Boolean.valueOf(settings.getProperty(SitesSettings.getTrackingEnabledKey(jahiaGAprofile)))) { %>checked<% } %>
+                                                   <% if (googleAnalyticsProfile.isEnabled()) { %>checked<% } %>
                                                    id="<%=jahiaGAprofile%>TrackingEnabled"/></td>
                                         <td class="lastCol">
                                             <a href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=displayEdit&profile="+jahiaGAprofile )%>'
@@ -186,7 +186,7 @@
                                     </tr>
                                         <%
                                         cnt++;
-                                    }
+
                                 }
                                 %>
                             </form>

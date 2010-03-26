@@ -31,14 +31,13 @@
  */
 package org.jahia.admin.analytics;
 
-import org.jahia.analytics.GoogleAnalyticsService;
+import org.jahia.services.analytics.GoogleAnalyticsProfile;
+import org.jahia.services.analytics.GoogleAnalyticsService;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.sites.SitesSettings;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.sites.JahiaSite;
@@ -224,7 +223,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
 
             // check validity of parameters
             final Map<String, Boolean> gaValidity = validateParameters();
-            final boolean profileAvailable = checkJahiaProfileAvaibility(request, jahiaProfileName);
+            final boolean profileAvailable = !site.hasProfile(jahiaProfileName);
             if (!gaValidity.get("emptyField")) {
                 if (gaValidity.get("credentialsOK")) {
                     if ((gaValidity.get("validAccount")) && gaValidity.get("validProfile")) {
@@ -303,24 +302,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
 
     }
 
-    /**
-     * The profil already exist
-     *
-     * @param request
-     * @param jahiaProfileName
-     * @return
-     */
-    private boolean checkJahiaProfileAvaibility(HttpServletRequest request, String jahiaProfileName) {
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        if (jData != null) {
-            boolean exist = jData.getProcessingContext().getSite().getProperty(SitesSettings.getJahiaProfileNameKey(jahiaProfileName), null) != null;
-            if (exist) {
-                logger.debug("Profile [" + jahiaProfileName + "] exists");
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Check is the parameters are valide
@@ -367,19 +348,23 @@ public class ManageAnalytics extends AbstractAdministrationModule {
         if (jData != null) {
             jParams = jData.getProcessingContext();
             site = jParams.getSite();
-            Iterator it = ((site.getSettings()).keySet()).iterator();
-            while (it.hasNext()) {
-                String key = (String) it.next();
-                if (key.startsWith("jahiaGAprofile")) {
-                    String profile = site.getSettings().getProperty(key);
-                    boolean newTrackingEnabled = Boolean.valueOf(request.getParameter(profile + "TrackingEnabled") != null);
-                    String newTrackedUrls = "virtual";
-                    if (StringUtils.left(JahiaTools.getStrParameter(request, profile + "TrackedUrls", "real").trim(), 100).equals("real")) {
-                        newTrackedUrls = "real";
-                    }
-                    site.getSettings().setProperty(SitesSettings.getTrackingEnabledKey(profile), String.valueOf(newTrackingEnabled));
-                    site.getSettings().setProperty(SitesSettings.getTrackedUrlKey(profile), newTrackedUrls);
+            Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfil().iterator();
+
+            while (googleAnalyticsProfileIterator.hasNext()) {
+                GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
+                String profile = googleAnalyticsProfile.getProfile();
+
+                // get tracking enabled value
+                boolean newTrackingEnabled = request.getParameter(profile + "TrackingEnabled") != null;
+
+                // get tracked rl
+                String newTrackedUrls = "virtual";
+                if (StringUtils.left(JahiaTools.getStrParameter(request, profile + "TrackedUrls", "real").trim(), 100).equals("real")) {
+                    newTrackedUrls = "real";
                 }
+                googleAnalyticsProfile.setEnabled(newTrackingEnabled);
+                googleAnalyticsProfile.setTypeUrl(newTrackedUrls);
+
             }
             jahiaSitesService = servicesRegistry.getJahiaSitesService();
             try {
@@ -423,21 +408,14 @@ public class ManageAnalytics extends AbstractAdministrationModule {
         if (jData != null) {
             jParams = jData.getProcessingContext();
             site = jParams.getSite();
-
-            final List<String> propertiesToBeRemoved = new ArrayList<String>();
-            propertiesToBeRemoved.add(SitesSettings.getUserAccountPropertyKey(profile));
-            propertiesToBeRemoved.add(SitesSettings.getProfileKey(profile));
-            propertiesToBeRemoved.add(SitesSettings.getLoginKey(profile));
-            propertiesToBeRemoved.add(SitesSettings.getPasswordKey(profile));
-            propertiesToBeRemoved.add(SitesSettings.getTrackingEnabledKey(profile));
-            propertiesToBeRemoved.add(SitesSettings.getTrackedUrlKey(profile));
-            propertiesToBeRemoved.add(SitesSettings.getJahiaProfileNameKey(profile));
-
+            site.removeProfile(profile);
 
             try {
-                servicesRegistry.getJahiaSitesService().removeSiteProperties(site, propertiesToBeRemoved);
+                //servicesRegistry.getJahiaSitesService().removeSiteProperties(site, propertiesToBeRemoved);
+
+                // To do: remove profile
                 servicesRegistry.getCacheService().flushAllCaches();
-            } catch (JahiaException e) {
+            } catch (Exception e) {
                 logger.error(e, e);
             }
             JahiaAdministration.doRedirect(request,
@@ -476,15 +454,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                                           HttpServletResponse response,
                                           HttpSession session) throws IOException, ServletException {
         if (servicesRegistry != null) {
-            if (mode.equals("new")) {
-                site.getSettings().setProperty(SitesSettings.getJahiaProfileNameKey(jahiaProfileName), jahiaProfileName);
-            }
-            site.getSettings().setProperty(SitesSettings.getUserAccountPropertyKey(jahiaProfileName), gaUserAccount);
-            site.getSettings().setProperty(SitesSettings.getProfileKey(jahiaProfileName), gaProfile);
-            site.getSettings().setProperty(SitesSettings.getLoginKey(jahiaProfileName), gaLogin);
-            site.getSettings().setProperty(SitesSettings.getPasswordKey(jahiaProfileName), gaPassword);
-            site.getSettings().setProperty(SitesSettings.getTrackingEnabledKey(jahiaProfileName), String.valueOf(trackingEnabled));
-            site.getSettings().setProperty(SitesSettings.getTrackedUrlKey(jahiaProfileName), trackedUrls);
+            site.addOrUpdateGoogleAnalyticsProfile(jahiaProfileName,trackedUrls,trackingEnabled,gaPassword,gaLogin,gaProfile,gaUserAccount);
 
             jahiaSitesService = servicesRegistry.getJahiaSitesService();
             try {

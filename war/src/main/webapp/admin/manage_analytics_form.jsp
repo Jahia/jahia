@@ -35,6 +35,7 @@
 <%@ page import="org.jahia.bin.JahiaAdministration,
                  java.util.Properties" %>
 <%@ page import="org.jahia.services.sites.*" %>
+<%@ page import="org.jahia.services.analytics.*" %>
 
 <%
     Properties settings = currentSite.getSettings();
@@ -48,10 +49,10 @@
     if (request.getParameter("sub") != null) {
         if (request.getParameter("sub").equals("displayEdit")) {
             operation = "saveEdit&profile=" + jahiaGAprofile;
-            gaUserAccount = settings.getProperty(SitesSettings.getUserAccountPropertyKey(jahiaGAprofile));
-            gaLogin = settings.getProperty(SitesSettings.getLoginKey(jahiaGAprofile));
-            gaProfile = settings.getProperty(SitesSettings.getProfileKey(jahiaGAprofile));
-            gaPassword = settings.getProperty(SitesSettings.getPasswordKey(jahiaGAprofile));
+            gaUserAccount = currentSite.getGoogleAnalyticsAccount(jahiaGAprofile);
+            gaLogin = currentSite.getGoogleAnalyticsLogin(jahiaGAprofile);
+            gaProfile = currentSite.getGoogleAnalyticsProfile(jahiaGAprofile);
+            gaPassword = currentSite.getGoogleAnalyticsPassword(jahiaGAprofile);
         } else {
             operation = "add";
             gaUserAccount = (String) request.getAttribute("gaUserAccount");

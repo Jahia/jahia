@@ -48,6 +48,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
@@ -77,29 +78,39 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     public static final String PROPERTY_ENFORCE_PASSWORD_POLICY = "enforcePasswordPolicy";
 
     private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (JahiaSite.class);
+            org.apache.log4j.Logger.getLogger(JahiaSite.class);
 
 
-    /** the site id * */
+    /**
+     * the site id *
+     */
     private int mSiteID = -1;
 
-    /** the site display title * */
+    /**
+     * the site display title *
+     */
     private String mTitle = "";
 
-    /** a unique String identifier key choosed by the creator * */
+    /**
+     * a unique String identifier key choosed by the creator *
+     */
     private String mSiteKey = "";
 
-    /** Server Name www.jahia.org * */
+    /**
+     * Server Name www.jahia.org *
+     */
     private String mServerName = "";
 
     private String templatePackageName;
 
-    /** desc * */
+    /**
+     * desc *
+     */
     private String mDescr;
 
     private JahiaBaseACL mACL;
 
-    private Properties mSettings = new Properties ();
+    private Properties mSettings = new Properties();
 
     private Boolean mixLanguagesActive;
     private Set<String> languages;
@@ -108,11 +119,13 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
     private String JCRLocalPath;
 
+    private Map<String, GoogleAnalyticsProfile> googleAnalyticsProfils = new HashMap<String, GoogleAnalyticsProfile>();
+
     /**
      * Constructor, the purpose of this empty constructor is to enable
      * <jsp:useBean...> tag in JSP
      */
-    public JahiaSite () {
+    public JahiaSite() {
     }
 
     /**
@@ -140,26 +153,26 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     }
 
 
-    public int getID () {
+    public int getID() {
         return mSiteID;
     }
 
-    public void setID (int id) {
+    public void setID(int id) {
         mSiteID = id;
     }
 
-    public String getTitle () {
+    public String getTitle() {
         return mTitle;
     }
 
-    public void setTitle (String value) {
+    public void setTitle(String value) {
         mTitle = value;
     }
 
     /**
      * Return the Full Qualified Domain Name ( www.jahia.org )
      */
-    public String getServerName () {
+    public String getServerName() {
         return mServerName;
     }
 
@@ -167,41 +180,41 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     /**
      * Set the Full Qualified Domain Name ( www.jahia.org )
      */
-    public void setServerName (String name) {
+    public void setServerName(String name) {
         mServerName = name;
     }
 
     /**
      * Return the unique String identifier key ( ex: jahia )
      */
-    public String getSiteKey () {
+    public String getSiteKey() {
         return mSiteKey;
     }
 
 
-    public int getHomePageID () {
+    public int getHomePageID() {
         return -1;
     }
 
     /**
      * @return
      */
-    public JahiaPage getHomePage () {
+    public JahiaPage getHomePage() {
         return null;
     }
 
     /**
      * @return
      */
-    public JahiaPage getHomePage (EntryLoadRequest entryLoadRequest) {
+    public JahiaPage getHomePage(EntryLoadRequest entryLoadRequest) {
         return null;
     }
 
-    public ContentPage getHomeContentPage () {
+    public ContentPage getHomeContentPage() {
         return null;
     }
 
-    public boolean isURLIntegrityCheckEnabled () {
+    public boolean isURLIntegrityCheckEnabled() {
         // we activate URL integrity checks by default if no setting was found.
         String value = getProperty(
                 URL_INTEGRITY_CHECKING_ENABLED, "true");
@@ -212,12 +225,12 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
             return Boolean.valueOf(value);
         }
     }
-    
-    public void setURLIntegrityCheckEnabled (boolean val) {
-        mSettings.setProperty(URL_INTEGRITY_CHECKING_ENABLED, 
+
+    public void setURLIntegrityCheckEnabled(boolean val) {
+        mSettings.setProperty(URL_INTEGRITY_CHECKING_ENABLED,
                 String.valueOf(val));
     }
-    
+
     public boolean isWAIComplianceCheckEnabled() {
         // we activate WAI compliance checks by default if no setting was found.
         final String value = getProperty(WAI_COMPLIANCE_CHECKING_ENABLED,
@@ -229,33 +242,33 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
             return Boolean.valueOf(value);
         }
     }
-    
-    public void setWAIComplianceCheckEnabled (boolean val) {
+
+    public void setWAIComplianceCheckEnabled(boolean val) {
         mSettings.setProperty(WAI_COMPLIANCE_CHECKING_ENABLED,
                 String.valueOf(val));
     }
-    
-    public boolean isHtmlCleanupEnabled () {
+
+    public boolean isHtmlCleanupEnabled() {
         // we activate HTML cleanup by default if no setting was found.
         String value = getProperty(HTML_CLEANUP_ENABLED, "true");
         // backward compatibility
         if ("0".equals(value) || "1".equals(value)) {
-            return "1".equals(value);  
+            return "1".equals(value);
         } else {
             return Boolean.valueOf(value);
         }
     }
 
-    public void setHtmlCleanupEnabled (boolean val) {
+    public void setHtmlCleanupEnabled(boolean val) {
         mSettings.setProperty(HTML_CLEANUP_ENABLED, String.valueOf(val));
     }
 
-    public boolean isHtmlMarkupFilteringEnabled () {
+    public boolean isHtmlMarkupFilteringEnabled() {
         // we activate HTML markup filtering by default if no setting was found.
         String value = getProperty(HTML_MARKUP_FILTERING_ENABLED, "true");
         // backward compatibility
         if ("0".equals(value) || "1".equals(value)) {
-            return "1".equals(value);  
+            return "1".equals(value);
         } else {
             return Boolean.valueOf(value);
         }
@@ -266,9 +279,9 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
                 .getProperty(HTML_MARKUP_FILTERING_TAGS);
     }
 
-    public void setHtmlMarkupFilteringEnabled (boolean val) {
+    public void setHtmlMarkupFilteringEnabled(boolean val) {
         mSettings.setProperty(HTML_MARKUP_FILTERING_ENABLED,
-                String.valueOf (val));
+                String.valueOf(val));
     }
 
     public void setHtmlMarkupFilteringTags(String tags) {
@@ -277,17 +290,17 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
                         .toLowerCase(), ", ;/<>"), ",") : "");
     }
 
-    public String getTemplateFolder () {
+    public String getTemplateFolder() {
         return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                 .getTemplatePackage(getTemplatePackageName()).getRootFolder();
     }
 
 
-    public String getDescr () {
+    public String getDescr() {
         return mDescr;
     }
 
-    public void setDescr (String descr) {
+    public void setDescr(String descr) {
         mDescr = descr;
     }
 
@@ -306,12 +319,11 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     */
 
 
-
     /**
      * ACL handling based on JahiaPage model
      */
 
-    private boolean checkAccess (JahiaUser user, int permission) {
+    private boolean checkAccess(JahiaUser user, int permission) {
         if (user == null) {
             return false;
         }
@@ -319,18 +331,18 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         // Test the access rights
         boolean result = false;
         try {
-            result = mACL.getPermission (user, permission);
+            result = mACL.getPermission(user, permission);
         } catch (JahiaACLException ex) {
             // if an error occured, just return false;
         }
 
         if (!result) {
-            logger.debug ("Permission denied for user [" +
-                    user.getName () + "] to page [" + getID () +
+            logger.debug("Permission denied for user [" +
+                    user.getName() + "] to page [" + getID() +
                     "] for access permission [" + permission + "]");
         } else {
-            logger.debug ("Permission granted for user [" +
-                    user.getName () + "] to page [" + getID () +
+            logger.debug("Permission granted for user [" +
+                    user.getName() + "] to page [" + getID() +
                     "] for access permission [" + permission + "]");
         }
 
@@ -343,35 +355,32 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * access means having the ability to admin the site ( manage users, groups,..)
      *
      * @param user Reference to the user.
-     *
      * @return Return true if the user has admin right
      */
-    public final boolean checkAdminAccess (JahiaUser user) {
-        return checkAccess (user, JahiaBaseACL.ADMIN_RIGHTS);
+    public final boolean checkAdminAccess(JahiaUser user) {
+        return checkAccess(user, JahiaBaseACL.ADMIN_RIGHTS);
     }
 
     /**
      * Check if the user has read access on the site.
      *
      * @param user Reference to the user.
-     *
      * @return Return true if the user has read access
      *         or false in any other case.
      */
-    public final boolean checkReadAccess (JahiaUser user) {
-        return checkAccess (user, JahiaBaseACL.READ_RIGHTS);
+    public final boolean checkReadAccess(JahiaUser user) {
+        return checkAccess(user, JahiaBaseACL.READ_RIGHTS);
     }
 
     /**
      * Check if the user has Write access on the site.
      *
      * @param user Reference to the user.
-     *
      * @return Return true if the user has read access
      *         or false in any other case.
      */
-    public final boolean checkWriteAccess (JahiaUser user) {
-        return checkAccess (user, JahiaBaseACL.WRITE_RIGHTS);
+    public final boolean checkWriteAccess(JahiaUser user) {
+        return checkAccess(user, JahiaBaseACL.WRITE_RIGHTS);
     }
 
 
@@ -380,7 +389,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      *
      * @return Return the page's ACL.
      */
-    public final JahiaBaseACL getACL () {
+    public final JahiaBaseACL getACL() {
         return mACL;
     }
 
@@ -389,10 +398,10 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      *
      * @return Return the ACL ID.
      */
-    public final int getAclID () {
+    public final int getAclID() {
         int id = 0;
         try {
-            id = mACL.getID ();
+            id = mACL.getID();
         } catch (JahiaACLException ex) {
             // This exception should not happen ... :)
         }
@@ -400,14 +409,11 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     }
 
 
-
-
-
     /**
      * returns the default homepage definition for users
      * -1 : undefined
      */
-    public int getUserDefaultHomepageDef () {
+    public int getUserDefaultHomepageDef() {
         return -1;
 
     }
@@ -415,7 +421,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     /**
      * returns the default homepage definition for groups
      */
-    public int getGroupDefaultHomepageDef () {
+    public int getGroupDefaultHomepageDef() {
         return -1;
 
     }
@@ -426,9 +432,8 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * corresponds to the ranking of the languages.
      *
      * @return a List containing String elements.
-     *
      */
-    public Set<String> getLanguages () {
+    public Set<String> getLanguages() {
         return languages;
     }
 
@@ -441,7 +446,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * Returns an List of site language  ( as Locale ).
      *
      * @return an List of Locale elements.
-     *
      */
     public List<Locale> getLanguagesAsLocales() {
 
@@ -463,7 +467,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * @throws JahiaException when an error occured while storing the modified
      *                        site language settings values.
      */
-    public void setLanguages (Set<String> languages) {
+    public void setLanguages(Set<String> languages) {
         this.languages = languages;
     }
 
@@ -472,19 +476,19 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      *
      * @param mixLanguagesActive
      */
-    public void setMixLanguagesActive (boolean mixLanguagesActive) {
+    public void setMixLanguagesActive(boolean mixLanguagesActive) {
         this.mixLanguagesActive = mixLanguagesActive;
     }
 
-    public boolean isMixLanguagesActive () {
+    public boolean isMixLanguagesActive() {
         return mixLanguagesActive;
     }
 
-    public void setSettings (Properties props) {
+    public void setSettings(Properties props) {
         this.mSettings = props != null ? props : new Properties();
     }
 
-    public Properties getSettings () {
+    public Properties getSettings() {
         return mSettings;
     }
 
@@ -502,7 +506,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
                 return getJCRLocalPath();
             }
         } catch (RepositoryException e) {
-            throw new JahiaException("Error while retrieving site's JCR Path","Error while retrieving site's JCR Path",0,0,e);
+            throw new JahiaException("Error while retrieving site's JCR Path", "Error while retrieving site's JCR Path", 0, 0, e);
         }
     }
 
@@ -541,11 +545,11 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         }
 
         public int compare(JahiaSite site1,
-                JahiaSite site2) {
-            if (site1 == null || site1.getTitle()== null) {
+                           JahiaSite site2) {
+            if (site1 == null || site1.getTitle() == null) {
                 return 1;
             }
-            if (site2 == null || site2.getTitle()== null) {
+            if (site2 == null || site2.getTitle() == null) {
                 return -1;
             }
             return collator.compare(site1.getTitle(), site2.getTitle());
@@ -567,17 +571,17 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     public static TitleComparator getTitleComparator(Locale locale) {
         return new TitleComparator(locale);
     }
-    
+
     public String toString() {
         final StringBuffer buff = new StringBuffer();
         buff.append("JahiaSite: ID = ").append(mSiteID).
-                append(", Settings: ").append(mSettings); 
+                append(", Settings: ").append(mSettings);
         return buff.toString();
     }
 
     /**
      * Returns the corresponding template set name of this virtual site.
-     * 
+     *
      * @return the corresponding template set name of this virtual site
      */
     public String getTemplatePackageName() {
@@ -586,9 +590,8 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
     /**
      * Sets the template package name for this virtual site.
-     * 
-     * @param packageName
-     *            the new template package name for this virtual site
+     *
+     * @param packageName the new template package name for this virtual site
      */
     public void setTemplatePackageName(String packageName) {
         this.templatePackageName = packageName;
@@ -610,10 +613,10 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         // fix for PEU-77 (by PELTIER Olivier)
         return new HashCodeBuilder().append(mSiteID).toHashCode();
     }
-    
+
     /**
      * Returns <code>true</code> if this site is the default one on the server.
-     * 
+     *
      * @return <code>true</code> if this site is the default one on the server
      */
     public boolean isDefault() {
@@ -626,11 +629,11 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         String value = mSettings.getProperty(key);
         return value != null ? value : defaultValue;
     }
-    
+
     public boolean isFileLockOnPublicationEnabled() {
         return Boolean.valueOf(getProperty(FILE_LOCK_ON_PUBLICATION, "false"));
     }
-    
+
     public void setFileLockOnPublicationEnabled(
             boolean fileLockOnPublicationEnabled) {
         mSettings.setProperty(FILE_LOCK_ON_PUBLICATION, String
@@ -644,5 +647,63 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
     public void setJCRLocalPath(String JCRLocalPath) {
         this.JCRLocalPath = JCRLocalPath;
+    }
+
+
+    public  String getGoogleAnalyticsTrackedUrl(String jahiaProfileName) {
+      return  googleAnalyticsProfils.get(jahiaProfileName).getTypeUrl();
+    }
+
+    public  boolean getGoogleAnalyticsTrackingEnabled(String jahiaProfileName) {
+        return  googleAnalyticsProfils.get(jahiaProfileName).isEnabled();
+    }
+
+    public  String getGoogleAnalyticsPassword(String jahiaProfileName) {
+        return  googleAnalyticsProfils.get(jahiaProfileName).getPassword();
+    }
+
+    public  String getGoogleAnalyticsLogin(String jahiaProfileName) {
+        return  googleAnalyticsProfils.get(jahiaProfileName).getLogin();
+    }
+
+    public  String getGoogleAnalyticsProfile(String jahiaProfileName) {
+        return  googleAnalyticsProfils.get(jahiaProfileName).getProfile();
+    }
+
+    public  String getGoogleAnalyticsAccount(String jahiaProfileName) {
+        return  googleAnalyticsProfils.get(jahiaProfileName).getAccount();
+    }
+
+    public void addOrUpdateGoogleAnalyticsProfile(String name, String trackedUrls, boolean trackingEnabled, String password, String login, String profile, String account){
+       googleAnalyticsProfils.put(name,new GoogleAnalyticsProfile( name,  trackedUrls,  trackingEnabled,  password,  login,  profile,  account));
+    }
+
+    public boolean hasGoogleAnalyticsProfil(){
+        return !googleAnalyticsProfils.isEmpty();
+    }
+
+    public boolean hasProfile(String jahiaProfileName){
+       return googleAnalyticsProfils.containsKey(jahiaProfileName);
+    }
+
+    public void removeProfile(String jahiaProfileName){
+        googleAnalyticsProfils.remove(jahiaProfileName);
+    }
+
+    public Collection<GoogleAnalyticsProfile> getGoogleAnalyticsProfil(){
+        return googleAnalyticsProfils.values();
+    }
+
+    public boolean hasActivatedGoogleAnalyticsProfil(){
+        final Iterator<GoogleAnalyticsProfile> googleAnalyticsProfilIterator = googleAnalyticsProfils.values().iterator();
+
+        // check if at list one profile is enabled
+        while (googleAnalyticsProfilIterator.hasNext()) {
+            GoogleAnalyticsProfile gaProfile = googleAnalyticsProfilIterator.next();
+            if (gaProfile.isEnabled()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

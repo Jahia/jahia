@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
@@ -125,7 +126,7 @@ public class JCRSitesProvider {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error("cannot get site",e);
+            logger.error("cannot get site", e);
         }
         return null;
     }
@@ -161,7 +162,7 @@ public class JCRSitesProvider {
             List<JahiaSite> sites = getSites();
             for (JahiaSite jahiaSite : sites) {
                 if (id <= jahiaSite.getID()) {
-                    id = jahiaSite.getID()+1;
+                    id = jahiaSite.getID() + 1;
                 }
             }
             site.setID(id);
@@ -171,8 +172,8 @@ public class JCRSitesProvider {
             jcrTemplate.doExecuteWithSystemSession(new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        JCRNodeWrapper defaultSite = session.getNode("/templatesSet/"+site.getTemplatePackageName()+"/defaultSite");
-                        defaultSite.copy(session.getNode("/sites"),site.getSiteKey(), false);
+                        JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + site.getTemplatePackageName() + "/defaultSite");
+                        defaultSite.copy(session.getNode("/sites"), site.getSiteKey(), false);
                         session.save();
                     } catch (PathNotFoundException e) {
                     } catch (RepositoryException e) {
@@ -199,7 +200,7 @@ public class JCRSitesProvider {
                     session.save();
                     return null;
                 }
-            };     
+            };
             JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCacllback);
             // Now let's delete the live workspace site.
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCacllback);
@@ -225,13 +226,29 @@ public class JCRSitesProvider {
                     siteNode.setProperty("j:serverName", site.getServerName());
 //                    siteNode.setProperty("j:installedModules", new String[]{site.getTemplatePackageName()});
                     String defaultLanguage = site.getDefaultLanguage();
-                    if(defaultLanguage!=null)
-                    siteNode.setProperty("j:defaultLanguage", defaultLanguage);
+                    if (defaultLanguage != null)
+                        siteNode.setProperty("j:defaultLanguage", defaultLanguage);
                     siteNode.setProperty("j:mixLanguage", site.isMixLanguagesActive());
                     siteNode.setProperty("j:languages", site.getLanguages().toArray(
                             new String[site.getLanguages().size()]));
                     siteNode.setProperty("j:mandatoryLanguages", site.getMandatoryLanguages().toArray(
                             new String[site.getMandatoryLanguages().size()]));
+
+                    // remove deleted profiles
+
+                    // add google analytics
+                    Iterator<GoogleAnalyticsProfile> it = site.getGoogleAnalyticsProfil().iterator();
+                    while (it.hasNext()) {
+                        GoogleAnalyticsProfile googleAnalyticsProfile = it.next();
+                        JCRNodeWrapper googleAnalyticsNode = siteNode.addNode(googleAnalyticsProfile.getName(), Constants.JAHIANT_GOOGLEANALYTICS);
+                        googleAnalyticsNode.setProperty("j:account", googleAnalyticsProfile.getAccount());
+                        googleAnalyticsNode.setProperty("j:login", googleAnalyticsProfile.getLogin());
+                        googleAnalyticsNode.setProperty("j:password", googleAnalyticsProfile.getPassword());
+                        googleAnalyticsNode.setProperty("j:profile", googleAnalyticsProfile.getProfile());
+                        googleAnalyticsNode.setProperty("j:typeUrl", googleAnalyticsProfile.getTypeUrl());
+                        googleAnalyticsNode.setProperty("j:enabled", googleAnalyticsProfile.isEnabled());
+                    }
+
                     session.save();
                     return null;
                 }
@@ -264,6 +281,24 @@ public class JCRSitesProvider {
             languagesList.add(language.getString());
         }
         site.setMandatoryLanguages(languagesList);
+
+        // load google analytics profiles
+        NodeIterator gaProfileNodeIterator = node.getNodes();
+        while (gaProfileNodeIterator != null && gaProfileNodeIterator.hasNext()) {
+            JCRNodeWrapper childNode = (JCRNodeWrapper) gaProfileNodeIterator.nextNode();
+            if (childNode.getNodeTypes().contains(Constants.JAHIANT_GOOGLEANALYTICS)) {
+                String name = childNode.getName();
+                String account = childNode.getPropertyAsString("j:account");
+                String login = childNode.getPropertyAsString("j:login");
+                String password = childNode.getPropertyAsString("j:password");
+                String profile = childNode.getPropertyAsString("j:profile");
+                String typeUrl = childNode.getPropertyAsString("j:typeUrl");
+                boolean enabled = childNode.getProperty("j:enabled").getBoolean();
+
+                site.addOrUpdateGoogleAnalyticsProfile(name, typeUrl, enabled, password, login, profile, account);
+            }
+        }
+
         return site;
     }
 

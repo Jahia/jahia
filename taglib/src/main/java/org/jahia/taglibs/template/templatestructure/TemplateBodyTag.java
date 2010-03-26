@@ -32,26 +32,15 @@
 package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
-import org.jahia.analytics.GoogleAnalyticsService;
-import org.jahia.data.JahiaData;
-import org.jahia.data.beans.JahiaBean;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.pages.ContentPage;
+import org.jahia.services.analytics.GoogleAnalyticsService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.SitesSettings;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.DynamicAttributes;
-import javax.servlet.jsp.tagext.Tag;
 import java.util.*;
 
 /**
@@ -136,7 +125,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
     private transient Map<String, Object> attributes = new HashMap<String, Object>();
     private String gwtScript;
-    boolean useGwt = false;
     private boolean editDivOpen = false;
 
     /**
@@ -156,16 +144,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
 
-            useGwt = renderContext.isEditMode();
-            ServletRequest request = pageContext.getRequest();
-
-            // check the gwtForGuest attribute from parent tag
-            Tag parent = getParent();
-            boolean gwtForGuest = false;
-            if (parent instanceof TemplateTag) {
-                gwtForGuest = ((TemplateTag) parent).enableGwtForGuest();
-            }
-
             StringBuilder buf = new StringBuilder("<body");
             for (String param : attributes.keySet()) {
                 buf.append(" ").append(param).append("=\"").append(attributes.get(param)).append("\"");
@@ -173,7 +151,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             buf.append(">");
 
             // add google visualizer api if there is at least one active google analytics profile and if its the edit mode
-            if (renderContext.isEditMode() && isGoogleAnalyticsActivated(renderContext.getSite())) {
+            if (renderContext != null && renderContext.isEditMode() && renderContext.getSite().hasActivatedGoogleAnalyticsProfil()) {
                 buf.append(GoogleAnalyticsService.getInstance().renderBaseVisualisationCode());
             }
 
@@ -205,33 +183,22 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     public int doEndTag() {
         final StringBuilder buf = new StringBuilder();
 
-        ServletRequest request = pageContext.getRequest();
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-           
-            //if (isGoogleAnaylitcsTrackingActivated(renderContext.getSite()) && isLiveMode()) {
-              //  buf.append(GoogleAnalyticsService.getInstance().renderBaseTrackingCode());
-              //  List<JCRNodeWrapper> trackedNodes = (List<JCRNodeWrapper>)renderContext.getRequest().getAttribute(GoogleAnalyticsFilter.GOOGLE_ANALYTICS_TRACKED_NODES);
-              //  buf.append(GoogleAnalyticsService.getInstance().renderNodeTrackingCode(trackedNodes,renderContext.getSite()));
 
+            if (renderContext.getSite().hasGoogleAnalyticsProfil() /*&& renderContext.isLiveMode()*/) {
+                buf.append(GoogleAnalyticsService.getInstance().renderBaseTrackingCode(renderContext.getRequest().getProtocol()));
+               // List<JCRNodeWrapper> trackedNodes = (List<JCRNodeWrapper>) renderContext.getRequest().getAttribute(GoogleAnalyticsFilter.GOOGLE_ANALYTICS_TRACKED_NODES);
+               // buf.append(GoogleAnalyticsService.getInstance().renderNodeTrackingCode(trackedNodes, renderContext.getSite()));
 
-           // }
-            if (useGwt) {
+            }
+
+            // in edit mode, generate gwt dictionnary
+            if (renderContext != null && renderContext.isEditMode()) {
                 // Generate jahia_gwt_dictionnary
                 Map<String, String> dictionaryMap = getJahiaGwtDictionary();
                 if (dictionaryMap != null) {
-                    Locale currentLocale = request.getLocale();
-                    if (renderContext != null) {
-                        addMandatoryGwtMessages(renderContext.getUILocale(), currentLocale);
-                    } else {
-                        // we fall back to JahiaData for the administration interface, where this tag is also used.
-                        JahiaData jahiaData = (JahiaData) pageContext.findAttribute("org.jahia.data.JahiaData");
-                        if (jahiaData != null) {
-                            addMandatoryGwtMessages(jahiaData.getProcessingContext().getUILocale(), currentLocale);
-                        } else {
-                            addMandatoryGwtMessages(null, currentLocale);
-                        }
-                    }
+                    addMandatoryGwtMessages(renderContext.getUILocale(), renderContext.getRequest().getLocale());
                     buf.append("<script type='text/javascript'>\n");
                     buf.append(generateJahiaGwtDictionary());
                     buf.append("</script>\n");
@@ -251,22 +218,13 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         // reset attributes
         gwtScript = null;
         attributes = new HashMap<String, Object>();
-        useGwt = false;
         editDivOpen = false;
         return EVAL_PAGE;
     }
 
     /**
-     * check if it's live mode
-     * @return
-     */
-    private boolean isLiveMode() {
-        final JahiaBean jBean = (JahiaBean) pageContext.getAttribute("jahia", PageContext.REQUEST_SCOPE);
-        return jBean.getRequestInfo().isNormalMode();
-    }
-
-    /**
      * Set dynamic attribute
+     *
      * @param s
      * @param s1
      * @param o
@@ -279,47 +237,15 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         attributes.put(s1, o);
     }
 
-    
 
 
-    /**
-     * Check if there is one activated google analytics profile
-     * @param jahiaSite
-     * @return
-     */
-    private boolean isGoogleAnaylitcsTrackingActivated(JahiaSite jahiaSite) {
-        boolean atLeast1TPon = false;
-        // google analytics
-        Iterator<?> it = ((jahiaSite.getSettings()).keySet()).iterator();
-        // check if at list one profile is enabled
-        while (it.hasNext()) {
-            String key = (String) it.next();
-            if (key.startsWith(SitesSettings.JAHIA_GA_PROFILE)) {
-                if (Boolean.valueOf(jahiaSite.getSettings().getProperty(SitesSettings.GA_TRACKING_ENABLED))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
 
     /**
      * Check if there is a least one google analytics profile
+     *
      * @param jahiaSite
      * @return
      */
-    private boolean isGoogleAnalyticsActivated(JahiaSite jahiaSite) {
-        // google analytics
-        Iterator<?> sitePropertiesKey = jahiaSite.getSettings().keySet().iterator();
-        // check if at list one profile is enabled
-        while (sitePropertiesKey.hasNext()) {
-            String key = (String) sitePropertiesKey.next();
-            if (key.startsWith(SitesSettings.JAHIA_GA_PROFILE)) {
-                logger.debug("AT least one profile in the db !!!!");
-                return true;
-            }
-        }
-        return false;
-    }
+
 }

@@ -46,8 +46,6 @@ public interface JahiaServiceAsync {
 
     void drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
 
-    void getAvailableLanguagesAndWorkflowStates (boolean displayIsoCode,boolean displayLanguage, boolean inEngine, AsyncCallback<GWTJahiaLanguageSwitcherBean> async) ;
-
     void getProcessJob(String name, String groupName, AsyncCallback<GWTJahiaProcessJob> async);
 
     void getAvailableSites(AsyncCallback<List<GWTJahiaSite>> asyncCallback);

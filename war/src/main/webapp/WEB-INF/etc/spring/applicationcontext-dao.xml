@@ -32,7 +32,6 @@
     		       The sequence name will be table_name.column_name -->
     			<map>
                     <entry key="org.jahia.hibernate.model.JahiaGrp" value="jahia_grps.id_jahia_grps"/>
-                    <entry key="org.jahia.hibernate.model.JahiaLink" value="jahia_link.id"/>
                     <entry key="org.jahia.hibernate.model.JahiaPwdPolicy" value="jahia_pwd_policies.jahia_pwd_policy_id"/>
                     <entry key="org.jahia.hibernate.model.JahiaPwdPolicyRule"
                            value="jahia_pwd_policy_rules.jahia_pwd_policy_rule_id"/>

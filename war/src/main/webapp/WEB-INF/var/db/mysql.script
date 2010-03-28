@@ -21,9 +21,4 @@ jahia.database.transactions = false
 jahia.database.hibernate.dialect = org.hibernate.dialect.MySQLDialect
 jahia.nested_transaction_allowed = true
 
-# uncomment this to use JTA transactions
-#jahia.database.schemascriptdir = sql/schema/mysql-tx
-#jahia.database.transactions = true
-#jahia.database.hibernate.dialect = org.hibernate.dialect.MySQLInnoDBDialect
-#jahia.nested_transaction_allowed = false
 jahia.jboss.datasource.typeMapping = mySQL

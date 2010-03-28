@@ -199,15 +199,6 @@ public class JahiaAdministration extends HttpServlet {
                     request.getQueryString() + "'] --");
         }
 
-        if (jSettings != null) {
-            if (jSettings.isUtf8Encoding()) {
-                // bad browser, doesn't send character encoding :(
-                // we can force the encoding ONLY if we do this call before any
-                // getParameter() call is done !
-                request.setCharacterEncoding("UTF-8");
-            }
-        }
-
         // get the current user session...
         HttpSession session = request.getSession(true);
 
@@ -460,7 +451,7 @@ public class JahiaAdministration extends HttpServlet {
 
         String contentTypeStr = "text/html;charset=";
         String charEncoding = org.jahia.settings.SettingsBean.getInstance() != null ? org.jahia.settings.SettingsBean.getInstance()
-                .getDefaultResponseBodyEncoding() : "UTF-8";
+                .getCharacterEncoding() : "UTF-8";
         contentTypeStr = contentTypeStr + charEncoding;
 
         request.setAttribute("content-type", contentTypeStr);

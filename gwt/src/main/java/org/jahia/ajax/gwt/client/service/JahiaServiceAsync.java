@@ -38,19 +38,15 @@ import java.util.List;
 
 
 /**
- * Created by Jahia.
  * User: ktlili
  * Date: 5 juil. 2007
  * Time: 14:04:49
- * To change this template use File | Settings | File Templates.
  */
 public interface JahiaServiceAsync {
 
     void drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString, AsyncCallback<GWTJahiaPortletOutputBean> async);
 
-    void inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent, AsyncCallback<GWTJahiaInlineEditingResultBean> async);
-
-    void isInlineEditingAllowed(Integer containerID, Integer fieldID, AsyncCallback<Boolean> async);
+    void getAvailableLanguagesAndWorkflowStates (boolean displayIsoCode,boolean displayLanguage, boolean inEngine, AsyncCallback<GWTJahiaLanguageSwitcherBean> async) ;
 
     void getProcessJob(String name, String groupName, AsyncCallback<GWTJahiaProcessJob> async);
 

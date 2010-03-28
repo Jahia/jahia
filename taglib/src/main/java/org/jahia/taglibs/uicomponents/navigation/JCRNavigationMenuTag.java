@@ -31,9 +31,8 @@
  */
 package org.jahia.taglibs.uicomponents.navigation;
 
-import org.apache.axis.utils.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Category;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -51,10 +50,10 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@SuppressWarnings("serial")
 public class JCRNavigationMenuTag extends AbstractJahiaTag {
 
-    private static transient final Category logger = Logger.getLogger(JCRNavigationMenuTag.class);
+    private static final long serialVersionUID = 8195958771697928329L;
+    private static transient final Logger logger = Logger.getLogger(JCRNavigationMenuTag.class);
     private String kind = null;
     private int startLevel = Integer.MIN_VALUE;
     private int maxDepth = Integer.MIN_VALUE;
@@ -133,7 +132,7 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
 
             generateMenuAsFlatList(realStartLevel, baseNode, 1,
                     navMenuUItemsBeans, null, baseNode != null ? baseNode.getPath() : null);
-            if (!StringUtils.isEmpty(var)) {
+            if (StringUtils.isNotEmpty(var)) {
                 pageContext.setAttribute(var, navMenuUItemsBeans);
             }
 
@@ -392,6 +391,12 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
     }
 
     public int doEndTag() throws JspException {
+        resetState();
+        return EVAL_PAGE;
+    }
+
+    @Override
+    protected void resetState() {
         // let's reinitialize the tag variables to allow tag object reuse in
         // pooling.
         kind = null;
@@ -406,9 +411,8 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
         typesToFilterBy = null;        
         bodyContent = null;
         super.resetState();
-        return EVAL_PAGE;
     }
-
+    
     public class NavMenuItemBean implements Comparable<NavMenuItemBean> {
         private String separator = "";
         private int level = 0;

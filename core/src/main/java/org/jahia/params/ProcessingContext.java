@@ -127,7 +127,6 @@ import org.jahia.services.fields.ContentField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -136,7 +135,6 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -625,7 +623,7 @@ public class ProcessingContext {
             newLoadRequest.setWithMarkedForDeletion(true);
         } else if (EDIT.equals(getOpMode())) {
             newLoadRequest.setWithDeleted(false);
-            newLoadRequest.setWithMarkedForDeletion(org.jahia.settings.SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects());
+            newLoadRequest.setWithMarkedForDeletion(false);
         }
         if (this.entryLoadRequest.getWorkflowState() > 0) {
             this.entryLoadRequest = newLoadRequest;
@@ -1193,9 +1191,9 @@ public class ProcessingContext {
     }
 
     private boolean findSiteFromSession() {
-        site = (JahiaSite) getSessionState().getAttribute(SESSION_SITE);
-        return !(site == null || site.getID() <= 0);
-    }
+            site = (JahiaSite) getSessionState().getAttribute(SESSION_SITE);
+            return !(site == null || site.getID() <= 0);
+        }
 
     /**
      * @return true if default site was found successfully.

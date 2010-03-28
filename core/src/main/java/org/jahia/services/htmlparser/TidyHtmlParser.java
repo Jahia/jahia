@@ -201,7 +201,7 @@ public class TidyHtmlParser implements HtmlParser {
 
         // charset
         byte[] strByte = null;
-        String charSet = SettingsBean.getInstance().getDefaultResponseBodyEncoding();
+        String charSet = SettingsBean.getInstance().getCharacterEncoding();
         if ("UTF-8".equalsIgnoreCase(charSet) && config.getProperty(TidyConfig.CHAR_ENCODING) == null) {
             config.setProperty(TidyConfig.CHAR_ENCODING, "utf8");
         }

@@ -60,45 +60,8 @@ public final class UserPreferencesHelper {
 
     private static Logger logger = Logger.getLogger(UserPreferencesHelper.class);
     
-    public static final String DISPLAY_ACL_DIFF_STATE = "acldiff.activated";
-
-    public static final String DISPLAY_INTEGRITY_STATE = "integrity.activated";
-
-    public static final String DISPLAY_TBP_STATE = "timebasepublishing.activated";
-
-    public static final String ENABLE_INLINE_EDITING = "inlineediting.activated";
-
     private static JahiaPreferencesService getPrefsService() {
         return ServicesRegistry.getInstance().getJahiaPreferencesService();
-    }
-
-    public static boolean isDisplayAclDiffState(Principal principal) {
-        return getPrefsService().getGenericPreferenceBooleanValue(
-                DISPLAY_ACL_DIFF_STATE, SettingsBean.getInstance().isAclDisp(),
-                principal);
-    }
-
-    public static boolean isDisplayIntegrityState(Principal principal) {
-        return getPrefsService().getGenericPreferenceBooleanValue(
-                DISPLAY_INTEGRITY_STATE,
-                SettingsBean.getInstance().isIntegrityDisp(), principal);
-    }
-
-    public static boolean isDisplayTbpState(Principal principal) {
-        return getPrefsService().getGenericPreferenceBooleanValue(
-                DISPLAY_TBP_STATE, SettingsBean.getInstance().isTbpDisp(),
-                principal);
-    }
-
-    public static boolean isDisplayWorkflowState(Principal principal) {
-        return SettingsBean.getInstance().isWflowDisp();
-    }
-
-    public static boolean isEnableInlineEditing(Principal principal) {
-        return getPrefsService().getGenericPreferenceBooleanValue(
-                ENABLE_INLINE_EDITING,
-                SettingsBean.getInstance().isInlineEditingActivated(),
-                principal);
     }
 
     /**
@@ -225,7 +188,7 @@ public final class UserPreferencesHelper {
             try {
                 recipientEmail = new InternetAddress(recipientEmail, name,
                         SettingsBean.getInstance()
-                                .getDefaultResponseBodyEncoding()).toString();
+                                .getCharacterEncoding()).toString();
             } catch (UnsupportedEncodingException e) {
                 logger.warn(e.getMessage(), e);
                 try {

@@ -127,20 +127,9 @@ public class EngineRenderer {
             }
             // set response attributes...
             final HttpServletResponse response = jParams.getResponse();
-            if (jParams.settings ().isUtf8Encoding ()) {
-                response.setContentType (mimeType + ";charset=UTF-8");
-            } else {
-                response.setContentType (mimeType);
-            }
+            response.setContentType (mimeType + ";charset=" + jParams.settings().getCharacterEncoding());
 
-            // add "no cache" to request header only if methode is not a get
             final HttpServletRequest request = jParams.getRequest();
-            if (!request.getMethod ().toLowerCase ().equals ("get")) {
-                response.setHeader ("Cache-Control", "no-cache");
-                // Pragma is not officially supported in response.
-                response.setHeader ("Pragma", "no-cache");
-                response.setDateHeader ("Expires", 0);
-            }
 
             // todo FIXME is this attribute name still used ? If not remove it
             jParams.getRequest ().setAttribute ("org.jahia.data.JahiaParams", jParams);

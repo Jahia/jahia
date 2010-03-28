@@ -96,8 +96,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
-import org.jahia.urls.URI;
-import org.jahia.urls.URICodec;
 import org.jahia.utils.JahiaConsole;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Version;
@@ -466,11 +464,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 factory.enableClusterSync();
             }
 
-            // let's set the URI generation default encoding according to
-            // the Jahia settings.
-            URICodec.setDefaultEncoding(jSettings.getDefaultURIEncoding());
-            URI.setDefaultEncoding(jSettings.getDefaultURIEncoding());
-
             createAuthorizationPipeline(config);
 
             // initialize content portlets
@@ -564,22 +557,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                          final HttpServletResponse response)
         throws IOException,
         ServletException {
-
-        /** todo Can we put this someplace else, and furthermore can be only
-         *  do this if we have a session variable set or something ?
-         */
-        // The following part is the most important part of the servlet, which makes sure
-        // we read all the encodings in UTF-8. This is documented in the Servlet API 2.3
-        // specification, under the SRV 4.9 section, page 37
-        // logger.debug("Character encoding passed: " + request.getCharacterEncoding() );
-        if (jSettings != null) {
-            if (jSettings.isUtf8Encoding()) {
-                // bad browser, doesn't send character encoding :(
-                // we can force the encoding ONLY if we do this call before any
-                // getParameter() call is done !
-                request.setCharacterEncoding("UTF-8");
-            }
-        }
 
         if (logger.isDebugEnabled()) {
             logger.debug("--------------------------------------------- NEW "

@@ -164,65 +164,6 @@
             memoryStoreEvictionPolicy="LRU"
             >
     </defaultCache>
-    <!-- This cache parameters define how many pages do we want to cache in memory/disk -->
-    <cache
-            name="SkeletonCache"
-            overflowToDisk="true"
-            maxElementsInMemory="2000"
-            timeToIdleSeconds="3600"
-            timeToLiveSeconds="14400"
-            diskPersistent="true"
-            maxElementsOnDisk="10000"
-            eternal="false">
-        <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.SkeletonCacheEventListenerFactory"
-                                   properties=""/>
-    </cache>
-    <cache
-            name="SkeletonCache-groups"
-            overflowToDisk="true"
-            maxElementsInMemory="500"
-            diskPersistent="true"
-            eternal="false"/>
-    <!-- This cache parameters define how many fragments of pages do we want to store in cache (based on an average of 5 fragments per page)-->
-    <cache
-            name="ContainerHTMLCache"
-            overflowToDisk="true"
-            maxElementsInMemory="10000"
-            diskPersistent="true"
-            timeToIdleSeconds="3600"
-            timeToLiveSeconds="14400"
-            maxElementsOnDisk="50000"
-            eternal="false"/>
-    <cache
-            name="ContainerHTMLCache-groups"
-            overflowToDisk="true"
-            maxElementsInMemory="500"
-            diskPersistent="true"
-            eternal="false"/>
-    <cache
-            name="LockAlreadyAcquiredMap"
-            overflowToDisk="true"
-            maxElementsInMemory="300"
-            diskPersistent="false"
-            eternal="true"/>
-    <cache
-            name="LockAlreadyAcquiredMap-groups"
-            overflowToDisk="true"
-            maxElementsInMemory="300"
-            diskPersistent="false"
-            eternal="true"/>
-    <cache
-            name="LockPrerequisitesResultMap"
-            overflowToDisk="true"
-            maxElementsInMemory="300"
-            diskPersistent="false"
-            eternal="true"/>
-    <cache
-            name="LockPrerequisitesResultMap-groups"
-            overflowToDisk="true"
-            maxElementsInMemory="300"
-            diskPersistent="false"
-            eternal="true"/>
     <cache
             name="nodeusersacls"
             overflowToDisk="true"

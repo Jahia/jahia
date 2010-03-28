@@ -2,7 +2,7 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.taglibs.AbstractJCRTag;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyType;

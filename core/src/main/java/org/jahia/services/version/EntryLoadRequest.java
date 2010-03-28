@@ -76,7 +76,7 @@ public class EntryLoadRequest implements Cloneable, Serializable {
     }
 
     final static public StaticEntryLoadRequest CURRENT = new StaticEntryLoadRequest(ACTIVE_WORKFLOW_STATE, 0, defaultLocaleList);
-    final static public StaticEntryLoadRequest STAGED = new StaticEntryLoadRequest(STAGING_WORKFLOW_STATE, 0, defaultLocaleList, SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects());
+    final static public StaticEntryLoadRequest STAGED = new StaticEntryLoadRequest(STAGING_WORKFLOW_STATE, 0, defaultLocaleList, false);
     final static public StaticEntryLoadRequest VERSIONED = new StaticEntryLoadRequest(VERSIONED_WORKFLOW_STATE, 0, defaultLocaleList);
     final static public StaticEntryLoadRequest WAITING = new StaticEntryLoadRequest(WAITING_WORKFLOW_STATE, 0, defaultLocaleList);
     final static public StaticEntryLoadRequest DELETED = new StaticEntryLoadRequest(DELETED_WORKFLOW_STATE, 0, defaultLocaleList);
@@ -363,10 +363,10 @@ public class EntryLoadRequest implements Cloneable, Serializable {
         final EntryLoadRequest loadRequest;
         if (versionID == STAGING_WORKFLOW_STATE) {
             loadRequest = new EntryLoadRequest(EntryLoadRequest.STAGED);
-            loadRequest.setWithMarkedForDeletion(org.jahia.settings.SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects());
+            loadRequest.setWithMarkedForDeletion(false);
         } else if (versionID == ACTIVE_WORKFLOW_STATE) {
             loadRequest = new EntryLoadRequest(EntryLoadRequest.CURRENT);
-            loadRequest.setWithMarkedForDeletion(org.jahia.settings.SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects());
+            loadRequest.setWithMarkedForDeletion(false);
         } else {
             loadRequest = new EntryLoadRequest(EntryLoadRequest.VERSIONED);
             loadRequest.setVersionID(versionID);

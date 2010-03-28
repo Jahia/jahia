@@ -66,52 +66,6 @@ public class JavaScriptApi {
         AjaxRequest.perfom(url, options);
     }
 
-    static void onBlurEditableContent(final Element e, String containerID, String fieldID) {
-        Log.info("Blurring field [" + containerID + "," + fieldID + "]: " + e.getInnerHTML() + " contentEditable" + e.getAttribute("contentEditable"));
-        if ((e.getAttribute("contentEditable") != null) &&
-            (e.getAttribute("contentEditable").equals("true"))) {
-            String content = e.getInnerHTML();
-            e.setAttribute("contentEditable", "false");
-            e.setClassName("inlineEditingDeactivated");
-            Integer containerIDInt = Integer.parseInt(containerID);
-            Integer fieldIDInt = Integer.parseInt(fieldID);
-            JahiaService.App.getInstance().inlineUpdateField(containerIDInt, fieldIDInt, content, new AsyncCallback<GWTJahiaInlineEditingResultBean>() {
-                public void onSuccess(GWTJahiaInlineEditingResultBean result) {
-                    if (result.isContentModified()) {
-                        Info.display("Content updated", "Content saved.");
-                        Log.info("Content successfully modified.");
-                    }
-                }
-
-                public void onFailure(Throwable throwable) {
-                    Log.error("Error modifying content", throwable);
-                }
-            });
-        }
-    }
-
-    static void onClickEditableContent(final Element e, String containerID, String fieldID) {
-        Log.info("Checking if inline editing is allowed for containerID=" + containerID + " fieldID=" + fieldID);
-        Integer containerIDInt = Integer.parseInt(containerID);
-        Integer fieldIDInt = Integer.parseInt(fieldID);
-        JahiaService.App.getInstance().isInlineEditingAllowed(containerIDInt, fieldIDInt, new AsyncCallback<Boolean>() {
-            public void onSuccess(Boolean result) {
-                if (result.booleanValue()) {
-                    Log.info("Inline editing is allowed.");
-                    e.setAttribute("contentEditable", "true");
-                    e.setClassName("inlineEditingActivated");
-                } else {
-                    Log.info("Inline editing is not allowed.");
-                }
-            }
-
-            public void onFailure(Throwable throwable) {
-                Log.error("Error modifying content", throwable);
-            }
-        });
-    }
-
-
     static void renderPortlet(final Element e, String windowID, String entryPointInstanceID, String pathInfo, String queryString) {
         JahiaService.App.getInstance().drawPortletInstanceOutput(windowID, entryPointInstanceID, pathInfo, queryString, new AsyncCallback<GWTJahiaPortletOutputBean>() {
             public void onSuccess(GWTJahiaPortletOutputBean result) {
@@ -126,8 +80,6 @@ public class JavaScriptApi {
     }
 
     private native void initJavaScriptApi() /*-{
-        $wnd.onBlurEditableContent = function (element, containerID, fieldID) {@org.jahia.ajax.gwt.client.core.JavaScriptApi::onBlurEditableContent(Lcom/google/gwt/user/client/Element;Ljava/lang/String;Ljava/lang/String;)(element, containerID, fieldID); };
-        $wnd.onClickEditableContent = function (element, containerID, fieldID) {@org.jahia.ajax.gwt.client.core.JavaScriptApi::onClickEditableContent(Lcom/google/gwt/user/client/Element;Ljava/lang/String;Ljava/lang/String;)(element, containerID, fieldID); };
         $wnd.renderPortlet = function (element, windowID, entryPointInstanceID, pathInfo, queryString) {@org.jahia.ajax.gwt.client.core.JavaScriptApi::renderPortlet(Lcom/google/gwt/user/client/Element;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(windowID, entryPointInstanceID, pathInfo, queryString); };
 
         if (!$wnd.jahia) {

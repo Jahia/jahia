@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.taglibs;
+package org.jahia.taglibs.jcr;
 
 import java.util.Locale;
 
@@ -40,6 +40,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 /**
  * Base tag for the JCR related tags.

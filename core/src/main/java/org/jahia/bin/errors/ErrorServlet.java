@@ -224,7 +224,7 @@ public class ErrorServlet extends HttpServlet {
 
         response.setStatus(errorCode);
         response.setContentType("text/html; charset="
-                + SettingsBean.getInstance().getDefaultResponseBodyEncoding());
+                + SettingsBean.getInstance().getCharacterEncoding());
         response.resetBuffer();
 
         String errorPagePath = getErrorPagePath(request, response);

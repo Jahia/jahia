@@ -33,7 +33,7 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.taglibs.AbstractJCRTag;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 

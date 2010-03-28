@@ -120,7 +120,6 @@ import org.apache.log4j.Logger;
 import org.apache.struts.Globals;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.*;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.applications.ServletIncludeRequestWrapper;
 import org.jahia.services.applications.ServletIncludeResponseWrapper;
@@ -351,16 +350,6 @@ public class ParamBean extends ProcessingContext {
                 setSite(getDefaultSite());
             }
 
-            // check if the site key, resolved from request
-            // parameters (pageId, site key etc.) matches the key, resolved
-            // by the host name            
-            if (jSettings.isPerformSiteAndPageIDMatchCheck() && isSiteResolvedByKeyOrPageId()) {
-                JahiaSite siteByHostName = getSiteByHostName();
-                if (siteByHostName != null && !getSite().getSiteKey().equals(siteByHostName.getSiteKey())) {
-                    throw new JahiaSiteAndPageIDMismatchException(getSite().getSiteKey(), siteByHostName.getSiteKey(),
-                            request.getServerName());
-                }
-            }
             if (getSite() != null) {
                 setSiteInfoFromSiteFound();
             }
@@ -468,12 +457,8 @@ public class ParamBean extends ProcessingContext {
 
     public ServletIncludeResponseWrapper getResponseWrapper() {
         if (mResponse == null) {
-            String forceEncoding = null;
-            if (settings().isUtf8Encoding()) {
-                forceEncoding = "UTF-8";
-            }
             mResponse = new ServletIncludeResponseWrapper(getRealResponse(),
-                    true, forceEncoding);
+                    true, settings().getCharacterEncoding());
         }
         return mResponse;
     }

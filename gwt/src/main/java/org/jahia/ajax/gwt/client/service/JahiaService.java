@@ -41,11 +41,9 @@ import org.jahia.ajax.gwt.client.util.URL;
 import java.util.List;
 
 /**
- * Created by Jahia.
  * User: ktlili
  * Date: 5 juil. 2007
  * Time: 14:04:48
- * To change this template use File | Settings | File Templates.
  */
 public interface JahiaService extends RemoteService {
     /**
@@ -65,14 +63,14 @@ public interface JahiaService extends RemoteService {
                 JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
                     public void updateEntryPointUrl() {
                         String relativeServiceEntryPoint = createEntryPointUrl();
-                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
                         ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
                     }
                 });
             }
 
             return app;
-        }
+            }
 
         private static String createEntryPointUrl() {
             return JahiaGWTParameters.getServiceEntryPoint()+"base.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
@@ -81,10 +79,6 @@ public interface JahiaService extends RemoteService {
 
     public GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString);
 
-
-    public GWTJahiaInlineEditingResultBean inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent);
-
-    public Boolean isInlineEditingAllowed(Integer containerID, Integer fieldID);
 
     public GWTJahiaProcessJob getProcessJob(String name, String groupName);
 

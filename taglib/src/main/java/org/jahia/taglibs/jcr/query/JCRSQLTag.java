@@ -45,7 +45,7 @@ import org.apache.jackrabbit.commons.query.QueryObjectModelBuilder;
 import org.apache.jackrabbit.commons.query.QueryObjectModelBuilderRegistry;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.taglibs.AbstractJCRTag;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
 
 /**
  * Tag implementation for exposing a result of SQL-2 JCR query into the template scope.

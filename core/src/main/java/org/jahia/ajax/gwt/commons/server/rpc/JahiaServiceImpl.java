@@ -37,7 +37,6 @@ import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.data.JahiaData;
@@ -51,9 +50,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -120,21 +117,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         return result;
     }
 
-
-    public GWTJahiaInlineEditingResultBean inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent) {
-        GWTJahiaInlineEditingResultBean resultBean = new GWTJahiaInlineEditingResultBean();
-        return resultBean;
-    }
-
-    public Boolean isInlineEditingAllowed(Integer containerID, Integer fieldID) {
-        if (logger.isDebugEnabled())
-            logger.debug("isInlineEditingAllowed called for containerID=" + containerID + " fieldID=" + fieldID);
-        final boolean inlineEditingActivatedPreference = UserPreferencesHelper.isEnableInlineEditing(getRemoteJahiaUser());
-        if (!inlineEditingActivatedPreference) {
-            return false;
-        }
-        return true;
-    }
 
     public GWTJahiaProcessJob getProcessJob(String name, String groupName) {
         try {

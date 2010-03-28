@@ -211,7 +211,7 @@ public class MailServiceImpl extends MailService {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         
         sender.setDefaultEncoding(SettingsBean.getInstance()
-                .getDefaultResponseBodyEncoding());
+                .getCharacterEncoding());
 
         sender.setHost(settings.getSmtpHost());
         int port = settings.getPort();
@@ -424,7 +424,7 @@ public class MailServiceImpl extends MailService {
         return sendTemplateMessage(new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 mimeMessage.setContent(message, "text/html; charset="
-                        + getSettingsBean().getDefaultResponseBodyEncoding());
+                        + getSettingsBean().getCharacterEncoding());
                 mimeMessage.addFrom(InternetAddress.parse(StringUtils
                         .isNotEmpty(from) ? from : defaultSender()));
 
@@ -440,7 +440,7 @@ public class MailServiceImpl extends MailService {
                             InternetAddress.parse(bcc));
                 }
                 mimeMessage.setSubject(subject, getSettingsBean()
-                        .getDefaultResponseBodyEncoding());
+                        .getCharacterEncoding());
             }
         });
     }

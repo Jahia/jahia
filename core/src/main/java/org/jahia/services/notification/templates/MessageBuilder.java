@@ -107,7 +107,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
             }
             try {
                 email = new InternetAddress(email, name, SettingsBean
-                        .getInstance().getDefaultResponseBodyEncoding())
+                        .getInstance().getCharacterEncoding())
                         .toString();
             } catch (UnsupportedEncodingException e) {
                 logger.warn(e.getMessage(), e);
@@ -381,7 +381,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         }
 
         String charset = SettingsBean.getInstance()
-                .getDefaultResponseBodyEncoding().toLowerCase();
+                .getCharacterEncoding().toLowerCase();
 
         Binding binding = new Binding();
         runScript(mailTemplate, binding);

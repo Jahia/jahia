@@ -1126,32 +1126,13 @@ public class JahiaConfigurationWizard extends HttpServlet {
         values.put("datasource.name",  request.getParameter("datasource").trim());
         values.put("hibernate_dialect",  request.getParameter("hibernate_dialect").trim());
         values.put("database_type_mapping",  request.getParameter("database_type_mapping").trim());
-        values.put("storeFilesInDB",  request.getParameter("storeFilesInDB"));
-        values.put("storeBigTextInDB",request.getParameter("storeBigTextInDB"));
         values.put("useExistingDb",request.getParameter("useExistingDb"));
-        if(request.getParameter("storeFilesInDB")==null){
-            values.put("storeFilesInDB","");
-        }
-        if(request.getParameter("storeBigTextInDB")==null){
-            values.put("storeBigTextInDB",  "false");
-        }
         if(request.getParameter("useExistingDb")==null){
 
             values.put("useExistingDb","false")  ;
 
         }
         logger.debug("we are in the useExistingDb value is  "+values.get("useExistingDb"));
-        logger.debug(" storeFilesInDB value is "+values.get("storeFilesInDB")+ " and storeBigTextInDB is "+values.get("storeBigTextInDB"));
-
-        String utf8Encoding = request.getParameter("utf8Encoding");
-        if (utf8Encoding == null) {
-            utf8Encoding = "false";
-        } else {
-            if ("true".equals(utf8Encoding)) {
-                utf8Encoding = "true";
-            }
-        }
-        values.put("utf8Encoding", utf8Encoding);
 
 // check database settings validity...if the user want to go next (or apply)
         if (request.getParameter("go").equals("next")) {
@@ -1699,7 +1680,7 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         return db.databaseTest((String) values.get("database_script"), (String) values.get("database_driver"),
                 (String) values.get("database_url"), (String) values.get("database_user"),
                 (String) values.get("database_pwd"), line,
-                "true".equals(values.get("utf8Encoding")), !"false".equals(createTables));
+                true, !"false".equals(createTables));
     }
 
     /**
@@ -1837,8 +1818,6 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         properties.setProperty("jahiaFilesDiskPath", (String) values.get("server_jahiafiles"));
         properties.setProperty("jahiaEtcDiskPath", values.get("server_jahiafiles") + "/etc/");
         properties.setProperty("jahiaVarDiskPath", values.get("server_jahiafiles") + "/var/");
-        properties.setProperty("jahiaFilesBigTextDiskPath", values.get("server_jahiafiles") + "/var/content/bigtext/");
-        properties.setProperty("slideContentDiskPath", values.get("server_jahiafiles") + "/var/content/slide/");
         properties.setProperty("tmpContentDiskPath", values.get("server_jahiafiles") + "/var/content/tmp/");
         properties.setProperty("jahiaNewWebAppsDiskPath", values.get("server_jahiafiles") + "/var/new_webapps/");
         properties.setProperty("jahiaImportsDiskPath", values.get("server_jahiafiles") + "/var/imports/");
@@ -1862,22 +1841,9 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         }
 
         properties.setProperty("db_script", (String) values.get("database_script"));
-        String utf8Encoding = (String) values.get("utf8Encoding");
-        properties.setProperty("utf8Encoding", utf8Encoding);
-        if ("true".equalsIgnoreCase(utf8Encoding)) {
-            properties.setProperty("defaultResponseBodyEncoding", "UTF-8");
-        } else {
-            properties.setProperty("defaultResponseBodyEncoding", "ISO-8859-1");
-        }
         try {
             properties.setProperty("localIp", InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
-        }
-        String storeBigTextInDB = (String) values.get("storeBigTextInDB");
-        if ((storeBigTextInDB == null) || "false".equalsIgnoreCase(storeBigTextInDB)) {
-            properties.setProperty("bigtext.service", "FileJahiaText");
-        } else {
-            properties.setProperty("bigtext.service", "DBJahiaText");
         }
         if (appsService.length() != 0) {
             properties.setProperty("JahiaWebAppsDeployerService", appsService);
@@ -1942,7 +1908,6 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         // database settings...
         if (database || all) {
             values.put("database_script", properties.getProperty("db_script").trim());
-            values.put("utf8Encoding", properties.getProperty("utf8Encoding").trim());
             values.put("database_custom", Boolean.FALSE);
             values.put("database_requested", Boolean.FALSE);
             try {

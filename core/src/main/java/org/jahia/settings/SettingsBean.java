@@ -85,14 +85,12 @@ public class SettingsBean {
     private String serverHomeDiskPath;
     private String jahiaHomeDiskPath;
     private String jahiaTemplatesDiskPath;
-    private String jahiaHtmlEditorsDiskPath;
     private String jahiaWebAppsDiskPath;
     private String jahiaEnginesDiskPath;
     private String jahiaJspDiskPath;
     private String jahiaFilesDiskPath;
     private String jahiaEtcDiskPath;
     private String jahiaVarDiskPath;
-    private String jahiaFilesBigTextDiskPath;
     private String jahiaHostHttpPath;
     private String jahiaTemplatesHttpPath;
     private String jahiaEnginesHttpPath;
@@ -110,7 +108,6 @@ public class SettingsBean {
 
     private String jspContext;
     private String templatesContext;
-    private String htmlEditorsContext;
     private String enginesContext;
     private String javascriptContext;
 
@@ -126,27 +123,11 @@ public class SettingsBean {
     // this is the list of jahia.properties files values...
     private long jahiaFileUploadMaxSize;
 
-    // Characters encoding
-    private boolean utf8Encoding;
-
-    // Lock activation
-    private boolean locksActivated;
-
-    private boolean outputContainerCacheActivated = false;
-
-    // Activation / deactivation of site ID in URLs
-    private boolean siteIDInURL;
-
-    // Activation / deactivation of site/page-ID match check
-    private boolean performSiteAndPageIDMatchCheck;
-
     // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
     private boolean useRelativeSiteURLs;
 
     // Default language code for multi-language system
     private String defaultLanguageCode;
-
-    private boolean aclPreloadActive = true;
 
     // the (optional) url the user will be redirected after logout
     public String logoutRedirectUrl;
@@ -163,14 +144,10 @@ public class SettingsBean {
     private String mail_paranoia;
     private int mail_maxRegroupingOfPreviousException = 500;
 
-    private String defaultResponseBodyEncoding;
-    private String defaultURIEncoding;
+    private String characterEncoding;
 
     private String tmpContentDiskPath;
     private long templatesObserverInterval;
-    private String schedulerConfigFile;
-    private String ramSchedulerConfigFile;
-
     private boolean isProcessingServer;
 
     private String siteServerNameTestURLExpr;
@@ -188,20 +165,8 @@ public class SettingsBean {
 
     private int maxAggregatedEvents = 5000;
 
-    private boolean showTimeBasedPublishingIcons;
     private boolean developmentMode = true;
-    private boolean readOnlyMode = false;
     private int connectionTimeoutForProductionJob;
-
-    //flags for aes
-    private boolean tbpDisp;
-    private boolean wflowDisp;
-    private boolean aclDisp;
-    private boolean integrityDisp;    
-
-    // pagination settings
-    private int preloadedItemsForPagination = 100;
-    private int paginationWindowSize;
 
     // Core engine page generation queue configuration parameters
     private int maxParallelProcessings = 40;
@@ -210,27 +175,12 @@ public class SettingsBean {
     private int suggestedRetryTimeAfterTimeout = 60; // in seconds
     private int suggestedRetryTimeAfterTimeoutOnStartup = 15; // in seconds
 
-    private int editModeSessionTimeout = 2*60*60; // 2 hours
-
     // The db max elements for SQL IN clause
     private int dBMaxElementsForInClause = 1000;
-
-    private boolean workflowDisplayStatusForLinkedPages;
-
-    private String workflowDefaultType;
-
-    private boolean displayMarkedForDeletedContentObjects;
-
-    private boolean deprecatedNonContainerFieldsUsed = false;
 
     // Settings to control servlet response wrapper flushing
     private boolean wrapperBufferFlushingActivated = true;
 
-
-    // ESI, default expiration age in seconds
-    private long containerCacheDefaultExpirationDelay;
-
-    private boolean containerCacheLiveModeOnly = false;
 
     private static SettingsBean instance = null;
     private boolean inlineEditingActivated = false;
@@ -242,9 +192,6 @@ public class SettingsBean {
     private boolean considerPreferredLanguageAfterLogin;
     
     private boolean considerDefaultJVMLocale;
-
-    // enable ACL check when displaying the current page path
-    private boolean checkAclInPagePath ;
 
     private String ehCacheJahiaFile;
 
@@ -304,15 +251,13 @@ public class SettingsBean {
             server = getString("server");
             serverHomeDiskPath = getString("serverHomeDiskPath");
             jahiaTemplatesDiskPath = pathResolver.resolvePath (getString("jahiaTemplatesDiskPath"));
-            jahiaHtmlEditorsDiskPath = pathResolver.resolvePath (getString("jahiaHtmlEditorsDiskPath"));
             jahiaJspDiskPath = pathResolver.resolvePath (getString("jahiaJspDiskPath"));
             jahiaEnginesDiskPath = pathResolver.resolvePath (getString("jahiaEnginesDiskPath"));
             jahiaJavaScriptDiskPath = pathResolver.resolvePath (getString("jahiaJavaScriptDiskPath"));
-            classDiskPath = pathResolver.resolvePath (getString("classDiskPath"));
+            classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
             jahiaFilesDiskPath = JahiaTools.convertContexted (getString("jahiaFilesDiskPath"), pathResolver);
             jahiaEtcDiskPath = JahiaTools.convertContexted (getString("jahiaEtcDiskPath"), pathResolver);
             jahiaVarDiskPath = JahiaTools.convertContexted (getString("jahiaVarDiskPath"), pathResolver);
-            jahiaFilesBigTextDiskPath = JahiaTools.convertContexted (getString("jahiaFilesBigTextDiskPath"), pathResolver);
             tmpContentDiskPath = JahiaTools.convertContexted (getString("tmpContentDiskPath"), pathResolver);
             jahiaNewWebAppsDiskPath = JahiaTools.convertContexted (getString("jahiaNewWebAppsDiskPath"), pathResolver);
             jahiaImportsDiskPath = JahiaTools.convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
@@ -325,10 +270,8 @@ public class SettingsBean {
             jahiaJavaScriptHttpPath = JahiaTools.convertWebContexted(getString("jahiaJavaScriptHttpPath"));
             jspContext = getString("jahiaJspDiskPath");
             templatesContext = getString("jahiaTemplatesDiskPath");
-            htmlEditorsContext = getString("jahiaHtmlEditorsDiskPath");
             enginesContext = getString("jahiaEnginesDiskPath");
             javascriptContext = getString("jahiaJavaScriptDiskPath");
-            displayMarkedForDeletedContentObjects = getBoolean("displayMarkedForDeletedContentObjects", false);
 
             // jahia real path...
             File jahiaContextFolder = new File (pathResolver.resolvePath("." + File.separator));
@@ -361,21 +304,7 @@ public class SettingsBean {
             // files...
             jahiaFileUploadMaxSize = getLong("jahiaFileUploadMaxSize");
 
-            // chars encoding
-            utf8Encoding = getBoolean("utf8Encoding");
-            defaultResponseBodyEncoding = getString("defaultResponseBodyEncoding", "ISO-8859-1");
-            defaultURIEncoding = getString("defaultURIEncoding", "UTF-8");
-
-            // Lock activation
-            locksActivated = getBoolean ("locksActivated", true);
-
-            outputContainerCacheActivated = getBoolean("outputContainerCacheActivated", false);
-
-            // activation / deactivation of site ID in URL
-            siteIDInURL = getBoolean ("siteIDInURL", true);
-
-            // activation / deactivation of site/page ID match check
-            performSiteAndPageIDMatchCheck = getBoolean ("performSiteAndPageIDMatchCheck", false);
+            characterEncoding = getString("characterEncoding", "UTF-8");
 
             // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
             useRelativeSiteURLs = getBoolean ("useRelativeSiteURLs", false);
@@ -389,8 +318,6 @@ public class SettingsBean {
             considerDefaultJVMLocale = getBoolean("considerDefaultJVMLocale", false);
                 
             considerPreferredLanguageAfterLogin = getBoolean("considerPreferredLanguageAfterLogin", false);
-
-            aclPreloadActive = getBoolean("org.jahia.acl.preload_active", true);
 
             // mail settings...
             mail_service_activated = getBoolean("mail_service_activated", false);
@@ -454,17 +381,12 @@ public class SettingsBean {
                 }
             }
 
-            schedulerConfigFile = JahiaTools.convertContexted (getString("schedulerConfigFile", "$context/WEB-INF/etc/config/quartz.properties"), pathResolver);
-            ramSchedulerConfigFile = JahiaTools.convertContexted (getString("ramSchedulerConfigFile", "$context/WEB-INF/etc/config/quartz-ram.properties"), pathResolver);
             isProcessingServer = getBoolean("processingServer", true);
 
             siteServerNameTestURLExpr = getString("siteServerNameTestURLExpr", "${request.scheme}://${siteServerName}:${request.serverPort}${request.contextPath}/isjahia.jsp");
             siteServerNameTestConnectTimeout = getInt("siteServerNameTestConnectTimeout", 500);
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
-
-            workflowDisplayStatusForLinkedPages = getBoolean("workflowDisplayStatusForLinkedPages", true);
-            workflowDefaultType = getString("workflowDefaultType", "two_validation_step_workflow");
 
             // the (optional) url the user will be redirected after logout
             logoutRedirectUrl = getString("logoutRedirectUrl", null);
@@ -485,18 +407,9 @@ public class SettingsBean {
 
             maxAggregatedEvents = getInt("maxAggregatedEvents", 5000);
 
-            showTimeBasedPublishingIcons = getBoolean("showTimeBasedPublishingIcons", true);
             localAccessUri = getString("localAccessUri", "http://localhost:8080");
             developmentMode = getBoolean("developmentMode",true);
-            readOnlyMode = getBoolean("readOnlyMode",false);
-            tbpDisp = getBoolean("timebased_display",false);
-            aclDisp = getBoolean("aclDiff_display",false);
-            wflowDisp =getBoolean("workflow_display",false);
-            integrityDisp =getBoolean("integrityChecks_display",false);
             connectionTimeoutForProductionJob = getInt("connectionTimeoutForProductionJob",60000);
-
-            preloadedItemsForPagination = getInt("preloadedItemsForPagination",preloadedItemsForPagination);
-            paginationWindowSize = getInt("paginationWindowSize", 20);
 
             // Maximum parallel heavy processing threads
             maxParallelProcessings = getInt("maxParallelProcessings", maxParallelProcessings);
@@ -505,22 +418,14 @@ public class SettingsBean {
             pageGenerationWaitTimeOnStartup = getLong("pageGenerationWaitTimeOnStartup", pageGenerationWaitTimeOnStartup);
             suggestedRetryTimeAfterTimeoutOnStartup = getInt("suggestedRetryTimeAfterTimeoutOnStartup", suggestedRetryTimeAfterTimeoutOnStartup);
 
-            editModeSessionTimeout = getInt("editModeSessionTimeout", 2*60*60);
-
             dBMaxElementsForInClause = getInt("db_max_elements_for_in_clause", dBMaxElementsForInClause);
 
             wrapperBufferFlushingActivated = getBoolean("wrapperBufferFlushingActivated", true);
-
-            containerCacheDefaultExpirationDelay = getLong("containerCacheDefaultExpirationDelay",3600*4); //4 hours
-
-            containerCacheLiveModeOnly = getBoolean("containerCacheLiveModeOnly", false);
 
             inlineEditingActivated = getBoolean("inlineEditingActivated", false);
             portletAJAXRenderingActivated = getBoolean("portletAJAXRenderingActivated", false);
 
             gmailPasswordExported = getBoolean("gmailPasswordExported", true);
-
-            checkAclInPagePath = getBoolean("checkAclInPagePath", true) ;
 
             jahiaPreparePortletJCRPath = getString("prepare.portlet.jcr.path");
             
@@ -765,40 +670,6 @@ public class SettingsBean {
     }
 
     /**
-     * Does Jahia use the Unicode Transformation Format to encode output Strings
-     *
-     * @return  True if UTF-8 encoding, false otherwise
-     */
-    public boolean isUtf8Encoding () {
-        return utf8Encoding;
-    }
-
-    /**
-     * Are the locks verification activated ?
-     *
-     * @return The locksActived parameter.
-     */
-    public boolean areLocksActivated () {
-        return locksActivated;
-    }
-
-    /**
-     * Return status of site ID in URL generation
-     * @return true if the site ID should be generated in all URLs
-     */
-    public boolean isSiteIDInURL () {
-        return siteIDInURL;
-    }
-
-    /**
-     * Return the activation/deactivation switch of the site/page-ID match check
-     * @return true if the site and page ID match check should be performed
-     */
-    public boolean isPerformSiteAndPageIDMatchCheck () {
-        return performSiteAndPageIDMatchCheck;
-    }
-
-   /**
      * Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
     */
     public boolean isUseRelativeSiteURLs() {
@@ -815,14 +686,6 @@ public class SettingsBean {
 
     public String getDefaultLanguageCode () {
         return defaultLanguageCode;
-    }
-
-    public boolean isAclPreloadActive() {
-        return aclPreloadActive;
-    }
-
-    public void setAclPreloadActive(boolean aclPreloadActive) {
-        this.aclPreloadActive = aclPreloadActive;
     }
 
     /**
@@ -875,14 +738,6 @@ public class SettingsBean {
     } // end getJahiaTemplatesDiskPath
 
     /**
-     * Returns the HtmlEditors Root Disk Path
-     * @return  Returns the HtmlEditors Root Disk Path
-     */
-    public String getJahiaHtmlEditorsDiskPath() {
-        return this.jahiaHtmlEditorsDiskPath;
-    }
-
-    /**
      * Used to get the engines disk path.
      *
      * @return  The engines disk path.
@@ -922,15 +777,6 @@ public class SettingsBean {
         return jahiaVarDiskPath;
     }
 
-
-    /**
-     * Used to get the data jahiafiles disk path.
-     *
-     * @return  The data jahiafiles disk path.
-     */
-    public String getJahiaFilesDataDiskPath() {
-        return jahiaFilesBigTextDiskPath;
-    } // end getJahiaFilesDataDiskPath
 
     /**
      * Used to get the shared templates disk path.
@@ -986,15 +832,6 @@ public class SettingsBean {
     } // end getJspContext
 
     /**
-     * Used to get the html editor context.
-     *
-     * @return  The html editor context.
-     */
-    public String getHtmlEditorsContext() {
-        return this.htmlEditorsContext;
-    }
-
-    /**
      * Used to get the templates context.
      *
      * @return  The templates context.
@@ -1023,9 +860,6 @@ public class SettingsBean {
 
     public String getClassDiskPath() {
         return classDiskPath;
-    }
-    public String getJahiaFilesBigTextDiskPath() {
-        return jahiaFilesBigTextDiskPath;
     }
     public String getJahiaFilesDiskPath() {
         return jahiaFilesDiskPath;
@@ -1060,9 +894,6 @@ public class SettingsBean {
     public String getJahiaImportsDiskPath() {
         return jahiaImportsDiskPath;
     }
-    public boolean isLocksActivated() {
-        return locksActivated;
-    }
     public String getMail_administrator() {
         return mail_administrator;
     }
@@ -1076,11 +907,8 @@ public class SettingsBean {
         return mail_server;
     }
 
-    public String getDefaultResponseBodyEncoding() {
-        return defaultResponseBodyEncoding;
-    }
-    public String getDefaultURIEncoding() {
-        return defaultURIEncoding;
+    public String getCharacterEncoding() {
+        return characterEncoding;
     }
 
     public PathResolver getPathResolver() {
@@ -1096,14 +924,6 @@ public class SettingsBean {
   }
     public long getTemplatesObserverInterval() {
         return templatesObserverInterval;
-    }
-
-    public String getSchedulerConfigFile() {
-        return schedulerConfigFile;
-    }
-
-    public String getRamSchedulerConfigFile() {
-        return ramSchedulerConfigFile;
     }
 
     public boolean isProcessingServer() {
@@ -1180,16 +1000,8 @@ public class SettingsBean {
         this.clusterCacheMaxBatchSize = clusterCacheMaxBatchSize;
     }
 
-    public boolean showTimeBasedPublishingIcons() {
-        return showTimeBasedPublishingIcons;
-    }
-
     public boolean isDevelopmentMode() {
         return developmentMode;
-    }
-
-    public boolean isReadOnlyMode() {
-        return readOnlyMode;
     }
 
     /**
@@ -1204,18 +1016,6 @@ public class SettingsBean {
         return connectionTimeoutForProductionJob;
     }
 
-    public boolean isAclDisp() {
-        return aclDisp;
-    }
-
-    public boolean isTbpDisp() {
-        return tbpDisp;
-    }
-
-    public boolean isWflowDisp() {
-        return wflowDisp;
-    }
-
     public String getCacheClusterUnderlyingImplementation() {
 		return cacheClusterUnderlyingImplementation;
 	}
@@ -1224,18 +1024,6 @@ public class SettingsBean {
 			String cacheClusterUnderlyingImplementation) {
 		this.cacheClusterUnderlyingImplementation = cacheClusterUnderlyingImplementation;
 	}
-
-    /**
-     * max items allowed to be preloaded for pagination calculation.
-     * @return
-     */
-    public int getPreloadedItemsForPagination() {
-        return preloadedItemsForPagination;
-    }
-
-    public void setPreloadedItemsForPagination(int preloadedItemsForPagination) {
-        this.preloadedItemsForPagination = preloadedItemsForPagination;
-    }
 
     public int getCacheMaxGroups() {
         return cacheMaxGroups;
@@ -1274,23 +1062,6 @@ public class SettingsBean {
     }
 
 
-    public int getEditModeSessionTimeout() {
-        return editModeSessionTimeout;
-    }
-
-    public void setEditModeSessionTimeout(int editModeSessionTimeout) {
-        this.editModeSessionTimeout = editModeSessionTimeout;
-    }
-
-    public boolean isOutputContainerCacheActivated() {
-        return outputContainerCacheActivated;
-    }
-
-    public void setOutputContainerCacheActivated(boolean outputContainerCacheActivated) {
-        this.outputContainerCacheActivated = outputContainerCacheActivated;
-    }
-
-
     /**
      * Returns the DB max elements for SQL IN clause, to limit the scope of returned row
      * or for optimized sql query rewritting.
@@ -1301,62 +1072,12 @@ public class SettingsBean {
         return dBMaxElementsForInClause;
     }
 
-    public boolean isDisplayMarkedForDeletedContentObjects() {
-        return displayMarkedForDeletedContentObjects;
-    }
-
-    public boolean areDeprecatedNonContainerFieldsUsed() {
-        return deprecatedNonContainerFieldsUsed;
-    }
-
-    public void setDeprecatedNonContainerFieldsUsed(
-            boolean deprecatedNonContainerFieldsUsed) {
-        if (!this.deprecatedNonContainerFieldsUsed && deprecatedNonContainerFieldsUsed){
-            logger.warn("YOU ARE USING FIELDS WITHOUT CONTAINERS, WHICH ARE DEPRECATED AND WILL NOT BE SUPPORTED IN THE NEXT MAJOR RELEASE OF JAHIA.");
-            Thread.dumpStack();
-        }
-        this.deprecatedNonContainerFieldsUsed = deprecatedNonContainerFieldsUsed;
-    }
-
     public boolean isWrapperBufferFlushingActivated() {
         return wrapperBufferFlushingActivated;
     }
 
     public void setWrapperBufferFlushingActivated(boolean wrapperBufferFlushingActivated) {
         this.wrapperBufferFlushingActivated = wrapperBufferFlushingActivated;
-    }
-
-    public long getContainerCacheDefaultExpirationDelay() {
-        return containerCacheDefaultExpirationDelay;
-    }
-
-    public void setContainerCacheDefaultExpirationDelay(long containerCacheDefaultExpirationDelay) {
-        this.containerCacheDefaultExpirationDelay = containerCacheDefaultExpirationDelay;
-    }
-
-    public boolean isContainerCacheLiveModeOnly() {
-        return containerCacheLiveModeOnly;
-    }
-
-    public void setContainerCacheLiveModeOnly(boolean containerCacheLiveModeOnly) {
-        this.containerCacheLiveModeOnly = containerCacheLiveModeOnly;
-    }
-
-    public boolean isWorkflowDisplayStatusForLinkedPages() {
-        return workflowDisplayStatusForLinkedPages;
-    }
-
-    public void setWorkflowDisplayStatusForLinkedPages(
-            boolean workflowDisplayStatusForLinkedPages) {
-        this.workflowDisplayStatusForLinkedPages = workflowDisplayStatusForLinkedPages;
-    }
-
-    public String getWorkflowDefaultType() {
-        return workflowDefaultType;
-    }
-
-    public void setWorkflowDefaultType(String workflowDefaultType) {
-        this.workflowDefaultType = workflowDefaultType;
     }
 
     public boolean isInlineEditingActivated() {
@@ -1383,18 +1104,6 @@ public class SettingsBean {
         this.gmailPasswordExported = gmailPasswordExported;
     }
 
-    public int getPaginationWindowSize() {
-        return paginationWindowSize;
-    }
-
-    public void setCheckAclInPagePath(boolean checkAclInPagePath) {
-        this.checkAclInPagePath = checkAclInPagePath ;
-    }
-
-    public boolean isCheckAclInPagePath() {
-        return this.checkAclInPagePath ;
-    }
-
     public String getEhCacheJahiaFile() {
         return ehCacheJahiaFile;
     }
@@ -1405,14 +1114,6 @@ public class SettingsBean {
 
     public void setJahiaPreparePortletJCRPath(String jahiaPreparePortletJCRPath) {
         this.jahiaPreparePortletJCRPath = jahiaPreparePortletJCRPath;
-    }
-
-    public boolean isIntegrityDisp() {
-        return integrityDisp;
-    }
-
-    public void setIntegrityDisp(boolean integrityDisp) {
-        this.integrityDisp = integrityDisp;
     }
 
     public boolean isConsiderDefaultJVMLocale() {

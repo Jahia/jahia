@@ -109,7 +109,7 @@ public class JahiaFetcherBaseService extends JahiaFetcherService {
             // Let's initialize the wrapper, that includes our specific PrintWriter, allowing us to redirect
             // output to a string object.
             String forceEncoding = null;
-            forceEncoding = org.jahia.settings.SettingsBean.getInstance().getDefaultResponseBodyEncoding();
+            forceEncoding = org.jahia.settings.SettingsBean.getInstance().getCharacterEncoding();
             responseWrapper = new ServletIncludeResponseWrapper(jParams.getResponse(), false, forceEncoding);
 
             if (responseWrapper == null) {

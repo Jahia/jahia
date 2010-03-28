@@ -46,7 +46,7 @@ import org.apache.jackrabbit.commons.query.QueryObjectModelBuilder;
 import org.apache.jackrabbit.commons.query.QueryObjectModelBuilderRegistry;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.query.QOMBuilder;
-import org.jahia.taglibs.AbstractJCRTag;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
 
 /**
  * This is the base tag for declaring Query object Model specified by the

@@ -79,7 +79,7 @@ public class GroovyMimeMessagePreparator implements MimeMessagePreparator,
             MimeMultipart ma = new MimeMultipart("alternative");
             msg.setContent(ma);
             //charset should be specified in jahia.props to support exotic languages
-            final String charset = "charset="+org.jahia.settings.SettingsBean.getInstance().getDefaultResponseBodyEncoding().toLowerCase();
+            final String charset = "charset="+org.jahia.settings.SettingsBean.getInstance().getCharacterEncoding().toLowerCase();
 
             String textBody = (String) binding.getVariable("textBody");
             if (textBody != null) {
@@ -103,7 +103,7 @@ public class GroovyMimeMessagePreparator implements MimeMessagePreparator,
 
                     public InputStream getInputStream() throws IOException {
                         //charset should be specified in jahia.props to support exotic languages
-                        return new ByteArrayInputStream(htmlBody.getBytes(org.jahia.settings.SettingsBean.getInstance().getDefaultResponseBodyEncoding().toUpperCase()));
+                        return new ByteArrayInputStream(htmlBody.getBytes(org.jahia.settings.SettingsBean.getInstance().getCharacterEncoding().toUpperCase()));
                     }
 
                     public String getName() {

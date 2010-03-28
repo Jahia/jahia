@@ -36,7 +36,7 @@ import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
-import org.jahia.taglibs.AbstractJCRTag;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;

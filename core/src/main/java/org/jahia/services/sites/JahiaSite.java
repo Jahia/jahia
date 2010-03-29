@@ -649,6 +649,10 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         this.JCRLocalPath = JCRLocalPath;
     }
 
+    public  GoogleAnalyticsProfile getGoogleAnalytics(String jahiaProfileName) {
+        return  googleAnalyticsProfils.get(jahiaProfileName);
+    }
+
 
     public  String getGoogleAnalyticsTrackedUrl(String jahiaProfileName) {
       return  googleAnalyticsProfils.get(jahiaProfileName).getTypeUrl();

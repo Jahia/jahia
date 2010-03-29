@@ -31,18 +31,27 @@
  */
 package org.jahia.ajax.gwt.client.widget.analytics;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.data.BaseListLoader;
+import com.extjs.gxt.ui.client.data.ListLoader;
+import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,7 +95,35 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         mainContainer = new LayoutContainer();
 
         add(mainContainer);
-        final ToolBar toolbar = new ToolBar();
+
+
+        // profiles selector
+        final ComboBox<GWTJahiaAnalyticsProfile> analyticsProfileComboBox = new ComboBox<GWTJahiaAnalyticsProfile>();       
+        final ListStore<GWTJahiaAnalyticsProfile> profilesStore = new ListStore<GWTJahiaAnalyticsProfile>();
+        analyticsProfileComboBox.setStore(profilesStore);
+        analyticsProfileComboBox.setDisplayField("name");
+        JahiaContentManagementService.App.getInstance().getGAProfiles(new AsyncCallback<List<GWTJahiaAnalyticsProfile>>() {
+            public void onSuccess(List<GWTJahiaAnalyticsProfile> gwtJahiaAnalyticsProfiles) {
+                Log.debug("Found " + gwtJahiaAnalyticsProfiles.size() + " profiles");
+                if (gwtJahiaAnalyticsProfiles.size() > 0) {
+                    profilesStore.add(gwtJahiaAnalyticsProfiles);
+                    analyticsProfileComboBox.select(0);
+                }
+            }
+
+            public void onFailure(Throwable throwable) {
+                Log.error("Error while retriving parofile", throwable);
+            }
+        });
+        analyticsProfileComboBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaAnalyticsProfile>(){
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaAnalyticsProfile> event) {
+                oneProfileChanged(event.getSelectedItem());
+            }
+        });
+
+
+        // start date / end date
         final DateField startDate = new DateField();
         final DateField endDate = new DateField();
 
@@ -102,7 +139,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
             }
         });
 
-
+        // views
         final Button textButton = new Button("Text");
         final Button worldMapButton = new Button("Geo map");
         final Button annotatedTimeLineButton = new Button("Annotated Time Line");
@@ -128,9 +165,14 @@ public class AnalyticsDataVisualizer extends ContentPanel {
                 oneAnnotatedTimeLineSelected();
             }
         });
-        toolbar.add(new Label("Start date: "));
+
+        // create toolbar
+        final ToolBar toolbar = new ToolBar();
+        toolbar.add(new Label(" Profile: "));
+        toolbar.add(analyticsProfileComboBox);
+        toolbar.add(new Label(" Start date: "));
         toolbar.add(startDate);
-        toolbar.add(new Label("End date"));
+        toolbar.add(new Label(" End date"));
         toolbar.add(endDate);
         toolbar.add(textButton);
         toolbar.add(worldMapButton);
@@ -201,18 +243,18 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         column.setHeader("date");
         column.setWidth(300);
         column.setRenderer(new GridCellRenderer<GWTJahiaAnalyticsData>() {
-                        public Object render(GWTJahiaAnalyticsData gwtJahiaAnalyticsData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaAnalyticsData> gwtJahiaAnalyticsDataListStore, Grid<GWTJahiaAnalyticsData> gwtJahiaNodeGrid) {
-                            Date d = gwtJahiaAnalyticsData.getDate();
-                            if (d != null) {
-                                return DateTimeFormat.getFormat("d/MM/y").format(d);
-                            } else {
-                                return "-";
-                            }
-                        }
-                    });
+            public Object render(GWTJahiaAnalyticsData gwtJahiaAnalyticsData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaAnalyticsData> gwtJahiaAnalyticsDataListStore, Grid<GWTJahiaAnalyticsData> gwtJahiaNodeGrid) {
+                Date d = gwtJahiaAnalyticsData.getDate();
+                if (d != null) {
+                    return DateTimeFormat.getFormat("d/MM/y").format(d);
+                } else {
+                    return "-";
+                }
+            }
+        });
         configs.add(column);
 
-         column = new ColumnConfig();
+        column = new ColumnConfig();
         column.setId("country");
         column.setHeader("Country");
         column.setWidth(100);
@@ -221,7 +263,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         column = new ColumnConfig();
         column.setId("value");
         column.setHeader("Views");
-        column.setWidth(100);        
+        column.setWidth(100);
         configs.add(column);
         store.groupBy("country");
 
@@ -242,6 +284,13 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      */
     public void setDataList(List<GWTJahiaAnalyticsData> dataList) {
         this.dataList = dataList;
+    }
+
+    /**
+     * Called on profile changed
+     * @param profile
+     */
+    public void oneProfileChanged(GWTJahiaAnalyticsProfile profile) {
     }
 
     /**

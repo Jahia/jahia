@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
@@ -84,6 +85,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      * @throws GWTJahiaServiceException if node does not exist
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException;
+
+      public List<GWTJahiaAnalyticsProfile> getGAProfiles() throws GWTJahiaServiceException;
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException;
 

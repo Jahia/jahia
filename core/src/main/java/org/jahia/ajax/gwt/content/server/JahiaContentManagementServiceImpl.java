@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -246,6 +247,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    public List<GWTJahiaAnalyticsProfile> getGAProfiles() {
+        return analytics.getActiveProfiles(getSite());
+    }
+
     public List<GWTJahiaNode> getSavedSearch() throws GWTJahiaServiceException {
         return search.getSavedSearch(retrieveCurrentSession());
     }
@@ -397,7 +402,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         final GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, props);
         result.setNode(node);
-        result.setAvailabledLanguages(languages.getLanguages(getSite(),getRemoteJahiaUser(), getLocale()));
+        result.setAvailabledLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
         result.setCurrentLocale(languages.getCurrentLang(getLocale()));
         return result;
     }
@@ -1088,18 +1093,24 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      */
     public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query) throws GWTJahiaServiceException {
-        if(!getSite().hasGoogleAnalyticsProfil()){
+        if (!getSite().hasGoogleAnalyticsProfil()) {
+            logger.debug("There is no configured google analytics account");
             return new ArrayList<GWTJahiaAnalyticsData>();
         }
 
-        Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = getSite().getGoogleAnalyticsProfil().iterator();
-        GoogleAnalyticsProfile googleAnalyticsProfile = getSite().getGoogleAnalyticsProfil().iterator().next();
+        // get google analytics account
+        final GoogleAnalyticsProfile googleAnalyticsProfile ;
+        if (query.getProfile() != null && query.getProfile().getName() != null) {
+            googleAnalyticsProfile = getSite().getGoogleAnalytics(query.getProfile().getName());
+        } else {
+            googleAnalyticsProfile = getSite().getGoogleAnalyticsProfil().iterator().next();
+        }
 
-
-        String jahiaProfileName = googleAnalyticsProfile.getName();
-        String gaAccount = googleAnalyticsProfile.getAccount();
-        String login = googleAnalyticsProfile.getLogin();
-        String pwd = googleAnalyticsProfile.getPassword();
+        // get its parameter
+        final String jahiaProfileName = googleAnalyticsProfile.getName();
+        final String gaAccount = googleAnalyticsProfile.getAccount();
+        final String login = googleAnalyticsProfile.getLogin();
+        final String pwd = googleAnalyticsProfile.getPassword();
 
 
         // check parameters

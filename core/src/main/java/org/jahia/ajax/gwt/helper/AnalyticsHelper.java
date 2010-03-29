@@ -3,13 +3,17 @@ package org.jahia.ajax.gwt.helper;
 import com.google.gdata.data.analytics.DataEntry;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
+import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.analytics.GoogleAnalyticsService;
+import org.jahia.services.sites.JahiaSite;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -44,7 +48,7 @@ public class AnalyticsHelper {
                 ParsePosition pos = new ParsePosition(0);
                 Date viewDate = null;
                 if (viewDateAsStrg != null) {
-                     viewDate = formatter.parse(viewDateAsStrg, pos);
+                    viewDate = formatter.parse(viewDateAsStrg, pos);
                 }
 
 
@@ -61,4 +65,22 @@ public class AnalyticsHelper {
         }
         return results;
     }
+
+    /**
+     * get list of active profiles
+     * @param site
+     * @return
+     */
+    public List<GWTJahiaAnalyticsProfile> getActiveProfiles(JahiaSite site) {
+        List<GWTJahiaAnalyticsProfile> list = new ArrayList<GWTJahiaAnalyticsProfile>();
+        final Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfil().iterator();
+        while (googleAnalyticsProfileIterator.hasNext()) {
+            final GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
+            if (googleAnalyticsProfile.isEnabled()) {
+                list.add(new GWTJahiaAnalyticsProfile(googleAnalyticsProfile.getName()));
+            }
+        }
+        return list;
+    }
 }
+

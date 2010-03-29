@@ -17,6 +17,7 @@ public class GWTJahiaAnalyticsQuery implements Serializable {
     private Date startDate;
     private Date endDate;
     private GWTJahiaNode node;
+    private GWTJahiaAnalyticsProfile profile;
 
     public GWTJahiaAnalyticsQuery() {
     }
@@ -43,6 +44,14 @@ public class GWTJahiaAnalyticsQuery implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public GWTJahiaAnalyticsProfile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(GWTJahiaAnalyticsProfile profile) {
+        this.profile = profile;
     }
 
     public GWTJahiaNode getNode() {

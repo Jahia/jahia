@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
@@ -85,6 +86,9 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, AsyncCallback<List<GWTJahiaNode>> async);
 
     void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
+
+    void getGAProfiles(AsyncCallback<List<GWTJahiaAnalyticsProfile>> async);
+
 
     void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);
 

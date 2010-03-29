@@ -31,7 +31,10 @@ public class GoogleAnalyticsFilter extends AbstractFilter {
         if (!trackedNode.contains(resource.getNode())) {
             trackedNode.add(resource.getNode());
         }
-        renderContext.getRequest().setAttribute(GOOGLE_ANALYTICS_TRACKED_NODES, trackedNode);
+
+        if (resource.getNode().hasProperty("j:gaenabaled") && resource.getNode().getProperty("j:gaenabaled").getBoolean()) {
+            renderContext.getRequest().setAttribute(GOOGLE_ANALYTICS_TRACKED_NODES, trackedNode);
+        }
 
         // execute other filters
         return chain.doFilter(renderContext, resource, chain);

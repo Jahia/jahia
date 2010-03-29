@@ -4,6 +4,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
+import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -70,6 +71,12 @@ public class AnalyticsTabItem extends EditEngineTabItem {
                 @Override
                 public void oneAnnotatedTimeLineSelected() {
                     lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:date");
+                    loadData(lastQuery);
+                }
+
+                @Override
+                public void oneProfileChanged(GWTJahiaAnalyticsProfile profile) {
+                    lastQuery.setProfile(profile);
                     loadData(lastQuery);
                 }
             };

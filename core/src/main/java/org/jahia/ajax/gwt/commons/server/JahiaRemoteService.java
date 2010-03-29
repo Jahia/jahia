@@ -59,15 +59,15 @@ import java.util.Locale;
 
 /**
  * Base class for Jahia GWT services.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public abstract class JahiaRemoteService implements RemoteService, ServletContextAware, RequestResponseAware {
-    
+
     private static final transient Logger logger = Logger.getLogger(JahiaRemoteService.class);
     private static final String ORG_JAHIA_DATA_JAHIA_DATA = "org.jahia.data.JahiaData";
     private static final String ORG_JAHIA_PARAMS_PARAM_BEAN = "org.jahia.params.ParamBean";
-    
+
     private HttpServletRequest request;
     private HttpServletResponse response;
     private ServletContext servletContext;
@@ -75,8 +75,8 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     /**
      * build JahiaData
      *
-     * @deprecated
      * @return
+     * @deprecated
      */
     private JahiaData buildJahiaData() {
         return buildJahiaData(false);
@@ -84,6 +84,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
 
     /**
      * Retrive current session
+     *
      * @return
      * @throws GWTJahiaServiceException
      */
@@ -93,6 +94,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
 
     /**
      * Retrieve current session by locale
+     *
      * @param locale
      * @return
      * @throws GWTJahiaServiceException
@@ -101,21 +103,22 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession("default", locale, null);
         } catch (RepositoryException e) {
-            logger.error(e,e);
+            logger.error(e, e);
             throw new GWTJahiaServiceException("Cannot open user session");
         }
     }
 
     /**
      * REtrive current session by workspace
+     *
      * @return
      * @throws GWTJahiaServiceException
      */
     protected JCRSessionWrapper retrieveCurrentSession(String workspace) throws GWTJahiaServiceException {
         try {
-            return JCRSessionFactory.getInstance().getCurrentUserSession(workspace,getLocale());
+            return JCRSessionFactory.getInstance().getCurrentUserSession(workspace, getLocale());
         } catch (RepositoryException e) {
-            logger.error(e,e);
+            logger.error(e, e);
             throw new GWTJahiaServiceException("Cannot open user session");
         }
     }
@@ -123,8 +126,8 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     /**
      * build JahiaData
      *
-     * @deprecated
      * @return
+     * @deprecated
      */
     private JahiaData buildJahiaData(boolean doBuildData) {
         ProcessingContext jParams = retrieveParamBean();
@@ -147,16 +150,24 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         return locale;
     }
 
+    /**
+     * Get site
+     *
+     * @return
+     */
     protected JahiaSite getSite() {
         try {
             JahiaSite site = JahiaSitesBaseService.getInstance().getSiteByKey(request.getParameter("site"));
+            if (site == null) {
+                site = JahiaSitesBaseService.getInstance().getDefaultSite();
+            }
 
             return site;
         } catch (Exception e) {
             try {
                 return JahiaSitesBaseService.getInstance().getDefaultSite();
-            } catch (JahiaException e1) {
-                e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (JahiaException ex) {
+                logger.error(ex, ex);
             }
         }
         return null;
@@ -175,7 +186,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     protected String getLocaleJahiaAdminResource(String label) {
         Locale l = getUILocale();
         try {
-            return JahiaResourceBundle.getJahiaInternalResource(label,l);
+            return JahiaResourceBundle.getJahiaInternalResource(label, l);
         } catch (Exception e) {
             return "";
         }
@@ -268,8 +279,8 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     /**
      * Retrieve JahiaData object corresponding to the current request
      *
-     * @deprecated
      * @return
+     * @deprecated
      */
     protected JahiaData retrieveJahiaData() {
         final HttpServletRequest request = getRequest();
@@ -301,8 +312,8 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     /**
      * Retrieve paramBean
      *
-     * @deprecated
      * @return
+     * @deprecated
      */
     protected ParamBean retrieveParamBean() {
         final HttpServletRequest request = getRequest();
@@ -348,5 +359,5 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         this.servletContext = servletContext;
     }
 
-    
+
 }

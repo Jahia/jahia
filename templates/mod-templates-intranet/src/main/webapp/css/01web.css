@@ -19,9 +19,13 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,bloc
 img,body,html{border:0;}
 
 /******************************************************************************
-* Body
+* Body and GWT .x-border-layout-ct BG
 ******************************************************************************/
+.x-border-layout-ct,
 body {
+	background-color:#7b7b7b;
+}
+#bodywrapper {
 	background-color:#7b7b7b;
 	color:#333;
 	margin:0;
@@ -30,8 +34,7 @@ body {
 	line-height:normal;
 	font-size:80%;
 	line-height:160%
-}
-#bodywrapper {}
+	}
 /******************************************************************************
 * Utils
 ******************************************************************************/

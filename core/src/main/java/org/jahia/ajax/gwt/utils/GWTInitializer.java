@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
@@ -129,6 +130,11 @@ public class GWTInitializer {
             if (renderContext.getSite() != null) {
                 params.put(JahiaGWTParameters.SITE_KEY, renderContext.getSite()
                         .getSiteKey());
+            }
+        } else {
+            final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
+            if (attribute != null) {
+                params.put(JahiaGWTParameters.SITE_KEY, attribute.getSiteKey());
             }
         }
 

@@ -196,7 +196,7 @@ public class Find extends HttpServlet implements Controller {
             final String name = escapeColon ? propertyWrapper.getName().replace(":", "_") : propertyWrapper.getName();
             if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
                 if (!propertyWrapper.isMultiple()) {
-                    jsonObject.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getWebdavUrl());
+                    jsonObject.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getUrl());
                 }
             } else {
                 if (!propertyWrapper.isMultiple()) {

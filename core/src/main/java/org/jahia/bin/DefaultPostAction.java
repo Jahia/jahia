@@ -94,7 +94,7 @@ public class DefaultPostAction implements Action {
         String lastPath = subPaths[subPaths.length - 1];
         JCRNodeWrapper node = null;
         StringBuffer realPath = new StringBuffer();
-        for (String subPath : subPaths) {
+            for (String subPath : subPaths) {
             if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
                 realPath.append("/").append(subPath);
                 try {

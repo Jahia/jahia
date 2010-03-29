@@ -34,7 +34,7 @@ rule "Create file in docspace"
       The type jnt:docspaceFile has been assigned to a node
    then
        Create a new node post of type jnt:post under the node.getNode("comments")
-       Set the property content of the node.getNode("comments").getNode("post") with the value "file uploaded"
+       Set the property content of the post with the value "file uploaded"
 end
 
 rule "Update file in docspace"
@@ -43,5 +43,5 @@ rule "Update file in docspace"
 	   - it has the extension type jnt:docspaceFile
    then
        Create a new node post of type jnt:post under the node.getNode("comments")
-       Set the property content of the node.getNode("comments").getNode("post") with the value "file updated"
+       Set the property content of the post with the value "file updated"
 end

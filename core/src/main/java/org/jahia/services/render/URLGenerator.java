@@ -51,6 +51,11 @@ public class URLGenerator {
     private int siteURLPortOverride = 0;
     private String contribute;
 
+    private String baseLive;
+    private String baseContribute;
+    private String baseEdit;
+    private String basePreview;
+
     public URLGenerator(RenderContext context, Resource resource, JCRStoreService jcrStoreService) {
         this.context = context;
         this.resource = resource;
@@ -73,13 +78,16 @@ public class URLGenerator {
             base = getContext() + Render.getRenderServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         }
 
-
         final String resourcePath = context.getMainResource().getNode().getPath() + ".html";
 
-        live = getContext() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale() + resourcePath;
-        edit = getContext() + Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
-        preview = getContext() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
-        contribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + resourcePath;
+        baseLive = getContext() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
+        live = baseLive + resourcePath;
+        baseEdit = getContext() + Edit.getEditServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        edit = baseEdit + resourcePath;
+        basePreview = getContext() + Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        preview = basePreview + resourcePath;
+        baseContribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        contribute = baseContribute + resourcePath;
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         logout = getContext() + Logout.getLogoutServletPath();
         initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
@@ -299,5 +307,21 @@ public class URLGenerator {
 
     public String getCaptcha() {
         return captcha;
+    }
+
+    public String getBaseContribute() {
+        return baseContribute;
+    }
+
+    public String getBaseEdit() {
+        return baseEdit;
+    }
+
+    public String getBaseLive() {
+        return baseLive;
+    }
+
+    public String getBasePreview() {
+        return basePreview;
     }
 }

@@ -26,7 +26,7 @@
             <span class="forum-corners-top"><span></span></span>
 
             <div id="forum-Form"><!--start forum-Form-->
-                 <h4 class="forum-h4-first">${currentNode.propertiesAsString['threadSubject']} : <fmt:message key="reply"/></h4>
+                 <h4 class="forum-h4-first"><fmt:message key="docspace.label.document.add.comment"/></h4>
 
                 <fieldset>
                     <p class="field">

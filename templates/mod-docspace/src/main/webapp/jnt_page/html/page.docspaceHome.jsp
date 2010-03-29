@@ -35,7 +35,12 @@
                 <div class="boxdocspace-inner-border">
                     <c:forEach var="node" items="${currentNode.nodes}">
                         <c:if test="${jcr:isNodeType(node,'jnt:docspace')}">
-                            <a href="${url.base}${node.path}.html">${node.path}</a>
+                            <c:if test="${jcr:hasPermission(node, 'write')}">
+                                <a href="${url.basePreview}${node.path}.html">${node.path}</a>
+                            </c:if>
+                            <c:if test="${not jcr:hasPermission(node, 'write')}">
+                                <a href="${url.baseLive}${node.path}.html">${node.path}</a>
+                            </c:if>
                         </c:if>
                     </c:forEach>
                     <div class="clear"></div>

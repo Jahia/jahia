@@ -34,6 +34,7 @@ package org.jahia.services.content.rules;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
@@ -67,7 +68,7 @@ public class NodeWrapper implements Updateable {
     public NodeWrapper(NodeWrapper parentNodeWrapper, String name, String type, KnowledgeHelper drools) throws RepositoryException {
         this.parentNode = parentNodeWrapper;
 
-        Node node = parentNode.getNode();
+        JCRNodeWrapper node = (JCRNodeWrapper) parentNode.getNode();
         parentNodePath = node.getPath();
         this.name = name;
         if (type == null) {
@@ -83,6 +84,9 @@ public class NodeWrapper implements Updateable {
             List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
         } else {
+            if(node.isVersioned()) {
+                node.checkout();
+            }
             this.node = node.addNode(JCRContentUtils.findAvailableNodeName(node, name), type);
         }
     }

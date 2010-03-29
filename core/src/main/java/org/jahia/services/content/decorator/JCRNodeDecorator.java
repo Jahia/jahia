@@ -691,4 +691,13 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public List<VersionInfo> getVersionInfos() throws RepositoryException {
         return node.getVersionInfos();
     }
+
+    /**
+     * Gets a list of all versions for this node as Version object
+     *
+     * @return a list of Version object
+     */
+    public List<Version> getVersionsAsVersion() {
+        return node.getVersionsAsVersion();
+    }
 }

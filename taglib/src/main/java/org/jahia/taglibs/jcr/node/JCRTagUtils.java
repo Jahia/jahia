@@ -308,4 +308,24 @@ public class JCRTagUtils {
         }
         return map;
     }
+
+    public static boolean hasPermission(JCRNodeWrapper node,String permission) {
+        String perm = permission.toLowerCase();
+        if("read_live".equals(perm)) {
+            return node.hasPermission(JCRNodeWrapper.READ_LIVE);
+        }
+        else if("read".equals(perm)) {
+            return node.hasPermission(JCRNodeWrapper.READ);
+        }
+        else if("write_live".equals(perm)) {
+            return node.hasPermission(JCRNodeWrapper.WRITE_LIVE);
+        }
+        else if("write".equals(perm)) {
+            return node.hasPermission(JCRNodeWrapper.WRITE);
+        }
+        else if("modify_acls".equals(perm)) {
+            return node.hasPermission(JCRNodeWrapper.MODIFY_ACL);
+        }
+        return false;
+    }
 }

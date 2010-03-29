@@ -56,12 +56,13 @@
          * sense to display.
          * @param node
          */
-        function getText(node) {
-            if (node["j:firstName"] != '' || node["j:lastName"] != '') {
+        function getUserNameText(node) {
+            if ((node["j:firstName"] || node["j:lastName"]) && (node["j:firstName"] != '' || node["j:lastName"] != '')) {
                 return node["j:firstName"] + ' ' + node["j:lastName"];
             } else if (node["j:nodename"] != null) {
                 return node["j:nodename"];
             }
+            return "node is not a user";
         }
 
         $("#searchUser").autocomplete("${url.find}", {
@@ -71,13 +72,13 @@
                 return $.map(data, function(row) {
 				    return {
 					    data: row,
-					    value: getText(row),
-					    result: getText(row)
+					    value: getUserNameText(row),
+					    result: getUserNameText(row)
 				    }
 			    });
             },
             formatItem: function(item) {
-			    return getText(item);
+			    return getUserNameText(item);
 		    },
             extraParams: {
                 query : "SELECT * FROM [jnt:user] AS user WHERE user.[j:nodename] LIKE '%{$q}%' OR user.[j:lastName] LIKE '%{$q}%' OR user.[j:firstName] LIKE '%{$q}%'",
@@ -91,7 +92,7 @@
 
 		<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 		<c:if test="${not empty title.string}">
-		<label for="searchTerm">${fn:escapeXml(title.string)}:&nbsp;</label>
+		<label for="searchUser">${fn:escapeXml(title.string)}:&nbsp;</label>
 		</c:if>
 		<fmt:message key='search.users.defaultText' var="startSearching"/>
        	<input type="text" name="user" id="searchUser" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>

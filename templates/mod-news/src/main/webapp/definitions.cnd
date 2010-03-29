@@ -3,9 +3,7 @@
 [jnt:news] > jnt:content, mix:title, jmix:structuredContent
  - desc (string, richtext) i18n
  - image (weakreference, file[mime='image/*'])
- page link (page[type="external,internal"])
  - date (date) = now()
- - type (string,choicelist[script=tests.groovy])
  - tags (weakreference,choicelist[nodes='/categories;jnt:category'])
 
 [jnt:lastNews] > jnt:content, jmix:list, mix:title, jmix:queryContent, jmix:cache 

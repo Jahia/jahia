@@ -48,6 +48,7 @@ import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.servlet.ServletRequest;
 import java.io.InputStream;
@@ -628,10 +629,15 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     /**
      * Gets a list of all versions of this node
      * @see #getVersionHistory()
-     * @return a list of all versions of this node
+     * @return a list of all versions name of this node
      */
     List<String> getVersions();
 
+    /**
+     * Gets a list of all versions for this node as Version object
+     * @return a list of Version object
+     */
+    List<Version> getVersionsAsVersion();
     /**
      * Gets the frozen version node of a given version name.
      * Warning the node returned here is not a regular node, and has another nodetype, frozen properties & mixins &

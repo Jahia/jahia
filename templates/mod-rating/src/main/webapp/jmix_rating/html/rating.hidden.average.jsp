@@ -45,7 +45,7 @@
 							$("#all_votes${id}").text(result.j_nbOfVotes);
 							$("#all_avg${id}").text((''+result.j_sumOfVotes/result.j_nbOfVotes).substring(0,3));
 							// Display confirmation message to the user
-							$("#messages${id}").text("Rating saved (" + value + "). Thanks!").stop().css("opacity", 1).fadeIn(30);
+							$("#messages${id}").html("<br/>Rating saved (" + value + "). Thanks!").stop().css("opacity", 1).fadeIn(30);
 							// Hide confirmation message and enable stars for "Rate this" control, after 2 sec...
 							setTimeout(function(){
 								$("#messages${id}").fadeOut(1000, function(){ui.enable();});

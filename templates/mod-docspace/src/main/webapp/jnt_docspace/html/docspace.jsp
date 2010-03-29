@@ -18,40 +18,48 @@
 
 <div class='grid_12'><!--start grid_12-->
 
-<div class="boxdocspace "><!--start boxdocspace -->
+    <div class="boxdocspace "><!--start boxdocspace -->
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
-              <div class="boxdocspace-inner-border">
-                <div class="floatright">
-                <form action="#" method="post">
-                    <select name="actions">
-                    <option>Actions</option>
-                    <option>Informations</option>
-                    <option>Suprimer</option>
-                    <option>Demander a l'acces</option>
-                    <option>Ajouter un Utilisateur</option>
-                    <option>Partager</option>
-                    </select>
-                  </form>
-                </div>
-                <div class="imagefloatleft">
-                  <div class="itemImage itemImageLeft"><a href="#"><img alt="" src="${url.currentModule}/css/img/docspacebig.png"/></a></div>
-                </div>
-                <h3 >Espace : <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
-                      <p class="clearMaringPadding docspacedate">Date de creation :
+                <div class="boxdocspace-inner-border">
+                    <div class="floatright">
+                        <form action="#" method="post">
+                            <select name="actions">
+                                <option>Actions</option>
+                                <option>Informations</option>
+                                <option>Suprimer</option>
+                                <option>Demander a l'acces</option>
+                                <option>Ajouter un Utilisateur</option>
+                                <option>Partager</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="imagefloatleft">
+                        <div class="itemImage itemImageLeft"><a href="#"><img alt=""
+                                                                              src="${url.currentModule}/css/img/docspacebig.png"/></a>
+                        </div>
+                    </div>
+                    <h3>Espace : <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
+
+                    <p class="clearMaringPadding docspacedate">Date de creation :
                         <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
                         <fmt:formatDate value="${created.time}" pattern="yyyy/MM/dd HH:mm"/>
-                      </p>
-  <p class="clearMaringPadding docspaceauthor"><a href="#">Par ${currentNode.propertiesAsString['jcr:createdBy']}</a></p>
+                    </p>
 
-                <p class="clearMaringPadding"><jcr:nodeProperty node="${currentNode}" name="jcr:description"/></p>
-                <!--stop boxdocspace -->
-                  <div class="clear"></div>
-              </div>
+                    <p class="clearMaringPadding docspaceauthor"><a
+                            href="#">Par ${currentNode.propertiesAsString['jcr:createdBy']}</a></p>
+
+                    <p class="clearMaringPadding"><jcr:nodeProperty node="${currentNode}" name="jcr:description"/></p>
+                    <!--stop boxdocspace -->
+                    <div class="clear"></div>
+                </div>
+            </div>
         </div>
     </div>
-</div><!--stop boxdocspace -->
-<div class='clear'></div></div><!--stop grid_12-->
+    <!--stop boxdocspace -->
+    <div class='clear'></div>
+</div>
+<!--stop grid_12-->
 <%--list all users write write access to current node--%>
 
 <div class='grid_4'><!--start grid_4-->
@@ -59,15 +67,27 @@
 
     <ul class="docspacelist docspacelistusers">
         <c:forEach items="${currentNode.aclEntries}" var="acls">
-        <li>
-            <img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/user_32.png" />
-            <a class="floatleft" href="#" ><c:out value="${acls.key}"/></a>
-            <div class='clear'></div>
-        </li>
+            <li>
+                <c:set var="users" value="${fn:substringBefore(acls.key, ':')}"/>
+                <c:choose>
+                    <c:when test="${users eq 'u'}">
+                        <c:set value="user_32" var="iconName"/>
+                    </c:when>
+                    <c:when test="${users eq 'g'}">
+                        <c:set value="group-icon" var="iconName"/>
+                    </c:when>
+                </c:choose>
+                <img class="floatleft" alt="user default icon" src="${url.currentModule}/images/${iconName}.png"/>
+                <a class="floatleft" href="#"><c:out value="${fn:substringAfter(acls.key,':')}"/></a>
+
+                <div class='clear'></div>
+            </li>
         </c:forEach>
     </ul>
     <template:area path="searchUsers" forceCreation="true" areaType="jnt:searchUsers"/>
-    <div class='clear'></div></div><!--stop grid_4-->
+    <div class='clear'></div>
+</div>
+<!--stop grid_4-->
 <div class='grid_16'><!--start grid_16-->
     <!--<div class="boxdocspace">
 <div class="edit"><a href="#" title="editer" ><span class="hidden">editer</span></a></div>
@@ -83,79 +103,92 @@
     </div>
 </div>-->
 
-<h4 class="boxdocspace-title2">Espaces de travail</h4>
-<div class="boxdocspace-title2">
+    <h4 class="boxdocspace-title2">Espaces de travail</h4>
 
-                       <div class="TableActions"><!--start formSearchTop-->
+    <div class="boxdocspace-title2">
 
-                        <form action="#" method="post">
-                          <p>
-                            <a href="#" title="view details" ><img class="rightside" src="${url.currentModule}/css/img/view-details.png" alt="add user"/></a>
-                            <a href="#" title="view thumbnails" ><img class="rightside" src="${url.currentModule}/css/img/view-thumbnails.png" alt="add user"/></a>
-                            <label>Filtre : </label>
+        <div class="TableActions"><!--start formSearchTop-->
 
-                            <select name="tagfilter">
-                              <option>Mon tag 1</option>
-                              <option>Mon tag 2</option>
-                              <option>Mon tag 3</option>
-                            </select>
-                            <label> - Search: </label>
-                            <input class="text" type="text" name="search"  value="Search..." tabindex="4"/>
-                            <input class="gobutton" type="image" src="${url.currentModule}/css/img/search-button.png" tabindex="5"/>
+            <form action="#" method="post">
+                <p>
+                    <a href="#" title="view details"><img class="rightside"
+                                                          src="${url.currentModule}/css/img/view-details.png"
+                                                          alt="add user"/></a>
+                    <a href="#" title="view thumbnails"><img class="rightside"
+                                                             src="${url.currentModule}/css/img/view-thumbnails.png"
+                                                             alt="add user"/></a>
+                    <label>Filtre : </label>
 
-                          </p>
+                    <select name="tagfilter">
+                        <option>Mon tag 1</option>
+                        <option>Mon tag 2</option>
+                        <option>Mon tag 3</option>
+                    </select>
+                    <label> - Search: </label>
+                    <input class="text" type="text" name="search" value="Search..." tabindex="4"/>
+                    <input class="gobutton" type="image" src="${url.currentModule}/css/img/search-button.png"
+                           tabindex="5"/>
 
-                        </form>
-                        <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
-                            <input type="hidden" name="nodeType" value="jnt:file"/>
-                            <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-                            <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>
-                            <input type="file" name="file">
-                            <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
-                            <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
-                            <input type="hidden" name="jcr:mixinTypes" value="jnt:docspaceFile"/>
-                            <input type="hidden" name="version" value="true"/>
-                            <input type="submit" name="upload"/>
-                        </form>
-                      </div><!--stop formSearchTop-->
+                </p>
 
-</div>
-<script type="text/javascript">
+            </form>
+            <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
+                <input type="hidden" name="nodeType" value="jnt:file"/>
+                <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+                <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>
+                <input type="file" name="file">
+                <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
+                <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
+                <input type="hidden" name="jcr:mixinTypes" value="jnt:docspaceFile"/>
+                <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
+                <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
+                <input type="hidden" name="version" value="true"/>
+                <input type="submit" id="upload" value="Upload"/>
+            </form>
+        </div>
+        <!--stop formSearchTop-->
 
-            jQuery(document).ready(function(){
+    </div>
+    <script type="text/javascript">
 
-                // Masquer la div à slider
-                jQuery(".AddNote1").hide();
+        jQuery(document).ready(function() {
 
-                //Appliquer la classe active sur le bouton
-                jQuery(".BtMore").toggle(function(){
-                    jQuery(this).addClass("active");
-                }, function () {
-                        jQuery(this).removeClass("active");
-                    });
+            // Masquer la div à slider
+            jQuery(".AddNote1").hide();
 
-                // Slide down et up sur click
-                jQuery(".BtMore").click(function(){
-                    jQuery(this).next(".AddNote1").slideToggle("slow");
-                });
-
+            //Appliquer la classe active sur le bouton
+            jQuery(".BtMore").toggle(function() {
+                jQuery(this).addClass("active");
+            }, function () {
+                jQuery(this).removeClass("active");
             });
 
-</script>
-<div class="boxdocspace">
+            // Slide down et up sur click
+            jQuery(".BtMore").click(function() {
+                jQuery(this).next(".AddNote1").slideToggle("slow");
+            });
+
+        });
+
+    </script>
+    <div class="boxdocspace">
         <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border"><!--start boxdocspace -->
-                    <template:area forcedTemplate="hidden.docspace" areaType="jnt:docFilesList" path="filesList" forceCreation="true"/>
+                    <template:area forcedTemplate="hidden.docspace" areaType="jnt:docFilesList" path="filesList"
+                                   forceCreation="true"/>
 
 
-<div class="clear"></div>
+                    <div class="clear"></div>
 
-              </div>
+                </div>
+            </div>
         </div>
     </div>
-</div><!--stop boxdocspace -->
+    <!--stop boxdocspace -->
 
-<div class='clear'></div></div><!--stop grid_16-->
+    <div class='clear'></div>
+</div>
+<!--stop grid_16-->
 
 

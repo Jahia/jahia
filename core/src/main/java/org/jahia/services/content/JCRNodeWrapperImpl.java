@@ -1599,6 +1599,28 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    public List<Version> getVersionsAsVersion() {
+        List<Version> results = new ArrayList<Version>();
+        try {
+            VersionHistory vh = objectNode.getVersionHistory();
+            VersionIterator vi = vh.getAllVersions();
+
+            // forget root version
+            vi.nextVersion();
+
+            while (vi.hasNext()) {
+                Version version = vi.nextVersion();
+                results.add(version);
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving versions", e);
+        }
+        return results;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public List<VersionInfo> getVersionInfos() throws RepositoryException {
         return ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(session, this);
     }

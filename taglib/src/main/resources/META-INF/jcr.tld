@@ -614,4 +614,13 @@
             ${jcr:hasChildrenOfType(currentNode,'jnt:page,jnt:folder')}
         </example>
     </function>
+    <function>
+        <description>Returns true if the current user has the specified right on the node.</description>
+        <name>hasPermission</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>boolean hasPermission(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+        <example>
+            ${jcr:hasPermission(currentNode,'read')}
+        </example>
+    </function>
 </taglib>

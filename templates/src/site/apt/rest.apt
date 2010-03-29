@@ -113,7 +113,7 @@ Basic Jahia REST API
   In the case of a regular POST method, the default response format is HTML. This format may be changed to JSON by
   setting up the appropriate request headers (see below).
 
-  In the case of HTML we will render the newly created or update node with its default template
+  In the case of HTML we will render the newly created or updated node with its default template
   (unless you have specified a different template using the newNodeOutputFormat parameter).
 
   In order to change the response format to JSON, you must set the following headers : "accept" = "application/json"

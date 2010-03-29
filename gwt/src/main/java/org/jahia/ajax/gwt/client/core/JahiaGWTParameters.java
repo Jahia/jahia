@@ -135,11 +135,14 @@ public class JahiaGWTParameters {
         if (siteKey == null) {
             siteKey = jahiaParamDictionary.get(SITE_KEY);
         }
-        return jahiaParamDictionary.get(SITE_KEY);
+        return siteKey;
     }
 
     public static void setSiteKey(String newSiteKey) {
         siteKey = newSiteKey;
+        for (UrlUpdater urlUpdater : updaters) {
+            urlUpdater.updateEntryPointUrl();
+        }
     }
 
     public static String getContextPath() {

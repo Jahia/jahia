@@ -357,6 +357,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         width = w;
     }
 
+    public String getSiteKey() {
+        return get("siteKey");
+    }
+
+    public void setSiteKey(String siteKey) {
+        set("siteKey", siteKey);
+    }
+
     public boolean isVersioned() {
         return versioned;
     }

@@ -679,7 +679,11 @@ public class NavigationHelper {
         n.setThumbnailsMap(new HashMap<String, String>());
         n.setVersioned(versioned);
         n.setLanguageCode(node.getLanguage());
-
+        try {
+            n.setSiteKey(node.resolveSite().getSiteKey());
+        } catch (RepositoryException e) {
+            logger.error("Error when getting sitekey", e);
+        }
         if (node.isFile()) {
             n.setSize(node.getFileContent().getContentLength());
 

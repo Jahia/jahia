@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -30,15 +31,11 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
     public LanguageSwitcherActionItem() {
     }
 
-    public void setLanguages(List<String> languages) {
-        this.languages = languages;
-    }
-
-    boolean ok = false;
+    private String siteKey = null;
 
     @Override
     public void handleNewLinkerSelection() {
-        if (ok) {
+        if (siteKey != null && siteKey.equals(JahiaGWTParameters.getSiteKey())) {
             return;
         }
 
@@ -79,7 +76,7 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
             MenuItem mi = getMenuItem();
             mi.setSubMenu(menu);
         }
-        ok = true;
+        siteKey = JahiaGWTParameters.getSiteKey();
     }
 
     @Override

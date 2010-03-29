@@ -105,7 +105,8 @@ public class URLResolver {
         if (!resolveUrlMapping()) {
             init();
             if (isMappable()
-                    && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
+                    && SettingsBean.getInstance().isPermanentMoveForVanityURL()
+                    && !isUnnamedSubmitPath()) {
                 try {
                     VanityUrl defaultVanityUrl = getVanityUrlService()
                             .getVanityUrlForWorkspaceAndLocale(getNode(),
@@ -492,6 +493,18 @@ public class URLResolver {
      */
     public boolean isMappable() {
         return mappable;
+    }
+
+    /**
+     * This method checks if the path is a submit path for creating new objects using a submit path
+     * that includes a wildcard characters and therefore ends with the character sequence "/*".
+     * @return true if the path is an unnamed submit path.
+     */
+    public boolean isUnnamedSubmitPath() {
+        if (path != null) {
+            return path.endsWith("/*");
+        }
+        return false;
     }
 
     /**

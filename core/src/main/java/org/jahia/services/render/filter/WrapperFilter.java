@@ -28,8 +28,13 @@ public class WrapperFilter extends AbstractFilter {
                 Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper);
                 if (service.hasTemplate(node.getPrimaryNodeType(), wrapper)) {
                     Script script = service.resolveScript(wrappedResource, renderContext);
-                    renderContext.getRequest().setAttribute("wrappedContent", output);
-                    output = script.execute(resource, renderContext);
+                    Object wrappedContent = renderContext.getRequest().getAttribute("wrappedContent");
+                    try {
+                        renderContext.getRequest().setAttribute("wrappedContent", output);
+                        output = script.execute(resource, renderContext);
+                    } finally {
+                        renderContext.getRequest().setAttribute("wrappedContent", wrappedContent);
+                    }
                 } else {
                     logger.warn("Cannot get wrapper "+wrapper);
                 }

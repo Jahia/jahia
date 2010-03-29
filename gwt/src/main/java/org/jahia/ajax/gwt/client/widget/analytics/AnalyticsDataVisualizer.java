@@ -33,15 +33,14 @@ package org.jahia.ajax.gwt.client.widget.analytics;
 
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.GroupingStore;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GroupingView;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 
@@ -82,6 +81,8 @@ public class AnalyticsDataVisualizer extends ContentPanel {
     private void init() {
         setLayout(new FillLayout());
         setHeaderVisible(false);
+        setBodyBorder(false);
+        setBorders(false);
         mainContainer = new LayoutContainer();
 
         add(mainContainer);
@@ -199,6 +200,16 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         column.setId("date");
         column.setHeader("date");
         column.setWidth(300);
+        column.setRenderer(new GridCellRenderer<GWTJahiaAnalyticsData>() {
+                        public Object render(GWTJahiaAnalyticsData gwtJahiaAnalyticsData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaAnalyticsData> gwtJahiaAnalyticsDataListStore, Grid<GWTJahiaAnalyticsData> gwtJahiaNodeGrid) {
+                            Date d = gwtJahiaAnalyticsData.getDate();
+                            if (d != null) {
+                                return DateTimeFormat.getFormat("d/MM/y").format(d);
+                            } else {
+                                return "-";
+                            }
+                        }
+                    });
         configs.add(column);
 
          column = new ColumnConfig();

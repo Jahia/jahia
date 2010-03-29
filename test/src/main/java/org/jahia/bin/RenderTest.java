@@ -16,11 +16,15 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.VersionInfo;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
+import org.jahia.utils.LanguageCodeConverters;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +40,9 @@ public class RenderTest extends TestCase {
     private ProcessingContext ctx;
     private final static String TESTSITE_NAME = "renderTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private static final String MAIN_CONTENT_TITLE = "Main content title update ";
+    private static final String MAIN_CONTENT_BODY = "Main content body update ";
+    private static int NUMBER_OF_VERSIONS = 5;
 
     HttpClient client;
 
@@ -117,7 +124,7 @@ public class RenderTest extends TestCase {
         // publish it
         jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
 
-        for (int i = 1; i < 11; i++) {
+        for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
             editSession.checkout(stagedSubPage);
             stagedSubPage.setProperty("jcr:title", "title" + i);
             editSession.save();
@@ -151,7 +158,50 @@ public class RenderTest extends TestCase {
             index++;
         }
         logger.debug("number of version: " + index);
-        assertEquals(11, index);
+        assertEquals(NUMBER_OF_VERSIONS, index);
+
+    }
+
+    public void testRestAPI() throws RepositoryException, IOException, JSONException {
+
+        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+
+        Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
+
+        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale);
+        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale);
+
+        JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
+
+        JCRNodeWrapper stageNode = stageRootNode.getNode("home");
+
+        editSession.checkout(stageNode);
+        JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
+        stagedSubPage.setProperty("jcr:title", "title0");
+
+        JCRNodeWrapper stagedPageContent = stagedSubPage.addNode("pagecontent", "jnt:contentList");
+        JCRNodeWrapper stagedRow1 = stagedPageContent.addNode("row1", "jnt:row");
+        stagedRow1.setProperty("column", "2col106");
+        JCRNodeWrapper stagedCol1 = stagedRow1.addNode("col1", "jnt:contentList");
+        JCRNodeWrapper mainContent = stagedCol1.addNode("mainContent", "jnt:mainContent");
+        mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + "0");
+        mainContent.setProperty("body", MAIN_CONTENT_BODY + "0");
+
+        PostMethod createPost = new PostMethod("http://localhost:8080/cms/render/default/en" + SITECONTENT_ROOT_NODE + "/home/pagecontent/row1/col1/*");
+        createPost.addRequestHeader("x-request-with", "XMLHttpRequest");
+        createPost.addRequestHeader("accept", "application/json");
+        // here we voluntarily don't set the node name to test automatic name creation.
+        createPost.addParameter("nodeType", "jnt:mainContent");
+        createPost.addParameter("jcr:title", MAIN_CONTENT_TITLE + "1");
+        createPost.addParameter("body", MAIN_CONTENT_BODY + "1");
+
+        int responseCode = client.executeMethod(createPost);
+        assertEquals("Error in response, code=" + responseCode, 200, responseCode);
+        String responseBody = createPost.getResponseBodyAsString();
+
+        JSONArray jsonResults = new JSONArray(responseBody);
+
+        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
 
     }
 

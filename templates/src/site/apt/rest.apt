@@ -73,6 +73,8 @@ Basic Jahia REST API
 
  Method : POST
 
+ Request headers : see response format section below.
+
 *---------------------------+-------------+----------------------------------------------------------------------+
 |Name                       |Mandatory    |Description                                                           |
 *---------------------------+-------------+----------------------------------------------------------------------+
@@ -108,11 +110,14 @@ Basic Jahia REST API
 
 ** Response format
 
-  The response is by default HTML, if post method is called in a regular request or JSON if defined so in the headers.
-  Header "accept" equals "application/json" and header "x-requested-with" equals "XMLHttpRequest". If HTML we will
-  render the newly created node or updated one with its default template (unless you have specified a
-  different template in the newNodeOuptutFormat).
-  
+  In the case of a regular POST method, the default response format is HTML. This format may be changed to JSON by
+  setting up the appropriate request headers (see below).
+
+  In the case of HTML we will render the newly created or update node with its default template
+  (unless you have specified a different template using the newNodeOutputFormat parameter).
+
+  In order to change the response format to JSON, you must set the following headers : "accept" = "application/json"
+  and "x-requested-with" = "XMLHttpRequest".   
 
 ** Example
 

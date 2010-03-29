@@ -57,7 +57,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
             dataVisualizer = new AnalyticsDataVisualizer() {
                 public void oneDateChanged(Date newStartDate, Date newEndDate) {
                     lastQuery.setStartDate(newStartDate);
-                    lastQuery.setStartDate(newEndDate);
+                    lastQuery.setEndDate(newEndDate);
                     loadData(lastQuery);
                 }
 

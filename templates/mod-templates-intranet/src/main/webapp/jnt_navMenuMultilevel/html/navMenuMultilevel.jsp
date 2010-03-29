@@ -21,6 +21,7 @@
     <a href='<c:url value="${navMenuBean.node.path}.html" context="${url.base}"/>'>${fn:escapeXml(title.string)}</a>
     <c:choose>
         <c:when test="${navMenuBean.hasChildren}">
+            <div class="box-inner">
             <ul class="navmenu submenu level_${navMenuBean.level}">
         </c:when>
         <c:otherwise>
@@ -29,6 +30,7 @@
     </c:choose>
     <c:if test="${navMenuBean.lastInLevel && not empty navMenuBean.parentItem}">
         </ul>
+        </div>
     </c:if>
 </c:forEach>
 

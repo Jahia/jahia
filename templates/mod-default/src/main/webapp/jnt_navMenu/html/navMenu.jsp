@@ -12,7 +12,7 @@
 <c:if test="${renderContext.editMode || not empty items}">
 <ul class="navmenu level_${fn:length(jcr:getParentsOfType(currentNode, 'jnt:navMenu')) + 1}">
 <c:forEach items="${items}" var="menuItem">
-    <template:module node="${menuItem}" editable="true" templateWrapper="${jcr:isNodeType(menuItem, 'jmix:list,jnt:navMenuMultilevel') ? '' : 'wrapper.listItem'}" template="${template}">
+    <template:module node="${menuItem}" editable="true" templateWrapper="${jcr:isNodeType(menuItem, 'jmix:list,jnt:navMenuMultilevel,jnt:navMenuChildNodes') ? '' : 'wrapper.listItem'}" template="${template}">
         <template:param name="subNodesTemplate" value="link"/>
         <template:param name="subNodesWrapper" value="wrapper.listItem"/>
         <template:param name="omitFormatting" value="true"/>

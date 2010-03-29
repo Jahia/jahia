@@ -254,8 +254,8 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
      * @throws java.io.IOException           JSP writer exception
      * @throws javax.jcr.RepositoryException In case of JCR error
      */
-    private void generateMenuAsFlatList(int realStartLevel, JCRNodeWrapper currentNode, int level, Set<NavMenuItemBean> navMenuItemsBean,
-                                        NavMenuItemBean parentItem, String basePath)
+    private void generateMenuAsFlatList(final int realStartLevel, final JCRNodeWrapper currentNode, final int level, final Set<NavMenuItemBean> navMenuItemsBean,
+                                        final NavMenuItemBean parentItem, final String basePath)
             throws IOException, RepositoryException {
         if (currentNode == null) {
             logger.error("Incorrect node : " + currentNode);
@@ -269,6 +269,8 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
 
         // if the list empty, add a navMenuItem for the action menu
         if (maxDepth == Integer.MIN_VALUE || level <= realStartLevel + maxDepth) {
+            final String currentPath = node.getPath().replaceAll(
+                    basePath + "/", "");
             int itemCount = 0;
             NavMenuItemBean navMenuItemBean = null;
             while (iterator.hasNext()) {
@@ -340,13 +342,13 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                     }
                     res.getDependencies().add(nodeWrapper);
 
-                    logger.debug("level = " + level);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("level = " + level);
+                    }
                     // Set level
                     navMenuItemBean.setLevel(level - realStartLevel);
 
                     final String path = nodeWrapper.getPath().replaceAll(
-                            basePath + "/", "");
-                    final String currentPath = node.getPath().replaceAll(
                             basePath + "/", "");
                     final String[] pathElement = path.split("/");
                     final String[] currentPathElement = currentPath.split("/");
@@ -371,6 +373,9 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                                 }
                             }
                             navMenuItemsBean.add(navMenuItemBean);
+                            if (parentItem != null) {
+                                parentItem.setHasChildren(true);
+                            }
                         }
                     } catch (ArrayIndexOutOfBoundsException e) {
                         logger.warn(e.getMessage(), e);
@@ -423,7 +428,8 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
         private int itemCount = 0;
         private NavMenuItemBean parentItem = null;
         private JCRNodeWrapper node = null;
-
+        private boolean hasChildren;
+        
         public String getSeparator() {
             return separator;
         }
@@ -532,6 +538,20 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
             } catch (RepositoryException e) {
                 return -1;
             }
+        }
+
+        /**
+         * @return the hasChildren
+         */
+        public boolean isHasChildren() {
+            return hasChildren;
+        }
+
+        /**
+         * @param hasChildren the hasChildren to set
+         */
+        public void setHasChildren(boolean hasChildren) {
+            this.hasChildren = hasChildren;
         }
     }
 

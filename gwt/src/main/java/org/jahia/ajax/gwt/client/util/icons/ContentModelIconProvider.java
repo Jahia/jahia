@@ -276,6 +276,8 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
                 return CONTENT_ICONS.jntInputText();
             } else if (type.equals(JNT_SEARCH_RESULTS)) {
                 return CONTENT_ICONS.list();
+            } else if (type.startsWith("jnt:navMenu")) {
+                return CONTENT_ICONS.navMenu();
             }
         }
         if (ext != null) {

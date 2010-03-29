@@ -1,2 +1,0 @@
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<li class="box-inner-border">${not fn:contains(wrappedContent, '<a ') ? '<span>' : ''}${wrappedContent}${not fn:contains(wrappedContent, '<a ') ? '</span>' : ''}</li>

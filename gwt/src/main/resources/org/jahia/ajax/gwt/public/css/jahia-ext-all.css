@@ -7,7 +7,7 @@
  */
 html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}img,body,html{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}ol,ul {list-style:none;}caption,th {text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;}q:before,q:after{content:'';}
 .ext-el-mask {
-    z-index: 100;
+    z-index: 1000;
     position: absolute;
     top:0;
     left:0;
@@ -19,7 +19,7 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,bloc
     zoom: 1;
 }
 .ext-el-mask-msg {
-    z-index: 101;
+    z-index: 1001;
     position: absolute;
     top: 0;
     left: 0;

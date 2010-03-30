@@ -1,6 +1,7 @@
 package org.jahia.services.render.filter;
 
 import org.jahia.params.ParamBean;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -29,13 +30,13 @@ import javax.jcr.RepositoryException;
  */
 public class WrapperFilterTest extends TestCase {
     private ParamBean paramBean;
-    private JahiaSite site;
+    private JCRSiteNode site;
     private JCRSessionWrapper session;
     private JCRNodeWrapper node;
 
     @Override
     protected void setUp() throws Exception {
-        site = TestHelper.createSite("test");
+        JahiaSite site = TestHelper.createSite("test");
 
         paramBean = (ParamBean) Jahia.getThreadParamBean();
 
@@ -45,6 +46,7 @@ public class WrapperFilterTest extends TestCase {
         paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
 
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
 
         JCRNodeWrapper shared = session.getNode("/shared");
 

@@ -118,7 +118,7 @@ public abstract class JahiaSitesService extends JahiaService {
      *
      * @auhtor NK
      */
-    public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr, Properties settings,
+    public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                                       Locale selectedLocale,
                                       String selectTmplSet, String firstImport, File fileImport, String fileImportName,
                                       Boolean asAJob, Boolean doImportServerPermissions, ProcessingContext jParams) throws JahiaException, IOException;
@@ -140,17 +140,8 @@ public abstract class JahiaSitesService extends JahiaService {
      */
     public abstract void updateSite (JahiaSite site)
             throws JahiaException;
-    
-    /**
-     * Update given properties of a JahiaSite definition
-     *
-     * @param JahiaSite the site bean object
-     * @�aram Properties the properties to update
-     */    
-    public abstract void updateSiteProperties (JahiaSite site, Properties props) throws JahiaException;
 
 
-    public abstract void removeSiteProperties (JahiaSite site, List<String> propertiesToBeRemoved) throws JahiaException;
     //-------------------------------------------------------------------------
     /**
      * Return the amount of sites in the system.

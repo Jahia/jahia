@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
 import org.apache.struts.util.RequestUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
@@ -186,7 +187,7 @@ public class ManageServer extends AbstractAdministrationModule {
         SettingsBean settings = SettingsBean.getInstance();
 
         // set new values in the properties manager...
-        PropertiesManager properties = new PropertiesManager(Jahia.getStaticServletConfig().getServletContext().getRealPath(SettingsBean.JAHIA_PROPERTIES_FILE_PATH));
+        PropertiesManager properties = new PropertiesManager(JahiaContextLoaderListener.getServletContext().getRealPath(SettingsBean.JAHIA_PROPERTIES_FILE_PATH));
         properties.setProperty("mail_service_activated", cfg.isServiceActivated() ? "true" : "false");
         properties.setProperty("mail_server", cfg.getHost());
         properties.setProperty("mail_administrator", cfg.getTo());

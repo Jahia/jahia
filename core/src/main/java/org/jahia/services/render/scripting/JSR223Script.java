@@ -3,6 +3,7 @@ package org.jahia.services.render.scripting;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.render.*;
 
 import javax.script.*;
@@ -52,7 +53,7 @@ public class JSR223Script implements Script {
                     bindings.put(currentAttributeName, context.getRequest().getAttribute(currentAttributeName));
                 }
             }
-            InputStream scriptInputStream = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(template.getPath());
+            InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template.getPath());
             if (scriptInputStream != null) {
                 Reader scriptContent = null;
                 try {

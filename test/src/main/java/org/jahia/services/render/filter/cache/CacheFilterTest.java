@@ -37,13 +37,13 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.data.JahiaData;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -78,12 +78,11 @@ public class CacheFilterTest extends TestCase {
     private JCRNodeWrapper node;
     private ParamBean paramBean;
     private JCRSessionWrapper session;
-    private JahiaSite site;
+    protected JCRSiteNode site;
 
     @Override
     protected void setUp() throws Exception {
-        site = TestHelper.createSite("test");
-
+        JahiaSite site = TestHelper.createSite("test");
         paramBean = (ParamBean) Jahia.getThreadParamBean();
 
         paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
@@ -94,6 +93,7 @@ public class CacheFilterTest extends TestCase {
         */
         
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
 
         JCRNodeWrapper shared = session.getNode("/shared");
         if (shared.hasNode("testContent")) {

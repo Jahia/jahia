@@ -34,6 +34,7 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -62,7 +63,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
                     String flagPath = "/css/images/flags/shadow/flag_" + new Locale("en",
                                                                                     value.getValue().getString()).getDisplayCountry(
                             Locale.ENGLISH).toLowerCase().replaceAll(" ", "_") + ".png";
-                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(flagPath));
+                    File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
                     if (!f.exists()) {
                         flagPath = "/css/blank.gif";
                     }
@@ -84,7 +85,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         final String enDisplayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
                 Locale.ENGLISH);
         String flagPath = "/css/images/flags/shadow/flag_" + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
-        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(flagPath));
+        File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
         if (!f.exists()) {
             flagPath = "/css/blank.gif";
         }
@@ -106,7 +107,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         final String enDisplayName = new Locale("en", value).getDisplayCountry(
                 Locale.ENGLISH);
         String flagPath = "/css/images/flags/shadow/flag_" + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
-        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(flagPath));
+        File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
         if (!f.exists()) {
             flagPath = "/css/blank.gif";
         }

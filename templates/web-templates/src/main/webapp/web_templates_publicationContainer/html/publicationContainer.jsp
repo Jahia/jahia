@@ -74,7 +74,7 @@
 		<div class="clear"> </div>
 	</div><!--stop publicationListItem -->
     <c:choose>
-        <c:when test="${(renderContext.moduleParams.loop mod 2) == 1}">
+        <c:when test="${(currentResource.moduleParams.loop mod 2) == 1}">
            <div class="clear"> </div>
         </c:when>
     </c:choose>

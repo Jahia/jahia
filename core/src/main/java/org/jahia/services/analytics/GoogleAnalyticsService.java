@@ -39,7 +39,7 @@ import com.google.gdata.data.analytics.DataFeed;
 import com.google.gdata.util.AuthenticationException;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.decorator.JCRSiteNode;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -274,7 +274,7 @@ public class GoogleAnalyticsService {
      * @param site
      * @return
      */
-    public String renderNodeTrackingCode(List<JCRNodeWrapper> nodes, JahiaSite site) {
+    public String renderNodeTrackingCode(List<JCRNodeWrapper> nodes, JCRSiteNode site) {
         if (nodes == null || nodes.isEmpty()) {
             logger.debug(" There is no tracking nodes");
             return "";
@@ -298,13 +298,13 @@ public class GoogleAnalyticsService {
      *
      * @return
      */
-    private String renderNodeTrackingCode(JCRNodeWrapper node, JahiaSite site, boolean initTracker) {
+    private String renderNodeTrackingCode(JCRNodeWrapper node, JCRSiteNode site, boolean initTracker) {
 
         StringBuffer result = new StringBuffer();
 
 
         // get enabled profiles
-        Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfil().iterator();
+        Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfile().iterator();
         while (googleAnalyticsProfileIterator.hasNext()) {
             GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
 

@@ -53,6 +53,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
@@ -127,16 +128,12 @@ public class URLResolver {
      * @param url   URL in HTML links of outgoing requests
      * @param request  The current request in order to obtain the context path
      */
-    public URLResolver(String url, HttpServletRequest request) {
-        String contextPath = request.getContextPath();
-        if (url.startsWith(contextPath + Edit.getRenderServletPath())) {
-            this.urlPathInfo = StringUtils.substringAfter(url, Edit
-                    .getRenderServletPath());
-        } else if (url.startsWith(contextPath + Edit.getEditServletPath())) {
-            this.urlPathInfo = StringUtils.substringAfter(url, Edit
-                    .getEditServletPath());
-        }
-        if (this.urlPathInfo != null) {
+    public URLResolver(String url, RenderContext context) {
+        String contextPath = context.getRequest().getContextPath();
+
+        this.urlPathInfo = StringUtils.substringAfter(url, contextPath + context.getServletPath());
+
+        if (!StringUtils.isEmpty(urlPathInfo)) {
             path = getUrlPathInfo().substring(1);
             init();
         }
@@ -338,7 +335,7 @@ public class URLResolver {
                                 // ignore it
                             }
                         }
-                        JahiaSite site = node.resolveSite();
+                        JCRSiteNode site = node.resolveSite();
 
                         JCRSessionWrapper userSession = site != null
                                 && site.getDefaultLanguage() != null
@@ -419,22 +416,10 @@ public class URLResolver {
                             }
                         }
 
-                        JahiaSite site = node.resolveSite();
+                        JCRSiteNode site = node.resolveSite();
                         JCRSessionWrapper userSession;
 
                         if (site != null) {
-                            ProcessingContext ctx = Jahia.getThreadParamBean();
-                            ctx.setSite(site);
-                            ctx.setContentPage(site.getHomeContentPage());
-                            ctx.setThePage(site.getHomePage());
-                            ctx.getSessionState().setAttribute(
-                                    ProcessingContext.SESSION_SITE, site);
-                            ctx
-                                    .getSessionState()
-                                    .setAttribute(
-                                            ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID,
-                                            site.getHomePageID());
-
                             String defaultLanguage = site.getDefaultLanguage();
                             boolean mixLanguagesActive = site
                                     .isMixLanguagesActive();

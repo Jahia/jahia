@@ -199,7 +199,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public void uploadedFile(String location, String tmpName, int operation, String newName) throws GWTJahiaServiceException;
 
-    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode) throws GWTJahiaServiceException;
+    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, String configName) throws GWTJahiaServiceException;
 
     public String getNodeURL(String path, String locale, int mode) throws GWTJahiaServiceException;
 

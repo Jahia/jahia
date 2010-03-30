@@ -153,7 +153,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             buf.append(">");
 
             // add google visualizer api if there is at least one active google analytics profile and if its the edit mode
-            if (renderContext != null && renderContext.isEditMode() && renderContext.getSite().hasActivatedGoogleAnalyticsProfil()) {
+            if (renderContext != null && renderContext.isEditMode() && renderContext.getSite() != null && renderContext.getSite().hasActivatedGoogleAnalyticsProfile()) {
                 buf.append(GoogleAnalyticsService.getInstance().renderBaseVisualisationCode());
             }
 
@@ -164,7 +164,8 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                     Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
                     pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
                     pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
-                    pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" path=\"" + r.getNode().getPath() + "\" locale=\"" + r.getLocale() + "\" template=\"" + r.getResolvedTemplate() + "\">");
+
+                    pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" config=\""+renderContext.getEditModeConfigName() +"\" path=\"" + r.getNode().getPath() + "\" locale=\"" + r.getLocale() + "\" template=\"" + r.getResolvedTemplate() + "\">");
                     editDivOpen = true;
                 } else {
 //                    Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
@@ -188,7 +189,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
 
-            if (renderContext.getSite().hasGoogleAnalyticsProfil() /*&& renderContext.isLiveMode()*/) {
+            if (renderContext.getSite() != null && renderContext.getSite().hasGoogleAnalyticsProfile() /*&& renderContext.isLiveMode()*/) {
                 buf.append(GoogleAnalyticsService.getInstance().renderBaseTrackingCode(renderContext.getRequest().getProtocol()));
                 List<JCRNodeWrapper> trackedNodes = (List<JCRNodeWrapper>) renderContext.getRequest().getAttribute(GoogleAnalyticsFilter.GOOGLE_ANALYTICS_TRACKED_NODES);
                 buf.append(GoogleAnalyticsService.getInstance().renderNodeTrackingCode(trackedNodes, renderContext.getSite()));

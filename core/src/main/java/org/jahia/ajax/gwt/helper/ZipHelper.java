@@ -35,6 +35,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -179,7 +180,7 @@ public class ZipHelper {
                     if (zipentry.isDirectory()) {
                         target.createCollection(filename);
                     } else {
-                        String contentType = Jahia.getStaticServletConfig().getServletContext().getMimeType(filename);
+                        String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename);
                         target.uploadFile(filename, zis, contentType);
                     }
                     result = true;

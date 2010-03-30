@@ -76,7 +76,7 @@
     <c:set var="queryContraint" value="isdescendantnode(blogContent,['${currentNode.path}'])"/>
     <c:if test="${!empty(tagFilter)}">
         <c:forEach var="tag" items="${tagsMap}">
-            <jcr:node var="tagNode" path="${renderContext.siteNode.path}/tags/${tag}"/>
+            <jcr:node var="tagNode" path="${renderContext.site.path}/tags/${tag}"/>
             <c:set var="queryContraint" value="${queryContraint} and blogContent.[j:tags] = '${tagNode.UUID}'"/>
         </c:forEach>
     </c:if>    

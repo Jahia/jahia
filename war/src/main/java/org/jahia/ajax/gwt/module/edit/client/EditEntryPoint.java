@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
+import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfig;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,8 +18,12 @@ public class EditEntryPoint extends CommonEntryPoint {
         super.afterPermissionsLoad();
         RootPanel panel = RootPanel.get("editmode") ;
         if (panel != null) {
-            panel.add(new EditPanelViewport(DOM.getInnerHTML(panel.getElement()),DOM.getElementAttribute(panel.getElement(), "path"),DOM.getElementAttribute(panel.getElement(), "template"), 
-                    DOM.getElementAttribute(panel.getElement(), "locale"))) ;
+            GWTEditConfig config = new GWTEditConfig();
+
+            config.setName(DOM.getElementAttribute(panel.getElement(), "config"));
+
+            panel.add(new EditPanelViewport(DOM.getInnerHTML(panel.getElement()),DOM.getElementAttribute(panel.getElement(), "path"),DOM.getElementAttribute(panel.getElement(), "template"),
+                    DOM.getElementAttribute(panel.getElement(), "locale"), config)) ;
         }
     }
 }

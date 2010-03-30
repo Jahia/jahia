@@ -107,7 +107,7 @@
                 <li>1. "/" means returns containers from all virtual sites.</li>
                 <li>2. In the context of a JSP page, Jahia provides a currentPage bean and a currentSite bean in request scope so you
                 can directly refer to all pages or site to generate their paths :
-                <code>&lt;query:childNode path="${currentPage.JCRPath}"/&gt;</code>
+                <code>&lt;query:childNode path="${currentPage.path}"/&gt;</code>
                 Any instance object of <code>SiteBean</code>, <code>PageBean</code>, <code>ContainerListBean</code> classes have the method <code>getJCRPath():String</code>
                 for that purpose.</li>
                 <li>3. This path can be obtained through the method : getJCRPath(ProcessingContext context):String on the
@@ -275,8 +275,8 @@
                 <li>1. "/" means returns containers from all virtual sites.</li>
                 <li>2. In the context of a JSP page, Jahia provides a currentPage bean and currentSite bean in request
                 scope so you can directly refer to all pages or site to generate their paths :<br>
-                <code>&lt;query:descendantNode path="${currentPage.JCRPath}"/&gt;</code><br>
-                <code>&lt;query:descendantNode path="${currentSite.JCRPath}"/&gt;</code><br>
+                <code>&lt;query:descendantNode path="${currentPage.path}"/&gt;</code><br>
+                <code>&lt;query:descendantNode path="${currentSite.path}"/&gt;</code><br>
                 Any instance object of PageBean or SiteBean classes have the method getJCRPath():String
                 for that purpose.</li>
                 <li>3. This path can be obtained through the method : <code>getJCRPath(ProcessingContext context):String</code> on the

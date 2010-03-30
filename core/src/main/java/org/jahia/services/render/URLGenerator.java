@@ -29,6 +29,8 @@ public class URLGenerator {
     private String live;
     private String edit;
     private String preview;
+    private String contribute;
+    private String studio;
     private String find;
     private String logout;
     private String initializers;
@@ -49,7 +51,6 @@ public class URLGenerator {
     // settings
     private boolean useRelativeSiteURLs = false;
     private int siteURLPortOverride = 0;
-    private String contribute;
 
     private String baseLive;
     private String baseContribute;
@@ -70,13 +71,7 @@ public class URLGenerator {
      * Set workspace url as attribute of the current request
      */
     protected void initURL() {
-        if (context.isEditMode()) {
-            base = getContext() + Edit.getEditServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
-        } else if (context.isContributionMode()){
-            base = getContext() + Contribute.getContributeServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
-        } else {
-            base = getContext() + Render.getRenderServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
-        }
+        base = getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
 
         final String resourcePath = context.getMainResource().getNode().getPath() + ".html";
 
@@ -88,6 +83,7 @@ public class URLGenerator {
         preview = basePreview + resourcePath;
         baseContribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         contribute = baseContribute + resourcePath;
+        studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templatesSet.html";
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         logout = getContext() + Logout.getLogoutServletPath();
         initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
@@ -121,6 +117,10 @@ public class URLGenerator {
 
     public String getContribute() {
         return contribute;
+    }
+
+    public String getStudio() {
+        return studio;
     }
 
     public String getLive(String versionNumber) {
@@ -176,12 +176,7 @@ public class URLGenerator {
             languages = LazyMap.decorate(new HashMap(), new Transformer() {
                 public Object transform(Object lang) {
                     String servletPath;
-                    if (context.isEditMode()) {
-                        servletPath = Edit.getEditServletPath();
-                    } else {
-                        servletPath = Render.getRenderServletPath();
-                    }
-                    return getContext() + servletPath + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() + ".html";
+                    return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() + ".html";
                 }
             });
         }

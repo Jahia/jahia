@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfig;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
 import java.util.ArrayList;
@@ -23,16 +24,10 @@ import java.util.List;
  */
 public class SidePanel extends ContentPanel {
     private final List<SidePanelTabItem> tabs;
-    private final PagesTabItem pagesTabItem;
-    private final CreateContentTabItem createContentTabItem;
-    private final ContentBrowseTabItem contentBrowseTabItem ;
-    private final ImagesBrowseTabItem imagesBrowseTabItem ;
-    private final FilesBrowseTabItem filesBrowseTabItem  ;
-    private final MashupBrowseTabItem mashupBrowseTabItem ;
-    private final SearchTabItem searchTabItem;
+    private final SidePanelTabItem pagesTabItem;
     private final WorkflowTabItem workflowTabItem;
 
-    public SidePanel() {
+    public SidePanel(GWTEditConfig config) {
         super(new FitLayout());
         setHeaderVisible(true);
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
@@ -42,26 +37,25 @@ public class SidePanel extends ContentPanel {
         }));
         tabs = new ArrayList<SidePanelTabItem>();
 
-        pagesTabItem = new PagesTabItem();
-        tabs.add(pagesTabItem);
+        if (config.getName().equals("editmode")) {
+            pagesTabItem = new PagesTabItem();
+            tabs.add(pagesTabItem);
+        } else {
+            pagesTabItem = new TemplatesTabItem();
+            tabs.add(pagesTabItem);
+        }
 
-        createContentTabItem = new CreateContentTabItem();
-        tabs.add(createContentTabItem);
+        tabs.add(new CreateContentTabItem());
 
-        contentBrowseTabItem = new ContentBrowseTabItem();
-        tabs.add(contentBrowseTabItem);
+        tabs.add(new ContentBrowseTabItem());
 
-        imagesBrowseTabItem = new ImagesBrowseTabItem();
-        tabs.add(imagesBrowseTabItem);
+        tabs.add(new ImagesBrowseTabItem());
 
-        filesBrowseTabItem = new FilesBrowseTabItem();
-        tabs.add(filesBrowseTabItem);
+        tabs.add(new FilesBrowseTabItem());
 
-        mashupBrowseTabItem = new MashupBrowseTabItem();
-        tabs.add(mashupBrowseTabItem);
+        tabs.add(new MashupBrowseTabItem());
 
-        searchTabItem = new SearchTabItem();
-        tabs.add(searchTabItem);
+        tabs.add(new SearchTabItem());
 
         workflowTabItem = new WorkflowTabItem();
         tabs.add(workflowTabItem);
@@ -102,35 +96,4 @@ public class SidePanel extends ContentPanel {
         workflowTabItem.refresh();
     }
 
-    public PagesTabItem getPagesTabItem() {
-        return pagesTabItem;
-    }
-
-    public CreateContentTabItem getCreateContentTabItem() {
-        return createContentTabItem;
-    }
-
-    public ContentBrowseTabItem getContentBrowseTabItem() {
-        return contentBrowseTabItem;
-    }
-
-    public ImagesBrowseTabItem getImagesBrowseTabItem() {
-        return imagesBrowseTabItem;
-    }
-
-    public FilesBrowseTabItem getFilesBrowseTabItem() {
-        return filesBrowseTabItem;
-    }
-
-    public MashupBrowseTabItem getMashupBrowseTabItem() {
-        return mashupBrowseTabItem;
-    }
-
-    public SearchTabItem getSearchTabItem() {
-        return searchTabItem;
-    }
-
-    public WorkflowTabItem getWorkflowTabItem() {
-        return workflowTabItem;
-    }
 }

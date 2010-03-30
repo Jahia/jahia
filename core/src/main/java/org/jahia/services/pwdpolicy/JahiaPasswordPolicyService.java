@@ -240,23 +240,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
      *         for the specified site ID
      */
     public boolean isPolicyEnabled(int siteId) {
-
-        boolean enforcePolicy = false;
-        try {
-            JahiaSite site = ServicesRegistry.getInstance()
-                    .getJahiaSitesService().getSite(siteId);
-            // check if the policy is enabled for site
-            if (site != null) {
-                enforcePolicy = StringUtils.equals("true", site.getSettings()
-                        .getProperty(PROPERTY_SITE_ENFORCE_POLICY));
-            }
-        } catch (JahiaException ex) {
-            logger.error("Unable to retrieve a property "
-                    + PROPERTY_SITE_ENFORCE_POLICY + " for site ID " + siteId,
-                    ex);
-        }
-
-        return enforcePolicy;
+        return true;
     }
 
     /**

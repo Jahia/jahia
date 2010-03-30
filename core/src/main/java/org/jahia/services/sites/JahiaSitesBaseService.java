@@ -61,7 +61,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.settings.SettingsBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
@@ -288,14 +287,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 //
 
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
-                             Properties settings, Locale selectedLocale,
+                             Locale selectedLocale,
                              String selectTmplSet, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, ProcessingContext jParams) throws JahiaException, IOException
     {
-        if (settings == null) {
-            settings = new Properties();
-        }
-        JahiaSite site = new JahiaSite(-1,title,serverName,siteKey, descr,settings, null);
+        JahiaSite site = new JahiaSite(-1,title,serverName,siteKey, descr,null, null);
 
         if (selectTmplSet != null) {
             site.setTemplatePackageName(selectTmplSet);
@@ -506,52 +502,12 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     public synchronized void updateSite (JahiaSite site) throws JahiaException {
 //        JahiaSitesPersistance.getInstance ().dbUpdateSite (site);
 //        JahiaSite defaultSite = this.getDefaultSite();
-        Properties props = new Properties();
-        if (site.getSettings() != null){
-            props = (Properties)site.getSettings().clone();
-        }
-
         //todo update jahia site name/description
 //        siteManager.updateJahiaSite(site);
         siteProvider.updateSite(site);
-        site.setSettings(props);
         siteCacheByName.flush();
         siteCacheByID.flush();
         siteCacheByKey.flush();
-    }
-    
-    /**
-     * Update a JahiaSite definition
-     *
-     * @param site the site bean object
-     */
-    public synchronized void updateSiteProperties (JahiaSite site, Properties props) throws JahiaException {
-        site.getSettings().putAll(props);
-        addToCache(site);
-    }
-
-    public synchronized void removeSiteProperties (JahiaSite site, List<String> propertiesToBeRemoved) throws JahiaException {
-        for (String key : propertiesToBeRemoved) {
-            site.getSettings().remove(key);
-        }
-        addToCache(site);
-    }
-
-    /**
-     * load all sites from database in cache
-     */
-    protected void loadSitesInCache (SettingsBean settingsBean) throws JahiaException {
-
-        List<JahiaSite> sites = siteProvider.getSites();
-        if (sites != null) {
-            int size = sites.size ();
-            for (int i = 0; i < size; i++) {
-                JahiaSite site = sites.get (i);
-                // start and create the site's new templates folder if not exists
-                // JahiaSiteTools.startTemplateObserver (site, settingsBean, templateDeployerService, fileWatcherService);
-                addToCache(site);
-            }
-        }
     }
 
 

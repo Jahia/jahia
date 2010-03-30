@@ -56,6 +56,7 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.engines.mysettings.MySettingsEngine;
@@ -219,7 +220,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
             if (htmlBodyTemplate != null) {
                 try {
                     html = new SimpleTemplateEngine().createTemplate(
-                            Jahia.getStaticServletConfig().getServletContext()
+                            JahiaContextLoaderListener.getServletContext()
                                     .getResource(htmlBodyTemplate)).make(
                             new HashMap(vars)).toString();
                 } catch (Exception e) {
@@ -239,7 +240,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
     protected Locale getPreferredLocale() {
         if (preferredLocale == null) {
             preferredLocale = UserPreferencesHelper.getPreferredLocale(
-                    subscriber, siteId);
+                    subscriber);
         }
         return preferredLocale;
     }
@@ -289,7 +290,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
             if (textBodyTemplate != null) {
                 try {
                     text = new SimpleTemplateEngine().createTemplate(
-                            Jahia.getStaticServletConfig().getServletContext()
+                            JahiaContextLoaderListener.getServletContext()
                                     .getResource(textBodyTemplate)).make(
                             new HashMap(vars)).toString();
                 } catch (Exception e) {

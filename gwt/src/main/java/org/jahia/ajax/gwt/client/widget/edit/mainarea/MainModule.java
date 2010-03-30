@@ -18,6 +18,7 @@ import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfig;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
@@ -42,11 +43,11 @@ public class MainModule extends ContentPanel implements Module {
     private String originalHtml;
     private EditLinker editLinker;
     private ActionMenu contextMenu;
-
+    private GWTEditConfig config;
 
     Map<Element, Module> m;
 
-    public MainModule(final String html, final String path, final String template) {
+    public MainModule(final String html, final String path, final String template, GWTEditConfig config) {
         super(new FlowLayout());
         setHeading("Page : " + path);
         setScrollMode(Style.Scroll.AUTO);
@@ -54,6 +55,8 @@ public class MainModule extends ContentPanel implements Module {
         this.originalHtml = html;
         this.path = path;
         this.template = template;
+        this.config = config;
+
         getHeader().setStyleAttribute("z-index", "999");
         getHeader().setStyleAttribute("position", "relative");
         Hover.getInstance().setMainModule(this);
@@ -108,7 +111,7 @@ public class MainModule extends ContentPanel implements Module {
     }
 
     public void refresh() {
-        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true, new AsyncCallback<GWTRenderResult>() {
+        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true, config.getName(), new AsyncCallback<GWTRenderResult>() {
             public void onSuccess(GWTRenderResult result) {
                 int i = getVScrollPosition();
                 setHeading("Page : " + path);

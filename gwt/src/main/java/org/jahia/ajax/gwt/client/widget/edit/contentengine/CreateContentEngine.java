@@ -263,16 +263,11 @@ public class CreateContentEngine extends AbstractContentEngine {
 
 
                 if (node.isPage()) {
-                    if (linker instanceof EditLinker) {
-                        ((EditLinker) linker).getMainModule().goTo(node.getPath(), null);
-                        ((EditLinker) linker).getSidePanel().getPagesTabItem().addOpenPath(node.getPath());
-                    } else {
                     linker.refreshMainComponent();
-                    }
-                        linker.refreshLeftPanel(EditLinker.REFRESH_PAGES);
+                    linker.refreshLeftPanel(EditLinker.REFRESH_PAGES);
                 } else {
                     linker.refreshMainComponent();
-                    }
+                }
                 }
         };
         if (createInParentAndMoveBefore) {

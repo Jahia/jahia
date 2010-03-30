@@ -229,30 +229,16 @@ public final class UserPreferencesHelper {
      * 
      * @param user
      *            the user to retrieve locale preferences
-     * @param siteId
-     *            the site ID
      * @return the preferred locale of the specified user or the first one from
      *         the list of available locales
      */
-    public static Locale getPreferredLocale(JahiaUser user, int siteId) {
+    public static Locale getPreferredLocale(JahiaUser user) {
         String propValue = getPreference("preferredLanguage", user);
         Locale locale = propValue != null ? LanguageCodeConverters
                 .languageCodeToLocale(propValue) : null;
-    
+
         if (null == locale) {
-            JahiaSite site = null;
-            if (siteId > 0) {
-                try {
-                    site = ServicesRegistry.getInstance()
-                            .getJahiaSitesService().getSite(siteId);
-                } catch (JahiaException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-    
-            if (site != null) {
-                locale = getPreferredLocale(user, site);
-            }
+            locale = Locale.getDefault();
         }
         return locale;
     }

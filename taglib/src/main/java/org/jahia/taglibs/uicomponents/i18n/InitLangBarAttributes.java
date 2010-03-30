@@ -32,6 +32,7 @@
 package org.jahia.taglibs.uicomponents.i18n;
 
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -78,7 +79,7 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
 
 
         final RenderContext renderContext = (RenderContext) request.getAttribute("renderContext");
-        final JahiaSite currentSite = renderContext.getSite();
+        final JCRSiteNode currentSite = renderContext.getSite();
         final Set<String> languageSettings = currentSite.getLanguages();
 
         if (languageSettings.size() < 2) {

@@ -78,7 +78,7 @@ public class NodeUsagesGrid {
                 Object url = tableEvent.getModel().get("url");
                 if (url != null && url instanceof String) {
                     instance.getRenderedContent((String) url, null, JahiaGWTParameters.getUILanguage(), null,
-                                                "wrapper.previewwrapper", null, false, new AsyncCallback<GWTRenderResult>() {
+                                                "wrapper.previewwrapper", null, false, null, new AsyncCallback<GWTRenderResult>() {
                                 public void onSuccess(GWTRenderResult result) {
                                     HTML html = new HTML(result.getResult());
                                     Window w = new Window();

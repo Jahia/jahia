@@ -32,7 +32,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
@@ -45,14 +44,14 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
  */
 public class EditPanelViewport extends Viewport {
 
-        public EditPanelViewport(String html, String path, String template, String locale) {
+        public EditPanelViewport(String html, String path, String template, String locale, GWTEditConfig config) {
             super() ;
             setLayout(new FitLayout());
-            createUI(html, path,template,locale);
+            createUI(html, path,template,locale, config);
         }
 
-        public void createUI(String html, String path, String template, String locale) {
-            EditManager layout = new EditManager(html, path,template,locale) ;
+        public void createUI(String html, String path, String template, String locale, GWTEditConfig config) {
+            EditManager layout = new EditManager(html, path,template,locale, config) ;
 
             // layout is the main widget contained in the viewport
             add(layout) ;

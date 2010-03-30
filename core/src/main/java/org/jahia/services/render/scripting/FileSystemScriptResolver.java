@@ -1,6 +1,7 @@
 package org.jahia.services.render.scripting;
 
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -96,7 +97,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
 
     private Template resolveTemplate(Resource resource, RenderContext context, String template, ExtendedNodeType st, SortedSet<JahiaTemplatesPackage> sortedPackages) {
         for (JahiaTemplatesPackage aPackage : sortedPackages) {
-            if ("siteLayout".equals(aPackage.getModuleType()) && !aPackage.getName().equals(context.getSite().getTemplatePackageName())) {
+            if ("siteLayout".equals(aPackage.getModuleType()) && (context.getSite() == null || !aPackage.getName().equals(context.getSite().getTemplatePackageName()))) {
                 continue;
             }
             String currentTemplatePath = aPackage.getRootFolderPath();
@@ -119,7 +120,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
             String templatePath = n + (template.equals("default") ? "" : "." + template) + "." + currentFileExtension;
             String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':', '_') + "/" + templateType + "/" + templatePath;
             try {
-                if (Jahia.getStaticServletConfig().getServletContext().getResource(modulePath) != null) {
+                if (JahiaContextLoaderListener.getServletContext().getResource(modulePath) != null) {
                     return modulePath;
                 }
             } catch (MalformedURLException e) {

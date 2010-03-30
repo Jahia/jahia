@@ -32,7 +32,6 @@ public class CreatePageTabItem extends PropertiesTabItem {
 
     @Override
     public void postCreate() {
-
         FieldSet fieldSet = new FieldSet();
         fieldSet.setHeading("Template");
         fieldSet.setId("template");
@@ -56,6 +55,10 @@ public class CreatePageTabItem extends PropertiesTabItem {
         combo.setTypeAhead(true);
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
 //        combo.setForceSelection(true);
+        if (engine instanceof CreatePageContentEngine) {
+            combo.setValue(((CreatePageContentEngine) engine).getDefaultTemplate());
+        }
+        
         form.add(combo);
 
         propertiesEditor.add(fieldSet);

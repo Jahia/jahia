@@ -53,6 +53,7 @@ import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.cluster.ClusterListener;
 import org.jahia.services.cluster.ClusterMessage;
@@ -177,7 +178,7 @@ public class FileListSync implements ClusterListener {
             return;
         }
 
-        contextPath = Jahia.getStaticServletConfig().getServletContext().getRealPath("/");
+        contextPath = JahiaContextLoaderListener.getServletContext().getRealPath("/");
 
         if (clusterService.isActivated())
             clusterService.addListener(this);

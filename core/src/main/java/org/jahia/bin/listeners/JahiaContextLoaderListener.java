@@ -57,9 +57,11 @@ public class JahiaContextLoaderListener extends ContextLoaderListener {
     
     private static final transient Logger logger = Logger
             .getLogger(JahiaContextLoaderListener.class);
-    
+
+    private static ServletContext servletContext;
+
     public void contextInitialized(ServletContextEvent event) {
-        ServletContext servletContext = event.getServletContext();
+        servletContext = event.getServletContext();
         String jahiaWebAppRoot = servletContext.getRealPath("/");
         System.setProperty("jahiaWebAppRoot", jahiaWebAppRoot);
         Jahia.initContextData(servletContext);
@@ -97,5 +99,9 @@ public class JahiaContextLoaderListener extends ContextLoaderListener {
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    public static ServletContext getServletContext() {
+        return servletContext;
     }
 }

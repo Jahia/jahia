@@ -109,6 +109,7 @@
 package org.jahia.params;
 
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
@@ -135,7 +136,7 @@ public class SerializableParamBean extends ParamBean implements Serializable {
      * @throws JahiaException
      */
     public SerializableParamBean(JahiaSite site, JahiaUser user) throws JahiaException {
-        super(null, null, Jahia.getStaticServletConfig().getServletContext(),
+        super(null, null, JahiaContextLoaderListener.getServletContext(),
                 System.currentTimeMillis(), ProcessingContext.POST_METHOD, site, user);
     }
 
@@ -150,7 +151,7 @@ public class SerializableParamBean extends ParamBean implements Serializable {
      * @throws JahiaException
      */
     public SerializableParamBean(ProcessingContext jParams) throws JahiaException {
-        super(null, null, Jahia.getStaticServletConfig().getServletContext(),
+        super(null, null, JahiaContextLoaderListener.getServletContext(),
                 System.currentTimeMillis(),
                 ProcessingContext.POST_METHOD, jParams.getSite(), jParams.getUser());
     }

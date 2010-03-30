@@ -38,15 +38,10 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.decorator.JCRFileContent;
-import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
-import org.jahia.services.content.decorator.JCRPlaceholderNode;
-import org.jahia.services.content.decorator.JCRVersion;
+import org.jahia.services.content.decorator.*;
 import org.jahia.services.content.nodetypes.*;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.comparator.NumericStringComparator;
 
@@ -2335,25 +2330,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
 
-    public JahiaSite resolveSite() throws RepositoryException {
+    public JCRSiteNode resolveSite() throws RepositoryException {
         JCRNodeWrapper current = this;
         try {
             while (true) {
-                if (current.isNodeType("jnt:jahiaVirtualsite") || current.isNodeType("jnt:virtualsite")) {
+                if (current.isNodeType("jnt:virtualsite")) {
                     String sitename = current.getName();
-                    try {
-                        return ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitename);
-                    } catch (JahiaException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                    break;
+                    return (JCRSiteNode) current;
                 }
                 current = current.getParent();
             }
         } catch (ItemNotFoundException e) {
         }
-
-        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
+        return null;
+//        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
     }
 
 }

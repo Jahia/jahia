@@ -161,10 +161,6 @@ public class SiteBean {
         return jahiaSite.getTitle();
     }
 
-    public String getJCRPath() throws JahiaException {
-        return jahiaSite.getJCRPath();
-    }
-    
    public String getExternalUrl() {
        return processingContext.getSiteURL(jahiaSite, -1, false, true, false);
    }

@@ -244,9 +244,14 @@ public class EditModeDNDListener extends DNDListener {
                     }
 
                     public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                        new CreatePageContentEngine(editLinker, node, gwtJahiaNodeType, null).show();
+                        List<GWTJahiaNode> sources = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
+                        new CreatePageContentEngine(editLinker, node, gwtJahiaNodeType, new HashMap<String, GWTJahiaNodeProperty>(),sources.get(0), null, false).show();
                     }
                 });
+
+            }
+        } else if (PAGETREE_TYPE.equals(targetType)) {
+            if (PAGETREE_TYPE.equals(sourceType)) {
 
             }
         } else if (BROWSETREE_TYPE.equals(targetType)) {

@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
@@ -152,7 +153,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 for (File file : files) {
                                     try {
                                         dest.uploadFile(file.getName(), new FileInputStream(file),
-                                                Jahia.getStaticServletConfig().getServletContext().getMimeType(
+                                                JahiaContextLoaderListener.getServletContext().getMimeType(
                                                         file.getName()));
                                     } catch (Exception t) {
                                         logger.error("file observer error : ", t);
@@ -355,32 +356,32 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
 
         // get all jahiaGAprofiles
-        final String cntProfile = s.getSettings().getProperty("profileCnt_" + s.getSiteKey());
-        if (cntProfile != null) {
-            p.setProperty("profileCnt_" + s.getSiteKey(), cntProfile);
-        }
-        Iterator<Object> it = s.getSettings().keySet().iterator();
-        while (it.hasNext()) {
-            String key = (String) it.next();
-            if (key.startsWith("jahiaGAprofile")) {
-                String jahiaProfileName = (String) s.getSettings().get(key);
-                p.setProperty(key, jahiaProfileName);
-                Iterator<Object> it2 = s.getSettings().keySet().iterator();
-                while (it2.hasNext()) {
-                    String gaProp = (String) it2.next();
-                    if (gaProp.startsWith(jahiaProfileName)) {
-                        if (gaProp.endsWith("gaPassword")) {
-                            if (SettingsBean.getInstance().isGmailPasswordExported()) {
-                                p.setProperty(gaProp, (String) s.getSettings().get(gaProp));
-                            } else {
-                                p.setProperty(gaProp, "");
-                            }
-                        }
-                        p.setProperty(gaProp, (String) s.getSettings().get(gaProp));
-                    }
-                }
-            }
-        }
+//        final String cntProfile = s.getSettings().getProperty("profileCnt_" + s.getSiteKey());
+//        if (cntProfile != null) {
+//            p.setProperty("profileCnt_" + s.getSiteKey(), cntProfile);
+//        }
+//        Iterator<Object> it = s.getSettings().keySet().iterator();
+//        while (it.hasNext()) {
+//            String key = (String) it.next();
+//            if (key.startsWith("jahiaGAprofile")) {
+//                String jahiaProfileName = (String) s.getSettings().get(key);
+//                p.setProperty(key, jahiaProfileName);
+//                Iterator<Object> it2 = s.getSettings().keySet().iterator();
+//                while (it2.hasNext()) {
+//                    String gaProp = (String) it2.next();
+//                    if (gaProp.startsWith(jahiaProfileName)) {
+//                        if (gaProp.endsWith("gaPassword")) {
+//                            if (SettingsBean.getInstance().isGmailPasswordExported()) {
+//                                p.setProperty(gaProp, (String) s.getSettings().get(gaProp));
+//                            } else {
+//                                p.setProperty(gaProp, "");
+//                            }
+//                        }
+//                        p.setProperty(gaProp, (String) s.getSettings().get(gaProp));
+//                    }
+//                }
+//            }
+//        }
 
         Set<String> v = s.getLanguages();
         for (String sls : v) {
@@ -389,16 +390,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
 
-        Properties settings = s.getSettings();
-
-        for (Iterator<Object> iterator = settings.keySet().iterator(); iterator.hasNext();) {
-            String s1 = (String) iterator.next();
-            if (JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY.equals(s1)
-                    || s1.startsWith("prod_") || s1.startsWith("html_")
-                    || s1.startsWith("wai_") || s1.startsWith("url_")) {
-                p.setProperty(s1, settings.getProperty(s1));
-            }
-        }
+//        Properties settings = s.getSettings();
+//
+//        for (Iterator<Object> iterator = settings.keySet().iterator(); iterator.hasNext();) {
+//            String s1 = (String) iterator.next();
+//            if (JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY.equals(s1)
+//                    || s1.startsWith("prod_") || s1.startsWith("html_")
+//                    || s1.startsWith("wai_") || s1.startsWith("url_")) {
+//                p.setProperty(s1, settings.getProperty(s1));
+//            }
+//        }
         if (s.isDefault()) {
             p.setProperty("defaultSite", "true");
         }
@@ -524,7 +525,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             try {
                                 name = pathMapping.get("/") + name.substring(1);
                                 String filename = name.substring(name.lastIndexOf('/') + 1);
-                                String contentType = Jahia.getStaticServletConfig().getServletContext().getMimeType(filename);
+                                String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename);
                                 ensureFile(jcrStoreService.getSessionFactory().getCurrentUserSession(), name, zis, contentType, site, pathMapping);
                             } catch (Exception e) {
                                 logger.error("Cannot upload file " + zipentry.getName(), e);
@@ -701,10 +702,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             String value = p.getProperty(property);
             StringTokenizer st = new StringTokenizer(property, ".");
             String firstKey = st.nextToken();
-            if (JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY.equals(property)) {
-                siteSettings = true;
-                site.getSettings().put(property, value);
-            }
 
             if (firstKey.equals("language")) {
                 String lang = st.nextToken();
@@ -728,25 +725,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             } else if (firstKey.equals("mixLanguage")) {
                 site.setMixLanguagesActive(Boolean.getBoolean(value));
-            } else if (firstKey.startsWith("prod_") || firstKey.startsWith("html_") || firstKey.startsWith(
-                    "wai_") || firstKey.startsWith("url_")) {
-                siteSettings = true;
-                site.getSettings().put(firstKey, value);
             } else if (firstKey.startsWith("defaultSite") && "true".equals(
                     value) && sitesService.getDefaultSite() == null) {
                 sitesService.setDefaultSite(site);
-            } else if (firstKey.startsWith("jahiaGAprofile")) {
-                siteSettings = true;
-                site.getSettings().put("jahiaGAprofile_" + firstKey.split("_")[1] + "_" + site.getSiteKey(), value);
-            } else if (firstKey.startsWith("profileCnt")) {
-                siteSettings = true;
-                site.getSettings().put("profileCnt_" + site.getSiteKey(), value);
-            } else if (firstKey.endsWith("gaUserAccount") || firstKey.endsWith("gaProfile") || firstKey.endsWith(
-                    "gaLogin") || firstKey.endsWith("gaPassword") || firstKey.endsWith(
-                    "trackedUrls") || firstKey.endsWith("trackingEnabled") || firstKey.endsWith("profileId")) {
-                siteSettings = true;
-                String profileName = firstKey.split("_")[0];
-                site.getSettings().put(profileName + "_" + site.getSiteKey() + "_" + firstKey.split("_")[2], value);
             }
         }
         site.setLanguages(languages);

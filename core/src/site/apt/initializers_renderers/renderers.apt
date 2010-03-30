@@ -38,7 +38,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         final String enDisplayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
                 Locale.ENGLISH);
         String flagPath = "/css/images/flags/shadow/flag_" + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
-        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(flagPath));
+        File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
         if (!f.exists()) {
             flagPath = "/css/blank.gif";
         }
@@ -54,7 +54,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         final String enDisplayName = new Locale("en", propertyWrapper.getValue().getString()).getDisplayCountry(
                 Locale.ENGLISH);
         String flagPath = "/css/images/flags/shadow/flag_" + enDisplayName.toLowerCase().replaceAll(" ", "_") + ".png";
-        File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(flagPath));
+        File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
         if (!f.exists()) {
             flagPath = "/css/blank.gif";
         }

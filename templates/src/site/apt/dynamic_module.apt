@@ -79,7 +79,7 @@ Creation of Dynamic Module
 ---------------------------------------
 <c:if test="${currentNode.properties['j:firstLimit'].long gt 0}">
     <jcr:sql var="topStories"
-             sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.siteNode.path}'])
+             sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.site.path}'])
          and story.[j:level]='first' order by story.[jcr:lastModified] desc"/>
     <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:firstLimit'].long - 1}">
         <template:module node="${topic}" forcedTemplate="large" editable="false">

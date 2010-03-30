@@ -74,7 +74,7 @@ public class PagesTabItem extends SidePanelTabItem {
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
                 if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
-                    if (!getSelectedItem().getNodeTypes().contains("jnt:templatesFolder") && !getSelectedItem().getNodeTypes().contains("jnt:virtualsite")) {
+                    if (!getSelectedItem().getNodeTypes().contains("jnt:virtualsite")) {
                         editLinker.getMainModule().goTo(getSelectedItem().getPath(), null);
                     }
                 }
@@ -115,10 +115,6 @@ public class PagesTabItem extends SidePanelTabItem {
 
     public void addOpenPath(String path) {
         factory.setOpenPath(path);        
-    }
-
-    public GWTJahiaNode findTemplateFolder () {
-        return tree.getStore().findModel("path","/sites/"+ JahiaGWTParameters.getSiteKey() +"/templates");
     }
 
     public class PageTreeGridDropTarget extends TreeGridDropTarget {
@@ -195,11 +191,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             final GWTJahiaNode node = PagesTabItem.this.tree.getSelectionModel().getSelectedItem();
-            if (node.getExt().equals("icon-template")) {
-                l.add(node);
-                e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.TEMPLATETREE_TYPE);
-                e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
-            } else if (node.getExt().equals("icon-page")) {
+            if (node.getExt().equals("icon-page")) {
                 l.add(node);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);

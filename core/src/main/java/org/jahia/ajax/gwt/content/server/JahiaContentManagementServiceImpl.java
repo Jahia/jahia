@@ -800,22 +800,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.uploadedFile(location, tmpName, operation, newName, retrieveCurrentSession());
     }
 
-    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode) throws GWTJahiaServiceException {
+    public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, String configName) throws GWTJahiaServiceException {
         if (locale != null) {
             final Locale value = LanguageCodeConverters.languageCodeToLocale(locale);
             if (!getLocale().equals(value)) {
                 getRequest().getSession().setAttribute(ProcessingContext.SESSION_LOCALE, value);
             }
         }
-        return this.template.getRenderedContent(path, template, templateWrapper, contextParams, editMode, getRequest(), getResponse(), retrieveCurrentSession());
+        return this.template.getRenderedContent(path, template, templateWrapper, contextParams, editMode, configName, getRequest(), getResponse(), retrieveCurrentSession());
     }
 
     public String getNodeURL(String path, String locale, int mode) throws GWTJahiaServiceException {
-        return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale), mode, retrieveParamBean(), retrieveCurrentSession());
+        return this.template.getNodeURL(path, mode, retrieveParamBean().getRequest(), retrieveParamBean().getResponse(), retrieveCurrentSession());
     }
 
     public String getNodeURL(String path, String version, String workspace, String locale, int mode) throws GWTJahiaServiceException {
-        return this.template.getNodeURL(path, LanguageCodeConverters.languageCodeToLocale(locale), version, mode, retrieveParamBean(), retrieveCurrentSession(workspace));
+        return this.template.getNodeURL(path, version, mode, retrieveParamBean().getRequest(), retrieveParamBean().getResponse(), retrieveCurrentSession(workspace));
     }
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
@@ -932,7 +932,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public List<GWTJahiaPermission> getGrantedPermissions() throws GWTJahiaServiceException {
-        return rolesPermissions.getGrantedPermissions(getSite().getSiteKey(), getRemoteJahiaUser());
+        return rolesPermissions.getGrantedPermissions(getSite(), getRemoteJahiaUser());
     }
 
 

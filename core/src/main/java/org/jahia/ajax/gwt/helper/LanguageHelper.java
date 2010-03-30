@@ -31,25 +31,41 @@ public class LanguageHelper {
         List<GWTJahiaLanguage> items = new ArrayList<GWTJahiaLanguage>();
 
         try {
-            final JahiaSite currentSite = site;
-            final Set<String> languageSettings = currentSite.getLanguages();
-            if (languageSettings != null && languageSettings.size() > 0) {
-                final TreeSet<String> orderedLangs = new TreeSet<String>();
-                orderedLangs.addAll(languageSettings);
-                for (String langCode : orderedLangs) {
-                    if (user.isPermitted(new PermissionIdentity(langCode, "languages",  currentSite.getSiteKey()))) {
-                        GWTJahiaLanguage item = new GWTJahiaLanguage();
-                        item.setLanguage(langCode);
-                        item.setDisplayName(getDisplayName(langCode));
-                        item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
-                        item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
-                        items.add(item);
+            if (site != null)  {
+                final Set<String> languageSettings = site.getLanguages();
+                if (languageSettings != null && languageSettings.size() > 0) {
+                    final TreeSet<String> orderedLangs = new TreeSet<String>();
+                    orderedLangs.addAll(languageSettings);
+                    for (String langCode : orderedLangs) {
+                        if (user.isPermitted(new PermissionIdentity(langCode, "languages",  site.getSiteKey()))) {
+                            GWTJahiaLanguage item = new GWTJahiaLanguage();
+                            item.setLanguage(langCode);
+                            item.setDisplayName(getDisplayName(langCode));
+                            item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
+                            item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
+                            items.add(item);
+                        }
                     }
+                }
+            } else {
+                Locale[] locales = Locale.getAvailableLocales();
+                final TreeSet<String> orderedLangs = new TreeSet<String>();
+                for (Locale locale : locales) {
+                    orderedLangs.add(locale.getLanguage());
+                }
+                for (String langCode : orderedLangs) {
+                    GWTJahiaLanguage item = new GWTJahiaLanguage();
+                    item.setLanguage(langCode);
+                    item.setDisplayName(getDisplayName(langCode));
+                    item.setImage(getLangIcon(Jahia.getContextPath(), langCode));
+                    item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
+                    items.add(item);
                 }
             }
         } catch (Exception e) {
             logger.error("Error while creating change site link", e);
         }
+
         return items;
     }
 

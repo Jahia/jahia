@@ -58,10 +58,7 @@ public class JahiaGWTParameters {
     public static final String CONTEXT_PATH = "contextPath";
     public static final String SERVLET_PATH = "servletPath";
     public static final String QUERY_STRING = "queryString";
-    public static final String LIVE_URL = "liveUrl";
-    public static final String EDIT_URL = "editUrl";
-    public static final String PREVIEW_URL = "previewUrl";
-    public static final String COMPARE_URL = "compareUrl";
+    public static final String STUDIO_URL = "studioUrl";
     public static final String BASE_URL = "baseUrl";
     public static final String USER_URL = "userUrl";
 
@@ -133,7 +130,11 @@ public class JahiaGWTParameters {
 
     public static String getSiteKey() {
         if (siteKey == null) {
-            siteKey = jahiaParamDictionary.get(SITE_KEY);
+            if (jahiaParamDictionary.keySet().contains(SITE_KEY)) {
+                siteKey = jahiaParamDictionary.get(SITE_KEY);
+            } else {
+                siteKey = "";
+            }
         }
         return siteKey;
     }

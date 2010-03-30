@@ -48,6 +48,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRPortletNode;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSite;
@@ -385,17 +386,17 @@ public class NavigationHelper {
                     userNodes.add(root);
 
                 }
-
             } else if (key.equals(JCRClientUtils.SITE_REPOSITORY)) {
                 GWTJahiaNode root = getNode("/sites", currentUserSession);
                 if (root != null) {
-                    root.setDisplayName("sites");
-                    userNodes.add(root);
+                    List<GWTJahiaNode> list = ls(root, "jnt:virtualsite", null,null,false,false, currentUserSession);
+                    userNodes.addAll(list);
                 }
-                GWTJahiaNode templatesRoot = getNode("/sites/"+ site.getSiteKey() +"/templates", currentUserSession);
-                if (templatesRoot != null) {
-                    templatesRoot.setDisplayName("templates");
-                    userNodes.add(templatesRoot);
+            } else if (key.equals(JCRClientUtils.TEMPLATES_REPOSITORY)) {
+                GWTJahiaNode root = getNode("/templatesSet", currentUserSession);
+                if (root != null) {
+                    List<GWTJahiaNode> list = ls(root, "jnt:templatesSetFolder", null,null,false,false, currentUserSession);
+                    userNodes.addAll(list);
                 }
             } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
                 GWTJahiaNode root = getNode("/", currentUserSession);
@@ -680,7 +681,10 @@ public class NavigationHelper {
         n.setVersioned(versioned);
         n.setLanguageCode(node.getLanguage());
         try {
-            n.setSiteKey(node.resolveSite().getSiteKey());
+            JCRSiteNode site = node.resolveSite();
+            if (site != null) {
+                n.setSiteKey(site.getSiteKey());
+            }
         } catch (RepositoryException e) {
             logger.error("Error when getting sitekey", e);
         }

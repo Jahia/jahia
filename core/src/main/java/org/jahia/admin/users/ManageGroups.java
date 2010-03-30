@@ -419,9 +419,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         session.setAttribute("providerName",theGroup.getProviderName());
         //end predrag
 
-        boolean enforcePasswordPolicyForSite = StringUtils.equals("true",
-                jahiaSite.getSettings().getProperty(
-                        JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY));
+        boolean enforcePasswordPolicyForSite = true;
         request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY
                 + "ForSite", Boolean.valueOf(enforcePasswordPolicyForSite));
         
@@ -524,9 +522,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         int homePageID = homePageParam != null && homePageParam.length() > 0 ? Integer.parseInt(homePageParam) : -1;
         grp.setHomepageID(homePageID);
 
-        boolean enforcePasswordPolicyForSite = StringUtils.equals("true",
-                jahiaSite.getSettings().getProperty(
-                        JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY));
+        boolean enforcePasswordPolicyForSite = true;
         if (enforcePasswordPolicyForSite) {
             boolean enforcePasswordPolicyForGroup = StringUtils
                     .equals(

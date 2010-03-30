@@ -73,6 +73,8 @@ public final class JCRClientUtils {
 
     public final static String SITE_REPOSITORY = "siteRepository";
 
+    public final static String TEMPLATES_REPOSITORY = "templatesRepository";
+
     public final static String AUTHORIZATIONS_ACL = "default";
     public final static String MODES_ACL = "modes";
     public final static String ROLES_ACL = "roles";
@@ -83,8 +85,6 @@ public final class JCRClientUtils {
 
     public final static String GLOBAL_REPOSITORY = "globalRepository";
     
-    public static final String REUSABLE_COMPONENTS_REPOSITORY = "resuableComponentsRepository";
-
     public final static String INFO = "info";
     public final static String PRINCIPAL_ROLES_MAPPING = "principalRolesMapping";
     public final static String AUTHORIZATIONS = "authorizations";

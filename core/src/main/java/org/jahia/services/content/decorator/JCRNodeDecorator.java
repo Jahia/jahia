@@ -32,7 +32,6 @@
 package org.jahia.services.content.decorator;
 
 import org.jahia.params.ParamBean;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -684,7 +683,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.checkValidity();
     }
 
-    public JahiaSite resolveSite() throws RepositoryException {
+    public JCRSiteNode resolveSite() throws RepositoryException {
         return node.resolveSite();
     }
 

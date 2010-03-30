@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="tags.css" nodetype="jmix:tagged"/>
 <c:set var="usageThreshold" value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
-<jcr:node var="tagsRoot" path="${renderContext.siteNode.path}/tags"/>
+<jcr:node var="tagsRoot" path="${renderContext.site.path}/tags"/>
 <div class="tags">
 <h3><c:if test="${not empty currentNode.properties['jcr:title'] && not empty currentNode.properties['jcr:title'].string}" var="titleProvided">${fn:escapeXml(currentNode.properties['jcr:title'].string)}</c:if><c:if test="${not titleProvided}"><fmt:message key="tags"/></c:if></h3>
 <jcr:sql var="tags" sql="select * from [jnt:tag] as sel where ischildnode(sel,['${tagsRoot.path}']) order by sel.[j:nodename]"/>

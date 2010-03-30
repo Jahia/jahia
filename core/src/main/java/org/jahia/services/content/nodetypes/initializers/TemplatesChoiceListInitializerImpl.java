@@ -34,6 +34,7 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -84,7 +85,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         }
 
         SortedSet<Template> templates;
-        JahiaSite site = null;
+        JCRSiteNode site = null;
         try {
             if ("j:template".equals(declaringPropertyDefinition.getName())) {
                 templates = new TreeSet<Template>();

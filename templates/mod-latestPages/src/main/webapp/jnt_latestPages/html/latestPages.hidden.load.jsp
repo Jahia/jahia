@@ -30,10 +30,10 @@
 
 	<%-- Execute the query, depending on the selected mode --%>
 	<c:if test="${mode.string eq 'site'}">
-		<jcr:sql var="result" sql="SELECT * FROM [jnt:page] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.siteNode.path}') ORDER BY [jcr:${criteria.string}] DESC" limit="${nbOfResult.long}" />
+		<jcr:sql var="result" sql="SELECT * FROM [jnt:page] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.site.path}') ORDER BY [jcr:${criteria.string}] DESC" limit="${nbOfResult.long}" />
 	</c:if>
 	<c:if test="${mode.string eq 'platform'}">
-		<jcr:sql var="result" sql="SELECT * FROM [jnt:page] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.siteNode.parent.path}') ORDER BY [jcr:${criteria.string}] DESC" limit="${nbOfResult.long}" />
+		<jcr:sql var="result" sql="SELECT * FROM [jnt:page] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.site.parent.path}') ORDER BY [jcr:${criteria.string}] DESC" limit="${nbOfResult.long}" />
 	</c:if>
 
 	<%-- Debug message --%>

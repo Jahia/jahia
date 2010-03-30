@@ -226,11 +226,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         }
     }
 
-    public void setURLIntegrityCheckEnabled(boolean val) {
-        mSettings.setProperty(URL_INTEGRITY_CHECKING_ENABLED,
-                String.valueOf(val));
-    }
-
     public boolean isWAIComplianceCheckEnabled() {
         // we activate WAI compliance checks by default if no setting was found.
         final String value = getProperty(WAI_COMPLIANCE_CHECKING_ENABLED,
@@ -241,26 +236,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         } else {
             return Boolean.valueOf(value);
         }
-    }
-
-    public void setWAIComplianceCheckEnabled(boolean val) {
-        mSettings.setProperty(WAI_COMPLIANCE_CHECKING_ENABLED,
-                String.valueOf(val));
-    }
-
-    public boolean isHtmlCleanupEnabled() {
-        // we activate HTML cleanup by default if no setting was found.
-        String value = getProperty(HTML_CLEANUP_ENABLED, "true");
-        // backward compatibility
-        if ("0".equals(value) || "1".equals(value)) {
-            return "1".equals(value);
-        } else {
-            return Boolean.valueOf(value);
-        }
-    }
-
-    public void setHtmlCleanupEnabled(boolean val) {
-        mSettings.setProperty(HTML_CLEANUP_ENABLED, String.valueOf(val));
     }
 
     public boolean isHtmlMarkupFilteringEnabled() {
@@ -279,17 +254,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
                 .getProperty(HTML_MARKUP_FILTERING_TAGS);
     }
 
-    public void setHtmlMarkupFilteringEnabled(boolean val) {
-        mSettings.setProperty(HTML_MARKUP_FILTERING_ENABLED,
-                String.valueOf(val));
-    }
-
-    public void setHtmlMarkupFilteringTags(String tags) {
-        mSettings.setProperty(HTML_MARKUP_FILTERING_TAGS,
-                tags != null ? StringUtils.join(StringUtils.split(tags
-                        .toLowerCase(), ", ;/<>"), ",") : "");
-    }
-
     public String getTemplateFolder() {
         return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                 .getTemplatePackage(getTemplatePackageName()).getRootFolder();
@@ -303,86 +267,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     public void setDescr(String descr) {
         mDescr = descr;
     }
-
-
-    //-------------------------------------------------------------------------
-    /*
-    public String getSiteUrl(ProcessingContext jParam){
-
-        try {
-            return jParam.composeSiteUrl(this);
-        } catch ( JahiaException je ){
-            logger.debug("JahiaSite.getSiteUrl() exception " + je.getMessage(), je);
-        }
-        return "";
-    }
-    */
-
-
-    /**
-     * ACL handling based on JahiaPage model
-     */
-
-    private boolean checkAccess(JahiaUser user, int permission) {
-        if (user == null) {
-            return false;
-        }
-
-        // Test the access rights
-        boolean result = false;
-        try {
-            result = mACL.getPermission(user, permission);
-        } catch (JahiaACLException ex) {
-            // if an error occured, just return false;
-        }
-
-        if (!result) {
-            logger.debug("Permission denied for user [" +
-                    user.getName() + "] to page [" + getID() +
-                    "] for access permission [" + permission + "]");
-        } else {
-            logger.debug("Permission granted for user [" +
-                    user.getName() + "] to page [" + getID() +
-                    "] for access permission [" + permission + "]");
-        }
-
-        return result;
-    }
-
-
-    /**
-     * Check if the user has administration access on the specified site. Admin
-     * access means having the ability to admin the site ( manage users, groups,..)
-     *
-     * @param user Reference to the user.
-     * @return Return true if the user has admin right
-     */
-    public final boolean checkAdminAccess(JahiaUser user) {
-        return checkAccess(user, JahiaBaseACL.ADMIN_RIGHTS);
-    }
-
-    /**
-     * Check if the user has read access on the site.
-     *
-     * @param user Reference to the user.
-     * @return Return true if the user has read access
-     *         or false in any other case.
-     */
-    public final boolean checkReadAccess(JahiaUser user) {
-        return checkAccess(user, JahiaBaseACL.READ_RIGHTS);
-    }
-
-    /**
-     * Check if the user has Write access on the site.
-     *
-     * @param user Reference to the user.
-     * @return Return true if the user has read access
-     *         or false in any other case.
-     */
-    public final boolean checkWriteAccess(JahiaUser user) {
-        return checkAccess(user, JahiaBaseACL.WRITE_RIGHTS);
-    }
-
 
     /**
      * Return the site's ACL object.
@@ -437,10 +321,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         return languages;
     }
 
-    public String[] getActiveLanguageCodes() {
-        return getLanguages().toArray(new String[getLanguages().size()]);
-    }
-
 
     /**
      * Returns an List of site language  ( as Locale ).
@@ -482,37 +362,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
     public boolean isMixLanguagesActive() {
         return mixLanguagesActive;
-    }
-
-    public void setSettings(Properties props) {
-        this.mSettings = props != null ? props : new Properties();
-    }
-
-    public Properties getSettings() {
-        return mSettings;
-    }
-
-    /**
-     * Return jcr path "/siteKey/ContentPage_10/ContainerList_332"
-     *
-     * @return
-     * @throws JahiaException
-     */
-    public String getJCRPath() throws JahiaException {
-        try {
-            if (getUUID() != null) {
-                return JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID("jahia", getUUID()).getPath();
-            } else {
-                return getJCRLocalPath();
-            }
-        } catch (RepositoryException e) {
-            throw new JahiaException("Error while retrieving site's JCR Path", "Error while retrieving site's JCR Path", 0, 0, e);
-        }
-    }
-
-
-    public String getUUID() throws JahiaException {
-        return (String) getSettings().get("uuid");
     }
 
     public void setMandatoryLanguages(Set<String> mandatoryLanguages) {
@@ -625,7 +474,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         return defaultSite != null && defaultSite.equals(this);
     }
 
-    public String getProperty(String key, String defaultValue) {
+    private String getProperty(String key, String defaultValue) {
         String value = mSettings.getProperty(key);
         return value != null ? value : defaultValue;
     }
@@ -653,30 +502,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         return  googleAnalyticsProfils.get(jahiaProfileName);
     }
 
-
-    public  String getGoogleAnalyticsTrackedUrl(String jahiaProfileName) {
-      return  googleAnalyticsProfils.get(jahiaProfileName).getTypeUrl();
-    }
-
-    public  boolean getGoogleAnalyticsTrackingEnabled(String jahiaProfileName) {
-        return  googleAnalyticsProfils.get(jahiaProfileName).isEnabled();
-    }
-
-    public  String getGoogleAnalyticsPassword(String jahiaProfileName) {
-        return  googleAnalyticsProfils.get(jahiaProfileName).getPassword();
-    }
-
-    public  String getGoogleAnalyticsLogin(String jahiaProfileName) {
-        return  googleAnalyticsProfils.get(jahiaProfileName).getLogin();
-    }
-
-    public  String getGoogleAnalyticsProfile(String jahiaProfileName) {
-        return  googleAnalyticsProfils.get(jahiaProfileName).getProfile();
-    }
-
-    public  String getGoogleAnalyticsAccount(String jahiaProfileName) {
-        return  googleAnalyticsProfils.get(jahiaProfileName).getAccount();
-    }
 
     public void addOrUpdateGoogleAnalyticsProfile(String name, String trackedUrls, boolean trackingEnabled, String password, String login, String profile, String account){
        googleAnalyticsProfils.put(name,new GoogleAnalyticsProfile( name,  trackedUrls,  trackingEnabled,  password,  login,  profile,  account));

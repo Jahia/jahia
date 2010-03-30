@@ -475,25 +475,19 @@
  - j:allowedTypes (string, choicelist[nodetypes]) multiple
  + * (nt:base) = nt:base version
 
+[jnt:templatesSetFolder] > nt:base, jmix:hierarchyNode
+ + * (jnt:virtualsite)
+
 [jnt:templatesFolder] > nt:base, jmix:hierarchyNode
  + * (jnt:page)
 
+[jnt:template] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title
+ - j:picture (weakreference, file[mime='image/*'])
+ + j:target (jnt:page)
+
 [jmix:templateLocked] mixin
 
-[jnt:reusableComponentsRoot] > nt:base, jmix:hierarchyNode, jmix:collection
- + * (jnt:reusableComponentsFolder)
-
-[jnt:reusableComponentsFolder] > nt:base, jmix:hierarchyNode, jmix:collection
- + * (jnt:reusableComponentsFolder)
- + * (jnt:reusableComponent)
-
-[jnt:reusableComponent] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title
- - j:picture (weakreference, file[mime='image/*'])
- - j:targetReference (weakreference) hidden < nt:base
- + j:target (nt:base) version
-
-[jnt:reuseComponent] > nt:base
- - j:targetReference
+[jmix:templateShared] mixin
 
 //---------------------------------------------------------
 // Portlets

@@ -90,7 +90,7 @@
 			    return format(item);
 		    },
             extraParams: {
-                query : "/jcr:root${renderContext.site.JCRPath}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
+                query : "/jcr:root${renderContext.site.path}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
                 language : "xpath",
                 propertyMatchRegexp : "{$q}.*",
                 removeDuplicatePropValues : "true"
@@ -106,7 +106,7 @@
 		</c:if>
 		<fmt:message key='search.startSearching' var="startSearching"/>
        	<s:term id="searchTerm" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
-       	<s:site value="${renderContext.siteNode.name}" display="false"/>
+       	<s:site value="${renderContext.site.name}" display="false"/>
     	<input class="searchsubmit" type="submit"  title="<fmt:message key='search.submit'/>"/>
 
 </s:form><br class="clear"/>

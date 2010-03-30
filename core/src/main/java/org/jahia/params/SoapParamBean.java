@@ -32,6 +32,7 @@
 package org.jahia.params;
 
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.sites.JahiaSite;
@@ -52,7 +53,7 @@ public class SoapParamBean extends ParamBean {
     private JahiaPage page;
 
     public SoapParamBean(JahiaSite site, JahiaUser user) throws JahiaException {
-        super(null, null, Jahia.getStaticServletConfig().getServletContext(), System.currentTimeMillis(),
+        super(null, null, JahiaContextLoaderListener.getServletContext(), System.currentTimeMillis(),
                 ProcessingContext.POST_METHOD, site, user);
     }
 

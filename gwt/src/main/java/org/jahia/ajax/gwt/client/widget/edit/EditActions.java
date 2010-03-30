@@ -70,8 +70,8 @@ public class EditActions {
 
             public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
                 if (linker instanceof EditLinker) {
-                    GWTJahiaNode n = ((EditLinker) linker).getSidePanel().getPagesTabItem().findTemplateFolder();
-                    new CreatePageContentEngine(linker, n, gwtJahiaNodeType, null).show();
+//                    GWTJahiaNode n = ((EditLinker) linker).getSidePanel().getPagesTabItem().findTemplateFolder();
+//                    new CreatePageContentEngine(linker, n, gwtJahiaNodeType, null).show();
                 }
 
             }

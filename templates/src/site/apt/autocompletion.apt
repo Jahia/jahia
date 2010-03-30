@@ -47,7 +47,7 @@ Integration of auto-completion in templates
 			    return format(item);
 		    },
             extraParams: {
-                query : "/jcr:root${renderContext.site.JCRPath}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
+                query : "/jcr:root${renderContext.site.path}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
                 language : "xpath",
                 escapeColon : "false",
                 propertyMatchRegexp : "{$q}.*",
@@ -90,7 +90,7 @@ Integration of auto-completion in templates
  The next important part are the additional parameters passed to the AJAX request. First is the query :
 
 ---------------------------------------
-query : "/jcr:root${renderContext.site.JCRPath}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
+query : "/jcr:root${renderContext.site.path}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
 ---------------------------------------
 
  Note that we insert the path to the site dynamically, since it might change depending where the component is used. Also
@@ -198,7 +198,7 @@ Server:Apache-Coyote/1.1
  use SQL-2 syntax :
 
 ---------------------------------------
-query : "/jcr:root${renderContext.site.JCRPath}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
+query : "/jcr:root${renderContext.site.path}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
 language : "xpath",
 escapeColon : "false",
 propertyMatchRegexp : "{$q}.*",

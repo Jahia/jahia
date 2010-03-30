@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.exceptions.JahiaException;
@@ -243,7 +244,7 @@ public class Service extends JahiaService {
                                         ProcessingContext.EDIT);
                                 sitesService.addSite(user.getJahiaUser(), infos.getProperty("sitetitle"), infos.getProperty(
                                         "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
-                                        "description"), null, locale, tpl, "importRepositoryFile", null, uri, true,
+                                        "description"), locale, tpl, "importRepositoryFile", null, uri, true,
                                         false, ctx);
                             } catch (Exception e) {
                                 logger.error("Cannot create site " + infos.get("sitetitle"), e);
@@ -276,13 +277,13 @@ public class Service extends JahiaService {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 InputStream is = null;
                 try {
-                    is = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(path);
+                    is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
                     if (is == null) {
                         throw new FileNotFoundException("Unable to locate resource at the specified path: " + path);
                     }
                     session.importXML(targetNode.getPath(), is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
                     session.save();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     logger.error("Error reading content of file " + path, e);
                 } finally {
                     IOUtils.closeQuietly(is);
@@ -481,7 +482,7 @@ public class Service extends JahiaService {
                     if (!noMoreSite) {
                         sitesService.addSite(user, (String) infos.get(
                                 "sitetitle"), (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                                null, ctx.getLocale(), tpl,
+                                ctx.getLocale(), tpl,
                                 "fileImport", file,
                                 (String) infos.get(
                                         "importFileName"), true,
@@ -564,23 +565,6 @@ public class Service extends JahiaService {
         map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
         schedulerService.deleteJob(jobName, "RULES_JOBS");
         schedulerService.scheduleJob(jobDetail, new SimpleTrigger(jobName + "TRIGGER", "RULES_JOBS", node.getNode().getProperty(propertyName).getDate().getTime()));
-    }
-
-    public void createReusableComponent(final NodeWrapper node, KnowledgeHelper drools)
-            throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(
-                new JCRCallback<Boolean>() {
-                    public Boolean doInJCR(JCRSessionWrapper session)
-                            throws RepositoryException {
-                        String targetNode = node.getNode().getProperty("j:targetReference").getNode().getPath();
-                        session.checkout(node.getNode());
-                        node.getNode().getProperty("j:targetReference").remove();
-                        session.save();
-                        session.getWorkspace().copy(targetNode, node.getPath() + "/j:target");
-                        logger.info("Reusable component is created with the name '" + node.getName() + "' for target node " + targetNode);
-                        return true;
-                    }
-                });
     }
 
     public void setTaggingService(TaggingService taggingService) {

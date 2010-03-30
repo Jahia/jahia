@@ -22,7 +22,7 @@ Building search forms
   3: <s:form method="get">
   4:    <label for="searchTerm">Start searching:</label>
   5:      <s:term id="searchTerm"/>
-  6:      <s:site value="${renderContext.siteNode.name}" display="false"/>
+  6:      <s:site value="${renderContext.site.name}" display="false"/>
   7:      <input type="submit" value="Search" title="Search"/>
   8: </s:form>
 -------------

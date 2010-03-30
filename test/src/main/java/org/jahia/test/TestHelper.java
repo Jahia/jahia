@@ -100,7 +100,7 @@ public class TestHelper {
             service.removeSite(site);
         }
 
-        site = service.addSite(admin, name, serverName, name, name, null, ctx.getLocale(), templateSet,
+        site = service.addSite(admin, name, serverName, name, name, ctx.getLocale(), templateSet,
                                importFile == null ? "noImport" : "fileImport", importFile, null, false, false, ctx);
 
         ctx.setSite(site);

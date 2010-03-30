@@ -39,9 +39,6 @@
 <%@ page import="org.jahia.services.sites.*" %>
 <%@ page import="org.jahia.services.analytics.GoogleAnalyticsProfile" %>
 
-<%
-    Properties settings = currentSite.getSettings();
-%>
 <script type="text/javascript">
 
     function sendForm() {

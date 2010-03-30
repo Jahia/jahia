@@ -33,6 +33,7 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
+import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -273,7 +274,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
                 try {
                     boolean templateLocked = resource.getNode().isNodeType("jmix:templateLocked");
-                    boolean isTemplateMode = pageContext.getAttribute("isTemplate", PageContext.REQUEST_SCOPE) != null && (Boolean) pageContext.getAttribute("isTemplate", PageContext.REQUEST_SCOPE);
+                    boolean isTemplateMode = Studio.STUDIO_MODE.equals(renderContext.getEditModeConfigName());
 
                     if (renderContext.isEditMode() && editable && (isTemplateMode || !templateLocked)) {
                         String type = getModuleType();
@@ -407,7 +408,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         if (renderContext.isEditMode()) {
             boolean templateLocked = currentResource.getNode().isNodeType("jmix:templateLocked");
-            boolean isTemplateMode = pageContext.getAttribute("isTemplate", PageContext.REQUEST_SCOPE) != null && (Boolean) pageContext.getAttribute("isTemplate", PageContext.REQUEST_SCOPE);
+            boolean isTemplateMode = Studio.STUDIO_MODE.equals(renderContext.getEditModeConfigName());
             if (!templateLocked || isTemplateMode) {
                 printModuleStart("placeholder", templateLocked, path, null, null);
                 printModuleEnd();

@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
@@ -91,6 +92,7 @@ public class GWTInitializer {
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor/contents.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/edit.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-templates.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/diff.css\" rel=\"stylesheet\"/>\n");
@@ -142,9 +144,7 @@ public class GWTInitializer {
         if (request.getAttribute("url") != null) {
             URLGenerator url = (URLGenerator) request.getAttribute("url");
             params.put(JahiaGWTParameters.BASE_URL, url.getBase());
-            params.put(JahiaGWTParameters.LIVE_URL, url.getLive());
-            params.put(JahiaGWTParameters.EDIT_URL, url.getEdit());
-            params.put(JahiaGWTParameters.PREVIEW_URL, url.getPreview());
+            params.put(JahiaGWTParameters.STUDIO_URL, url.getStudio());
             params.put(JahiaGWTParameters.USER_URL, url.getUserProfile());
             addLanguageSwitcherLinks(renderContext,params,url);
         }
@@ -165,11 +165,13 @@ public class GWTInitializer {
      */
     public static void addLanguageSwitcherLinks(RenderContext renderContext, Map<String, String> params, URLGenerator urlGenerator) {
         try {
-            final JahiaSite currentSite = renderContext.getSite();
-            final Set<String> languageSettings = currentSite.getLanguages();
-            if (languageSettings != null && languageSettings.size() > 0) {
-                for (String lang : languageSettings) {
-                    params.put(lang, urlGenerator.getLanguages().get(lang));
+            final JCRSiteNode currentSite = renderContext.getSite();
+            if (currentSite != null) {
+                final Set<String> languageSettings = currentSite.getLanguages();
+                if (languageSettings != null && languageSettings.size() > 0) {
+                    for (String lang : languageSettings) {
+                        params.put(lang, urlGenerator.getLanguages().get(lang));
+                    }
                 }
             }
         }catch (Exception e) {

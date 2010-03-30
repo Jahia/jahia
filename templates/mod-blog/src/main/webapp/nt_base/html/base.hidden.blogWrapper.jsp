@@ -94,7 +94,7 @@ ${wrappedContent}
                     <c:set var="usageThreshold" value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
                     <div class="tags">
                         <h3><fmt:message key="tags"/></h3>
-                        <jcr:sql var="tags" sql="select * from [jnt:tag] where ischildnode(['${renderContext.siteNode.path}/tags']) order by [j:nodename]"/>
+                        <jcr:sql var="tags" sql="select * from [jnt:tag] where ischildnode(['${renderContext.site.path}/tags']) order by [j:nodename]"/>
                         <c:set var="totalUsages" value="0"/>
                         <jsp:useBean id="filteredTags" class="java.util.LinkedHashMap"/>
                         <c:forEach items="${tags.nodes}" var="tag">

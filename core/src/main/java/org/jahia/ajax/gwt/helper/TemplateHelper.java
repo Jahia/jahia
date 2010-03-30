@@ -2,16 +2,12 @@ package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesBaseService;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,11 +39,12 @@ public class TemplateHelper {
      * @param templateWrapper
      * @param contextParams
      * @param editMode
+     * @param configName
      * @param request
      * @param response
      * @param currentUserSession
      */
-    public GWTRenderResult getRenderedContent(String path, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTRenderResult getRenderedContent(String path, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, String configName, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
@@ -55,6 +52,7 @@ public class TemplateHelper {
             request.setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
+            renderContext.setEditModeConfigName(configName);
             renderContext.setMainResource(r);
             if (contextParams != null) {
                 for (Map.Entry<String, String> entry : contextParams.entrySet()) {
@@ -63,23 +61,8 @@ public class TemplateHelper {
             }
             r.pushWrapper(templateWrapper);
 
-            JahiaSite site = node.resolveSite();
-            if (site == null) {
-                site = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
-            }
-            if (site == null) {
-                try {
-                    site = JahiaSitesBaseService.getInstance().getDefaultSite();
-                } catch (JahiaException e) {
-                    logger.error("Cannot get site",e);
-                }
-            }
-            if (site != null) {
-                request.getSession().setAttribute(ProcessingContext.SESSION_SITE, site);
-                renderContext.setSite(site);
-                renderContext.setSiteNode(currentUserSession.getNode("/sites/" + site.getSiteKey()));
-            }
-
+            JCRSiteNode site = node.resolveSite();
+            renderContext.setSite(site);
             String res = renderService.render(r, renderContext);
             result = new GWTRenderResult(res, new HashMap(renderContext.getStaticAssets()));
         } catch (RepositoryException e) {
@@ -124,33 +107,34 @@ public class TemplateHelper {
     /**
      * Get node url depending
      *
+     * @param request
+     * @param response
      * @param currentUserSession
-     * @param locale
      * @return
      */
-    public String getNodeURL(String path, Locale locale, int mode, ParamBean ctx, JCRSessionWrapper currentUserSession) {
-        return getNodeURL(path, locale, null, mode, ctx, currentUserSession);
+    public String getNodeURL(String path, int mode, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) {
+        return getNodeURL(path, null, mode, request, response, currentUserSession);
     }
 
     /**
      * Get node url depending
      *
+     * @param request
+     * @param response
      * @param currentUserSession
-     * @param locale
      * @return
      */
-    public String getNodeURL(String path, Locale locale, String versionNumber, int mode, ParamBean ctx, JCRSessionWrapper currentUserSession) {
+    public String getNodeURL(String path, String versionNumber, int mode, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) {
         try {
-            if (locale == null) {
-                locale = ctx.getLocale();
-            }
             final JCRSessionWrapper session = currentUserSession;
             final JCRNodeWrapper node = session.getNode(path);
             final Resource resource = new Resource(node, "html", null, null);
-            ctx.getRequest().setAttribute("mode", "edit");
-            final RenderContext renderContext = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());
-            renderContext.setSite(ctx.getSite());
-            renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(null, locale).getNode("/sites/" + ctx.getSite().getSiteKey()));
+            request.setAttribute("mode", "edit");
+            final RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
+
+            JCRSiteNode site = node.resolveSite();
+            renderContext.setSite((JCRSiteNode) node);
+
             if (mode == EDIT) {
                 renderContext.setEditMode(true);
             } else {
@@ -159,9 +143,9 @@ public class TemplateHelper {
             renderContext.setMainResource(resource);
 
             final URLGenerator urlGenerator = new URLGenerator(renderContext, resource, renderService.getStoreService());
-            if (mode == 0) {
+            if (mode == LIVE) {
                 return urlGenerator.getLive(versionNumber);
-            } else if (mode == 1) {
+            } else if (mode == PREVIEW) {
                 return urlGenerator.getPreview(versionNumber);
             } else {
                 return urlGenerator.getEdit(versionNumber);

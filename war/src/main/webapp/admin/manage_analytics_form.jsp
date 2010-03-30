@@ -48,10 +48,10 @@
     if (request.getParameter("sub") != null) {
         if (request.getParameter("sub").equals("displayEdit")) {
             operation = "saveEdit&profile=" + jahiaGAprofile;
-            gaUserAccount = currentSite.getGoogleAnalyticsAccount(jahiaGAprofile);
-            gaLogin = currentSite.getGoogleAnalyticsLogin(jahiaGAprofile);
-            gaProfile = currentSite.getGoogleAnalyticsProfile(jahiaGAprofile);
-            gaPassword = currentSite.getGoogleAnalyticsPassword(jahiaGAprofile);
+            gaUserAccount = currentSite.googleAnalyticsProfils.get(jahiaGAprofile).getAccount();
+            gaLogin = currentSite.googleAnalyticsProfils.get(jahiaGAprofile).getLogin();
+            gaProfile = currentSite.googleAnalyticsProfils.get(jahiaGAprofile).getProfile();
+            gaPassword = currentSite.googleAnalyticsProfils.get(jahiaGAprofile).getPassword();
         } else {
             operation = "add";
             gaUserAccount = (String) request.getAttribute("gaUserAccount");

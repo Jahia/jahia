@@ -17,9 +17,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Edit extends Render {
     private static Logger logger = Logger.getLogger(Edit.class);
+    public static final String EDIT_MODE = "editmode";
+
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
+        context.setEditModeConfigName(EDIT_MODE);
+        context.setServletPath(getEditServletPath());
         return context;
     }
 

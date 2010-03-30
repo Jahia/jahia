@@ -20,6 +20,7 @@ import org.jahia.services.rbac.jcr.PermissionImpl;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.rbac.jcr.RoleImpl;
 import org.jahia.services.rbac.jcr.RoleService;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaPrincipal;
@@ -81,15 +82,17 @@ public class RolesPermissionsHelper {
      * @param jcrSession
      * @return
      */
-    public List<GWTJahiaPermission> getGrantedPermissions(final String site, JahiaUser user)
+    public List<GWTJahiaPermission> getGrantedPermissions(final JahiaSite site, JahiaUser user)
             throws GWTJahiaServiceException {
         final List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
         try {
             long timer = System.currentTimeMillis();
             // site permission
-            for (PermissionImpl permission : roleService.getPermissions(site)) {
-                if (user.isPermitted(permission)) {
-                    permissions.add(toPermission(permission));
+            if (site != null) {
+                for (PermissionImpl permission : roleService.getPermissions(site.getSiteKey())) {
+                    if (user.isPermitted(permission)) {
+                        permissions.add(toPermission(permission));
+                    }
                 }
             }
 

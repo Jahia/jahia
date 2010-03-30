@@ -36,11 +36,9 @@ import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +55,7 @@ public class RenderContext {
     private HttpServletResponse response;
     private Resource mainResource;
     private JahiaUser user;
-    private JahiaSite site;
+    private JCRSiteNode site;
     private URLGenerator URLGenerator;
     private Locale uiLocale;
 
@@ -65,6 +63,8 @@ public class RenderContext {
 
     private boolean includeSubModules = true;
     private boolean isEditMode = false;
+    private String editModeConfigName;
+    private String servletPath;
     private boolean isContributionMode = false;
 
     private Set<String> displayedModules = new HashSet<String>();
@@ -75,8 +75,6 @@ public class RenderContext {
         }
     });
 
-    private JCRNodeWrapper siteNode;
-    
     private String contentType;
 
     private Map<String,Map <String, Integer>> templatesCacheExpiration = new HashMap<String, Map<String,Integer>>();
@@ -102,11 +100,11 @@ public class RenderContext {
         return user;
     }
 
-    public JahiaSite getSite() {
+    public JCRSiteNode getSite() {
         return site;
     }
 
-    public void setSite(JahiaSite site) {
+    public void setSite(JCRSiteNode site) {
         this.site = site;
     }
 
@@ -136,6 +134,22 @@ public class RenderContext {
 
     public void setEditMode(boolean editMode) {
         isEditMode = editMode;
+    }
+
+    public String getEditModeConfigName() {
+        return editModeConfigName;
+    }
+
+    public void setEditModeConfigName(String editModeConfigName) {
+        this.editModeConfigName = editModeConfigName;
+    }
+
+    public String getServletPath() {
+        return servletPath;
+    }
+
+    public void setServletPath(String servletPath) {
+        this.servletPath = servletPath;
     }
 
     public boolean isContributionMode() {
@@ -198,14 +212,6 @@ public class RenderContext {
         return mainResource;
     }
 
-    public void setSiteNode(JCRNodeWrapper siteNode) {
-        this.siteNode = siteNode;
-    }
-
-    public JCRNodeWrapper getSiteNode() {
-        return siteNode;
-    }
-
 	public String getContentType() {
     	return contentType;
     }
@@ -226,7 +232,7 @@ public class RenderContext {
         if (uiLocale == null) {
             Locale locale = null;
             if(!getUser().getUsername().equals(Constants.GUEST_USERNAME)) {
-                locale = UserPreferencesHelper.getPreferredLocale(getUser(), getSite());
+                locale = UserPreferencesHelper.getPreferredLocale(getUser());
             }
             if (locale == null) {
                 locale = getMainResourceLocale();
@@ -238,7 +244,10 @@ public class RenderContext {
     }
 
     public Locale getFallbackLocale() {
-        return site.isMixLanguagesActive()? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()):null;
+        if (site != null) {
+            return site.isMixLanguagesActive()? LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()):null;
+        }
+        return null;
     }
 
     public void setLiveMode(boolean liveMode) {

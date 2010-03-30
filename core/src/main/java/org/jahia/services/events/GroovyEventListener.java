@@ -35,6 +35,7 @@ import groovy.lang.Binding;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
@@ -188,7 +189,7 @@ public class GroovyEventListener extends JahiaEventListener implements Initializ
     private String checkPath(String path, ProcessingContext ctx) {
         String listenerPath = null;
         try {
-            listenerPath = Jahia.getStaticServletConfig().getServletContext().getResource(ctx.settings().getTemplatesContext() + path) != null ? path : null;
+            listenerPath = JahiaContextLoaderListener.getServletContext().getResource(ctx.settings().getTemplatesContext() + path) != null ? path : null;
         } catch (MalformedURLException e) {
             logger.warn(e.getMessage(), e);
         }

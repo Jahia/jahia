@@ -26,8 +26,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class LanguageSwitcherActionItem extends BaseActionItem {
-    private List<String> languages;
-
     public LanguageSwitcherActionItem() {
     }
 
@@ -61,7 +59,7 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
             }
 
             public void onFailure(Throwable throwable) {
-                Log.error("Unable to load avalibale mixin", throwable);
+                Log.error("Unable to load available languages", throwable);
             }
         });
 

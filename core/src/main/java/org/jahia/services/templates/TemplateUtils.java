@@ -35,6 +35,7 @@ import java.net.MalformedURLException;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
@@ -57,7 +58,7 @@ public class TemplateUtils {
     public static boolean isResourceAvailable(String resourcePath) {
         boolean available = false;
         try {
-            available = Jahia.getStaticServletConfig().getServletContext()
+            available = JahiaContextLoaderListener.getServletContext()
                     .getResource(resourcePath) != null;
         } catch (MalformedURLException e) {
             logger.debug(e.getMessage(), e);

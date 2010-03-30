@@ -26,7 +26,7 @@ import java.util.*;
  */
 public class CreatePageContentEngine extends CreateContentEngine {
     protected CreatePageTabItem createPageTab;
-
+    protected GWTJahiaNode defaultTemplate;
     public CreatePageContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetName) {
         super(linker, parent, type, targetName);
     }
@@ -35,8 +35,9 @@ public class CreatePageContentEngine extends CreateContentEngine {
         super(linker, parent, type, targetName, createInParentAndMoveBefore);
     }
 
-    public CreatePageContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore) {
+    public CreatePageContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, GWTJahiaNode defaultTemplate, String targetName, boolean createInParentAndMoveBefore) {
         super(linker, parent, type, props, targetName, createInParentAndMoveBefore);
+        this.defaultTemplate = defaultTemplate;
     }
 
     @Override
@@ -76,5 +77,9 @@ public class CreatePageContentEngine extends CreateContentEngine {
                 }
             });
         }
+    }
+
+    public GWTJahiaNode getDefaultTemplate() {
+        return defaultTemplate;
     }
 }

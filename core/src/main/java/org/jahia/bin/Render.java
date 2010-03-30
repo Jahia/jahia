@@ -46,6 +46,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
@@ -168,7 +169,9 @@ public class Render extends HttpServlet implements Controller,
 
     protected RenderContext createRenderContext(HttpServletRequest req,
             HttpServletResponse resp, JahiaUser user) {
-        return new RenderContext(req, resp, user);
+        RenderContext context =  new RenderContext(req, resp, user);
+        context.setServletPath(getRenderServletPath());
+        return context;
     }
 
     protected Date getVersionDate(HttpServletRequest req){
@@ -326,13 +329,8 @@ public class Render extends HttpServlet implements Controller,
         if (urlResolver.getPath().endsWith(".do")) {
             resource = urlResolver.getResource(getVersionDate(req));
             renderContext.setMainResource(resource);
-            renderContext.setSite(Jahia.getThreadParamBean().getSite());
-            renderContext.setSiteNode(JCRSessionFactory.getInstance()
-                    .getCurrentUserSession(urlResolver.getWorkspace(),
-                            urlResolver.getLocale()).getNode(
-                            "/sites/"
-                                    + Jahia.getThreadParamBean().getSite()
-                                            .getSiteKey()));
+            JCRSiteNode site = resource.getNode().resolveSite();
+            renderContext.setSite(site);
 
             action = templateService.getActions().get(
                     resource.getResolvedTemplate());
@@ -591,13 +589,11 @@ public class Render extends HttpServlet implements Controller,
                 } else {
                     Resource resource = urlResolver
                             .getResource(getVersionDate(req));
-                    final JahiaSite site = paramBean.getSite();
+//                    final JahiaSite site = paramBean.getSite();
                     renderContext.setMainResource(resource);
+                    JCRSiteNode site = resource.getNode().resolveSite();
+
                     renderContext.setSite(site);
-                    renderContext.setSiteNode(JCRSessionFactory.getInstance()
-                            .getCurrentUserSession(urlResolver.getWorkspace(),
-                                    urlResolver.getLocale()).getNode(
-                                    "/sites/" + site.getSiteKey()));
                     resource.pushWrapper("wrapper.fullpage");
                     resource.pushWrapper("wrapper.bodywrapper");
 

@@ -61,7 +61,7 @@
 			    return format(item);
 		    },
             extraParams: {
-                query : "/jcr:root${renderContext.site.JCRPath}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
+                query : "/jcr:root${renderContext.site.path}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
                 language : "xpath",
                 escapeColon : "false",
                 propertyMatchRegexp : "{$q}.*",

@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
@@ -74,18 +75,25 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 nodetype = s[1];
             }
             try {
-                JahiaSite site;
+                JCRSiteNode site = null;
                 JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextNode");
                 if (contextNode != null) {
                     site = contextNode.resolveSite();
                 } else {
-                    site = JahiaSitesBaseService.getInstance().getDefaultSite();
+                    final JahiaSite defaultSite = JahiaSitesBaseService.getInstance().getDefaultSite();
+                    if (defaultSite != null) {
+                        site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode("/sites/"+ defaultSite.getSiteKey());
+                    }
                 }
-
-                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null, locale,
-                                                                                                 site.isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(
-                                                                                                         site.getDefaultLanguage()) : null);
-                final JCRNodeWrapper node = jcrSessionWrapper.getNode(s[0].replace("$currentSite", site.getSiteKey()));
+                String path = s[0];
+                Locale fallbackLocale = null;
+                if (site != null) {
+                    fallbackLocale = site.isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(
+                            site.getDefaultLanguage()) : null;
+                    path = path.replace("$currentSite", site.getSiteKey());
+                }
+                final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null, locale, fallbackLocale);
+                final JCRNodeWrapper node = jcrSessionWrapper.getNode(path);
                 final NodeIterator nodeIterator = node.getNodes();
                 while (nodeIterator.hasNext()) {
                     JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();

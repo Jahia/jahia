@@ -60,24 +60,6 @@ public class TemplateAttributesFilter extends AbstractFilter {
         chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request",
                 new LocalizationContext(new JahiaResourceBundle(resource.getLocale(), script.getTemplate().getModule().getName()), resource.getLocale()));
 
-        if (context.isEditMode()) {
-            if (request.getAttribute("isTemplate") == null) {
-                JCRNodeWrapper current = resource.getNode();
-                while (true) {
-                    try {
-                        if (current.isNodeType("jnt:templatesFolder")) {
-                            request.setAttribute("isTemplate", Boolean.TRUE);
-                            break;
-                        }
-                        current = current.getParent();
-                    } catch (ItemNotFoundException e) {
-                        request.setAttribute("isTemplate", Boolean.FALSE);
-                        break;
-                    }
-                }
-            }
-        }
-
         String out;
         out = chain.doFilter(context, resource);
 

@@ -372,8 +372,7 @@ public class ManageSites extends AbstractAdministrationModule {
         request.setAttribute("warningMsg", warningMsg);
         request.setAttribute("defaultSite", defaultSite);
         request.setAttribute("newAdminOnly", Boolean.valueOf(grantedSites.size() <= 0));
-        String enforcePasswordPolicy = newJahiaSite.getSettings().getProperty(
-                JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY);
+        String enforcePasswordPolicy = "true";
         request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
                 enforcePasswordPolicy != null ? enforcePasswordPolicy
                         : "true");
@@ -491,10 +490,6 @@ public class ManageSites extends AbstractAdministrationModule {
 //                site.setTemplatesAutoDeployMode(true);
 //                site.setWebAppsAutoDeployMode(true);
 
-                site.getSettings().setProperty(
-                        JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                        enforcePasswordPolicy ? "true" : "false");
-
 
                 // set in session...
                 session.setAttribute(CLASS_NAME + "newJahiaSite", site);
@@ -519,9 +514,6 @@ public class ManageSites extends AbstractAdministrationModule {
                         null);
 
 
-                site.getSettings().setProperty(
-                        JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                        enforcePasswordPolicy ? "true" : "false");
                 session.setAttribute(CLASS_NAME + "newJahiaSite", site);
                 request.setAttribute("newJahiaSite", site);
                 request.setAttribute("warningMsg", warningMsg);
@@ -819,9 +811,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     .getInstance().getJahiaPasswordPolicyService();
             JahiaSite newSite = (JahiaSite) session.getAttribute(CLASS_NAME
                     + "newJahiaSite");
-            if (newSite != null
-                    && "true".equals(newSite.getSettings().get(
-                            JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY))) {
+            if (newSite != null) {
                 PolicyEnforcementResult evalResult = pwdPolicyService
                         .enforcePolicyOnUserCreate(new JahiaDBUser(-1,
                                 adminUsername, adminPassword, null, null),
@@ -967,7 +957,7 @@ public class ManageSites extends AbstractAdministrationModule {
             JahiaUser currentUser = jums.lookupUser((String) session.getAttribute(CLASS_NAME + "jahiaLoginUsername"));
             // add the site in siteManager...
             site = jsms.addSite(currentUser, site.getTitle(), site.getServerName(), site.getSiteKey(), site.getDescr(),
-                    site.getSettings(), selectedLocale, (String) request.getAttribute("selectedTmplSet"), (String) request.getAttribute("firstImport"),
+                    selectedLocale, (String) request.getAttribute("selectedTmplSet"), (String) request.getAttribute("firstImport"),
                     (File) request.getAttribute("fileImport"),
                     (String) request.getAttribute("fileImportName"), (Boolean) request.getAttribute("asAJob"),
                     (Boolean) request.getAttribute("doImportServerPermissions"), jParams);
@@ -1239,8 +1229,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             Boolean defaultSite = Boolean.FALSE;
 
-            String enforcePasswordPolicy = site.getSettings().getProperty(
-                    JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY);
+            String enforcePasswordPolicy = "true";
             request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
                     enforcePasswordPolicy != null ? enforcePasswordPolicy
                             : "false");
@@ -1334,7 +1323,7 @@ public class ManageSites extends AbstractAdministrationModule {
             JahiaTemplatesPackage tmplPack = templateMgr
                     .getTemplatePackage(selectedTmplSet);
 
-            String enforcePasswordPolicy = site.getSettings().getProperty(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY);
+            String enforcePasswordPolicy = "true";
             request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY, enforcePasswordPolicy != null ? enforcePasswordPolicy : "false");
 
             Boolean defaultSite = Boolean.FALSE;
@@ -1485,9 +1474,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 site.setServerName(siteServerName);
                 site.setDescr(siteDescr);
 
-                site.getSettings().setProperty(
-                        JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                        enforcePasswordPolicy ? "true" : "false");
                 sMgr.updateSite(site);
 
                 JahiaSite defSite = getDefaultSite();
@@ -2088,7 +2074,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         try {
                             if (!noMoreSite) {
                                 ServicesRegistry.getInstance().getJahiaSitesService().addSite(jParams.getUser(), (String) infos.get("sitetitle"),
-                                        (String) infos.get("siteservername"), (String) infos.get("sitekey"), "", null, defaultLocale, tpl, "fileImport", file, (String) infos.get("importFileName"), true, false, jParams);
+                                        (String) infos.get("siteservername"), (String) infos.get("sitekey"), "", defaultLocale, tpl, "fileImport", file, (String) infos.get("importFileName"), true, false, jParams);
 
 //                                createSite(jParams.getUser(), (String) infos.get("sitetitle"),
 //                                        (String) infos.get("siteservername"), (String) infos.get("sitekey"), "", false, jParams.getLocale(), tpl, "fileImport", file, (String) infos.get("importFileName"),true);

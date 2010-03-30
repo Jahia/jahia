@@ -1,6 +1,7 @@
 package org.jahia.services.render;
 
 import org.apache.commons.io.IOUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.bin.Jahia;
 import org.apache.commons.lang.StringUtils;
@@ -46,7 +47,7 @@ public class FileSystemTemplate implements Comparable<FileSystemTemplate>, Templ
         if (!propCache.containsKey(propName)) {
             properties = new Properties();            
             propCache.put(propName, properties);
-            InputStream is = Jahia.getStaticServletConfig().getServletContext().getResourceAsStream(propName);
+            InputStream is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(propName);
             if (is != null) {
                 try {
                     properties.load(is);

@@ -37,6 +37,9 @@
                 <entry key="/edit/**">
                     <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit"/>
                 </entry>
+                <entry key="/studio/**">
+                    <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Studio"/>
+                </entry>
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find"/>
                 </entry>

@@ -40,6 +40,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -66,11 +67,11 @@ public class ConditionalFilterTest extends TestCase {
     private JCRNodeWrapper node;
     private ParamBean paramBean;
     private JCRSessionWrapper session;
-    private JahiaSite site;
+    private JCRSiteNode site;
 
     @Override
     protected void setUp() throws Exception {
-        site = TestHelper.createSite("test");
+        JahiaSite site = TestHelper.createSite("test");
 
         paramBean = (ParamBean) Jahia.getThreadParamBean();
 
@@ -82,6 +83,7 @@ public class ConditionalFilterTest extends TestCase {
         */
         
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
 
         JCRNodeWrapper shared = session.getNode("/shared");
         if (shared.hasNode("testContent")) {

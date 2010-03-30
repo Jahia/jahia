@@ -34,6 +34,11 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import javax.jcr.Value;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.jahia.services.seo.VanityUrl;
+
 import java.util.Map;
 import java.util.LinkedHashMap;
 
@@ -88,6 +93,6 @@ public class ChoiceListValue implements Comparable<ChoiceListValue> {
     }
 
     public int compareTo(ChoiceListValue o) {
-        return getDisplayName().compareTo(o.getDisplayName());
+        return getDisplayName().compareToIgnoreCase(o.getDisplayName());
     }
 }

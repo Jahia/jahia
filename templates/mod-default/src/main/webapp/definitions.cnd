@@ -128,7 +128,11 @@
 [jnt:navMenuMultilevel] > jnt:content, jmix:navMenuItem, jmix:interactiveContent
  - j:startLevel (long) = 1
  - j:maxDepth (long) = 3
- - j:relativeToCurrentNode (boolean)
+ - j:useVisitedNodeAsBaseline (boolean)
+ - j:baselineNode (weakreference)
+ - j:allowedTypes (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList;jnt:formElementValidation']) = 'jnt:page' multiple
  
-[jnt:navMenuChildNodes] > jnt:nodeReference, jmix:navMenuItem, jmix:interactiveContent
+[jnt:navMenuChildNodes] > jmix:navMenuItem, jmix:interactiveContent
+ - j:baselineNode (weakreference)
+ - j:allowedTypes (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList;jnt:formElementValidation']) = 'jnt:page' multiple
 //---------------------------------------------------------

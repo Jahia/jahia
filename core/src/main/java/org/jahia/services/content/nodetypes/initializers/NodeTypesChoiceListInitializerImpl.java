@@ -36,7 +36,9 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
         } catch (NoSuchNodeTypeException e) {
             logger.error("Cannot get type",e);
         }
-
+        
+        Collections.sort(listValues);
+        
         return listValues;
     }
 }

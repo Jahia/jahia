@@ -4,15 +4,15 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<jcr:nodeProperty node="${currentNode}" name="j:node" var="reference"/>
+<jcr:nodeProperty node="${currentNode}" name="j:baselineNode" var="baselineNode"/>
 
 <c:set var="startLevel" value="${not empty param.startLevel ? param.startLevel : currentNode.properties['j:startLevel'].long}"/>
-<c:set var="mainNode" value="${not empty reference ? reference.node : renderContext.mainResource.node}"/>
+<c:set var="useVisitedNodeAsBasline" value="${not empty param.useVisitedNodeAsBaseline ? param.useVisitedNodeAsBaseline : currentNode.properties['j:useVisitedNodeAsBaseline'].boolean}"/>
+<c:set var="mainNode" value="${not empty baselineNode ? baselineNode.node : (useVisitedNodeAsBaseline or jcr:isNodeType(renderContext.mainResource.node, 'jnt:page') ? renderContext.mainResource.node : jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page'))}"/>
 
-<jcr:navigationMenu var="menu" menuNode="${currentNode}" startLevel="${startLevel}" 
-    node="${jcr:isNodeType(mainNode, 'jnt:page') ? mainNode : jcr:getParentOfType(mainNode, 'jnt:page')}" 
+<jcr:navigationMenu var="menu" menuNode="${currentNode}" startLevel="${startLevel}" node="${mainNode}" 
     maxDepth="${not empty param.maxDepth ? param.maxDepth : currentNode.properties['j:maxDepth'].long}" 
-    relativeToCurrentNode="${not empty param.relativeToCurrentNode ? param.relativeToCurrentNode : currentNode.properties['j:relativeToCurrentNode'].boolean}"/>
+    relativeToCurrentNode="${useVisitedNodeAsBasline}"/>
     
 <c:forEach items="${menu}" var="navMenuBean">
     <jcr:nodeProperty node="${navMenuBean.node}" name="jcr:title" var="title"/>

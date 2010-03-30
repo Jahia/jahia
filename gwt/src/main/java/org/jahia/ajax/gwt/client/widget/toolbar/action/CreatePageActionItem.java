@@ -22,7 +22,6 @@ public class CreatePageActionItem extends BaseActionItem {
             if (node != null) {
                 if (node.getNodeTypes().contains("jnt:page")) {
                     setEnabled(node.isWriteable() && !node.isLocked());
-                    updateTitle(getGwtToolbarItem().getTitle());
                 } else {
                     setEnabled(false);
                 }

@@ -19,12 +19,8 @@ public class CreateTemplateActionItem extends BaseActionItem {
         if (linker != null) {
             GWTJahiaNode node = linker.getMainNode();
             if (node != null) {
-                if (node.getNodeTypes().contains("jnt:page")) {
+                if (node.getNodeTypes().contains("jnt:templatesFolder")) {
                     setEnabled(node.isWriteable() && !node.isLocked());
-                    updateTitle(getGwtToolbarItem().getTitle());
-                } else if (node.getNodeTypes().contains("jnt:templatesFolder")) {
-                    setEnabled(node.isWriteable() && !node.isLocked());
-                    updateTitle("New template");
                 } else {
                     setEnabled(false);
                 }

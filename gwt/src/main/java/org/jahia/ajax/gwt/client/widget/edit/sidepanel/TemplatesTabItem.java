@@ -80,7 +80,7 @@ public class TemplatesTabItem extends SidePanelTabItem {
         });
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
 
-        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.pages", tree.getSelectionModel()));
+        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.templates", tree.getSelectionModel()));
 
         add(tree);
     }

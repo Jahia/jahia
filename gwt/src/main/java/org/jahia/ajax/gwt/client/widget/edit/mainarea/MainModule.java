@@ -85,7 +85,7 @@ public class MainModule extends ContentPanel implements Module {
         addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, editLinker));
 
         // contextMenu
-        contextMenu = new ActionMenu("contextmenu-editmode", editLinker) {
+        contextMenu = new ActionMenu("contextmenu-"+config.getName(), editLinker) {
             @Override
             public void beforeShow() {
                 makeSelected();

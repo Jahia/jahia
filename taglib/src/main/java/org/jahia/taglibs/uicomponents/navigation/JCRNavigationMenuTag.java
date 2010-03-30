@@ -119,7 +119,7 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
             if (isRelativeToCurrentNode() && baseNode != null) {
                 baseNode = baseNode.getParent();
             }
-            while (baseNode != null && !baseNode.isNodeType("jnt:virtualsite")
+            while (baseNode != null && !baseNode.isNodeType(Constants.JAHIANT_VIRTUALSITE)
                     && (!isRelativeToCurrentNode() || realStartLevel < 0)) {
                 baseNode = baseNode.getParent();
                 if (isRelativeToCurrentNode()) {
@@ -282,6 +282,11 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
 
                 boolean isInPath = true;
                 if (level > realStartLevel) {
+                    if (nodeWrapper.hasProperty("j:hideInNavMenu")
+                            && nodeWrapper.getProperty("j:hideInNavMenu")
+                                    .getBoolean()) {
+                        continue;
+                    }
                     if (!CollectionUtils.isEmpty(getTypesToFilterBy())) {
                         boolean found = false;
                         for (String typeValue : getTypesToFilterBy()) {
@@ -294,17 +299,43 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                             continue;
                         }
                     }
-                    if (!CollectionUtils.isEmpty(getTagsToFilterBy())) {
+                    if (!CollectionUtils.isEmpty(getTagsToFilterBy())
+                            || !CollectionUtils
+                                    .isEmpty(getCategoriesToFilterBy())) {
                         boolean found = false;
-                        for (String filterTag : getTagsToFilterBy()) {
-                            JCRPropertyWrapper property = nodeWrapper
-                                    .hasProperty(Constants.TAGS) ? nodeWrapper
-                                    .getProperty(Constants.TAGS) : null;
-                            if (property != null) {
-                                for (Value setTag : property.getValues()) {
-                                    if (setTag.getString().equals(filterTag)) {
-                                        found = true;
-                                        break;
+                        if (!CollectionUtils.isEmpty(getTagsToFilterBy())) {
+                            for (String filterTag : getTagsToFilterBy()) {
+                                JCRPropertyWrapper property = nodeWrapper
+                                        .hasProperty(Constants.TAGS) ? nodeWrapper
+                                        .getProperty(Constants.TAGS)
+                                        : null;
+                                if (property != null) {
+                                    for (Value setTag : property.getValues()) {
+                                        if (setTag.getString()
+                                                .equals(filterTag)) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (!found
+                                && !CollectionUtils
+                                        .isEmpty(getCategoriesToFilterBy())) {
+                            for (String filterCategory : getCategoriesToFilterBy()) {
+                                JCRPropertyWrapper property = nodeWrapper
+                                        .hasProperty(Constants.DEFAULT_CATEGORY) ? nodeWrapper
+                                        .getProperty(Constants.DEFAULT_CATEGORY)
+                                        : null;
+                                if (property != null) {
+                                    for (Value setCategory : property
+                                            .getValues()) {
+                                        if (setCategory.getString().equals(
+                                                filterCategory)) {
+                                            found = true;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -313,27 +344,7 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                             continue;
                         }
                     }
-                    if (!CollectionUtils.isEmpty(getCategoriesToFilterBy())) {
-                        boolean found = false;
-                        for (String filterCategory : getCategoriesToFilterBy()) {
-                            JCRPropertyWrapper property = nodeWrapper
-                                    .hasProperty(Constants.DEFAULT_CATEGORY) ? nodeWrapper
-                                    .getProperty(Constants.DEFAULT_CATEGORY)
-                                    : null;
-                            if (property != null) {
-                                for (Value setCategory : property.getValues()) {
-                                    if (setCategory.getString().equals(
-                                            filterCategory)) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        if (!found) {
-                            continue;
-                        }
-                    }
+
                     navMenuItemBean.setItemCount(++itemCount);
                     // First container
                     if (begin) {

@@ -111,6 +111,9 @@
 //---------------------------------------------------------
 // Navigation menu
 //---------------------------------------------------------
+[jmix:hideInNavMenu] > jmix:option, jmix:contentMixin mixin
+- j:hideInNavMenu (boolean) = true
+
 [jmix:navMenuItem] mixin
 
 [jnt:navMenu] > jnt:content, mix:title, jmix:navMenuItem, jmix:interactiveContent

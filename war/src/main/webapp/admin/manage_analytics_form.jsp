@@ -38,7 +38,6 @@
 <%@ page import="org.jahia.services.analytics.*" %>
 
 <%
-    Properties settings = currentSite.getSettings();
 
     String jahiaGAprofile = "";
     String operation = "";
@@ -131,7 +130,7 @@
                                         </td>
                                         <td valign="top">
                                             :&nbsp;<input type="checkbox" name="trackingEnabled"
-                                                          <% if (Boolean.valueOf(settings.getProperty(jahiaGAprofile+"_trackingEnabled"))) { %>checked<% } %>
+                                                          <% if (Boolean.valueOf(currentSite.getGoogleAnalyticsTrackingEnabled(jahiaGAprofile))) { %>checked<% } %>
                                                           id="trackingEnabled"/>
                                         </td>
                                     </tr>
@@ -144,12 +143,12 @@
                                             <label><fmt:message
                                                     key="org.jahia.admin.site.ManageAnalytics.realUrls.label"/></label>
                                             <input type="radio" name="trackedUrls" value="real"
-                                                   <%if(settings.getProperty(jahiaGAprofile+"_trackedUrls")!=null){if ((settings.getProperty(jahiaGAprofile+"_trackedUrls").equals("real"))) { %>checked<% }}else{ %>checked<% }%>
+                                                   <%if(currentSite.getGoogleAnalyticsTrackedUrl(jahiaGAprofile)!=null){if ((currentSite.getGoogleAnalyticsTrackedUrl(jahiaGAprofile).equals("real"))) { %>checked<% }}else{ %>checked<% }%>
                                                    id="trackedUrls"/>
                                             <label><fmt:message
                                                     key="org.jahia.admin.site.ManageAnalytics.virtualUrls.label"/></label>
                                             <input type="radio" name="trackedUrls" value="virtual"
-                                                   <% if(settings.getProperty(jahiaGAprofile+"_trackedUrls")!=null){ if ((settings.getProperty(jahiaGAprofile+"_trackedUrls").equals("virtual"))) { %>checked<% }
+                                                   <% if(currentSite.getGoogleAnalyticsTrackedUrl(jahiaGAprofile)!=null){ if ((currentSite.getGoogleAnalyticsTrackedUrl(jahiaGAprofile).equals("virtual"))) { %>checked<% }
                                             } %> id="trackedUrls"/>
                                         </td>
                                     </tr>

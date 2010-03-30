@@ -40,8 +40,7 @@
 
 <template:addResources type="css" resources="jquery.autocomplete.css" />
 <template:addResources type="css" resources="thickbox.css" />
-<template:addResources type="css" resources="simplesearchform.css" />
-
+<template:addResources type="css" resources="searchusers.css" />
 <template:addResources type="javascript"
                        resources="${url.context}/templates/default/javascript/jquery.min.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxQueue.js" />
@@ -88,7 +87,7 @@
         });
     });
 </script>
-<form method="post" action="${url.base}${currentResource.node.parent.path}.setAcl.do" class="simplesearchform">
+<form method="post" action="${url.base}${currentResource.node.parent.path}.setAcl.do" class="userssearchform">
 
 		<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 		<c:if test="${not empty title.string}">
@@ -96,6 +95,6 @@
 		</c:if>
 		<fmt:message key='search.users.defaultText' var="startSearching"/>
        	<input type="text" name="user" id="searchUser" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
-       	<input type="submit"  title="<fmt:message key='search.submit'/>"/>
+       	<input class="addusersubmit" type="submit"  title="<fmt:message key='search.submit'/>"/>
         <input type="hidden" name="acl" value="rew--"/>
 </form><br class="clear"/>

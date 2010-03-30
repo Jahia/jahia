@@ -1,0 +1,25 @@
+#bodywrapper form.userssearchform {
+	position:relative;
+	width:220px;
+}
+#bodywrapper form.userssearchform .text-input {
+	background-image:url(img/userssearchform-bar-bg.png);
+	border:1px solid #666;
+	color:#666666;
+	height:20px;
+	padding:4px 30px 2px 5px;
+	vertical-align:middle;
+	width:183px;
+}
+#bodywrapper form.userssearchform .addusersubmit {
+	background:transparent url(img/addusersubmit.png) no-repeat;
+	border:none;
+	cursor:pointer;
+	height:26px;
+	padding:0;
+	position:absolute;
+	right:2px;
+	text-indent:-9999px;
+	top:2px;
+	width:26px;
+}

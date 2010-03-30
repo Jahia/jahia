@@ -104,7 +104,7 @@
 <%--list all users write write access to current node--%>
 
 <div class='grid_4'><!--start grid_4-->
-    <h4 class="boxdocspace-title">Users</h4>
+    <h4 class="boxdocspace-title">Users</h4><template:area path="searchUsers" forceCreation="true" areaType="jnt:searchUsers"/>
 
     <ul class="docspacelist docspacelistusers">
         <c:forEach items="${currentNode.aclEntries}" var="acls">
@@ -125,7 +125,7 @@
             </li>
         </c:forEach>
     </ul>
-    <template:area path="searchUsers" forceCreation="true" areaType="jnt:searchUsers"/>
+   
     <div class='clear'></div>
 </div>
 <!--stop grid_4-->

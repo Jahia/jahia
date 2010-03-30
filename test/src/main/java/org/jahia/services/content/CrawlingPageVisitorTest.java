@@ -102,7 +102,7 @@ public class CrawlingPageVisitorTest extends TestCase {
             crawldbPath = new Path(testdir, "crawldb");
             segmentsPath = new Path(testdir, "segments");
             try {
-                if (ProcessingContext.getDefaultSite() != null && ProcessingContext.getDefaultSite().getJCRPath() != null) {
+                if (ProcessingContext.getDefaultSite() != null && "/sites/"+ProcessingContext.getDefaultSite().getSiteKey() != null) {
                     defaultSite = ProcessingContext.getDefaultSite();                    
                 }
             } catch (Exception e) {

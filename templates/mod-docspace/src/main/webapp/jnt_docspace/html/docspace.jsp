@@ -146,9 +146,11 @@
 
     <h4 class="boxdocspace-title2">Espaces de travail</h4>
 
-    <div class="boxdocspace-title2">
+   <div class="boxdocspace"><!--start boxdocspace -->
+	<div class="boxdocspacegrey boxdocspacepadding10 ">
+		<div class="boxdocspace-inner">
+			<div class="boxdocspace-inner-border">
 
-        <div class="TableActions"><!--start formSearchTop-->
             <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
                 <input type="hidden" name="nodeType" value="jnt:file"/>
                 <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -160,12 +162,13 @@
                 <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
                 <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
                 <input type="hidden" name="version" value="true"/>
-                <input type="submit" id="upload" value="Upload"/>
+                <input class="button" type="submit" id="upload" value="Upload"/>
             </form>
-        </div>
-        <!--stop formSearchTop-->
 
-    </div>
+            </div>
+		</div>
+	</div>
+</div>
     <script type="text/javascript">
 
         jQuery(document).ready(function() {

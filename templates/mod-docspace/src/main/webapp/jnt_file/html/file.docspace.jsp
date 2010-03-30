@@ -92,14 +92,14 @@
                         <fmt:message key="docspace.label.document.createdBy"/> : <span class="author"><a
                                 href="${url.base}/users/${currentNode.properties['jcr:lastModifiedBy'].string}.html">${currentNode.properties['jcr:lastModifiedBy'].string}</a></span>
                     </p>
-                    <br class="clear"/>
+                    
 
-                    <p><template:option node="${currentNode}" template="hidden.tags"
-                                        nodetype="jmix:tagged"/><br/><template:option node="${currentNode}"
+                   <template:option node="${currentNode}" template="hidden.tags"
+                                        nodetype="jmix:tagged"/><template:option node="${currentNode}"
                                                                                       template="hidden.addTag"
-                                                                                      nodetype="jmix:tagged"/></p>
+                                                                                      nodetype="jmix:tagged"/>
 
-                    <p><template:option node="${currentNode}" template="hidden.average" nodetype="jmix:rating"/></p>
+                    <template:option node="${currentNode}" template="hidden.average" nodetype="jmix:rating"/>
                     <!--stop boxdocspace -->
                     <div class="clear"></div>
                 </div>

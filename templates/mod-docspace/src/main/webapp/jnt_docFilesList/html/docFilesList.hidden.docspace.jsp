@@ -17,14 +17,27 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery.dataTables.min.js"/>
 <template:include template="hidden.header"/>
 <script type="text/javascript">
-    var myTable = $(document).ready(function() {
-        $('#fileListTable').dataTable({
+    $(document).ready(function() {
+        var myTable = $('#fileListTable').dataTable({
             "bLengthChange": true,
             "bFilter": true,
             "bSort": true,
             "bInfo": false,
             "bAutoWidth": false,
-            "bStateSave" : true
+            "bStateSave" : true,
+            "aaSorting": [
+                [2,'desc'],
+                [1,'asc']
+            ],
+            "aoColumns": [
+                null,
+                null,
+                null,
+                null,
+                {
+                    "sType": "html"
+                }
+            ]
         });
     });
 </script>
@@ -40,13 +53,17 @@
     </colgroup>
     <thead>
     <tr>
-        <th class="center" id="Type" scope="col">Type <a title="sort down" href="#"> <img
+        <th class="center" id="Type" scope="col"><fmt:message key="docspace.label.type"/> <a title="sort down" href="#">
+            <img
+                    src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
+        <th id="Title" scope="col"><fmt:message key="docspace.label.title"/> <a title="sort down" href="#"> <img
                 src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th id="Title" scope="col"> Titre <a title="sort down" href="#"> <img
+        <th class="center" id="Creation" scope="col"><fmt:message key="docspace.label.creation"/><a title="sort down"
+                                                                                                    href="#"> <img
                 src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th class="center" id="Creation" scope="col">Creation<a title="sort down" href="#"> <img
+        <th id="Author" scope="col"><fmt:message key="docspace.label.author"/> <a title="sort down" href="#"> <img
                 src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th id="Author" scope="col">Autheur <a title="sort down" href="#"> <img
+        <th id="Rating" scope="col"><fmt:message key="docspace.label.rating"/> <a title="sort down" href="#"> <img
                 src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
     </tr>
     </thead>
@@ -58,17 +75,16 @@
             <td class="center" headers="Type"><a style="display:block;width:16px;height:16px"
                                                  class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("subchild")).getName()) %>"></a>
             </td>
-            <td headers="Title"><a href="${url.base}${subchild.path}.docspace.html">${subchild.name}</a>
-
-
-                <a class="BtMore rightside" href="#"></a>
-            </td>
+            <td headers="Title"><a href="${url.base}${subchild.path}.docspace.html">${subchild.name}</a></td>
 
             <jcr:nodeProperty node="${subchild}" name="jcr:created" var="created"/>
             <jcr:nodeProperty node="${subchild}" name="jcr:lastModified" var="modified"/>
             <fmt:formatDate value="${created.time}" dateStyle="full" type="date" var="displayDate"/>
-            <td class="center" headers="Creation">${displayDate}<br/><span style="font-size:smaller;"><fmt:formatDate value="${modified.time}" dateStyle="full" type="both"/></span></td>
+            <td class="center" headers="Creation">${displayDate}<br/><span style="font-size:smaller;"><fmt:formatDate
+                    value="${modified.time}" dateStyle="full" type="both"/></span></td>
             <td headers="Author">${subchild.propertiesAsString['jcr:createdBy']}</td>
+            <td headers="Rating"><template:option node="${subchild}" template="hidden.average.readonly"
+                                                  nodetype="jmix:rating"/></td>
         </tr>
 
     </c:forEach>

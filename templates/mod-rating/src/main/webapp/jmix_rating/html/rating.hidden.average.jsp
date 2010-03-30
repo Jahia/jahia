@@ -14,7 +14,7 @@
 <template:addResources type="css" resources="uni-form.css,ui.stars.css" nodetype="jmix:rating"/>
 <template:addResources type="javascript" resources="jquery.min.js,ui.core.min.js,ui.stars.js" nodetype="jmix:rating"/>
 <script type="text/javascript">
-    $(function() {
+    $(document).ready(function() {
         $("#avg${id}").children().not(":input").hide();
         $("#rat${id}").children().not("select").hide();
 
@@ -35,9 +35,7 @@
 					$("#messages${id}").text("Saving...").stop().css("opacity", 1).fadeIn(30);
 
 					// Send request to the server using POST method
-					$.post("${url.base}${currentNode.path}", {'j:lastVote': value,
-                        redirectTo:"${url.base}${renderContext.mainResource.node.path}",
-                        newNodeOutputFormat:"html",methodToCall:"put"}, function(result)
+					$.post("${url.base}${currentNode.path}", {'j:lastVote': value,methodToCall:"put"}, function(result)
 					{
 							// Select stars from "Average rating" control to match the returned average rating value
 							$("#avg${id}").stars("select", Math.round(result.j_sumOfVotes/result.j_nbOfVotes));

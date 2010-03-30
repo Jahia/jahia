@@ -15,7 +15,45 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.js"/>
+<template:addResources type="javascript"
+                       resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
 
+<template:addResources type="javascript" resources="jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
+<script>
+    $(document).ready(function() {
+        $("#ckeditorEditDescription").editable(function (value, settings) {
+            var url = $(this).attr('jcr:url');
+            var submitId = $(this).attr('jcr:id');
+            var data = {};
+            data[submitId] = value;
+            data['methodToCall'] = 'put';
+            $.post(url, data, null, "json");
+            return(value);
+        }, {
+            type : 'ckeditor',
+            onblur : 'ignore',
+            submit : 'Ok',
+            cancel : 'Cancel',
+            tooltip : 'Click to edit'
+        });
+
+        $("#actions").change(function() {
+            if ($(this).val() == 'delete') {
+                if (confirm("Do you really want to delete this file?")) {
+                    var data = {};
+                    data['methodToCall'] = 'delete';
+                    $.post('${url.base}${currentNode.path}', data, function () {
+                        window.location.href = '${url.base}${currentNode.parent.path}.html';
+                    }, "json");
+                } else {
+                    $(this).val("");
+                }
+            }
+        });
+    });
+</script>
 <div class='grid_12'><!--start grid_12-->
 
     <div class="boxdocspace "><!--start boxdocspace -->
@@ -24,10 +62,9 @@
                 <div class="boxdocspace-inner-border">
                     <div class="floatright">
                         <form action="#" method="post">
-                            <select name="actions">
-                                <option>Actions</option>
-                                <option>Informations</option>
-                                <option>Suprimer</option>
+                            <select name="actions" id="actions">
+                                <option value="">Actions</option>
+                                <option value="delete">Suprimer</option>
                                 <option>Demander a l'acces</option>
                                 <option>Ajouter un Utilisateur</option>
                                 <option>Partager</option>
@@ -47,9 +84,13 @@
                     </p>
 
                     <p class="clearMaringPadding docspaceauthor"><a
-                            href="#">Par ${currentNode.propertiesAsString['jcr:createdBy']}</a></p>
+                            href="#"><fmt:message key="docspace.label.document.createdBy"/> ${currentNode.properties['jcr:createdBy'].string}</a></p>
 
-                    <p class="clearMaringPadding"><jcr:nodeProperty node="${currentNode}" name="jcr:description"/></p>
+                    <p class="clearMaringPadding"><span jcr:id="jcr:description" id="ckeditorEditDescription"
+                              jcr:url="${url.base}${currentNode.path}">
+                        <c:if test="${not empty currentNode.properties['jcr:description'].string}">${currentNode.properties['jcr:description'].string}</c:if>
+                        <c:if test="${empty currentNode.properties['jcr:description'].string}">Add a description (click here)</c:if>
+                    </span></p>
                     <!--stop boxdocspace -->
                     <div class="clear"></div>
                 </div>
@@ -108,30 +149,6 @@
     <div class="boxdocspace-title2">
 
         <div class="TableActions"><!--start formSearchTop-->
-
-            <form action="#" method="post">
-                <p>
-                    <a href="#" title="view details"><img class="rightside"
-                                                          src="${url.currentModule}/css/img/view-details.png"
-                                                          alt="add user"/></a>
-                    <a href="#" title="view thumbnails"><img class="rightside"
-                                                             src="${url.currentModule}/css/img/view-thumbnails.png"
-                                                             alt="add user"/></a>
-                    <label>Filtre : </label>
-
-                    <select name="tagfilter">
-                        <option>Mon tag 1</option>
-                        <option>Mon tag 2</option>
-                        <option>Mon tag 3</option>
-                    </select>
-                    <label> - Search: </label>
-                    <input class="text" type="text" name="search" value="Search..." tabindex="4"/>
-                    <input class="gobutton" type="image" src="${url.currentModule}/css/img/search-button.png"
-                           tabindex="5"/>
-
-                </p>
-
-            </form>
             <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
                 <input type="hidden" name="nodeType" value="jnt:file"/>
                 <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>

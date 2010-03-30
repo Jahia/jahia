@@ -41,6 +41,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.*;
 import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.RepositoryException;
@@ -95,7 +96,10 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                 }
 
                 final Script script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
+                Object attribute = pageContext.getRequest().getAttribute("currentNode");
+                pageContext.getRequest().setAttribute("currentNode",node);
                 pageContext.getOut().write(script.execute(wrappedResource, renderContext));
+                pageContext.getRequest().setAttribute("currentNode",attribute);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

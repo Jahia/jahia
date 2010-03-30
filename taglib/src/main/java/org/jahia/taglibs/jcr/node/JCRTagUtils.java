@@ -31,6 +31,7 @@
  */
 package org.jahia.taglibs.jcr.node;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.util.ToStringUtils;
 import org.drools.util.StringUtils;
@@ -327,5 +328,9 @@ public class JCRTagUtils {
             return node.hasPermission(JCRNodeWrapper.MODIFY_ACL);
         }
         return false;
+    }
+
+    public static String humanReadableFileLength(JCRNodeWrapper node) {
+        return FileUtils.byteCountToDisplaySize(node.getFileContent().getContentLength());
     }
 }

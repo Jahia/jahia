@@ -6,7 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
    <jcr:sql var="result"
-             sql="select * from [jnt:file] as file where isdescendantnode(file, ['${currentNode.parent.path}']) order by file.[jcr:lastModified] desc"/>
+             sql="select * from [jmix:docspaceElement] as file where ischildnode(file, ['${currentNode.parent.path}']) order by file.[jcr:lastModified] desc"/>
 
     <c:set var="forcedSkin" value="none" />
     <c:set var="renderOptions" value="none" />

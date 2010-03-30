@@ -74,7 +74,7 @@
                     </div>
                     <div class="imagefloatleft">
                         <div class="itemImage itemImageLeft"><a
-                                class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>"
+                                class="${functions:fileIcon(currentNode.name)}"
                                 href="#"></a>
                         </div>
                     </div>

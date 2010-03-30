@@ -53,6 +53,19 @@
             }
         });
     });
+
+    function noAccent(chaine) {
+        temp = chaine.replace(/[àâä]/gi, "a");
+        temp = temp.replace(/[éèêë]/gi, "e");
+        temp = temp.replace(/[îï]/gi, "i");
+        temp = temp.replace(/[ôö]/gi, "o");
+        temp = temp.replace(/[ùûü]/gi, "u");
+        var t = "";
+        for (var i = 0; i < temp.length; i++) {
+            if (temp.charCodeAt(i) > 47 && temp.charCodeAt(i) < 123) t += temp.charAt(i);
+        }
+        return t;
+    }
 </script>
 <div class='grid_12'><!--start grid_12-->
 
@@ -84,13 +97,20 @@
                     </p>
 
                     <p class="clearMaringPadding docspaceauthor"><a
-                            href="#"><fmt:message key="docspace.label.document.createdBy"/> ${currentNode.properties['jcr:createdBy'].string}</a></p>
+                            href="#"><fmt:message
+                            key="docspace.label.document.createdBy"/> ${currentNode.properties['jcr:createdBy'].string}</a>
+                    </p>
 
                     <p class="clearMaringPadding"><span jcr:id="jcr:description" id="ckeditorEditDescription"
-                              jcr:url="${url.base}${currentNode.path}">
+                                                        jcr:url="${url.base}${currentNode.path}">
                         <c:if test="${not empty currentNode.properties['jcr:description'].string}">${currentNode.properties['jcr:description'].string}</c:if>
                         <c:if test="${empty currentNode.properties['jcr:description'].string}">Add a description (click here)</c:if>
                     </span></p>
+
+                    <p><template:option node="${currentNode}" template="hidden.tags"
+                                        nodetype="jmix:tagged"/><br/><template:option node="${currentNode}"
+                                                                                      template="hidden.addTag"
+                                                                                      nodetype="jmix:tagged"/></p>
                     <!--stop boxdocspace -->
                     <div class="clear"></div>
                 </div>
@@ -104,7 +124,8 @@
 <%--list all users write write access to current node--%>
 
 <div class='grid_4'><!--start grid_4-->
-    <h4 class="boxdocspace-title">Users</h4><template:area path="searchUsers" forceCreation="true" areaType="jnt:searchUsers"/>
+    <h4 class="boxdocspace-title">Users</h4><template:area path="searchUsers" forceCreation="true"
+                                                           areaType="jnt:searchUsers"/>
 
     <ul class="docspacelist docspacelistusers">
         <c:forEach items="${currentNode.aclEntries}" var="acls">
@@ -125,7 +146,7 @@
             </li>
         </c:forEach>
     </ul>
-   
+
     <div class='clear'></div>
 </div>
 <!--stop grid_4-->
@@ -144,70 +165,107 @@
     </div>
 </div>-->
 
-    <h4 class="boxdocspace-title2">Espaces de travail</h4>
+    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.workspace"/></h4>
 
-   <div class="boxdocspace"><!--start boxdocspace -->
-	<div class="boxdocspacegrey boxdocspacepadding10 ">
-		<div class="boxdocspace-inner">
-			<div class="boxdocspace-inner-border">
-
-            <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
-                <input type="hidden" name="nodeType" value="jnt:file"/>
-                <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-                <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>
-                <input type="file" name="file">
-                <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
-                <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
-                <input type="hidden" name="jcr:mixinTypes" value="jnt:docspaceFile"/>
-                <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
-                <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
-                <input type="hidden" name="version" value="true"/>
-                <input class="button" type="submit" id="upload" value="Upload"/>
-            </form>
-
-            </div>
-		</div>
-	</div>
-</div>
-    <script type="text/javascript">
-
-        jQuery(document).ready(function() {
-
-            // Masquer la div à slider
-            jQuery(".AddNote1").hide();
-
-            //Appliquer la classe active sur le bouton
-            jQuery(".BtMore").toggle(function() {
-                jQuery(this).addClass("active");
-            }, function () {
-                jQuery(this).removeClass("active");
-            });
-
-            // Slide down et up sur click
-            jQuery(".BtMore").click(function() {
-                jQuery(this).next(".AddNote1").slideToggle("slow");
-            });
-
-        });
-
-    </script>
-    <div class="boxdocspace">
-        <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
+    <div class="boxdocspace"><!--start boxdocspace -->
+        <div class="boxdocspacegrey boxdocspacepadding10 ">
             <div class="boxdocspace-inner">
-                <div class="boxdocspace-inner-border"><!--start boxdocspace -->
-                    <template:area forcedTemplate="hidden.docspace" areaType="jnt:docFilesList" path="filesList"
-                                   forceCreation="true"/>
+                <div class="boxdocspace-inner-border">
+
+                    <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
+                        <input type="hidden" name="nodeType" value="jnt:file"/>
+                        <input type="hidden" name="redirectTo"
+                               value="${url.base}${renderContext.mainResource.node.path}"/>
+                        <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>
+                        <input type="file" name="file">
+                        <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
+                        <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
+                        <input type="hidden" name="jcr:mixinTypes" value="jnt:docspaceFile"/>
+                        <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
+                        <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
+                        <input type="hidden" name="version" value="true"/>
+                        <input class="button" type="submit" id="upload" value="Upload"/>
+                    </form>
+                    <form method="post" action="${currentNode.name}/*" name="newDocspace">
+                        <input type="hidden" name="autoCheckin" value="true">
+                        <input type="hidden" name="nodeType" value="jnt:docspace">
+
+                        <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.workspace.new"/></h3>
+                        <fieldset>
+                            <legend><fmt:message key="docspace.label.workspace.creation"/></legend>
+
+                            <p><label for="docspacetitle" class="left"><fmt:message key="docspace.label.title"/>
+                                :</label>
+                                <input type="text" name="jcr:title" id="docspacetitle" class="field" value=""
+                                       tabindex="20"/></p>
 
 
-                    <div class="clear"></div>
+                            <p><label for="docspacedesc" class="left"><fmt:message
+                                    key="docspace.label.description"/> :</label>
+                                <textarea name="jcr:description" id="docspacedesc" cols="45" rows="3"
+                                          tabindex="21"></textarea></p>
 
+                            <div class="formMarginLeft">
+                                <input type="submit" class="button"
+                                       value="<fmt:message key="docspace.label.workspace.create"/>" tabindex="28"
+                                       onclick="
+                                                   if (document.newDocspace.elements['jcr:title'].value == '') {
+                                                       alert('you must fill the title ');
+                                                       return false;
+                                                   }
+                                                   document.newDocspace.action = '${currentNode.name}/'+noAccent(document.newDocspace.elements['jcr:title'].value.replace(' ',''));
+                                                   document.newDocspace.submit();
+                                               "
+                                        />
+                            </div>
+                        </fieldset>
+                    </form>
                 </div>
+                <!--stop formSearchTop-->
+
             </div>
         </div>
     </div>
-    <!--stop boxdocspace -->
+<script type="text/javascript">
 
-    <div class='clear'></div>
+    jQuery(document).ready(function() {
+
+        // Masquer la div à slider
+        jQuery(".AddNote1").hide();
+
+        //Appliquer la classe active sur le bouton
+        jQuery(".BtMore").toggle(function() {
+            jQuery(this).addClass("active");
+        }, function () {
+            jQuery(this).removeClass("active");
+        });
+
+        // Slide down et up sur click
+        jQuery(".BtMore").click(function() {
+            jQuery(this).next(".AddNote1").slideToggle("slow");
+        });
+
+    });
+
+</script>
+<div class="boxdocspace">
+    <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
+        <div class="boxdocspace-inner">
+            <div class="boxdocspace-inner-border"><!--start boxdocspace -->
+                <template:area forcedTemplate="hidden.docspace" areaType="jnt:docFilesList" path="filesList"
+                               forceCreation="true"/>
+
+
+                <div class="clear"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+<!--stop boxdocspace -->
+
+<div class='clear'></div>
 </div>
 <!--stop grid_16-->
 

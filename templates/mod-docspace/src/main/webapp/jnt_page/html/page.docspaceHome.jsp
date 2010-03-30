@@ -13,41 +13,42 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.cookie.js,jquery.hotkey.js,jquery.metadata.js,sarissa.js,jquery.tree.js"/>
 <script type="text/javascript">
-   function noAccent(chaine) {
-      temp = chaine.replace(/[àâä]/gi,"a");
-      temp = temp.replace(/[éèêë]/gi,"e");
-      temp = temp.replace(/[îï]/gi,"i");
-      temp = temp.replace(/[ôö]/gi,"o");
-      temp = temp.replace(/[ùûü]/gi,"u");
-       var t = "";
-       for (var i = 0;i<temp.length;i++) {
-           if (temp.charCodeAt(i) >47 && temp.charCodeAt(i) < 123) t +=temp.charAt(i);
-       }
-       return t;
-   }
+    function noAccent(chaine) {
+        temp = chaine.replace(/[àâä]/gi, "a");
+        temp = temp.replace(/[éèêë]/gi, "e");
+        temp = temp.replace(/[îï]/gi, "i");
+        temp = temp.replace(/[ôö]/gi, "o");
+        temp = temp.replace(/[ùûü]/gi, "u");
+        var t = "";
+        for (var i = 0; i < temp.length; i++) {
+            if (temp.charCodeAt(i) > 47 && temp.charCodeAt(i) < 123) t += temp.charAt(i);
+        }
+        return t;
+    }
+
+    /*$(document).ready(function() {
+        $("#docspaceTree").tree();
+    });*/
 </script>
 <div class='grid_6'><!--start grid_6-->
-    <h4 class="boxdocspace-title2">Espaces de travail</h4>
+    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.workspace"/></h4>
+
     <div class="boxdocspace"><!--start boxdocspace -->
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
-                <div class="boxdocspace-inner-border">
-                    <c:forEach var="node" items="${currentNode.nodes}">
-                        <c:if test="${jcr:isNodeType(node,'jnt:docspace')}">
-                            <c:if test="${jcr:hasPermission(node, 'write')}">
-                                <a href="${url.basePreview}${node.path}.html">${node.path}</a>
-                            </c:if>
-                            <c:if test="${not jcr:hasPermission(node, 'write')}">
-                                <a href="${url.baseLive}${node.path}.html">${node.path}</a>
-                            </c:if>
-                        </c:if>
-                    </c:forEach>
-                    <div class="clear"></div>
+                <div class="boxdocspace-inner-border" id="docspaceTree">
+                    <ul>
+                        <c:forEach var="node" items="${jcr:getChildrenOfType(currentNode,'jnt:docspace')}">
+                            <template:module node="${node}" forcedTemplate="hidden.tree"/>
+                        </c:forEach>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div><!--stop boxdocspace -->
+    </div>
+    <!--stop boxdocspace -->
     <div class="boxdocspace">
         <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
 
@@ -55,23 +56,28 @@
                 <div class="boxdocspace-inner-border"><!--start boxdocspace -->
 
                     <div class="Form formCreateDocspace">
-                        <form method="post"  action="${currentNode.name}/" name="newDocspace">
+                        <form method="post" action="${currentNode.name}/" name="newDocspace">
                             <input type="hidden" name="autoCheckin" value="true">
                             <input type="hidden" name="nodeType" value="jnt:docspace">
-                            <h3 class="boxdocspacetitleh3">Creer un nouvel espace de travail</h3>
-                            <fieldset><legend>Creation d'un espace de travail</legend>
 
-                                <p><label for="docspacetitle" class="left">Titre :</label>
-                                    <input type="text" name="jcr:title" id="docspacetitle" class="field" value="" tabindex="20" /></p>
+                            <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.workspace.new"/></h3>
+                            <fieldset>
+                                <legend><fmt:message key="docspace.label.workspace.creation"/></legend>
+
+                                <p><label for="docspacetitle" class="left"><fmt:message key="docspace.label.title"/>
+                                    :</label>
+                                    <input type="text" name="jcr:title" id="docspacetitle" class="field" value=""
+                                           tabindex="20"/></p>
 
 
-                                <p><label for="docspacedesc" class="left">Description :</label>
-                                    <textarea name="jcr:description" id="docspacedesc" cols="45" rows="3" tabindex="21"></textarea></p>
- <%--                               <p>
-                                    <label for="docspacecat" class="left">Categories :</label>
-                                    <input type="text" name="docspacecat" id="docspacecat" class="field" value="" tabindex="22" /></p>
- --%>                               <div class="formMarginLeft">
-                                    <input type="submit" class="button" value="Creer le docspace" tabindex="28"
+                                <p><label for="docspacedesc" class="left"><fmt:message
+                                        key="docspace.label.description"/> :</label>
+                                    <textarea name="jcr:description" id="docspacedesc" cols="45" rows="3"
+                                              tabindex="21"></textarea></p>
+
+                                <div class="formMarginLeft">
+                                    <input type="submit" class="button"
+                                           value="<fmt:message key="docspace.label.workspace.create"/>" tabindex="28"
                                            onclick="
                                                    if (document.newDocspace.elements['jcr:title'].value == '') {
                                                        alert('you must fill the title ');
@@ -92,7 +98,9 @@
     </div>
     <!--stop boxdocspace -->
 
-    <div class='clear'></div></div><!--stop grid_6-->
+    <div class='clear'></div>
+</div>
+<!--stop grid_6-->
 
 <div class='grid_10'><!--start grid_10-->
     <div class="boxdocspace"><!--start boxdocspace -->
@@ -101,18 +109,22 @@
 
                 <div id="search-docspace">
                     <h3 class="boxdocspacetitleh3">Rechercher</h3>
+
                     <form method="get" action="#">
                         <fieldset>
                             <p class="field">
                                 <input type="text" value="" name="search2" class="search docspacesearch" tabindex="4"/>
                                 <input type="submit" value="Rechercher" class="button searchbutton" tabindex="5"/>
                             </p>
+
                             <p>
                                 <label class="formFloatLeft">
-                                    <input type="radio" tabindex="10" id="RadioGroup2_0" value="radio" name="RadioGroup2" />
+                                    <input type="radio" tabindex="10" id="RadioGroup2_0" value="radio"
+                                           name="RadioGroup2"/>
                                     les tags, categories ou infos </label>
                                 <label class="formFloatLeft">
-                                    <input type="radio" tabindex="11" id="RadioGroup2_1" value="radio" name="RadioGroup2" />
+                                    <input type="radio" tabindex="11" id="RadioGroup2_1" value="radio"
+                                           name="RadioGroup2"/>
                                 </label>
                                 tout le contenu</p>
                         </fieldset>
@@ -122,58 +134,61 @@
 
             </div>
         </div>
-    </div><!--stop boxdocspace -->
+    </div>
+    <!--stop boxdocspace -->
     <div class='grid_5 alpha '><!--start grid_5-->
-        <h4 class="boxdocspace-title">Derniers documents publics</h4>
+        <h4 class="boxdocspace-title"><fmt:message key="docspace.label.workspace.last.document"/></h4>
         <ul class="docspacelist">
-            <li>
-                <a class="file" href="#" >mon document </a><span class="docspacelistinfo">50ko</span>
-                <p class="docspacelistinfo2">le resume de mon documentle resume de mon documentle resume de mon documentle resume de mon document </p>
-            </li>
-            <li>
-                <a class="ppt" href="#" >mon document </a><span class="docspacelistinfo">50ko</span>
-                <p class="docspacelistinfo2">le resume de mon documentle resume de mon documentle resume de mon documentle resume de mon document </p>
-            </li>
-            <li>
-                <a class="doc" href="#" >mon document </a><span class="docspacelistinfo">50ko</span>
-                <p class="docspacelistinfo2">le resume de mon documentle resume de mon documentle resume de mon documentle resume de mon document </p>
-            </li>
-            <li>
-                <a class="rar" href="#" >mon document </a><span class="docspacelistinfo">50ko</span>
-                <p class="docspacelistinfo2">le resume de mon documentle resume de mon documentle resume de mon documentle resume de mon document </p>
-            </li>
-            <li class="last">
-                <a class="pdf" href="#" >mon document </a><span class="docspacelistinfo">50ko</span>
-                <p class="docspacelistinfo2">le resume de mon documentle resume de mon documentle resume de mon documentle resume de mon document </p>
-            </li>
-        </ul>
-        <!--stop boxdocspace -->
-    </div><!--stop grid_5-->
-    <div class='grid_5 omega'><!--start grid_5-->
-        <h4 class="boxdocspace-title">Derniers Espaces crees</h4>
-        <ul class="docspacelist">
-            <li>
-                <a class="adocspace" href="#" >Mon espace </a><span class="docspacelistinfo">cree le 08/02/2010</span>
-                <p class="docspacelistinfo2">la description de mon espace la info2 de mon espace la description de mon espace la info2 de mon espace</p>
-            </li>
-            <li>
-                <a class="adocspace" href="#" >Mon espace </a><span class="docspacelistinfo">cree le 08/02/2010</span>
-                <p class="docspacelistinfo2">la description de mon espace la info2 de mon espace la description de mon espace la info2 de mon espace</p>
-            </li>
-            <li>
-                <a class="adocspace" href="#" >Mon espace </a><span class="docspacelistinfo">cree le 08/02/2010</span>
-                <p class="docspacelistinfo2">la description de mon espace la info2 de mon espace la description de mon espace la info2 de mon espace</p>
-            </li>
-            <li>
-                <a class="adocspace" href="#" >Mon espace </a><span class="docspacelistinfo">cree le 08/02/2010</span>
-                <p class="docspacelistinfo2">la description de mon espace la info2 de mon espace la description de mon espace la info2 de mon espace</p>
-            </li>
-            <li class="last">
-                <a class="adocspace" href="#" >Mon espace </a><span class="docspacelistinfo">cree le 08/02/2010</span>
-                <p class="docspacelistinfo2">la description de mon espace la info2 de mon espace la description de mon espace la info2 de mon espace</p>
-            </li>
-        </ul>
-        <!--stop boxdocspace -->
-    </div><!--stop grid_5-->
+            <jcr:sql var="result"
+                     sql="select * from [jnt:file] as file where isdescendantnode(file, ['${currentNode.path}']) order by file.[jcr:lastModified] desc"/>
+            <c:forEach items="${result.nodes}" var="document" end="10">
+                <li>
+                    <c:if test="${jcr:hasPermission(document, 'write')}">
+                        <a class="${functions:fileIcon(document.name)}"
+                           href="${url.basePreview}${document.path}.docspace.html"
+                           title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
+                    </c:if>
+                    <c:if test="${not jcr:hasPermission(document, 'write')}">
+                        <a class="${functions:fileIcon(document.name)}"
+                           href="${url.baseLive}${document.path}.docspace.html"
+                           title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
+                    </c:if>
+                    <span class="docspacelistinfo">${jcr:humanReadableFileLength(document)}</span>
 
-<div class='clear'></div></div><!--stop grid_10-->
+                    <p class="docspacelistinfo2">${functions:abbreviate(functions:removeHtmlTags(document.properties['jcr:description'].string),100,150,'...')}</p>
+                </li>
+            </c:forEach>
+        </ul>
+        <!--stop boxdocspace -->
+    </div>
+    <!--stop grid_5-->
+    <div class='grid_5 omega'><!--start grid_5-->
+        <h4 class="boxdocspace-title"><fmt:message key="docspace.label.workspace.last"/></h4>
+        <ul class="docspacelist">
+            <jcr:sql var="result"
+                     sql="select * from [jnt:docspace] as file where isdescendantnode(file, ['${currentNode.path}']) order by file.[jcr:lastModified] desc"/>
+            <c:forEach items="${result.nodes}" var="docspace" end="10">
+                <li>
+                    <c:if test="${jcr:hasPermission(docspace, 'write')}">
+                        <a class="adocspace" href="${url.basePreview}${docspace.path}.html"
+                           title="${docspace.name}">${functions:abbreviate(docspace.name,20,30,'...')}</a>
+                    </c:if>
+                    <c:if test="${not jcr:hasPermission(docspace, 'write')}">
+                        <a class="adocspace" href="${url.baseLive}${docspace.path}.html"
+                           title="${docspace.name}">${functions:abbreviate(docspace.name,20,30,'...')}</a>
+                    </c:if>
+                    <span class="docspacelistinfo"><fmt:message
+                            key="docspace.label.document.lastModification"/>&nbsp;<fmt:formatDate
+                            value="${docspace.properties['jcr:lastModified'].time}" dateStyle="medium"/></span>
+
+                    <p class="docspacelistinfo2">${functions:abbreviate(functions:removeHtmlTags(docspace.properties['jcr:description'].string),100,150,'...')}</p>
+                </li>
+            </c:forEach>
+        </ul>
+        <!--stop boxdocspace -->
+    </div>
+    <!--stop grid_5-->
+
+    <div class='clear'></div>
+</div>
+<!--stop grid_10-->

@@ -6,6 +6,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -53,18 +54,17 @@
     </colgroup>
     <thead>
     <tr>
-        <th class="center" id="Type" scope="col"><fmt:message key="docspace.label.type"/> <a title="sort down" href="#">
+        <th class="center" id="Type" scope="col"><fmt:message key="docspace.label.type"/>
             <img
-                    src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th id="Title" scope="col"><fmt:message key="docspace.label.title"/> <a title="sort down" href="#"> <img
-                src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th class="center" id="Creation" scope="col"><fmt:message key="docspace.label.creation"/><a title="sort down"
-                                                                                                    href="#"> <img
-                src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th id="Author" scope="col"><fmt:message key="docspace.label.author"/> <a title="sort down" href="#"> <img
-                src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
-        <th id="Rating" scope="col"><fmt:message key="docspace.label.rating"/> <a title="sort down" href="#"> <img
-                src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></a></th>
+                    src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
+        <th id="Title" scope="col"><fmt:message key="docspace.label.title"/> <img
+                src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
+        <th class="center" id="Creation" scope="col"><fmt:message key="docspace.label.creation"/><img
+                src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
+        <th id="Author" scope="col"><fmt:message key="docspace.label.author"/> <img
+                src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
+        <th id="Rating" scope="col"><fmt:message key="docspace.label.rating"/> <img
+                src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
     </tr>
     </thead>
 
@@ -73,9 +73,9 @@
 
         <tr class="odd">
             <td class="center" headers="Type"><a style="display:block;width:16px;height:16px"
-                                                 class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("subchild")).getName()) %>"></a>
+                                                 class="${functions:fileIcon(subchild.name)}"></a>
             </td>
-            <td headers="Title"><a href="${url.base}${subchild.path}.docspace.html">${subchild.name}</a></td>
+            <td headers="Title"><a href="${url.base}${subchild.path}<c:if test="${jcr:isNodeType(subchild, 'jnt:docspaceFile')}">.docspace</c:if>.html">${subchild.name}</a></td>
 
             <jcr:nodeProperty node="${subchild}" name="jcr:created" var="created"/>
             <jcr:nodeProperty node="${subchild}" name="jcr:lastModified" var="modified"/>

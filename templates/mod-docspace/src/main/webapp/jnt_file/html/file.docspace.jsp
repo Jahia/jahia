@@ -40,6 +40,20 @@
             cancel : 'Cancel',
             tooltip : 'Click to edit'
         });
+
+        $("#actions").change(function() {
+            if ($(this).val() == 'delete') {
+                if (confirm("Do you really want to delete this file?")) {
+                    var data = {};
+                    data['methodToCall'] = 'delete';
+                    $.post('${url.base}${currentNode.path}', data, function () {
+                        window.location.href = '${url.base}${currentNode.parent.path}.html';
+                    }, "json");
+                } else {
+                    $(this).val("");
+                }
+            }
+        });
     });
 </script>
 <div class='grid_12'><!--start grid_12-->
@@ -52,12 +66,9 @@
                                 href="${url.base}${currentNode.parent.path}.html">${currentNode.parent.name}</a></span>
 
                         <form action="#" method="post">
-                            <select name="actions">
-                                <option>Actions</option>
-                                <option>Informations</option>
-                                <option>Suprimer</option>
-                                <option>Telecharger</option>
-                                <option>Telecharger en pdf</option>
+                            <select name="actions" id="actions">
+                                <option selected="true" value="">Actions</option>
+                                <option value="delete">Suprimer</option>
                             </select>
                         </form>
                     </div>
@@ -99,47 +110,44 @@
 
     <h4 class="boxdocspace-title2">Discution et Versions </h4>
 
-    <div class="boxdocspace-title2">
-
-        <div class="TableActions"><!--start Form-->
-
-            <form action="#" method="post">
-                <p>
-                    <a href="#formdocspaceupload" title="upload"><img class="rightside"
-                                                                      src="${url.currentModule}/css/img/upload.png"
-                                                                      alt="upload"/></a>
-                    <a href="#formdocspacecomment" title="comment"><img class="rightside"
-                                                                        src="${url.currentModule}/css/img/comment.png"
-                                                                        alt="comment"/></a>
-                    <label>Filtre : </label>
-
-                    <select name="tagfilter">
-                        <option>All</option>
-                        <option>Comments</option>
-                        <option>Versions</option>
-
-                    </select>
-                    <label> - Search: </label>
-                    <input class="text" type="text" name="search" value="Search..." tabindex="4"/>
-                    <input class="gobutton" type="image" src="${url.currentModule}/css/img/search-button.png"
-                           tabindex="5"/>
-
-                </p>
-
-            </form>
-
-        </div>
-        <!--stop Form-->
-
-    </div>
-
-
     <div class="boxdocspace">
         <div class="boxdocspacepadding10 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border"><!--start boxdocspace -->
                     <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}"/>
+                    <div class="post-reply">
+                        <div class="forum-box forum-box-style2">
+                            <span class="forum-corners-top"><span></span></span>
 
+                            <div id="forum-Form"><!--start forum-Form-->
+                                <h4 class="forum-h4-first"><fmt:message key="docspace.label.document.add.version"/></h4>
+
+                                <form action="${url.base}${currentNode.parent.path}/*" method="POST" name="uploadFile"
+                                      enctype="multipart/form-data">
+                                    <fieldset>
+                                        <input type="hidden" name="nodeType" value="jnt:file"/>
+                                        <input type="hidden" name="redirectTo"
+                                               value="${url.base}${renderContext.mainResource.node.path}"/>
+                                        <input type="hidden" name="targetDirectory" value="${currentNode.parent.path}"/>
+                                        <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
+                                        <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
+                                        <input type="hidden" name="jcr:mixinTypes" value="jnt:docspaceFile"/>
+                                        <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
+                                        <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
+                                        <input type="hidden" name="version" value="true"/>
+
+                                        <p class="field">
+                                            <input type="file" name="file">
+                                        </p>
+
+                                        <p class="forum_button">
+                                            <input type="submit" id="upload" value="Upload"/>
+                                        </p>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -164,14 +172,9 @@
                         <c:if test="${not empty currentNode.properties['jcr:description'].string}">${currentNode.properties['jcr:description'].string}</c:if>
                         <c:if test="${empty currentNode.properties['jcr:description'].string}">Add a description (click here)</c:if>
                     </span>
-                        Download live version : <a href="${url.baseLive}${currentNode.path}">Download</a><br>
-                        Download staging version : <a href="${currentNode.url}">Download</a><br>
-
-                    <form method="POST" name="publishFile" action="${url.base}${currentNode.path}.publishFile.do">
-                        <input type="submit" name="publish file"/>
-                    </form>
 
                     </p>
+
                     <div class="clear"></div>
                 </div>
             </div>
@@ -196,12 +199,15 @@
                 </c:if>
                 <img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png"/>
                 <c:choose>
-                <c:when test="${jcr:hasPermission(currentNode, 'write') or publishedVersion}">
-                    <a href="${currentNode.url}?v=${version.name}">Version ${version.name}</a>
-                </c:when>
-                <c:otherwise>
-                    Version ${version.name}
-                </c:otherwise>
+                    <c:when test="${jcr:hasPermission(currentNode, 'write')}">
+                        <a href="${currentNode.url}?v=${version.name}">Version ${version.name}</a>
+                    </c:when>
+                    <c:when test="${publishedVersion}">
+                        <a href="${currentNode.url}">Version ${version.name}</a>
+                    </c:when>
+                    <c:otherwise>
+                        Version ${version.name}
+                    </c:otherwise>
                 </c:choose>
                 <p class="docspacedate"><fmt:formatDate
                         value="${version.created.time}" pattern="yyyy/MM/dd HH:mm"/>
@@ -216,6 +222,9 @@
             </li>
         </c:forEach>
     </ul>
+    <form method="POST" name="publishFile" action="${url.base}${currentNode.path}.publishFile.do">
+        <input type="submit" value="<fmt:message key="docspace.label.document.publish"/>"/>
+    </form>
 </div>
 <!--stop grid_4-->
 

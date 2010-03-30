@@ -48,6 +48,7 @@ import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.comparator.NumericStringComparator;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -1612,6 +1613,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 Version version = vi.nextVersion();
                 results.add(version);
             }
+            Collections.sort(results,new Comparator<Version>() {
+                public int compare(Version o1, Version o2) {
+                    try {
+                        return o1.getCreated().compareTo(o2.getCreated());
+                    } catch (RepositoryException e) {
+                        return -1;
+                    }
+                }
+            });
         } catch (RepositoryException e) {
             logger.error("Error while retrieving versions", e);
         }

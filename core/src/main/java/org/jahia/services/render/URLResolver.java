@@ -105,8 +105,7 @@ public class URLResolver {
         if (!resolveUrlMapping()) {
             init();
             if (isMappable()
-                    && SettingsBean.getInstance().isPermanentMoveForVanityURL()
-                    && !isUnnamedSubmitPath()) {
+                    && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
                     VanityUrl defaultVanityUrl = getVanityUrlService()
                             .getVanityUrlForWorkspaceAndLocale(getNode(),
@@ -153,11 +152,11 @@ public class URLResolver {
                 : LanguageCodeConverters.languageCodeToLocale(langCode);
         path = "/" + StringUtils.substringAfter(path, "/");
 
-        // TODO: this is perhaps a temporary limitation as URL points to special templates
+        // TODO: this is perhaps a temporary limitation as URL points to special templates, when 
+        // there are more than one dots - and the path needs to end with .html
         String lastPart = StringUtils.substringAfterLast(path, "/");
-        if (lastPart.length() > 0
-                && !StringUtils.substringBefore(lastPart, ".html")
-                        .contains(".")) {
+        int indexOfHTMLSuffix = lastPart.indexOf(".html");
+        if (indexOfHTMLSuffix > 0 && lastPart.indexOf(".") == indexOfHTMLSuffix) {
             mappable = true;
         }
     }
@@ -495,17 +494,6 @@ public class URLResolver {
         return mappable;
     }
 
-    /**
-     * This method checks if the path is a submit path for creating new objects using a submit path
-     * that includes a wildcard characters and therefore ends with the character sequence "/*".
-     * @return true if the path is an unnamed submit path.
-     */
-    public boolean isUnnamedSubmitPath() {
-        if (path != null) {
-            return path.endsWith("/*");
-        }
-        return false;
-    }
 
     /**
      * Checks whether the URL points to a Jahia content object, which can be mapped to vanity

@@ -156,7 +156,11 @@ public class URLGenerator {
     public String getUserProfile() {
         if (userProfile == null) {
             if (!JahiaUserManagerService.isGuest(context.getUser())) {
-                userProfile = buildURL(jcrStoreService.getUserFolders(null, context.getUser()).iterator().next(), null, resource.getTemplateType());
+                if (context.getSite() != null) {
+                    userProfile = base + context.getSite().getPath() + "/users/" + context.getUser().getUsername() + "."+ resource.getTemplateType();
+                } else {
+                    userProfile = base + "/users/" + context.getUser().getUserKey() + "."+ resource.getTemplateType();
+                }
             }
         }
         return userProfile;

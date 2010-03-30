@@ -175,6 +175,8 @@ public class JCRSitesProvider {
                         JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + site.getTemplatePackageName() + "/defaultSite");
                         defaultSite.copy(session.getNode("/sites"), site.getSiteKey(), false);
                         session.save();
+                        session.getNode("/sites/"+site.getSiteKey()).clone(session.getNode("/users"), "users");
+                        session.save();
                     } catch (PathNotFoundException e) {
                     } catch (RepositoryException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

@@ -104,7 +104,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             return (JCRNodeWrapper) session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(), "/"));
         } else {
-            return provider.getNodeWrapper(objectNode.getParent(), session);
+            return (JCRNodeWrapper) session.getItem(StringUtils.substringBeforeLast(getPath(),"/"));
         }
     }
 

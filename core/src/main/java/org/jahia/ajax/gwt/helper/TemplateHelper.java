@@ -2,6 +2,9 @@ package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.bin.Edit;
+import org.jahia.bin.Render;
+import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -54,6 +57,14 @@ public class TemplateHelper {
             renderContext.setEditMode(editMode);
             renderContext.setEditModeConfigName(configName);
             renderContext.setMainResource(r);
+            if (Edit.EDIT_MODE.equals(configName)) {
+                renderContext.setServletPath(Edit.getEditServletPath());
+            } else if (Studio.STUDIO_MODE.equals(configName)) {
+                renderContext.setServletPath(Studio.getStudioServletPath());
+            } else {
+                renderContext.setServletPath(Render.getRenderServletPath());
+            }
+
             if (contextParams != null) {
                 for (Map.Entry<String, String> entry : contextParams.entrySet()) {
                     r.getModuleParams().put(entry.getKey(), entry.getValue());

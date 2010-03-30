@@ -15,10 +15,10 @@
 <li id="treeNode${currentNode.identifier}" class="closed">
 
     <c:if test="${jcr:hasPermission(currentNode, 'write')}">
-        <a href="${url.basePreview}${currentNode.path}.html"><ins>&nbsp;</ins>${currentNode.name}</a>
+        <a href="${url.basePreview}${currentNode.path}.html"><span class="folder">${currentNode.name}</span></a>
     </c:if>
     <c:if test="${not jcr:hasPermission(currentNode, 'write')}">
-        <a href="${url.baseLive}${currentNode.path}.html"><ins>&nbsp;</ins>${currentNode.name}</a>
+        <a href="${url.baseLive}${currentNode.path}.html"><span class="folder">${currentNode.name}</span></a>
     </c:if>
     <c:forEach var="node" items="${jcr:getChildrenOfType(currentNode,'jnt:docspace')}" varStatus="status">
         <c:if test="${status.first}">

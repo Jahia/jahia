@@ -12,8 +12,8 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.cookie.js,jquery.hotkey.js,jquery.metadata.js,sarissa.js,jquery.tree.js"/>
+<template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css,jquery.treeview.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.treeview.min.js"/>
 <script type="text/javascript">
     function noAccent(chaine) {
         temp = chaine.replace(/[àâä]/gi, "a");
@@ -28,9 +28,9 @@
         return t;
     }
 
-    /*$(document).ready(function() {
-        $("#docspaceTree").tree();
-    });*/
+    $(document).ready(function() {
+        $("#docspaceTree").treeview();
+    });
 </script>
 <div class='grid_6'><!--start grid_6-->
     <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.workspace"/></h4>
@@ -38,8 +38,8 @@
     <div class="boxdocspace"><!--start boxdocspace -->
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
-                <div class="boxdocspace-inner-border" id="docspaceTree">
-                    <ul>
+                <div class="boxdocspace-inner-border">
+                    <ul id="docspaceTree" class="filetree">
                         <c:forEach var="node" items="${jcr:getChildrenOfType(currentNode,'jnt:docspace')}">
                             <template:module node="${node}" forcedTemplate="hidden.tree"/>
                         </c:forEach>

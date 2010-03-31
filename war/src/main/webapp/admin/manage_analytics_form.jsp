@@ -38,20 +38,25 @@
 <%@ page import="org.jahia.services.analytics.*" %>
 
 <%
-
     String jahiaGAprofile = "";
     String operation = "";
     String gaUserAccount = "";
     String gaLogin = "";
     String gaProfile = "";
     String gaPassword = "";
+    boolean typeUrlVirtual = false;
+    boolean typeUrlReal = false;
+    boolean trackingEnabled = false;
     if (request.getParameter("sub") != null) {
         if (request.getParameter("sub").equals("displayEdit")) {
             operation = "saveEdit&profile=" + jahiaGAprofile;
-            gaUserAccount = currentSite.googleAnalyticsProfils.get(jahiaGAprofile).getAccount();
-            gaLogin = currentSite.googleAnalyticsProfils.get(jahiaGAprofile).getLogin();
-            gaProfile = currentSite.googleAnalyticsProfils.get(jahiaGAprofile).getProfile();
-            gaPassword = currentSite.googleAnalyticsProfils.get(jahiaGAprofile).getPassword();
+            gaUserAccount = currentSite.getGoogleAnalytics(jahiaGAprofile).getAccount();
+            gaLogin = currentSite.getGoogleAnalytics(jahiaGAprofile).getLogin();
+            gaProfile = currentSite.getGoogleAnalytics(jahiaGAprofile).getProfile();
+            gaPassword = currentSite.getGoogleAnalytics(jahiaGAprofile).getPassword();
+            trackingEnabled = currentSite.getGoogleAnalytics(jahiaGAprofile).isEnabled();
+            typeUrlVirtual = currentSite.getGoogleAnalytics(jahiaGAprofile).getTypeUrl().equals("virtual");
+            typeUrlReal = currentSite.getGoogleAnalytics(jahiaGAprofile).getTypeUrl().equals("real");
         } else {
             operation = "add";
             gaUserAccount = (String) request.getAttribute("gaUserAccount");
@@ -130,7 +135,7 @@
                                         </td>
                                         <td valign="top">
                                             :&nbsp;<input type="checkbox" name="trackingEnabled"
-                                                          <% if (Boolean.valueOf(currentSite.getGoogleAnalyticsTrackingEnabled(jahiaGAprofile))) { %>checked<% } %>
+                                                          <% if (trackingEnabled) { %>checked<% } %>
                                                           id="trackingEnabled"/>
                                         </td>
                                     </tr>
@@ -143,13 +148,11 @@
                                             <label><fmt:message
                                                     key="org.jahia.admin.site.ManageAnalytics.realUrls.label"/></label>
                                             <input type="radio" name="trackedUrls" value="real"
-                                                   <%if(currentSite.getGoogleAnalyticsTrackedUrl(jahiaGAprofile)!=null){if ((currentSite.getGoogleAnalyticsTrackedUrl(jahiaGAprofile).equals("real"))) { %>checked<% }}else{ %>checked<% }%>
-                                                   id="trackedUrls"/>
+                                                   <%if(typeUrlReal) { %>checked<% }else{ %>checked<% }%> id="trackedUrls"/>
                                             <label><fmt:message
                                                     key="org.jahia.admin.site.ManageAnalytics.virtualUrls.label"/></label>
                                             <input type="radio" name="trackedUrls" value="virtual"
-                                                   <% if(currentSite.getGoogleAnalyticsTrackedUrl(jahiaGAprofile)!=null){ if ((currentSite.getGoogleAnalyticsTrackedUrl(jahiaGAprofile).equals("virtual"))) { %>checked<% }
-                                            } %> id="trackedUrls"/>
+                                                   <% if(typeUrlVirtual) { %>checked<% }%> id="trackedUrls"/>
                                         </td>
                                     </tr>
 

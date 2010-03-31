@@ -1,5 +1,3 @@
-<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
-<%@ page import="org.jahia.utils.FileUtils" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -72,10 +70,20 @@
     <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
 
         <tr class="odd">
-            <td class="center" headers="Type"><a style="display:block;width:16px;height:16px"
-                                                 class="${functions:fileIcon(subchild.name)}"></a>
+            <td class="center" headers="Type">
+                <c:choose>
+                    <c:when test="${jcr:isNodeType(subchild, 'jnt:docspace')}">
+                        <a style="display:block;width:16px;height:16px"><img alt="docspace" src="${url.currentModule}/css/img/docspace.png" height="16" width="16"/></a>
+                    </c:when>
+                    <c:otherwise>
+                        <a style="display:block;width:16px;height:16px"
+                           class="${functions:fileIcon(subchild.name)}"></a>
+                    </c:otherwise>
+                </c:choose>
             </td>
-            <td headers="Title"><a href="${url.base}${subchild.path}<c:if test="${jcr:isNodeType(subchild, 'jnt:docspaceFile')}">.docspace</c:if>.html">${subchild.name}</a></td>
+            <td headers="Title"><a
+                    href="${url.base}${subchild.path}<c:if test="${jcr:isNodeType(subchild, 'jnt:docspaceFile')}">.docspace</c:if>.html">${subchild.name}</a>
+            </td>
 
             <jcr:nodeProperty node="${subchild}" name="jcr:created" var="created"/>
             <jcr:nodeProperty node="${subchild}" name="jcr:lastModified" var="modified"/>

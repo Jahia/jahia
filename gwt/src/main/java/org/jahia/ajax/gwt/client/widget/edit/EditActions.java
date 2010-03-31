@@ -291,7 +291,7 @@ public class EditActions {
 
         private PublishAllConfirmWindow(final Linker linker, final GWTJahiaNode selectedNode) {
             setScrollMode(Style.Scroll.AUTO);
-            setHeading("Publish");
+            setHeading(Messages.getResource("publication_publish"));
             setSize(800, 500);
             setResizable(false);
 

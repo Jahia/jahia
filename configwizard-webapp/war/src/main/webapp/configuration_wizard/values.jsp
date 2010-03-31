@@ -248,7 +248,7 @@
     </td>
     <td headers="t8" class="t4">
         <% final String utf8Encoding = (String) values.get("utf8Encoding");
-            if (utf8Encoding.equals("true")) { %>
+            if ("true".equals(utf8Encoding)) { %>
         <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.values.true.label"/>
         <% } else { %>
         <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.values.false.label"/>

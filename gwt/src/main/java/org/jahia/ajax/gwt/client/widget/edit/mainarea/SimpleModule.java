@@ -7,11 +7,13 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
@@ -25,29 +27,27 @@ import java.util.List;
  * Time: 12:25:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleModule extends LayoutContainer implements Module {
-
-    private String id;
-    private GWTJahiaNode node;
-    private HTML html;
-    private String path;
-    private String template;
-    private String scriptInfo;
-    private Module parentModule;
-    private MainModule mainModule;
-    private String nodeTypes;
-    private boolean isDraggable=false;
-    private int depth;
-    private boolean selectable;
+public class SimpleModule extends Module {
 
     public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, final MainModule mainModule) {
         this.id = id;
-        setBorders(false);
         this.path = path;
         this.mainModule = mainModule;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.nodeTypes = nodeTypes;
+
+        if (mainModule.getConfig().getName().equals("studiomode")) {
+            head = new Header();
+            add(head);
+            head.setText(Messages.getResource("em_content")+" : "+ path.substring(path.lastIndexOf('/')+1));
+            head.addStyleName("x-panel-header");
+            head.addStyleName("x-panel-header-simplemodule");
+            if (locked) {
+                head.addStyleName("x-panel-header-lockedmodule");
+            }
+            setBorders(false);
+        }
 
         html = new HTML(s);
         add(html);
@@ -89,69 +89,12 @@ public class SimpleModule extends LayoutContainer implements Module {
         addListener(Events.OnMouseOut, outListener);
     }
 
-    public String getModuleId() {
-        return id;
-    }
-
-    public HTML getHtml() {
-        return html;
-    }
-
-    public LayoutContainer getContainer() {
-        return this;
-    }
-
-    public int getDepth() {
-        return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public void setSelectable(boolean selectable) {
-        this.selectable = selectable;
-    }
-
-    public boolean isSelectable() {
-        return selectable;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public GWTJahiaNode getNode() {
-        return node;
-    }
-
     public void setNode(GWTJahiaNode node) {
         this.node = node;
         if(node.getNodeTypes().contains("jmix:shareable")) {
 //            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
             this.setToolTip(new ToolTipConfig("Important","This is a shared node"));
         }
-    }
-
-
-    public Module getParentModule() {
-        return parentModule;
-    }
-
-    public void setParentModule(Module parentModule) {
-        this.parentModule = parentModule;
-    }
-
-    public String getTemplate() {
-        return template;
-    }
-
-    public void setDraggable(boolean isDraggable) {
-        this.isDraggable = isDraggable;
-    }
-
-    public boolean isDraggable() {
-        return isDraggable;
     }
 
     public class SimpleModuleDragSource extends ModuleDragSource {

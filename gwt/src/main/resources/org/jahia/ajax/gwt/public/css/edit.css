@@ -1,5 +1,22 @@
 /** styles added for list module in order to make them as nice as jahia6 **/
 
+.x-panel-header-simplemodule {
+    background : #009933 url(../images/xtheme-jahia-andromeda/panel/white-top-bottom2.png) top left;
+	padding: 4px;
+    color: #fff !important;
+	font-weight: bold;
+    font-size: 9px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+    border:none;
+	padding: 2px 5px ;
+	vertical-align: middle;
+	margin-bottom:2px;
+	display:inline;
+}
+
 .x-panel-header-listmodule {
     background : #333333 url(../images/xtheme-jahia-andromeda/panel/white-top-bottom2.png) top left;
 	padding: 4px;

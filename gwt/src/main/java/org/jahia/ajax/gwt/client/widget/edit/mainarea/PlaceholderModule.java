@@ -17,14 +17,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
  * Time: 12:03:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PlaceholderModule extends LayoutContainer implements Module {
-    private String id;
-    private String path;
-    private Module parentModule;
-    private MainModule mainModule;
-    private String nodeTypes;
-    private int depth;
-    private boolean selectable;
+public class PlaceholderModule extends Module {
 
     public PlaceholderModule(String id, String path, String nodeTypes, MainModule mainModule) {
         super(new FlowLayout());
@@ -32,6 +25,7 @@ public class PlaceholderModule extends LayoutContainer implements Module {
         this.path = path;
         this.mainModule = mainModule;
         this.nodeTypes = nodeTypes;
+
         if (path.endsWith("*")) {
             setBorders(false);
         } else {
@@ -40,7 +34,7 @@ public class PlaceholderModule extends LayoutContainer implements Module {
 
         setHeight(20);
         
-        HTML html = new HTML("");
+        html = new HTML("");
         add(html);
 
         DropTarget target = new PlaceholderModuleDropTarget();
@@ -49,59 +43,6 @@ public class PlaceholderModule extends LayoutContainer implements Module {
 
         target.addDNDListener(mainModule.getEditLinker().getDndListener());
 
-    }
-
-    public void onParsed() {
-    }
-
-    public String getModuleId() {
-        return id;
-    }
-
-    public HTML getHtml() {
-        return null;
-    }
-
-    public LayoutContainer getContainer() {
-        return this;
-    }
-
-    public int getDepth() {
-        return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public void setSelectable(boolean selectable) {
-        this.selectable = selectable;
-    }
-
-    public boolean isSelectable() {
-        return selectable;
-    }
-
-
-    public String getPath() {
-        return path;
-    }
-
-    public GWTJahiaNode getNode() {
-        return null;
-    }
-
-    public void setNode(GWTJahiaNode node) {
-        
-    }
-
-
-    public Module getParentModule() {
-        return parentModule;
-    }
-
-    public void setParentModule(Module parentModule) {
-        this.parentModule = parentModule;
     }
 
     private class PlaceholderModuleDropTarget extends ModuleDropTarget {
@@ -125,15 +66,8 @@ public class PlaceholderModule extends LayoutContainer implements Module {
             }
         }
     }
-    
-    public String getTemplate() {
-        return null;
-    }
 
     public boolean isDraggable() {
         return false;
-    }
-
-    public void setDraggable(boolean isDraggable) {
     }
 }

@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -32,14 +33,9 @@ import java.util.Set;
  * First module of any rendered element.
  * Sub content will be created as ListModule or SimpleModule.
  */
-public class MainModule extends ContentPanel implements Module {
+public class MainModule extends Module {
 
     private static MainModule module;
-    private GWTJahiaNode node;
-    private HTML html;
-    private String path;
-    private String template;
-    private boolean selectable = true;
     private String originalHtml;
     private EditLinker editLinker;
     private ActionMenu contextMenu;
@@ -49,16 +45,21 @@ public class MainModule extends ContentPanel implements Module {
 
     public MainModule(final String html, final String path, final String template, GWTEditConfig config) {
         super(new FlowLayout());
-        setHeading("Page : " + path);
         setScrollMode(Style.Scroll.AUTO);
 
+        this.id = "main";
         this.originalHtml = html;
         this.path = path;
         this.template = template;
         this.config = config;
+        this.depth = 0;
 
-        getHeader().setStyleAttribute("z-index", "999");
-        getHeader().setStyleAttribute("position", "relative");
+        head = new Header();
+        head.setText("Page : " + path);
+        head.addStyleName("x-panel-header");
+        head.setStyleAttribute("z-index", "999");
+        head.setStyleAttribute("position", "relative");
+
         Hover.getInstance().setMainModule(this);
         Selection.getInstance().setMainModule(this);
 
@@ -114,7 +115,7 @@ public class MainModule extends ContentPanel implements Module {
         JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true, config.getName(), new AsyncCallback<GWTRenderResult>() {
             public void onSuccess(GWTRenderResult result) {
                 int i = getVScrollPosition();
-                setHeading("Page : " + path);
+                head.setText("Page : " + path);
                 removeAll();
                 Selection.getInstance().hide();
                 Hover.getInstance().removeAll();
@@ -178,6 +179,7 @@ public class MainModule extends ContentPanel implements Module {
     }-*/;
 
     private void display(String result) {
+        add(head);
         html = new HTML(result);
         add(html);
         ModuleHelper.tranformLinks(html);
@@ -199,38 +201,8 @@ public class MainModule extends ContentPanel implements Module {
         m = ModuleHelper.parse(this);
     }
 
-    public void onParsed() {
-    }
-
     public String getModuleId() {
         return "main";
-    }
-
-    public HTML getHtml() {
-        return html;
-    }
-
-    public LayoutContainer getContainer() {
-        return this;
-    }
-
-    public int getDepth() {
-        return 0;
-    }
-
-    public void setDepth(int depth) {
-    }
-
-    public void setSelectable(boolean selectable) {
-        this.selectable = selectable;
-    }
-
-    public boolean isSelectable() {
-        return selectable;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     public void goTo(String path, String template) {
@@ -253,10 +225,6 @@ public class MainModule extends ContentPanel implements Module {
         refresh();
     }
 
-    public GWTJahiaNode getNode() {
-        return node;
-    }
-
     public void setNode(GWTJahiaNode node) {
         this.node = node;
         if (node.getNodeTypes().contains("jnt:page") || node.getInheritedNodeTypes().contains("jnt:page")) {
@@ -271,16 +239,8 @@ public class MainModule extends ContentPanel implements Module {
         }
     }
 
-
-    public Module getParentModule() {
-        return null;
-    }
-
-    public void setParentModule(Module module) {
-    }
-
-    public String getTemplate() {
-        return null;
+    public GWTEditConfig getConfig() {
+        return config;
     }
 
     public void handleNewModuleSelection(Module selectedModule) {
@@ -299,9 +259,6 @@ public class MainModule extends ContentPanel implements Module {
 
     public boolean isDraggable() {
         return false;
-    }
-
-    public void setDraggable(boolean isDraggable) {
     }
 
     public static native void exportStaticMethod() /*-{

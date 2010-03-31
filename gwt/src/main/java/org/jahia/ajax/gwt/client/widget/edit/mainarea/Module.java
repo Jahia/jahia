@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.extjs.gxt.ui.client.widget.Header;
+import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -8,37 +10,107 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
  * Interface defining what is a mdoule on a rendered page in edit mode
  * A module could be selected, edited, dragged etc.
  */
-public interface Module {
+public abstract class Module extends LayoutContainer {
 
-    void onParsed();
+    protected String id;
+    protected GWTJahiaNode node;
+    protected HTML html;
+    protected String path;
+    protected String template;
+    protected String scriptInfo;
+    protected Module parentModule;
+    protected MainModule mainModule;
+    protected String nodeTypes;
+    protected boolean isDraggable = false;
+    protected int depth;
+    protected boolean selectable;
+    protected Header head;
+    protected boolean locked;
 
-    HTML getHtml();
+    public Module() {
+    }
 
-    LayoutContainer getContainer();
+    public Module(Layout layout) {
+        super(layout);
+    }
 
-    int getDepth();
+    protected Module(String id, String path, HTML html, String template, String scriptInfo, String nodeTypes, boolean locked, MainModule mainModule) {
+        this.id = id;
+        this.path = path;
+        this.html = html;
+        this.template = template;
+        this.scriptInfo = scriptInfo;
+        this.nodeTypes = nodeTypes;
+        this.locked = locked;
+        this.mainModule = mainModule;
+    }
 
-    void setDepth(int depth);
+    public void onParsed() {
 
-    void setSelectable(boolean selectable);
+    }
 
-    boolean isSelectable();
+    public Module getParentModule() {
+        return parentModule;
+    }
 
-    String getModuleId();
+    public void setParentModule(Module parentModule) {
+        this.parentModule = parentModule;
+    }
 
-    String getPath();
-    
-    GWTJahiaNode getNode();
+    public String getModuleId() {
+        return id;
+    }
 
-    Module getParentModule();
+    public HTML getHtml() {
+        return html;
+    }
 
-    void setParentModule(Module module);
+    public LayoutContainer getContainer() {
+        return this;
+    }
 
-    void setNode(GWTJahiaNode node);
+    public int getDepth() {
+        return depth;
+    }
 
-    String getTemplate();
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
 
-    void setDraggable(boolean isDraggable);
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
 
-    boolean isDraggable();
+    public boolean isSelectable() {
+        return selectable;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public GWTJahiaNode getNode() {
+        return node;
+    }
+
+    public void setNode(GWTJahiaNode node) {
+        this.node = node;
+    }
+
+    public String getNodeTypes() {
+        return nodeTypes;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setDraggable(boolean isDraggable) {
+        this.isDraggable = isDraggable;
+    }
+
+    public boolean isDraggable() {
+        return isDraggable;
+    }
+
 }

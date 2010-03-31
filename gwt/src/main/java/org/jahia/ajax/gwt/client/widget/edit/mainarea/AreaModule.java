@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
@@ -19,20 +20,7 @@ import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopu
  * Time: 7:25:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AreaModule extends ContentPanel implements Module {
-
-    private String id;
-    private GWTJahiaNode node;
-    private HTML html;
-    private String path;
-    private String template;
-    private String scriptInfo;
-    private Module parentModule;
-    private MainModule mainModule;
-    private String nodeTypes;
-    private boolean isDraggable = true;
-    private int depth;
-    private boolean selectable;
+public class AreaModule extends Module {
 
     public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, MainModule mainModule) {
         this.id = id;
@@ -41,16 +29,20 @@ public class AreaModule extends ContentPanel implements Module {
         this.scriptInfo = scriptInfo;
         this.mainModule = mainModule;
         this.nodeTypes = nodeTypes;
+        head = new Header();
+        add(head);
+
         if (path.contains("/")) {
-            setHeading(Messages.getResource("em_area")+" : "+ path.substring(path.lastIndexOf('/')+1));
+            head.setText(Messages.getResource("em_area")+" : "+ path.substring(path.lastIndexOf('/')+1));
         } else {
-            setHeading(Messages.getResource("em_area")+" : "+ path);
+            head.setText(Messages.getResource("em_area")+" : "+ path);
         }
         setBorders(false);
-        setBodyBorder(false);
-        getHeader().addStyleName("x-panel-header-areamodule");
+//        setBodyBorder(false);
+        head.addStyleName("x-panel-header");
+        head.addStyleName("x-panel-header-areamodule");
         if (locked) {
-            getHeader().addStyleName("x-panel-header-lockedmodule");
+            head.addStyleName("x-panel-header-lockedmodule");
         }
         html = new HTML(s);
         add(html);
@@ -90,69 +82,4 @@ public class AreaModule extends ContentPanel implements Module {
         addListener(Events.OnMouseOut, outListener);
 
     }
-
-    public String getModuleId() {
-        return id;
-    }
-
-    public HTML getHtml() {
-        return html;
-    }
-
-    public LayoutContainer getContainer() {
-        return this;
-    }
-
-    public int getDepth() {
-        return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public void setSelectable(boolean selectable) {
-        this.selectable = selectable;
-    }
-
-    public boolean isSelectable() {
-        return selectable;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public GWTJahiaNode getNode() {
-        return node;
-    }
-
-    public void setNode(GWTJahiaNode node) {
-        this.node = node;
-    }
-
-    public Module getParentModule() {
-        return parentModule;
-    }
-
-    public String getNodeTypes() {
-        return nodeTypes;
-    }
-
-    public void setParentModule(Module parentModule) {
-        this.parentModule = parentModule;
-    }
-
-    public String getTemplate() {
-        return template;
-    }
-
-    public void setDraggable(boolean isDraggable) {
-        this.isDraggable = isDraggable;
-    }
-
-    public boolean isDraggable() {
-        return isDraggable;
-    }
-
 }

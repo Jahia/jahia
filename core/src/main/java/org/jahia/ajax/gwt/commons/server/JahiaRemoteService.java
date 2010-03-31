@@ -158,10 +158,6 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     protected JahiaSite getSite() {
         try {
             JahiaSite site = JahiaSitesBaseService.getInstance().getSiteByKey(request.getParameter("site"));
-            if (site == null) {
-                site = JahiaSitesBaseService.getInstance().getDefaultSite();
-            }
-
             return site;
         } catch (Exception e) {
             try {

@@ -44,8 +44,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.Contribute;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.Render;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRCallback;
@@ -80,8 +82,15 @@ public class URLResolver {
     private static final String DEFAULT_WORKSPACE = LIVE_WORKSPACE;
 
     private static Logger logger = Logger.getLogger(URLResolver.class);
+    
+    private static String[] servletsAllowingUrlMapping = new String[] {
+            StringUtils.substringAfterLast(Render.getRenderServletPath(), "/"),
+            StringUtils.substringAfterLast(Edit.getEditServletPath(), "/"),
+            StringUtils.substringAfterLast(Contribute
+                    .getContributeServletPath(), "/") };
 
     private String urlPathInfo = null;
+    private String servletPart;    
     private String workspace;
     private Locale locale;
     private String path;
@@ -102,7 +111,10 @@ public class URLResolver {
         super();
         this.urlPathInfo = urlPathInfo;
         setSiteKey(siteKey);
-        path = StringUtils.substringAfter(getUrlPathInfo().substring(1), "/");
+        servletPart = StringUtils.substring(getUrlPathInfo(), 1,
+                StringUtils.indexOf(getUrlPathInfo(), "/", 1));
+        path = StringUtils.substring(getUrlPathInfo(),
+                servletPart.length() + 2, getUrlPathInfo().length());
         if (!resolveUrlMapping()) {
             init();
             if (isMappable()
@@ -153,61 +165,81 @@ public class URLResolver {
         // there are more than one dots - and the path needs to end with .html
         String lastPart = StringUtils.substringAfterLast(path, "/");
         int indexOfHTMLSuffix = lastPart.indexOf(".html");
-        if (indexOfHTMLSuffix > 0 && lastPart.indexOf(".") == indexOfHTMLSuffix) {
+        if (isServletAllowingUrlMapping() && indexOfHTMLSuffix > 0
+                && lastPart.indexOf(".") == indexOfHTMLSuffix) {
             mappable = true;
         }
     }
 
+    private boolean isServletAllowingUrlMapping() {
+        boolean isServletAllowingUrlMapping = false;
+        for (String servletAllowingUrlMapping : servletsAllowingUrlMapping) {
+            if (servletAllowingUrlMapping.equals(servletPart)) {
+                isServletAllowingUrlMapping = true;
+                break;
+            }
+        }
+        return isServletAllowingUrlMapping;
+    }
+    
     private boolean resolveUrlMapping() {
         boolean mappingResolved = false;
-        String tempPath = null;
-        try {
-            String tempWorkspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(
-                    getPath(), "/"), DEFAULT_WORKSPACE);
-            tempPath = StringUtils.substringAfter(getPath(), "/");
-            if (getSiteKey() == null) {
-                setSiteKey(StringUtils.substringBetween(getPath(), "/sites/",
-                        "/"));
-            }
-            List<VanityUrl> vanityUrls = getVanityUrlService()
-                    .findExistingVanityUrls("/" + tempPath, StringUtils.EMPTY,
-                            tempWorkspace);
-            VanityUrl resolvedVanityUrl = null;
-            if (!vanityUrls.isEmpty() && !StringUtils.isEmpty(getSiteKey())) {
-                for (VanityUrl vanityUrl : vanityUrls) {
-                    if (vanityUrl.isActive() && getSiteKey().equals(vanityUrl.getSite())) {
-                        resolvedVanityUrl = vanityUrl;
-                        break;
+        if (isServletAllowingUrlMapping()) {
+            String tempPath = null;
+            try {
+                String tempWorkspace = StringUtils.defaultIfEmpty(StringUtils
+                        .substringBefore(getPath(), "/"), DEFAULT_WORKSPACE);
+                tempPath = StringUtils.substringAfter(getPath(), "/");
+                if (getSiteKey() == null) {
+                    setSiteKey(StringUtils.substringBetween(getPath(),
+                            "/sites/", "/"));
+                }
+                List<VanityUrl> vanityUrls = getVanityUrlService()
+                        .findExistingVanityUrls("/" + tempPath,
+                                StringUtils.EMPTY, tempWorkspace);
+                VanityUrl resolvedVanityUrl = null;
+                if (!vanityUrls.isEmpty() && !StringUtils.isEmpty(getSiteKey())) {
+                    for (VanityUrl vanityUrl : vanityUrls) {
+                        if (vanityUrl.isActive()
+                                && getSiteKey().equals(vanityUrl.getSite())) {
+                            resolvedVanityUrl = vanityUrl;
+                            break;
+                        }
                     }
                 }
-            }
-            if (resolvedVanityUrl == null && StringUtils.isEmpty(getSiteKey())
-                    && !vanityUrls.isEmpty()) {
-                resolvedVanityUrl = vanityUrls.get(0);
-            }
-            if (resolvedVanityUrl != null) {
-                workspace = tempWorkspace;
-                locale = StringUtils.isEmpty(resolvedVanityUrl.getLanguage()) ? DEFAULT_LOCALE
-                        : LanguageCodeConverters
-                                .languageCodeToLocale(resolvedVanityUrl
-                                        .getLanguage());
-                path = StringUtils.substringBeforeLast(resolvedVanityUrl.getPath(), "/") + ".html";
-                setVanityUrl(resolvedVanityUrl.getUrl());
-                if (SettingsBean.getInstance().isPermanentMoveForVanityURL()
-                        && !resolvedVanityUrl.isDefaultMapping()) {
-                    VanityUrl defaultVanityUrl = getVanityUrlService()
-                            .getVanityUrlForWorkspaceAndLocale(getNode(),
-                                    workspace, locale);
-                    if (defaultVanityUrl != null
-                            && !resolvedVanityUrl.equals(defaultVanityUrl)) {
-                        setRedirectUrl(defaultVanityUrl.getUrl());
-                    }
+                if (resolvedVanityUrl == null
+                        && StringUtils.isEmpty(getSiteKey())
+                        && !vanityUrls.isEmpty()) {
+                    resolvedVanityUrl = vanityUrls.get(0);
                 }
-                mappingResolved = true;
+                if (resolvedVanityUrl != null) {
+                    workspace = tempWorkspace;
+                    locale = StringUtils.isEmpty(resolvedVanityUrl
+                            .getLanguage()) ? DEFAULT_LOCALE
+                            : LanguageCodeConverters
+                                    .languageCodeToLocale(resolvedVanityUrl
+                                            .getLanguage());
+                    path = StringUtils.substringBeforeLast(resolvedVanityUrl
+                            .getPath(), "/")
+                            + ".html";
+                    setVanityUrl(resolvedVanityUrl.getUrl());
+                    if (SettingsBean.getInstance()
+                            .isPermanentMoveForVanityURL()
+                            && !resolvedVanityUrl.isDefaultMapping()) {
+                        VanityUrl defaultVanityUrl = getVanityUrlService()
+                                .getVanityUrlForWorkspaceAndLocale(getNode(),
+                                        workspace, locale);
+                        if (defaultVanityUrl != null
+                                && !resolvedVanityUrl.equals(defaultVanityUrl)) {
+                            setRedirectUrl(defaultVanityUrl.getUrl());
+                        }
+                    }
+                    mappingResolved = true;
+                }
+            } catch (RepositoryException e) {
+                logger.warn("Error when trying to resolve URL mapping: "
+                        + tempPath, e);
             }
-        } catch (RepositoryException e) {
-            logger.warn("Error when trying to resolve URL mapping: "
-                    + tempPath, e);
         }
         return mappingResolved;
     }

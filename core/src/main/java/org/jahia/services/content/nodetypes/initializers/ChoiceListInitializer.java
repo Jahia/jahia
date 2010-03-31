@@ -32,7 +32,6 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 

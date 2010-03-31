@@ -1,6 +1,7 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -19,8 +20,10 @@ import java.util.*;
  *
  */
 public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitializer {
+    
     private transient static Logger logger = Logger.getLogger(SubNodeTypesChoiceListInitializerImpl.class);
 
+    @SuppressWarnings("unchecked")
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         final SortedSet<ChoiceListValue> listValues = new TreeSet<ChoiceListValue>();
         if (StringUtils.isEmpty(param)) {
@@ -30,9 +33,17 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
             String includedTypes = StringUtils.substringBefore(param, ";");
 
             Set<String> excludedTypes = new HashSet<String>();
-            CollectionUtils.addAll(excludedTypes, StringUtils.substringAfter(param, ";").split(","));
+            String exclusion = StringUtils.substringAfter(param, ";");
+            if (StringUtils.isNotBlank(exclusion)) {
+                excludedTypes.addAll(CollectionUtils.collect(Arrays.asList(StringUtils.substringAfter(param, ";").split(",")), new Transformer() {
+                    public Object transform(Object input) {
+                        return ((String) input).trim();
+                    }
+                }));
+            }
             
             for (String nodeTypeName : includedTypes.split(",")) {
+                nodeTypeName = nodeTypeName.trim();
                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance()
                         .getNodeType(nodeTypeName);
                 if (!isExcludedType(nodeType, excludedTypes)) {
@@ -69,4 +80,5 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
         }
         return isExcluded;
     }
+    
 }

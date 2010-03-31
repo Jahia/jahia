@@ -107,6 +107,29 @@ Basic Jahia REST API
 |jcr:mixinTypes             |no           | Allow you to set a mixin on the new node                             |
 *---------------------------+-------------+----------------------------------------------------------------------+
 
+* AJAX requests
+
+  All AJAX JSON requests should have the following headers set :
+
+  accept: application/json
+  x-requested-with : XMLHttpRequest
+
+  The second header should be set for you when accessing the API through a browser, but if you are using the REST API
+  through an HttpClient call or even another external client software (such as a mobile device for example), be sure
+  that both these headers are set, otherwise it will default to HTML feedback.
+
+* File uploads
+
+  In the case of a file upload, when using AJAX requests (by setting the headers as described in the previous section),
+  you actually have to perform two requests. The first request will be a multipart form upload and will save either in
+  the current users' "files" directory, or if the "targetDirectory" property was set it will store the uploaded files
+  there. The response is a JSON object with a "uuids" array property that contains string of the identifiers of all the
+  created file nodes in the repository.
+
+  The second request can then use the UUIDs returned by the first AJAX request to set references to the new file nodes.
+
+  If a file already exists at the upload target, it will be updated, and if versioning is activated (see the version
+  parameter above), it will create a new version before updating the file.
 
 ** Response format
 

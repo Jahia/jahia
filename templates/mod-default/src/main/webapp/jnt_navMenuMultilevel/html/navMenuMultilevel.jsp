@@ -21,7 +21,7 @@
     <a href='<c:url value="${navMenuBean.node.path}.html" context="${url.base}"/>'>${fn:escapeXml(title.string)}</a>
     <c:choose>
         <c:when test="${navMenuBean.hasChildren}">
-            <ul class="navmenu submenu level_${navMenuBean.level}">
+            <ul class="navmenu submenu level_${navMenuBean.level + 1}">
         </c:when>
         <c:otherwise>
             </li>

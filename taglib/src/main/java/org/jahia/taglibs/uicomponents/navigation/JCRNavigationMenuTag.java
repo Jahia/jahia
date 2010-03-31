@@ -276,10 +276,6 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
             while (iterator.hasNext()) {
                 JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) iterator
                         .nextNode();
-                navMenuItemBean = new NavMenuItemBean();
-                navMenuItemBean.setNode(nodeWrapper);
-                navMenuItemBean.setParentItem(parentItem);
-
                 boolean isInPath = true;
                 if (level > realStartLevel) {
                     if (nodeWrapper.hasProperty("j:hideInNavMenu")
@@ -344,6 +340,10 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                             continue;
                         }
                     }
+
+                    navMenuItemBean = new NavMenuItemBean();
+                    navMenuItemBean.setNode(nodeWrapper);
+                    navMenuItemBean.setParentItem(parentItem);
 
                     navMenuItemBean.setItemCount(++itemCount);
                     // First container

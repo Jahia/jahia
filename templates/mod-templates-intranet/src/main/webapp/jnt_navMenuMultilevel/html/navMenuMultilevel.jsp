@@ -22,7 +22,7 @@
     <c:choose>
         <c:when test="${navMenuBean.hasChildren}">
             <div class="box-inner">
-            <ul class="navmenu submenu level_${navMenuBean.level}">
+            <ul class="navmenu submenu level_${navMenuBean.level + 1}">
         </c:when>
         <c:otherwise>
             </li>

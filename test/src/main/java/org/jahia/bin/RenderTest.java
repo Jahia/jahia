@@ -19,6 +19,7 @@ import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -63,7 +64,7 @@ public class RenderTest extends TestCase {
 
         // todo we should really insert content to test the find.
 
-        PostMethod loginMethod = new PostMethod("http://localhost:8080/cms/login");
+        PostMethod loginMethod = new PostMethod("http://localhost:8080"+Jahia.getContextPath()+"/cms/login");
         loginMethod.addParameter("username", "root");
         loginMethod.addParameter("password", "root1234");
         loginMethod.addParameter("redirectActive", "false");
@@ -80,7 +81,7 @@ public class RenderTest extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
 
-        PostMethod logoutMethod = new PostMethod("http://localhost:8080/cms/logout");
+        PostMethod logoutMethod = new PostMethod("http://localhost:8080"+Jahia.getContextPath()+"/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
@@ -145,7 +146,7 @@ public class RenderTest extends TestCase {
         List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
         int index = 0;
         for (VersionInfo curVersionInfo : liveVersionInfos) {
-            GetMethod versionGet = new GetMethod("http://localhost:8080/cms/render/live/en" + subPagePublishedNode.getPath() + ".html?v=" + curVersionInfo.getVersion().getCreated().getTime().getTime());
+            GetMethod versionGet = new GetMethod("http://localhost:8080"+Jahia.getContextPath()+"/cms/render/live/en" + subPagePublishedNode.getPath() + ".html?v=" + curVersionInfo.getCheckinDate().getTime().getTime());
             try {
                 int responseCode = client.executeMethod(versionGet);
                 assertEquals("Response code " + responseCode, 200, responseCode);
@@ -187,8 +188,8 @@ public class RenderTest extends TestCase {
         mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + "0");
         mainContent.setProperty("body", MAIN_CONTENT_BODY + "0");
 
-        PostMethod createPost = new PostMethod("http://localhost:8080/cms/render/default/en" + SITECONTENT_ROOT_NODE + "/home/pagecontent/row1/col1/*");
-        createPost.addRequestHeader("x-request-with", "XMLHttpRequest");
+        PostMethod createPost = new PostMethod("http://localhost:8080"+Jahia.getContextPath()+"/cms/render/default/en" + SITECONTENT_ROOT_NODE + "/home/pagecontent/row1/col1/*");
+        createPost.addRequestHeader("x-requested-with", "XMLHttpRequest");
         createPost.addRequestHeader("accept", "application/json");
         // here we voluntarily don't set the node name to test automatic name creation.
         createPost.addParameter("nodeType", "jnt:mainContent");
@@ -196,10 +197,10 @@ public class RenderTest extends TestCase {
         createPost.addParameter("body", MAIN_CONTENT_BODY + "1");
 
         int responseCode = client.executeMethod(createPost);
-        assertEquals("Error in response, code=" + responseCode, 200, responseCode);
+        assertEquals("Error in response, code=" + responseCode, 201, responseCode);
         String responseBody = createPost.getResponseBodyAsString();
 
-        JSONArray jsonResults = new JSONArray(responseBody);
+        JSONObject jsonResults = new JSONObject(responseBody);
 
         assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
 

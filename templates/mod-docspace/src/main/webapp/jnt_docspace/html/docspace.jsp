@@ -21,6 +21,9 @@
 
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
+<template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
+<template:addResources type="javascript" resources="ajaxreplace.js"/>
+<template:addResources type="css" resources="jquery.fancybox.css"/>
 <script>
     $(document).ready(function() {
         $("#ckeditorEditDescription").editable(function (value, settings) {
@@ -51,6 +54,47 @@
                     $(this).val("");
                 }
             }
+        });
+
+        $("#createSubDocspace").submit(function() {
+            if ($("#docspacetitle").val().length < 1) {
+                $("#login_error").show();
+                $.fancybox.resize();
+                return false;
+            }
+
+            $.fancybox.showActivity();
+            $.ajax({
+                type        : "POST",
+                cache       : false,
+                url         : '${url.base}${currentNode.path}/' + noAccent($('#docspacetitle').val().replace(' ', '')),
+                data        : $(this).serializeArray(),
+                success     : function(data) {
+                    $.get('${url.base}${currentNode.path}/filesList.hidden.docspace.html?ajaxcall=true',null,function(data){
+                        $("#documentList${currentNode.identifier}").html(data);
+                    });
+                    $.fancybox.resize();
+                    $.fancybox.center();
+                    $.fancybox.close();
+                }
+            });
+
+            return false;
+        });
+
+        $("#showCreateSubDocspace").fancybox({
+            'scrolling'          : 'no',
+            'titleShow'          : false,
+            'hideOnContentClick' : false,
+            'showCloseButton'    : true,
+            'overlayOpacity'     : 0.6,
+            'onClosed'           : function() {
+                $("#login_error").hide();
+            }
+        });
+
+        $('#docspacecreatebutton').click(function() {
+            $('#createSubDocspace').submit();
         });
     });
 
@@ -186,86 +230,76 @@
                         <input type="hidden" name="version" value="true"/>
                         <input class="button" type="submit" id="upload" value="Upload"/>
                     </form>
-                    <form method="post" action="${currentNode.name}/*" name="newDocspace">
-                        <input type="hidden" name="autoCheckin" value="true">
-                        <input type="hidden" name="nodeType" value="jnt:docspace">
-
-                        <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.workspace.new"/></h3>
-                        <fieldset>
-                            <legend><fmt:message key="docspace.label.workspace.creation"/></legend>
-
-                            <p><label for="docspacetitle" class="left"><fmt:message key="docspace.label.title"/>
-                                :</label>
-                                <input type="text" name="jcr:title" id="docspacetitle" class="field" value=""
-                                       tabindex="20"/></p>
-
-
-                            <p><label for="docspacedesc" class="left"><fmt:message
-                                    key="docspace.label.description"/> :</label>
-                                <textarea name="jcr:description" id="docspacedesc" cols="45" rows="3"
-                                          tabindex="21"></textarea></p>
-
-                            <div class="formMarginLeft">
-                                <input type="submit" class="button"
-                                       value="<fmt:message key="docspace.label.workspace.create"/>" tabindex="28"
-                                       onclick="
-                                                   if (document.newDocspace.elements['jcr:title'].value == '') {
-                                                       alert('you must fill the title ');
-                                                       return false;
-                                                   }
-                                                   document.newDocspace.action = '${currentNode.name}/'+noAccent(document.newDocspace.elements['jcr:title'].value.replace(' ',''));
-                                                   document.newDocspace.submit();
-                                               "
-                                        />
-                            </div>
-                        </fieldset>
-                    </form>
+                    <a id="showCreateSubDocspace" href="#createSubDocspace"><span>Create Sub Docspace</span></a>
                 </div>
                 <!--stop formSearchTop-->
 
             </div>
         </div>
     </div>
-<script type="text/javascript">
+    <script type="text/javascript">
 
-    jQuery(document).ready(function() {
+        jQuery(document).ready(function() {
 
-        // Masquer la div à slider
-        jQuery(".AddNote1").hide();
+            // Masquer la div à slider
+            jQuery(".AddNote1").hide();
 
-        //Appliquer la classe active sur le bouton
-        jQuery(".BtMore").toggle(function() {
-            jQuery(this).addClass("active");
-        }, function () {
-            jQuery(this).removeClass("active");
+            //Appliquer la classe active sur le bouton
+            jQuery(".BtMore").toggle(function() {
+                jQuery(this).addClass("active");
+            }, function () {
+                jQuery(this).removeClass("active");
+            });
+
+            // Slide down et up sur click
+            jQuery(".BtMore").click(function() {
+                jQuery(this).next(".AddNote1").slideToggle("slow");
+            });
+
         });
 
-        // Slide down et up sur click
-        jQuery(".BtMore").click(function() {
-            jQuery(this).next(".AddNote1").slideToggle("slow");
-        });
+    </script>
+    <div class="boxdocspace">
+        <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
+            <div class="boxdocspace-inner">
+                <div class="boxdocspace-inner-border" ><!--start boxdocspace -->
+                    <div id="documentList${currentNode.identifier}"><template:area forcedTemplate="hidden.docspace" areaType="jnt:docFilesList" path="filesList"
+                                   forceCreation="true"/></div>
+                    <div class="clear"></div>
 
-    });
-
-</script>
-<div class="boxdocspace">
-    <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
-        <div class="boxdocspace-inner">
-            <div class="boxdocspace-inner-border"><!--start boxdocspace -->
-                <template:area forcedTemplate="hidden.docspace" areaType="jnt:docFilesList" path="filesList"
-                               forceCreation="true"/>
-
-
-                <div class="clear"></div>
-
+                </div>
             </div>
         </div>
     </div>
 </div>
-    </div>
 <!--stop boxdocspace -->
 
 <div class='clear'></div>
+</div>
+<div style="display:none;">
+    <form id="createSubDocspace" method="post" action="">
+        <input type="hidden" name="autoCheckin" value="true">
+        <input type="hidden" name="nodeType" value="jnt:docspace">
+
+        <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.workspace.new"/></h3>
+        <fieldset>
+            <legend><fmt:message key="docspace.label.workspace.creation"/></legend>
+            <p id="login_error" style="display:none;">Please, enter data</p>
+
+            <p><label for="docspacetitle" class="left"><fmt:message key="docspace.label.title"/>
+                :</label>
+                <input type="text" name="jcr:title" id="docspacetitle" class="field" value=""
+                       tabindex="20"/></p>
+
+
+            <p><label for="docspacedesc" class="left"><fmt:message
+                    key="docspace.label.description"/> :</label>
+                <textarea name="jcr:description" id="docspacedesc" cols="45" rows="3"
+                          tabindex="21"></textarea></p>
+            <input type="button" value="<fmt:message key="docspace.label.workspace.create"/>" tabindex="28"
+                   id="docspacecreatebutton" onclick="$('#createSubDocspace').submit();">
+        </fieldset>
+    </form>
 </div>
 <!--stop grid_16-->
 

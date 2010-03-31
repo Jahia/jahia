@@ -35,19 +35,26 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.JahiaService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Toolbar action item to copy template to selected site
@@ -67,10 +74,41 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 public void onSuccess(List<GWTJahiaSite> result) {
                     for (GWTJahiaSite site : result) {
                         MenuItem item = new MenuItem(site.getSiteKey());
+                        item.setData("site",site);
                         item.addSelectionListener(new SelectionListener<MenuEvent>() {
                             @Override
                             public void componentSelected(MenuEvent ce) {
-                                
+                                Info.display("Deploy Templates","Your templates are being deployed...");
+                                GWTJahiaNode node = linker.getSelectedNode();
+                                GWTJahiaSite site = ce.getItem().getData("site");
+                                String nodePath = node.getPath();
+                                String originalPath;
+                                if(nodePath.substring(0,nodePath.lastIndexOf("/")).equals("/templatesSet")) {
+                                    originalPath = nodePath+"/defaultSite/templates";
+                                } else if (nodePath.contains("/defaultSite/templates")){
+                                    originalPath = nodePath;
+                                } else {
+                                    MessageBox.alert("Error","Error could not deploy the selected path, please select a particular template or the root level of your templateSet",null);
+                                    return;
+                                }
+                                String s = "/" + (originalPath.substring(originalPath.lastIndexOf(
+                                        "/defaultSite/") + "/defaultSite/".length()));
+                                String destinationPath = "/sites/" + site.getSiteKey() + s;
+                                Map<String, String> pathsToSyncronize = new LinkedHashMap<String, String>();
+                                pathsToSyncronize.put(originalPath,destinationPath);
+                                destinationPath = "/sites/" + site.getSiteKey() + "/contents";
+                                originalPath = originalPath.substring(0, originalPath.indexOf(
+                                        "/defaultSite/templates")) + "/defaultSite/contents";
+                                pathsToSyncronize.put(originalPath,destinationPath);
+                                JahiaContentManagementService.App.getInstance().synchro(pathsToSyncronize,new AsyncCallback() {
+                                    public void onFailure(Throwable caught) {
+                                        Info.display("Deploy Templates","Error during your templates deployment");
+                                    }
+
+                                    public void onSuccess(Object result) {
+                                        Info.display("Deploy Templates","Your templates deployment is successful");
+                                    }
+                                });
                             }
                         });
                         menu.add(item);

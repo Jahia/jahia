@@ -476,10 +476,10 @@
  - j:allowedTypes (string, choicelist[nodetypes]) multiple
  + * (nt:base) = nt:base version
 
-[jnt:templatesSetFolder] > nt:base, jmix:hierarchyNode
+[jnt:templatesSetFolder] > nt:base, jmix:hierarchyNode, jmix:collection
  + * (jnt:virtualsite)
 
-[jnt:templatesFolder] > nt:base, jmix:hierarchyNode
+[jnt:templatesFolder] > nt:base, jmix:hierarchyNode, jmix:collection
  + * (jnt:page)
 
 [jnt:template] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title

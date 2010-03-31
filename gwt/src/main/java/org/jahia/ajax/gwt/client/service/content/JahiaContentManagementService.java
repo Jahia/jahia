@@ -282,6 +282,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      */
     public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query)throws GWTJahiaServiceException;
 
+    void synchro(Map<String, String> pathsToSyncronize) throws GWTJahiaServiceException;
+
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

@@ -43,7 +43,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.*;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.comparator.NumericStringComparator;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -2344,6 +2343,93 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         return null;
 //        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
+    }
+
+    public void synchro(JCRNodeWrapper destNode, boolean allowsExternalSharedNodes) throws RepositoryException {
+        if (!destNode.isCheckedOut()) {
+            destNode.checkout();
+        }
+        final Map<String, String> uuidMapping = getSession().getUuidMapping();
+
+        if (isFile()) {
+            InputStream is = getFileContent().downloadFile();
+            destNode.getFileContent().uploadFile(is, getFileContent().getContentType());
+            try {
+                is.close();
+            } catch (IOException e) {
+                logger.error(e, e);
+            }
+        }
+
+        try {
+            NodeType[] mixin = objectNode.getMixinNodeTypes();
+            for (NodeType aMixin : mixin) {
+                destNode.addMixin(aMixin.getName());
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error adding mixin types to copy", e);
+        }
+
+        uuidMapping.put(getIdentifier(), destNode.getIdentifier());
+        if (hasProperty("jcr:language")) {
+            destNode.setProperty("jcr:language", getProperty("jcr:language").getString());
+        }
+        PropertyIterator props = getProperties();
+
+        while (props.hasNext()) {
+            Property property = props.nextProperty();
+            try {
+                if (!property.getDefinition().isProtected()) {
+                    if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                        destNode.setProperty(property.getName(), property.getValues());
+                    } else {
+                        destNode.setProperty(property.getName(), property.getValue());
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
+            }
+        }
+
+
+        if (!isFile()) {
+            NodeIterator ni = getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
+                if (source.isNodeType("mix:shareable")) {
+                    if (uuidMapping.containsKey(source.getIdentifier())) {
+                        // ugly save because to make node really shareable
+                        session.save();
+                        try {
+                            JCRNodeWrapper node = destNode.getNode(source.getName());
+                            source.synchro(node, allowsExternalSharedNodes);
+                        } catch (RepositoryException e) {
+                            destNode.clone(session.getNodeByUUID(uuidMapping.get(source.getIdentifier())),
+                                       source.getName());
+                        }                        
+                    } else {
+                        try {
+                            JCRNodeWrapper node = destNode.getNode(source.getName());
+                            source.synchro(node, allowsExternalSharedNodes);
+                        } catch (RepositoryException e) {
+                            if (allowsExternalSharedNodes) {
+                                destNode.clone(source, source.getName());
+                            } else {
+                                source.copy(destNode, source.getName(), allowsExternalSharedNodes);
+                            }
+                        }
+                    }
+                } else {
+                    try {
+                        JCRNodeWrapper node = destNode.getNode(source.getName());
+                        source.synchro(node, allowsExternalSharedNodes);
+                    } catch (RepositoryException e) {
+                        source.copy(destNode, source.getName(), allowsExternalSharedNodes);
+                    }
+                }
+            }
+        }
+
     }
 
 }

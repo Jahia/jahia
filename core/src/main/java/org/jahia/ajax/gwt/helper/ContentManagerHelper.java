@@ -753,4 +753,20 @@ public class ContentManagerHelper {
             logger.error(e.getMessage(), e);
         }
     }
+
+    public void synchro(Map<String, String> pathsToSyncronize, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+        try {
+            for (Map.Entry<String, String> entry : pathsToSyncronize.entrySet()) {
+                JCRNodeWrapper originalNode = currentUserSession.getNode(entry.getKey());
+                JCRNodeWrapper destinationNode = currentUserSession.getNode(entry.getValue());
+                if (originalNode.hasPermission(JCRNodeWrapper.READ) && destinationNode.hasPermission(JCRNodeWrapper.WRITE)) {
+                    originalNode.synchro(destinationNode, true);                    
+                }
+            }
+            currentUserSession.save();
+        } catch (RepositoryException e){
+            logger.error(e.getMessage(),e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
 }

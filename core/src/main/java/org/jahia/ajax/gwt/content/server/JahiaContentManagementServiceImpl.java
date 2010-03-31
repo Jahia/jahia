@@ -1123,6 +1123,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return analytics.queryData(jahiaProfileName, login, pwd, gaAccount, query);
     }
 
+    public void synchro(Map<String, String> pathsToSyncronize) throws GWTJahiaServiceException {
+        contentManager.synchro(pathsToSyncronize, retrieveCurrentSession());
+    }
+
+
     /**
      * @param seoHelper the seoHelper to set
      */

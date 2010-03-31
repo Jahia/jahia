@@ -3,7 +3,6 @@ package org.jahia.services.render;
 import org.apache.commons.io.IOUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.bin.Jahia;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -31,6 +30,10 @@ public class FileSystemTemplate implements Comparable<FileSystemTemplate>, Templ
     private Properties properties;
 
     private static Map<String,Properties> propCache = new HashMap<String, Properties>();
+    
+    public static void clearPropertiesCache() {
+        propCache.clear();
+    }
 
     public FileSystemTemplate(String path, String key, JahiaTemplatesPackage ownerPackage, String displayName) {
         this.path = path;

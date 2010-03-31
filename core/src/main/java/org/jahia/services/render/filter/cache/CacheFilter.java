@@ -66,7 +66,7 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (!renderContext.isEditMode() && !(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
+        if (!(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")));
 

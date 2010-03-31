@@ -109,6 +109,41 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     /**
+     * Evaluates to <code>true</code> if the current mode equals to the
+     * specified one
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class ModeCondition implements ExecutionCondition {
+
+        private String mode;
+
+        /**
+         * Initializes an instance of this class.
+         * 
+         * @param mode the target mode to check for
+         */
+        public ModeCondition(String mode) {
+            super();
+            this.mode = mode;
+        }
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            boolean matches = false;
+            if ("live".equals(mode)) {
+                matches = renderContext.isLiveMode();
+            } else if ("edit".equals(mode)) {
+                matches = renderContext.isEditMode();
+            } else if ("contribution".equals(mode)) {
+                matches = renderContext.isContributionMode();
+            } else {
+                throw new IllegalArgumentException("Unsupported mode '" + mode + "'");
+            }
+            return matches;
+        }
+    }
+
+    /**
      * Evaluates to <code>true</code> if the current resource's template type
      * matches the provided one.
      * 

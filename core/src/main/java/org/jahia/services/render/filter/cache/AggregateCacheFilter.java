@@ -48,10 +48,7 @@ import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.utils.LanguageCodeConverters;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.servlet.ServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -72,16 +69,26 @@ public class AggregateCacheFilter extends AbstractFilter {
     public static final Pattern ESI_INCLUDE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:include -->");
     private static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
 
-    public static final Map<String, String> notCacheableFragment = new HashMap<String, String>(512);
+    public static final Set<String> notCacheableFragment = new HashSet<String>(512);
+    
+    public static void clearNotCacheableFragmentCache() {
+        notCacheableFragment.clear();
+    }
 
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (renderContext.isLiveMode()) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
             chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")));
 
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
+            
+            if (Boolean.valueOf(script.getTemplate().getProperties().getProperty(
+                    "cache.additional.key.useMainResourcePath", "false"))) {
+                resource.getModuleParams().put("module.cache.additional.key",
+                        renderContext.getMainResource().getNode().getPath());
+            }
+            
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
 
             if (debugEnabled) {
@@ -89,7 +96,7 @@ public class AggregateCacheFilter extends AbstractFilter {
             }
             Element element = null;
             final BlockingCache cache = cacheProvider.getCache();
-            final boolean cacheable = !notCacheableFragment.containsKey(key);
+            final boolean cacheable = !notCacheableFragment.contains(key);
             String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername());
             if (cacheable) {
                 try {
@@ -126,7 +133,6 @@ public class AggregateCacheFilter extends AbstractFilter {
                     String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
                     Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
                             script.getTemplate().getProperties().getProperty("cache.expiration", "-1"));
-                    final String currentPath = cacheProvider.getKeyGenerator().getPath(key);
                     Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
                     for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                         String path = nodeWrapper.getPath();
@@ -171,7 +177,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                     } else {
                         cachedElement = new Element(key, null);
                         cache.put(cachedElement);
-                        notCacheableFragment.put(key, key);
+                        notCacheableFragment.add(key);
                     }
                     if (debugEnabled) {
                         logger.debug("Caching content for node : " + key);
@@ -196,8 +202,6 @@ public class AggregateCacheFilter extends AbstractFilter {
                     return surroundWithCacheTag(key, renderContent);
                 }
             }
-        }
-        return chain.doFilter(renderContext, resource);
     }
 
     private String aggregateContent(BlockingCache cache, String cachedContent, RenderContext renderContext) {
@@ -241,7 +245,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                     "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get(
                     "language")),renderContext.getFallbackLocale()).getNode(keyAttrbs.get("path"));
             String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get(
-                    "templateType"), keyAttrbs.get("template"), keyAttrbs.get("template")), renderContext);
+                    "templateType"), keyAttrbs.get("template"), keyAttrbs.get("forcedTemplate")), renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);

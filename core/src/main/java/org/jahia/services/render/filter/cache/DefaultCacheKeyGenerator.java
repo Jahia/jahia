@@ -73,11 +73,11 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
                                                                                             "path", "template",
                                                                                             "templateType", "acls",
-                                                                                            "wrapped", "queryString"));
+                                                                                            "wrapped", "custom", "queryString"));
     private static final String CACHE_NAME = "nodeusersacls";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
-    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}");
+    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}");
 
     private JahiaGroupManagerService groupManagerService;
     private Set<JahiaGroup> aclGroups = null;
@@ -104,7 +104,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             } else if ("path".equals(field)) {
                 args.add(resource.getNode().getPath());
             } else if ("template".equals(field)) {
-                args.add(resource.getResolvedTemplate());
+                args.add(resource.getTemplate());
             } else if ("templateType".equals(field)) {
                 args.add(resource.getTemplateType());
             } else if ("queryString".equals(field)) {
@@ -114,6 +114,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 args.add(appendAcls(resource, renderContext));
             } else if ("wrapped".equals(field)) {
                 args.add(String.valueOf(resource.hasWrapper()));
+            } else if ("custom".equals(field)) {
+                args.add((String) resource.getModuleParams().get("module.cache.additional.key"));
             }
         }
         return args.toArray(new String[KNOWN_FIELDS.size()]);
@@ -220,8 +222,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         Object[] values = format.parse(key);
         Map<String, String> result = new LinkedHashMap<String, String>(fields.size());
         for (int i = 0; i < values.length; i++) {
-            Object object = values[i];
-            result.put(fields.get(i), (String) object);
+            String value = (String) values[i];
+            result.put(fields.get(i), value == null || value.equals("null") ? null : value);
         }
         return result;
     }

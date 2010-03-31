@@ -90,11 +90,30 @@ when we flush this entry we will flush the whole cache-->
     <!--<bean id="cacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter">
         <property name="priority" value="20" />
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
+        <property name="conditions">
+            <set>
+                <bean class="org.jahia.services.render.filter.AbstractFilter$NotCondition">
+                    <constructor-arg>
+                        <bean class="org.jahia.services.render.filter.AbstractFilter$ModeCondition">
+                            <constructor-arg value="edit"/>
+                        </bean>
+                    </constructor-arg>
+                </bean>
+            </set>
+        </property>
     </bean>-->
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
         <property name="priority" value="20" />
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
     	<property name="skipOnTemplateTypes" value="json"/>
+        <property name="skipOnNodeTypes" value="jnt:navMenu"/>
+        <property name="conditions">
+            <set>
+                <bean class="org.jahia.services.render.filter.AbstractFilter$ModeCondition">
+                    <constructor-arg value="live"/>
+                </bean>
+            </set>
+        </property>
     </bean>
     <bean id="mainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter" parent="cacheFilter">
         <property name="applyOnMainResource" value="true"/>

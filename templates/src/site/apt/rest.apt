@@ -107,7 +107,7 @@ Basic Jahia REST API
 |jcr:mixinTypes             |no           | Allow you to set a mixin on the new node                             |
 *---------------------------+-------------+----------------------------------------------------------------------+
 
-* AJAX requests
+** AJAX requests
 
   All AJAX JSON requests should have the following headers set :
 
@@ -118,7 +118,7 @@ Basic Jahia REST API
   through an HttpClient call or even another external client software (such as a mobile device for example), be sure
   that both these headers are set, otherwise it will default to HTML feedback.
 
-* File uploads
+** File uploads
 
   In the case of a file upload, when using AJAX requests (by setting the headers as described in the previous section),
   you actually have to perform two requests. The first request will be a multipart form upload and will save either in

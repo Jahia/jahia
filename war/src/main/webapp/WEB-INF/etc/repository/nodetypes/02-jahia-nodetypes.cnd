@@ -322,7 +322,7 @@
  - j:mandatoryLanguages (string) multiple nofulltext
  - j:defaultLanguage (string) nofulltext
  - j:mixLanguage (boolean) = false
- + users (jnt:folder)
+ + users (nt:base) = nt:base
  + * (jmix:hierarchyNode)
 
  //---------------------------------------------------------

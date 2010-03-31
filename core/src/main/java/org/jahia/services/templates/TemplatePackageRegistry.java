@@ -33,7 +33,6 @@ package org.jahia.services.templates;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
@@ -58,27 +57,44 @@ import java.util.*;
  */
 class TemplatePackageRegistry {
 
-    private static Logger logger = Logger
-            .getLogger(TemplatePackageRegistry.class);
+    private static Logger logger = Logger.getLogger(TemplatePackageRegistry.class);
 
     static class ModuleRegistry implements BeanPostProcessor {
 
         private TemplatePackageRegistry templatePackageRegistry;
+        
+        private ChoiceListInitializerService choiceListInitializers;
+        
+        private ProfileExtensions profileExtensions;
 
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             if (bean instanceof RenderFilter) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering RenderFilter '" + beanName + "'");
+                }
                 templatePackageRegistry.filters.add((RenderFilter) bean);
             } else if (bean instanceof ErrorHandler) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering ErrorHandler '" + beanName + "'");
+                }
                 templatePackageRegistry.errorHandlers.add((ErrorHandler) bean);
             } else if (bean instanceof Action) {
                 Action action = (Action) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering Action '" + action.getName() + "' (" + beanName + ")");
+                }
                 templatePackageRegistry.actions.put(action.getName(), action);
             } else if (bean instanceof ModuleChoiceListInitializer) {
                 ModuleChoiceListInitializer moduleChoiceListInitializer = (ModuleChoiceListInitializer) bean;
-                ChoiceListInitializerService cli = org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService.getInstance();
-                cli.getInitializers().put(moduleChoiceListInitializer.getKey(),moduleChoiceListInitializer);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering ModuleChoiceListInitializer '" + moduleChoiceListInitializer.getKey() + "' (" + beanName + ")");
+                }
+                choiceListInitializers.getInitializers().put(moduleChoiceListInitializer.getKey(),moduleChoiceListInitializer);
             } else if(bean instanceof ModuleGlobalObject) {
                 ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering ModuleGlobalObject '" + beanName + "'");
+                }
                 if(moduleGlobalObject.getGlobalRulesObject()!=null) {
                     for (RulesListener listener : RulesListener.getInstances()) {
                         for (Map.Entry<String, Object> entry : moduleGlobalObject.getGlobalRulesObject().entrySet()) {
@@ -88,7 +104,9 @@ class TemplatePackageRegistry {
                 }
             } else if (bean instanceof ProfileExtension) {
                 ProfileExtension profileExtension = (ProfileExtension) bean;
-                ProfileExtensions profileExtensions = (ProfileExtensions) SpringContextSingleton.getInstance().getContext().getBean("profileExtensions");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering ProfileExtension '" + beanName + "'");
+                }
                 profileExtensions.registerExtension(profileExtension);
             }
             return bean;
@@ -100,6 +118,20 @@ class TemplatePackageRegistry {
 
         public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {
             this.templatePackageRegistry = templatePackageRegistry;
+        }
+
+        /**
+         * @param choiceListInitializers the choiceListInitializers to set
+         */
+        public void setChoiceListInitializers(ChoiceListInitializerService choiceListInitializers) {
+            this.choiceListInitializers = choiceListInitializers;
+        }
+
+        /**
+         * @param profileExtensions the profileExtensions to set
+         */
+        public void setProfileExtensions(ProfileExtensions profileExtensions) {
+            this.profileExtensions = profileExtensions;
         }
     }
 

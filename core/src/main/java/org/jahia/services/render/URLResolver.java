@@ -126,9 +126,11 @@ public class URLResolver {
                     if (defaultVanityUrl != null) {
                         setRedirectUrl(defaultVanityUrl.getUrl());
                     }
+                } catch (AccessDeniedException e) {
+                    logger.debug("User has no access to the resource, so there will not be a redirection");
                 } catch (RepositoryException e) {
                     logger.warn("Error when trying to check whether there is a vanity URL mapping", e);
-                }        
+                }
             }
         }
     }

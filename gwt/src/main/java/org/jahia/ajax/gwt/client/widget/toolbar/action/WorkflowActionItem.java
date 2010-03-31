@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -106,6 +107,7 @@ public class WorkflowActionItem extends BaseActionItem {
             setEnabled(true);
         }
         if (bypassActionItem != null) {
+            Log.info("handle wf: "+bypassActionItem.getClass().getName());
             bypassActionItem.handleNewLinkerSelection();
         }
         if (!isEnabled) {

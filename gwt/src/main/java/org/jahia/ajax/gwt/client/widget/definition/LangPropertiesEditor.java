@@ -119,7 +119,7 @@ public class LangPropertiesEditor extends LayoutContainer {
 
             PropertiesEditor langPropertiesEditor = getPropertiesEditorByLang(locale);
             if (langPropertiesEditor == null) {
-                if (addSharedLangLabel && node.getNodeTypes().contains("jmix:shareable")) {
+                if (addSharedLangLabel && node.isShared()) {
                     Label label = new Label("Important : This is a shared node, editing it will modify its value for all its usages");
                     label.setStyleAttribute("color", "rgb(200,80,80)");
                     label.setStyleAttribute("font-size", "14px");

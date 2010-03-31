@@ -24,6 +24,7 @@ public abstract class Module extends LayoutContainer {
     protected boolean isDraggable = false;
     protected int depth;
     protected boolean selectable;
+    protected String headerText;
     protected Header head;
     protected boolean locked;
 
@@ -94,6 +95,15 @@ public abstract class Module extends LayoutContainer {
     }
 
     public void setNode(GWTJahiaNode node) {
+        if (mainModule.getConfig().getName().equals("studiomode")) {
+            if (node.getNodeTypes().contains("jmix:templateShared") && node.getNodeTypes().contains("jmix:templateLocked")) {
+                head.setText(headerText + " (locked & shared)");
+            } else if (node.getNodeTypes().contains("jmix:templateShared")) {
+                head.setText(headerText + " (shared)");
+            } else if (node.getNodeTypes().contains("jmix:templateLocked")) {
+                head.setText(headerText + " (locked)");
+            }
+        }
         this.node = node;
     }
 

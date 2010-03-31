@@ -1005,6 +1005,35 @@ public class ContentActions {
         }
     }
 
+    public static void switchTemplateShared(final Linker linker) {
+        final GWTJahiaNode target = linker.getSelectedNode();
+        if (target != null) {
+            final boolean shared;
+            if (!target.getNodeTypes().contains("jmix:templateShared")) {
+                target.getNodeTypes().add("jmix:templateShared");
+                shared = true;
+            } else {
+                target.getNodeTypes().remove("jmix:templateShared");
+                shared = false;
+            }
+            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target),new ArrayList<GWTJahiaNodeProperty>(),new AsyncCallback() {
+                public void onFailure(Throwable caught) {
+                    Log.error("Error",caught);
+                }
+
+                public void onSuccess(Object result) {
+                    if (shared) {
+                        Info.display("Component shared","Component shared.");
+                    } else {
+                        Info.display("Component unshared","Component unshared.");
+                    }
+                    linker.refreshMainComponent();
+                }
+            });
+
+        }
+    }
+
     public static void makeShareableNode(final Linker linker) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {

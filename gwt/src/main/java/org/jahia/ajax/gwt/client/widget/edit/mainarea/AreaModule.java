@@ -33,10 +33,11 @@ public class AreaModule extends Module {
         add(head);
 
         if (path.contains("/")) {
-            head.setText(Messages.getResource("em_area")+" : "+ path.substring(path.lastIndexOf('/')+1));
+            headerText = Messages.getResource("em_area") + " : " + path.substring(path.lastIndexOf('/') + 1);
         } else {
-            head.setText(Messages.getResource("em_area")+" : "+ path);
+            headerText = Messages.getResource("em_area")+" : "+ path;
         }
+        head.setText(headerText);
         setBorders(false);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");

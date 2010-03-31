@@ -40,7 +40,8 @@ public class SimpleModule extends Module {
         if (mainModule.getConfig().getName().equals("studiomode")) {
             head = new Header();
             add(head);
-            head.setText(Messages.getResource("em_content")+" : "+ path.substring(path.lastIndexOf('/')+1));
+            headerText = Messages.getResource("em_content") + " : " + path.substring(path.lastIndexOf('/') + 1);
+            head.setText(headerText);
             head.addStyleName("x-panel-header");
             head.addStyleName("x-panel-header-simplemodule");
             if (locked) {
@@ -90,10 +91,17 @@ public class SimpleModule extends Module {
     }
 
     public void setNode(GWTJahiaNode node) {
-        this.node = node;
-        if(node.getNodeTypes().contains("jmix:shareable")) {
-//            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
-            this.setToolTip(new ToolTipConfig("Important","This is a shared node"));
+        super.setNode(node);
+        if (mainModule.getConfig().getName().equals("studiomode")) {
+            if (node.getNodeTypes().contains("jmix:templateShared")) {
+                head.setText(head.getText()+" (shared)");
+            }
+            if (node.getNodeTypes().contains("jmix:templateLocked")) {
+                head.setText(head.getText()+" (shared)");
+            }
+        }
+        if(node.isShared()) {
+            this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }
     }
 

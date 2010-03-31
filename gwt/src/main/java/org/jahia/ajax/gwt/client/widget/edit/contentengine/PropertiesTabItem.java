@@ -95,7 +95,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
             propertiesEditor = getPropertiesEditorByLang(locale);
 
             if (propertiesEditor == null) {
-                if (engine.isExistingNode() && engine.getNode().getNodeTypes().contains("jmix:shareable")) {
+                if (engine.isExistingNode() && engine.getNode().isShared()) {
                     // this label is shared among languages.
                     if (addSharedLangLabel) {
                         Label label = new Label(Messages.get("warning.sharedNode", "Important : This is a shared node, editing it will modify its value for all its usages"));

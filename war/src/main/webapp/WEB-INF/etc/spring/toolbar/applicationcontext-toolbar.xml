@@ -2368,7 +2368,7 @@
 
     <bean id="org.jahia.toolbar.item.saveAsSharedComponent" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SaveAsSharedComponentActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchSharedComponentInTemplateActionItem"/>
         </property>
         <property name="titleKey" value="label.saveAsSharedComponent"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-saveAsSharedComponent"/>

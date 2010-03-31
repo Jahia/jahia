@@ -560,7 +560,16 @@ public class JCRStoreProvider {
     }
 
     public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) throws RepositoryException {
-        final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, session, this);
+        final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, null, session, this);
+        if(w.checkValidity()) {
+            return service.decorate(w);
+        } else {
+            throw new PathNotFoundException("This node doesn't exist in this language "+objectNode.getPath());
+        }
+    }
+
+    public JCRNodeWrapper getNodeWrapper(Node objectNode, String path, JCRSessionWrapper session) throws RepositoryException {
+        final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, path, session, this);
         if(w.checkValidity()) {
             return service.decorate(w);
         } else {
@@ -579,11 +588,11 @@ public class JCRStoreProvider {
             jcrNode = getNodeWrapper(parent.getParent(), session);
             String name = StringUtils.substringBefore(prop.getName(), "_" + lang);
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(name);
-            return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getParent(), session, this), prop, session, this, epd, name);
+            return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getParent(), null, session, this), prop, session, this, epd, name);
         } else {
             jcrNode = getNodeWrapper(prop.getParent(), session);
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(prop.getName());
-            return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getParent(), session, this), prop, session, this, epd);
+            return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getParent(), null, session, this), prop, session, this, epd);
         }
     }
 

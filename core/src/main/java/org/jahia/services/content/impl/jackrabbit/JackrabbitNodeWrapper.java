@@ -56,8 +56,8 @@ import java.util.Map;
 public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
     private static final transient Logger logger = Logger.getLogger(JackrabbitNodeWrapper.class);
 
-    protected JackrabbitNodeWrapper(Node objectNode, JCRSessionWrapper session, JCRStoreProvider provider) {
-        super(objectNode, session, provider);
+    protected JackrabbitNodeWrapper(Node objectNode, String path, JCRSessionWrapper session, JCRStoreProvider provider) {
+        super(objectNode, path, session, provider);
     }
 
     @Override

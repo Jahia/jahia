@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
@@ -40,17 +41,23 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
  * 
  * @author Sergiy Shyrkov
  */
-public class SaveAsSharedComponentActionItem extends BaseActionItem {
+public class SwitchSharedComponentInTemplateActionItem extends BaseActionItem {
 
     private static final long serialVersionUID = -3579254325077395142L;
 
     public void onComponentSelection() {
-        ContentActions.makeShareableNode(linker);
+        ContentActions.switchTemplateShared(linker);
     }
 
     public void handleNewLinkerSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.getSelectedNodes().size() == 1);
+        if (linker != null) {
+            GWTJahiaNode node = linker.getSelectedNode();
+            if (node != null) {
+                setEnabled(!node.isShared() && node.isWriteable());
+            } else {
+                setEnabled(false);
+            }
+        }
     }
 
 }

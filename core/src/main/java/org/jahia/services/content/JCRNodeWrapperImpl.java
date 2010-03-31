@@ -75,14 +75,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     
     private transient Map<String, String> propertiesAsString;
 
-    protected JCRNodeWrapperImpl(Node objectNode, JCRSessionWrapper session, JCRStoreProvider provider) {
+    protected JCRNodeWrapperImpl(Node objectNode, String path, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
         this.objectNode = objectNode;
         setItem(objectNode);
-        try {
-            this.localPath = objectNode.getPath();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+        if (path != null) {
+            this.localPath = path;
+        } else {
+            try {
+                this.localPath = objectNode.getPath();
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
     }
 
@@ -253,7 +257,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper addNode(String name) throws RepositoryException {
         Node n = objectNode.addNode(name);
-        return provider.getNodeWrapper(n, session);
+        return provider.getNodeWrapper(n, localPath+ "/"+name, session);
     }
 
     /**
@@ -261,7 +265,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         Node n = objectNode.addNode(name, type);
-        return provider.getNodeWrapper(n, session);
+        return provider.getNodeWrapper(n, localPath + "/" + name, session);
     }
 
     public JCRNodeWrapper addNode(String name, String type, String identifier, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
@@ -280,7 +284,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     Name typeName = NameFactoryImpl.getInstance().create(jahiaTypeName.getUri(), jahiaTypeName.getLocalName());
                     Node child;
                     child = ((NodeImpl)objectNode).addNode(qname, typeName, org.apache.jackrabbit.core.id.NodeId.valueOf(identifier));
-                    return provider.getNodeWrapper(child, session);
+                    return provider.getNodeWrapper(child, localPath + "/" + name, session);
                 } else {
                     return addNode(name, type);
                 }
@@ -464,7 +468,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     if (mpp.equals(getPath())) {
                         JCRStoreProvider storeProvider = entry.getValue();
                         String root = storeProvider.getRelativeRoot();
-                        list.add(storeProvider.getNodeWrapper(session.getProviderSession(storeProvider).getNode(root.length() == 0 ? "/" : root), session));
+                        final Node node = session.getProviderSession(storeProvider).getNode(root.length() == 0 ? "/" : root);
+                        list.add(storeProvider.getNodeWrapper(node, localPath + "/" + node.getName(), session));
                     }
                 }
             }
@@ -476,7 +481,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Node node = ni.nextNode();
             if (session.getLocale() == null || !node.getName().equals("j:translation")) {
                 try {
-                    JCRNodeWrapper child = provider.getNodeWrapper(node, session);
+                    JCRNodeWrapper child = provider.getNodeWrapper(node, localPath + "/" + node.getName(), session);
                     list.add(child);
                 } catch (PathNotFoundException e) {
                     if(logger.isDebugEnabled())
@@ -497,7 +502,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             if (mountPoints.containsKey(getPath() + "/" + name)) {
                 JCRStoreProvider storeProvider = mountPoints.get(getPath() + "/" + name);
-                list.add(storeProvider.getNodeWrapper(session.getProviderSession(storeProvider).getNode(storeProvider.getRelativeRoot()), session));
+                final Node node = session.getProviderSession(storeProvider).getNode(storeProvider.getRelativeRoot());
+                list.add(storeProvider.getNodeWrapper(node, localPath + "/" + node.getName(), session));
             }
         }
 
@@ -505,7 +511,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         while (ni.hasNext()) {
             Node node = ni.nextNode();
-            JCRNodeWrapper child = provider.getNodeWrapper(node, session);
+            JCRNodeWrapper child = provider.getNodeWrapper(node, localPath + "/" + node.getName(), session);
             list.add(child);
         }
 
@@ -517,7 +523,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
         if (objectNode.hasNode(s)) {
-            return provider.getNodeWrapper(objectNode.getNode(s), session);
+            return provider.getNodeWrapper(objectNode.getNode(s), localPath + "/" + s, session);
         }        
         List<JCRNodeWrapper> c = getChildren();
         for (JCRNodeWrapper jcrNodeWrapper : c) {
@@ -1333,7 +1339,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeIterator ni = getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
-                if (source.isNodeType("mix:shareable")) {
+                if (source.isNodeType("mix:shareable") || source.isNodeType("jmix:templateShared")) {
                     if (uuidMapping.containsKey(source.getIdentifier())) {
                         // ugly save because to make node really shareable
                         session.save();
@@ -2293,7 +2299,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeImpl node = (NodeImpl) getRealNode();
 
             try {
-                return provider.getNodeWrapper(node.clone((NodeImpl) sharedNode.getRealNode(), jrname), session);
+                return provider.getNodeWrapper(node.clone((NodeImpl) sharedNode.getRealNode(), jrname), localPath + "/"+ name, session);
             } catch (RepositoryException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }

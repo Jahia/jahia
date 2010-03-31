@@ -695,6 +695,15 @@ public class NavigationHelper {
         n.setFile(node.isFile());
         n.setCollection(node.isCollection());
 
+        n.setIsShared(false);
+        try {
+            if (node.isNodeType("mix:shareable") && node.getSharedSet().getSize() > 1) {
+                n.setIsShared(true);
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error when getting shares", e);
+        }
+
         try {
             List<Locale> locales = node.getLockedLocales();
             for (Locale locale : locales) {

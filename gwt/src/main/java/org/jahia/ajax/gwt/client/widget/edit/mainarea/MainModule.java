@@ -55,7 +55,8 @@ public class MainModule extends Module {
         this.depth = 0;
 
         head = new Header();
-        head.setText("Page : " + path);
+        headerText = "Page : " + path;
+        head.setText(headerText);
         head.addStyleName("x-panel-header");
         head.setStyleAttribute("z-index", "999");
         head.setStyleAttribute("position", "relative");
@@ -230,7 +231,7 @@ public class MainModule extends Module {
         if (node.getNodeTypes().contains("jnt:page") || node.getInheritedNodeTypes().contains("jnt:page")) {
 //            editManager.getEditLinker().getCreatePageButton().setEnabled(true);
         }
-        if (node.getNodeTypes().contains("jmix:shareable")) {
+        if (node.isShared()) {
 //            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }

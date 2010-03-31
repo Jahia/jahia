@@ -81,11 +81,14 @@ public class ModuleHelper {
         JahiaContentManagementService.App.getInstance().getNodesWithPublicationInfo(list,new AsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 for (GWTJahiaNode gwtJahiaNode : result) {
-                    for (Module module : modulesByPath.get(gwtJahiaNode.getPath())) {
-                        if (Log.isDebugEnabled()) {
-                            Log.debug("set object for "+module.getModuleId());
+                    final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
+                    if (moduleList != null) {
+                        for (Module module : moduleList) {
+                            if (Log.isDebugEnabled()) {
+                                Log.debug("set object for "+module.getModuleId());
+                            }
+                            module.setNode(gwtJahiaNode);
                         }
-                        module.setNode(gwtJahiaNode);
                     }
                 }
                 m.getEditLinker().handleNewModuleSelection();
@@ -164,10 +167,6 @@ public class ModuleHelper {
 
     public static List<Module> getModules() {
         return modules;
-    }
-
-    public static Map<String, List<Module>> getModulesByPath() {
-        return modulesByPath;
     }
 
     public static void tranformLinks(final HTML html) {

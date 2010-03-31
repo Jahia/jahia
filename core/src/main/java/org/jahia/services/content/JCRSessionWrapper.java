@@ -123,7 +123,7 @@ public class JCRSessionWrapper implements Session {
 
     public JCRNodeWrapper getRootNode() throws RepositoryException {
         JCRStoreProvider provider = sessionFactory.getProvider("/");
-        return provider.getNodeWrapper(getProviderSession(provider).getRootNode(), this);
+        return provider.getNodeWrapper(getProviderSession(provider).getRootNode(), "/", this);
     }
 
     public Repository getRepository() {
@@ -206,7 +206,7 @@ public class JCRSessionWrapper implements Session {
                 Item item = getProviderSession(provider).getItem(
                         provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
-                    return provider.getNodeWrapper((Node) item, this);
+                    return provider.getNodeWrapper((Node) item, localPath, this);
                 } else {
                     return provider.getPropertyWrapper((Property) item, this);
                 }
@@ -228,7 +228,7 @@ public class JCRSessionWrapper implements Session {
                 Item item = getProviderSession(provider).getItem(
                         provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
-                    return provider.getNodeWrapper((Node) item, this);
+                    return provider.getNodeWrapper((Node) item, localPath, this);
                 } else {
                     return provider.getPropertyWrapper((Property) item, this);
                 }

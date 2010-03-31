@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 public class GWTJahiaNode extends BaseTreeModel implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
 
     private boolean displayable = false;
+    private boolean isShared = false;
     private String url;
     private boolean hasChildren = false;
     private boolean hasFolderChildren = false;
@@ -496,6 +497,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setTemplate(String template) {
         set("template", template);
+    }
+
+    public boolean isShared() {
+        return isShared;
+    }
+
+    public void setIsShared(boolean isShared) {
+        this.isShared = isShared;
     }
 
 

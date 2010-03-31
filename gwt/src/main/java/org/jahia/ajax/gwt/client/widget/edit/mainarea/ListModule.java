@@ -42,10 +42,11 @@ public class ListModule extends Module {
         add(head);
 
         if (path.contains("/")) {
-            head.setText(Messages.getResource("em_content")+" : "+ path.substring(path.lastIndexOf('/')+1));
+            headerText = Messages.getResource("em_content") + " : " + path.substring(path.lastIndexOf('/') + 1);
         } else {
-            head.setText(Messages.getResource("em_content")+" : "+ path);
+            headerText = Messages.getResource("em_content") + " : " + path;
         }
+        head.setText(headerText);
         setBorders(false);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
@@ -97,10 +98,9 @@ public class ListModule extends Module {
     }
 
     public void setNode(GWTJahiaNode node) {
-        this.node = node;
-        if(node.getNodeTypes().contains("jmix:shareable")) {
-//            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
-            this.setToolTip(new ToolTipConfig("Important","This is a shared node"));
+        super.setNode(node);
+        if(node.isShared()) {
+            this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }
     }
 

@@ -14,6 +14,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.dataTables.min.js"/>
+<template:addResources type="css" resources="dataTables.css"/>
 <template:include template="hidden.header"/>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -31,6 +32,7 @@
             "aoColumns": [
                 null,
                 null,
+				null,
                 null,
                 null,
                 {
@@ -40,15 +42,17 @@
         });
     });
 </script>
-<table width="100%" class="table tableTasks " summary="Edition Mes taches en cours (table)" id="fileListTable">
+<table width="100%" class="table fileListTable" summary="file List Table" id="fileListTable">
     <caption class=" hidden">
         Edition Mes taches en cours (table)
     </caption>
     <colgroup>
         <col span="1" width="5%" class="col1"/>
         <col span="1" width="40%" class="col2"/>
-        <col span="1" width="15%" class="col3"/>
-        <col span="1" width="15%" class="col4"/>
+        <col span="1" width="10%" class="col3"/>
+        <col span="1" width="20%" class="col4"/>
+        <col span="1" width="10%" class="col5"/>
+        <col span="1" width="15%" class="col6"/>
     </colgroup>
     <thead>
     <tr>
@@ -58,6 +62,8 @@
         <th id="Title" scope="col"><fmt:message key="docspace.label.title"/> <img
                 src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
         <th class="center" id="Creation" scope="col"><fmt:message key="docspace.label.creation"/><img
+                src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
+        <th class="center" id="LastModif" scope="col"><fmt:message key="docspace.label.lastmodificationdate"/><img
                 src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
         <th id="Author" scope="col"><fmt:message key="docspace.label.author"/> <img
                 src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
@@ -87,9 +93,9 @@
 
             <jcr:nodeProperty node="${subchild}" name="jcr:created" var="created"/>
             <jcr:nodeProperty node="${subchild}" name="jcr:lastModified" var="modified"/>
-            <fmt:formatDate value="${created.time}" dateStyle="full" type="date" var="displayDate"/>
-            <td class="center" headers="Creation">${displayDate}<br/><span style="font-size:smaller;"><fmt:formatDate
-                    value="${modified.time}" dateStyle="full" type="both"/></span></td>
+            <fmt:formatDate value="${created.time}" dateStyle="medium" type="date" var="displayDate"/>
+            <td class="center" headers="Creation">${displayDate}</td>
+            <td class="center" headers="LastModif"><fmt:formatDate value="${modified.time}" dateStyle="medium" type="both"/></td>
             <td headers="Author">${subchild.propertiesAsString['jcr:createdBy']}</td>
             <td headers="Rating"><template:option node="${subchild}" template="hidden.average.readonly"
                                                   nodetype="jmix:rating"/></td>

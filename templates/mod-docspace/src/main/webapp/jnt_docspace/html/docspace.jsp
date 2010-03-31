@@ -144,18 +144,19 @@
                             href="#"><fmt:message
                             key="docspace.label.document.createdBy"/> ${currentNode.properties['jcr:createdBy'].string}</a>
                     </p>
-
-                    <p class="clearMaringPadding"><span jcr:id="jcr:description" id="ckeditorEditDescription"
+					<div class="clear"></div>
+                    <div jcr:id="jcr:description" id="ckeditorEditDescription"
                                                         jcr:url="${url.base}${currentNode.path}">
+                        <div class="clear"></div>
                         <c:if test="${not empty currentNode.properties['jcr:description'].string}">${currentNode.properties['jcr:description'].string}</c:if>
                         <c:if test="${empty currentNode.properties['jcr:description'].string}">Add a description (click here)</c:if>
-                    </span></p>
+                    </div>
 
-                    <p><template:option node="${currentNode}" template="hidden.tags"
-                                        nodetype="jmix:tagged"/><br/><template:option node="${currentNode}"
+                    <template:option node="${currentNode}" template="hidden.tags"
+                                        nodetype="jmix:tagged"/><template:option node="${currentNode}"
                                                                                       template="hidden.addTag"
-                                                                                      nodetype="jmix:tagged"/></p>
-                    <!--stop boxdocspace -->
+                                                                                      nodetype="jmix:tagged"/>
+              <!--stop boxdocspace -->
                     <div class="clear"></div>
                 </div>
             </div>
@@ -215,8 +216,9 @@
         <div class="boxdocspacegrey boxdocspacepadding10 ">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
-
+<div class="floatleft">
                     <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
+                        <span><strong>Upload new file: </strong></span>
                         <input type="hidden" name="nodeType" value="jnt:file"/>
                         <input type="hidden" name="redirectTo"
                                value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -230,35 +232,17 @@
                         <input type="hidden" name="version" value="true"/>
                         <input class="button" type="submit" id="upload" value="Upload"/>
                     </form>
-                    <a id="showCreateSubDocspace" href="#createSubDocspace"><span>Create Sub Docspace</span></a>
-                </div>
+</div>
+<div class="floatright"><span><strong>Create Sub Docspace: </strong></span>
+                    <a id="showCreateSubDocspace" href="#createSubDocspace"><span>Create</span></a>
+</div>
+              <div class="clear"></div></div>
                 <!--stop formSearchTop-->
 
             </div>
         </div>
     </div>
-    <script type="text/javascript">
 
-        jQuery(document).ready(function() {
-
-            // Masquer la div à slider
-            jQuery(".AddNote1").hide();
-
-            //Appliquer la classe active sur le bouton
-            jQuery(".BtMore").toggle(function() {
-                jQuery(this).addClass("active");
-            }, function () {
-                jQuery(this).removeClass("active");
-            });
-
-            // Slide down et up sur click
-            jQuery(".BtMore").click(function() {
-                jQuery(this).next(".AddNote1").slideToggle("slow");
-            });
-
-        });
-
-    </script>
     <div class="boxdocspace">
         <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">

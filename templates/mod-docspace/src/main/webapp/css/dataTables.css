@@ -1,0 +1,13 @@
+
+.dataTables_length {
+	width: 49%;
+	float: left;
+}
+
+.dataTables_filter {
+	width: 49%;
+	float: right;
+	text-align: right;
+}
+
+

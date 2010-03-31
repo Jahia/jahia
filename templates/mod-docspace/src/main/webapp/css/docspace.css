@@ -1,3 +1,6 @@
+#bodywrapper .fileListTable{
+clear:left
+}
 /******************************************************************************
 *  Template docspace
 ******************************************************************************/
@@ -35,12 +38,30 @@
 #bodywrapper .formCreateDocspace legend {
 	display:none	
 }
-#bodywrapper .formCreateDocspace p {
-	padding:0;
-	margin:0 0 0.2em 0;
+#bodywrapper .formCreateDocspace input,
+#bodywrapper .formCreateDocspace textarea {
+	width:97%
 }
-#bodywrapper .formCreateDocspace input.field, #bodywrapper .formCreateDocspace textarea {
-	width:50%;
+#bodywrapper .formCreateDocspace p{
+	clear:both;
+	margin:0.5em 0;
+	padding:0px
+}
+#bodywrapper .formCreateDocspace .formMarginLeft{ 
+	margin:0.5em 0 0.5em 0;
+	padding:0;
+}
+#bodywrapper .formCreateDocspace label.left,
+#bodywrapper .formCreateDocspace label {
+	display:block;
+	font-weight:bold;
+	
+}
+#bodywrapper .formCreateDocspace input.radio,
+#bodywrapper .formCreateDocspace input.checkbox,
+#bodywrapper .formCreateDocspace input.button,
+#bodywrapper .formCreateDocspace button {
+	width:auto;
 }
 /******************************************************************************
 *  boxdocspace
@@ -212,7 +233,7 @@
 	overflow-x: hidden;
 	overflow-y: auto;
 	overflow : -moz-scrollbars-vertical;
-	background-color:#fff
+	background-color:#E1E1E1
 }
 #bodywrapper .docspacelist li {
 	padding:2px 5px;

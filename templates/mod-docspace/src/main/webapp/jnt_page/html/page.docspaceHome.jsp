@@ -55,7 +55,7 @@
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border"><!--start boxdocspace -->
 
-                    <div class="Form formCreateDocspace">
+                    <div class="formCreateDocspace">
                         <form method="post" action="${currentNode.name}/" name="newDocspace">
                             <input type="hidden" name="autoCheckin" value="true">
                             <input type="hidden" name="nodeType" value="jnt:docspace">
@@ -64,18 +64,17 @@
                             <fieldset>
                                 <legend><fmt:message key="docspace.label.workspace.creation"/></legend>
 
-                                <p><label for="docspacetitle" class="left"><fmt:message key="docspace.label.title"/>
-                                    :</label>
+                                <p><label for="docspacetitle" ><fmt:message key="docspace.label.title"/>:</label>
                                     <input type="text" name="jcr:title" id="docspacetitle" class="field" value=""
                                            tabindex="20"/></p>
 
 
-                                <p><label for="docspacedesc" class="left"><fmt:message
-                                        key="docspace.label.description"/> :</label>
+                                <p><label for="docspacedesc" ><fmt:message
+                                        key="docspace.label.description"/>:</label>
                                     <textarea name="jcr:description" id="docspacedesc" cols="45" rows="3"
                                               tabindex="21"></textarea></p>
 
-                                <div class="formMarginLeft">
+                                <div>
                                     <input type="submit" class="button"
                                            value="<fmt:message key="docspace.label.workspace.create"/>" tabindex="28"
                                            onclick="

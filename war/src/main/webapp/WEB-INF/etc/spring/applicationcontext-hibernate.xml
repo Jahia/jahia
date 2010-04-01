@@ -14,16 +14,9 @@
         </property>
         <property name="mappingResources">
             <list>
-                <value>org/jahia/hibernate/model/JahiaGrp.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaGrpAccess.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaGrpProp.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaPwdPolicy.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaPwdPolicyRule.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaPwdPolicyRuleParam.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaSitesUser.hbm.xml</value>
-                <value>org/jahia/hibernate/model/SubscriptionData.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaUser.hbm.xml</value>
-                <value>org/jahia/hibernate/model/JahiaUserProp.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaVersion.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaInstalledPatch.hbm.xml</value>
             </list>

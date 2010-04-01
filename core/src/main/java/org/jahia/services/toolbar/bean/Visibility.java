@@ -37,7 +37,7 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.toolbar.resolver.VisibilityResolver;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 
 /**
  * User: jahia
@@ -276,7 +276,7 @@ public class Visibility {
     private boolean isLogging(JahiaUser jahiaUser) {
         if (needAuthentication != null) {
             if (Boolean.parseBoolean(needAuthentication)) {
-                return jahiaUser != null && (!jahiaUser.getUsername().equalsIgnoreCase(JahiaUserManagerProvider.GUEST_USERNAME));
+                return jahiaUser != null && (!jahiaUser.getUsername().equalsIgnoreCase(JahiaUserManagerService.GUEST_USERNAME));
             }
         }
         return true;

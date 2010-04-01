@@ -42,8 +42,8 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
-import org.jahia.services.usermanager.JahiaDBUser;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.JahiaString;
 import org.jahia.engines.EngineMessage;
@@ -174,7 +174,7 @@ public class CookieAuthValveImpl implements Valve {
             }
             
             enforcePasswordPolicy(jahiaUser, (ParamBean)processingContext);
-            jahiaUser.setProperty(JahiaDBUser.PROP_LAST_LOGIN_DATE, String
+            jahiaUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE, String
                     .valueOf(System.currentTimeMillis()));
         }
     }

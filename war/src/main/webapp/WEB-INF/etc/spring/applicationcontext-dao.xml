@@ -10,10 +10,6 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="jahiaGroupDAO" class="org.jahia.hibernate.dao.JahiaGroupDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaGroupAccessDAO" class="org.jahia.hibernate.dao.JahiaGroupAccessDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaUserDAO" class="org.jahia.hibernate.dao.JahiaUserDAO" parent="abstractGeneratorDAO"/>
-
     <bean id="jahiaVersionDAO" class="org.jahia.hibernate.dao.JahiaVersionDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaInstalledPatchDAO" class="org.jahia.hibernate.dao.JahiaInstalledPatchDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaPasswordPolicyDAO" class="org.jahia.hibernate.dao.JahiaPasswordPolicyDAO" parent="abstractGeneratorDAO" depends-on="jahiaIdentifierGenerator"/>
@@ -31,13 +27,11 @@
     		  <!-- For DB sequences, the key is the table name, and the value is the column name that we use as initial max values
     		       The sequence name will be table_name.column_name -->
     			<map>
-                    <entry key="org.jahia.hibernate.model.JahiaGrp" value="jahia_grps.id_jahia_grps"/>
                     <entry key="org.jahia.hibernate.model.JahiaPwdPolicy" value="jahia_pwd_policies.jahia_pwd_policy_id"/>
                     <entry key="org.jahia.hibernate.model.JahiaPwdPolicyRule"
                            value="jahia_pwd_policy_rules.jahia_pwd_policy_rule_id"/>
                     <entry key="org.jahia.hibernate.model.JahiaPwdPolicyRuleParam"
                            value="jahia_pwd_policy_rule_params.jahia_pwd_policy_rule_param_id"/>
-                    <entry key="org.jahia.hibernate.model.JahiaUser" value="jahia_users.id_jahia_users"/>
                     <entry key="org.jahia.hibernate.model.JahiaVersion" value="jahia_version.install_number"/>
                     <entry key="org.jahia.hibernate.model.JahiaInstalledPatch"
                            value="jahia_installedpatch.install_number"/>

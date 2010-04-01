@@ -38,7 +38,6 @@ import org.jahia.services.usermanager.jcr.JCRGroup;
 
 import javax.jcr.Node;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.security.Principal;
 
 /**
@@ -69,7 +68,7 @@ public class UsersGroup extends JCRGroup {
                           getJahiaSiteUserManagerService().getMembers(
                 getSiteID());
             JahiaUser guest = ServicesRegistry.getInstance().
-                    getJahiaSiteUserManagerService().getMember(mSiteID,JahiaUserManagerDBProvider.GUEST_USERNAME);
+                    getJahiaSiteUserManagerService().getMember(mSiteID, JahiaUserManagerService.GUEST_USERNAME);
             userList.remove(guest);
         } catch (JahiaException ex) {
             UsersGroup.logger.error("Error while trying to retrieve full user list for site " + getSiteID(), ex);
@@ -96,17 +95,7 @@ public class UsersGroup extends JCRGroup {
         if (principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
             return false;
         }
-        if (mSiteID == 0) {
-            return true;
-        }
-        if (!(principal instanceof JahiaDBUser)) {
-            return true;
-        } else {
-            if (ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(mSiteID, principal.getName()) != null) {
-                return true;
-            }
-        }
 
-        return false;
+        return true;
     }
 }

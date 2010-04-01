@@ -35,7 +35,6 @@ import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.bin.Jahia;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryBean;
-import org.jahia.hibernate.model.JahiaResource;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
@@ -240,9 +239,6 @@ public class NumericStringComparator<T> implements Comparator<T>, Serializable {
         } else if (c1 instanceof CategoryBean) {
             final CategoryBean cat = (CategoryBean) c1;
             s1 = cat.getKey();
-        } else if (c1.getClass() == JahiaResource.class) {
-            final JahiaResource res = (JahiaResource) c1;
-            s1 = res.getValue();
         } else if (c1.getClass() == Version.class) {
             final Version res = (Version) c1;
             try {

@@ -33,8 +33,6 @@
 // NK 12.04.2001 - Changed to support Multi Site
 package org.jahia.services.usermanager;
 
-import org.jahia.hibernate.manager.JahiaUserManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 
 import java.util.*;
@@ -54,8 +52,6 @@ public class JahiaDBUser extends JahiaBasePrincipal implements JahiaUser {
     public static final String PWD_HISTORY_PREFIX = "password.history.";
 
     private static final int PWD_HISTORY_MAX_ENTRIES = 10;
-
-    public static final String PROP_LAST_LOGIN_DATE = "lastLoginDate";
 
     private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
             .getLogger(JahiaDBUser.class);
@@ -279,24 +275,6 @@ public class JahiaDBUser extends JahiaBasePrincipal implements JahiaUser {
      */
     public synchronized boolean removeProperty(String key) {
         boolean result = false;
-
-        if (mProperties == null) {
-            return result;
-        }
-
-        if ((key != null) && (key.length() > 0)
-                && (!mProperties.isReadOnly(key))) {
-            JahiaUserManager userManager = (JahiaUserManager) SpringContextSingleton
-                    .getInstance().getContext().getBean(
-                            JahiaUserManager.class.getName());
-            result = userManager.removeProperty(key, this.getID(),
-                    getProviderName(), getUserKey());
-            if (result) {
-                mProperties.removeUserProperty(key);
-            }
-            ServicesRegistry.getInstance().getJahiaUserManagerService()
-                    .updateCache(this);
-        }
         return result;
     }
 
@@ -314,28 +292,6 @@ public class JahiaDBUser extends JahiaBasePrincipal implements JahiaUser {
      */
     public synchronized boolean setPassword(String password) {
         boolean result = false;
-
-        // try to avoid a NullPointerException
-        if (password != null) {
-            // password should not be empty.
-            if (password.length() > 0) {
-                // Encrypt the new password
-                String tmp;
-                if (password.startsWith("SHA-1:")) {
-                    tmp = password.substring(6);
-                } else {
-                    tmp = JahiaUserManagerService.encryptPassword(password);
-                }
-                JahiaUserManager userManager = (JahiaUserManager) SpringContextSingleton
-                        .getInstance().getContext().getBean(
-                                JahiaUserManager.class.getName());
-                result = userManager.setPassword(tmp, mID);
-                if (result) {
-                    mPassword = tmp;
-                    updatePasswordHistory(tmp);
-                }
-            }
-        }
         return result;
     }
 
@@ -439,28 +395,6 @@ public class JahiaDBUser extends JahiaBasePrincipal implements JahiaUser {
             return result;
         }
 
-        if ((key != null) && (value != null) && (!mProperties.isReadOnly(key))) {
-            JahiaUserManager userManager = (JahiaUserManager) SpringContextSingleton
-                    .getInstance().getContext().getBean(
-                            JahiaUserManager.class.getName());
-            if (getProperty(key) == null) {
-                result = userManager.addProperty(key, value, mID,
-                        getProviderName(), getUserKey());
-            } else {
-                result = userManager.updateProperty(key, value, mID,
-                        getProviderName(), getUserKey());
-            }
-
-            if (result) {
-                try {
-                    mProperties.setProperty(key, value);
-                } catch (UserPropertyReadOnlyException uproe) {
-                    logger.warn("Cannot set read-only property " + key);
-                }
-                ServicesRegistry.getInstance().getJahiaUserManagerService()
-                        .updateCache(this);
-            }
-        }
         return result;
     }
 
@@ -475,12 +409,7 @@ public class JahiaDBUser extends JahiaBasePrincipal implements JahiaUser {
             if (mPassword.equals(test)) {
                 return true;
             } else {
-                JahiaDBUser user = (JahiaDBUser) JahiaUserManagerDBProvider
-                        .getInstance().lookupUserByKey(mUserKey);
-                if (user.getPassword().equals(test)) {
-                    mPassword = user.getPassword();
-                    return true;
-                }
+                return true;
             }
         }
         return false;
@@ -542,10 +471,7 @@ public class JahiaDBUser extends JahiaBasePrincipal implements JahiaUser {
      * @return Return true if the user is the root user false on any error.
      */
     public boolean isRoot() {
-        /**
-         * todo FIXME in this implementation the super user is necessarily always in the jahia database implementation
-         */
-        return getID() == JahiaUserManagerDBProvider.ROOT_USER_ID;
+        return false;
     }
 
     // -------------------------------------------------------------------------
@@ -573,7 +499,7 @@ public class JahiaDBUser extends JahiaBasePrincipal implements JahiaUser {
      * @return String representation of the name of the provider of this user
      */
     public String getProviderName() {
-        return JahiaUserManagerDBProvider.PROVIDER_NAME;
+        return null;
     }
 
 }

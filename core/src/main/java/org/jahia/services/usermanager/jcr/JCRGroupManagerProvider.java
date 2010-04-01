@@ -601,9 +601,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
 
     private JCRGroup getGroup(Node usersFolderNode, String name, int siteID1, boolean external) {
         JCRGroup group;
-        if (JahiaGroupManagerDBProvider.GUEST_GROUPNAME.equals(name)) {
+        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(name)) {
             group = new GuestGroup(usersFolderNode, jcrTemplate, siteID1);
-        } else if (JahiaGroupManagerDBProvider.USERS_GROUPNAME.equals(name)) {
+        } else if (JahiaGroupManagerService.USERS_GROUPNAME.equals(name)) {
             group = new UsersGroup(usersFolderNode, jcrTemplate, siteID1);
         } else {
             group = new JCRGroup(usersFolderNode, jcrTemplate, siteID1, external);

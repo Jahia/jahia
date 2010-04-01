@@ -120,7 +120,7 @@ public final class RuleConditions {
                         "The user object is null. Unable to evaluate the condition");
             }
 
-            return ctx.getUser().getProperty(JahiaDBUser.PROP_LAST_LOGIN_DATE) != null;
+            return ctx.getUser().getProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE) != null;
         }
     }
 
@@ -226,27 +226,28 @@ public final class RuleConditions {
 
             boolean success = true;
 
-            // we can only deal with the JahiaDBUser
-            if (ctx.getUser() instanceof JahiaDBUser) {
-                int checkedPasswordCount = getParameterIntValue(parameters, 0);
-
-                List history = ((JahiaDBUser) ctx.getUser())
-                        .getPasswordHistory();
-
-                String encryptedPassword = JahiaUserManagerService
-                        .encryptPassword(ctx.getPassword());
-                if (encryptedPassword != null) {
-                    for (int i = 0; i < checkedPasswordCount
-                            && i < history.size(); i++) {
-                        UserProperty prop = (UserProperty) history.get(i);
-                        if (prop != null && prop.getValue() != null
-                                && encryptedPassword.equals(prop.getValue())) {
-                            success = false;
-                            break;
-                        }
-                    }
-                }
-            }
+            // todo implement in jcr
+//            // we can only deal with the JahiaDBUser
+//            if (ctx.getUser() instanceof JahiaDBUser) {
+//                int checkedPasswordCount = getParameterIntValue(parameters, 0);
+//
+//                List history = ((JahiaDBUser) ctx.getUser())
+//                        .getPasswordHistory();
+//
+//                String encryptedPassword = JahiaUserManagerService
+//                        .encryptPassword(ctx.getPassword());
+//                if (encryptedPassword != null) {
+//                    for (int i = 0; i < checkedPasswordCount
+//                            && i < history.size(); i++) {
+//                        UserProperty prop = (UserProperty) history.get(i);
+//                        if (prop != null && prop.getValue() != null
+//                                && encryptedPassword.equals(prop.getValue())) {
+//                            success = false;
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
 
             return success;
         }

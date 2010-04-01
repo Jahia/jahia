@@ -55,13 +55,6 @@ import org.springframework.beans.factory.InitializingBean;
 public abstract class JahiaUserManagerProvider extends JahiaService implements InitializingBean {
 // ------------------------------ FIELDS ------------------------------
 
-    /**
-     * Guest user unique identification name.
-     * Each usermanager should create this special user, who is assigned
-     * automatically for each anonymous session internally in Jahia.
-     */
-    public static final String GUEST_USERNAME = "guest";
-
     private static Logger logger = Logger
 	        .getLogger(JahiaUserManagerProvider.class);
 

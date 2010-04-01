@@ -984,9 +984,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 if (adminSiteUser != null) {
                     // attach admin to administrators group...
                     JahiaSiteTools.getAdminGroup(site).addMember(adminSiteUser);
-
-                    // create admin membership for this site...
-                    JahiaSiteTools.addMember(adminSiteUser, site);
                 }
 
                 // set as current site if the session site is null

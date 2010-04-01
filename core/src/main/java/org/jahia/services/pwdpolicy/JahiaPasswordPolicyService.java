@@ -262,15 +262,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
         if (user.isRoot())
             return isPolicyEnabledForRoot();
 
-        boolean enforcePolicy = false;
-
-        List<Integer> l = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getUserMembership(user);
-        for (Integer siteId : l) {
-            if (isPolicyEnabled(siteId)) {
-                enforcePolicy = true;
-                break;
-            }
-        }
+        boolean enforcePolicy = true;
 
         // check if the policy is enabled for at least one of the user
         // groups

@@ -75,16 +75,6 @@ public abstract class JahiaSiteUserManagerService extends JahiaService {
 
 
     /**
-     * This method returns an Map of username/usr_id couples of members of the requested site
-     *
-     * @param siteID the site identifier
-     *
-     * @return Return an Map of username/usrid couples members of this site.
-     */
-    public abstract Map getMembersMap (int siteID) throws JahiaException;
-
-
-    /**
      * This method returns the list of all members of this site.
      *
      * @param siteID the site identifier
@@ -103,31 +93,6 @@ public abstract class JahiaSiteUserManagerService extends JahiaService {
      * @return Return the user if not null.
      */
     public abstract JahiaUser getMember (int siteID, String username);
-
-    public abstract List<Integer> getUserMembership (JahiaUser user);
-
-
-    /**
-     * return a DOM document of all users membership of a site
-     *
-     * @param siteID    the site id
-     *
-     * @return JahiaDOMObject a DOM representation of this object
-     */
-    public abstract JahiaDOMObject getUserMembershipsAsDOM (int siteID)
-            throws JahiaException;
-
-
-    /**
-     * return a DOM document of external users ( from other site )
-     * that have membership access on this site
-     *
-     * @param siteID the site id
-     *
-     * @return JahiaDOMObject a DOM representation of this object
-     */
-    public abstract JahiaDOMObject getAuthExternalUsersAsDOM (int siteID)
-            throws JahiaException;
 
 
 }

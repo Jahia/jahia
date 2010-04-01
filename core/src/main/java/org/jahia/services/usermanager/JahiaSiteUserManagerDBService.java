@@ -31,13 +31,11 @@
  */
 package org.jahia.services.usermanager;
 
-import org.jahia.data.JahiaDOMObject;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaUserManager;
 import org.jahia.registries.ServicesRegistry;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -51,13 +49,6 @@ public class JahiaSiteUserManagerDBService extends JahiaSiteUserManagerService {
             org.apache.log4j.Logger.getLogger(JahiaSiteUserManagerDBService.class);
 
     private static JahiaSiteUserManagerDBService mInstance;
-
-    public static final String SITE_USERS_CACHE = "SiteUsersCache";
-    private JahiaUserManager userManager;
-
-    public void setUserManager(JahiaUserManager userManager) {
-        this.userManager = userManager;
-    }
 
     /**
      * Default constructor.
@@ -100,11 +91,7 @@ public class JahiaSiteUserManagerDBService extends JahiaSiteUserManagerService {
      * @param user the user to add as member
      */
     public synchronized boolean addMember(int siteID, JahiaUser user) throws JahiaException {
-
-        if (user == null) {
-            return false;
-        }
-        return userManager.addMemberToSite(siteID, user);
+        return true;
     }
 
 
@@ -114,13 +101,7 @@ public class JahiaSiteUserManagerDBService extends JahiaSiteUserManagerService {
      * @param siteID the site identifier
      * @param user  reference on the user to be removed from the site.
      */
-    public synchronized boolean removeMember(int siteID, JahiaUser user)
-            throws JahiaException {
-
-        if (user == null) {
-            return false;
-        }
-        userManager.removeMemberFromSite(siteID,user);
+    public synchronized boolean removeMember(int siteID, JahiaUser user) throws JahiaException {
         return true;
     }
 
@@ -131,24 +112,7 @@ public class JahiaSiteUserManagerDBService extends JahiaSiteUserManagerService {
      * @param user the user to be removed from all site.
      */
     public synchronized boolean removeMember(JahiaUser user) throws JahiaException {
-
-        if (user == null) {
-            return false;
-        }
-        userManager.removeMemberFromAllSite(user);
         return true;
-    }
-
-
-
-    /**
-     * This method returns the list of all the usernames of members of a site.
-     *
-     * @param siteID the site identifier
-     * @return Return an Map of username/usrid couples members of this site.
-     */
-    public Map getMembersMap(int siteID) throws JahiaException {
-        return userManager.getAllMembersNameOfSite(siteID);
     }
 
 
@@ -158,61 +122,25 @@ public class JahiaSiteUserManagerDBService extends JahiaSiteUserManagerService {
      * @return List of JahiaUser members of this site.
      */
     public List getMembers(int siteID) throws JahiaException {
-        return userManager.getAllMembersOfSite(siteID);
+        List r = new ArrayList();
+        List<String> l = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserList();
+        for (String s : l) {
+            r.add(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(s));
+        }
+        return r;
     }
 
 
     /**
      * Check if a user has or not access on a site.
      *
-     * @param int    siteID, the site identifier
-     * @param String username, the site identifier
      * @return Return the user if not null.
      */
     public JahiaUser getMember(int siteID, String username) {
-        // first look it up directly
-        JahiaUser user = userManager.getMemberInSite(siteID,username);
-
-        if (user == null) {
-            if (!"".equals(username)) {
-                user = ServicesRegistry.getInstance().
-                        getJahiaUserManagerService().lookupUser(
-                        username);
-                if (user instanceof JahiaDBUser) {
-                    user = null;
-                }
-            }
-        }
-        return user;
-    }
-
-    public List<Integer> getUserMembership(JahiaUser user) {
-        return userManager.getUserSiteMembership(user);
-    }
-
-    /**
-     * return a DOM document of all users membership of a site
-     *
-     * @param int the site id
-     * @return JahiaDOMObject a DOM representation of this object
-     */
-    public JahiaDOMObject getUserMembershipsAsDOM(int siteID)
-            throws JahiaException {
-
-        return null;
+        return ServicesRegistry.getInstance().
+                getJahiaUserManagerService().lookupUser(
+                username);
     }
 
 
-    /**
-     * return a DOM document of external users ( from other site except server admin )
-     * that have membership access on this site
-     *
-     * @param int the site id
-     * @return JahiaDOMObject a DOM representation of this object
-     */
-    public JahiaDOMObject getAuthExternalUsersAsDOM(int siteID)
-            throws JahiaException {
-
-        return null;
-    }
 }

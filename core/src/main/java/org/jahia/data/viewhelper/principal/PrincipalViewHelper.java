@@ -59,7 +59,6 @@ import org.jahia.services.usermanager.GuestGroup;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerDBProvider;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.UsersGroup;
 import org.jahia.utils.JahiaString;
@@ -330,7 +329,7 @@ public class PrincipalViewHelper implements Serializable {
         if (p instanceof JahiaUser) {
             final JahiaUser user = (JahiaUser)p;
             // Find a displayable user property
-            if (user.getUsername().equals(JahiaUserManagerDBProvider.GUEST_USERNAME)) {
+            if (user.getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
                 properties.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.users.guest.label", Jahia.getThreadParamBean().getLocale()));
                 return JahiaString.adjustStringSize(properties.toString(), size);
             } else {

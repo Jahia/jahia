@@ -55,45 +55,6 @@ import org.jahia.services.usermanager.JahiaUser;
  */
 public final class JahiaSiteTools {
 
-    /**
-     * Create a new membership for a user
-     *
-     * @param user  the user to add as member
-     * @param site  the site
-     */
-    public static boolean addMember (JahiaUser user, JahiaSite site)
-            throws JahiaException {
-
-        if (site == null || user == null) {
-            return false;
-        }
-        JahiaSiteUserManagerService jsums = ServicesRegistry.getInstance ()
-                .getJahiaSiteUserManagerService ();
-
-        if (jsums == null) {
-            return false;
-        }
-
-        return jsums.addMember (site.getID (), user);
-    }
-
-
-    /**
-     * Add a group membership on this site ( in a group sharing context )
-     *
-     * @param grp   the group reference
-     * @param site  the site reference
-     */
-    public static boolean addGroup (JahiaGroup grp, JahiaSite site)
-            throws JahiaException {
-
-        if (site == null || grp == null) {
-            return false;
-        }
-
-        return true;
-    }
-
 
     /**
      * return the admin group of this site

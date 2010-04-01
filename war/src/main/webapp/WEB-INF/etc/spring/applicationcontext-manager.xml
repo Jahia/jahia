@@ -49,26 +49,6 @@
         </property>
    </bean>
 
-    <bean id="org.jahia.hibernate.manager.JahiaGroupManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaGroupManager">
-                <property name="jahiaGroupAccessDAO" ref="jahiaGroupAccessDAO" />
-                <property name="jahiaGroupDAO" ref="jahiaGroupDAO" />
-                <property name="jahiaUserDAO" ref="jahiaUserDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-                <property name="preloadGroupMembers" value="true"/>
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.hibernate.manager.JahiaUserManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.JahiaUserManager">
-                <property name="jahiaUserDAO" ref="jahiaUserDAO" />
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
-
     <bean id="org.jahia.hibernate.manager.JahiaPasswordPolicyManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaPasswordPolicyManager">

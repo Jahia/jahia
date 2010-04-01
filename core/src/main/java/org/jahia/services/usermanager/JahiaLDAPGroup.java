@@ -34,12 +34,15 @@
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.JahiaGroupManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.jcr.JCRGroup;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -79,7 +82,7 @@ public class JahiaLDAPGroup extends JahiaGroup {
     private JahiaGroupManagerLDAPProvider myProvider;
 
     /**
-     * Instanciate a new JahiaDBGroup object.
+     * 
      *
      * @throws JahiaException This class need to access the Services Registry and the DB Pool
      *                        Service. If any of this services can't be accessed, a
@@ -157,8 +160,11 @@ public class JahiaLDAPGroup extends JahiaGroup {
 
         if ((key != null) && (key.length () > 0)) {
             // Remove these lines if LDAP problem --------------------
-            JahiaGroupManager groupManager = (JahiaGroupManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaGroupManager.class.getName());
-            result = groupManager.removeProperty (key, -1, getProviderName (), getGroupKey ());
+            JCRGroupManagerProvider userManager = (JCRGroupManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRGroupManagerProvider");
+            JCRGroup jcrGroup = (JCRGroup) userManager.lookupExternalGroup(getName());
+            if(jcrGroup!=null) {
+                jcrGroup.removeProperty(key);
+            }
         }
 
         if (result) {
@@ -196,11 +202,10 @@ public class JahiaLDAPGroup extends JahiaGroup {
 
         if ((key != null) && (value != null)) {
             // Remove these lines if LDAP problem --------------------
-            JahiaGroupManager groupManager = (JahiaGroupManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaGroupManager.class.getName());
-            if (getProperty(key) == null) {
-                result = groupManager.addProperty(key, value, -1, getProviderName(), getGroupKey());
-            } else {
-                result = groupManager.updateProperty(key, value, -1, getProviderName(), getGroupKey());
+            JCRGroupManagerProvider userManager = (JCRGroupManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRGroupManagerProvider");
+            JCRGroup jcrGroup = (JCRGroup) userManager.lookupExternalGroup(getName());
+            if(jcrGroup!=null) {
+                jcrGroup.setProperty(key, value);
             }
 
             // End remove --------------------

@@ -9,7 +9,6 @@
         <property name="defaultProvider" value="false"/>
         <property name="readOnly" value="true"/>
         <property name="priority" value="2"/>
-        <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager"/>
         <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
         <property name="ldapProperties">
             <map>

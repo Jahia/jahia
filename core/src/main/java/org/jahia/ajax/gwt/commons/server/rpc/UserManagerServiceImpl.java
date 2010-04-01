@@ -39,7 +39,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -123,7 +122,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
     public PagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<Integer> siteIds) {
         try {
             Properties criterias = new Properties();
-            criterias.setProperty(JahiaGroupManagerDBProvider.GROUPNAME_PROPERTY_NAME, match);
+            criterias.setProperty("groupname", match);
 
             List<Integer> sites = siteIds;
             if (sites == null || sites.size() == 0) {

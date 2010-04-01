@@ -34,11 +34,10 @@
 package org.jahia.services.usermanager;
 
 import org.apache.log4j.Logger;
-import org.jahia.hibernate.manager.JahiaUserManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 
 import java.util.*;
 
@@ -253,9 +252,13 @@ public class JahiaLDAPUser extends JahiaBasePrincipal implements JahiaUser {
         }
 
         if ((key != null) && (key.length () > 0) && (!mProperties.isReadOnly(key))) {
-            // Remove these lines if LDAP problem --------------------
-            JahiaUserManager userManager = (JahiaUserManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaUserManager.class.getName());
-            result = userManager.removeProperty (key, -1, getProviderName (), getUserKey ());
+            JCRUserManagerProvider userManager = (JCRUserManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRUserManagerProvider");
+            JCRUser jcrUser = (JCRUser) userManager.lookupExternalUser(getName());
+            if(jcrUser!=null) {
+                jcrUser.removeProperty(key);
+                result = true;
+            }
+
         }
         //Predrag
         if (result) {
@@ -268,7 +271,7 @@ public class JahiaLDAPUser extends JahiaBasePrincipal implements JahiaUser {
     /**
      * Change the user's password.
      *
-     * @param newPassword New user's password
+     * @param password New user's password
      *
      * @return Return true id the old password is the same as the current one and
      *         the new password is valid. Return false on any failure.
@@ -354,7 +357,7 @@ public class JahiaLDAPUser extends JahiaBasePrincipal implements JahiaUser {
     /**
      * Set the home page id.
      *
-     * @param int The user homepage id.
+     * @param id The user homepage id.
      *
      * @return false on error
      */

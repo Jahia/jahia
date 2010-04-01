@@ -64,7 +64,6 @@ import javax.naming.directory.SearchResult;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaGroupManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
@@ -148,7 +147,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
     private JahiaUserManagerLDAPProvider userProvider;
 
     private CacheService cacheService;
-    private JahiaGroupManager groupManager;
+
     private JahiaUserManagerService jahiaUserManagerService;
 
 // -------------------------- STATIC METHODS --------------------------
@@ -299,10 +298,6 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
-    }
-
-    public void setGroupManager(JahiaGroupManager groupManager) {
-        this.groupManager = groupManager;
     }
 
     public void setJahiaUserManagerService(JahiaUserManagerService jahiaUserManagerService) {
@@ -623,7 +618,6 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
      * keep this connection open as long as possible, in order to reuser the
      * connection.
      *
-     * @param forceRefresh
      *
      * @return DirContext the current public context.
      */
@@ -809,8 +803,8 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
     private void mapDBToJahiaProperties (Properties groupProps,
                                          String usingGroupKey) {
             // Get all the user attributes
-        Properties dbProperties = groupManager.getGroupProperties (-1, PROVIDER_NAME, usingGroupKey);
-            groupProps.putAll (dbProperties);
+//        Properties dbProperties = groupManager.getGroupProperties (-1, PROVIDER_NAME, usingGroupKey);
+//            groupProps.putAll (dbProperties);
     }
 
     private Map<String, Principal> getGroupMembers (SearchResult sr, boolean dynamic)
@@ -1268,20 +1262,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
             searchCriterias = new Properties();
             searchCriterias.setProperty("*", "*");
         }
-
-        JahiaGroupManager groupManager = (JahiaGroupManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaGroupManager.class.getName());
-        Iterator<?> criteriaNames = searchCriterias.keySet().iterator();
-        List<String> criteriaValueList = new ArrayList<String>(searchCriterias.size());
-        List<String> criteriaNameList = new ArrayList<String>(searchCriterias.size());
-        while (criteriaNames.hasNext()) {
-            String curCriteriaName = (String) criteriaNames.
-                    next();
-            String curCriteriaValue = makeLIKEString(
-                    searchCriterias.getProperty(curCriteriaName));
-            criteriaValueList.add(curCriteriaValue);
-            criteriaNameList.add(curCriteriaName);
-        }
-        groupManager.searchGroupName(criteriaNameList, criteriaValueList, siteID, groupKeys, PROVIDER_NAME);
+        //todo implement it with jcr properties ..
 
         return groupKeys;
     }

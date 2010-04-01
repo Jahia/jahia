@@ -43,10 +43,8 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
-import org.jahia.services.usermanager.JahiaDBUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -174,7 +172,7 @@ public class LoginEngineAuthValveImpl implements Valve {
                 }
 
                 enforcePasswordPolicy(theUser, paramBean);
-                theUser.setProperty(JahiaDBUser.PROP_LAST_LOGIN_DATE, String.valueOf(System.currentTimeMillis()));
+                theUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE, String.valueOf(System.currentTimeMillis()));
                 checkRedirect(paramBean);
             } else {
                 valveContext.invokeNext(context);

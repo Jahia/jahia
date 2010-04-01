@@ -347,21 +347,10 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null, false);
             }
 
-            // create groups memberships...
-            JahiaSiteTools.addGroup(adminGroup, site);
-            JahiaSiteTools.addGroup(usersGroup, site);
-            JahiaSiteTools.addGroup(guestGroup, site);
-
             JahiaUser guestSiteUser = jums.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
 
             // attach superadmin user (current) to administrators group...
             adminGroup.addMember(currentUser);
-
-            // create creator user membership for this site...
-            JahiaSiteTools.addMember(currentUser, site);
-
-            // create guest user membership for this site...
-            JahiaSiteTools.addMember(guestSiteUser, site);
 
             File initialZip = null;
             String initialZipName = null;

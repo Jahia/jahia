@@ -57,8 +57,6 @@ import javax.naming.directory.SearchResult;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.JahiaUserManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
@@ -472,7 +470,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
      * keep this connection open as long as possible, in order to reuser the
      * connection.
      *
-     * @param forceRefresh
      *
      * @return DirContext the current public context.
      *
@@ -1009,19 +1006,8 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
             searchCriterias.setProperty("*", "*");
         }
 
-        JahiaUserManager groupManager = (JahiaUserManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaUserManager.class.getName());
-        Iterator<?> criteriaNames = searchCriterias.keySet().iterator();
-        List<String> criteriaValueList = new ArrayList<String>(searchCriterias.size());
-        List<String> criteriaNameList = new ArrayList<String>(searchCriterias.size());
-        while (criteriaNames.hasNext()) {
-            String curCriteriaName = (String) criteriaNames.
-                    next();
-            String curCriteriaValue = makeLIKEString(
-                    searchCriterias.getProperty(curCriteriaName));
-            criteriaValueList.add(curCriteriaValue);
-            criteriaNameList.add(curCriteriaName);
-        }
-        groupManager.searchUserName(criteriaNameList, criteriaValueList, userKeys, PROVIDER_NAME);
+        // todo implement this
+
 
         return userKeys;
     }

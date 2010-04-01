@@ -255,6 +255,9 @@ public class JCRSitesProvider {
                         } else {
                             googleAnalyticsNode = siteNode.addNode(googleAnalyticsProfile.getName(), Constants.JAHIANT_GOOGLEANALYTICS);
                         }
+                        if(!googleAnalyticsNode.isCheckedOut()){
+                           session.checkout(googleAnalyticsNode); 
+                        }
                         googleAnalyticsNode.setProperty("j:account", googleAnalyticsProfile.getAccount());
                         googleAnalyticsNode.setProperty("j:login", googleAnalyticsProfile.getLogin());
                         googleAnalyticsNode.setProperty("j:password", googleAnalyticsProfile.getPassword());

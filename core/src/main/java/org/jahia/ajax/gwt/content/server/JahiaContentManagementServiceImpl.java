@@ -504,7 +504,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
         if (name == null) {
-            List<GWTJahiaNodeProperty> l = langCodeProperties.get(getSite().getDefaultLanguage());
+            String defaultLanguage = getLocale().toString();
+            if(getSite()!=null) {
+                defaultLanguage = getSite().getDefaultLanguage();
+            }
+            List<GWTJahiaNodeProperty> l = langCodeProperties.get(defaultLanguage);
             if (l == null && langCodeProperties.size() > 0) {
                 l = langCodeProperties.values().iterator().next();
             }

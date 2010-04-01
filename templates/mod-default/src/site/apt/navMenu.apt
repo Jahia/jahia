@@ -1,0 +1,16 @@
+Navigation menu
+
+* {Overview}
+
+  Module is aimed to provide the framework as well as a set of out-of-the-box components for building navigation menus of different complexity level.
+  
+  This documentation includes:
+
+  * An overview of the {{{./navMenuComponents.html} built-in components}} for creating menus.
+
+  * Several {{{./navMenuUsage.html} common use cases}} for navigation menus.
+
+  * A reference of {{{./navMenuStyles.html} CSS style}}, used by the menu.
+    
+  * A "How To" for {{{./navMenuCustomizing.html} creating custom components}}.
+

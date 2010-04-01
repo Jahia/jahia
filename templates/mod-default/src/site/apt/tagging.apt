@@ -1,34 +1,8 @@
-Usage of Jahia Default Module
-
-  This module contains common content definitions, rendering templates, resource bundles and other resource and is deployed by default.
-
-  The module includes a set of features and components, providing base Jahia templates functionality:
-
-      * {{{Hide} Hide templates from drop down list of available templates}}
-      
-      * {{Tagging}}
-
-
-* {Hide} templates from drop down list of available templates
-
-  To hide your templates from the drop down list of available templates inside edit mode (in the PreviewPanel or in the Properties Editor).\
-  You just have to name your template : definition_name.hidden.template_name.jsp for example.
-
-------------------------------------------------
-Example:
-jmix_tagged
-  |
-  + html
-     |
-     - tagged.hidden.addTag.jsp
-     - tagged.hidden.tags.jsp
-------------------------------------------------     
-
-* {Tagging}
+Tagging
 
   {{{http://en.wikipedia.org/wiki/Tag_%28metadata%29}Tagging}} the content is one of the important features in {{{http://en.wikipedia.org/wiki/Social_network_service}social networking}}. 
 
-  Jahia leverages tagging by enabling its support on all content containers and pages using following definitions:
+  Jahia leverages tagging by enabling its support on all content objects and pages using following definitions:
 
 --------------------------------------------
 [jmix:tagged] > jmix:metadata mixin

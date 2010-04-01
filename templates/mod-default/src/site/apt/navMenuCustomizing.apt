@@ -1,0 +1,12 @@
+Creating custom menu items
+
+  Apart from {{{./navMenuComponents.html} built-in menu components}}, delivered with Jahia,
+  integrators can create their own components.
+  
+  The menu component must have a <<<jmix:navMenuItem>>> mixin to be able to act as
+  a menu item (being able to drop it into the placeholder area of the <<<jnt:nevMenu>>> component)
+  and <<<jmix:interactiveContent>>> mixin to list this custom component in the selector (left-side) panel:
+
+-------------
+[jnt:navMenuCutomItem] > jnt:content, jmix:navMenuItem, jmix:interactiveContent
+-------------

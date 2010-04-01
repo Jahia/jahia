@@ -7,10 +7,14 @@
         <menu ref="parent"/>
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Usage" href="usage.html">
-            	<item name="Hide templates" href="usage.html#Hide"/>
-            	<item name="Tagging" href="usage.html#Tagging"/>
+            <item name="Hide Templates" href="hideTemplates.html"/>
+            <item name="Navigation Menu" href="navMenu.html">
+                <item name="Built-in Components" href="navMenuComponents.html"/>
+                <item name="Common Use Cases" href="navMenuUsage.html"/>
+                <item name="CSS Style Reference" href="navMenuStyles.html"/>
+                <item name="Customization" href="navMenuCustomizing.html"/>
             </item>
+            <item name="Tagging" href="tagging.html"/>
             <item name="User Profile" href="profile.html">
                 <item name="Edit Simple Text" href="profile.html#Simple"/>
                 <item name="Edit Rich Text" href="profile.html#Rich"/>

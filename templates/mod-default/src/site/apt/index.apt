@@ -2,13 +2,16 @@ Jahia Default Module
 
 * Goals Overview
 
-  The Jahia Default Module container common resources (definitions, rendering templates, rules etc.) to handle base set of content objects in Jahia.
+  This module contains common content definitions, rendering templates, resource bundles and static assets and is deployed by default.
 
-	* Usage
+  The module includes a set of features and components, providing base Jahia templates functionality:
 
-	  General instructions on how to use features and components in the Jahia Default Module can be found on the {{{usage.html}usage page}}.
+    * {{{./hideTemplates.html} Hide templates}} - allows removing a particular template from the drop down list of available templates
+      
+    * {{{./navMenu.html} Navigation menu}} - support for building navigation menus manually and in automatic mode
 
-	* User Profile
+    * {{{./tagging.html} Tagging}} - utilization of social tagging feature in Jahia
 
-	  General instructions on how to develop in line editable pages is available in {{{profile.html}user profile page}}.
+    * {{{./profile.html} User Profile}} - general instructions on how to develop in line editable pages is available in user profile page
 
+	[]

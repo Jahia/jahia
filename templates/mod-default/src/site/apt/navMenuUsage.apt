@@ -1,0 +1,42 @@
+Navigation menu use cases
+
+  Several examples of navigation menu usage:
+
+  * {{{manually} Building simple menu manually}} - shows an example of how to build a single-level menu manually.
+
+  * {{{multilevel} Building multilevel menus}} - describes how to build menus, consisting of multiple levels.
+
+  * {{{categories} Using categories and tags}} - overview of the filtering capabilities of the multilevel menu, based on the tagged or categorized content.
+
+  * {{{Hiding} Hiding items in navigation menu}} - explanation of the option for hiding pages from the automatically generated menus.
+
+  []
+
+
+* Building simple menu {manually}
+
+  This is the case when the whole menu will be built manually by dragging and dropping corresponding {{{./navMenuComponents.html} components}}
+  into the placeholder area of the <<<jnt:navMenu>>> node:
+
+[./images/navMenu/designMode.png] Creating multilevel menus
+
+* Building {multilevel} menus
+
+  Similar approach is used for building multilevel menus manually. As the sub-menu the same <<<jnt:navMenu>>> component
+  should be dropped into the placeholder area of the existing navigation menu as shown in {{{manually} previous section}}.
+
+* Using {categories} and tags
+
+  More advanced way of building menus automatically is using categorization and {{{./tagging.html} tagging}} features.
+  
+  It is possible to specify categories and tags filter to be able to including automatically
+  nodes, which are categorized correspondingly. In such a way an editor is able to influence
+  the automatically generated menus. 
+  
+[./images/navMenu/categoryAndTagFilter.png] Using categories and tags
+
+* {Hiding} items in navigation menu
+
+  An option can be activated on any content object to tell the automatically generated menus to not including this item:
+
+[./images/navMenu/hideInNavMenu.png] Hiding items in navigation menu

@@ -23,6 +23,7 @@
 
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
+
 <script>
     $(document).ready(function() {
         $("#ckeditorEditDescription").editable(function (value, settings) {
@@ -102,25 +103,19 @@
     <!--stop boxdocspace -->
 
     <h4 class="boxdocspace-title2">Document history</h4>
-
-    <div class="boxdocspace">
-        <div class="boxdocspacepadding10 boxdocspacemarginbottom16">
+    
+        <div class="boxdocspace"><!--start boxdocspace -->
+        <div class="boxdocspacegrey boxdocspacepadding10 ">
             <div class="boxdocspace-inner">
-                <div class="boxdocspace-inner-border"><!--start boxdocspace -->
-                    <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}"/>
-                    <div class="post-reply">
-                        <div class="forum-box forum-box-style2">
-                            <span class="forum-corners-top"><span></span></span>
-
-                            <div id="forum-Form"><!--start forum-Form-->
-                                <h4 class="forum-h4-first"><fmt:message key="docspace.label.document.add.version"/></h4>
+                <div class="boxdocspace-inner-border">
+                                
 
                                 <form action="${url.base}${currentNode.parent.path}/*" method="POST" name="uploadFile"
                                       enctype="multipart/form-data">
-                                    <fieldset>
                                         <input type="hidden" name="nodeType" value="jnt:file"/>
                                         <input type="hidden" name="redirectTo"
                                                value="${url.base}${renderContext.mainResource.node.path}"/>
+                                        <input type="hidden" name="newNodeOutputFormat" value="docspace.html"/>
                                         <input type="hidden" name="targetDirectory" value="${currentNode.parent.path}"/>
                                         <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
                                         <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
@@ -128,24 +123,28 @@
                                         <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
                                         <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
                                         <input type="hidden" name="version" value="true"/>
+										<span><strong><fmt:message key="docspace.label.document.add.version"/></strong></span>
 
-                                        <p class="field">
                                             <input type="file" name="file">
-                                        </p>
-
-                                        <p class="forum_button">
-                                            <input type="submit" id="upload" value="Upload"/>
-                                        </p>
-                                    </fieldset>
+                                            <input class="button" type="submit" id="upload" value="Upload"/>
                                 </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              <div class="clear"></div></div>
             </div>
         </div>
     </div>
-    <!--stop boxdocspace -->
+
+                            <div class="boxdocspace">
+                                <div class="boxdocspacepadding10 boxdocspacemarginbottom16">
+                                    <div class="boxdocspace-inner">
+                                        <div class="boxdocspace-inner-border"><!--start boxdocspace -->
+                                        
+                                            <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}"/>
+                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--stop boxdocspace -->
 
     <div class='clear'></div>
 </div>

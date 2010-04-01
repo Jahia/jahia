@@ -26,7 +26,7 @@
             "bAutoWidth": false,
             "bStateSave" : true,
             "aaSorting": [
-                [2,'desc'],
+                [4,'desc'],
                 [1,'asc']
             ],
             "aoColumns": [
@@ -90,7 +90,7 @@
 			<a href="${url.base}${subchild.path}<c:if test="${jcr:isNodeType(subchild, 'jnt:docspaceFile')}">.docspace</c:if>.html">${subchild.name}</a><br />
           </td>
            <td headers="Download">
-            <a href="${subchild.url}">download</a>
+            <c:if test="${not jcr:isNodeType(subchild, 'jnt:docspace')}"><a href="${subchild.url}">download</a></c:if>
           </td>
 
             <jcr:nodeProperty node="${subchild}" name="jcr:created" var="created"/>

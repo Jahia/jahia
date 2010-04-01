@@ -229,9 +229,8 @@
                         <input class="button" type="submit" id="upload" value="Upload"/>
                     </form>
 </div>
-<div class="floatright"><span><strong>Create Sub a Docspace: </strong></span>
-                    <a id="showCreateSubDocspace" href="#createSubDocspace"><img alt="Create Sub Docspace" src="${url.currentModule}/css/img/create-sub-docspace-medium.png"/></a>
-</div>
+<div class="floatright"><span><strong>Create a Sub-Docspace: </strong></span>
+                    <a id="showCreateSubDocspace" href="#createSubDocspace"><img alt="Create Sub Docspace" src="${url.currentModule}/css/img/create-sub-docspace-medium.png"/></a></div>
               <div class="clear"></div></div>
                 <!--stop formSearchTop-->
 

@@ -399,7 +399,7 @@ public class ContentDetails extends BottomRightComponent {
                     if (preview != null) {
                         g.setWidget(0, 0, new Image(preview));
                     }
-                    String name = selectedNode.getDisplayName();
+                    String name = selectedNode.getName();
                     if (name != null) {
                         flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_name") + " :</b> " + name));
                     }
@@ -422,6 +422,9 @@ public class ContentDetails extends BottomRightComponent {
                     if (config.isDisplayLock() && selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
                         flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lock") + " :</b> " + selectedNode.getLockOwner()));
                     }
+
+                    flowPanel.add(new HTML("<b>Types :</b>"+ selectedNode.getNodeTypes()));
+                    flowPanel.add(new HTML("<b>Tags :</b>"+ selectedNode.getTags()));
                 }
             } else {
                 int numberFiles = 0;

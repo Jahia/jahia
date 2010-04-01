@@ -33,11 +33,13 @@
 package org.jahia.modules.seo.rules;
 
 import javax.jcr.RepositoryException;
+import javax.validation.ConstraintViolationException;
 
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.rules.NodeWrapper;
@@ -74,8 +76,18 @@ public class SeoService {
         final String path = node.getPath();
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                urlManager.saveVanityUrlMapping(session.getNode(path), new VanityUrl(url, JCRContentUtils
-                        .getSiteKey(path), locale, isDefault, true), session);
+                String urlToTry = url;
+                int index = 0;
+                String siteKey = JCRContentUtils.getSiteKey(path);
+                JCRNodeWrapper nodeWrapper = session.getNode(path);
+                while (true) {
+                    try {
+                        urlManager.saveVanityUrlMapping(nodeWrapper, new VanityUrl(urlToTry, siteKey, locale, isDefault, true), session);
+                        break;
+                    } catch (ConstraintViolationException ex) {
+                        urlToTry = url + "-" + (++index);
+                    }
+                }
                 return true;
             }
         });

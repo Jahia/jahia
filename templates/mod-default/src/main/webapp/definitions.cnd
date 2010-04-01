@@ -135,7 +135,7 @@
  - j:baselineNode (weakreference)
  - j:allowedTypes (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList;jnt:formElementValidation']) = 'jnt:page' multiple
  
-[jnt:navMenuChildNodes] > jmix:navMenuItem, jmix:interactiveContent
+[jnt:navMenuChildNodes] > jnt:content, jmix:navMenuItem, jmix:interactiveContent
  - j:baselineNode (weakreference)
  - j:allowedTypes (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList;jnt:formElementValidation']) = 'jnt:page' multiple
 //---------------------------------------------------------

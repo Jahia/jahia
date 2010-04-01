@@ -41,9 +41,9 @@
             tooltip : 'Click to edit'
         });
 
-        $("#actions").change(function() {
-            if ($(this).val() == 'delete') {
-                if (confirm("Do you really want to delete this file?")) {
+        $("#actions").click(function() {
+            if ($(this).hasClass( 'delete' )) {
+                if (confirm("Do you REALLY want to delete this file?")) {
                     var data = {};
                     data['methodToCall'] = 'delete';
                     $.post('${url.base}${currentNode.path}', data, function () {
@@ -56,29 +56,23 @@
         });
     });
 </script>
+<div class='grid_16'><!--start grid_16-->
+<a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html">Back to: ${currentNode.parent.name}</a>
+<div class='clear'></div></div>
 <div class='grid_12'><!--start grid_12-->
     <div class="boxdocspace "><!--start boxdocspace -->
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
                     <div class="floatright">
-                        <span>Back to docspace : <a
-                                href="${url.base}${currentNode.parent.path}.html">${currentNode.parent.name}</a></span>
-
-                        <form action="#" method="post">
-                            <select name="actions" id="actions">
-                                <option selected="true" value="">Actions</option>
-                                <option value="delete">Suprimer</option>
-                            </select>
-                        </form>
+                                <a href="#" id="actions" title="Delete" class="delete"><span>Delete this file </span><img src="${url.currentModule}/css/img/delete.png"/></a>
                     </div>
                     <div class="imagefloatleft">
                         <div class="itemImage itemImageLeft"><a
-                                class="${functions:fileIcon(currentNode.name)}"
-                                href="#"></a>
+                                href="${currentNode.url}"><img title="Download" value="download" src="${url.currentModule}/css/img/documentbig.png"/></a>
                         </div>
                     </div>
-                    <h3><fmt:message key="docspace.label.document.name"/> : ${currentNode.name}</h3>
+                    <h3><fmt:message key="docspace.label.document.name"/> : <a href="${currentNode.url}"><img title="Download" value="download" src="${url.currentModule}/css/img/download.png"/>  ${currentNode.name}</a></h3>
 
                     <p class="clearMaringPadding docspacedate "><fmt:message key="label.created"/> : <fmt:formatDate
                             value="${currentNode.properties['jcr:created'].time}" pattern="yyyy/MM/dd"/>, <fmt:message
@@ -92,13 +86,12 @@
                         <fmt:message key="docspace.label.document.createdBy"/> : <span class="author"><a
                                 href="${url.base}/users/${currentNode.properties['jcr:lastModifiedBy'].string}.html">${currentNode.properties['jcr:lastModifiedBy'].string}</a></span>
                     </p>
-                    
-
+                    <div class="clear"></div>
                    <template:option node="${currentNode}" template="hidden.tags"
                                         nodetype="jmix:tagged"/><template:option node="${currentNode}"
                                                                                       template="hidden.addTag"
                                                                                       nodetype="jmix:tagged"/>
-
+<hr/>
                     <template:option node="${currentNode}" template="hidden.average" nodetype="jmix:rating"/>
                     <!--stop boxdocspace -->
                     <div class="clear"></div>
@@ -108,7 +101,7 @@
     </div>
     <!--stop boxdocspace -->
 
-    <h4 class="boxdocspace-title2">Discution et Versions </h4>
+    <h4 class="boxdocspace-title2">Document history</h4>
 
     <div class="boxdocspace">
         <div class="boxdocspacepadding10 boxdocspacemarginbottom16">
@@ -223,7 +216,7 @@
         </c:forEach>
     </ul>
     <form method="POST" name="publishFile" action="${url.base}${currentNode.path}.publishFile.do">
-        <input type="submit" value="<fmt:message key="docspace.label.document.publish"/>"/>
+        <input class="button" type="submit" value="<fmt:message key="docspace.label.document.publish"/>"/>
     </form>
 </div>
 <!--stop grid_4-->

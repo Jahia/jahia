@@ -1,5 +1,68 @@
+#bodywrapper .filetree span.folder  {
+background:transparent url(img/docspace.png) no-repeat scroll 0 0;
+}
+ 
+#bodywrapper .filetree li.collapsable span.folder{
+background:transparent url(img/docspace-open.png) no-repeat scroll 0 0;
+}
+#bodywrapper .filetree li.expandable span.folder {
+background:transparent url(img/docspace-subdocspace.png) no-repeat scroll 0 0;
+}
+#bodywrapper .filetree li.last span.folder {
+background:transparent url(img/docspace.png) no-repeat scroll 0 0;
+}
+
+#bodywrapper a.docspaceBack,
+#bodywrapper a.docspaceBack:link,
+#bodywrapper a.docspaceBack:visited,
+#bodywrapper a.docspaceBack:hover,
+#bodywrapper a.docspaceBack:active {
+	 font-size:0.9em;
+	 background:#043B9D url(img/bg-docspaceback.png) repeat-x scroll left top;
+	 color:#fff;
+	 padding:5px;
+	 margin:5px;
+	 border:1px solid #666;
+	 border-bottom:none;
+	 text-decoration:none;
+	-moz-border-radius-topleft :3px;
+	-webkit-border-top-left-radius:3px;
+	-moz-border-radius-topright:3px;
+	-webkit-border-top-right-radius:3px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	color:#fff;
+	text-decoration:none;
+}
+
 #bodywrapper .fileListTable{
-clear:left
+	clear:left
+}
+#bodywrapper .uploadfile{
+	line-height:32px
+}
+
+#bodywrapper a.delete,
+#bodywrapper a.delete:link,
+#bodywrapper a.delete:visited {
+	color:#ff0000;
+ 	padding:5px;
+	margin:5px;
+	background-color:#ffcccc;
+	border:1px solid #ff9999;
+	text-decoration:none;
+	-moz-border-radius:3px;
+	-webkit-border-top-right:3px;
+	border-radius:3px; 
+}
+#bodywrapper a.delete:hover,
+#bodywrapper a.delete:active {
+	color:#fff;
+	background-color:#ff0000;
+	text-decoration:none;
+}
+#bodywrapper a.delete img, #bodywrapper a#showCreateSubDocspace img {
+	vertical-align:middle
 }
 /******************************************************************************
 *  Template docspace
@@ -227,7 +290,7 @@ clear:left
 #bodywrapper ul.docspacelistusers{
 	margin:0 0 10px 0;
 	padding:0;
-	height:143px;
+	height:192px;
 	border:1px solid #b9a99b;
 	display: block;
 	overflow-x: hidden;
@@ -241,7 +304,7 @@ clear:left
 #bodywrapper .docspacedate,
 #bodywrapper .docspaceauthor{
 	line-height:1.2em;
-	font-size:0.8em;
+	font-size:0.9em;
 	font-weight:normal;
 }
 /*edit*/

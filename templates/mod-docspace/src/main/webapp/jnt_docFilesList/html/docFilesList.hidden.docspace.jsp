@@ -31,6 +31,7 @@
             ],
             "aoColumns": [
                 null,
+				null,
                 null,
 				null,
                 null,
@@ -48,19 +49,21 @@
     </caption>
     <colgroup>
         <col span="1" width="5%" class="col1"/>
-        <col span="1" width="40%" class="col2"/>
-        <col span="1" width="10%" class="col3"/>
-        <col span="1" width="20%" class="col4"/>
-        <col span="1" width="10%" class="col5"/>
-        <col span="1" width="15%" class="col6"/>
+        <col span="1" width="5%" class="col2"/>
+        <col span="1" width="35%" class="col3"/>
+        <col span="1" width="10%" class="col4"/>
+        <col span="1" width="20%" class="col5"/>
+        <col span="1" width="10%" class="col6"/>
+        <col span="1" width="15%" class="col7"/>
     </colgroup>
     <thead>
     <tr>
         <th class="center" id="Type" scope="col"><fmt:message key="docspace.label.type"/>
-            <img
-                    src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
+            <img src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>       
         <th id="Title" scope="col"><fmt:message key="docspace.label.title"/> <img
                 src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
+        <th class="center" id="Download" scope="col"><fmt:message key="docspace.label.download"/>
+            </th>
         <th class="center" id="Creation" scope="col"><fmt:message key="docspace.label.creation"/><img
                 src="${url.currentModule}/css/img/sort-arrow-down.png" alt="down"/></th>
         <th class="center" id="LastModif" scope="col"><fmt:message key="docspace.label.lastmodificationdate"/><img
@@ -78,18 +81,17 @@
         <tr class="odd">
             <td class="center" headers="Type">
                 <c:choose>
-                    <c:when test="${jcr:isNodeType(subchild, 'jnt:docspace')}">
-                        <a style="display:block;width:16px;height:16px"><img alt="docspace" src="${url.currentModule}/css/img/docspace.png" height="16" width="16"/></a>
-                    </c:when>
+                    <c:when test="${jcr:isNodeType(subchild, 'jnt:docspace')}"><a style="display:block;width:32px;height:32px"><img alt="docspace" src="${url.currentModule}/css/img/docspacemedium.png" height="32" width="32"/></a></c:when>
                     <c:otherwise>
                         <a style="display:block;width:16px;height:16px"
-                           class="${functions:fileIcon(subchild.name)}"></a>
-                    </c:otherwise>
-                </c:choose>
-            </td>
-            <td headers="Title"><a
-                    href="${url.base}${subchild.path}<c:if test="${jcr:isNodeType(subchild, 'jnt:docspaceFile')}">.docspace</c:if>.html">${subchild.name}</a>
-            </td>
+                           class="${functions:fileIcon(subchild.name)}"></a>                    </c:otherwise>
+                </c:choose>            </td>
+          <td headers="Title">
+			<a href="${url.base}${subchild.path}<c:if test="${jcr:isNodeType(subchild, 'jnt:docspaceFile')}">.docspace</c:if>.html">${subchild.name}</a><br />
+          </td>
+           <td headers="Download">
+            <a href="${subchild.url}">download</a>
+          </td>
 
             <jcr:nodeProperty node="${subchild}" name="jcr:created" var="created"/>
             <jcr:nodeProperty node="${subchild}" name="jcr:lastModified" var="modified"/>
@@ -100,7 +102,6 @@
             <td headers="Rating"><template:option node="${subchild}" template="hidden.average.readonly"
                                                   nodetype="jmix:rating"/></td>
         </tr>
-
     </c:forEach>
     <div class="clear"></div>
     <c:if test="${editable and renderContext.editMode}">

@@ -2,12 +2,14 @@
 .dataTables_length {
 	width: 49%;
 	float: left;
+	margin-bottom:5px
 }
 
 .dataTables_filter {
 	width: 49%;
 	float: right;
 	text-align: right;
+	margin-bottom:5px
 }
 
 

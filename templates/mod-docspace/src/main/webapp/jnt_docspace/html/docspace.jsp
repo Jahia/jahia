@@ -42,9 +42,9 @@
             tooltip : 'Click to edit'
         });
 
-        $("#actions").change(function() {
-            if ($(this).val() == 'delete') {
-                if (confirm("Do you really want to delete this file?")) {
+        $("#actions").click(function() {
+            if ($(this).hasClass( 'delete' )) {
+                if (confirm("Do you REALLY want to delete this docspace with ALL related sub-docspaces and files?")) {
                     var data = {};
                     data['methodToCall'] = 'delete';
                     $.post('${url.base}${currentNode.path}', data, function () {
@@ -111,6 +111,10 @@
         return t;
     }
 </script>
+<div class='grid_16'><!--start grid_16-->
+<a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html">Back to: ${currentNode.parent.name}</a>
+<div class='clear'></div></div>
+
 <div class='grid_12'><!--start grid_12-->
 
     <div class="boxdocspace "><!--start boxdocspace -->
@@ -118,19 +122,10 @@
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
                     <div class="floatright">
-                        <form action="#" method="post">
-                            <select name="actions" id="actions">
-                                <option value="">Actions</option>
-                                <option value="delete">Suprimer</option>
-                                <option>Demander a l'acces</option>
-                                <option>Ajouter un Utilisateur</option>
-                                <option>Partager</option>
-                            </select>
-                        </form>
-                    </div>
-                    <div class="imagefloatleft">
-                        <div class="itemImage itemImageLeft"><a href="#"><img alt=""
-                                                                              src="${url.currentModule}/css/img/docspacebig.png"/></a>
+                                <a href="#" id="actions" title="Delete" class="delete"><span>Delete this Docspace </span><img src="${url.currentModule}/css/img/delete.png"/></a>                    </div>
+              <div class="imagefloatleft">
+                        <div class="itemImage itemImageLeft"><img alt=""
+                                                                              src="${url.currentModule}/css/img/docspacebig.png"/>
                         </div>
                     </div>
                     <h3>Espace : <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
@@ -144,15 +139,16 @@
                             href="#"><fmt:message
                             key="docspace.label.document.createdBy"/> ${currentNode.properties['jcr:createdBy'].string}</a>
                     </p>
-					<div class="clear"></div>
+                    
+				  <div class="clear"></div>
                     <div jcr:id="jcr:description" id="ckeditorEditDescription"
                                                         jcr:url="${url.base}${currentNode.path}">
                         <div class="clear"></div>
                         <c:if test="${not empty currentNode.properties['jcr:description'].string}">${currentNode.properties['jcr:description'].string}</c:if>
                         <c:if test="${empty currentNode.properties['jcr:description'].string}">Add a description (click here)</c:if>
                     </div>
-
-                    <template:option node="${currentNode}" template="hidden.tags"
+<hr />
+                  <template:option node="${currentNode}" template="hidden.tags"
                                         nodetype="jmix:tagged"/><template:option node="${currentNode}"
                                                                                       template="hidden.addTag"
                                                                                       nodetype="jmix:tagged"/>
@@ -169,7 +165,7 @@
 <%--list all users write write access to current node--%>
 
 <div class='grid_4'><!--start grid_4-->
-    <h4 class="boxdocspace-title">Users</h4><template:area path="searchUsers" forceCreation="true"
+    <h4 class="boxdocspace-title">Docspace Workers</h4><template:area path="searchUsers" forceCreation="true"
                                                            areaType="jnt:searchUsers"/>
 
     <ul class="docspacelist docspacelistusers">
@@ -210,15 +206,15 @@
     </div>
 </div>-->
 
-    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.workspace"/></h4>
+    <h4 class="boxdocspace-title2">Document Workspaces</h4>
 
     <div class="boxdocspace"><!--start boxdocspace -->
         <div class="boxdocspacegrey boxdocspacepadding10 ">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
-<div class="floatleft">
+<div class="floatleft uploadfile">
                     <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
-                        <span><strong>Upload new file: </strong></span>
+                        <span><strong>Upload a new file to create its workspace: </strong></span>
                         <input type="hidden" name="nodeType" value="jnt:file"/>
                         <input type="hidden" name="redirectTo"
                                value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -233,8 +229,8 @@
                         <input class="button" type="submit" id="upload" value="Upload"/>
                     </form>
 </div>
-<div class="floatright"><span><strong>Create Sub Docspace: </strong></span>
-                    <a id="showCreateSubDocspace" href="#createSubDocspace"><span>Create</span></a>
+<div class="floatright"><span><strong>Create Sub a Docspace: </strong></span>
+                    <a id="showCreateSubDocspace" href="#createSubDocspace"><img alt="Create Sub Docspace" src="${url.currentModule}/css/img/create-sub-docspace-medium.png"/></a>
 </div>
               <div class="clear"></div></div>
                 <!--stop formSearchTop-->
@@ -259,7 +255,7 @@
 <!--stop boxdocspace -->
 
 <div class='clear'></div>
-</div>
+
 <div style="display:none;">
     <form id="createSubDocspace" method="post" action="">
         <input type="hidden" name="autoCheckin" value="true">

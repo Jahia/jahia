@@ -92,14 +92,6 @@ public class SimpleModule extends Module {
 
     public void setNode(GWTJahiaNode node) {
         super.setNode(node);
-        if (mainModule.getConfig().getName().equals("studiomode")) {
-            if (node.getNodeTypes().contains("jmix:templateShared")) {
-                head.setText(head.getText()+" (shared)");
-            }
-            if (node.getNodeTypes().contains("jmix:templateLocked")) {
-                head.setText(head.getText()+" (shared)");
-            }
-        }
         if(node.isShared()) {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }

@@ -265,7 +265,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         Node n = objectNode.addNode(name, type);
-        return provider.getNodeWrapper(n, localPath + "/" + name, session);
+        if (localPath.equals("/")) {
+            return provider.getNodeWrapper(n, localPath + name, session);
+        } else {
+            return provider.getNodeWrapper(n, localPath + "/" + name, session);
+        }
     }
 
     public JCRNodeWrapper addNode(String name, String type, String identifier, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {

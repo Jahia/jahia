@@ -409,7 +409,7 @@ public final class JCRContentUtils {
             ext = basename.substring(dot);
             basename = basename.substring(0, dot);
         }
-        int und = basename.lastIndexOf('_');
+        int und = basename.lastIndexOf('-');
         if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
             basename = basename.substring(0, und);
         }
@@ -417,7 +417,7 @@ public final class JCRContentUtils {
         do {
             try {
                 dest.getNode(name);
-                name = basename + "_" + (i++) + ext;
+                name = basename + "-" + (i++) + ext;
             } catch (RepositoryException e) {
                 break;
             }

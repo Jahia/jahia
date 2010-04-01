@@ -325,11 +325,11 @@
  + users (nt:base) = nt:base
  + * (jmix:hierarchyNode)
 
- //---------------------------------------------------------
+//---------------------------------------------------------
 // Google analytics
 //---------------------------------------------------------
 
- [jnt:googleanalytics] > nt:base, jmix:hierarchyNode
+[jnt:googleanalytics] > nt:base, jmix:hierarchyNode, jmix:basemetadata
  - j:login (string) protected nofulltext
  - j:password (string) protected nofulltext
  - j:account (string) protected nofulltext

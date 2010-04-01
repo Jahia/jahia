@@ -267,6 +267,7 @@ public class JCRSitesProvider {
                     return null;
                 }
             });
+            JCRPublicationService.getInstance().publish("/sites/"+site.getSiteKey(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, false);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

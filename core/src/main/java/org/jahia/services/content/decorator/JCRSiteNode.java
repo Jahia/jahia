@@ -20,6 +20,8 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class JCRSiteNode extends JCRNodeDecorator {
+    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCRSiteNode.class);
+
     protected Map<String, GoogleAnalyticsProfile> googleAnalyticsProfiles;
 
     public JCRSiteNode(JCRNodeWrapper node) {
@@ -268,6 +270,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
                 NodeIterator ni = getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper childNode = (JCRNodeWrapper) ni.next();
+                    logger.error(getPath()+","+getUUID()+" sub nodes: "+ni.getSize());
                     if (childNode.getNodeTypes().contains(Constants.JAHIANT_GOOGLEANALYTICS)) {
                         String name = childNode.getName();
                         String account = childNode.getPropertyAsString("j:account");
@@ -280,7 +283,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
                     }
                 }
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.error(e,e);
                 return false;
             }
         }

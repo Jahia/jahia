@@ -144,7 +144,7 @@
                                         }else{
                                             myClass = "oddLine" ;
                                         }
-                                        String jahiaGAprofile = googleAnalyticsProfile.getProfile();
+                                        String jahiaGAprofile = googleAnalyticsProfile.getName();
 
                                             %>
                                     <tr class="<%=myClass%>" id="<%=jahiaGAprofile%>">

@@ -38,6 +38,7 @@
 <%@ page import="org.jahia.services.analytics.*" %>
 
 <%
+    JahiaSite currentSite = null;
     String jahiaGAprofile = "";
     String operation = "";
     String gaUserAccount = "";
@@ -49,6 +50,7 @@
     boolean trackingEnabled = false;
     if (request.getParameter("sub") != null) {
         if (request.getParameter("sub").equals("displayEdit")) {
+            jahiaGAprofile = request.getParameter("profile");
             operation = "saveEdit&profile=" + jahiaGAprofile;
             gaUserAccount = currentSite.getGoogleAnalytics(jahiaGAprofile).getAccount();
             gaLogin = currentSite.getGoogleAnalytics(jahiaGAprofile).getLogin();

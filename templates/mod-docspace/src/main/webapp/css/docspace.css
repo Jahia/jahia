@@ -417,3 +417,14 @@ display:inline;
 #bodywrapper .itemImageLeft{
 	margin-bottom:10px;
 }
+
+#divCreateSubDocspace {
+    overflow: auto;
+	width: 500px;
+	height: 200px;
+	background-color: #FDFDFD;
+}
+
+#bodywrapper #divCreateSubDocspace {
+	display: none;
+}

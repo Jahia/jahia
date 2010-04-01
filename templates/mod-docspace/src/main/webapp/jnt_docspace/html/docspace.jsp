@@ -88,13 +88,13 @@
             'hideOnContentClick' : false,
             'showCloseButton'    : true,
             'overlayOpacity'     : 0.6,
+		    'transitionIn'		: 'none',
+		    'transitionOut'		: 'none',
+            'centerOnScroll'     : true,
+            
             'onClosed'           : function() {
                 $("#login_error").hide();
             }
-        });
-
-        $('#docspacecreatebutton').click(function() {
-            $('#createSubDocspace').submit();
         });
     });
 
@@ -230,7 +230,7 @@
                     </form>
 </div>
 <div class="floatright"><span><strong>Create a Sub-Docspace: </strong></span>
-                    <a id="showCreateSubDocspace" href="#createSubDocspace"><img alt="Create Sub Docspace" src="${url.currentModule}/css/img/create-sub-docspace-medium.png"/></a></div>
+                    <a id="showCreateSubDocspace" href="#divCreateSubDocspace"><img alt="Create Sub Docspace" src="${url.currentModule}/css/img/create-sub-docspace-medium.png"/></a></div>
               <div class="clear"></div></div>
                 <!--stop formSearchTop-->
 
@@ -255,8 +255,8 @@
 
 <div class='clear'></div>
 
-<div style="display:none;">
-    <form id="createSubDocspace" method="post" action="">
+<div id="divCreateSubDocspace">
+    <form id="createSubDocspace" method="post" action="" class="Form">
         <input type="hidden" name="autoCheckin" value="true">
         <input type="hidden" name="nodeType" value="jnt:docspace">
 

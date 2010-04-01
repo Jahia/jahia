@@ -366,8 +366,10 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 font-weight:bold
 }
 
-#bodywrapper .docspacelistcomment h5.title {
-display:inline;
+#bodywrapper .docspacelistcomment h4.title {
+	display:inline;
+	margin:0;
+	padding:0;
 }
 #bodywrapper .docspacelistcomment li.docspaceitemversion {
 	background-color:#FCF0BA

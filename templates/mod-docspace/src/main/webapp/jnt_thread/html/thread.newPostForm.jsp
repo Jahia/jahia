@@ -15,13 +15,12 @@
 </script>
 <a name="threadPost"></a>
 
-
 <div class="boxdocspace"><!--start boxdocspace -->
 	<div class="boxdocspacegrey boxdocspacepadding10">
 		<div class="boxdocspace-inner">
 			<div class="boxdocspace-inner-border">   
 <a id="formdocspacecomment" name="formdocspacecomment"></a>
-<div class="Form formdocspacecomment"><!--start formdocspacecomment-->
+<div class="formCreateDocspace formdocspacecomment"><!--start formdocspacecomment-->
 <form action="${url.base}${currentNode.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jnt:post"/>
     <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}.docspace"/>
@@ -29,15 +28,15 @@
     <input type="hidden" name="newNodeOutputFormat" value="html"/>
 
 <p>
-	<label class="left" for="commenttitle">Tire : </label>
+	<label for="commenttitle">Tire : </label>
 	<input value="<c:if test="${not empty currentNode.children}"> Re:</c:if>${currentNode.propertiesAsString['threadSubject']}" type="text" size="35" id="forum_site" name="jcr:title"
                                tabindex="1"/>
 </p>
 <p>
-	<label class="left" for="comment">Comment : </label>
+	<label for="comment">Comment : </label>
    <textarea rows="7" cols="35" id="jahia-forum-thread-${currentNode.UUID}" name="content" tabindex="2"></textarea>
 </p> 
-  <div class="formMarginLeft">
+  <div>
   		<input type="reset" value="Reset" class="button" tabindex="3"/>
       <input type="submit" value="Submit" class="button" tabindex="4"/>
 </div>
@@ -48,7 +47,7 @@
 
 
 
-</div>
+				</div>
 			</div>
 		</div>
 	</div>

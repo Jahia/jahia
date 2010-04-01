@@ -107,25 +107,24 @@
             <div class="boxdocspace-inner">
 
                 <div id="search-docspace">
-                    <h3 class="boxdocspacetitleh3">Rechercher</h3>
+                    <h3 class="boxdocspacetitleh3">Search</h3>
 
                     <form method="get" action="#">
                         <fieldset>
                             <p class="field">
                                 <input type="text" value="" name="search2" class="search docspacesearch" tabindex="4"/>
-                                <input type="submit" value="Rechercher" class="button searchbutton" tabindex="5"/>
+                                <input type="submit" value="Search" class="button searchbutton" tabindex="5"/>
                             </p>
-
                             <p>
                                 <label class="formFloatLeft">
                                     <input type="radio" tabindex="10" id="RadioGroup2_0" value="radio"
                                            name="RadioGroup2"/>
-                                    les tags, categories ou infos </label>
+                                    Tags, Categories</label>
                                 <label class="formFloatLeft">
                                     <input type="radio" tabindex="11" id="RadioGroup2_1" value="radio"
                                            name="RadioGroup2"/>
                                 </label>
-                                tout le contenu</p>
+                                all content</p>
                         </fieldset>
                     </form>
                 </div>

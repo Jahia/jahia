@@ -23,6 +23,7 @@
             <documentation jcr:primaryType="jnt:permission"/>
             <about jcr:primaryType="jnt:permission"/>
             <studio-mode jcr:primaryType="jnt:permission"/>
+            <users jcr:primaryType="jnt:permission"/>
         </global>
     </permissions>
 

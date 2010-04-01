@@ -80,29 +80,22 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             Properties criterias = new Properties();
             criterias.setProperty("*", match);
 
-            List<Integer> sites = siteIds;
             Set<Principal> users;
-            if (sites == null || sites.size() == 0) {
-                sites = new ArrayList<Integer>();
-                sites.add(getSite().getID());
-            }
             List<GWTJahiaUser> result = new ArrayList<GWTJahiaUser>();
-            for (Integer siteId : sites) {
-                users = userManagerService.searchUsers(siteId, criterias);
-                if (users != null) {
-                    Iterator iterator = users.iterator();
-                    JahiaUser user;
-                    GWTJahiaUser data;
-                    while (iterator.hasNext()) {
-                        user = (JahiaUser) iterator.next();
-                        data = new GWTJahiaUser(user.getUsername(), user.getUserKey());
-                        Properties p = user.getProperties();
-                        for (Object o : p.keySet()) {
-                            data.set((String) o, p.get(o));
-                        }
-                        data.setProvider(user.getProviderName());
-                        result.add(data);
+            users = userManagerService.searchUsers(criterias);
+            if (users != null) {
+                Iterator iterator = users.iterator();
+                JahiaUser user;
+                GWTJahiaUser data;
+                while (iterator.hasNext()) {
+                    user = (JahiaUser) iterator.next();
+                    data = new GWTJahiaUser(user.getUsername(), user.getUserKey());
+                    Properties p = user.getProperties();
+                    for (Object o : p.keySet()) {
+                        data.set((String) o, p.get(o));
                     }
+                    data.setProvider(user.getProviderName());
+                    result.add(data);
                 }
             }
             Collections.sort(result, new Comparator<GWTJahiaUser>() {

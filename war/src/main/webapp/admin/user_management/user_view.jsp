@@ -43,7 +43,7 @@
 <%
     String groupName = (String)request.getAttribute("groupName");
     List groupMembership = (List)request.getAttribute("groupMembership");
-    int stretcherToOpen   = 1;
+    int stretcherToOpen   = 0;
 %>
 
 <!-- Adiministration page position -->

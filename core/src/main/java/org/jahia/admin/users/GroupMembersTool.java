@@ -136,7 +136,7 @@ public class GroupMembersTool
         logger.debug("Started");
         JahiaUserManagerService uMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
         request.setAttribute("providerList", uMgr.getProviderList());
-        request.setAttribute("resultList", PrincipalViewHelper.getSearchResult(request, jahiaSite.getID()));
+        request.setAttribute("resultList", PrincipalViewHelper.getSearchResult(request));
         request.setAttribute("userSearch", JSP_PATH + "user_management/user_search.jsp");
         request.setAttribute("jspSource", JSP_PATH + "group_management/group_members_tool.jsp");
         session.setAttribute("jahiaDisplayMessage", Jahia.COPYRIGHT);

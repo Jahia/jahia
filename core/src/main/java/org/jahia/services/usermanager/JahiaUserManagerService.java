@@ -245,7 +245,7 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * @return List a List of JahiaUser elements that correspond to those
      *         search criterias
      */
-    public abstract Set<Principal> searchUsers (int siteID, Properties searchCriterias);
+    public abstract Set<Principal> searchUsers (Properties searchCriterias);
 
     /**
      * Find users according to a table of name=value properties. If the left
@@ -262,8 +262,7 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * @return Set a set of JahiaUser elements that correspond to those
      *         search criterias
      */
-    public abstract Set<Principal> searchUsers (String providerKey, int siteID,
-                                     Properties searchCriterias);
+    public abstract Set<Principal> searchUsers (String providerKey, Properties searchCriterias);
 
     /**
      * This method indicates that any internal cache for a provider should be

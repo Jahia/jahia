@@ -47,7 +47,7 @@
     String userSearch = (String)request.getAttribute("userSearch");
     String currentSite = (String)request.getAttribute("currentSite");
     JahiaData jData = (JahiaData)request.getAttribute("org.jahia.data.JahiaData");
-    int stretcherToOpen   = 1;
+    int stretcherToOpen   = 0;
 %>
 
 <!-- For future version : <script language="javascript" src="../search_options.js"></script> -->
@@ -110,7 +110,7 @@ function setFocus()
             <div class="dex-TabPanelBottom">
             <div class="tabContent">
             <jsp:include page="/admin/include/left_menu.jsp">
-                <jsp:param name="mode" value="site"/>
+                <jsp:param name="mode" value="server"/>
             </jsp:include>
             
             <div id="content" class="fit">
@@ -125,11 +125,6 @@ function setFocus()
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
                     <a class="ico-user-add" href="javascript:submitForm('create');"><fmt:message key="org.jahia.admin.users.ManageUsers.createNewUser.label"/></a>
-                    </span> 
-                </span>
-                <span class="dex-PushButton"> 
-                    <span class="first-child">                  
-                    <a class="ico-user-reg" href="javascript:submitForm('register');"><fmt:message key="org.jahia.admin.users.ManageUsers.registerExistingUser.label"/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton"> 

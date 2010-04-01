@@ -107,8 +107,7 @@ public class CookieAuthValveImpl implements Valve {
             searchCriterias.setProperty(userPropertyName,
                                         authCookie.getValue());
             Set<Principal> foundUsers = ServicesRegistry.getInstance().
-                             getJahiaUserManagerService().searchUsers(processingContext.
-                getSiteID(), searchCriterias);
+                             getJahiaUserManagerService().searchUsers(searchCriterias);
             if (foundUsers.size() == 1) {
                 jahiaUser = (JahiaUser) foundUsers.iterator().next();
                 processingContext.getSessionState().setAttribute(ProcessingContext.
@@ -124,8 +123,7 @@ public class CookieAuthValveImpl implements Valve {
                         searchCriterias.setProperty(userPropertyName, cookieUserKey);
                         Set<Principal> usersWithKey = ServicesRegistry.getInstance().
                                            getJahiaUserManagerService().
-                                           searchUsers(
-                            processingContext.getSiteID(), searchCriterias);
+                                           searchUsers(searchCriterias);
                         if (usersWithKey.size() > 0) {
                             cookieUserKey = null;
                         }

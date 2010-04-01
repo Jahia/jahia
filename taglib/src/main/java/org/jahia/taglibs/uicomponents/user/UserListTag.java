@@ -115,7 +115,7 @@ public class UserListTag extends AbstractJahiaTag {
         if (thelist.size() == 1 || getScope().equalsIgnoreCase("all") || getScope().equalsIgnoreCase("everywhere")) {
             logger.debug("searching all");
             //we search on the current siteID domain
-            searchResults.addAll(userservice.searchUsers(siteID, searchParameters));
+            searchResults.addAll(userservice.searchUsers(searchParameters));
         } else {
             String delimitor = " ";
             if (getScope().indexOf(",") != -1) delimitor = ",";
@@ -125,26 +125,28 @@ public class UserListTag extends AbstractJahiaTag {
                     String token = tk.nextToken();
                     if (curProvider.getKey().trim().toLowerCase().indexOf(token.toLowerCase()) != -1) {
                         logger.debug("searching in " + curProvider.getKey());
-                        searchResults.addAll(userservice.searchUsers(curProvider.getKey(), siteID, searchParameters));
+                        searchResults.addAll(userservice.searchUsers(curProvider.getKey(), searchParameters));
                     }
                 }
             }
         }
 
         int count = 0;
-        for (Iterator<?> it = searchResults.iterator(); it.hasNext();) {
-
-            if (count > displaylimit) break;
-            JahiaUser user = (JahiaUser) it.next();
-            if(getBackCall()!=null) {
-                sb.append("<a href=\"").append(backCall.replaceAll("userid","'"+user.getUserKey()+"'")).append("\"");
-                if(styleClass!=null && !"".equals(styleClass.trim())) {
+        for (Principal searchResult : searchResults) {
+            if (count > displaylimit) {
+                break;
+            }
+            JahiaUser user = (JahiaUser) searchResult;
+            if (getBackCall() != null) {
+                sb.append("<a href=\"").append(backCall.replaceAll("userid", "'" + user.getUserKey() + "'")).append(
+                        "\"");
+                if (styleClass != null && !"".equals(styleClass.trim())) {
                     sb.append(" class=\"").append(styleClass).append("\"");
                 }
                 sb.append(">");
             }
             sb.append(user.getUsername()).append("<br/>");
-            if(getBackCall()!=null) {
+            if (getBackCall() != null) {
                 sb.append("</a>");
             }
             count++;

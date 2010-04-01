@@ -54,8 +54,6 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPageBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -82,9 +80,6 @@ import java.util.*;
 public class ManageUsers extends AbstractAdministrationModule {
 
     public static final String REQUEST_KEY_PREFIX = "manage-user-";
-    public static final String REQUEST_PASSWORD_KEY = REQUEST_KEY_PREFIX + "password";
-    public static final String REQUEST_PASSWORD_CONFIRMATION_KEY =
-            REQUEST_KEY_PREFIX + "passwordConfirmation";
 
     public static final String SEPARATOR = "#";
     public static final String USER_PROPERTY_PREFIX = REQUEST_KEY_PREFIX + "property" + SEPARATOR;
@@ -93,14 +88,10 @@ public class ManageUsers extends AbstractAdministrationModule {
 
     private JahiaUserManagerService userManager;
 
-    private JahiaSite jahiaSite;
-
     ProcessingContext jParams;
 
     private String userMessage = "";
     private boolean isError = true;
-
-    private License coreLicense;
 
     // This attribute will be set to true if the super admin change its
     // properties, false other wise.
@@ -124,13 +115,10 @@ public class ManageUsers extends AbstractAdministrationModule {
             userManager = sReg.getJahiaUserManagerService();
         }
 
-        // get the current website. get the jahiaserver if it's null...
-        jahiaSite =  (JahiaSite) request.getSession().getAttribute( ProcessingContext.SESSION_SITE );
-
         JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         this.jParams = jData.getProcessingContext();
 
-        coreLicense = Jahia.getCoreLicense();
+        License coreLicense = Jahia.getCoreLicense();
         if ( coreLicense == null ){
             // set request attributes...
             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
@@ -176,8 +164,6 @@ public class ManageUsers extends AbstractAdministrationModule {
             displayUsers(request, response, session);
         } else if (operation.equals("create")) {
             displayUserCreate(request, response, session);
-        } else if (operation.equals("register")) {
-            displayRegisterUser(request, response, session);
         } else if (operation.equals("edit")) {
             isSuperAdminProp = false;
             displayUserEdit(request, response, session);
@@ -188,15 +174,13 @@ public class ManageUsers extends AbstractAdministrationModule {
         } else if (operation.equals("remove")) {
             displayUserRemove(request, response, session);
         } else if (operation.equals("processCreate")) {
-            if (processUserCreate(request, response, session)) {
+            if (processUserCreate(request, response)) {
                 displayUsers(request, response, session);
             } else {
                 displayUserCreate(request, response, session);
             }
-        } else if (operation.equals("processRegister")) {
-            processRegisterUser(request, response, session);
         } else if (operation.equals("processEdit")) {
-            if (processUserEdit(request, response, session)) {
+            if (processUserEdit(request)) {
                 if (isSuperAdminProp) {
                     session.setAttribute(JahiaAdministration.CLASS_NAME + "configJahia", Boolean.TRUE);
                     JahiaAdministration.displayMenu(request, response, session);
@@ -231,8 +215,6 @@ public class ManageUsers extends AbstractAdministrationModule {
     throws IOException, ServletException
     {
         try {
-            request.setAttribute("jahiaSite",jahiaSite);
-
             // check null warning msg
             if ( request.getAttribute("warningMsg") == null ) {
                 request.setAttribute("warningMsg", "");
@@ -277,10 +259,9 @@ public class ManageUsers extends AbstractAdministrationModule {
     throws IOException, ServletException, JahiaException
     {
         request.setAttribute("providerList", userManager.getProviderList());
-        Set userSet = PrincipalViewHelper.getSearchResult(request, jahiaSite.getID());
+        Set userSet = PrincipalViewHelper.getSearchResult(request);
         userSet = PrincipalViewHelper.removeJahiaAdministrators(userSet);
         request.setAttribute("resultList", userSet);
-        request.setAttribute("currentSite", jahiaSite.getServerName());
         request.setAttribute("jspSource", JSP_PATH + "user_management/user_management.jsp");
         request.setAttribute("directMenu", JSP_PATH + "direct_menu.jsp");
         request.setAttribute("userSearch", JSP_PATH + "user_management/user_search.jsp");
@@ -325,7 +306,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             displayUsers(request, response, session);
             return;
         }
-        Map userProperties = new HashMap();
+        Map<String,String> userProperties = new HashMap<String, String>();
         userProperties.put("username", JahiaTools.nnString(request.getParameter("username")));
         userProperties.put("passwd", JahiaTools.nnString(request.getParameter("passwd")));
         userProperties.put("passwdconfirm", JahiaTools.nnString(request.getParameter("passwdconfirm")));
@@ -335,22 +316,20 @@ public class ManageUsers extends AbstractAdministrationModule {
         //userProperties.put("email", JahiaTools.nnString(request.getParameter("email")));
         //userProperties.put("organization", JahiaTools.nnString(request.getParameter("organization")));
         Iterator names = new EnumerationIterator(request.getParameterNames ());
-        if (names != null) {
-            while (names.hasNext ()) {
-                String name = (String) names.next ();
-                if (name != null && name.startsWith (USER_PROPERTY_PREFIX)) {
-                    String newValue = request.getParameter (name);
-                    int index = name.indexOf (SEPARATOR);
-                    String key = name.substring (index + 1);
-                    String currentValue = (String) userProperties.get(key);
-                    if (newValue == null) {
-                        continue;
-                    }
-                    if (currentValue == null) {
-                        userProperties.put (key, newValue);
-                    } else if (!currentValue.equals (newValue)) {
-                        userProperties.put (key, currentValue);
-                    }
+        while (names.hasNext()) {
+            String name = (String) names.next();
+            if (name != null && name.startsWith(USER_PROPERTY_PREFIX)) {
+                String newValue = request.getParameter(name);
+                int index = name.indexOf(SEPARATOR);
+                String key = name.substring(index + 1);
+                String currentValue = userProperties.get(key);
+                if (newValue == null) {
+                    continue;
+                }
+                if (currentValue == null) {
+                    userProperties.put(key, newValue);
+                } else if (!currentValue.equals(newValue)) {
+                    userProperties.put(key, currentValue);
                 }
             }
         }
@@ -361,8 +340,6 @@ public class ManageUsers extends AbstractAdministrationModule {
         int homePageId = -1;
         if (homePageParam != null && homePageParam.length() > 0) {
             homePageId = Integer.parseInt(homePageParam);
-        } else {
-            homePageId = jahiaSite.getUserDefaultHomepageDef();
         }
         if (homePageId != -1) {
             try {
@@ -408,10 +385,8 @@ public class ManageUsers extends AbstractAdministrationModule {
      * @throws JahiaException
      */
     private boolean processUserCreate(HttpServletRequest request,
-                                      HttpServletResponse response,
-                                      HttpSession session)
+                                      HttpServletResponse response)
             throws IOException, ServletException, JahiaException {
-        JahiaSiteUserManagerService siteUser = ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
         // get form values...
         if (!"save".equals(request.getParameter("actionType"))) {
             // in this case we are just refreshing the form, we do not perform
@@ -431,13 +406,6 @@ public class ManageUsers extends AbstractAdministrationModule {
             userMessage = StringUtils.capitalize(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.users.ManageUsers.onlyCharacters.label",
                     jParams.getLocale()));
             return false;
-        } else if (siteUser.getMember(jahiaSite.getID(), username) != null) {
-            userMessage = JahiaResourceBundle.getJahiaInternalResource("label.nextStep",
-                    jParams.getLocale());
-            userMessage += " [" + username + "] ";
-            userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.alreadyExist.label",
-                    jParams.getLocale());
-            return false;
         } else if (userManager.userExists(username)) {
             JahiaUser user = userManager.lookupUser(username);
             String url = JahiaAdministration.composeActionURL(request,response,"users","&sub=processRegister&userSelected=" + user.getUserKey());
@@ -451,59 +419,52 @@ public class ManageUsers extends AbstractAdministrationModule {
             userMessage += "&nbsp;<a href=\""+url+"\">" + JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.clickHereToRegister.label", jParams.getLocale()) + "</a>";
             return false;
         }
-        JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry
-                .getInstance().getJahiaPasswordPolicyService();
-        boolean pwdPolicyEnabled = pwdPolicyService.isPolicyEnabled(jahiaSite
-                .getID());
+        JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
         String passwd = request.getParameter("passwd").trim();
         if ("".equals(passwd)) {
-            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.specifyPassword.label",
-                    jParams.getLocale());
+            userMessage = JahiaResourceBundle.getJahiaInternalResource(
+                    "org.jahia.admin.userMessage.specifyPassword.label", jParams.getLocale());
             return false;
         } else {
             String passwdConfirm = request.getParameter("passwdconfirm").trim();
             if (!passwdConfirm.equals(passwd)) {
-                userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.passwdNotMatch.label",
-                        jParams.getLocale());
+                userMessage = JahiaResourceBundle.getJahiaInternalResource(
+                        "org.jahia.admin.userMessage.passwdNotMatch.label", jParams.getLocale());
                 return false;
             }
-            if (pwdPolicyEnabled) {
-                PolicyEnforcementResult evalResult = pwdPolicyService
-                        .enforcePolicyOnUserCreate(
-                                new JahiaDBUser(-1, username, passwd, null,
-                                        null), passwd, jahiaSite.getID());
-                if (!evalResult.isSuccess()) {
-                    EngineMessages policyMsgs = evalResult.getEngineMessages();
-                    policyMsgs.saveMessages(((ParamBean) jParams).getRequest());
-                    return false;
-                }
+            PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(new JahiaDBUser(-1,
+                                                                                                            username,
+                                                                                                            passwd,
+                                                                                                            null, null),
+                                                                                            passwd, 0);
+            if (!evalResult.isSuccess()) {
+                EngineMessages policyMsgs = evalResult.getEngineMessages();
+                policyMsgs.saveMessages(((ParamBean) jParams).getRequest());
+                return false;
             }
         }
         Properties userProps = new Properties();
 
-        Iterator names = new EnumerationIterator(request.getParameterNames ());
-        if (names != null) {
-            while (names.hasNext ()) {
-                String name = (String) names.next ();
-                if (name != null && name.startsWith (USER_PROPERTY_PREFIX)) {
-                    String newValue = request.getParameter (name);
-                    int index = name.indexOf (SEPARATOR);
-                    String key = name.substring (index + 1);
-                    String currentValue = (String) userProps.get(key);
-                    if (newValue == null) {
-                        continue;
-                    }
-                    if (currentValue == null) {
-                        userProps.put (key, newValue);
-                    } else if (!currentValue.equals (newValue)) {
-                        userProps.put (key, currentValue);
-                    }
+        Iterator names = new EnumerationIterator(request.getParameterNames());
+        while (names.hasNext()) {
+            String name = (String) names.next();
+            if (name != null && name.startsWith(USER_PROPERTY_PREFIX)) {
+                String newValue = request.getParameter(name);
+                int index = name.indexOf(SEPARATOR);
+                String key = name.substring(index + 1);
+                String currentValue = (String) userProps.get(key);
+                if (newValue == null) {
+                    continue;
+                }
+                if (currentValue == null) {
+                    userProps.put(key, newValue);
+                } else if (!currentValue.equals(newValue)) {
+                    userProps.put(key, currentValue);
                 }
             }
         }
 
-        JahiaUser usr = null;
-        usr = userManager.createUser(username, passwd, userProps);
+        JahiaUser usr = userManager.createUser(username, passwd, userProps);
         if (usr == null) {
             userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.unableCreateUser.label",
                     jParams.getLocale());
@@ -511,9 +472,6 @@ public class ManageUsers extends AbstractAdministrationModule {
             return false;
         } else {
             usr = userManager.lookupUser(username);
-            JahiaSiteUserManagerService siteUserManager =
-                    ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
-            siteUserManager.addMember(jahiaSite.getID(), usr);
             userMessage = JahiaResourceBundle.getJahiaInternalResource("label.nextStep",
                     jParams.getLocale());
             userMessage += " [" + username + "] ";
@@ -550,11 +508,11 @@ public class ManageUsers extends AbstractAdministrationModule {
         JahiaUser theUser;
         if (isSuperAdminProp) {
             userToEdit = (String)session.getAttribute(JahiaAdministration.CLASS_NAME + "jahiaLoginUsername");
-            theUser = (JahiaUser) userManager.lookupUser(userToEdit);
+            theUser = userManager.lookupUser(userToEdit);
             // Spaces ensure the compatibility format from the user_management.jsp select box
             request.setAttribute("isSuperAdminProp", "");
         } else {
-            userToEdit = (String)request.getParameter("selectedUsers");
+            userToEdit = request.getParameter("selectedUsers");
             if (userToEdit == null) { // Get the last user if none was selected.
                 userToEdit = (String)session.getAttribute("selectedUsers");
             }
@@ -567,12 +525,12 @@ public class ManageUsers extends AbstractAdministrationModule {
             // Consider actual selected user as the last one and store it in session.
             session.setAttribute("selectedUsers", userToEdit);
             userToEdit = JahiaTools.replacePattern(userToEdit, "&nbsp;", " ");
-            theUser = (JahiaUser) userManager.lookupUserByKey(userToEdit.substring(1));
+            theUser = userManager.lookupUserByKey(userToEdit.substring(1));
         }
         request.setAttribute("theUser", theUser);
 
 
-        Set groups = (Set)getGroups(theUser, jahiaSite.getID());
+        Set<JahiaGroup> groups = getGroups(theUser);
         // display the edit form with initial values
         request.setAttribute("groups", groups);
 
@@ -580,26 +538,24 @@ public class ManageUsers extends AbstractAdministrationModule {
         // pick out all the user properties parameters, and set it into the
         // user properties
         Iterator names = new EnumerationIterator(request.getParameterNames ());
-        if (names != null) {
-            while (names.hasNext ()) {
-                String name = (String) names.next ();
-                if (name != null && name.startsWith (USER_PROPERTY_PREFIX)) {
-                    String newValue = request.getParameter (name);
-                    int index = name.indexOf (SEPARATOR);
-                    String key = name.substring (index + 1);
-                    UserProperty currentProp = userProperties.getUserProperty (key);
-                    if (newValue == null) {
-                        continue;
-                    }
-                    if (currentProp == null) {
-                        currentProp = new UserProperty(name, newValue, false);
-                        userProperties.setUserProperty (key, currentProp);
-                    } else if (!currentProp.getValue().equals (newValue)) {
-                        //TODO: The new data should be validated here!!
-                        if (!currentProp.isReadOnly()) {
-                            currentProp.setValue(newValue);
-                            userProperties.setUserProperty(key, currentProp);
-                        }
+        while (names.hasNext()) {
+            String name = (String) names.next();
+            if (name != null && name.startsWith(USER_PROPERTY_PREFIX)) {
+                String newValue = request.getParameter(name);
+                int index = name.indexOf(SEPARATOR);
+                String key = name.substring(index + 1);
+                UserProperty currentProp = userProperties.getUserProperty(key);
+                if (newValue == null) {
+                    continue;
+                }
+                if (currentProp == null) {
+                    currentProp = new UserProperty(name, newValue, false);
+                    userProperties.setUserProperty(key, currentProp);
+                } else if (!currentProp.getValue().equals(newValue)) {
+                    //TODO: The new data should be validated here!!
+                    if (!currentProp.isReadOnly()) {
+                        currentProp.setValue(newValue);
+                        userProperties.setUserProperty(key, currentProp);
                     }
                 }
             }
@@ -612,7 +568,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         // Get the home page
         String homePageParam = request.getParameter("homePageID");
         String homePageTitle = null;
-        int homePageId = -1;
+        int homePageId;
         if (homePageParam != null && homePageParam.length() > 0) {
             homePageId = Integer.parseInt(homePageParam);
         } else {
@@ -659,20 +615,14 @@ public class ManageUsers extends AbstractAdministrationModule {
      * @throws ServletException
      * @throws JahiaException
      */
-    private boolean processUserEdit(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    HttpSession session)
+    private boolean processUserEdit(HttpServletRequest request)
     throws IOException, ServletException, JahiaException
     {
         logger.debug("Started");
         // get form values...
         String username = request.getParameter("username");
-        JahiaUser usr;
-        if (isSuperAdminProp) {
-            usr = (JahiaUser) userManager.lookupUser(username);
-        } else {
-            usr = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(jahiaSite.getID(), username);
-        }
+        JahiaUser usr = userManager.lookupUser(username);
+
         logger.debug("Update user : " + usr.getUserKey());
 
         // jahia_db usr processing
@@ -712,24 +662,22 @@ public class ManageUsers extends AbstractAdministrationModule {
         // pick out all the user properties parameters, and set it into the
         // user properties
         Iterator names = new EnumerationIterator(request.getParameterNames());
-        if (names != null) {
-            while (names.hasNext()) {
-                String name = (String) names.next();
-                if (name != null && name.startsWith(USER_PROPERTY_PREFIX)) {
-                    String newValue = request.getParameter(name);
-                    int index = name.indexOf(SEPARATOR);
-                    String key = name.substring(index + 1);
-                    UserProperty currentProp = usr.getUserProperty(key);
-                    if (newValue == null) {
-                        continue;
-                    }
-                    if (currentProp == null) {
+        while (names.hasNext()) {
+            String name = (String) names.next();
+            if (name != null && name.startsWith(USER_PROPERTY_PREFIX)) {
+                String newValue = request.getParameter(name);
+                int index = name.indexOf(SEPARATOR);
+                String key = name.substring(index + 1);
+                UserProperty currentProp = usr.getUserProperty(key);
+                if (newValue == null) {
+                    continue;
+                }
+                if (currentProp == null) {
+                    usr.setProperty(key, newValue);
+                } else if (!currentProp.getValue().equals(newValue)) {
+                    //TODO: The new data should be validated here!!
+                    if (!currentProp.isReadOnly()) {
                         usr.setProperty(key, newValue);
-                    } else if (!currentProp.getValue().equals(newValue)) {
-                        //TODO: The new data should be validated here!!
-                        if (!currentProp.isReadOnly()) {
-                            usr.setProperty(key, newValue);
-                        }
                     }
                 }
             }
@@ -759,15 +707,13 @@ public class ManageUsers extends AbstractAdministrationModule {
         return true;
     }
 
-    private Set getGroups(JahiaUser usr, int site) {
-        Set groups = new HashSet();
+    private Set<JahiaGroup> getGroups(JahiaUser usr) {
+        Set<JahiaGroup> groups = new HashSet<JahiaGroup>();
         JahiaGroupManagerService jahiaGroupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        List v = jahiaGroupManagerService.getUserMembership(usr);
-        Iterator en = v.iterator();
-        while (en.hasNext()) {
-            String gname = (String) en.next();
-            JahiaGroup g = jahiaGroupManagerService.lookupGroup(gname);
-            if (g != null && (usr.isRoot() || g.getSiteID() == site)) {
+        List<String> v = jahiaGroupManagerService.getUserMembership(usr);
+        for (String aV : v) {
+            JahiaGroup g = jahiaGroupManagerService.lookupGroup(aV);
+            if (g != null || usr.isRoot()) {
                 groups.add(g);
             }
         }
@@ -810,107 +756,6 @@ public class ManageUsers extends AbstractAdministrationModule {
             isError = true;
         }
     }
-
-    private void displayRegisterUser(HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     HttpSession session)
-            throws IOException, ServletException, JahiaException {
-        //logger.debug("display select existant administrator started ");
-
-        request.getSession().setAttribute("admin","create");
-
-        // retrieve previous form values...
-        String selectedSite = (String) request.getAttribute("selectedSite");
-
-        String jahiaDisplayMessage = Jahia.COPYRIGHT;
-
-        if (selectedSite == null) {
-            if (request.getParameter("site") == null) {
-                selectedSite = "0";
-            } else {
-                selectedSite = request.getParameter("site");
-            }
-        }
-
-        try {
-            JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
-            JahiaSiteUserManagerService siteUser = ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
-
-            // get admins list...
-            Iterator allSites = jahiaSitesService.getSites();
-            List sitesList = new ArrayList();
-            Integer siteIDInteger = new Integer(selectedSite);
-
-            // clean sites...
-            while (allSites.hasNext()) {
-                JahiaSite site = (JahiaSite) allSites.next();
-                if (site.getID() > 0 && site.getID() != jParams.getSiteID()) {
-                    sitesList.add(site);
-                }
-            }
-
-            // set the Iterator to null if the List is empty...
-            if (sitesList.size() == 0) {
-                allSites = null;
-            } else {
-                Locale defaultLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
-                if (defaultLocale != null) {
-                    Collections.sort(sitesList, JahiaSite.getTitleComparator(defaultLocale));
-                } else {
-                    Collections.sort(sitesList, JahiaSite.getTitleComparator());
-                }
-                allSites = sitesList.iterator();
-            }
-
-            // get users... only if allSites is not null...
-            if ((allSites != null) && (!selectedSite.equals("0"))) {
-                List allUser = new ArrayList();
-
-                List users = siteUser.getMembers(siteIDInteger);
-                for (Iterator iterator = users.iterator(); iterator.hasNext();) {
-                    JahiaUser user = (JahiaUser) iterator.next();
-                    if (siteUser.getMember(jParams.getSiteID(),user.getUsername()) == null) {
-                        Map adminHash = new HashMap();
-                        adminHash.put("key", user.getUserKey());
-                        adminHash.put("username", user.getUsername());
-                        allUser.add(adminHash);
-                    }
-                }
-
-                request.setAttribute("usersList", allUser.iterator());
-            }
-
-            // set attributes...
-            session.setAttribute("jahiaDisplayMessage", jahiaDisplayMessage);
-            request.setAttribute("allSites", allSites);
-            request.setAttribute("allSitesJS", sitesList.iterator());
-            request.setAttribute("selectedSite", new Integer(selectedSite));
-
-            // redirect...
-            JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "user_management/site_existant_user.jsp");
-        } catch (JahiaException je) {
-            displayUsers(request, response, session);
-        }
-
-        // set default values...
-        session.setAttribute("jahiaDisplayMessage", Jahia.COPYRIGHT);
-    } // end displaySelectExistantAdmin
-
-    private void processRegisterUser(HttpServletRequest request,
-                                                HttpServletResponse response,
-                                                HttpSession session)
-            throws IOException, ServletException, JahiaException {
-
-        String userkey = request.getParameter("userSelected");
-        if (userkey != null) {
-            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userkey);
-            JahiaSiteUserManagerService siteUser = ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
-            siteUser.addMember(jParams.getSiteID(), user);
-        }
-        
-        displayUsers(request, response, session);
-    } // end processExistantAdminSelectSite
-
 
     /**
      * Process the Jahia user DB removing.

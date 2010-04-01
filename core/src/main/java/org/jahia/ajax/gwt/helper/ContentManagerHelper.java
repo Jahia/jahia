@@ -759,9 +759,7 @@ public class ContentManagerHelper {
             for (Map.Entry<String, String> entry : pathsToSyncronize.entrySet()) {
                 JCRNodeWrapper originalNode = currentUserSession.getNode(entry.getKey());
                 JCRNodeWrapper destinationNode = currentUserSession.getNode(entry.getValue());
-                if (originalNode.hasPermission(JCRNodeWrapper.READ) && destinationNode.hasPermission(JCRNodeWrapper.WRITE)) {
-                    originalNode.synchro(destinationNode, true);                    
-                }
+                originalNode.synchro(destinationNode, true);
             }
             currentUserSession.save();
         } catch (RepositoryException e){

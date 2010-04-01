@@ -844,7 +844,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
                 if (dynamic) {
                     Properties p = new Properties();
                     p.put("ldap.url", userKey);
-                    Set<JahiaUser> t = getUserManagerProvider().searchUsers(0,p);
+                    Set<JahiaUser> t = getUserManagerProvider().searchUsers(p);
                     for (Iterator<JahiaUser> iterator = t.iterator(); iterator.hasNext();) {
                         JahiaUser jahiaUser = iterator.next();
                         members.put(jahiaUser.getUserKey(), jahiaUser);
@@ -997,7 +997,7 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
                         Properties p = new Properties();
                         p.put("ldap.url", url);
                         p.put("user.key", removeKeyPrefix(user.getUserKey()));
-                        Set<JahiaUser> t = getUserManagerProvider().searchUsers(0,p);
+                        Set<JahiaUser> t = getUserManagerProvider().searchUsers(p);
                         if (!t.isEmpty()) {
                             result.add("{ldap}"+groupKey);
                             if (answer2.hasMore()) {

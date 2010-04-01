@@ -941,15 +941,13 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
      *         only return the configured limit of users at maxium. Check out the
      *         users.ldap.properties file to change the limit.
      */
-    public Set<JahiaUser> searchUsers (int siteID, Properties searchCriterias) {
+    public Set<JahiaUser> searchUsers (Properties searchCriterias) {
         Set<JahiaUser> result = new HashSet<JahiaUser>();
         // first let's lookup the user by the properties in Jahia's DB
         Set<String> userKeys = searchLDAPUsersByDBProperties(searchCriterias);
         // now that we have the keys, let's load all the users.
-        Iterator<String> userKeyEnum = userKeys.iterator();
-        while (userKeyEnum.hasNext()) {
-            String curUserKey = userKeyEnum.next();
-            JahiaUser user = lookupUserByKey(curUserKey);
+        for (String userKey : userKeys) {
+            JahiaUser user = lookupUserByKey(userKey);
             result.add(user);
         }
 

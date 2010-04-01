@@ -56,7 +56,7 @@
     final Map userProperties = (Map) request.getAttribute("userProperties");
     JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
     ProcessingContext jParams = ((JahiaData) request.getAttribute("org.jahia.data.JahiaData")).getProcessingContext();
-    int stretcherToOpen = 1;
+    int stretcherToOpen = 0;
 %>
 <%!
     public String getUserProp(final Map userProps, final String propName) {
@@ -113,7 +113,7 @@
 <div class="dex-TabPanelBottom">
 <div class="tabContent">
 <jsp:include page="/admin/include/left_menu.jsp">
-    <jsp:param name="mode" value="site"/>
+    <jsp:param name="mode" value="server"/>
 </jsp:include>
 
 <div id="content" class="fit">

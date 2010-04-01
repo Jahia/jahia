@@ -294,12 +294,12 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
      * @return Set a set of JahiaUser elements that correspond to those
      *         search criterias
      */
-    public Set searchUsers (final int siteID, final Properties searchCriterias) {
+    public Set searchUsers (final Properties searchCriterias) {
         Set userList = new HashSet();
 
         List resultList = routeCallAll(new Command() {
             public Object execute(JahiaUserManagerProvider p) {
-                return p.searchUsers(siteID, searchCriterias);
+                return p.searchUsers(searchCriterias);
             }
         }, null);
 
@@ -326,13 +326,12 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
      * @return Set a set of JahiaUser elements that correspond to those
      *         search criterias
      */
-    public Set searchUsers (String providerKey, final int siteID,
-                            final Properties searchCriterias) {
+    public Set searchUsers (String providerKey,final Properties searchCriterias) {
         List<String> providerList = new ArrayList<String>(1);
         providerList.add (providerKey);
         return (Set<JahiaUser>) routeCallOne(new Command() {
             public Object execute(JahiaUserManagerProvider p) {
-                return p.searchUsers(siteID, searchCriterias);
+                return p.searchUsers(searchCriterias);
             }
         }, providerList, null);
     }

@@ -109,7 +109,7 @@ rule "Grant permissions to user-manager role"
 	then
 		Log "Grant permissions to user-manager role"
 		Grant permission "admin/jahia-administration" to role node.getPath()
-		Grant permission "admin/users" to role node.getPath()
+		Grant permission "global/users" to role node.getPath()
 		Grant permission "admin/groups" to role node.getPath()
 		Grant permission "admin/site-permissions" to role node.getPath()
 end

@@ -10,8 +10,7 @@
                                     j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
         </j:acl>
  	    <admin jcr:primaryType="jnt:permissionGroup">
-   		    <jahia-administration jcr:primaryType="jnt:permission"/> 	    
-   		    <users jcr:primaryType="jnt:permission"/>
+   		    <jahia-administration jcr:primaryType="jnt:permission"/> 	       		    
    		    <groups jcr:primaryType="jnt:permission"/>
    		    <site-languages jcr:primaryType="jnt:permission"/>
    		    <site-permissions jcr:primaryType="jnt:permission"/>

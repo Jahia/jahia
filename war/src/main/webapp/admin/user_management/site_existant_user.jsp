@@ -39,7 +39,7 @@
     Iterator allSitesJS    = (Iterator)request.getAttribute("allSitesJS");
     Iterator usersList = (Iterator)request.getAttribute("usersList");
     Integer     selectedSite  = (Integer)request.getAttribute("selectedSite");
-    stretcherToOpen   = 1;
+    stretcherToOpen   = 0;
 %>
 
 <div id="topTitle">
@@ -81,7 +81,7 @@
             <div class="dex-TabPanelBottom">
             <div class="tabContent">
             <jsp:include page="/admin/include/left_menu.jsp">
-                <jsp:param name="mode" value="site"/>
+                <jsp:param name="mode" value="server"/>
             </jsp:include>
             <div id="content" class="fit">
 <div class="head">

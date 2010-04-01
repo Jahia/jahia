@@ -72,7 +72,7 @@ String selectedUsers = (String)request.getAttribute("selectedUsers");
             <div class="dex-TabPanelBottom">
             <div class="tabContent">
             <jsp:include page="/admin/include/left_menu.jsp">
-                <jsp:param name="mode" value="site"/>
+                <jsp:param name="mode" value="server"/>
             </jsp:include>
             
             <div id="content" class="fit">

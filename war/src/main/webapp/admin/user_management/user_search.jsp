@@ -50,7 +50,7 @@ Prerequisites :
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%
     List providerList     = (List) request.getAttribute( "providerList" );
-int stretcherToOpen   = 1;
+int stretcherToOpen   = 0;
 %>
 
 <script type="text/javascript" src="<%=request.getContextPath()%>/javascript/selectbox.js"></script>

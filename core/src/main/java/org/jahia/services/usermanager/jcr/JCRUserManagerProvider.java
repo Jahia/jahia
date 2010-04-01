@@ -407,7 +407,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * @return Set a set of JahiaUser elements that correspond to those
      *         search criterias
      */
-    public Set<JahiaUser> searchUsers(int siteID, final Properties searchCriterias) {
+    public Set<JahiaUser> searchUsers(final Properties searchCriterias) {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Set<JahiaUser>>() {
                 public Set<JahiaUser> doInJCR(JCRSessionWrapper session) throws RepositoryException {

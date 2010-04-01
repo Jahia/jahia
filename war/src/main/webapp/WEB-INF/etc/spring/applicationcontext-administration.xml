@@ -150,9 +150,9 @@
     <!-- Site settings administration modules -->
 
     <bean id="usersAdministrationModule" class="org.jahia.admin.users.ManageUsers" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
+        <property name="serverModule" value="true"/>
         <property name="urlKey" value="users" />
-        <property name="permissionName" value="admin/users" />
+        <property name="permissionName" value="global/users" />
         <property name="name" value="users" />
         <property name="icon" value="user1_into" />
         <property name="label" value="label.manageUsers" />

@@ -153,8 +153,7 @@ public class LoginEngineAuthValveImpl implements Valve {
                         cookieUserKey = JahiaString.generateRandomString(cookieAuthConfig.getIdLength());
                         Properties searchCriterias = new Properties();
                         searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-                        Set<Principal> foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(
-                                jParams.getSiteID(), searchCriterias);
+                        Set<Principal> foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias);
                         if (foundUsers.size() > 0) {
                             cookieUserKey = null;
                         }

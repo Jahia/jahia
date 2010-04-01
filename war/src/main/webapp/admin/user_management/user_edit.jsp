@@ -95,11 +95,7 @@
 
 %>
 <%
-    if (isSuperAdminProp == null) {
-        stretcherToOpen = 1;
-    } else {
-        stretcherToOpen = 0;
-    }
+    stretcherToOpen = 0;
 %>
 
 <!-- For future version : <script language="javascript" src="../search_options.js"></script> -->
@@ -161,9 +157,8 @@
 <td style="vertical-align: top;" align="left" height="100%">
 <div class="dex-TabPanelBottom">
 <div class="tabContent">
-<% String menuMode = isSuperAdminProp == null ? "site" : "server"; %>
 <jsp:include page="/admin/include/left_menu.jsp">
-    <jsp:param name="mode" value="<%= menuMode %>"/>
+    <jsp:param name="mode" value="server"/>
 </jsp:include>
 
 <div id="content" class="fit">

@@ -448,7 +448,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param siteID The site ID containing the principal to search
      * @return a Properties object that contain the search criterium
      */
-    public static Set getSearchResult(ProcessingContext processingContext, int siteID) {
+    public static Set getSearchResult(ProcessingContext processingContext) {
 
         String searchString = processingContext.getParameter("searchString");
         String searchIn = processingContext.getParameter("searchIn");
@@ -456,7 +456,7 @@ public class PrincipalViewHelper implements Serializable {
         String storedOn = processingContext.getParameter("storedOn");
         String[] providers = processingContext.getParameterValues("providers");
 
-        return getSearchResult(searchIn, siteID, searchString, searchInProps, storedOn, providers);
+        return getSearchResult(searchIn, searchString, searchInProps, storedOn, providers);
     }
 
     /**
@@ -473,7 +473,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param siteID The site ID containing the principal to search
      * @return a Properties object that contain the search criterium
      */
-    public static Set getSearchResult(ServletRequest request, int siteID) {
+    public static Set getSearchResult(ServletRequest request) {
 
         String searchString = request.getParameter("searchString");
         final String searchIn = request.getParameter("searchIn");
@@ -481,19 +481,19 @@ public class PrincipalViewHelper implements Serializable {
         final String storedOn = request.getParameter("storedOn");
         final String[] providers = request.getParameterValues("providers");
 
-        return getSearchResult(searchIn, siteID, searchString, searchInProps, storedOn, providers);
+        return getSearchResult(searchIn, searchString, searchInProps, storedOn, providers);
     }
 
-    public static Set getSearchResult(String searchIn, int siteID, String searchString, String[] searchInProps, String storedOn, String[] providers) {
+    public static Set getSearchResult(String searchIn, String searchString, String[] searchInProps, String storedOn, String[] providers) {
         JahiaUserManagerService jahiaUserManagerService =
             ServicesRegistry.getInstance().getJahiaUserManagerService();
         final Properties searchParameters = new Properties();
-        final Set searchResults = new HashSet();
+        final Set<Principal> searchResults = new HashSet<Principal>();
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
             searchResults.addAll(jahiaUserManagerService.
-                searchUsers(siteID, searchParameters));
+                searchUsers(searchParameters));
         } else {
             //if (searchString == null || "".equals(searchString)) {
             if ("".equals(searchString)) {
@@ -502,18 +502,17 @@ public class PrincipalViewHelper implements Serializable {
             if ("allProps".equals(searchIn) || searchInProps == null) {
                 searchParameters.setProperty("*", searchString);
             } else {
-                for (int i = 0; i < searchInProps.length; i++) {
-                    searchParameters.setProperty(searchInProps[i], searchString);
+                for (String searchInProp : searchInProps) {
+                    searchParameters.setProperty(searchInProp, searchString);
                 }
             }
             if ("everywhere".equals(storedOn) || providers == null) {
                 searchResults.addAll(jahiaUserManagerService.
-                    searchUsers(siteID, searchParameters));
+                    searchUsers(searchParameters));
             } else {
-                for (int i = 0; i < providers.length; i++) {
-                    final String curServer = providers[i];
-                    final Set curSearchResults = jahiaUserManagerService.
-                        searchUsers(curServer, siteID, searchParameters);
+                for (final String curServer : providers) {
+                    final Set<Principal> curSearchResults = jahiaUserManagerService.
+                            searchUsers(curServer, searchParameters);
                     if (curSearchResults != null) {
                         searchResults.addAll(curSearchResults);
                     }

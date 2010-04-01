@@ -260,7 +260,7 @@ public class SelectUG_Engine implements JahiaEngine {
             }
 
             //if (searchString != null && searchString.length() > 0) {
-                Set searchResults = PrincipalViewHelper.getSearchResult(searchIn, siteID, searchString, searchInProps, storedOn, providers);
+                Set searchResults = PrincipalViewHelper.getSearchResult(searchIn, searchString, searchInProps, storedOn, providers);
                 if (searchResults != null) {
                     List resultList = new ArrayList();
                     Iterator resultListEnum = searchResults.iterator();

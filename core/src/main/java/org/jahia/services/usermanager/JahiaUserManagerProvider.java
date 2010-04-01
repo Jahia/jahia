@@ -280,7 +280,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      * @return Set a set of JahiaUser elements that correspond to those
      *         search criterias
      */
-    public abstract Set<JahiaUser> searchUsers (int siteID, Properties searchCriterias);
+    public abstract Set<JahiaUser> searchUsers (Properties searchCriterias);
 
     /**
      * This method indicates that any internal cache for a provider should be

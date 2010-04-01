@@ -44,7 +44,7 @@
     <h4 class="forum-h4-first">${title.string}</h4>
 
     <p class="forum-author"><fmt:message key="by"/><strong>&nbsp;<a
-            href="${url.base}/users/${createdBy.string}">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<span class="timestamp"><fmt:formatDate
+            href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html">${createdBy.string}</a></strong>&nbsp;&raquo;&nbsp;<span class="timestamp"><fmt:formatDate
             value="${created.time}" pattern="yyyy/MM/dd HH:mm"/></span></p>
 
     <div class="content">${content.string}</div>

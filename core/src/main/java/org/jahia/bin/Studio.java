@@ -34,13 +34,6 @@ public class Studio extends Render {
     }
 
     protected boolean hasAccess(JahiaUser user, String site) {
-        if (user == null) {
-            return false;
-        }
-
-        if (site == null) {
-            logger.error("Site key is null.");
-        }
-        return user.isPermitted(new PermissionIdentity("edit-mode","actions", site));
+        return user != null && user.isPermitted(new PermissionIdentity("global/studio-mode"));
     }
 }

@@ -136,7 +136,7 @@
                     </property>
                     <property name="visibility">
                         <bean class="org.jahia.services.toolbar.bean.Visibility">
-                            <property name="siteActionPermission" value="actions/edit-mode"/>
+                            <property name="serverActionPermission" value="global/studio-mode"/>
                         </bean>
                     </property>
                     <property name="contextMenu" value="true"/>
@@ -1493,6 +1493,11 @@
                     <property name="value" value="studioUrl"/>
                 </bean>
             </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="serverActionPermission" value="global/studio-mode"/>
+            </bean>
         </property>
     </bean>
 

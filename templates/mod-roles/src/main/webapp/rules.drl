@@ -83,6 +83,7 @@ rule "Grant permissions to webmaster role"
 		Grant permission "global/email-settings" to role node.getName()
 		Grant permission "global/root-user" to role node.getName()
 		Grant permission "global/patches" to role node.getName()
+		Grant permission "global/studio-mode" to role node.getName()
 end
 
 ############################################

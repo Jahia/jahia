@@ -44,17 +44,18 @@ public class ModuleHelper {
                 String id = DOM.getElementAttribute(divElement, "id");
                 String type = DOM.getElementAttribute(divElement, "type");
                 String templateLocked = DOM.getElementAttribute(divElement, "templateLocked");
+                String templateShared = DOM.getElementAttribute(divElement, "templateShared");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String template = DOM.getElementAttribute(divElement, "template");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
                 String scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
                 Module module = null;
                 if (type.equals("area")) {
-                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, m);
+                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, templateShared.length()>0, m);
                 } else if (type.equals("list")) {
-                    module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, m);
+                    module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, templateShared.length()>0, m);
                 } else if (type.equals("existingNode")) {
-                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, m);
+                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, templateShared.length()>0, m);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, nodetypes, m);
                 }

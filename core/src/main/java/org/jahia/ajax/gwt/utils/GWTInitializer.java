@@ -36,12 +36,14 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
@@ -125,19 +127,23 @@ public class GWTInitializer {
 
         params.put(JahiaGWTParameters.LANGUAGE, locale.toString());
         params.put(JahiaGWTParameters.UI_LANGUAGE, uilocale.toString());
-        if (renderContext != null) {
-            params.put(JahiaGWTParameters.WORKSPACE, renderContext
-                    .getMainResource().getWorkspace());
+        try {
+            if (renderContext != null) {
+                params.put(JahiaGWTParameters.WORKSPACE, renderContext
+                        .getMainResource().getWorkspace());
 
-            if (renderContext.getSite() != null) {
-                params.put(JahiaGWTParameters.SITE_KEY, renderContext.getSite()
-                        .getSiteKey());
+                if (renderContext.getSite() != null) {
+                    params.put(JahiaGWTParameters.SITE_UUID, renderContext.getSite().getIdentifier());
+                }
+            } else {
+                final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
+                if (attribute != null) {
+                    String id = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/" + attribute.getSiteKey()).getIdentifier();
+                    params.put(JahiaGWTParameters.SITE_UUID, id);
+                }
             }
-        } else {
-            final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
-            if (attribute != null) {
-                params.put(JahiaGWTParameters.SITE_KEY, attribute.getSiteKey());
-            }
+        } catch (RepositoryException e) {
+            logger.error("Error when getting site id", e);
         }
 
         // put live workspace url
@@ -146,7 +152,7 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.BASE_URL, url.getBase());
             params.put(JahiaGWTParameters.STUDIO_URL, url.getStudio());
             params.put(JahiaGWTParameters.USER_URL, url.getUserProfile());
-            addLanguageSwitcherLinks(renderContext,params,url);
+            addLanguageSwitcherLinks(renderContext, params, url);
         }
 
         // add jahia parameter dictionary
@@ -159,6 +165,7 @@ public class GWTInitializer {
 
     /**
      * Add lnaguage switcher link into page
+     *
      * @param renderContext
      * @param params
      * @param urlGenerator
@@ -174,7 +181,7 @@ public class GWTInitializer {
                     }
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Error while creating change site link", e);
         }
     }

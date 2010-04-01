@@ -38,6 +38,12 @@
                 	<property name="items">
                 		<list>
                 			<ref bean="org.jahia.toolbar.item.createTemplate"/>
+                            <bean class="org.jahia.services.toolbar.bean.Item">
+                                <property name="actionItem">
+                                    <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
+                                </property>
+                                <property name="titleKey" value="label.templatesDeploy"/>
+                            </bean>
                 			<ref bean="org.jahia.toolbar.item.createPage"/>
 						    <bean class="org.jahia.services.toolbar.bean.Item" parent="org.jahia.toolbar.item.edit">
 						        <property name="titleKey" value="label.rename"/>

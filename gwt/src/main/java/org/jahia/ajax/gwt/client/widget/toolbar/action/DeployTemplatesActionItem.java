@@ -121,15 +121,9 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 }
 
             });
-            if (isTextToolItem()) {
-                Button button = (Button) getTextToolItem();
-                button.setMenu(menu);
-            }
 
-            if (isMenuItem()) {
-                MenuItem mi = getMenuItem();
-                mi.setSubMenu(menu);
-            }
+            setSubMenu(menu);
+            
             ok = true;
         }
 

@@ -24,25 +24,32 @@ public abstract class Module extends LayoutContainer {
     protected boolean isDraggable = false;
     protected int depth;
     protected boolean selectable;
-    protected String headerText;
     protected Header head;
     protected boolean locked;
+    protected boolean shared;
 
     public Module() {
     }
 
-    public Module(Layout layout) {
-        super(layout);
-    }
-
-    protected Module(String id, String path, HTML html, String template, String scriptInfo, String nodeTypes, boolean locked, MainModule mainModule) {
+    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, MainModule mainModule) {
+        super();
         this.id = id;
         this.path = path;
-        this.html = html;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.nodeTypes = nodeTypes;
         this.locked = locked;
+        this.shared = shared;
+        this.mainModule = mainModule;
+    }
+
+    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, MainModule mainModule, Layout layout) {
+        super(layout);
+        this.id = id;
+        this.path = path;
+        this.template = template;
+        this.scriptInfo = scriptInfo;
+        this.nodeTypes = nodeTypes;
         this.mainModule = mainModule;
     }
 
@@ -95,16 +102,9 @@ public abstract class Module extends LayoutContainer {
     }
 
     public void setNode(GWTJahiaNode node) {
-        if (mainModule.getConfig().getName().equals("studiomode")) {
-            if (node.getNodeTypes().contains("jmix:templateShared") && node.getNodeTypes().contains("jmix:templateLocked")) {
-                head.setText(headerText + " (locked & shared)");
-            } else if (node.getNodeTypes().contains("jmix:templateShared")) {
-                head.setText(headerText + " (shared)");
-            } else if (node.getNodeTypes().contains("jmix:templateLocked")) {
-                head.setText(headerText + " (locked)");
-            }
-        }
         this.node = node;
+        node.setIsTemplateLocked(locked);
+        node.setIsTemplateShared(shared);
     }
 
     public String getNodeTypes() {
@@ -123,4 +123,19 @@ public abstract class Module extends LayoutContainer {
         return isDraggable;
     }
 
+    protected void setHeaderText(String headerText) {
+        if (mainModule.getConfig().getName().equals("studiomode")) {
+            if (shared && locked) {
+                head.setText(headerText + " (locked & shared)");
+            } else if (shared) {
+                head.setText(headerText + " (shared)");
+            } else if (locked) {
+                head.setText(headerText + " (locked)");
+            } else {
+                head.setText(headerText);
+            }
+        } else {
+            head.setText(headerText);
+        }
+    }
 }

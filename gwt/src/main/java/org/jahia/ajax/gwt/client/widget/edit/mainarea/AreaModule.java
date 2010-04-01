@@ -22,22 +22,16 @@ import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopu
  */
 public class AreaModule extends Module {
 
-    public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, MainModule mainModule) {
-        this.id = id;
-        this.path = path;
-        this.template = template;
-        this.scriptInfo = scriptInfo;
-        this.mainModule = mainModule;
-        this.nodeTypes = nodeTypes;
+    public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, MainModule mainModule) {
+        super(id, path, template, scriptInfo, nodeTypes, locked, shared, mainModule);
         head = new Header();
         add(head);
 
         if (path.contains("/")) {
-            headerText = Messages.getResource("em_area") + " : " + path.substring(path.lastIndexOf('/') + 1);
+            setHeaderText(Messages.getResource("em_area") + " : " + path.substring(path.lastIndexOf('/') + 1));
         } else {
-            headerText = Messages.getResource("em_area")+" : "+ path;
+            setHeaderText(Messages.getResource("em_area")+" : "+ path);
         }
-        head.setText(headerText);
         setBorders(false);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");

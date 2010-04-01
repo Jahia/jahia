@@ -1,18 +1,9 @@
 package org.jahia.ajax.gwt.helper;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
-import org.jahia.ajax.gwt.client.data.GWTJahiaPrincipal;
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
-import org.jahia.ajax.gwt.client.data.GWTRolesPermissions;
+import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.RoleIdentity;
@@ -20,12 +11,11 @@ import org.jahia.services.rbac.jcr.PermissionImpl;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.rbac.jcr.RoleImpl;
 import org.jahia.services.rbac.jcr.RoleService;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.*;
+
+import javax.jcr.RepositoryException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Roles and permission GWT helper class.
@@ -79,10 +69,9 @@ public class RolesPermissionsHelper {
     /**
      * Get list of granted permissions
      *
-     * @param jcrSession
      * @return
      */
-    public List<GWTJahiaPermission> getGrantedPermissions(final JahiaSite site, JahiaUser user)
+    public List<GWTJahiaPermission> getGrantedPermissions(final JCRSiteNode site, JahiaUser user)
             throws GWTJahiaServiceException {
         final List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
         try {
@@ -117,7 +106,6 @@ public class RolesPermissionsHelper {
      * 
      * @param site target site key or {@code null} if the server level
      *            permissions are requested
-     * @param jcrSession current JCR session
      * @return all permissions for the specified site or for the server if the
      *         site is not specified
      * @throws GWTJahiaServiceException in case of an error
@@ -348,8 +336,7 @@ public class RolesPermissionsHelper {
      * 
      * @param role
      * @param principals
-     * @param jcrSession current user JCR session
-     * @throws GWTJahiaServiceException in case of an error 
+     * @throws GWTJahiaServiceException in case of an error
      */
     public void removeRoleToPrincipals(GWTJahiaRole role, List<GWTJahiaPrincipal> principals) throws GWTJahiaServiceException {
         List<JahiaPrincipal> subjects = new LinkedList<JahiaPrincipal>();

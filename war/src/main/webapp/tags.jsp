@@ -71,7 +71,6 @@
 <s:term/>
 <internal:processDisplay/>
 <internal:contentManager/>
-<internal:aclEditor/>
 <internal:categoryManager/>
 <internal:contentPicker/>
 <internal:jobReport/>

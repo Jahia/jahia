@@ -54,6 +54,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     private boolean displayable = false;
     private boolean isShared = false;
+    private boolean isTemplateLocked = false;
+    private boolean isTemplateShared = false;
     private String url;
     private boolean hasChildren = false;
     private boolean hasFolderChildren = false;
@@ -358,12 +360,12 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         width = w;
     }
 
-    public String getSiteKey() {
-        return get("siteKey");
+    public String getSiteUUID() {
+        return get("siteUUID");
     }
 
-    public void setSiteKey(String siteKey) {
-        set("siteKey", siteKey);
+    public void setSiteUUID(String siteUUID) {
+        set("siteUUID", siteUUID);
     }
 
     public boolean isVersioned() {
@@ -507,6 +509,21 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         this.isShared = isShared;
     }
 
+    public boolean isTemplateShared() {
+        return isTemplateShared;
+    }
+
+    public void setIsTemplateShared(boolean isTemplateShared) {
+        this.isTemplateShared = isTemplateShared;
+    }
+
+    public boolean isTemplateLocked() {
+        return isTemplateLocked;
+    }
+
+    public void setIsTemplateLocked(boolean isTemplateLocked) {
+        this.isTemplateLocked = isTemplateLocked;
+    }
 
     public GWTJahiaNode getReferencedNode() {
         return referencedNode;

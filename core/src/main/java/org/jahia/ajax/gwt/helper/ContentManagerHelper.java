@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -758,8 +759,14 @@ public class ContentManagerHelper {
         try {
             for (Map.Entry<String, String> entry : pathsToSyncronize.entrySet()) {
                 JCRNodeWrapper originalNode = currentUserSession.getNode(entry.getKey());
-                JCRNodeWrapper destinationNode = currentUserSession.getNode(entry.getValue());
-                originalNode.synchro(destinationNode, true);
+                JCRNodeWrapper destinationNode = null;
+                try {
+                    destinationNode = currentUserSession.getNode(entry.getValue());
+                    originalNode.synchro(destinationNode, true);
+                } catch (PathNotFoundException e) {
+                    destinationNode = currentUserSession.getNode(StringUtils.substringBeforeLast(entry.getValue(),"/"));
+                    originalNode.copy(destinationNode, StringUtils.substringAfterLast(entry.getValue(),"/"), true);
+                }
             }
             currentUserSession.save();
         } catch (RepositoryException e){

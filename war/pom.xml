@@ -92,7 +92,6 @@
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <modules>
-                                <module>org.jahia.ajax.gwt.module.acleditor.ACLEditor</module>
                                 <module>org.jahia.ajax.gwt.module.admin.Admin</module>
                                 <module>org.jahia.ajax.gwt.module.contentmanager.ContentManager</module>
                                 <module>org.jahia.ajax.gwt.module.contentpicker.ContentPicker</module>

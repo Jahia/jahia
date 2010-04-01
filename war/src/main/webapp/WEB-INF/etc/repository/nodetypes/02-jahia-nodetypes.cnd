@@ -464,6 +464,7 @@
 
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
  orderable
+ - j:sourceTemplate (string)
  + * (nt:base) = nt:base version
 
 [jnt:content] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
@@ -476,19 +477,19 @@
  - j:allowedTypes (string, choicelist[nodetypes]) multiple
  + * (nt:base) = nt:base version
 
-[jnt:templatesSetFolder] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:templatesSetFolder] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
  + * (jnt:virtualsite)
 
-[jnt:templatesFolder] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:templatesFolder] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
  + * (jnt:page)
 
 [jnt:template] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title
  - j:picture (weakreference, file[mime='image/*'])
  + j:target (jnt:page)
 
-[jmix:templateLocked] mixin
-
-[jmix:templateShared] mixin
+[jmix:templateInformation] mixin
+ - j:templateLocked (boolean)
+ - j:templateShared (boolean)
 
 //---------------------------------------------------------
 // Portlets

@@ -20,7 +20,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 public class PlaceholderModule extends Module {
 
     public PlaceholderModule(String id, String path, String nodeTypes, MainModule mainModule) {
-        super(new FlowLayout());
+        super(id, path, null, null, nodeTypes, mainModule, new FlowLayout());
         this.id = id;
         this.path = path;
         this.mainModule = mainModule;

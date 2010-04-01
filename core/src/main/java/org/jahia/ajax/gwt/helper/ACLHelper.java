@@ -41,7 +41,7 @@ import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLEntry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.acl.ParentACLFinder;
-import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -169,7 +169,7 @@ public class ACLHelper {
 //        }
     }
 
-    public GWTJahiaNodeACE createUsersGroupACE(List<String> permissions, boolean grand, JahiaSite site) {
+    public GWTJahiaNodeACE createUsersGroupACE(List<String> permissions, boolean grand, JCRSiteNode site) {
         JahiaGroup usersGroup = jahiaGroupManagerService.lookupGroup(site.getID(), JahiaGroupManagerService.USERS_GROUPNAME);
         GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
         ace.setPrincipalType('g');

@@ -40,6 +40,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
@@ -182,7 +183,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             List<Integer> list = new ArrayList<Integer>();;
 
             if (context.equals("currentSite")) {
-                JahiaSite site = getSite();
+                JCRSiteNode site = getSite();
                 if (site != null) {
                     list.add(site.getID());
                 }
@@ -210,7 +211,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             List<Integer> list = new ArrayList<Integer>();;
 
             if (context.equals("currentSite")) {
-                JahiaSite site = getSite();
+                JCRSiteNode site = getSite();
                 if (site != null) {
                     list.add(site.getID());
                 }

@@ -7,7 +7,7 @@ import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.analytics.GoogleAnalyticsService;
-import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.decorator.JCRSiteNode;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -71,9 +71,9 @@ public class AnalyticsHelper {
      * @param site
      * @return
      */
-    public List<GWTJahiaAnalyticsProfile> getActiveProfiles(JahiaSite site) {
+    public List<GWTJahiaAnalyticsProfile> getActiveProfiles(JCRSiteNode site) {
         List<GWTJahiaAnalyticsProfile> list = new ArrayList<GWTJahiaAnalyticsProfile>();
-        final Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfil().iterator();
+        final Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfile().iterator();
         while (googleAnalyticsProfileIterator.hasNext()) {
             final GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
             if (googleAnalyticsProfile.isEnabled()) {

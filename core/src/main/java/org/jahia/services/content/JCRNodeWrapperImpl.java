@@ -1296,8 +1296,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         final Map<String, String> uuidMapping = getSession().getUuidMapping();
 
         if (copy == null || copy.getDefinition().allowsSameNameSiblings()) {
-            if (!dest.isCheckedOut()) {
-                dest.checkout();
+            if (!dest.isCheckedOut() && dest.isVersioned()) {
+                session.checkout(dest);
             }
             copy = dest.addNode(name, getPrimaryNodeTypeName());
         }
@@ -1347,7 +1347,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeIterator ni = getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
-                if (source.isNodeType("mix:shareable") || source.isNodeType("jmix:templateShared")) {
+                if (source.isNodeType("mix:shareable") || (source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean())) {
                     if (uuidMapping.containsKey(source.getIdentifier())) {
                         // ugly save because to make node really shareable
                         session.save();
@@ -2419,7 +2419,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     NodeIterator ni = originalNode.getNodes();
                     while (ni.hasNext()) {
                         JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
-                        if (source.isNodeType("mix:shareable")) {
+                        if (source.isNodeType("mix:shareable") || (source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean())) {
                             if (uuidMapping.containsKey(source.getIdentifier())) {
                                 // ugly save because to make node really shareable
                                 session.save();

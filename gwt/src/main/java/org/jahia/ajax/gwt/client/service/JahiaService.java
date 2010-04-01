@@ -73,7 +73,7 @@ public interface JahiaService extends RemoteService {
             }
 
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint()+"base.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
+            return JahiaGWTParameters.getServiceEntryPoint()+"base.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteUUID();
         }
     }
 

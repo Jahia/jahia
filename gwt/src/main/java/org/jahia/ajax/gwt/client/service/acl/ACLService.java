@@ -72,7 +72,7 @@ public interface ACLService  extends RemoteService {
         }
 
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint()+"acl.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
+            return JahiaGWTParameters.getServiceEntryPoint()+"acl.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteUUID();
         }
     }
 

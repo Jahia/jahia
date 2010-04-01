@@ -114,16 +114,7 @@ public class WorkflowActionItem extends BaseActionItem {
             setEnabled(false);
         }
 
-        if (isTextToolItem()) {
-            Button button = (Button) getTextToolItem();
-            button.setMenu(menu);
-        }
-
-        if (isMenuItem()) {
-            MenuItem mi = getMenuItem();
-            mi.setSubMenu(menu);
-        }
-
+        setSubMenu(menu);
     }
 
     @Override

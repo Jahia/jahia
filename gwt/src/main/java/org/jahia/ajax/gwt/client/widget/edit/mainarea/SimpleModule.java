@@ -29,19 +29,13 @@ import java.util.List;
  */
 public class SimpleModule extends Module {
 
-    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, final MainModule mainModule) {
-        this.id = id;
-        this.path = path;
-        this.mainModule = mainModule;
-        this.template = template;
-        this.scriptInfo = scriptInfo;
-        this.nodeTypes = nodeTypes;
+    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, final MainModule mainModule) {
+        super(id, path, template, scriptInfo, nodeTypes, locked, shared, mainModule);
 
         if (mainModule.getConfig().getName().equals("studiomode")) {
             head = new Header();
             add(head);
-            headerText = Messages.getResource("em_content") + " : " + path.substring(path.lastIndexOf('/') + 1);
-            head.setText(headerText);
+            setHeaderText(Messages.getResource("em_content") + " : " + path.substring(path.lastIndexOf('/') + 1));
             head.addStyleName("x-panel-header");
             head.addStyleName("x-panel-header-simplemodule");
             if (locked) {

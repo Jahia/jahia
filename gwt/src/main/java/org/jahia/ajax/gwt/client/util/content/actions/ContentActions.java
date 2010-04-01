@@ -43,6 +43,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -980,14 +982,19 @@ public class ContentActions {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
             final boolean locked;
-            if (!target.getNodeTypes().contains("jmix:templateLocked")) {
-                target.getNodeTypes().add("jmix:templateLocked");
+            final ArrayList<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
+            if (!target.getNodeTypes().contains("jmix:templateInformation")) {
+                target.getNodeTypes().add("jmix:templateInformation");
+            }
+            if (!target.isTemplateLocked()) {
+                properties.add(new GWTJahiaNodeProperty("j:templateLocked", new GWTJahiaNodePropertyValue("true", GWTJahiaNodePropertyType.BOOLEAN)));
                 locked = true;
             } else {
-                target.getNodeTypes().remove("jmix:templateLocked");
+                properties.add(new GWTJahiaNodeProperty("j:templateLocked", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
                 locked = false;
             }
-            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target),new ArrayList<GWTJahiaNodeProperty>(),new AsyncCallback() {
+
+            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties,new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Error",caught);
                 }
@@ -1009,14 +1016,19 @@ public class ContentActions {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
             final boolean shared;
-            if (!target.getNodeTypes().contains("jmix:templateShared")) {
-                target.getNodeTypes().add("jmix:templateShared");
+            final ArrayList<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
+            if (!target.getNodeTypes().contains("jmix:templateInformation")) {
+                target.getNodeTypes().add("jmix:templateInformation");
+            }
+            if (!target.isTemplateShared()) {
+                properties.add(new GWTJahiaNodeProperty("j:templateShared", new GWTJahiaNodePropertyValue("true", GWTJahiaNodePropertyType.BOOLEAN)));
                 shared = true;
             } else {
-                target.getNodeTypes().remove("jmix:templateShared");
+                properties.add(new GWTJahiaNodeProperty("j:templateShared", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
                 shared = false;
             }
-            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target),new ArrayList<GWTJahiaNodeProperty>(),new AsyncCallback() {
+
+            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties,new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Error",caught);
                 }
@@ -1037,7 +1049,7 @@ public class ContentActions {
     public static void makeShareableNode(final Linker linker) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
-            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()),"/sites/"+JahiaGWTParameters.getSiteKey()+"/contents",null,new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()),"/sites/"+JahiaGWTParameters.getSiteUUID()+"/contents",null,new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Info.display("Shared component","Error while sharing component");
                 }

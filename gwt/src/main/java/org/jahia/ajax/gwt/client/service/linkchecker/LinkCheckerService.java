@@ -37,7 +37,7 @@ public interface LinkCheckerService extends RemoteService {
         }
 
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint() + "linkchecker.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
+            return JahiaGWTParameters.getServiceEntryPoint() + "linkchecker.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteUUID();
         }
     }
 

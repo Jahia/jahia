@@ -72,7 +72,7 @@ public interface UserManagerService extends RemoteService  {
         }
 
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint()+"userManager.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
+            return JahiaGWTParameters.getServiceEntryPoint()+"userManager.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteUUID();
         }
     }
 

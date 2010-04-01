@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.commons.server;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.data.JahiaData;
@@ -43,6 +44,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -155,16 +157,13 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      *
      * @return
      */
-    protected JahiaSite getSite() {
+    protected JCRSiteNode getSite() {
         try {
-            JahiaSite site = JahiaSitesBaseService.getInstance().getSiteByKey(request.getParameter("site"));
-            return site;
-        } catch (Exception e) {
-            try {
-                return JahiaSitesBaseService.getInstance().getDefaultSite();
-            } catch (JahiaException ex) {
-                logger.error(ex, ex);
+            if (!StringUtils.isEmpty(request.getParameter("site"))) {
+                return (JCRSiteNode) retrieveCurrentSession().getNodeByUUID(request.getParameter("site"));
             }
+        } catch (Exception e) {
+            logger.error("Cannot get site",e);
         }
         return null;
     }
@@ -245,7 +244,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @param site
      * @return
      */
-    public String getResources(String key, Locale locale, JahiaSite site) {
+    public String getResources(String key, Locale locale, JCRSiteNode site) {
         if (logger.isDebugEnabled()) {
             logger.debug("Resources key: " + key);
         }

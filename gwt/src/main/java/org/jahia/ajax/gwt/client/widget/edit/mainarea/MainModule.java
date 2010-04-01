@@ -2,8 +2,6 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -44,7 +42,7 @@ public class MainModule extends Module {
     Map<Element, Module> m;
 
     public MainModule(final String html, final String path, final String template, GWTEditConfig config) {
-        super(new FlowLayout());
+        super("main", path, template, null, null, null, new FlowLayout());
         setScrollMode(Style.Scroll.AUTO);
 
         this.id = "main";
@@ -55,8 +53,7 @@ public class MainModule extends Module {
         this.depth = 0;
 
         head = new Header();
-        headerText = "Page : " + path;
-        head.setText(headerText);
+        head.setText("Page : " + path);
         head.addStyleName("x-panel-header");
         head.setStyleAttribute("z-index", "999");
         head.setStyleAttribute("position", "relative");
@@ -235,8 +232,8 @@ public class MainModule extends Module {
 //            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }
-        if (node.getSiteKey() != null && !JahiaGWTParameters.getSiteKey().equals(node.getSiteKey())) {
-            JahiaGWTParameters.setSiteKey(node.getSiteKey());
+        if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
+            JahiaGWTParameters.setSiteUUID(node.getSiteUUID());
         }
     }
 

@@ -12,10 +12,13 @@
                     <site_components jcr:primaryType="jnt:folder">
                     </site_components>
                 </contents>
+                <files jcr:primaryType="jnt:folder"/>
+                <mashups jcr:primaryType="jnt:folder"/>
+                <themes jcr:primaryType="jnt:folder"/>
                 <home j:template="default" jcr:primaryType="jnt:page">
                     <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Home" jcr:language="en"/>
-                    <pagecontent jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateLocked">
-                        <row1 jcr:primaryType="jnt:row" column="2col106" jcr:mixinTypes="jmix:templateLocked">
+                    <pagecontent jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"  j:templateLocked="true">
+                        <row1 jcr:primaryType="jnt:row" column="2col106" jcr:mixinTypes="jmix:templateInformation"  j:templateLocked="true">
                             <col1 jcr:primaryType="jnt:contentList"/>
                             <col2 jcr:primaryType="jnt:contentList">
 
@@ -26,8 +29,8 @@
                 <templates jcr:primaryType="jnt:templatesFolder">
                     <simple j:template="default" jcr:primaryType="jnt:page">
                         <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Simple" jcr:language="en"/>
-                        <pagecontent jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateLocked">
-                            <row1 jcr:primaryType="jnt:row" column="2col124" jcr:mixinTypes="jmix:templateLocked">
+                        <pagecontent jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
+                            <row1 jcr:primaryType="jnt:row" column="2col124" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
                                 <col1 jcr:primaryType="jnt:contentList"/>
                             </row1>
                         </pagecontent>

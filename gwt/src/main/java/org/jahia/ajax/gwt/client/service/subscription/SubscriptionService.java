@@ -75,7 +75,7 @@ public interface SubscriptionService extends RemoteService {
         private static String createEntryPointUrl() {
             return JahiaGWTParameters
                     .getServiceEntryPoint()
-                    + "subscription.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteKey();
+                    + "subscription.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteUUID();
         }
     }
 

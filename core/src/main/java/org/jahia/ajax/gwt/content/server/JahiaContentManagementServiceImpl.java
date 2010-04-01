@@ -193,7 +193,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
         return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, selectedNodes, openPaths,
-                false, null, getSite(), retrieveCurrentSession());
+                getSite(), retrieveCurrentSession());
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths, boolean forceCreate) throws GWTJahiaServiceException {
@@ -203,7 +203,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
-        return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, selectedNodes, openPaths, forceCreate, contentManager, getSite(), retrieveCurrentSession());
+        return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, selectedNodes, openPaths, getSite(), retrieveCurrentSession());
     }
 
     /**
@@ -1097,7 +1097,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      */
     public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query) throws GWTJahiaServiceException {
-        if (!getSite().hasGoogleAnalyticsProfil()) {
+        if (!getSite().hasGoogleAnalyticsProfile()) {
             logger.debug("There is no configured google analytics account");
             return new ArrayList<GWTJahiaAnalyticsData>();
         }
@@ -1107,7 +1107,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (query.getProfile() != null && query.getProfile().getName() != null) {
             googleAnalyticsProfile = getSite().getGoogleAnalytics(query.getProfile().getName());
         } else {
-            googleAnalyticsProfile = getSite().getGoogleAnalyticsProfil().iterator().next();
+            googleAnalyticsProfile = getSite().getGoogleAnalyticsProfile().iterator().next();
         }
 
         // get its parameter

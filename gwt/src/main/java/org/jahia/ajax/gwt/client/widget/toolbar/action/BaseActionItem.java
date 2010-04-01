@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -135,6 +136,23 @@ public abstract class BaseActionItem implements ActionItem {
         }
         contextMenuItem = createMenuItem();
         return contextMenuItem;
+    }
+
+    public void setSubMenu(Menu menu) {
+        if (isTextToolItem()) {
+            Button button = (Button) getTextToolItem();
+            button.setMenu(menu);
+        }
+
+        if (isMenuItem()) {
+            MenuItem mi = getMenuItem();
+            mi.setSubMenu(menu);
+        }
+
+        if (isContextMenuItem()) {
+            MenuItem mi = getContextMenuItem();
+            mi.setSubMenu(menu);
+        }
     }
 
     public boolean isTextToolItem() {

@@ -3,8 +3,8 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.bin.Jahia;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.rbac.PermissionIdentity;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -27,11 +27,11 @@ public class LanguageHelper {
      * @param currentLocale
      * @return
      */
-    public List<GWTJahiaLanguage> getLanguages(JahiaSite site, JahiaUser user, Locale currentLocale) {
+    public List<GWTJahiaLanguage> getLanguages(JCRSiteNode site, JahiaUser user, Locale currentLocale) {
         List<GWTJahiaLanguage> items = new ArrayList<GWTJahiaLanguage>();
 
         try {
-            if (site != null)  {
+            if (site != null && site.getLanguages() != null)  {
                 final Set<String> languageSettings = site.getLanguages();
                 if (languageSettings != null && languageSettings.size() > 0) {
                     final TreeSet<String> orderedLangs = new TreeSet<String>();

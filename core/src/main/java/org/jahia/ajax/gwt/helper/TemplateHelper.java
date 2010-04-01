@@ -10,7 +10,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
-import org.jahia.services.sites.JahiaSite;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;

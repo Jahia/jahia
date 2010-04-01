@@ -238,11 +238,6 @@
         <path>/META-INF/tags/ajax/contentpicker.tag</path>
     </tag-file>
     <tag-file>
-        <description>Displays the file manager engine</description>
-        <name>aclEditor</name>
-        <path>/META-INF/tags/ajax/acleditor.tag</path>
-    </tag-file>
-    <tag-file>
         <name>aclNameEditor</name>
         <path>/META-INF/tags/ajax/aclNameEditor.tag</path>
     </tag-file>

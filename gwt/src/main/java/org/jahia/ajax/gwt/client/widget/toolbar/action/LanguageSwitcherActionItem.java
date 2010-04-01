@@ -3,13 +3,11 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -33,7 +31,7 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
 
     @Override
     public void handleNewLinkerSelection() {
-        if (siteKey != null && siteKey.equals(JahiaGWTParameters.getSiteKey())) {
+        if (siteKey != null && siteKey.equals(JahiaGWTParameters.getSiteUUID())) {
             return;
         }
 
@@ -65,16 +63,9 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
 
         setEnabled(true);
 
-        if (isTextToolItem()) {
-            Button button = (Button) getTextToolItem();
-            button.setMenu(menu);
-        }
+        setSubMenu(menu);
 
-        if (isMenuItem()) {
-            MenuItem mi = getMenuItem();
-            mi.setSubMenu(menu);
-        }
-        siteKey = JahiaGWTParameters.getSiteKey();
+        siteKey = JahiaGWTParameters.getSiteUUID();
     }
 
     @Override

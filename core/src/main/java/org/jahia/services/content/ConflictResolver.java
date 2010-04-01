@@ -376,9 +376,9 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-//            if (prunedSourcePath.contains(targetNode.getPath() + "/" + newName)) {
-//                return true;
-//            }
+            if (prunedSourcePath.contains(targetNode.getPath() + "/" + newName)) {
+                return true;
+            }
             targetNode.getRealNode().getSession().save();
             JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), prunedSourcePath, sourceNode.getSession(), targetNode.getSession());
             return true;

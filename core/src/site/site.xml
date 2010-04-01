@@ -25,17 +25,22 @@ under the License.
     <body>
         <menu ref="parent"/>
         <menu name="Overview">
-            <item name="Introduction" href="./index.html"/>
-            <item name="ChoiceList Initializers" href="./initializers_renderers/initializers.html">
-                <item name="How ChoiceList Initializers work" href="./initializers_renderers/initializers.html#work"/>
-                <item name="Country Initializer Example" href="./initializers_renderers/country_initializer.html"/>
-                <item name="Other Initializers" href="./initializers_renderers/other_initializers.html"/>
-                <item name="Custom Property Rendering" href="./initializers_renderers/renderers.html"/>
+            <item name="Introduction" href="index.html"/>
+            <item name="ChoiceList Initializers" href="initializers_renderers/initializers.html">
+                <item name="How ChoiceList Initializers work" href="initializers_renderers/initializers.html#work"/>
+                <item name="Country Initializer Example" href="initializers_renderers/country_initializer.html"/>
+                <item name="Other Initializers" href="initializers_renderers/other_initializers.html"/>
+                <item name="Custom Property Rendering" href="initializers_renderers/renderers.html"/>
             </item>
-            <item name="Caches" href="./cache/cache.html"/>
-            <item name="CKEditor integration" href="./ckeditor/index.html"/>
+            <item name="Caches" href="cache/cache.html"/>
+            <item name="CKEditor integration" href="ckeditor/index.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>
     </body>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-default-skin</artifactId>
+        <version>1.0</version>
+    </skin>    
 </project>

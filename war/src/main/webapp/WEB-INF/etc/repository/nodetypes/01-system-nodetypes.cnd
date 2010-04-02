@@ -92,7 +92,7 @@
  *
  * @since 1.0
  */
-[nt:resource] > mix:mimeType, mix:lastModified
+[nt:resource] > mix:mimeType, mix:lastModified, mix:referenceable
   primaryitem jcr:data
   - jcr:data (BINARY) mandatory
 
@@ -295,7 +295,7 @@
 [mix:lockable]
   mixin
   - jcr:lockOwner (STRING) protected IGNORE nofulltext
-  - jcr:lockIsDeep (BOOLEAN) protected IGNORE 
+  - jcr:lockIsDeep (BOOLEAN) protected IGNORE
 
 //------------------------------------------------------------------------------
 // S H A R E A B L E   N O D E S

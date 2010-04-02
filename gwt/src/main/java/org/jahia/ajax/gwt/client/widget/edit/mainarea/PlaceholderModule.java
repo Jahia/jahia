@@ -37,34 +37,12 @@ public class PlaceholderModule extends Module {
         html = new HTML("");
         add(html);
 
-        DropTarget target = new PlaceholderModuleDropTarget();
+        DropTarget target = new ModuleDropTarget(this);
         target.setOperation(DND.Operation.COPY);
         target.setFeedback(DND.Feedback.INSERT);
 
         target.addDNDListener(mainModule.getEditLinker().getDndListener());
 
-    }
-
-    private class PlaceholderModuleDropTarget extends ModuleDropTarget {
-        public PlaceholderModuleDropTarget() {
-            super(PlaceholderModule.this);
-        }
-
-        @Override
-        protected void onDragEnter(DNDEvent e) {
-            if (parentModule.getNode().isWriteable() && !parentModule.getNode().isLocked()) {
-                boolean allowed = checkNodeType(e, nodeTypes);
-                if (allowed) {
-                    e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
-                    e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
-                    e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getParentModule().getNode());
-                }
-                e.getStatus().setStatus(allowed);
-                e.setCancelled(false);
-            } else {
-                e.getStatus().setStatus(false);
-            }
-        }
     }
 
     public boolean isDraggable() {

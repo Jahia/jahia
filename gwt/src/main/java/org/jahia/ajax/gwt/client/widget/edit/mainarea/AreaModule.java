@@ -20,10 +20,11 @@ import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopu
  * Time: 7:25:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AreaModule extends Module {
+public class AreaModule extends SimpleModule {
 
     public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, MainModule mainModule) {
         super(id, path, template, scriptInfo, nodeTypes, locked, shared, mainModule);
+        hasDragDrop = false;
         head = new Header();
         add(head);
 
@@ -41,40 +42,5 @@ public class AreaModule extends Module {
         }
         html = new HTML(s);
         add(html);
-    }
-
-    public void onParsed() {
-//        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
-
-//        DropTarget target = new AreaModuleDropTarget(this);
-//        target.addDNDListener(mainModule.getEditLinker().getDndListener());
-        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT+Event.ONCONTEXTMENU);
-
-        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                if (selectable) {
-                    Log.info("click" + path + " : " + scriptInfo);
-                    mainModule.getEditLinker().onModuleSelection(AreaModule.this);
-                }
-            }
-        };
-        addListener(Events.OnClick, listener);
-        addListener(Events.OnContextMenu, listener);
-        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,mainModule.getEditLinker()));
-
-        Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().addHover(AreaModule.this);
-            }
-        };
-        Listener<ComponentEvent> outListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().removeHover(AreaModule.this);
-            }
-        };
-
-        addListener(Events.OnMouseOver, hoverListener);
-        addListener(Events.OnMouseOut, outListener);
-
     }
 }

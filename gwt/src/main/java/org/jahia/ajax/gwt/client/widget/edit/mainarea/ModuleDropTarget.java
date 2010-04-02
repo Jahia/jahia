@@ -97,5 +97,20 @@ public class ModuleDropTarget extends DropTarget {
         return allowed;
     }
     
+    @Override
+    protected void onDragEnter(DNDEvent e) {
+        if (module.getParentModule().getNode().isWriteable() && !module.getParentModule().getNode().isLocked()) {
+            boolean allowed = checkNodeType(e, module.getParentModule().getNodeTypes());
+            if (allowed) {
+                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
+                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
+                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getParentModule().getNode());
+            }
+            e.getStatus().setStatus(allowed);
+            e.setCancelled(false);
+        } else {
+            e.getStatus().setStatus(false);
+        }
+    }
 
 }

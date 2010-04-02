@@ -28,6 +28,11 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class SimpleModule extends Module {
+    protected boolean hasDragDrop = true;
+
+    public SimpleModule(String id, String path, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, MainModule mainModule) {
+        super(id, path, template, scriptInfo, nodeTypes, locked, shared, mainModule);
+    }
 
     public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, final MainModule mainModule) {
         super(id, path, template, scriptInfo, nodeTypes, locked, shared, mainModule);
@@ -50,13 +55,17 @@ public class SimpleModule extends Module {
 
     public void onParsed() {
         Log.debug("Add drag source for simple module "+path);
-        DragSource source = new SimpleModuleDragSource(this);
-        source.addDNDListener(mainModule.getEditLinker().getDndListener());
 
-        DropTarget target = new SimpleModuleDropTarget(this);
-        target.setAllowSelfAsSource(true);
-        target.addDNDListener(mainModule.getEditLinker().getDndListener());
+        if (hasDragDrop) {
+            DragSource source = new ModuleDragSource(this);
+            source.addDNDListener(mainModule.getEditLinker().getDndListener());
+            DropTarget target = new ModuleDropTarget(this);
+            target.setAllowSelfAsSource(true);
+            target.addDNDListener(mainModule.getEditLinker().getDndListener());
+        }
+
         sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT+Event.ONCONTEXTMENU);
+
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
                 if (selectable) {
@@ -89,46 +98,5 @@ public class SimpleModule extends Module {
         if(node.isShared()) {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }
-    }
-
-    public class SimpleModuleDragSource extends ModuleDragSource {
-        public SimpleModuleDragSource(SimpleModule simpleModule) {
-            super(simpleModule);
-        }
-
-        @Override
-        protected void onDragStart(DNDEvent e) {
-            super.onDragStart(e);
-            Selection.getInstance().hide();
-            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-            List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-            l.add(getModule().getNode());
-            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
-        }
-
-    }
-
-    public class SimpleModuleDropTarget extends ModuleDropTarget {
-        public SimpleModuleDropTarget(SimpleModule simpleModule) {
-            super(simpleModule);
-        }
-
-        @Override
-        protected void onDragEnter(DNDEvent e) {
-            super.onDragEnter(e);
-            if (getModule().getParentModule().getNode().isWriteable() && !getModule().getParentModule().getNode().isLocked()) {
-                boolean allowed = checkNodeType(e, nodeTypes);
-                if (allowed) {
-                    e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-                    e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
-                    e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());
-                }
-                e.getStatus().setStatus(allowed);
-                e.setCancelled(false);
-            } else {
-                e.getStatus().setStatus(false);
-            }
-        }
-
     }
 }

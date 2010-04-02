@@ -3,7 +3,12 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.google.gwt.user.client.DOM;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDragSource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,6 +55,13 @@ public class ModuleDragSource extends EditModeDragSource {
             } else {
                 e.setCancelled(true);
             }
+
+            Selection.getInstance().hide();
+            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
+            List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
+            l.add(getModule().getNode());
+            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
         }
     }
+
 }

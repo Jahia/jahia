@@ -26,7 +26,7 @@ import java.util.List;
  * Time: 7:25:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ListModule extends Module {
+public class ListModule extends SimpleModule {
 
     public ListModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, MainModule mainModule) {
         super(id, path, template, scriptInfo, nodeTypes, locked, shared, mainModule);
@@ -48,89 +48,4 @@ public class ListModule extends Module {
         html = new HTML(s);
         add(html);
     }
-
-    public void onParsed() {
-//        getHeader().sinkEvents(Event.ONCLICK + Event.ONDBLCLICK);
-
-        DragSource source = new ListModuleDragSource(this);
-        source.addDNDListener(mainModule.getEditLinker().getDndListener());
-
-        DropTarget target = new ListModuleDropTarget(this);
-        target.setAllowSelfAsSource(true);
-        target.addDNDListener(mainModule.getEditLinker().getDndListener());
-        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT+Event.ONCONTEXTMENU);
-
-        Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                if (selectable) {
-                    Log.info("click" + path + " : " + scriptInfo);
-                    mainModule.getEditLinker().onModuleSelection(ListModule.this);
-                }
-            }
-        };
-        addListener(Events.OnClick, listener);
-        addListener(Events.OnContextMenu, listener);
-        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,mainModule.getEditLinker()));
-
-        Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().addHover(ListModule.this);
-            }
-        };
-        Listener<ComponentEvent> outListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Hover.getInstance().removeHover(ListModule.this);
-            }
-        };
-
-        addListener(Events.OnMouseOver, hoverListener);
-        addListener(Events.OnMouseOut, outListener);
-
-    }
-
-    public void setNode(GWTJahiaNode node) {
-        super.setNode(node);
-        if(node.isShared()) {
-            this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
-        }
-    }
-
-    public class ListModuleDragSource extends ModuleDragSource {
-        public ListModuleDragSource(ListModule simpleModule) {
-            super(simpleModule);
-        }
-
-        @Override
-        protected void onDragStart(DNDEvent e) {
-            super.onDragStart(e);
-            Selection.getInstance().hide();
-            e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-            List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-            l.add(getModule().getNode());
-            e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);
-        }
-
-    }
-
-    public class ListModuleDropTarget extends ModuleDropTarget {
-        public ListModuleDropTarget(ListModule simpleModule) {
-            super(simpleModule);
-        }
-
-        @Override
-        protected void onDragEnter(DNDEvent e) {
-            super.onDragEnter(e);
-            if (getModule().getParentModule().getNode().isWriteable() && !getModule().getParentModule().getNode().isLocked()) {
-                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.SIMPLEMODULE_TYPE);
-                e.getStatus().setData(EditModeDNDListener.TARGET_PATH, getPath());
-                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, getNode());
-                e.getStatus().setStatus(true);
-                e.setCancelled(false);
-            } else {
-                e.getStatus().setStatus(false);
-            }
-        }
-
-    }
-
 }

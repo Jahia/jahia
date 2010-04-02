@@ -143,7 +143,7 @@ public class TemplateHelper {
             final RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
 
             JCRSiteNode site = node.resolveSite();
-            renderContext.setSite((JCRSiteNode) node);
+            renderContext.setSite(site);
 
             if (mode == EDIT) {
                 renderContext.setEditMode(true);

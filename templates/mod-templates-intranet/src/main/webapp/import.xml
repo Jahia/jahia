@@ -13,7 +13,7 @@
                         <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"
                                           jcr:primaryType="jnt:simpleSearchForm" jcr:mixinTypes="jmix:templateInformation"  j:templateLocked="true" />
                         <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68" jcr:created="2010-03-29T16:33:11.425+02:00" jcr:primaryType="jnt:navMenu" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-03-29T16:46:13.743+02:00">
-                            <navMenuMultilevel jcr:uuid="1dee5898-893b-43eb-817f-49f07bee4367" j:maxDepth="2" j:relativeToCurrentNode="false" jcr:created="2010-03-29T16:34:05.661+02:00" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="1" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-03-29T16:34:17.308+02:00"/>
+                            <navMenuMultilevel jcr:uuid="1dee5898-893b-43eb-817f-49f07bee4367" j:maxDepth="2" j:useVisitedNodeAsBaseline="false" jcr:created="2010-03-29T16:34:05.661+02:00" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="1" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-03-29T16:34:17.308+02:00"/>
                         </topBar>
                         <shortcuts jcr:uuid="6796e0e7-4e22-47fe-8c59-607d66722c3a"
                                    jcr:primaryType="jnt:shortcuts" jcr:mixinTypes="jmix:templateInformation"  j:templateLocked="true" />

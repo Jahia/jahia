@@ -1228,78 +1228,6 @@
     </bean>
     <!-- end of Content Manager item groups -->
 
-    <!-- base item: open window, redirect, display info, ajax action, separator-->
-    <bean id="org.jahia.toolbar.item.OpenWindow" class="org.jahia.services.toolbar.bean.Item">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="http://www.jahia.org"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="width"/>
-                    <property name="value" value="1020"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="height"/>
-                    <property name="value" value="730"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.toolbar.item.OpenEngineWindow" class="org.jahia.services.toolbar.bean.Item">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenEngineWindowActionItem"/>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="windowName"/>
-                    <property name="value" value="enginePopupWindow"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="parameters"/>
-                    <property name="value"
-                              value="menubar=no,location=no,resizable=yes,scrollbars=yes,status=yes,width=1020,height=730"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Redirect item-->
-    <bean id="org.jahia.toolbar.item.RedirectWindow" class="org.jahia.services.toolbar.bean.Item">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="http://www.jahia.org"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- Switch mode item-->
-    <bean id="org.jahia.toolbar.item.SwitchMode" class="org.jahia.services.toolbar.bean.Item">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="mode"/>
-                    <property name="value" value="preview"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
     <!-- show compare mode-->
     <bean id="org.jahia.toolbar.item.ShowCompareEngine" class="org.jahia.services.toolbar.bean.Item">
         <property name="titleKey" value="label.compare"/>
@@ -1309,30 +1237,6 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ShowCompareEngine"/>
         </property>
     </bean>
-
-    <!-- base item: open window, redirect, display info, ajax action, separator-->
-    <bean id="org.jahia.toolbar.item.OpenHTMLWindow" class="org.jahia.services.toolbar.bean.Item">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenHTMLWindowActionItem"/>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="html"/>
-                    <property name="value" value="simple test"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="width"/>
-                    <property name="value" value="1020"/>
-                </bean>
-                <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="height"/>
-                    <property name="value" value="730"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
 
     <!-- Ajax Action item-->
     <bean id="org.jahia.toolbar.item.AjaxAction" class="org.jahia.services.toolbar.bean.Item">
@@ -1440,8 +1344,10 @@
     </bean>
 
     <!-- Live-->
-    <bean id="org.jahia.toolbar.item.Live" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.SwitchMode">
+    <bean id="org.jahia.toolbar.item.Live" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
+        </property>
         <property name="titleKey" value="label.live"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-live-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-live-normal"/>
@@ -1464,8 +1370,10 @@
 
 
     <!-- Preview-->
-    <bean id="org.jahia.toolbar.item.Preview" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.SwitchMode">
+    <bean id="org.jahia.toolbar.item.Preview" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
+        </property>
         <property name="titleKey" value="label.preview"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-preview-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-preview-normal"/>
@@ -1480,8 +1388,10 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.toolbar.item.Studio" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+    <bean id="org.jahia.toolbar.item.Studio" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.studio"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-edit-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-edit-normal"/>
@@ -1502,8 +1412,10 @@
     </bean>
 
     <!-- My settings-->
-    <bean id="org.jahia.toolbar.item.MySettings" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+    <bean id="org.jahia.toolbar.item.MySettings" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.mySettings"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-mysettings-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-mysettings-normal"/>
@@ -1524,8 +1436,10 @@
     </bean>
 
     <!-- Administration -->
-    <bean id="org.jahia.toolbar.item.Admin" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+    <bean id="org.jahia.toolbar.item.Admin" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.administration"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-admin-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-admin-normal"/>
@@ -1548,8 +1462,10 @@
     </bean>
 
     <!-- File Manager -->
-    <bean id="org.jahia.toolbar.item.FileManager" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.OpenWindow">
+    <bean id="org.jahia.toolbar.item.FileManager" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.documentManager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-filemanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-filemanager-normal"/>
@@ -1567,13 +1483,23 @@
                               value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwtfilemanager"/>
                 </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Content Manager -->
-    <bean id="org.jahia.toolbar.item.ContentManager" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.OpenWindow">
+    <bean id="org.jahia.toolbar.item.ContentManager" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.contentManager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-contentmanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-contentmanager-normal"/>
@@ -1591,13 +1517,23 @@
                               value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="contentmanager"/>
                 </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Mashup Manager -->
-    <bean id="org.jahia.toolbar.item.MashupManager" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.OpenWindow">
+    <bean id="org.jahia.toolbar.item.MashupManager" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.mashupmanager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-mashupmanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-mashupmanager-normal"/>
@@ -1616,13 +1552,23 @@
                               value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwtmashupmanager"/>
                 </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Category Manager -->
-    <bean id="org.jahia.toolbar.item.CategoryManager" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.OpenWindow">
+    <bean id="org.jahia.toolbar.item.CategoryManager" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.categorymanager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-categorymanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-categorymanager-normal"/>
@@ -1640,13 +1586,23 @@
                               value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwtcategorymanager"/>
                 </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Tag Manager -->
-    <bean id="org.jahia.toolbar.item.TagManager" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.OpenWindow">
+    <bean id="org.jahia.toolbar.item.TagManager" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.tagmanager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-tagmanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-tagmanager-normal"/>
@@ -1664,13 +1620,23 @@
                               value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwttagmanager"/>
                 </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Stie Manager -->
-    <bean id="org.jahia.toolbar.item.SiteManager" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.OpenWindow">
+    <bean id="org.jahia.toolbar.item.SiteManager" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.sitemanager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-sitemanager-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-sitemanager-normal"/>
@@ -1688,37 +1654,23 @@
                               value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="gwtsitemanager"/>
                 </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!-- GWT Workflow Manager -->
-    <bean id="org.jahia.toolbar.item.GWTWorkflow" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.OpenWindow">
-        <property name="titleKey" value="label.workflow"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-workflow-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-workflow-normal"/>
-        <property name="descriptionKey" value="label.workflow"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.toolbar.bean.Visibility">
-                <property name="mode" value="edit,preview,compare"/>
-            </bean>
-        </property>
-        <property name="properties">
-            <list>
                 <bean class="org.jahia.services.toolbar.bean.Property">
-                    <property name="name" value="url"/>
-                    <property name="classProvider"
-                              value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
-                    <property name="inputProvider" value="gwtworkflowmanager"/>
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
                 </bean>
             </list>
         </property>
     </bean>
 
     <!-- P-display -->
-    <bean id="org.jahia.toolbar.item.Pdisplay" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.OpenWindow">
+    <bean id="org.jahia.toolbar.item.Pdisplay" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.processManager"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-monitor-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-monitor-normal"/>
@@ -1736,13 +1688,23 @@
                               value="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"/>
                     <property name="inputProvider" value="monitor"/>
                 </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
             </list>
         </property>
     </bean>
 
     <!-- Logout -->
-    <bean id="org.jahia.toolbar.item.Logout" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+    <bean id="org.jahia.toolbar.item.Logout" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.logout"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-logout-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-logout-normal"/>
@@ -1765,8 +1727,10 @@
     </bean>
 
     <!-- Login -->
-    <bean id="org.jahia.toolbar.item.Login" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+    <bean id="org.jahia.toolbar.item.Login" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.login"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-login-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-login-normal"/>
@@ -1788,8 +1752,10 @@
     </bean>
 
     <!-- cache_on -->
-    <bean id="org.jahia.toolbar.item.CacheOn" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+    <bean id="org.jahia.toolbar.item.CacheOn" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.cacheon"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-login-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-login-normal"/>
@@ -1818,8 +1784,10 @@
     </bean>
 
     <!-- cache_off -->
-    <bean id="org.jahia.toolbar.item.CacheDebug" class="org.jahia.services.toolbar.bean.Item"
-          parent="org.jahia.toolbar.item.RedirectWindow">
+    <bean id="org.jahia.toolbar.item.CacheDebug" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+        </property>
         <property name="titleKey" value="label.cachedebug"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-login-min"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-login-normal"/>

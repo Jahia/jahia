@@ -118,6 +118,7 @@ public class ContentDetails extends BottomRightComponent {
         m_component = new ContentPanel(new FitLayout());
         m_component.setBodyBorder(false);
         m_component.setBorders(true);
+        m_component.setHeaderVisible(false);
         tabs = new TabPanel();
         tabs.setBodyBorder(false);
         tabs.setBorders(false);
@@ -128,7 +129,6 @@ public class ContentDetails extends BottomRightComponent {
         infoTabItem = new AsyncTabItem();
         infoTabItem.setText(Messages.getResource("fm_information"));
         infoTabItem.add(infoPanel);
-
         // properties
         propertiesTabItem = new AsyncTabItem();
         propertiesTabItem.setLayout(new FitLayout());

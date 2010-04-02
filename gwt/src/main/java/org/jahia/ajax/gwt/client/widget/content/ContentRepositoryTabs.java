@@ -172,6 +172,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         browseComponent = new ContentPanel(new AccordionLayout());
         browseComponent.setScrollMode(Style.Scroll.AUTO);
         browseComponent.getHeader().setBorders(false);
+        browseComponent.setHeaderVisible(false);
         browseComponent.setBodyBorder(true);
         browseComponent.setBorders(true);
         for (RepositoryTab tab : repositories) {

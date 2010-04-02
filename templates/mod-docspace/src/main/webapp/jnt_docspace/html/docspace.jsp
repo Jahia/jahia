@@ -112,8 +112,8 @@
     }
 </script>
 <div class='grid_12'><!--start grid_12-->
-<a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html">Back to: ${currentNode.parent.name}</a>
-<a href="#" id="actions" title="Delete" class="delete">Delete this Docspace</a>
+<a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html"><fmt:message key="docspace.label.back"/> ${currentNode.parent.name}</a>
+<a href="#" id="actions" title="Delete" class="delete"><fmt:message key="docspace.label.docspace.delete"/></a>
 <div class='clear'></div></div>
 
 <div class='grid_12'><!--start grid_12-->
@@ -128,9 +128,9 @@
                                                                               src="${url.currentModule}/css/img/docspacebig.png"/>
                         </div>
                     </div>
-                    <h3>Espace : <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
+                    <h3><fmt:message key="docspace.label.docspace"/> <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
 
-                    <p class="clearMaringPadding docspacedate">Date de creation :
+                    <p class="clearMaringPadding docspacedate"><fmt:message key="docspace.label.creation"/>
                         <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
                         <fmt:formatDate value="${created.time}" pattern="yyyy/MM/dd HH:mm"/>
                     </p>
@@ -165,8 +165,8 @@
 <%--list all users write write access to current node--%>
 
 <div class='grid_4'><!--start grid_4-->
-    <h4 class="boxdocspace-title">Docspace Workers</h4><template:area path="searchUsers" forceCreation="true"
-                                                           areaType="jnt:searchUsers"/>
+    <h4 class="boxdocspace-title"><fmt:message key="docspace.workers.list.title"/></h4>
+    <template:area path="searchUsers" forceCreation="true" areaType="jnt:searchUsers"/>
 
     <ul class="docspacelist docspacelistusers">
         <c:forEach items="${currentNode.aclEntries}" var="acls">
@@ -206,7 +206,7 @@
     </div>
 </div>-->
 
-    <h4 class="boxdocspace-title2">Document Workspaces</h4>
+    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.list.workspaces.title"/></h4>
 
     <div class="boxdocspace"><!--start boxdocspace -->
         <div class="boxdocspacegrey boxdocspacepadding10 ">
@@ -214,7 +214,7 @@
                 <div class="boxdocspace-inner-border">
 <div class="floatleft uploadfile">
                     <form action="${currentNode.name}/*" method="POST" name="uploadFile" enctype="multipart/form-data">
-                        <span><strong>Upload a new file to create its workspace: </strong></span>
+                        <span><strong><fmt:message key="docspace.label.upload.files"/></strong></span>
                         <input type="hidden" name="nodeType" value="jnt:file"/>
                         <input type="hidden" name="redirectTo"
                                value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -229,7 +229,7 @@
                         <input class="button" type="submit" id="upload" value="Upload"/>
                     </form>
 </div>
-<div class="floatright"><span><strong>Create a Sub-Docspace: </strong></span>
+<div class="floatright"><label><fmt:message key="docspace.label.subdocspace.new"/></label>
                     <a id="showCreateSubDocspace" href="#divCreateSubDocspace"><img alt="Create Sub Docspace" src="${url.currentModule}/css/img/create-sub-docspace-medium.png"/></a></div>
               <div class="clear"></div></div>
                 <!--stop formSearchTop-->
@@ -256,17 +256,16 @@
 <div class='clear'></div>
 
 <div id="divCreateSubDocspace">
-    <form id="createSubDocspace" method="post" action="" class="Form">
+<div class="popup-bodywrapper">
+<h3 class="boxdocspace-title"><fmt:message key="docspace.label.subdocspace.new"/></h3>
+    <form class="formDocspace" id="createSubDocspace" method="post" action="">
         <input type="hidden" name="autoCheckin" value="true">
         <input type="hidden" name="nodeType" value="jnt:docspace">
-
-        <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.workspace.new"/></h3>
         <fieldset>
-            <legend><fmt:message key="docspace.label.workspace.creation"/></legend>
+            <legend><fmt:message key="docspace.label.subdocspace.creation"/></legend>
             <p id="login_error" style="display:none;">Please, enter data</p>
 
-            <p><label for="docspacetitle" class="left"><fmt:message key="docspace.label.title"/>
-                :</label>
+            <p><label for="docspacetitle" class="left"><fmt:message key="docspace.label.title"/></label>
                 <input type="text" name="jcr:title" id="docspacetitle" class="field" value=""
                        tabindex="20"/></p>
 
@@ -275,10 +274,11 @@
                     key="docspace.label.description"/> :</label>
                 <textarea name="jcr:description" id="docspacedesc" cols="45" rows="3"
                           tabindex="21"></textarea></p>
-            <input type="button" value="<fmt:message key="docspace.label.workspace.create"/>" tabindex="28"
+            <input class="button" type="button" value="<fmt:message key="docspace.label.workspace.create"/>" tabindex="28"
                    id="docspacecreatebutton" onclick="$('#createSubDocspace').submit();">
         </fieldset>
     </form>
+    </div>
 </div>
 <!--stop grid_16-->
 

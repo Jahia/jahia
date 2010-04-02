@@ -1,7 +1,6 @@
 #bodywrapper .filetree span.folder  {
 background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 }
- 
 #bodywrapper .filetree li.collapsable span.folder{
 background:transparent url(img/docspace-open.png) no-repeat scroll 0 0;
 }
@@ -41,10 +40,10 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 #bodywrapper a.delete:active {
 	 font-size:0.9em;
 	 background:#990000 url(img/bg-docspacedelete.png) repeat-x scroll left top;
-	 color:#330000;
+	 color:#cc0000;
 	 padding:2px 5px;
 	 margin:0 5px;
-	 border:1px solid #990000;
+	 border:1px solid #cc0000;
 	 border-bottom:none;
 	 text-decoration:none;
 	-moz-border-radius-topleft :3px;
@@ -94,39 +93,39 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 	margin-left:-5px;
 	width:auto
 }
-/*Form create*/
-#bodywrapper .formCreateDocspace {
+/*Form Docspace*/
+#bodywrapper .formDocspace {
 	margin:0
 }
-#bodywrapper .formCreateDocspace fieldset {
+#bodywrapper .formDocspace fieldset {
 	border:none	
 }
-#bodywrapper .formCreateDocspace legend {
+#bodywrapper .formDocspace legend {
 	display:none	
 }
-#bodywrapper .formCreateDocspace input,
-#bodywrapper .formCreateDocspace textarea {
+#bodywrapper .formDocspace input,
+#bodywrapper .formDocspace textarea {
 	width:97%
 }
-#bodywrapper .formCreateDocspace p{
+#bodywrapper .formDocspace p{
 	clear:both;
 	margin:0.5em 0;
 	padding:0px
 }
-#bodywrapper .formCreateDocspace .formMarginLeft{ 
+#bodywrapper .formDocspace .formMarginLeft{ 
 	margin:0.5em 0 0.5em 0;
 	padding:0;
 }
-#bodywrapper .formCreateDocspace label.left,
-#bodywrapper .formCreateDocspace label {
+#bodywrapper .formDocspace label.left,
+#bodywrapper .formDocspace label {
 	display:block;
 	font-weight:bold;
 	
 }
-#bodywrapper .formCreateDocspace input.radio,
-#bodywrapper .formCreateDocspace input.checkbox,
-#bodywrapper .formCreateDocspace input.button,
-#bodywrapper .formCreateDocspace button {
+#bodywrapper .formDocspace input.radio,
+#bodywrapper .formDocspace input.checkbox,
+#bodywrapper .formDocspace input.button,
+#bodywrapper .formDocspace button {
 	width:auto;
 }
 /******************************************************************************
@@ -348,6 +347,7 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 #bodywrapper .docspacelistcomment li {
 	padding:10px;
 	margin:0;
+	margin-bottom:10px;
 	list-style:none;
 	background: url(img/hr.png) repeat-x bottom left;
 }
@@ -425,14 +425,66 @@ font-weight:bold
 #bodywrapper .itemImageLeft{
 	margin-bottom:10px;
 }
-
+/******************************************************************************
+*  Create SubDocspace Pop up
+******************************************************************************/
+/*Pop up*/
 #divCreateSubDocspace {
     overflow: auto;
 	width: 500px;
-	height: 200px;
-	background-color: #FDFDFD;
+	height: 230px;
+	background-color: #eaeaea;
 }
 
 #bodywrapper #divCreateSubDocspace {
 	display: none;
 }
+/*Form Title Pop up*/
+#divCreateSubDocspace h3.boxdocspace-title {
+	background:#666666 url(img/boxdocspace-h4title.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
+/*Form Docspace Pop up*/
+#divCreateSubDocspace .formDocspace {
+	margin:10px
+}
+#divCreateSubDocspace .formDocspace fieldset {
+	border:none	
+}
+#divCreateSubDocspace .formDocspace legend {
+	display:none	
+}
+#divCreateSubDocspace .formDocspace input,
+#divCreateSubDocspace .formDocspace textarea {
+	width:97%
+}
+#divCreateSubDocspace .formDocspace p{
+	clear:both;
+	margin:0.5em 0;
+	padding:0px
+}
+#divCreateSubDocspace .formDocspace .formMarginLeft{ 
+	margin:0.5em 0 0.5em 0;
+	padding:0;
+}
+#divCreateSubDocspace .formDocspace label.left,
+#divCreateSubDocspace .formDocspace label {
+	display:block;
+	font-weight:bold;
+	
+}
+#divCreateSubDocspace .formDocspace input.radio,
+#divCreateSubDocspace .formDocspace input.checkbox,
+#divCreateSubDocspace .formDocspace input.button,
+#divCreateSubDocspace .formDocspace button {
+	width:auto;
+}
+

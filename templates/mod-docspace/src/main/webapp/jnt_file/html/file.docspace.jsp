@@ -58,8 +58,8 @@
     });
 </script>
 <div class='grid_12'><!--start grid_12-->
-<a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html">Back to: ${currentNode.parent.name}</a>
-<a href="#" id="actions" title="Delete" class="delete">Delete this file SPACE</a>
+<a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html"><fmt:message key="docspace.label.back"/> ${currentNode.parent.name}</a>
+<a href="#" id="actions" title="Delete" class="delete"><fmt:message key="docspace.label.file.delete"/></a>
 <div class='clear'></div></div>
 <div class='grid_12'><!--start grid_12-->
     <div class="boxdocspace "><!--start boxdocspace -->
@@ -71,20 +71,22 @@
                                 href="${currentNode.url}"><img title="Download" value="download" src="${url.currentModule}/css/img/documentbig.png"/></a>
                         </div>
                     </div>
-                    <h3><fmt:message key="docspace.label.document.name"/> : <a href="${currentNode.url}"><img title="Download" value="download" src="${url.currentModule}/css/img/download.png"/>  ${currentNode.name}</a></h3>
+                    <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}"><img title="Download" value="download" src="${url.currentModule}/css/img/download.png"/>  ${currentNode.name} ${currentNode.baseVersion.name}</a></h3>
 
                     <p class="clearMaringPadding docspacedate "><fmt:message key="label.created"/> : <fmt:formatDate
                             value="${currentNode.properties['jcr:created'].time}" pattern="yyyy/MM/dd"/>, <fmt:message
-                            key="docspace.label.document.createdBy"/> : <span class="author"><a
+                            key="docspace.label.document.createdBy"/> <span class="author"><a
                             href="${url.base}/users/${currentNode.properties['jcr:createdBy'].string}.html">${currentNode.properties['jcr:createdBy'].string}</a></span>
                     </p>
 
                     <p class="clearMaringPadding docspacedate"><fmt:message
-                            key="docspace.label.document.lastModification"/> : <fmt:formatDate
+                            key="docspace.label.document.lastModification"/> <fmt:formatDate
                             value="${currentNode.properties['jcr:lastModified'].time}" pattern="yyyy/MM/dd"/>,
-                        <fmt:message key="docspace.label.document.createdBy"/> : <span class="author"><a
+                        <fmt:message key="docspace.label.document.createdBy"/> <span class="author"><a
                                 href="${url.base}/users/${currentNode.properties['jcr:lastModifiedBy'].string}.html">${currentNode.properties['jcr:lastModifiedBy'].string}</a></span>
                     </p>
+<div class="clear"></div>
+<hr/>    
                     <div class="clear"></div>
                    <template:option node="${currentNode}" template="hidden.tags"
                                         nodetype="jmix:tagged"/><template:option node="${currentNode}"
@@ -118,7 +120,7 @@
                                         <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
                                         <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
                                         <input type="hidden" name="version" value="true"/>
-										<span><strong><fmt:message key="docspace.label.document.add.version"/></strong></span>
+										<label><fmt:message key="docspace.label.document.add.version"/></label>
 
                                             <input type="file" name="file">
                                             <input class="button" type="submit" id="upload" value="Upload"/>
@@ -127,7 +129,7 @@
             </div>
         </div>
     </div>
-    <h4 class="boxdocspace-title2">Document history</h4>
+    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.document.history.tile"/></h4>
     
         
 
@@ -150,7 +152,7 @@
 
 
 <div class='grid_4'><!--start grid_4-->
-    <h4 class="boxdocspace-title">Description</h4>
+    <h4 class="boxdocspace-title"><fmt:message key="docspace.label.description.title"/></h4>
 
     <div class="boxdocspace"><!--start boxdocspace -->
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
@@ -160,7 +162,7 @@
                         <span jcr:id="jcr:description" id="ckeditorEditDescription"
                               jcr:url="${url.base}${currentNode.path}">
                         <c:if test="${not empty currentNode.properties['jcr:description'].string}">${currentNode.properties['jcr:description'].string}</c:if>
-                        <c:if test="${empty currentNode.properties['jcr:description'].string}">Add a description (click here)</c:if>
+                        <c:if test="${empty currentNode.properties['jcr:description'].string}"><fmt:message key="docspace.label.add.description"/></c:if>
                     </span>
 
                     </p>
@@ -172,7 +174,7 @@
     </div>
     <!--stop boxdocspace -->
 
-    <h4 class="boxdocspace-title">Versions</h4>
+    <h4 class="boxdocspace-title"><fmt:message key="docspace.label.document.version.tile"/></h4>
     <ul class="docspacelist docspacelistversion">
         <c:set var="checkPublishedVersion" value="true"/>
         <c:forEach items="${functions:reverse(currentNode.versionsAsVersion)}" var="version" varStatus="status">
@@ -202,7 +204,7 @@
                 <p class="docspacedate"><fmt:formatDate
                         value="${version.created.time}" pattern="yyyy/MM/dd HH:mm"/>
                     <c:if test="${publishedVersion eq 'true'}">
-                        &nbsp;(published)
+                        &nbsp;<fmt:message key="docspace.label.published"/>
                         <c:set var="checkPublishedVersion" value="false"/>
                         <c:set var="publishedVersion" value="false"/>
                     </c:if>

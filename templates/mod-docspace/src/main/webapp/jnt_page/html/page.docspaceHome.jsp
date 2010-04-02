@@ -33,7 +33,7 @@
     });
 </script>
 <div class='grid_6'><!--start grid_6-->
-    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.workspace"/></h4>
+    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.docspace.title"/></h4>
 
     <div class="boxdocspace"><!--start boxdocspace -->
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
@@ -55,28 +55,28 @@
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border"><!--start boxdocspace -->
 
-                    <div class="formCreateDocspace">
+                    <div class="formDocspace">
                         <form method="post" action="${currentNode.name}/" name="newDocspace">
                             <input type="hidden" name="autoCheckin" value="true">
                             <input type="hidden" name="nodeType" value="jnt:docspace">
 
-                            <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.workspace.new"/></h3>
+                            <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.docspace.new"/></h3>
                             <fieldset>
                                 <legend><fmt:message key="docspace.label.workspace.creation"/></legend>
 
-                                <p><label for="docspacetitle" ><fmt:message key="docspace.label.title"/>:</label>
+                                <p><label for="docspacetitle" ><fmt:message key="docspace.label.title"/></label>
                                     <input type="text" name="jcr:title" id="docspacetitle" class="field" value=""
                                            tabindex="20"/></p>
 
 
                                 <p><label for="docspacedesc" ><fmt:message
-                                        key="docspace.label.description"/>:</label>
+                                        key="docspace.label.description"/></label>
                                     <textarea name="jcr:description" id="docspacedesc" cols="45" rows="3"
                                               tabindex="21"></textarea></p>
 
                                 <div>
                                     <input type="submit" class="button"
-                                           value="<fmt:message key="docspace.label.workspace.create"/>" tabindex="28"
+                                           value="<fmt:message key="docspace.label.docspace.create"/>" tabindex="28"
                                            onclick="
                                                    if (document.newDocspace.elements['jcr:title'].value == '') {
                                                        alert('you must fill the title ');
@@ -107,7 +107,7 @@
             <div class="boxdocspace-inner">
 
                 <div id="search-docspace">
-                    <h3 class="boxdocspacetitleh3">Search</h3>
+                    <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.search"/></h3>
 
                     <form method="get" action="#">
                         <fieldset>
@@ -119,12 +119,12 @@
                                 <label class="formFloatLeft">
                                     <input type="radio" tabindex="10" id="RadioGroup2_0" value="radio"
                                            name="RadioGroup2"/>
-                                    Tags, Categories</label>
+                                    <fmt:message key="docspace.label.search.option1"/></label>
                                 <label class="formFloatLeft">
                                     <input type="radio" tabindex="11" id="RadioGroup2_1" value="radio"
                                            name="RadioGroup2"/>
                                 </label>
-                                all content</p>
+                                <fmt:message key="docspace.label.search.option2"/></p>
                         </fieldset>
                     </form>
                 </div>
@@ -135,7 +135,7 @@
     </div>
     <!--stop boxdocspace -->
     <div class='grid_5 alpha '><!--start grid_5-->
-        <h4 class="boxdocspace-title"><fmt:message key="docspace.label.workspace.last.document"/></h4>
+        <h4 class="boxdocspace-title"><fmt:message key="docspace.label.docspace.last.document"/></h4>
         <ul class="docspacelist">
             <jcr:sql var="result"
                      sql="select * from [jnt:file] as file where isdescendantnode(file, ['${currentNode.path}']) order by file.[jcr:lastModified] desc"/>
@@ -151,7 +151,6 @@
                            href="${url.baseLive}${document.path}.docspace.html"
                            title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
                     </c:if>
-                    <span class="docspacelistinfo">${jcr:humanReadableFileLength(document)}</span>
 
                     <p class="docspacelistinfo2">${functions:abbreviate(functions:removeHtmlTags(document.properties['jcr:description'].string),100,150,'...')}</p>
                 </li>
@@ -161,7 +160,7 @@
     </div>
     <!--stop grid_5-->
     <div class='grid_5 omega'><!--start grid_5-->
-        <h4 class="boxdocspace-title"><fmt:message key="docspace.label.workspace.last"/></h4>
+        <h4 class="boxdocspace-title"><fmt:message key="docspace.label.docspace.last"/></h4>
         <ul class="docspacelist">
             <jcr:sql var="result"
                      sql="select * from [jnt:docspace] as file where isdescendantnode(file, ['${currentNode.path}']) order by file.[jcr:lastModified] desc"/>

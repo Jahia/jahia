@@ -64,13 +64,15 @@ public class DocumentConverter extends HttpServlet implements Controller {
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        FileUpload fu = new FileUpload(request, "./tmp_transform", Integer.MAX_VALUE);
+        FileUpload fu = new FileUpload(request, converterService.getTmpDirectory(), Integer.MAX_VALUE);
         DiskFileItem inputFile = fu.getFileItems().get("fileField");
         String returnedMimeType = fu.getParameterValues("mimeType") != null ? fu.getParameterValues("mimeType")[0] : null;
 
+        ServletOutputStream outputStream = response.getOutputStream();
+
         converterService.convert(inputFile.getInputStream(),
                                 inputFile.getContentType(),
-                                response.getOutputStream(),
+                                outputStream,
                                 returnedMimeType);
 
         // return a file
@@ -79,6 +81,11 @@ public class DocumentConverter extends HttpServlet implements Controller {
                 "inline; filename=" + FilenameUtils.getName(inputFile.getName())
                         + "." + converterService.getExtension(returnedMimeType));
 
+        try {
+            outputStream.flush();
+        } finally {
+            outputStream.close();
+        }
 
         return null;
     }

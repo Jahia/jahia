@@ -111,12 +111,12 @@ public class DocumentConverterService {
     public void convert(InputStream inputStream, String inputFileName, OutputStream outputStream, String outputMimeType) {
 
         try {
-            String filesName = String.valueOf(System.currentTimeMillis());
+            
             // The outputFile required by the service
-            File outputFile = File.createTempFile(filesName, TMP_DIRECTORY);
+            File outputFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), tmpDirectory);
 
             // convert inputFile to outputFile
-            convert(getFile(inputStream, filesName),
+            convert(getFile(inputStream, String.valueOf(System.currentTimeMillis())),
                     formatRegistry.getFormatByExtension(inputFileName),
                     outputFile, getFormatByMimeType(outputMimeType));
 
@@ -170,7 +170,7 @@ public class DocumentConverterService {
 
         try {
 
-            file = File.createTempFile(fileName, TMP_DIRECTORY);
+            file = File.createTempFile(fileName, tmpDirectory);
             os = new FileOutputStream(file);
             byte buf[]=new byte[4096];
             int len;

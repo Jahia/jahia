@@ -16,6 +16,7 @@ Advanced search features
 
   * <Minimum hit count to start suggesting> - the number of hit count for the search query to perform the suggestion. Default value is 2.
 
+
   * <Number of suggested hits shown> - how many hits for the corrected query we will show? Defaults to 2.
 
   []

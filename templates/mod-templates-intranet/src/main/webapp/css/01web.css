@@ -25,7 +25,7 @@ img,body,html{border:0;}
 body {
 	background-color:#7b7b7b;
 }
-#bodywrapper {
+body {
 	background-color:#7b7b7b;
 	color:#333;
 	margin:0;
@@ -34,6 +34,9 @@ body {
 	line-height:normal;
 	font-size:80%;
 	line-height:160%
+}
+#bodywrapper {
+
 	}
 /******************************************************************************
 * Utils
@@ -265,16 +268,14 @@ body {
 }
 
 #bodywrapper h4 {
-	font-weight:bold;
 	font-size:1.2em;
 	margin-bottom:10px;
 	margin-top:10px;
-	font-family: MetaPro-Black, Arial, Helvetica, sans-serif;
+	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
 }
 #bodywrapper h5 {
 	font-weight:bold;
 	font-size:1em;
-	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
 }
 
 #bodywrapper fieldset {

@@ -41,13 +41,19 @@ import org.jahia.api.Constants;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.*;
-import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.*;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeDefinition;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
 import java.io.IOException;
@@ -61,18 +67,17 @@ import java.util.*;
  * Jahia specific actions.
  *
  * @author toto
- *
  */
 public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWrapper {
     protected static final Logger logger = Logger.getLogger(JCRNodeWrapper.class);
 
     protected Node objectNode = null;
-    protected Map<Locale,Node> i18NobjectNodes = null;
+    protected Map<Locale, Node> i18NobjectNodes = null;
 
     protected String[] defaultPerms = {Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS, Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE};
 
     private static final String J_PRIVILEGES = "j:privileges";
-    
+
     private transient Map<String, String> propertiesAsString;
 
     protected JCRNodeWrapperImpl(Node objectNode, String path, JCRSessionWrapper session, JCRStoreProvider provider) {
@@ -107,7 +112,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             return (JCRNodeWrapper) session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(), "/"));
         } else {
-            return (JCRNodeWrapper) session.getItem(StringUtils.substringBeforeLast(getPath(),"/"));
+            return (JCRNodeWrapper) session.getItem(StringUtils.substringBeforeLast(getPath(), "/"));
         }
     }
 
@@ -287,11 +292,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 if (identifier != null) {
                     org.jahia.services.content.nodetypes.Name jahiaName = new org.jahia.services.content.nodetypes.Name(name, NodeTypeRegistry.getInstance().getNamespaces());
-                    Name qname = NameFactoryImpl.getInstance().create(jahiaName.getUri() == null ? "" : jahiaName.getUri(),jahiaName.getLocalName());
+                    Name qname = NameFactoryImpl.getInstance().create(jahiaName.getUri() == null ? "" : jahiaName.getUri(), jahiaName.getLocalName());
                     org.jahia.services.content.nodetypes.Name jahiaTypeName = NodeTypeRegistry.getInstance().getNodeType(type).getNameObject();
                     Name typeName = NameFactoryImpl.getInstance().create(jahiaTypeName.getUri(), jahiaTypeName.getLocalName());
                     Node child;
-                    child = ((NodeImpl)objectNode).addNode(qname, typeName, org.apache.jackrabbit.core.id.NodeId.valueOf(identifier));
+                    child = ((NodeImpl) objectNode).addNode(qname, typeName, org.apache.jackrabbit.core.id.NodeId.valueOf(identifier));
                     return provider.getNodeWrapper(child, buildSubnodePath(name), session);
                 } else {
                     return addNode(name, type);
@@ -316,7 +321,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     * @deprecated As of JCR 2.0, {@link #getIdentifier()} should be used instead. 
+     *
+     * @deprecated As of JCR 2.0, {@link #getIdentifier()} should be used instead.
      */
     public String getUUID() throws UnsupportedRepositoryOperationException, RepositoryException {
         return objectNode.getUUID();
@@ -350,7 +356,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public String getUrl() {
         if (objectNode != null) {
-            return provider.getHttpPath()+"/"+getSession().getWorkspace().getName() + getPath();
+            return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + getPath();
         }
         return "";
     }
@@ -419,7 +425,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     * @deprecated 
+     *
+     * @deprecated
      */
     public List<JCRNodeWrapper> getChildren() {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
@@ -492,8 +499,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), session);
                     list.add(child);
                 } catch (PathNotFoundException e) {
-                    if(logger.isDebugEnabled())
-                    logger.debug(e.getMessage(), e);
+                    if (logger.isDebugEnabled())
+                        logger.debug(e.getMessage(), e);
                 }
             }
         }
@@ -532,7 +539,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
         if (objectNode.hasNode(s)) {
             return provider.getNodeWrapper(objectNode.getNode(s), buildSubnodePath(s), session);
-        }        
+        }
         List<JCRNodeWrapper> c = getChildren();
         for (JCRNodeWrapper jcrNodeWrapper : c) {
             if (jcrNodeWrapper.getName().equals(s)) {
@@ -587,7 +594,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             propertiesAsString = res;
         }
-        
+
         return propertiesAsString;
     }
 
@@ -825,7 +832,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -837,7 +844,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 language = getI18N(locale).getProperty("jcr:language").getString();
             } catch (Exception e) {
                 language = getSession().getLocale().toString();
-            }            
+            }
         }
         return language;
     }
@@ -849,7 +856,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @return
      */
     public Node getI18N(Locale locale) throws RepositoryException {
-        return getI18N(locale,true);
+        return getI18N(locale, true);
     }
 
     private Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
@@ -874,9 +881,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             i18NobjectNodes.put(locale, null);
         }
-        if(fallback) {
+        if (fallback) {
             final Locale fallbackLocale = getSession().getFallbackLocale();
-            if(fallbackLocale !=null && fallbackLocale!=locale) {
+            if (fallbackLocale != null && fallbackLocale != locale) {
                 return getI18N(fallbackLocale);
             }
         }
@@ -885,7 +892,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public Node getOrCreateI18N(Locale locale) throws RepositoryException {
         try {
-            return getI18N(locale,false);
+            return getI18N(locale, false);
         } catch (RepositoryException e) {
             Node t = objectNode.addNode("j:translation", "jnt:translation");
             t.setProperty("jcr:language", locale.toString());
@@ -919,8 +926,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         final Node localizedNode = getI18N(locale);
                         String localeString = localizedNode.getProperty("jcr:language").getString();
                         return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name + "_" + localeString),
-                                                          session, provider, getApplicablePropertyDefinition(name),
-                                                          name);
+                                session, provider, getApplicablePropertyDefinition(name),
+                                name);
                     } catch (ItemNotFoundException e) {
                         return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
                     }
@@ -955,7 +962,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (checkValidity()) {
             final Locale locale = getSession().getLocale();
             if (locale != null) {
-                return new LazyPropertyIterator(this, locale,s);
+                return new LazyPropertyIterator(this, locale, s);
             }
             return new LazyPropertyIterator(this, null, s);
         } else {
@@ -1168,7 +1175,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 final Node localizedNode = getI18N(locale);
                 String localeString = localizedNode.getProperty("jcr:language").getString();
-                return localizedNode.hasProperty(s+"_"+localeString);
+                return localizedNode.hasProperty(s + "_" + localeString);
             } catch (ItemNotFoundException e) {
             }
         }
@@ -1334,7 +1341,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         if (property.getDefinition().isMultiple() && (property.isMultiple())) {
                             copy.setProperty(property.getName(), property.getValues());
                         } else {
-                            copy.setProperty(property.getName(), property.getValue());      
+                            copy.setProperty(property.getName(), property.getValue());
                         }
                     }
                 } catch (Exception e) {
@@ -1383,7 +1390,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean lockAndStoreToken() throws RepositoryException  {
+    public boolean lockAndStoreToken() throws RepositoryException {
 
         Lock lock = objectNode.lock(false, false);
         if (lock.getLockToken() != null && isNodeType("jmix:lockable")) {
@@ -1499,12 +1506,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean forceUnlock() throws RepositoryException  {
+    public boolean forceUnlock() throws RepositoryException {
         if (!isLocked()) {
             return false;
         }
 
-        if (!isNodeType("jnt:translation") && !getLockedLocales().isEmpty())  {
+        if (!isNodeType("jnt:translation") && !getLockedLocales().isEmpty()) {
             return false;
         }
         if (hasProperty("j:locktoken")) {
@@ -1621,7 +1628,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 Version version = vi.nextVersion();
                 results.add(version);
             }
-            Collections.sort(results,new Comparator<Version>() {
+            Collections.sort(results, new Comparator<Version>() {
                 public int compare(Version o1, Version o2) {
                     try {
                         return o1.getCreated().compareTo(o2.getCreated());
@@ -1664,7 +1671,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             VersionHistory vh = objectNode.getSession().getWorkspace().getVersionManager().getVersionHistory(objectNode.getPath());
             Version v = JCRVersionService.findClosestVersion(vh, versionDate);
-            if (v==null) {
+            if (v == null) {
                 return null;
             }
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
@@ -1677,9 +1684,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * Change the permissions of a user on the given node.
+     *
      * @param objectNode The node on which to change permission
-     * @param user The user to update
-     * @param perm the permission to update for the user
+     * @param user       The user to update
+     * @param perm       the permission to update for the user
      * @throws RepositoryException
      */
     public static void changePermissions(Node objectNode, String user, String perm) throws RepositoryException {
@@ -1730,9 +1738,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * Change the permissions of a user on the given node.
+     *
      * @param objectNode The node on which to change permissions
-     * @param user The user to update
-     * @param perms A map with the name of the permission, and "GRANT" or "DENY" as a value
+     * @param user       The user to update
+     * @param perms      A map with the name of the permission, and "GRANT" or "DENY" as a value
      * @throws RepositoryException
      */
     public static void changePermissions(Node objectNode, String user, Map<String, String> perms) throws RepositoryException {
@@ -1804,6 +1813,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * Revoke all permissions for the specified user
+     *
      * @param objectNode The node on which to revoke permissions
      * @param user
      * @throws RepositoryException
@@ -1822,6 +1832,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * Revoke all permissions for all users on given node
+     *
      * @param objectNode The node on which to revoke all permission
      * @throws RepositoryException
      */
@@ -1837,6 +1848,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * Check if acl inheritance is broken on the given node or not
+     *
      * @param objectNode The node on which to check ACL inheritance break
      * @return true if ACL inheritance is broken
      * @throws RepositoryException
@@ -1850,8 +1862,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * Breaks the ACL inheritance on a given object node
-     * @param objectNode The node on which to set ACL inheritance
-     * @param inheritance true if ACL inheritance should be broken and false to inherit ACL from parent  
+     *
+     * @param objectNode  The node on which to set ACL inheritance
+     * @param inheritance true if ACL inheritance should be broken and false to inherit ACL from parent
      * @throws RepositoryException
      */
     public static void setAclInheritanceBreak(Node objectNode, boolean inheritance) throws RepositoryException {
@@ -1860,6 +1873,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * Returns the ACL node of the given node or creates one
+     *
      * @param objectNode The node to get the ACL node from
      * @return the ACL <code>Node</code> for the given node
      * @throws RepositoryException
@@ -1921,7 +1935,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean hasNode(String s) throws RepositoryException {
         // add mountpoints here
         final boolean b = objectNode.hasNode(s);
-        if(b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !"j:translation".equals(s) ){
+        if (b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !"j:translation".equals(s)) {
             final JCRNodeWrapper wrapper;
             try {
                 wrapper = (JCRNodeWrapper) getNode(s);
@@ -2173,7 +2187,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
+     *
+     * @throws UnsupportedRepositoryOperationException
+     *          as long as Jahia doesn't support it
      */
     public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
         throw new UnsupportedRepositoryOperationException();
@@ -2181,7 +2197,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
+     *
+     * @throws UnsupportedRepositoryOperationException
+     *          as long as Jahia doesn't support it
      */
     public PropertyIterator getProperties(String[] strings) throws RepositoryException {
         throw new UnsupportedRepositoryOperationException();
@@ -2210,7 +2228,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
+     *
+     * @throws UnsupportedRepositoryOperationException
+     *          as long as Jahia doesn't support it
      */
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
         return new PropertyIteratorImpl(objectNode.getWeakReferences(name), this);
@@ -2218,7 +2238,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
+     *
+     * @throws UnsupportedRepositoryOperationException
+     *          as long as Jahia doesn't support it
      */
     public void setPrimaryType(String nodeTypeName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
@@ -2256,7 +2278,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it 
+     *
+     * @throws UnsupportedRepositoryOperationException
+     *          as long as Jahia doesn't support it
      */
     public void followLifecycleTransition(String transition) throws UnsupportedRepositoryOperationException, InvalidLifecycleTransitionException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
@@ -2270,8 +2294,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public JCRNodeWrapper clone(JCRNodeWrapper sharedNode, String name) throws ItemExistsException, VersionException,
-                   ConstraintViolationException, LockException,
-                   RepositoryException {
+            ConstraintViolationException, LockException,
+            RepositoryException {
         if (!sharedNode.isNodeType("jmix:shareable")) {
             if (!sharedNode.isCheckedOut()) {
                 sharedNode.checkout();
@@ -2281,7 +2305,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             try {
                 final String path = sharedNode.getCorrespondingNodePath("live");
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback(){
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper n = session.getNode(path);
                         n.checkout();
@@ -2361,101 +2385,111 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public void synchro(final JCRNodeWrapper destinationNode, final boolean allowsExternalSharedNodes)
             throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession("root",new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper destNode = session.getNodeByUUID(destinationNode.getIdentifier());
-                JCRNodeWrapper originalNode = session.getNodeByUUID(getIdentifier());
-                if("j:acl".equals(destNode.getName())) {
-                    return null;
-                }
-                if (!destNode.isCheckedOut() && destNode.isVersioned()) {
-                    session.checkout(destNode);
-                }
-                final Map<String, String> uuidMapping = session.getUuidMapping();
+        if ("j:acl".equals(destinationNode.getName())) {
+            return;
+        }
+        if (!destinationNode.isCheckedOut() && destinationNode.isVersioned()) {
+            session.checkout(destinationNode);
+        }
+        final Map<String, String> uuidMapping = session.getUuidMapping();
 
-                if (isFile()) {
-                    JCRFileContent content = originalNode.getFileContent();
-                    InputStream is = content.downloadFile();
-                    destNode.getFileContent().uploadFile(is, content.getContentType());
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        logger.error(e, e);
-                    }
-                }
-
-                try {
-                    NodeType[] mixin = originalNode.getMixinNodeTypes();
-                    for (NodeType aMixin : mixin) {
-                        destNode.addMixin(aMixin.getName());
-                    }
-                } catch (RepositoryException e) {
-                    logger.error("Error adding mixin types to copy", e);
-                }
-
-                uuidMapping.put(getIdentifier(), destNode.getIdentifier());
-                if (hasProperty("jcr:language")) {
-                    destNode.setProperty("jcr:language", getProperty("jcr:language").getString());
-                }
-                PropertyIterator props = originalNode.getProperties();
-
-                while (props.hasNext()) {
-                    Property property = props.nextProperty();
-                    try {
-                        if (!property.getDefinition().isProtected()) {
-                            if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                                destNode.setProperty(property.getName(), property.getValues());
-                            } else {
-                                destNode.setProperty(property.getName(), property.getValue());
-                            }
-                        }
-                    } catch (Exception e) {
-                        logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
-                    }
-                }
-
-
-                if (!isFile()) {
-                    NodeIterator ni = originalNode.getNodes();
-                    while (ni.hasNext()) {
-                        JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
-                        if (source.isNodeType("mix:shareable") || (source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean())) {
-                            if (uuidMapping.containsKey(source.getIdentifier())) {
-                                // ugly save because to make node really shareable
-                                session.save();
-                                try {
-                                    JCRNodeWrapper node = destNode.getNode(source.getName());
-                                    source.synchro(node, allowsExternalSharedNodes);
-                                } catch (RepositoryException e) {
-                                    destNode.clone(session.getNodeByUUID(uuidMapping.get(source.getIdentifier())),
-                                                   source.getName());
-                                }
-                            } else {
-                                try {
-                                    JCRNodeWrapper node = destNode.getNode(source.getName());
-                                    source.synchro(node, allowsExternalSharedNodes);
-                                } catch (RepositoryException e) {
-                                    if (allowsExternalSharedNodes) {
-                                        destNode.clone(source, source.getName());
-                                    } else {
-                                        source.copy(destNode, source.getName(), allowsExternalSharedNodes);
-                                    }
-                                }
-                            }
-                        } else {
-                            try {
-                                JCRNodeWrapper node = destNode.getNode(source.getName());
-                                source.synchro(node, allowsExternalSharedNodes);
-                            } catch (RepositoryException e) {
-                                source.copy(destNode, source.getName(), allowsExternalSharedNodes);
-                            }
-                        }
-                    }
-                }
-                session.save();
-                return null;
+        if (isFile()) {
+            JCRFileContent content = getFileContent();
+            InputStream is = content.downloadFile();
+            destinationNode.getFileContent().uploadFile(is, content.getContentType());
+            try {
+                is.close();
+            } catch (IOException e) {
+                logger.error(e, e);
             }
-        });
+        }
+
+        try {
+            NodeType[] mixin = getMixinNodeTypes();
+            for (NodeType aMixin : mixin) {
+                destinationNode.addMixin(aMixin.getName());
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error adding mixin types to copy", e);
+        }
+
+        uuidMapping.put(getIdentifier(), destinationNode.getIdentifier());
+        if (hasProperty("jcr:language")) {
+            destinationNode.setProperty("jcr:language", getProperty("jcr:language").getString());
+        }
+        PropertyIterator props = this.getProperties();
+
+        while (props.hasNext()) {
+            Property property = props.nextProperty();
+            try {
+                if (!property.getDefinition().isProtected()) {
+                    if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                        destinationNode.setProperty(property.getName(), property.getValues());
+                    } else {
+                        destinationNode.setProperty(property.getName(), property.getValue());
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
+            }
+        }
+
+
+        if (!isFile()) {
+            NodeIterator ni = getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
+                if (source.isNodeType("mix:shareable") || (source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean())) {
+                    if (uuidMapping.containsKey(source.getIdentifier())) {
+                        // ugly save because to make node really shareable
+                        session.save();
+                        try {
+                            JCRNodeWrapper node = destinationNode.getNode(source.getName());
+                            source.synchro(node, allowsExternalSharedNodes);
+                        } catch (RepositoryException e) {
+                            destinationNode.clone(session.getNodeByUUID(uuidMapping.get(source.getIdentifier())),
+                                    source.getName());
+                        }
+                    } else {
+                        try {
+                            JCRNodeWrapper node = destinationNode.getNode(source.getName());
+                            source.synchro(node, allowsExternalSharedNodes);
+                        } catch (RepositoryException e) {
+                            if (allowsExternalSharedNodes) {
+                                destinationNode.clone(source, source.getName());
+                            } else {
+                                source.copy(destinationNode, source.getName(), allowsExternalSharedNodes);
+                            }
+                        }
+                    }
+                } else {
+                    try {
+                        JCRNodeWrapper node = destinationNode.getNode(source.getName());
+                        source.synchro(node, allowsExternalSharedNodes);
+                    } catch (RepositoryException e) {
+                        source.copy(destinationNode, source.getName(), allowsExternalSharedNodes);
+                    }
+                }
+            }
+        }
+        session.save();
+        // deploy to pages
+        if (isNodeType("jnt:page")) {
+            List<JCRNodeWrapper> pages = new ArrayList<JCRNodeWrapper>();
+            PropertyIterator pi = destinationNode.getWeakReferences("j:sourceTemplate");
+            while (pi.hasNext()) {
+                JCRPropertyWrapper property = (JCRPropertyWrapper) pi.next();
+                if (property.getParent().isNodeType("jnt:page")) {
+                    pages.add(property.getParent());
+                }
+            }
+
+
+            for (JCRNodeWrapper page : pages) {
+                destinationNode.synchro(page, false);
+            }
+        }
+
     }
 
 }

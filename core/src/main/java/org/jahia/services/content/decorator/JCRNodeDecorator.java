@@ -688,7 +688,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
     public void synchro(JCRNodeWrapper destNode, boolean allowsExternalSharedNodes) throws RepositoryException {
-        node.synchro(destNode, true);
+        node.synchro(destNode, allowsExternalSharedNodes);
     }
 
     public List<VersionInfo> getVersionInfos() throws RepositoryException {

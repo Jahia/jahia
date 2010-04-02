@@ -755,19 +755,24 @@ public class ContentManagerHelper {
         }
     }
 
-    public void synchro(Map<String, String> pathsToSyncronize, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public void synchro(final Map<String, String> pathsToSyncronize, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            for (Map.Entry<String, String> entry : pathsToSyncronize.entrySet()) {
-                JCRNodeWrapper originalNode = currentUserSession.getNode(entry.getKey());
-                JCRNodeWrapper destinationNode = null;
-                try {
-                    destinationNode = currentUserSession.getNode(entry.getValue());
-                    originalNode.synchro(destinationNode, true);
-                } catch (PathNotFoundException e) {
-                    destinationNode = currentUserSession.getNode(StringUtils.substringBeforeLast(entry.getValue(),"/"));
-                    originalNode.copy(destinationNode, StringUtils.substringAfterLast(entry.getValue(),"/"), true);
+            JCRTemplate.getInstance().doExecuteWithSystemSession(currentUserSession.getUser().getUsername(),new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (Map.Entry<String, String> entry : pathsToSyncronize.entrySet()) {
+                        JCRNodeWrapper originalNode = session.getNode(entry.getKey());
+                        JCRNodeWrapper destinationNode = null;
+                        try {
+                            destinationNode = session.getNode(entry.getValue());
+                            originalNode.synchro(destinationNode, true);
+                        } catch (PathNotFoundException e) {
+                            destinationNode = session.getNode(StringUtils.substringBeforeLast(entry.getValue(),"/"));
+                            originalNode.copy(destinationNode, StringUtils.substringAfterLast(entry.getValue(),"/"), true);
+                        }
+                    }
+                    return null;
                 }
-            }
+            });
             currentUserSession.save();
         } catch (RepositoryException e){
             logger.error(e.getMessage(),e);

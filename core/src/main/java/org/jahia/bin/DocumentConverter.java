@@ -35,6 +35,7 @@ package org.jahia.bin;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletOutputStream;
 
 import org.jahia.services.transform.DocumentConverterService;
 import org.jahia.tools.files.FileUpload;
@@ -80,7 +81,7 @@ public class DocumentConverter extends HttpServlet implements Controller {
         response.setHeader("Content-Disposition",
                 "inline; filename=" + FilenameUtils.getName(inputFile.getName())
                         + "." + converterService.getExtension(returnedMimeType));
-
+        
         try {
             outputStream.flush();
         } finally {

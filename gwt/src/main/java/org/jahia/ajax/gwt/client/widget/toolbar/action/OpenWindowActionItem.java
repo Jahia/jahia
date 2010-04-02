@@ -81,8 +81,9 @@ public class OpenWindowActionItem extends BaseActionItem {
             String name = getGwtToolbarItem().getTitle().replaceAll(" ", "_");
             Window.open(JahiaGWTParameters.getParam(jsUrl), name, wOptions);
         } else if (windowUrl != null && windowUrl.getValue() != null) {
+            String value = windowUrl.getValue().replace("${nodepath}", linker.getSelectedNode().getPath());
             String name = getGwtToolbarItem().getTitle().replaceAll(" ", "_");
-            Window.open(windowUrl.getValue(), name, wOptions);
+            Window.open(value, name, wOptions);
         }
     }
 

@@ -111,8 +111,9 @@
         return t;
     }
 </script>
-<div class='grid_16'><!--start grid_16-->
+<div class='grid_12'><!--start grid_12-->
 <a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html">Back to: ${currentNode.parent.name}</a>
+<a href="#" id="actions" title="Delete" class="delete">Delete this Docspace</a>
 <div class='clear'></div></div>
 
 <div class='grid_12'><!--start grid_12-->
@@ -121,8 +122,7 @@
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
-                    <div class="floatright">
-                                <a href="#" id="actions" title="Delete" class="delete"><span>Delete this Docspace </span><img src="${url.currentModule}/css/img/delete.png"/></a>                    </div>
+
               <div class="imagefloatleft">
                         <div class="itemImage itemImageLeft"><img alt=""
                                                                               src="${url.currentModule}/css/img/docspacebig.png"/>

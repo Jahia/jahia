@@ -49,8 +49,8 @@
     </caption>
     <colgroup>
         <col span="1" width="5%" class="col1"/>
-        <col span="1" width="5%" class="col2"/>
-        <col span="1" width="35%" class="col3"/>
+        <col span="1" width="35%" class="col2"/>
+        <col span="1" width="5%" class="col3"/>
         <col span="1" width="10%" class="col4"/>
         <col span="1" width="20%" class="col5"/>
         <col span="1" width="10%" class="col6"/>
@@ -89,8 +89,8 @@
           <td headers="Title">
 			<a href="${url.base}${subchild.path}<c:if test="${jcr:isNodeType(subchild, 'jnt:docspaceFile')}">.docspace</c:if>.html">${subchild.name}</a><br />
           </td>
-           <td headers="Download">
-            <c:if test="${not jcr:isNodeType(subchild, 'jnt:docspace')}"><a href="${subchild.url}">download</a></c:if>
+           <td class="center" headers="Download">
+            <c:if test="${not jcr:isNodeType(subchild, 'jnt:docspace')}"><a title="<fmt:message key="docspace.label.download"/>" href="${subchild.url}"><img src="${url.currentModule}/css/img/download.png"/></a></c:if>
           </td>
 
             <jcr:nodeProperty node="${subchild}" name="jcr:created" var="created"/>
@@ -99,7 +99,7 @@
             <td class="center" headers="Creation">${displayDate}</td>
             <td class="center" headers="LastModif"><fmt:formatDate value="${modified.time}" dateStyle="medium" type="both"/></td>
             <td headers="Author">${subchild.propertiesAsString['jcr:createdBy']}</td>
-            <td headers="Rating"><template:option node="${subchild}" template="hidden.average.readonly"
+            <td class="center" headers="Rating"><template:option node="${subchild}" template="hidden.average.readonly"
                                                   nodetype="jmix:rating"/></td>
         </tr>
     </c:forEach>

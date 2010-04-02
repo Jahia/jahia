@@ -44,7 +44,7 @@
 
         $("#actions").click(function() {
             if ($(this).hasClass( 'delete' )) {
-                if (confirm("Do you REALLY want to delete this file?")) {
+                if (confirm("Do you REALLY want to delete this file SPACE?")) {
                     var data = {};
                     data['methodToCall'] = 'delete';
                     $.post('${url.base}${currentNode.path}', data, function () {
@@ -57,17 +57,15 @@
         });
     });
 </script>
-<div class='grid_16'><!--start grid_16-->
+<div class='grid_12'><!--start grid_12-->
 <a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html">Back to: ${currentNode.parent.name}</a>
+<a href="#" id="actions" title="Delete" class="delete">Delete this file SPACE</a>
 <div class='clear'></div></div>
 <div class='grid_12'><!--start grid_12-->
     <div class="boxdocspace "><!--start boxdocspace -->
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
-                    <div class="floatright">
-                                <a href="#" id="actions" title="Delete" class="delete"><span>Delete this file </span><img src="${url.currentModule}/css/img/delete.png"/></a>
-                    </div>
                     <div class="imagefloatleft">
                         <div class="itemImage itemImageLeft"><a
                                 href="${currentNode.url}"><img title="Download" value="download" src="${url.currentModule}/css/img/documentbig.png"/></a>
@@ -101,11 +99,8 @@
         </div>
     </div>
     <!--stop boxdocspace -->
-
-    <h4 class="boxdocspace-title2">Document history</h4>
-    
-        <div class="boxdocspace"><!--start boxdocspace -->
-        <div class="boxdocspacegrey boxdocspacepadding10 ">
+<div class="boxdocspace"><!--start boxdocspace -->
+        <div class="boxdocspacegrey boxdocspacepadding10 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
                                 
@@ -132,6 +127,9 @@
             </div>
         </div>
     </div>
+    <h4 class="boxdocspace-title2">Document history</h4>
+    
+        
 
                             <div class="boxdocspace">
                                 <div class="boxdocspacepadding10 boxdocspacemarginbottom16">
@@ -215,6 +213,7 @@
         </c:forEach>
     </ul>
     <form method="POST" name="publishFile" action="${url.base}${currentNode.path}.publishFile.do">
+   		 <p><fmt:message key="docspace.text.document.publish"/></p>
         <input class="button" type="submit" value="<fmt:message key="docspace.label.document.publish"/>"/>
     </form>
 </div>

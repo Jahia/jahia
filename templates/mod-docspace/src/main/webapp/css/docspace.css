@@ -20,8 +20,8 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 	 font-size:0.9em;
 	 background:#043B9D url(img/bg-docspaceback.png) repeat-x scroll left top;
 	 color:#fff;
-	 padding:5px;
-	 margin:5px;
+	 padding:2px 5px;
+	 margin:0 5px;
 	 border:1px solid #666;
 	 border-bottom:none;
 	 text-decoration:none;
@@ -31,10 +31,34 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 	-webkit-border-top-right-radius:3px;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
-	color:#fff;
 	text-decoration:none;
+	float:left
 }
-
+#bodywrapper a.delete,
+#bodywrapper a.delete:link,
+#bodywrapper a.delete:visited,
+#bodywrapper a.delete:hover,
+#bodywrapper a.delete:active {
+	 font-size:0.9em;
+	 background:#990000 url(img/bg-docspacedelete.png) repeat-x scroll left top;
+	 color:#330000;
+	 padding:2px 5px;
+	 margin:0 5px;
+	 border:1px solid #990000;
+	 border-bottom:none;
+	 text-decoration:none;
+	-moz-border-radius-topleft :3px;
+	-webkit-border-top-left-radius:3px;
+	-moz-border-radius-topright:3px;
+	-webkit-border-top-right-radius:3px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	text-decoration:none;
+	float:right
+}
+#bodywrapper a.delete img, #bodywrapper a#showCreateSubDocspace img {
+	vertical-align:middle
+}
 #bodywrapper .fileListTable{
 	clear:left
 }
@@ -42,28 +66,7 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 	line-height:32px
 }
 
-#bodywrapper a.delete,
-#bodywrapper a.delete:link,
-#bodywrapper a.delete:visited {
-	color:#ff0000;
- 	padding:5px;
-	margin:5px;
-	background-color:#ffcccc;
-	border:1px solid #ff9999;
-	text-decoration:none;
-	-moz-border-radius:3px;
-	-webkit-border-top-right:3px;
-	border-radius:3px; 
-}
-#bodywrapper a.delete:hover,
-#bodywrapper a.delete:active {
-	color:#fff;
-	background-color:#ff0000;
-	text-decoration:none;
-}
-#bodywrapper a.delete img, #bodywrapper a#showCreateSubDocspace img {
-	vertical-align:middle
-}
+
 /******************************************************************************
 *  Template docspace
 ******************************************************************************/
@@ -347,6 +350,9 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 	margin:0;
 	list-style:none;
 	background: url(img/hr.png) repeat-x bottom left;
+}
+#bodywrapper .docspacelistcomment li:last-child {
+	background:none;
 }
 #bodywrapper .docspacelistcomment .itemImageLeft {
 	margin-right:20px

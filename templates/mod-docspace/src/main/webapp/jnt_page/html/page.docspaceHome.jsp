@@ -139,7 +139,7 @@
         <ul class="docspacelist">
             <jcr:sql var="result"
                      sql="select * from [jnt:file] as file where isdescendantnode(file, ['${currentNode.path}']) order by file.[jcr:lastModified] desc"/>
-            <c:forEach items="${result.nodes}" var="document" end="10">
+            <c:forEach items="${result.nodes}" var="document" end="9">
                 <li>
                     <c:if test="${jcr:hasPermission(document, 'write')}">
                         <a class="${functions:fileIcon(document.name)}"
@@ -164,7 +164,7 @@
         <ul class="docspacelist">
             <jcr:sql var="result"
                      sql="select * from [jnt:docspace] as file where isdescendantnode(file, ['${currentNode.path}']) order by file.[jcr:lastModified] desc"/>
-            <c:forEach items="${result.nodes}" var="docspace" end="10">
+            <c:forEach items="${result.nodes}" var="docspace" end="9">
                 <li>
                     <c:if test="${jcr:hasPermission(docspace, 'write')}">
                         <a class="adocspace" href="${url.basePreview}${docspace.path}.html"

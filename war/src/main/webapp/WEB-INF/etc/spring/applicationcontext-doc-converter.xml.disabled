@@ -4,8 +4,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
        
-    <bean id="org.jahia.services.transform.DocumentConverterService" class="org.jahia.services.transform.DocumentConverterService" init-method="start" destroy-method="stop" lazy-init="false">
+    <bean id="DocumentConverterService" class="org.jahia.services.transform.DocumentConverterService" init-method="start" destroy-method="stop" lazy-init="false">
     	<property name="enabled" value="false"/>
+        <property name="tmpDirectory" value="tmp_tranform" />
         <property name="officeManager">
             <bean class="org.jahia.services.transform.LocalOfficeManagerFactory">
             	<property name="officeHome" value="c:\\Program Files (x86)\\OpenOffice.org 3"/>
@@ -18,7 +19,7 @@
             <map>
                 <entry key="/convert">
                     <bean class="org.jahia.bin.DocumentConverter">
-                        <property name="converterService" ref="org.jahia.services.transform.DocumentConverterService"/>
+                        <property name="converterService" ref="DocumentConverterService"/>
                     </bean>
                 </entry>
             </map>

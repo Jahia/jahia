@@ -37,8 +37,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.services.transform.DocumentConverterService;
+import org.jahia.tools.files.FileUpload;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
 
 /**
  * Performs conversion of the submitted document into specified format.
@@ -58,9 +63,23 @@ public class DocumentConverter extends HttpServlet implements Controller {
      * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        
-        // TODO: get uploaded file and target format, use convertService to perform conversion and sent back the converted file data.
-        
+
+        FileUpload fu = new FileUpload(request, "./tmp_transform", Integer.MAX_VALUE);
+        DiskFileItem inputFile = fu.getFileItems().get("fileField");
+        String returnedMimeType = fu.getParameterValues("mimeType") != null ? fu.getParameterValues("mimeType")[0] : null;
+
+        converterService.convert(inputFile.getInputStream(),
+                                inputFile.getContentType(),
+                                response.getOutputStream(),
+                                returnedMimeType);
+
+        // return a file
+        response.setContentType(returnedMimeType);
+        response.setHeader("Content-Disposition",
+                "inline; filename=" + FilenameUtils.getName(inputFile.getName())
+                        + "." + converterService.getExtension(returnedMimeType));
+
+
         return null;
     }
 

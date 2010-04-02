@@ -32,9 +32,7 @@
 
 package org.jahia.services.transform;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,15 +55,19 @@ public class DocumentConverterService {
 
     protected static final Map<String, Object> DEF_PROPS = new HashMap<String, Object>(2);
 
+    public static final String TMP_DIRECTORY = "./tmp_transform";
+
     private static Logger logger = Logger.getLogger(DocumentConverterService.class);
 
     static {
         DEF_PROPS.put("Hidden", true);
         DEF_PROPS.put("ReadOnly", true);
+
     }
 
     private Map<String, ?> defaultLoadProperties = DEF_PROPS;
     private boolean enabled;
+    private String tmpDirectory;
 
     private DocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
 
@@ -102,12 +104,85 @@ public class DocumentConverterService {
      * mime-types.
      * 
      * @param inputStream the source stream
-     * @param inputMimeType the source MIME type
+     * @param inputFileName the source Name
      * @param outputStream the destination stream
      * @param outputMimeType the output MIME type
      */
-    public void convert(InputStream inputStream, String inputMimeType, OutputStream outputStream, String outputMimeType) {
-        // TODO implement me
+    public void convert(InputStream inputStream, String inputFileName, OutputStream outputStream, String outputMimeType) {
+
+        try {
+            String filesName = String.valueOf(System.currentTimeMillis());
+            // The outputFile required by the service
+            File outputFile = File.createTempFile(filesName, TMP_DIRECTORY);
+
+            // convert inputFile to outputFile
+            convert(getFile(inputStream, filesName),
+                    formatRegistry.getFormatByExtension(inputFileName),
+                    outputFile, getFormatByMimeType(outputMimeType));
+
+            // write the outputFileContent into outputStream
+            writeToOutputStream(outputStream, outputFile);
+
+        } catch (IOException ioe) {
+            logger.warn("A problem occured during the transformation", ioe);
+        }
+    }
+
+    public String getMimeType(String extension) {
+        return formatRegistry.getFormatByExtension(extension).getMediaType();
+    }
+
+    public String getExtension(String mimeType) {
+        return formatRegistry.getFormatByMediaType(mimeType).getExtension();
+    }
+
+    /**
+     *
+     * @param os  The outputStream to write into
+     * @param file The file to read from
+     */
+    protected void writeToOutputStream(OutputStream os, File file) {
+
+        try {
+            InputStream is = new FileInputStream(file);
+            byte buf[]=new byte[4096];
+            int len;
+            while((len=is.read(buf))>0) {
+                os.write(buf,0,len);
+            }
+
+            is.close();
+        } catch (IOException ioe) {
+            logger.warn("File " + file.getName() + " can't be written into outputStream", ioe);
+        }
+
+    }
+
+    /**
+     *
+     * @param is The inputStream to read from
+     * @param fileName The name of the file to create
+     * @return
+     */
+    private File getFile(InputStream is, String fileName) {
+        File file = null;
+        OutputStream os = null;
+
+        try {
+
+            file = File.createTempFile(fileName, TMP_DIRECTORY);
+            os = new FileOutputStream(file);
+            byte buf[]=new byte[4096];
+            int len;
+            while((len=is.read(buf))>0) {
+                os.write(buf,0,len);
+            }
+            os.close();
+            is.close();
+        } catch (IOException ioe) {
+            logger.warn("inputStream from file " + fileName + " can't be converted into file", ioe);
+        }
+        return file;
     }
 
     /**
@@ -142,10 +217,39 @@ public class DocumentConverterService {
     }
 
     /**
+     * Returns the {@link DocumentFormat} based on the mimeType of the
+     * specified file.
+     *
+     * @param mimeType the mimeType to detect format for
+     * @return the {@link DocumentFormat} based on a mimeType
+     */
+    protected DocumentFormat getFormatByMimeType(String mimeType) {
+        return formatRegistry.getFormatByMediaType(mimeType);
+    }
+
+    /**
+     * Returns the {@link DocumentFormat} based on the extension extracted from the file name of the
+     * specified file.
+     *
+     * @param fileName the file name to detect format for
+     * @return the {@link DocumentFormat} based on a mimeType
+     */
+    protected DocumentFormat getFormatByFileName(String fileName) {
+        return formatRegistry.getFormatByExtension(FilenameUtils.getExtension(fileName));
+    }
+
+    /**
      * @return the enabled
      */
     public boolean isEnabled() {
         return enabled;
+    }
+
+    /**
+     * @return the tmpDirectory
+     */
+    public String getTmpDirectory() {
+        return tmpDirectory;
     }
 
     /**
@@ -160,6 +264,13 @@ public class DocumentConverterService {
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    /**
+     * @param tmpDirectory the tmpDirectory to set
+     */
+    public void setTmpDirectory(String tmpDirectory) {
+        this.tmpDirectory = tmpDirectory;
     }
 
     /**

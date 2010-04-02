@@ -56,6 +56,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private boolean isShared = false;
     private boolean isTemplateLocked = false;
     private boolean isTemplateShared = false;
+    private boolean isTemplateDeployed = false;
     private String url;
     private boolean hasChildren = false;
     private boolean hasFolderChildren = false;
@@ -515,6 +516,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setIsTemplateShared(boolean isTemplateShared) {
         this.isTemplateShared = isTemplateShared;
+    }
+
+    public boolean isTemplateDeployed() {
+        return isTemplateDeployed;
+    }
+
+    public void setIsTemplateDeployed(boolean isTemplateDeployed) {
+        this.isTemplateDeployed = isTemplateDeployed;
     }
 
     public boolean isTemplateLocked() {

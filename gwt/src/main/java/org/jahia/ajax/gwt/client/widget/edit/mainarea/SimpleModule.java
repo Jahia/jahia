@@ -4,21 +4,16 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Header;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,12 +25,12 @@ import java.util.List;
 public class SimpleModule extends Module {
     protected boolean hasDragDrop = true;
 
-    public SimpleModule(String id, String path, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, MainModule mainModule) {
-        super(id, path, template, scriptInfo, nodeTypes, locked, shared, mainModule);
+    public SimpleModule(String id, String path, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, boolean deployed, MainModule mainModule) {
+        super(id, path, template, scriptInfo, nodeTypes, locked, shared, deployed, mainModule);
     }
 
-    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, final MainModule mainModule) {
-        super(id, path, template, scriptInfo, nodeTypes, locked, shared, mainModule);
+    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, boolean deployed, final MainModule mainModule) {
+        super(id, path, template, scriptInfo, nodeTypes, locked, shared, deployed, mainModule);
 
         if (mainModule.getConfig().getName().equals("studiomode")) {
             head = new Header();
@@ -43,9 +38,6 @@ public class SimpleModule extends Module {
             setHeaderText(Messages.getResource("em_content") + " : " + path.substring(path.lastIndexOf('/') + 1));
             head.addStyleName("x-panel-header");
             head.addStyleName("x-panel-header-simplemodule");
-            if (locked) {
-                head.addStyleName("x-panel-header-lockedmodule");
-            }
             setBorders(false);
         }
 
@@ -54,17 +46,17 @@ public class SimpleModule extends Module {
     }
 
     public void onParsed() {
-        Log.debug("Add drag source for simple module "+path);
+        Log.debug("Add drag source for simple module " + path);
 
         if (hasDragDrop) {
-            DragSource source = new ModuleDragSource(this);
+            DragSource source = new SimpleModuleDragSource(this);
             source.addDNDListener(mainModule.getEditLinker().getDndListener());
-            DropTarget target = new ModuleDropTarget(this);
+            DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.SIMPLEMODULE_TYPE);
             target.setAllowSelfAsSource(true);
             target.addDNDListener(mainModule.getEditLinker().getDndListener());
         }
 
-        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT+Event.ONCONTEXTMENU);
+        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT + Event.ONCONTEXTMENU);
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
@@ -76,7 +68,7 @@ public class SimpleModule extends Module {
         };
         addListener(Events.OnClick, listener);
         addListener(Events.OnContextMenu, listener);
-        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this,mainModule.getEditLinker()));
+        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, mainModule.getEditLinker()));
 
         Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
@@ -95,7 +87,7 @@ public class SimpleModule extends Module {
 
     public void setNode(GWTJahiaNode node) {
         super.setNode(node);
-        if(node.isShared()) {
+        if (node.isShared()) {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
         }
     }

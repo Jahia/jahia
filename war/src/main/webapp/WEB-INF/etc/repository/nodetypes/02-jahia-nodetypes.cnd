@@ -464,7 +464,7 @@
 
 [jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
  orderable
- - j:sourceTemplate (string)
+ - j:sourceTemplate (weakreference)
  + * (nt:base) = nt:base version
 
 [jnt:content] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
@@ -490,6 +490,7 @@
 [jmix:templateInformation] mixin
  - j:templateLocked (boolean)
  - j:templateShared (boolean)
+ - j:templateDeployed (boolean)
 
 //---------------------------------------------------------
 // Portlets

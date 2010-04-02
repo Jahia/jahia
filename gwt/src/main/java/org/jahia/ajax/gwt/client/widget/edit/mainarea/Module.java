@@ -27,11 +27,12 @@ public abstract class Module extends LayoutContainer {
     protected Header head;
     protected boolean locked;
     protected boolean shared;
+    protected boolean deployed;
 
     public Module() {
     }
 
-    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, MainModule mainModule) {
+    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, boolean deployed, MainModule mainModule) {
         super();
         this.id = id;
         this.path = path;
@@ -40,6 +41,7 @@ public abstract class Module extends LayoutContainer {
         this.nodeTypes = nodeTypes;
         this.locked = locked;
         this.shared = shared;
+        this.deployed = deployed;
         this.mainModule = mainModule;
     }
 
@@ -105,6 +107,23 @@ public abstract class Module extends LayoutContainer {
         this.node = node;
         node.setIsTemplateLocked(locked);
         node.setIsTemplateShared(shared);
+        node.setIsTemplateShared(deployed);
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public boolean isShared() {
+        return shared;
+    }
+
+    public boolean isDeployed() {
+        return deployed;
+    }
+
+    public MainModule getMainModule() {
+        return mainModule;
     }
 
     public String getNodeTypes() {

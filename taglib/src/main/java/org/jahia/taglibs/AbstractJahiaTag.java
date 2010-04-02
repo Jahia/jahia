@@ -569,7 +569,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
         addGwtDictionaryMessage("add_content_wizard_title", getJahiaInternalResourceValue("label.addContent"));
         addGwtDictionaryMessage("em_repository", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"));
         addGwtDictionaryMessage("em_drag", getJahiaInternalResourceValue("org.jahia.jcr.edit.drag.label"));
-        addGwtDictionaryMessage("em_contentlist", getJahiaInternalResourceValue("label.content"));
+        addGwtDictionaryMessage("em_contentlist", getJahiaInternalResourceValue("label.list"));
         addGwtDictionaryMessage("em_savetemplate", getJahiaInternalResourceValue("org.jahia.jcr.edit.savetemplate.label"));
         addGwtDictionaryMessage("em_content", getJahiaInternalResourceValue("label.content"));
         addGwtDictionaryMessage("em_area", getJahiaInternalResourceValue("org.jahia.jcr.edit.area.label"));

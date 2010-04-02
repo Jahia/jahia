@@ -275,6 +275,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 try {
                     boolean templateLocked = resource.getNode().hasProperty("j:templateLocked") && resource.getNode().getProperty("j:templateLocked").getBoolean();
                     boolean templateShared = resource.getNode().hasProperty("j:templateShared") && resource.getNode().getProperty("j:templateShared").getBoolean();
+                    boolean templateDeployed = resource.getNode().hasProperty("j:templateDeployed") && resource.getNode().getProperty("j:templateDeployed").getBoolean();
                     boolean isTemplateMode = Studio.STUDIO_MODE.equals(renderContext.getEditModeConfigName());
 
                     if (renderContext.isEditMode() && editable && (isTemplateMode || !templateLocked)) {
@@ -283,9 +284,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         Script script = null;
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
-                            printModuleStart(type, templateLocked, templateShared, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
+                            printModuleStart(type, templateLocked, templateShared, templateDeployed, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
                         } catch (TemplateNotFoundException e) {
-                            printModuleStart(type, templateLocked, templateShared, node.getPath(), resource.getResolvedTemplate(), "Script not found");
+                            printModuleStart(type, templateLocked, templateShared, templateDeployed, node.getPath(), resource.getResolvedTemplate(), "Script not found");
                         }
 
                         render(renderContext, resource);
@@ -326,7 +327,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return EVAL_PAGE;
     }
 
-    protected void printModuleStart(String type, boolean templateLocked, boolean templateShared, String path, String resolvedTemplate, String scriptInfo) throws IOException {
+    protected void printModuleStart(String type, boolean templateLocked, boolean templateShared, boolean templateDeployed, String path, String resolvedTemplate, String scriptInfo) throws IOException {
         String nodeTypes;
         if ("list".equals(type) || "placeholder".equals(type)) {
             Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
@@ -343,6 +344,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append("\" ")
                 .append((templateLocked) ? " templateLocked=\"true\"" : "")
                 .append((templateShared) ? " templateShared=\"true\"" : "")
+                .append((templateDeployed) ? " templateDeployed=\"true\"" : "")
                 .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
                 .append(" path=\"").append(path)
                 .append("\" ")
@@ -394,7 +396,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected String getModuleType() throws RepositoryException {
         String type = "existingNode";
-        if (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:containerList")) {
+        if (node.isNodeType("jmix:containerContent")) {
             type = "list";
         }
         return type;
@@ -412,7 +414,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             boolean templateLocked = currentResource.getNode().hasProperty("j:templateLocked") && currentResource.getNode().getProperty("j:templateLocked").getBoolean();
             boolean isTemplateMode = Studio.STUDIO_MODE.equals(renderContext.getEditModeConfigName());
             if (!templateLocked || isTemplateMode) {
-                printModuleStart("placeholder", false, false, path, null, null);
+                printModuleStart("placeholder", false, false, false, path, null, null);
                 printModuleEnd();
             }
         }

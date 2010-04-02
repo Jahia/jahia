@@ -17,11 +17,11 @@ import java.util.List;
  * Time: 4:16:42 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ModuleDragSource extends EditModeDragSource {
+public class SimpleModuleDragSource extends EditModeDragSource {
 
     private Module module;
 
-    public ModuleDragSource(Module target) {
+    public SimpleModuleDragSource(Module target) {
         super(target.getContainer());
         this.module = target;
     }
@@ -35,6 +35,11 @@ public class ModuleDragSource extends EditModeDragSource {
             DOM.setStyleAttribute(module.getHtml().getElement(), "display", "block");
         }
         super.onDragEnd(e);
+    }
+
+    @Override
+    protected void onDragCancelled(DNDEvent dndEvent) {
+        super.onDragCancelled(dndEvent);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override

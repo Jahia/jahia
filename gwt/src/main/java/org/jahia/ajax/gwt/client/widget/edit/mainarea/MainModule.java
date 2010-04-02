@@ -196,7 +196,7 @@ public class MainModule extends Module {
     }
 
     public void parse() {
-        m = ModuleHelper.parse(this);
+        m = ModuleHelper.parse(this, null);
     }
 
     public String getModuleId() {

@@ -23,11 +23,13 @@ import java.util.List;
 public class ModuleDropTarget extends DropTarget {
     
     private Module module;
+    protected String targetType;
 
-    public ModuleDropTarget(Module target) {
+    public ModuleDropTarget(Module target, String targetType) {
         super(target.getContainer());
         this.module = target;
         setOperation(DND.Operation.COPY);
+        this.targetType = targetType;
     }
 
     public Module getModule() {
@@ -99,10 +101,16 @@ public class ModuleDropTarget extends DropTarget {
     
     @Override
     protected void onDragEnter(DNDEvent e) {
+        if (module.getMainModule().getConfig().getName().equals("studiomode") && !module.getParentModule().isLocked()) {
+            e.getStatus().setStatus(false);
+            e.setCancelled(false);
+            return;
+        }
+
         if (module.getParentModule().getNode().isWriteable() && !module.getParentModule().getNode().isLocked()) {
             boolean allowed = checkNodeType(e, module.getParentModule().getNodeTypes());
             if (allowed) {
-                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PLACEHOLDER_TYPE);
+                e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, targetType);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
                 e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getParentModule().getNode());
             }

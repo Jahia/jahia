@@ -45,17 +45,18 @@ public class ModuleHelper {
                 String type = DOM.getElementAttribute(divElement, "type");
                 String templateLocked = DOM.getElementAttribute(divElement, "templateLocked");
                 String templateShared = DOM.getElementAttribute(divElement, "templateShared");
+                String templateDeployed = DOM.getElementAttribute(divElement, "templateDeployed");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String template = DOM.getElementAttribute(divElement, "template");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
                 String scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
                 Module module = null;
                 if (type.equals("area")) {
-                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, templateShared.length()>0, m);
+                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, templateShared.length()>0, templateDeployed.length()>0, m);
                 } else if (type.equals("list")) {
-                    module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, templateShared.length()>0, m);
+                    module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, templateShared.length()>0, templateDeployed.length()>0, m);
                 } else if (type.equals("existingNode")) {
-                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, templateShared.length()>0, m);
+                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateLocked.length()>0, templateShared.length()>0, templateDeployed.length()>0, m);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, nodetypes, m);
                 }
@@ -130,7 +131,7 @@ public class ModuleHelper {
         }
     }
 
-    public static Map<Element, Module> parse(Module module) {
+    public static Map<Element, Module> parse(Module module, Module parent) {
         Map<Element, Module> m = new HashMap<Element, Module>();
         if (module.getHtml() == null) {
             return m;
@@ -145,15 +146,15 @@ public class ModuleHelper {
 
                     if (subModule != null) {
                         subModule.setDepth(module.getDepth() + 1);
-                        m.putAll(parse(subModule));                        
+                        m.putAll(parse(subModule, module));
                         m.put(divElement, subModule);
                         divElement.setInnerHTML("");
                         module.getContainer().add(subModule.getContainer());
-                        subModule.setParentModule(module);
                     }
                 }
             }
         }
+        module.setParentModule(parent);
         module.onParsed();
         return m;
     }

@@ -184,7 +184,7 @@ public class ExportEngine implements JahiaEngine {
                 resp.setContentType("application/zip");
                 JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
                 JCRNodeWrapper node = session.getNode(processingContext.getParameter("path"));
-                ie.exportZip(node, outputStream);
+                ie.exportZip(node, outputStream, params);
                 outputStream.close();
                 return;
             }

@@ -36,6 +36,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.sites.JahiaSite;
+import org.jdom.JDOMException;
 import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
@@ -93,10 +94,12 @@ public interface ImportExportService {
     String DOCUMENT_EXPORTER = "doc";
 
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    String CLEANUP = "cleanup";
+    String XSL_PATH = "xsl_path";
 
     // Export
 
-    void exportAll(OutputStream out, Map<String, Object> params, ProcessingContext jParams) throws JahiaException, RepositoryException, SAXException, IOException;
+    void exportAll(OutputStream out, Map<String, Object> params, ProcessingContext jParams) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
 
     /**
      * Export complete sites
@@ -110,19 +113,21 @@ public interface ImportExportService {
      * @throws IOException
      * @throws SAXException
      */
-    void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites) throws JahiaException, RepositoryException, IOException, SAXException;
+    void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites)
+            throws JahiaException, RepositoryException, IOException, SAXException, JDOMException;
 
     /**
      * Export JCR content along with binaries into a zip
      *
      * @param node node to export
      * @param out outputstream
+     * @param params
      * @throws JahiaException
      * @throws RepositoryException
      * @throws SAXException
      * @throws IOException
      */
-    void exportZip(JCRNodeWrapper node, OutputStream out) throws JahiaException, RepositoryException, SAXException, IOException;
+    void exportZip(JCRNodeWrapper node, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
 
     // Import
 

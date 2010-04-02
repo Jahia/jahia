@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
+import org.jahia.bin.Export;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
@@ -668,7 +669,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public String getExportUrl(String path) throws GWTJahiaServiceException {
-        return retrieveParamBean().composeSiteUrl() + "/engineName/export" + path + ".xml?path=" + path;
+        try {
+            JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession();
+            return "/jahia"+ Export.getExportServletPath()+"/"+jcrSessionWrapper.getWorkspace().getName()+path;
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
     public void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {

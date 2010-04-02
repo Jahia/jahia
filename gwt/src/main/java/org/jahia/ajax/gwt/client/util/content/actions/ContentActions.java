@@ -1064,4 +1064,18 @@ public class ContentActions {
     }
 
 
+    public static void exportTemplateContent(Linker linker) {
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        if (selectedItems != null && selectedItems.size() == 1) {
+            GWTJahiaNode selectedNode = selectedItems.get(0);
+            if (selectedNode != null) {
+                new ContentExportTemplate(linker, selectedNode).show();
+            }
+        } else {
+            GWTJahiaNode selectedNode = linker.getMainNode();
+            if (selectedNode != null) {
+                new ContentExportTemplate(linker, selectedNode).show();
+            }
+        }
+    }
 }

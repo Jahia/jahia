@@ -31,7 +31,9 @@
  */
 package org.jahia.services.importexport;
 
+import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
@@ -51,10 +53,16 @@ import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipOutputStream;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jdom.Document;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+import org.jdom.transform.XSLTransformException;
+import org.jdom.transform.XSLTransformer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -97,6 +105,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private JahiaFileWatcherService fileWatcherService;
     private JCRStoreService jcrStoreService;
     private CategoryService categoryService;
+    private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
 
     public static ImportExportBaseService getInstance() {
         if (instance == null) {
@@ -189,7 +198,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         this.fileWatcherService = fileWatcherService;
     }
 
-    public void exportAll(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext) throws JahiaException, RepositoryException, IOException, SAXException {
+    public void exportAll(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext)
+            throws JahiaException, RepositoryException, IOException, SAXException, JDOMException {
         Iterator<JahiaSite> en = sitesService.getSites();
         List<JahiaSite> l = new ArrayList<JahiaSite>();
         while (en.hasNext()) {
@@ -199,7 +209,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exportSites(outputStream, params, processingContext, l);
     }
 
-    public void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites) throws JahiaException, RepositoryException, IOException, SAXException {
+    public void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites)
+            throws JahiaException, RepositoryException, IOException, SAXException, JDOMException {
         ZipOutputStream zout = new ZipOutputStream(outputStream);
 
         ZipEntry anEntry = new ZipEntry(EXPORT_PROPERTIES);
@@ -247,7 +258,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<String> tti = new HashSet<String>();
         tti.add(Constants.JAHIANT_VIRTUALSITE);
         try {
-            exportNodes((JCRNodeWrapper) session.getRootNode(), session, files, zzout, tti);
+            exportNodes((JCRNodeWrapper) session.getRootNode(), session, files, zzout, tti, params);
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -255,7 +266,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    private void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException {
+    private void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map<String, Object> params)
+            throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
         processingContext.setSite(jahiaSite);
         processingContext.setSiteID(jahiaSite.getID());
         processingContext.setSiteKey(jahiaSite.getSiteKey());
@@ -269,35 +281,60 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exportSitePermissions(dw, processingContext.getSite());
         dw.flush();
         Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>(jcrStoreService.getSiteFolders(processingContext.getSite().getSiteKey()));
-        exportNodes((JCRNodeWrapper) jcrStoreService.getSessionFactory().getCurrentUserSession().getRootNode(), jcrStoreService.getSessionFactory().getCurrentUserSession(), files, zout, new HashSet<String>());
+        exportNodes((JCRNodeWrapper) jcrStoreService.getSessionFactory().getCurrentUserSession().getRootNode(), jcrStoreService.getSessionFactory().getCurrentUserSession(), files, zout, new HashSet<String>(),
+                    params);
         zout.finish();
     }
 
-    public void exportZip(JCRNodeWrapper node, OutputStream out) throws JahiaException, RepositoryException, SAXException, IOException {
+    public void exportZip(JCRNodeWrapper node, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
         ZipOutputStream zout = new ZipOutputStream(out);
         Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
         files.add(node);
-        exportNodes(node, jcrStoreService.getSessionFactory().getCurrentUserSession(), files, zout, new HashSet<String>());
+        exportNodes(node, jcrStoreService.getSessionFactory().getCurrentUserSession(), files, zout, new HashSet<String>(),params);
         zout.finish();
     }
 
-    private void exportNodes(JCRNodeWrapper rootNode, JCRSessionWrapper session, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore) throws SAXException, IOException, RepositoryException {
+    private void exportNodes(JCRNodeWrapper rootNode, JCRSessionWrapper session, Set<JCRNodeWrapper> nodes,
+                             ZipOutputStream zout, Set<String> typesToIgnore, Map<String, Object> params)
+            throws SAXException, IOException, RepositoryException, JDOMException {
         TreeSet<JCRNodeWrapper> sorted = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
                 return o1.getPath().compareTo(o2.getPath());
             }
         });
         sorted.addAll(nodes);
-
-        DataWriter dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
         zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
+
+        OutputStream outputStream = zout;
+        if ((Boolean) params.get(CLEANUP)) {
+            String filename = rootNode.getName().replace(" ", "_");
+            File tempFile = File.createTempFile("exportTemplates-" + filename, "xml");
+            outputStream = new DeferredFileOutputStream(1024 * 1024 * 10, tempFile);
+        }
+        DataWriter dw = new DataWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 
         DocumentViewExporter exporter = new DocumentViewExporter(session, dw, true, false);
         typesToIgnore.add("rep:system");
         exporter.setTypesToIgnore(typesToIgnore);
         exporter.export(rootNode, sorted);
         dw.flush();
-        exportNodesBinary(rootNode,sorted, zout, typesToIgnore);
+        if ((Boolean) params.get(CLEANUP)) {
+            DeferredFileOutputStream stream = (DeferredFileOutputStream) outputStream;
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(stream.getFile()));
+            fileCleaningTracker.track(stream.getFile(), inputStream);
+            if (stream.isInMemory()) {
+                inputStream.close();
+                inputStream = new ByteArrayInputStream(stream.getData());
+            }
+            XSLTransformer xslTransformer = new XSLTransformer((String) params.get(XSL_PATH));
+            SAXBuilder saxBuilder = new SAXBuilder(false);
+            Document document = saxBuilder.build(inputStream);
+            Document document1 = xslTransformer.transform(document);
+            XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
+            xmlOutputter.output(document1, zout);
+            zout.closeEntry();
+        }
+        exportNodesBinary(rootNode, sorted, zout, typesToIgnore);
     }
 
     private void exportNodesBinary(JCRNodeWrapper root, SortedSet<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore) throws IOException, RepositoryException {

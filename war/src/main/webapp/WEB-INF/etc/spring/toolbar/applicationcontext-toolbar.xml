@@ -836,7 +836,7 @@
                 <ref bean="org.jahia.toolbar.item.ClipBoard"/>
                 <ref bean="org.jahia.toolbar.item.translate"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
-                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.export.template"/>
                 <ref bean="org.jahia.toolbar.item.import"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.lock"/>
@@ -2502,6 +2502,15 @@
         <property name="minIconStyle" value="gwt-toolbar-icon-translate"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-translate"/>
 
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.export.template" class="org.jahia.services.toolbar.bean.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExportTemplateActionItem"/>
+        </property>
+        <property name="titleKey" value="label.export"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-export"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-export"/>
     </bean>
     <!-- end of new content action buttons -->
 </beans>

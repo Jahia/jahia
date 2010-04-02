@@ -59,6 +59,9 @@
                         <property name="captchaProducer" ref="captchaProducer"/>
                     </bean>
                 </entry>
+                <entry key="/export/**">
+                    <bean name="org.jahia.bin.Export" class="org.jahia.bin.Export"/>
+                </entry>
             </map>
         </property>
     </bean>

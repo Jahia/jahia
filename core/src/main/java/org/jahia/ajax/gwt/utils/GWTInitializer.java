@@ -137,7 +137,7 @@ public class GWTInitializer {
                 }
             } else {
                 final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
-                if (attribute != null) {
+                if (attribute != null && !"".equals(attribute.getSiteKey())) {
                     String id = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/" + attribute.getSiteKey()).getIdentifier();
                     params.put(JahiaGWTParameters.SITE_UUID, id);
                 }

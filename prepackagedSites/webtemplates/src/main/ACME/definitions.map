@@ -1,5 +1,5 @@
 ### Standard mappings
-  
+
 ## Main content
 
 [jnt:mainContentContainer] = jnt:mainContent
@@ -28,6 +28,9 @@
 
 ### Webtemplates mappings
 
+[web_templates:title] = mix:title
+ - title = mix:title.jcr:title
+ 
 ## File container
 
 [web_templates:fileContainer] = jnt:nodeReference
@@ -122,13 +125,15 @@
  
 [web_templates:home] = jnt:page
    { addNode topMenu(jnt:navMenu) } 
-   { addNode autoTopMenu(topMenu, jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=2] }   
+   { addNode autoTopMenuLevel0(topMenu, jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
+   { addNode autoTopMenuLevel1(topMenu, jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }   
    { addNode sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
    { addNode autoSideMenu(sideMenu, jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }   
    
 [web_templates:simple] = jnt:page   
    { addNode topMenu(jnt:navMenu) } 
-   { addNode autoTopMenu(topMenu, jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=2] }   
+   { addNode autoTopMenuLevel0(topMenu, jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
+   { addNode autoTopMenuLevel1(topMenu, jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }      
    { addNode sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
    { addNode autoSideMenu(sideMenu, jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
 

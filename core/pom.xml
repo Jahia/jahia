@@ -1091,13 +1091,6 @@
             <version>quercus-4.0.3</version>
         </dependency>
 
-        <!-- Javascript engine for BSF -->
-        <dependency>
-            <groupId>rhino</groupId>
-            <artifactId>js</artifactId>
-            <version>1.7R2</version>
-        </dependency>
-
         <!-- Velocity engine for BSF -->
         <dependency>
             <groupId>org.apache.velocity</groupId>

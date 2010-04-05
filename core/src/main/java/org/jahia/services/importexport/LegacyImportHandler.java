@@ -253,10 +253,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 case CTX_FIELD:
                     setNodeField(uri, localName, uuid, attributes);
                     break;
-                // case CTX_MERGED:
-                // System.out.println("merge " + localName);
-                // currentCtx.peek().pushMerge(registry.getNodeType(attributes.getValue(Constants.JCR_NS, "primaryType")));
-                // break;
+
                 case CTX_SHAREABLE:
                     // System.out.println("create shareable "+localName);
                     if ("#shareableSource".equals(mapping.getMappedNode(
@@ -337,7 +334,7 @@ public class LegacyImportHandler extends DefaultHandler {
             pageKey = pageKey.replace('[', '_');
             pageKey = pageKey.replace(']', '_');
 
-            subPage = parent.addNode(pageKey, Constants.JAHIANT_PAGE);
+            subPage = addOrCheckoutNode(parent, pageKey, Constants.JAHIANT_PAGE);
             uuidMapping.put(uuid, subPage.getIdentifier());
             if (template != null && template.length() > 0) {
                 ExtendedNodeType pageType = registry.getNodeType("jnt:page");
@@ -358,42 +355,22 @@ public class LegacyImportHandler extends DefaultHandler {
             translation.setProperty("jcr:title_" + locale.toString(), title);
         }
     }
-
-    // private void createContentList(ExtendedNodeDefinition listDefinition, String uuid) throws RepositoryException {
-    // String value = mapping.getMappedItem(getCurrentContentType().getName(), listDefinition.getName());
-    // JCRNodeWrapper node = getCurrentContentNode();
-    // StringTokenizer st = new StringTokenizer(value, ".");
-    // while (st.hasMoreTokens()) {
-    // String nodeName = st.nextToken();
-    // String nodeType = Constants.JAHIANT_CONTENTLIST;
-    // // if (nodeName.indexOf(".") > 0) {
-    // // nodeType = StringUtils.substringBefore(nodeName, ".");
-    // // nodeName = StringUtils.substringAfter(nodeName, ".");
-    // // }
-    //
-    // // if (nodeName.equals("merge")) {
-    // // currentCtx.peek().pushMerge(listDefinition.getRequiredPrimaryTypes()[0]);
-    // // return;
-    // // }
-    //
-    //
-    // if (node.hasNode(nodeName)) {
-    // node = node.getNode(nodeName);
-    // } else {
-    // ExtendedNodeType parentNodeType = node.getPrimaryNodeType();
-    // if (parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName) != null) {
-    // String[] strings = parentNodeType.getChildNodeDefinitionsAsMap().get(nodeName).getRequiredPrimaryTypeNames();
-    // node = node.addNode(nodeName, strings[0]);
-    // } else {
-    // node = node.addNode(nodeName, nodeType);
-    // }
-    // autosetProperties(mapping.getAutosetPropertiesForItem(getCurrentContentType().getName(), listDefinition.getName()), node);
-    // uuidMapping.put(uuid, node.getIdentifier());
-    // }
-    // }
-    // ExtendedNodeType listType = listDefinition.getRequiredPrimaryTypes()[0];
-    // currentCtx.peek().pushList(node, listType);
-    // }
+    
+    private JCRNodeWrapper addOrCheckoutNode (JCRNodeWrapper parent, String nodeName, String nodeType) throws RepositoryException {
+        JCRNodeWrapper node = null;
+        try {
+            node = parent.getNode(nodeName);
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
+        } catch (PathNotFoundException e) {
+            if (!parent.isCheckedOut()) {
+                parent.checkout();
+            }
+            node = parent.addNode(nodeName, nodeType);
+        }
+        return node;
+    }
 
     private void createContentList(ExtendedNodeDefinition listDefinition,
             String uuid) throws RepositoryException {
@@ -404,10 +381,6 @@ public class LegacyImportHandler extends DefaultHandler {
             nodeType = StringUtils.substringBefore(nodeName, ".");
             nodeName = StringUtils.substringAfter(nodeName, ".");
         }
-        // if (nodeName.equals("merge")) {
-        // currentCtx.peek().pushMerge(listDefinition.getRequiredPrimaryTypes()[0]);
-        // return;
-        // }
 
         JCRNodeWrapper parent = getCurrentContentNode();
         JCRNodeWrapper node;
@@ -419,10 +392,10 @@ public class LegacyImportHandler extends DefaultHandler {
                 String[] strings = parentNodeType
                         .getChildNodeDefinitionsAsMap().get(nodeName)
                         .getRequiredPrimaryTypeNames();
-                node = parent.addNode(nodeName, strings[0]);
-            } else {
-                node = parent.addNode(nodeName, nodeType);
-            }
+                nodeType = strings[0];
+            } 
+            node = addOrCheckoutNode(parent, nodeName, nodeType);
+            
             performActions(mapping.getActions(getCurrentContentType(),
                     listDefinition.getName()), node);
             uuidMapping.put(uuid, node.getIdentifier());
@@ -459,11 +432,6 @@ public class LegacyImportHandler extends DefaultHandler {
                         .get(uuid));
                 currentCtx.peek().pushContainer(node, t);
             } else if (pickerRelationshipUuid != null) {
-                // JCRNodeWrapper node = getCurrentContentNode().addNode(
-                // "ctn" + (ctnId++), "jnt:nodeReference");
-                //
-                // uuidMapping.put(uuid, node.getIdentifier());
-
                 if (!references.containsKey(pickerRelationshipUuid)) {
                     references.put(pickerRelationshipUuid,
                             new ArrayList<String>());
@@ -479,7 +447,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     // System.out.println("--- Cannot found type, skip : "+nodeType);
                     currentCtx.peek().pushSkip();
                 }
-                JCRNodeWrapper node = getCurrentContentNode().addNode(
+                JCRNodeWrapper node = addOrCheckoutNode(getCurrentContentNode(), 
                         StringUtils.substringAfter(nodeType, ":") + "_"
                                 + (ctnId++), nodeType);
                 uuidMapping.put(uuid, node.getIdentifier());
@@ -510,7 +478,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 if (!StringUtils.isEmpty(addNodeAction.getParentNodeName())) {
                     nodeToWorkOn= node.getNode(addNodeAction.getParentNodeName());
                 }
-                JCRNodeWrapper addedNode = nodeToWorkOn.addNode(addNodeAction.getName(), addNodeAction
+                JCRNodeWrapper addedNode = addOrCheckoutNode(nodeToWorkOn, addNodeAction.getName(), addNodeAction
                         .getNodeType());
                 setProperties(addedNode, addNodeAction.getProperties());
             } else if (action instanceof SetProperties) {
@@ -568,7 +536,7 @@ public class LegacyImportHandler extends DefaultHandler {
             // System.out.println("link Field-node : " + localName);
             String reference = attributes.getValue("jahia:reference");
             if (!node.hasNode(propertyName)) {
-                JCRNodeWrapper sub = node.addNode(propertyName, "jnt:nodeLink");
+                JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:nodeLink");
 
                 Node translation = sub.getOrCreateI18N(locale);
                 if (title != null && title.length() > 0) {
@@ -589,7 +557,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
             String value = attributes.getValue("jahia:value");
             if (!node.hasNode(propertyName)) {
-                JCRNodeWrapper sub = node.addNode(propertyName,
+                JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName,
                         "jnt:externalLink");
 
                 Node translation = sub.getOrCreateI18N(locale);

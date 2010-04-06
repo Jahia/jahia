@@ -1,0 +1,174 @@
+Logging service
+
+ Jahia includes a simple yet powerful logging service that can be used to generate traces of system events at a very
+ high speed.
+
+* Architecture
+
+ The figure below illustrates the architecture of the logging service. The main interface is the MetricsLoggingService
+ API which includes methods to perform logging. The default implementation is the MetricsLoggingServiceImpl class.
+
+ The black arrows represent the actual path for content processing and rendering, while the blue arrows represent the
+ calls to the logging service to trace the events being performed in the system.
+
+[images/logging/logging_architecture.png]
+
+ As you can see, the default implementation uses the {{{http://www.slf4j.org/}SLF4J Java library}} to perform the actual logging, but this could
+ be modified by provided another implementation if the need be. SLF4J by default is configured to use the {{{http://logging.apache.org/log4j}Log4J logging
+ library}} that has been integrated in Jahia since its inception.
+
+ Below the JCR API, we have a listener class that will trace events as they are being performed directly on the JCR nodes,
+ in order to trace modifications performed on the content tree either through the regular user interface or through
+ custom JCR clients.
+
+* Default configuration
+
+ By default, Jahia will use the logging service to log the following information :
+
+ - Content events : this could be module viewing, content being created, updated or removed. The log will be created
+ in files named : jahia_access.log*
+
+ - Profiling information : this log will contain profile information for the rendering times of different modules,
+ very useful to track overall system performance. This logging has a minimal overhead (less than 5%). The log will be
+ created in files named : jahia_profiler.log*
+
+* Examples
+
+ You can find example on how to post-process log files to extract usage data in the mod-default module. It features
+ two example, one contains a list of the top ten visited pages, based on site navigation by users, and the other is an
+ recommendation system similar to what major online retails feature, that analyzes user sessions to build
+ recommendations on content such as "users that have viewed this content has also viewed...". Please refer to that
+ module's documentation for more details.
+ 
+* Event templates
+
+ Jahia's logging service uses the SLF4J library to perform it's logging, and therefore can use its {{{http://www.slf4j.org/faq.html#logging_performance}formatting anchors}}
+ to customize the logging messages. Jahia regroups similar message formats into what is called "event templates", that
+ may be configurable, although we provided default formats out of the box (for more information see the configuration
+ section below).
+
+ Here is a list of the used event templates inside Jahia's logging system :
+
+ - pageViewed : indicates the processing of an HTTP GET request. This can be a request for a full content page or a
+ simple node, but is not generated for child objects.
+
+ - nodeCreated : indicates a JCR node has been created.
+
+ - nodeUpdated : indicates a JCR node has been modified.
+
+ - nodeDeleted : indicates a JCR node has been deleted.
+
+ - moduleViewed : indicates that a module (or node) has been viewed. Contrary to the "pageViewed" event, this is
+ generated for each node that is part of a global HTTP GET request. 
+
+* Configuration
+
+ We present in this section the configuration files involved in settings up the logging service and it's various
+ components. Please note that in general it is recommended to make as few changes as possible, as it will make migration
+ to more recent versions of Jahia easier, since there will be less customization to merge.
+
+** WEB-INF/etc/spring/logging/applicationcontext-logging.xml
+
+ This Spring configuration provides both the implementation of the Jahia logging API as well as the event templates
+ setup. Unless you have a strong need for another implementation, we recommend you use the default service implementation,
+ but you might have a need to customize the event templates, in order for example to ease post-processing of the logs.
+
+-------------------------
+    <bean id="loggingService" class="org.jahia.services.logging.MetricsLoggingServiceImpl" factory-method="getInstance">
+        <property name="logTemplatesMap">
+            <map>
+                <entry key="moduleViewed" value="module viewed with template {}"/>
+                <entry key="pageViewed" value="page viewed with {} from {}"/>
+                <entry key="nodeUpdated" value="node updated with {}"/>
+                <entry key="nodeCreated" value="node created with {}"/>
+                <entry key="nodeDeleted" value="node deleted"/>
+            </map>
+        </property>
+    </bean>
+-------------------------
+
+** WEB-INF/etc/config/log4j.xml
+
+  The default configuration provides a Log4J XML configuration that provides two categories that are used by the
+  logging service : loggingService and profilerLoggingService. The first is used to trace content event operations,
+  while the second is used to log all profiling information.
+
+  Here below we present an extract of the log4j.xml file with the relevant sections. Note that the appenders, that are
+  responsible for setting up the logging to the destination are presented first, and then the required categories simply
+  have references to the declared appenders.
+
+-------------------------
+    <appender name="profilerLogs" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="jahia_profiler.log"/>
+        <param name="Threshold" value="debug"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="debug"/>
+            <param name="AcceptOnMatch" value="true"/>
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter"/>
+
+    </appender>
+
+    <appender name="hitAccess" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="jahia_access.log"/>
+        <param name="Threshold" value="trace"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="trace"/>
+            <param name="AcceptOnMatch" value="true"/>
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter"/>
+
+    </appender>
+
+...
+
+    <category name="loggingService" additivity="false">
+        <priority value="trace"/>
+        <appender-ref ref="hitAccess"/>
+    </category>
+
+    <category name="profilerLoggingService" additivity="false">
+        <priority value="debug"/>
+        <appender-ref ref="profilerLogs"/>
+    </category>
+-------------------------
+
+** WEB-INF/etc/spring/jcr/applicationcontext-jcr.xml
+
+ This configuration file contains the settings to configure logging for the JCR tree operations. Here is an extract of
+ the default configuration.
+
+-------------------------
+    <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
+          factory-method="getInstance" lazy-init="true">
+...
+        <property name="listeners">
+            <map>
+                <entry key="default">
+                    <list>
+...
+                        <bean class="org.jahia.services.logging.MetricsLoggingJCReventListener">
+                            <property name="loggingService" ref="loggingService"/>
+                            <property name="nodeTypesList">
+                                <list/>
+                            </property>
+                        </bean>
+...
+                    </list>
+                </entry>
+            </map>
+        </property>
+...
+    </bean>
+-------------------------
+
+ As you can see in the above configuration, the logging JCR event listener is configured only for the "default"
+ workspace, which is the editing workspace. Also note that the event listener can take a nodeTypesList parameter that
+ can contain a List<String> of JCR node types to listen to. If none are specified, all the node types will be logged.
+

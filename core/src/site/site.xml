@@ -34,6 +34,7 @@ under the License.
             </item>
             <item name="Caches" href="cache/cache.html"/>
             <item name="CKEditor integration" href="ckeditor/index.html"/>
+            <item name="Logging service" href="logging.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

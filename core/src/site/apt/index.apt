@@ -10,4 +10,5 @@ Core Module
  * {{{./cache/cache.html}Caches}}
 
  * {{{./ckeditor/index.html}CKEditor Integration}}
- 
+
+ * {{{./logging.html}Logging service customization}}

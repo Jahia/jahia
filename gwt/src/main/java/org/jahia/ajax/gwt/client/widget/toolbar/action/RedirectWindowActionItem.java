@@ -50,7 +50,7 @@ public class RedirectWindowActionItem extends BaseActionItem {
     public void onComponentSelection() {
         String jsUrl = getPropertyValue(getGwtToolbarItem(), "js.url");
         if (jsUrl != null) {
-            Window.Location.replace(JahiaGWTParameters.getParam(jsUrl));
+            Window.Location.assign(JahiaGWTParameters.getParam(jsUrl));
         } else {
             Map preferences = getGwtToolbarItem().getProperties();
             final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(Constants.URL);

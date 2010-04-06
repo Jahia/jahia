@@ -23,6 +23,17 @@
         <property name="urlParams" value="&amp;sub=list" />
     </bean>
 
+    <bean id="usersAdministrationModule" class="org.jahia.admin.users.ManageUsers" parent="abstractAdministrationModule">
+        <property name="serverModule" value="true"/>
+        <property name="urlKey" value="users" />
+        <property name="permissionName" value="global/users" />
+        <property name="name" value="users" />
+        <property name="icon" value="user1_into" />
+        <property name="label" value="label.manageUsers" />
+        <property name="urlAction" value="users" />
+        <property name="urlParams" value="&amp;sub=display" />
+    </bean>
+
     <bean id="serverAdministrationModule" class="org.jahia.admin.server.ManageServer" parent="abstractAdministrationModule">
         <property name="urlKey" value="server" />
         <property name="permissionName" value="global/email-settings" />
@@ -148,17 +159,6 @@
     </bean>
 
     <!-- Site settings administration modules -->
-
-    <bean id="usersAdministrationModule" class="org.jahia.admin.users.ManageUsers" parent="abstractAdministrationModule">
-        <property name="serverModule" value="true"/>
-        <property name="urlKey" value="users" />
-        <property name="permissionName" value="global/users" />
-        <property name="name" value="users" />
-        <property name="icon" value="user1_into" />
-        <property name="label" value="label.manageUsers" />
-        <property name="urlAction" value="users" />
-        <property name="urlParams" value="&amp;sub=display" />
-    </bean>
 
     <bean id="groupsAdministrationModule" class="org.jahia.admin.users.ManageGroups" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>

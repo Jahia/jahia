@@ -2,7 +2,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="portal.css"/>
-<template:addResources type="javascript" resources="jquery.js,ui.core.js,inettuts.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,inettuts.js"/>
 <jcr:node path="/shared/portalComponents" var="widgets"/>
 <script type="text/javascript">
 function addWidget(source, newName) {

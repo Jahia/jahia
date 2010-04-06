@@ -329,6 +329,12 @@ class TemplatePackageRegistry {
             }
         }
         
+        // handle dependencies
+        for (JahiaTemplatesPackage pack : registry.values()) {
+            pack.getDependencies().clear();
+            computeDependencies(pack.getDependencies(), pack);
+        }        
+        
         File[] files = rootFolder.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
@@ -376,7 +382,16 @@ class TemplatePackageRegistry {
             logger.warn("No available template packages found."
                     + " That will prevent creation of a virtual site.");
         }
-        // TODO implement dependency (inheritance) validation for template sets
+        // TODO implement dependency validation for template sets
     }
 
+    private void computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {
+        for (String depends : pack.getDepends()) {
+            JahiaTemplatesPackage dependentPack = registry.get(depends);
+            if (!dependencies.contains(dependentPack)) {
+                dependencies.add(dependentPack);
+                computeDependencies(dependencies, dependentPack);
+            }
+        }
+    }
 }

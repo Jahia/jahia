@@ -41,8 +41,7 @@
 <template:addResources type="css" resources="jquery.autocomplete.css" />
 <template:addResources type="css" resources="thickbox.css" />
 <template:addResources type="css" resources="searchusers.css" />
-<template:addResources type="javascript"
-                       resources="${url.context}/templates/default/javascript/jquery.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxQueue.js" />
 <template:addResources type="javascript" resources="jquery.autocomplete.js" />
 <template:addResources type="javascript" resources="jquery.bgiframe.min.js" />

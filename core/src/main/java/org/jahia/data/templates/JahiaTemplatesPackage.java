@@ -41,7 +41,6 @@ package org.jahia.data.templates;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.exolab.core.messenger.PacketQueue;
 import org.jahia.settings.SettingsBean;
 
 import java.io.File;
@@ -56,41 +55,43 @@ import java.util.*;
 public class JahiaTemplatesPackage {
 
     /**
-     * the file or directory name from which data are loaded *
+     * the file or directory name from which data are loaded
      */
     private String m_FileName;
     /**
-     * the full path to the source file or directory *
+     * the full path to the source file or directory
      */
     private String m_FilePath;
 
     /**
-     * Name of the package *
+     * Name of the package
      */
     private String m_Name;
     /**
-     * Name of the dependent package *
+     * Name of the dependent package
      */
     private List<String> depends = new LinkedList<String>();
     /**
-     * The Folder Name where to extract package contents *
+     * The Folder Name where to extract package contents
      */
     private String m_RootFolder;
     /**
-     * The initial import file *
+     * The initial import file
      */
     private List<String> initialImports = new LinkedList<String>();
     /**
-     * The Package Provider Name *
+     * The Package Provider Name
      */
     private String m_Provider;
     /**
-     * The Package thumbnail image file Name entry *
+     * The Package thumbnail image file Name entry
      */
     private String m_Thumbnail;
 
     private String description;
 
+    private Set<JahiaTemplatesPackage> dependencies = new LinkedHashSet<JahiaTemplatesPackage>();
+    
     private List<JahiaTemplateDef> templateListReadOnly = Collections.emptyList();
 
     private Map<String, JahiaTemplateDef> templatesReadOnly = Collections.emptyMap();
@@ -472,5 +473,13 @@ public class JahiaTemplatesPackage {
 
     public void setRulesDescriptorFile(String rulesDescriptorFiles) {
         this.rulesDescriptorFiles.add(rulesDescriptorFiles);
+    }
+
+
+    /**
+     * @return the dependencies
+     */
+    public Set<JahiaTemplatesPackage> getDependencies() {
+        return dependencies;
     }
 }

@@ -9,7 +9,7 @@
 <template:addResources type="inlinejavascript">
        var baseUrl = '${url.base}';
 </template:addResources>
-<template:addResources type="javascript" resources="jquery.js,ui.core.js,inettuts.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,inettuts.js"/>
 <script type="text/javascript">
     var baseUrl = '${url.base}'
     $(document).ready(function() {

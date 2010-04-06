@@ -366,6 +366,13 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.templates</groupId>
+            <artifactId>mod-assets</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.templates</groupId>
             <artifactId>mod-default</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>

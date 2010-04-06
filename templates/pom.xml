@@ -61,7 +61,8 @@
     <modules>
         <!--<module>core-templates</module>-->
         <!--<module>mod-6.0</module>-->
-        <module>mod-article</module>
+		<module>mod-article</module>
+        <module>mod-assets</module>
         <module>mod-blog</module>
         <module>mod-contact</module>
         <module>mod-default</module>

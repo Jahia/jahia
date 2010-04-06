@@ -86,8 +86,8 @@ public class AddResourcesTag extends BodyTagSupport {
 
         List<String> lookupPaths = new LinkedList<String>();
         lookupPaths.add(aPackage.getRootFolderPath() + "/" + type + "/");
-        for (String s : aPackage.getDepends()) {
-            lookupPaths.add(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(s).getRootFolderPath() + "/" + type + "/");
+        for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
+            lookupPaths.add(pack.getRootFolderPath() + "/" + type + "/");
         }
 
         for (String resource : strings) {

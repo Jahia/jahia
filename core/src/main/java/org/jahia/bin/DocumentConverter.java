@@ -44,8 +44,6 @@ import org.springframework.web.servlet.mvc.Controller;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
-
 /**
  * Performs conversion of the submitted document into specified format.
  * 
@@ -79,9 +77,9 @@ public class DocumentConverter extends HttpServlet implements Controller {
         // return a file
         response.setContentType(returnedMimeType);
         response.setHeader("Content-Disposition",
-                "inline; filename=" + FilenameUtils.getName(inputFile.getName())
-                        + "." + converterService.getExtension(returnedMimeType));
-        
+                "attachement; filename=\"" + FilenameUtils.getBaseName(inputFile.getName())
+                        + "." + converterService.getExtension(returnedMimeType) + "\"");
+
         try {
             outputStream.flush();
         } finally {

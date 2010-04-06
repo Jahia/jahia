@@ -55,8 +55,6 @@ public class DocumentConverterService {
 
     protected static final Map<String, Object> DEF_PROPS = new HashMap<String, Object>(2);
 
-    public static final String TMP_DIRECTORY = "./tmp_transform";
-
     private static Logger logger = Logger.getLogger(DocumentConverterService.class);
 
     static {
@@ -104,20 +102,20 @@ public class DocumentConverterService {
      * mime-types.
      * 
      * @param inputStream the source stream
-     * @param inputFileName the source Name
+     * @param inputFileExtension the source Name
      * @param outputStream the destination stream
      * @param outputMimeType the output MIME type
      */
-    public void convert(InputStream inputStream, String inputFileName, OutputStream outputStream, String outputMimeType) {
+    public void convert(InputStream inputStream, String inputFileExtension, OutputStream outputStream, String outputMimeType) {
 
         try {
             
             // The outputFile required by the service
-            File outputFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), tmpDirectory);
+            File outputFile = createTempFile();
 
             // convert inputFile to outputFile
-            convert(getFile(inputStream, String.valueOf(System.currentTimeMillis())),
-                    formatRegistry.getFormatByExtension(inputFileName),
+            convert(getFile(inputStream),
+                    formatRegistry.getFormatByExtension(inputFileExtension),
                     outputFile, getFormatByMimeType(outputMimeType));
 
             // write the outputFileContent into outputStream
@@ -126,6 +124,10 @@ public class DocumentConverterService {
         } catch (IOException ioe) {
             logger.warn("A problem occured during the transformation", ioe);
         }
+    }
+
+    protected File createTempFile() throws IOException {
+        return File.createTempFile(String.valueOf(System.currentTimeMillis()), null);
     }
 
     public String getMimeType(String extension) {
@@ -159,18 +161,21 @@ public class DocumentConverterService {
     }
 
     /**
-     *
+     * Create a {@link File} from an {@link InputStream}
      * @param is The inputStream to read from
-     * @param fileName The name of the file to create
-     * @return
+     * @return a {@link File} or null if given parameter is null.
      */
-    private File getFile(InputStream is, String fileName) {
+    private File getFile(InputStream is) {
+        if (is == null) {
+            return null;
+        }
+
         File file = null;
-        OutputStream os = null;
+        OutputStream os;
 
         try {
 
-            file = File.createTempFile(fileName, tmpDirectory);
+            file = createTempFile();
             os = new FileOutputStream(file);
             byte buf[]=new byte[4096];
             int len;
@@ -180,7 +185,7 @@ public class DocumentConverterService {
             os.close();
             is.close();
         } catch (IOException ioe) {
-            logger.warn("inputStream from file " + fileName + " can't be converted into file", ioe);
+            logger.warn("inputStream from file " + (file != null?file.getName():null) + " can't be converted into file", ioe);
         }
         return file;
     }
@@ -271,6 +276,12 @@ public class DocumentConverterService {
      */
     public void setTmpDirectory(String tmpDirectory) {
         this.tmpDirectory = tmpDirectory;
+
+        final File tmpdir = new File(tmpDirectory);
+
+        if (!tmpdir.exists()) {
+            tmpdir.mkdirs();
+        }
     }
 
     /**

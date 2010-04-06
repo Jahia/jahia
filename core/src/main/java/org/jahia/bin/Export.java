@@ -193,8 +193,7 @@ public class Export extends HttpServlet implements Controller {
     private void generateCleanedUpXML(HttpServletRequest request, HttpServletResponse resp, String nodePath)
             throws IOException, RepositoryException, JDOMException {
         OutputStream outputStream;
-        String filename = StringUtils.substringAfter(nodePath.substring(1), "/").replace(" ", "_");
-        File tempFile = File.createTempFile("exportTemplates-" + filename, "xml");
+        File tempFile = File.createTempFile("exportTemplates", "xml");
         outputStream = new DeferredFileOutputStream(1024 * 1024 * 10, tempFile);
         getXml(nodePath, outputStream);
         DeferredFileOutputStream stream = (DeferredFileOutputStream) outputStream;

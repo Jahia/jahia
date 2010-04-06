@@ -192,7 +192,7 @@ public class FileUpload {
      * Return the values of a parameter
      *
      * @param paramName the name of the parameter
-     * @return the values of a paramater as a String Array
+     * @return the values of a parameter as a String Array
      */
     public String[] getParameterValues (final String paramName) {
         final List<String> list = ((List<String>) params.get(paramName));

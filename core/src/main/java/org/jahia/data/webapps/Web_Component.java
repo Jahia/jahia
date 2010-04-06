@@ -46,18 +46,18 @@ package org.jahia.data.webapps;
  * Holds Informations about the <web> components element in the descriptors file
  * application.xml ( J2EE Standard )
  *
- * <application>
- *    <display-name>filemanager.ear</display-name>
- *    <desc>Application desc</desc>
- *    <module>
+ * &lt;application&gt;
+ *    &lt;display-name&gt;filemanager.ear&lt;/display-name&gt;
+ *    &lt;desc&gt;Application desc&lt;/desc&gt;
+ *    &lt;module&gt;
  *
- *       <web>
- *          <web-uri>war-ic.war</web-uri>
- *          <context-root>filemanager</context-root>
- *       </web>
+ *       &lt;web&gt;
+ *          &lt;web-uri&gt;war-ic.war&lt;/web-uri&gt;
+ *          &lt;context-root&gt;filemanager&lt;/context-root&gt;
+ *       &lt;/web&gt;
  *
- *    </module>
- * </application>
+ *    &lt;/module&gt;
+ * &lt;/application&gt;
  *
  *
  * @author Khue ng

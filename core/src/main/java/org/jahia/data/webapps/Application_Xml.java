@@ -54,16 +54,16 @@ import org.w3c.dom.Node;
  * Holds Informations about the Application deployment descriptors file
  * application.xml ( J2EE Standard )
  *
- * <application>
- *    <display-name>filemanager.ear</display-name>
- *    <desc>Application desc</desc>
- *    <module>
- *       <web>
- *          <web-uri>war-ic.war</web-uri>
- *          <context-root>filemanager</context-root>
- *       </web>
- *    </module>
- * </application>
+ * &lt;application&gt;
+ *    &lt;display-name&gt;filemanager.ear&lt;/display-name&gt;
+ *    &lt;desc&gt;Application desc&lt;/desc&gt;
+ *    &lt;module&gt;
+ *       &lt;web&gt;
+ *          &lt;web-uri&gt;war-ic.war&lt;/web-uri&gt;
+ *          &lt;context-root&gt;filemanager&lt;/context-root&gt;
+ *       &lt;/web&gt;
+ *    &lt;/module&gt;
+ * &lt;/application&gt;
  *
  *
  * @author Khue ng

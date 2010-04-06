@@ -4,7 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addResources type="css" resources="tags.css" nodetype="jmix:tagged"/>
+<template:addResources type="css" resources="tags.css"/>
 <c:set var="usageThreshold" value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
 <jcr:node var="tagsRoot" path="${renderContext.site.path}/tags"/>
 <div class="tags">

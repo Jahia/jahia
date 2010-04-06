@@ -5,7 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <template:addWrapper name="hidden.blogWrapper"/>
-<template:addResources type="css" resources="forum.css" nodetype="jmix:comments"/>
+<template:addResources type="css" resources="forum.css"/>
 <template:addResources type="css" resources="blog.css"/>
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>

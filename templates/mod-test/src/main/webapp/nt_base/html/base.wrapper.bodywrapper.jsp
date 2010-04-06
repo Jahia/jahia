@@ -34,7 +34,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../../common/declarations.jspf" %>
-<template:addResources type="css" resources="web.css" nodetype="jnt:page"/>
+<template:addResources type="css" resources="web.css"/>
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home" scope="request"/>
 
 <div id="bodywrapper"><!--start bodywrapper-->

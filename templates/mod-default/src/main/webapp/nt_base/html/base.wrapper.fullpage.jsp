@@ -52,7 +52,7 @@
 		<jcr:nodeProperty var="theme" node="${currentNode}" name="j:theme" inherited="true"/>
 		<c:if test="${!empty theme}">
 			<c:forEach var="themeFile" items="${theme.node.children}">
-				<template:addResources type="css" resources="${themeFile.url}" nodetype="jnt:page"/>
+				<template:addResources type="css" resources="${themeFile.url}"/>
 			</c:forEach>
 		</c:if>
         <utility:applicationResources/>

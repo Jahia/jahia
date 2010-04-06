@@ -4,8 +4,8 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:addResources type="css" resources="forum.css" nodetype="jnt:post"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js" nodetype="jnt:post"/>
+<template:addResources type="css" resources="forum.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
 <%-- Get all contents --%>
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>

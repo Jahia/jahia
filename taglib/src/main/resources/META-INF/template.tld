@@ -587,18 +587,6 @@
         <tag-class>org.jahia.taglibs.template.include.AddResourcesTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>Node to include in the page</description>
-            <name>node</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Nodetype of the option to include in the page</description>
-            <name>nodetype</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <description>
             	Type of the resources (will define where to find (in css direcory for css, in javascript directory for javascript).
             	If the type is inlineCss or inlineJavascript the content of the tag body will be used as the asset itself and

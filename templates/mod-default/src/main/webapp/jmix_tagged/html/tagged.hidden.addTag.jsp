@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
 <c:set var="org.jahia.javascript.includes.jQuery" value="true" scope="request"/>
-<template:addResources type="javascript" resources="jquery.min.js" nodetype="jmix:tagged"/>
+<template:addResources type="javascript" resources="jquery.min.js"/>
 
 <template:addResources type="css" resources="jquery.autocomplete.css" />
 <template:addResources type="css" resources="thickbox.css" />

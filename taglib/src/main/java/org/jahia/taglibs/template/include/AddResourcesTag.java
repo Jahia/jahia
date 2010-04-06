@@ -34,9 +34,7 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
-import org.jahia.registries.ServicesRegistry;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -72,10 +70,11 @@ public class AddResourcesTag extends BodyTagSupport {
         RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
         addResources(renderContext, templatesPackage, type, resources);
+        resetState();
         return super.doEndTag();
     }
 
-    private void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String type,
+    protected void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String type,
                               String resources) {
         if ("inlinecss".equals(type) || "inlinejavascript".equals(type)) {
             return;
@@ -125,14 +124,6 @@ public class AddResourcesTag extends BodyTagSupport {
         }
     }
 
-    public void setNodetype(String nodetype) {
-        // do nothing;
-    }
-
-    public void setNode(JCRNodeWrapper node) {
-        // do nothing;
-    }
-
     public void setType(String type) {
         this.type = type != null ? type.toLowerCase() : null;
     }
@@ -155,5 +146,16 @@ public class AddResourcesTag extends BodyTagSupport {
         return super.doAfterBody();
     }
     
-    
+ 
+    @Override
+    public void release() {
+        resetState();
+        super.release();
+    }
+
+    protected void resetState() {
+        insert = false;
+        resources = null;
+        type = null;
+    }
 }

@@ -170,5 +170,5 @@ Logging service
 
  As you can see in the above configuration, the logging JCR event listener is configured only for the "default"
  workspace, which is the editing workspace. Also note that the event listener can take a nodeTypesList parameter that
- can contain a List<String> of JCR node types to listen to. If none are specified, all the node types will be logged.
+ can contain a List\<String\> of JCR node types to listen to. If none are specified, all the node types will be logged.
 

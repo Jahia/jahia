@@ -788,7 +788,7 @@ public class JCRPublicationService extends JahiaService {
             publishedNode = liveSession.getNode(stageNode.getCorrespondingNodePath(liveSession.getWorkspace().getName()));
         } catch (ItemNotFoundException e) {
             if (logger.isDebugEnabled()) {
-                logger.debug(e);
+                logger.debug("No live node for staging node " + stageNode.getPath());
             }        
         }
 

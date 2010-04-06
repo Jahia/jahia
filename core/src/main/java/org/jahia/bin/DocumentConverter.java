@@ -47,8 +47,8 @@ import org.apache.commons.io.FilenameUtils;
 /**
  * Performs conversion of the submitted document into specified format.
  * 
+ * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
- * 
  */
 public class DocumentConverter extends HttpServlet implements Controller {
 

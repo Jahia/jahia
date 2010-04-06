@@ -49,6 +49,7 @@ import org.artofsolving.jodconverter.office.OfficeTask;
 /**
  * Document transformation service that uses OpenOffice for file conversion.
  * 
+ * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
  */
 public class DocumentConverterService {

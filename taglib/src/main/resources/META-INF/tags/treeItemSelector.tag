@@ -109,7 +109,7 @@
 	</template:addResources>
 	<c:set var="org.jahia.tags.treeItemSelector.resources" value="true" scope="request"/>
 </c:if>
-<c:set var="root" value="${functions:default(root, renderContext.siteNode.path)}"/>
+<c:set var="root" value="${functions:default(root, renderContext.site.path)}"/>
 <c:set var="displayIncludeChildren" value="${functions:default(displayIncludeChildren, 'true')}"/>
 <c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren" value="${fieldId}_includeChildren"/></c:if>
 <%-- by default set includeChildren to 'true' to search in subnodes --%>

@@ -53,7 +53,7 @@
 <c:if test="${display}">
     <c:set var="value" value="${not empty value ? fn:replace(value, ' ', '') : ''}"/>
     <c:set var="value" value="${functions:default(paramValues['src_sites.values'], not empty value ? fn:split(value, ',') : null)}"/>
-    <c:set var="selectedValues" value=",${not empty value ? fn:join(value, ',') : renderContext.site.siteKey},"/>
+    <c:set var="selectedValues" value=",${not empty value ? fn:join(value, ',') : renderContext.site.name},"/>
     <c:set var="allowAll" value="${not empty allowAll ? allowAll : true}"/>
     <c:set target="${attributes}" property="name" value="src_sites.values"/>
     <% jspContext.setAttribute("allSites", org.jahia.services.sites.JahiaSitesBaseService.getInstance().getSites()); %>

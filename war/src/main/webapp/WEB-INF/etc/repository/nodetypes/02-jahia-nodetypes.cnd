@@ -455,10 +455,6 @@
 - j:expiration (long)
 
 //---------------------------------------------------------
-// Contribution
-//---------------------------------------------------------
-
-//---------------------------------------------------------
 // Pages, content lists, reusable components
 //---------------------------------------------------------
 
@@ -471,10 +467,6 @@
 
 [jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title, jmix:list
  orderable
- - j:editableInContribution (boolean)
- - j:canOrderInContribution (boolean)
- - j:canDeleteInContribution (boolean)
- - j:allowedTypes (string, choicelist[nodetypes]) multiple
  + * (nt:base) = nt:base version
 
 [jnt:templatesSetFolder] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
@@ -487,10 +479,25 @@
  - j:picture (weakreference, file[mime='image/*'])
  + j:target (jnt:page)
 
-[jmix:templateInformation] mixin
+//---------------------------------------------------------
+// Template studio
+//---------------------------------------------------------
+
+[jmix:template]
+
+[jmix:templateInformation] > jmix:template, jmix:contentMixin mixin
  - j:templateLocked (boolean)
- - j:templateShared (boolean)
- - j:templateDeployed (boolean)
+ - j:templateShared (boolean) hidden
+ - j:templateDeployed (boolean) hidden
+
+[jmix:contributeMode] > jmix:template, jmix:listMixin mixin
+ - j:editableInContribution (boolean)
+ - j:canOrderInContribution (boolean)
+ - j:canDeleteInContribution (boolean)
+
+[jmix:listRestrictions] > jmix:template, jmix:listMixin mixin
+ - j:allowedTypes (string, choicelist[nodetypes]) multiple
+
 
 //---------------------------------------------------------
 // Portlets

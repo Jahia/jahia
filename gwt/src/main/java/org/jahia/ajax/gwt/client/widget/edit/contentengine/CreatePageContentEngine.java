@@ -1,7 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.TabItem;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -10,9 +9,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.*;
@@ -43,13 +40,18 @@ public class CreatePageContentEngine extends CreateContentEngine {
     @Override
     protected void initTabs() {
         createPageTab = new CreatePageTabItem(this);
-        tabs.add(createPageTab);
-//        tabs.add(new ContentTabItem(this));
-//        tabs.add(new LayoutTabItem(this));
-        tabs.add(new MetadataTabItem(this));
-        tabs.add(new ClassificationTabItem(this));
-        tabs.add(new OptionsTabItem(this));
-        tabs.add(new RightsTabItem(this));
+        if (linker instanceof EditLinker && ((EditLinker) linker).getMainModule().getConfig().getName().equals("studiomode")) {
+            tabs.add(createPageTab);
+            tabs.add(new TemplateOptionsTabItem(this));
+            tabs.add(new OptionsTabItem(this));
+            tabs.add(new RightsTabItem(this));
+        } else {
+            tabs.add(createPageTab);
+            tabs.add(new MetadataTabItem(this));
+            tabs.add(new ClassificationTabItem(this));
+            tabs.add(new OptionsTabItem(this));
+            tabs.add(new RightsTabItem(this));
+        }
     }
 
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {

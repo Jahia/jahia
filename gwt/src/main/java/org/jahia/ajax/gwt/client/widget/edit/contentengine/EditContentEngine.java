@@ -49,6 +49,7 @@ import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,16 +91,25 @@ public class EditContentEngine extends AbstractContentEngine {
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        tabs.add(new ContentTabItem(this));
-        tabs.add(new LayoutTabItem(this));
-        tabs.add(new MetadataTabItem(this));
-        tabs.add(new ClassificationTabItem(this));
-        tabs.add(new OptionsTabItem(this));
-        tabs.add(new RightsTabItem(this));
-        tabs.add(new UsagesTabItem(this));
-        tabs.add(new PublicationTabItem(this));
-        tabs.add(new SeoTabItem(this));
-        tabs.add(new AnalyticsTabItem(this));
+        if (linker instanceof EditLinker && ((EditLinker) linker).getMainModule().getConfig().getName().equals("studiomode")) {
+            tabs.add(new ContentTabItem(this));
+            tabs.add(new TemplateOptionsTabItem(this));
+            tabs.add(new LayoutTabItem(this));
+            tabs.add(new OptionsTabItem(this));
+            tabs.add(new RightsTabItem(this));
+            tabs.add(new UsagesTabItem(this));
+        } else {
+            tabs.add(new ContentTabItem(this));
+            tabs.add(new LayoutTabItem(this));
+            tabs.add(new MetadataTabItem(this));
+            tabs.add(new ClassificationTabItem(this));
+            tabs.add(new OptionsTabItem(this));
+            tabs.add(new RightsTabItem(this));
+            tabs.add(new UsagesTabItem(this));
+            tabs.add(new PublicationTabItem(this));
+            tabs.add(new SeoTabItem(this));
+            tabs.add(new AnalyticsTabItem(this));
+        }
     }
 
     /**

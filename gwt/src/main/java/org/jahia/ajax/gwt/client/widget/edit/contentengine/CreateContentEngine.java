@@ -98,12 +98,19 @@ public class CreateContentEngine extends AbstractContentEngine {
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        tabs.add(new ContentTabItem(this));
-        tabs.add(new LayoutTabItem(this));
-        tabs.add(new MetadataTabItem(this));
-        tabs.add(new ClassificationTabItem(this));
-        tabs.add(new OptionsTabItem(this));
-        tabs.add(new RightsTabItem(this));
+        if (linker instanceof EditLinker && ((EditLinker) linker).getMainModule().getConfig().getName().equals("studiomode")) {
+            tabs.add(new ContentTabItem(this));
+            tabs.add(new TemplateOptionsTabItem(this));
+            tabs.add(new LayoutTabItem(this));
+            tabs.add(new OptionsTabItem(this));
+        } else {
+            tabs.add(new ContentTabItem(this));
+            tabs.add(new LayoutTabItem(this));
+            tabs.add(new MetadataTabItem(this));
+            tabs.add(new ClassificationTabItem(this));
+            tabs.add(new OptionsTabItem(this));
+            tabs.add(new RightsTabItem(this));
+        }
 //        tabs.add(new CreatePageTabItem(this));
     }
 

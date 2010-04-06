@@ -38,7 +38,6 @@
 <%@ page import="org.jahia.services.analytics.*" %>
 
 <%
-    JahiaSite currentSite = null;
     String jahiaGAprofile = "";
     String operation = "";
     String gaUserAccount = "";

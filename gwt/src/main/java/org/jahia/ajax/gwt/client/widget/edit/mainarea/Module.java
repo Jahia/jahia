@@ -25,23 +25,19 @@ public abstract class Module extends LayoutContainer {
     protected int depth;
     protected boolean selectable;
     protected Header head;
-    protected boolean locked;
-    protected boolean shared;
-    protected boolean deployed;
+    protected String templateInfo;
 
     public Module() {
     }
 
-    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, boolean deployed, MainModule mainModule) {
+    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, String templateInfo, MainModule mainModule) {
         super();
         this.id = id;
         this.path = path;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.nodeTypes = nodeTypes;
-        this.locked = locked;
-        this.shared = shared;
-        this.deployed = deployed;
+        this.templateInfo = templateInfo;
         this.mainModule = mainModule;
     }
 
@@ -105,21 +101,22 @@ public abstract class Module extends LayoutContainer {
 
     public void setNode(GWTJahiaNode node) {
         this.node = node;
-        node.setIsTemplateLocked(locked);
-        node.setIsTemplateShared(shared);
-        node.setIsTemplateShared(deployed);
     }
 
     public boolean isLocked() {
-        return locked;
+        return templateInfo.contains("-locked-");
     }
 
     public boolean isShared() {
-        return shared;
+        return templateInfo.contains("-shared-");
     }
 
     public boolean isDeployed() {
-        return deployed;
+        return templateInfo.contains("-deployed-");
+    }
+
+    public boolean isParentLocked() {
+        return templateInfo.contains("-parentlocked-");
     }
 
     public MainModule getMainModule() {
@@ -144,11 +141,11 @@ public abstract class Module extends LayoutContainer {
 
     protected void setHeaderText(String headerText) {
         if (mainModule.getConfig().getName().equals("studiomode")) {
-            if (shared && locked) {
+            if (isShared() && isLocked()) {
                 head.setText(headerText + " (locked & shared)");
-            } else if (shared) {
+            } else if (isShared()) {
                 head.setText(headerText + " (shared)");
-            } else if (locked) {
+            } else if (isLocked()) {
                 head.setText(headerText + " (locked)");
             } else {
                 head.setText(headerText);

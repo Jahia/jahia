@@ -101,11 +101,11 @@ public class ModuleDropTarget extends DropTarget {
     
     @Override
     protected void onDragEnter(DNDEvent e) {
-        if (module.getMainModule().getConfig().getName().equals("studiomode") && !module.getParentModule().isLocked()) {
-            e.getStatus().setStatus(false);
-            e.setCancelled(false);
-            return;
-        }
+//        if (module.getMainModule().getConfig().getName().equals("studiomode") && !module.getParentModule().isLocked()) {
+//            e.getStatus().setStatus(false);
+//            e.setCancelled(false);
+//            return;
+//        }
 
         if (module.getParentModule().getNode().isWriteable() && !module.getParentModule().getNode().isLocked()) {
             boolean allowed = checkNodeType(e, module.getParentModule().getNodeTypes());

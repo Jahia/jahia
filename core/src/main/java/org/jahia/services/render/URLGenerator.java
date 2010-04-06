@@ -1,5 +1,6 @@
 package org.jahia.services.render;
 
+import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.*;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -10,6 +11,7 @@ import org.jahia.services.content.JCRStoreService;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.collections.Transformer;
 
+import javax.jcr.RepositoryException;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -23,6 +25,7 @@ import java.util.HashMap;
  * @todo Ideally instances of this class should be created by a factory that is configured through Spring.
  */
 public class URLGenerator {
+    private static Logger logger = Logger.getLogger(URLGenerator.class);
 
     private String base;
 
@@ -83,7 +86,21 @@ public class URLGenerator {
         preview = basePreview + resourcePath;
         baseContribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         contribute = baseContribute + resourcePath;
-        studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templatesSet.html";
+        studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templatesSet";
+        if (context.getSite() != null) {
+            studio += "/" + context.getSite().getTemplatePackageName() + "/defaultSite/";
+            try {
+                if (resource.getNode().isNodeType("jnt:page") && resource.getNode().hasProperty("j:sourceTemplate")) {
+                    studio += "templates/" + resource.getNode().getProperty("j:sourceTemplate").getNode().getName() + ".html";
+                } else {
+                    studio += "home.html";
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get studio url",e);
+            }
+        } else {
+            studio += ".html";
+        }
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         logout = getContext() + Logout.getLogoutServletPath();
         initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();

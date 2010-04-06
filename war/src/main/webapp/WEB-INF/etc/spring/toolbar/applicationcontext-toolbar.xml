@@ -1390,7 +1390,7 @@
 
     <bean id="org.jahia.toolbar.item.Studio" class="org.jahia.services.toolbar.bean.Item">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
         <property name="titleKey" value="label.studio"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-edit-min"/>
@@ -1401,6 +1401,10 @@
                 <bean class="org.jahia.services.toolbar.bean.Property">
                     <property name="name" value="js.url"/>
                     <property name="value" value="studioUrl"/>
+                </bean>
+                <bean class="org.jahia.services.toolbar.bean.Property">
+                    <property name="name" value="no-options"/>
+                    <property name="value" value=""/>
                 </bean>
             </list>
         </property>

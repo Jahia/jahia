@@ -32,8 +32,13 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ListModule;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
 /**
  * Toolbar action item to lock the current node in template mode
@@ -43,13 +48,29 @@ public class SwitchLockComponentInTemplateActionItem extends BaseActionItem {
 
     private static final long serialVersionUID = -3579254325077395142L;
 
+    private transient boolean lock;
+
     public void onComponentSelection() {
-        ContentActions.switchTemplateLocked(linker);
+        ContentActions.switchTemplateLocked(linker, lock);
     }
 
     public void handleNewLinkerSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.getSelectedNodes().size() == 1);
+        if (linker != null) {
+            final Module module = ((EditLinker) linker).getSelectedModule();
+            GWTJahiaNode node = linker.getSelectedNode();
+            if (node != null) {
+                setEnabled(node.isWriteable());
+                if (module.isLocked()) {
+                    updateTitle("Enable component edition by contributors");
+                    lock = false;
+                } else {
+                    updateTitle("Disable component edition by contributors");
+                    lock = true;
+                }
+            } else {
+                setEnabled(false);
+            }
+        }
     }
 
 }

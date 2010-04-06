@@ -167,6 +167,8 @@
                             <value>jcr:lastModifiedBy</value>
                             <value>j:lastPublished</value>
                             <value>j:lastPublishedBy</value>
+                            <value>j:templateLocked</value>
+                            <value>j:templateShared</value>
                 			<value>j:tags</value>
                 		</set>
                 	</property>

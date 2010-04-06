@@ -751,5 +751,4 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     JCRSiteNode resolveSite() throws RepositoryException;
 
-    void synchro(JCRNodeWrapper destNode, boolean allowsExternalSharedNodes) throws RepositoryException;
 }

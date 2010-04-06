@@ -978,20 +978,17 @@ public class ContentActions {
         }
     }
 
-    public static void switchTemplateLocked(final Linker linker) {
+    public static void switchTemplateLocked(final Linker linker, final boolean locked) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
-            final boolean locked;
             final ArrayList<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
             if (!target.getNodeTypes().contains("jmix:templateInformation")) {
                 target.getNodeTypes().add("jmix:templateInformation");
             }
-            if (!target.isTemplateLocked()) {
+            if (locked) {
                 properties.add(new GWTJahiaNodeProperty("j:templateLocked", new GWTJahiaNodePropertyValue("true", GWTJahiaNodePropertyType.BOOLEAN)));
-                locked = true;
             } else {
                 properties.add(new GWTJahiaNodeProperty("j:templateLocked", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
-                locked = false;
             }
 
             JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties,new AsyncCallback() {
@@ -1012,20 +1009,17 @@ public class ContentActions {
         }
     }
 
-    public static void switchTemplateShared(final Linker linker) {
+    public static void switchTemplateShared(final Linker linker, final boolean shared) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
-            final boolean shared;
             final ArrayList<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
             if (!target.getNodeTypes().contains("jmix:templateInformation")) {
                 target.getNodeTypes().add("jmix:templateInformation");
             }
-            if (!target.isTemplateShared()) {
+            if (shared) {
                 properties.add(new GWTJahiaNodeProperty("j:templateShared", new GWTJahiaNodePropertyValue("true", GWTJahiaNodePropertyType.BOOLEAN)));
-                shared = true;
             } else {
                 properties.add(new GWTJahiaNodeProperty("j:templateShared", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
-                shared = false;
             }
 
             JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties,new AsyncCallback() {

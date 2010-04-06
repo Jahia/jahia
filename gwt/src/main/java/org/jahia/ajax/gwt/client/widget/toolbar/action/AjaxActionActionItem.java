@@ -258,7 +258,7 @@ public class AjaxActionActionItem extends BaseActionItem {
                             else if (action.equalsIgnoreCase(REDIRECT)) {
                                 if (result != null && result.getErrors().isEmpty() && result.getValue() != null
                                         && !"".equals(result.getValue().trim())) {
-                                    Window.Location.replace(result.getValue());
+                                    Window.Location.assign(result.getValue());
                                 }
                             }
                             // case of redirection

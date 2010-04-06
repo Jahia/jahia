@@ -56,7 +56,6 @@ import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.security.AccessControlException;
@@ -1308,15 +1307,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             copy = dest.addNode(name, getPrimaryNodeTypeName());
         }
-        if (isFile()) {
-            InputStream is = getFileContent().downloadFile();
-            copy.getFileContent().uploadFile(is, getFileContent().getContentType());
-            try {
-                is.close();
-            } catch (IOException e) {
-                logger.error(e, e);
-            }
-        }
 
         try {
             NodeType[] mixin = objectNode.getMixinNodeTypes();
@@ -1350,23 +1340,21 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
-        if (!isFile()) {
-            NodeIterator ni = getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
-                if (source.isNodeType("mix:shareable") || (source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean())) {
-                    if (uuidMapping.containsKey(source.getIdentifier())) {
-                        // ugly save because to make node really shareable
-                        session.save();
-                        copy.clone(session.getNodeByUUID(uuidMapping.get(source.getIdentifier())), source.getName());
-                    } else if (allowsExternalSharedNodes) {
-                        copy.clone(source, source.getName());
-                    } else {
-                        source.copy(copy, source.getName(), allowsExternalSharedNodes);
-                    }
+        NodeIterator ni = getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
+            if (source.isNodeType("mix:shareable") || (source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean())) {
+                if (uuidMapping.containsKey(source.getIdentifier())) {
+                    // ugly save because to make node really shareable
+                    session.save();
+                    copy.clone(session.getNodeByUUID(uuidMapping.get(source.getIdentifier())), source.getName());
+                } else if (allowsExternalSharedNodes) {
+                    copy.clone(source, source.getName());
                 } else {
                     source.copy(copy, source.getName(), allowsExternalSharedNodes);
                 }
+            } else {
+                source.copy(copy, source.getName(), allowsExternalSharedNodes);
             }
         }
 
@@ -2383,113 +2371,5 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 //        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
     }
 
-    public void synchro(final JCRNodeWrapper destinationNode, final boolean allowsExternalSharedNodes)
-            throws RepositoryException {
-        if ("j:acl".equals(destinationNode.getName())) {
-            return;
-        }
-        if (!destinationNode.isCheckedOut() && destinationNode.isVersioned()) {
-            session.checkout(destinationNode);
-        }
-        final Map<String, String> uuidMapping = session.getUuidMapping();
-
-        if (isFile()) {
-            JCRFileContent content = getFileContent();
-            InputStream is = content.downloadFile();
-            destinationNode.getFileContent().uploadFile(is, content.getContentType());
-            try {
-                is.close();
-            } catch (IOException e) {
-                logger.error(e, e);
-            }
-        }
-
-        try {
-            NodeType[] mixin = getMixinNodeTypes();
-            for (NodeType aMixin : mixin) {
-                destinationNode.addMixin(aMixin.getName());
-            }
-        } catch (RepositoryException e) {
-            logger.error("Error adding mixin types to copy", e);
-        }
-
-        uuidMapping.put(getIdentifier(), destinationNode.getIdentifier());
-        if (hasProperty("jcr:language")) {
-            destinationNode.setProperty("jcr:language", getProperty("jcr:language").getString());
-        }
-        PropertyIterator props = this.getProperties();
-
-        while (props.hasNext()) {
-            Property property = props.nextProperty();
-            try {
-                if (!property.getDefinition().isProtected()) {
-                    if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                        destinationNode.setProperty(property.getName(), property.getValues());
-                    } else {
-                        destinationNode.setProperty(property.getName(), property.getValue());
-                    }
-                }
-            } catch (Exception e) {
-                logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
-            }
-        }
-
-
-        if (!isFile()) {
-            NodeIterator ni = getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
-                if (source.isNodeType("mix:shareable") || (source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean())) {
-                    if (uuidMapping.containsKey(source.getIdentifier())) {
-                        // ugly save because to make node really shareable
-                        session.save();
-                        try {
-                            JCRNodeWrapper node = destinationNode.getNode(source.getName());
-                            source.synchro(node, allowsExternalSharedNodes);
-                        } catch (RepositoryException e) {
-                            destinationNode.clone(session.getNodeByUUID(uuidMapping.get(source.getIdentifier())),
-                                    source.getName());
-                        }
-                    } else {
-                        try {
-                            JCRNodeWrapper node = destinationNode.getNode(source.getName());
-                            source.synchro(node, allowsExternalSharedNodes);
-                        } catch (RepositoryException e) {
-                            if (allowsExternalSharedNodes) {
-                                destinationNode.clone(source, source.getName());
-                            } else {
-                                source.copy(destinationNode, source.getName(), allowsExternalSharedNodes);
-                            }
-                        }
-                    }
-                } else {
-                    try {
-                        JCRNodeWrapper node = destinationNode.getNode(source.getName());
-                        source.synchro(node, allowsExternalSharedNodes);
-                    } catch (RepositoryException e) {
-                        source.copy(destinationNode, source.getName(), allowsExternalSharedNodes);
-                    }
-                }
-            }
-        }
-        session.save();
-        // deploy to pages
-        if (isNodeType("jnt:page")) {
-            List<JCRNodeWrapper> pages = new ArrayList<JCRNodeWrapper>();
-            PropertyIterator pi = destinationNode.getWeakReferences("j:sourceTemplate");
-            while (pi.hasNext()) {
-                JCRPropertyWrapper property = (JCRPropertyWrapper) pi.next();
-                if (property.getParent().isNodeType("jnt:page")) {
-                    pages.add(property.getParent());
-                }
-            }
-
-
-            for (JCRNodeWrapper page : pages) {
-                destinationNode.synchro(page, false);
-            }
-        }
-
-    }
 
 }

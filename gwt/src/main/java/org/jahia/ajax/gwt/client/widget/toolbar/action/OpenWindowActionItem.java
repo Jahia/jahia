@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Hyperlink;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -58,24 +59,31 @@ public class OpenWindowActionItem extends BaseActionItem {
                 Log.debug("Found property: " + it.next());
             }
         }
-        final GWTJahiaProperty windowWidth = (GWTJahiaProperty) preferences.get(Constants.WIDTH);
-        String wWidth = "";
-        if (windowWidth == null) {
-            Log.debug("Warning: width not found - nb. preferences:" + preferences.size());
-            wWidth = ",width=900";
-        } else {
-            wWidth = ",width=" + windowWidth.getValue();
+
+        String wOptions = "";
+
+        final GWTJahiaProperty noOptions = (GWTJahiaProperty) preferences.get(Constants.NO_OPTIONS);
+
+        if (noOptions == null) {
+            final GWTJahiaProperty windowWidth = (GWTJahiaProperty) preferences.get(Constants.WIDTH);
+            String wWidth = "";
+            if (windowWidth == null) {
+                Log.debug("Warning: width not found - nb. preferences:" + preferences.size());
+                wWidth = ",width=900";
+            } else {
+                wWidth = ",width=" + windowWidth.getValue();
+            }
+
+            final GWTJahiaProperty windowHeight = (GWTJahiaProperty) preferences.get(Constants.HEIGHT);
+            String wHeight = "";
+            if (windowHeight == null) {
+                wHeight = ",height=600";
+            } else {
+                wHeight = ",height=" + windowHeight.getValue();
+            }
+            wOptions = "directories=no,scrollbars=yes,resizable=yes,status=no,location=no" + wWidth + wHeight;
         }
 
-        final GWTJahiaProperty windowHeight = (GWTJahiaProperty) preferences.get(Constants.HEIGHT);
-        String wHeight = "";
-        if (windowHeight == null) {
-            wHeight = ",height=600";
-        } else {
-            wHeight = ",height=" + windowHeight.getValue();
-        }
-
-        final String wOptions = "directories=no,scrollbars=yes,resizable=yes,status=no,location=no" + wWidth + wHeight;
         final String jsUrl = getPropertyValue(getGwtToolbarItem(), "js.url");
         if (jsUrl != null) {
             String name = getGwtToolbarItem().getTitle().replaceAll(" ", "_");
@@ -90,5 +98,11 @@ public class OpenWindowActionItem extends BaseActionItem {
         }
     }
 
-
+    /**
+     * Open new (tab) browser to URL, open with window.open()
+     * @param url The new URL to open like http://www.gwt.com/
+     */
+    public static native void windowOpen(String url)/*-{
+        $wnd.open(url);
+    }-*/;
 }

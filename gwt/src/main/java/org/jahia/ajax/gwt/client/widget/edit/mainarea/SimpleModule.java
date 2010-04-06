@@ -25,12 +25,12 @@ import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopu
 public class SimpleModule extends Module {
     protected boolean hasDragDrop = true;
 
-    public SimpleModule(String id, String path, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, boolean deployed, MainModule mainModule) {
-        super(id, path, template, scriptInfo, nodeTypes, locked, shared, deployed, mainModule);
+    public SimpleModule(String id, String path, String template, String scriptInfo, String nodeTypes, String templateInfo, MainModule mainModule) {
+        super(id, path, template, scriptInfo, nodeTypes, templateInfo, mainModule);
     }
 
-    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes, boolean locked, boolean shared, boolean deployed, final MainModule mainModule) {
-        super(id, path, template, scriptInfo, nodeTypes, locked, shared, deployed, mainModule);
+    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes, String templateInfo, final MainModule mainModule) {
+        super(id, path, template, scriptInfo, nodeTypes, templateInfo, mainModule);
 
         if (mainModule.getConfig().getName().equals("studiomode")) {
             head = new Header();
@@ -48,7 +48,7 @@ public class SimpleModule extends Module {
     public void onParsed() {
         Log.debug("Add drag source for simple module " + path);
 
-        if (hasDragDrop) {
+        if (hasDragDrop && !isParentLocked()) {
             DragSource source = new SimpleModuleDragSource(this);
             source.addDNDListener(mainModule.getEditLinker().getDndListener());
             DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.SIMPLEMODULE_TYPE);

@@ -35,6 +35,10 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ListModule;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
 /**
  * Toolbar action item to save the current node as a reusable component.
@@ -45,15 +49,29 @@ public class SwitchSharedComponentInTemplateActionItem extends BaseActionItem {
 
     private static final long serialVersionUID = -3579254325077395142L;
 
+    private transient boolean share;
+
     public void onComponentSelection() {
-        ContentActions.switchTemplateShared(linker);
+        ContentActions.switchTemplateShared(linker, share);
     }
 
     public void handleNewLinkerSelection() {
         if (linker != null) {
-            GWTJahiaNode node = linker.getSelectedNode();
-            if (node != null) {
-                setEnabled(!node.isShared() && node.isWriteable());
+            final Module module = ((EditLinker) linker).getSelectedModule();
+            if (!(module instanceof AreaModule) && !(module instanceof ListModule)) {
+                GWTJahiaNode node = linker.getSelectedNode();
+                if (node != null) {
+                    setEnabled(!node.isShared() && node.isWriteable());
+                    if (module.isShared()) {
+                        updateTitle("Unshare component");
+                        share = false;
+                    } else {
+                        updateTitle("Share component");
+                        share = true;
+                    }
+                } else {
+                    setEnabled(false);
+                }
             } else {
                 setEnabled(false);
             }

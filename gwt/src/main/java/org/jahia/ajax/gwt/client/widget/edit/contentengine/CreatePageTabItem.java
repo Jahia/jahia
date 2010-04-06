@@ -54,7 +54,7 @@ public class CreatePageTabItem extends PropertiesTabItem {
         combo.setValueField("uuid");
         combo.setTypeAhead(true);
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
-//        combo.setForceSelection(true);
+        combo.setForceSelection(true);
         if (engine instanceof CreatePageContentEngine) {
             combo.setValue(((CreatePageContentEngine) engine).getDefaultTemplate());
         }

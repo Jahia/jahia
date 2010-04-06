@@ -57,6 +57,7 @@ public abstract class Constants {
     public static final String INFO = "info";
     public static final String HEIGHT = "height";
     public static final String WIDTH = "width";
+    public static final String NO_OPTIONS = "no-options";
     public static final String NOTIFICATION_REFRESH_TIME = "refresh";
     public static final String HISTORY_LINKS = "history-links";
     public static final String HISTORY_LINKS_SIZE = "history-size";

@@ -1,7 +1,7 @@
 /*
  * jQuery Autocomplete plugin 1.1
  *
- * Copyright (c) 2009 JÃ¶rn Zaefferer
+ * Copyright (c) 2009 Jörn Zaefferer
  *
  * Dual licensed under the MIT and GPL licenses:
  *   http://www.opensource.org/licenses/mit-license.php

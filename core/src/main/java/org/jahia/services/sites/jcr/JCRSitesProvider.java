@@ -236,36 +236,20 @@ public class JCRSitesProvider {
                     siteNode.setProperty("j:mandatoryLanguages", site.getMandatoryLanguages().toArray(
                             new String[site.getMandatoryLanguages().size()]));
 
-                    // remove deleted profiles
-                    NodeIterator gaProfileNodeIterator = siteNode.getNodes();
-                    while (gaProfileNodeIterator != null && gaProfileNodeIterator.hasNext()) {
-                        JCRNodeWrapper childNode = (JCRNodeWrapper) gaProfileNodeIterator.nextNode();
-                        if (childNode.getNodeTypes().contains(Constants.JAHIANT_GOOGLEANALYTICS) && !site.hasProfile(childNode.getName())) {
-                               childNode.remove(); 
-                        }
-                    }
-
                     // add google analytics
-                    Iterator<GoogleAnalyticsProfile> it = site.getGoogleAnalyticsProfil().iterator();
-                    while (it.hasNext()) {
-                        GoogleAnalyticsProfile googleAnalyticsProfile = it.next();
-                        JCRNodeWrapper googleAnalyticsNode;
-                        if (siteNode.hasNode(googleAnalyticsProfile.getName())) {
-                            googleAnalyticsNode = siteNode.getNode(googleAnalyticsProfile.getName());
-                        } else {
-                            googleAnalyticsNode = siteNode.addNode(googleAnalyticsProfile.getName(), Constants.JAHIANT_GOOGLEANALYTICS);
-                        }
-                        if(!googleAnalyticsNode.isCheckedOut()){
-                           session.checkout(googleAnalyticsNode); 
-                        }
-                        googleAnalyticsNode.setProperty("j:account", googleAnalyticsProfile.getAccount());
-                        googleAnalyticsNode.setProperty("j:login", googleAnalyticsProfile.getLogin());
-                        googleAnalyticsNode.setProperty("j:password", googleAnalyticsProfile.getPassword());
-                        googleAnalyticsNode.setProperty("j:profile", googleAnalyticsProfile.getProfile());
-                        googleAnalyticsNode.setProperty("j:typeUrl", googleAnalyticsProfile.getTypeUrl());
-                        googleAnalyticsNode.setProperty("j:enabled", googleAnalyticsProfile.isEnabled());
+                    GoogleAnalyticsProfile googleAnalyticsProfile = site.getGoogleAnalytics();
+                    if (googleAnalyticsProfile != null && googleAnalyticsProfile.isEnabled()) {
+                        siteNode.setProperty("j:gaAccount", googleAnalyticsProfile.getAccount());
+                        siteNode.setProperty("j:gaLogin", googleAnalyticsProfile.getLogin());
+                        siteNode.setProperty("j:gaPassword", googleAnalyticsProfile.getPassword());
+                        siteNode.setProperty("j:gaTypeUrl", googleAnalyticsProfile.getTypeUrl());
                     }
-
+                    if (googleAnalyticsProfile.isToDelete()) {
+                        siteNode.getProperty("j:gaAccount").remove();
+                        siteNode.getProperty("j:gaLogin").remove();
+                        siteNode.getProperty("j:gaPassword").remove();
+                        siteNode.getProperty("j:gaTypeUrl").remove();
+                    }
                     session.save();
                     return null;
                 }
@@ -299,24 +283,13 @@ public class JCRSitesProvider {
             languagesList.add(language.getString());
         }
         site.setMandatoryLanguages(languagesList);
-
-        // load google analytics profiles
-        NodeIterator gaProfileNodeIterator = node.getNodes();
-        while (gaProfileNodeIterator != null && gaProfileNodeIterator.hasNext()) {
-            JCRNodeWrapper childNode = (JCRNodeWrapper) gaProfileNodeIterator.nextNode();
-            if (childNode.getNodeTypes().contains(Constants.JAHIANT_GOOGLEANALYTICS)) {
-                String name = childNode.getName();
-                String account = childNode.getPropertyAsString("j:account");
-                String login = childNode.getPropertyAsString("j:login");
-                String password = childNode.getPropertyAsString("j:password");
-                String profile = childNode.getPropertyAsString("j:profile");
-                String typeUrl = childNode.getPropertyAsString("j:typeUrl");
-                boolean enabled = childNode.getProperty("j:enabled").getBoolean();
-
-                site.addOrUpdateGoogleAnalyticsProfile(name, typeUrl, enabled, password, login, profile, account);
-            }
-        }
-
+        String account = node.getPropertyAsString("j:gaAccount");
+        String login = node.getPropertyAsString("j:gaLogin");
+        String password = node.getPropertyAsString("j:gaPassword");
+        String profile = node.getPropertyAsString("j:gaProfile");
+        String typeUrl = node.getPropertyAsString("j:gaTypeUrl");
+        boolean enabled = true;
+        site.setGoogleAnalyticsProfile(typeUrl, enabled, password, login, profile, account);
         return site;
     }
 

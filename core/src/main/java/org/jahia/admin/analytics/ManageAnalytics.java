@@ -218,44 +218,19 @@ public class ManageAnalytics extends AbstractAdministrationModule {
             request.setAttribute("gaLogin", gaLogin);
             request.setAttribute("trackingEnabled", trackingEnabled);
             request.setAttribute("trackedUrls", trackedUrls);
-            request.setAttribute("jahiaProfileName", jahiaProfileName);
-
-
             // check validity of parameters
             final Map<String, Boolean> gaValidity = validateParameters();
-            final boolean profileAvailable = !site.hasProfile(jahiaProfileName);
             if (!gaValidity.get("emptyField")) {
                 if (gaValidity.get("credentialsOK")) {
                     if ((gaValidity.get("validAccount")) && gaValidity.get("validProfile")) {
-                        if (saveMode.equals("new") && profileAvailable) {
-                            try {
-                                saveAnayliticsParameters("new", request, response, session);
-                            } catch (Exception e) {
-                                logger.error(e, e);
-                            }
-
-                        } else if (saveMode.equals("new") && !profileAvailable) {
-                            request.setAttribute("jahiaProfileInUse", "Profile name : " + jahiaProfileName + " is already in use");
-                            try {
-                                displayAdd(request, response, session, "new");
-                            } catch (Exception e) {
-                                logger.error(e, e);
-                            }
-
-                        } else if (saveMode.equals("edit")) {
-                            try {
-                                saveAnayliticsParameters("edit", request, response, session);
-                            } catch (Exception e) {
-                                logger.error(e, e);
-                            }
+                        try {
+                            site.setGoogleAnalyticsProfile(trackedUrls,true,gaPassword,gaLogin,gaProfile,gaUserAccount);
+                            commitChanges(request, response, session);
+                        } catch (Exception e) {
+                            logger.error(e, e);
                         }
-
-
                     } else if (!gaValidity.get("validAccount")) {
                         logger.info("account  unavailable");
-                        if (!profileAvailable)
-                            request.setAttribute("jahiaProfileInUse", "Profile name : " + jahiaProfileName + " is already in use");
-                        request.setAttribute("gaError", "account  unavailable");
                         try {
                             displayAdd(request, response, session, "new");
                         } catch (Exception e) {
@@ -263,9 +238,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                         }
                     } else {
                         logger.info("profile  unavailable");
-                        if (!profileAvailable) {
-                            request.setAttribute("jahiaProfileInUse", "Profile name : " + jahiaProfileName + " is already in use");
-                        }
                         request.setAttribute("gaError", "profile  unavailable");
                         try {
                             displayAdd(request, response, session, "new");
@@ -275,9 +247,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                     }
                 } else {
                     logger.info("bad credentials");
-                    if (!profileAvailable) {
-                        request.setAttribute("jahiaProfileInUse", "Profile name : " + jahiaProfileName + " is already in use");
-                    }
                     request.setAttribute("gaError", "bad credentials");
                     try {
                         displayAdd(request, response, session, "new");
@@ -288,9 +257,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
 
             } else {
                 logger.debug("an empty field is detected");
-                if (!profileAvailable) {
-                    request.setAttribute("jahiaProfileInUse", "Profile name : " + jahiaProfileName + " is already in use");
-                }
                 request.setAttribute("gaError", "an empty field is detected");
                 try {
                     displayAdd(request, response, session, "new");
@@ -318,10 +284,9 @@ public class ManageAnalytics extends AbstractAdministrationModule {
 
         GoogleAnalyticsService analyticsService = GoogleAnalyticsService.getInstance();
         if (!emptyField) {
-            if (credentialsOK = analyticsService.checkCredential(jahiaProfileName, gaLogin, gaPassword)) {
-                if (validAccount = analyticsService.checkAccount(jahiaProfileName, gaUserAccount)) {
-                    validProfile = analyticsService.checkProfile(jahiaProfileName, gaUserAccount, gaProfile);
-                }
+            if (credentialsOK = analyticsService.checkCredential(gaLogin, gaPassword)) {
+                validAccount = true;
+                validProfile = true;
             }
         }
         validity.put("credentialsOK", credentialsOK);
@@ -348,10 +313,9 @@ public class ManageAnalytics extends AbstractAdministrationModule {
         if (jData != null) {
             jParams = jData.getProcessingContext();
             site = jParams.getSite();
-            Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfil().iterator();
 
-            while (googleAnalyticsProfileIterator.hasNext()) {
-                GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
+            GoogleAnalyticsProfile googleAnalyticsProfile = site.getGoogleAnalytics();
+            if (googleAnalyticsProfile != null) {
                 String profile = googleAnalyticsProfile.getProfile();
 
                 // get tracking enabled value
@@ -362,9 +326,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                 if (StringUtils.left(JahiaTools.getStrParameter(request, profile + "TrackedUrls", "real").trim(), 100).equals("real")) {
                     newTrackedUrls = "real";
                 }
-                googleAnalyticsProfile.setEnabled(newTrackingEnabled);
                 googleAnalyticsProfile.setTypeUrl(newTrackedUrls);
-
             }
             jahiaSitesService = servicesRegistry.getJahiaSitesService();
             try {
@@ -403,18 +365,16 @@ public class ManageAnalytics extends AbstractAdministrationModule {
      */
     private void commitDelete(HttpServletRequest request, HttpServletResponse response, HttpSession session, String profile) throws IOException, ServletException {
         JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-
         if (jData != null) {
-            jParams = jData.getProcessingContext();
+            ProcessingContext jParams = jData.getProcessingContext();
             site = jParams.getSite();
-            site.removeProfile(profile);
 
+            jahiaSitesService = servicesRegistry.getJahiaSitesService();
             try {
-                //servicesRegistry.getJahiaSitesService().removeSiteProperties(site, propertiesToBeRemoved);
-
-                // To do: remove profile
-                servicesRegistry.getCacheService().flushAllCaches();
+                site.getGoogleAnalytics().setToDelete(true);
+                jahiaSitesService.updateSite(site);
+                site.getGoogleAnalytics().delete();
+                displayAnalyticsParams(request, response, session);
             } catch (Exception e) {
                 logger.error(e, e);
             }
@@ -438,35 +398,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
             throws IOException, ServletException {
         JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "manage_analytics.jsp");
     }
-
-
-    /**
-     * Save as site properties
-     *
-     * @param mode
-     * @param request
-     * @param response
-     * @param session
-     * @throws IOException
-     * @throws ServletException
-     */
-    private void saveAnayliticsParameters(String mode, HttpServletRequest request,
-                                          HttpServletResponse response,
-                                          HttpSession session) throws IOException, ServletException {
-        if (servicesRegistry != null) {
-            site.addOrUpdateGoogleAnalyticsProfile(jahiaProfileName,trackedUrls,trackingEnabled,gaPassword,gaLogin,gaProfile,gaUserAccount);
-
-            jahiaSitesService = servicesRegistry.getJahiaSitesService();
-            try {
-                jahiaSitesService.updateSite(site);
-                displayAnalyticsParams(request, response, session);
-            } catch (Exception e) {
-                logger.error(e, e);
-            }
-        }
-
-    }
-
 
 }
 

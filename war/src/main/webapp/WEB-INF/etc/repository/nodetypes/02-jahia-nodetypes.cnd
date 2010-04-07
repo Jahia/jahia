@@ -304,6 +304,17 @@
 [jnt:axisFolder] > jnt:systemfolder
 
 //---------------------------------------------------------
+// Google analytics
+//---------------------------------------------------------
+
+[jmix:googleAnalyticsAccount]  mixin
+ - j:gaLogin (string) protected nofulltext
+ - j:gaPassword (string) protected nofulltext
+ - j:gaAccount (string) protected nofulltext
+ - j:gaEnabled (boolean) = false
+ - j:gaTypeUrl (string) protected nofulltext
+
+//---------------------------------------------------------
 // Virtual sites
 //---------------------------------------------------------
 
@@ -312,7 +323,7 @@
  - j:virtualsitesFolderConfig (string) nofulltext
  - j:virtualsitesFolderSkeleton (string) nofulltext
 
-[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication
+[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication, jmix:googleAnalyticsAccount
  - j:title (string) protected nofulltext
  - j:serverName (string) protected nofulltext
  - j:description (string) protected
@@ -324,20 +335,6 @@
  - j:mixLanguage (boolean) = false
  + users (nt:base) = nt:base
  + * (jmix:hierarchyNode)
-
-//---------------------------------------------------------
-// Google analytics
-//---------------------------------------------------------
-
-[jnt:googleanalytics] > nt:base, jmix:hierarchyNode, jmix:basemetadata
- - j:login (string) protected nofulltext
- - j:password (string) protected nofulltext
- - j:account (string) protected nofulltext
- - j:profile (string) protected nofulltext
- - j:enabled (boolean) = false
- - j:typeUrl (string) protected nofulltext
-
-
 
 
 //---------------------------------------------------------

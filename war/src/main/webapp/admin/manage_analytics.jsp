@@ -32,11 +32,8 @@
 
 --%>
 <%@ include file="/admin/include/header.inc" %>
-<%@ page import="org.jahia.bin.JahiaAdministration,
-                 java.util.Properties" %>
+<%@ page import="org.jahia.bin.JahiaAdministration" %>
 <%@ page import="java.util.Iterator" %>
-<%@ page import="java.util.Set" %>
-<%@ page import="org.jahia.services.sites.*" %>
 <%@ page import="org.jahia.services.analytics.GoogleAnalyticsProfile" %>
 
 <script type="text/javascript">
@@ -75,36 +72,12 @@
                                     <fmt:message key="label.manageAnalytics"/>
                                 </div>
                             </div>
-                            <!--div class="head headtop">
-                                <div class="object-title">Google analytics tracking settings</div>
-                            </div-->
-
-                            <div id="operationMenu">
-                    <span class="dex-PushButton">
-                  <span class="first-child">
-                    <a class="ico-delete"
-                       href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile=all")%>'><fmt:message
-                            key="label.delete"/></a>
-                  </span>
-                </span>
-
-                            </div>
-                            <div class="head headtop">
-                                <div class="object-title">Existing profiles</div>
-                            </div>
                             <form name="mainForm"
                                   action='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=commit")%>'
                                   method="post">
                                 <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
                                     <thead>
                                     <tr>
-                                        <th width="5%">
-                                            &nbsp;
-                                        </th>
-                                        <th width="35%">
-                                            <fmt:message
-                                                    key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/>
-                                        </th>
                                         <th width="35%">
                                             <fmt:message
                                                     key="org.jahia.admin.site.ManageAnalytics.gaProfileName.label"/>
@@ -120,38 +93,18 @@
                                             <fmt:message
                                                     key="org.jahia.admin.site.ManageAnalytics.virtualUrlsTracked.label"/>
                                         </th>
-                                        <th width="12%" style="white-space: nowrap">
-                                            <fmt:message
-                                                    key="org.jahia.admin.site.ManageAnalytics.trackingEnabled.label"/>
-                                        </th>
                                         <th width="15%" class="lastCol">
                                             <fmt:message key="label.action"/>
                                         </th>
                                     </tr>
                                     </thead>
-                                        <%
-                                    
-                                    Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = currentSite.getGoogleAnalyticsProfil().iterator();
-                                    String myClass = "evenLine";
-                                    int cnt = 0;
-                                    while(googleAnalyticsProfileIterator.hasNext())
-                                    {
-                                        GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
-
-
-                                        if(cnt%2 == 0){
-                                            myClass = "evenLine" ;
-                                        }else{
-                                            myClass = "oddLine" ;
-                                        }
-                                        String jahiaGAprofile = googleAnalyticsProfile.getName();
-
-                                            %>
-                                    <tr class="<%=myClass%>" id="<%=jahiaGAprofile%>">
-                                        <td><input type="checkbox"/></td>
-                                        <td><%=jahiaGAprofile%>
-                                        </td>
-                                        <td><%= googleAnalyticsProfile.getProfile()%>
+                                    <%
+                                        GoogleAnalyticsProfile googleAnalyticsProfile = currentSite.getGoogleAnalyticsProfil();
+                                        String jahiaGAprofile= "ga";
+                                         if (googleAnalyticsProfile !=null && googleAnalyticsProfile.isEnabled()) {
+                                    %>
+                                    <tr class="evenLine" id="<%=jahiaGAprofile%>">
+                                        <td><%=googleAnalyticsProfile.getProfile()%>
                                         </td>
                                         <td><%=googleAnalyticsProfile.getAccount()%>
                                         </td>
@@ -161,9 +114,6 @@
                                         <td><input type="radio" value="virtual" name="<%=jahiaGAprofile%>TrackedUrls"
                                                    <% if (googleAnalyticsProfile.getTypeUrl().equals("virtual")) { %>checked<% } %>
                                                    id="<%=jahiaGAprofile%>TrackedUrls"/></td>
-                                        <td><input type="checkbox" name="<%=jahiaGAprofile%>TrackingEnabled"
-                                                   <% if (googleAnalyticsProfile.isEnabled()) { %>checked<% } %>
-                                                   id="<%=jahiaGAprofile%>TrackingEnabled"/></td>
                                         <td class="lastCol">
                                             <a href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=displayEdit&profile="+jahiaGAprofile )%>'
                                                title="<fmt:message key='label.edit'/>"><img
@@ -181,12 +131,13 @@
                                                     height="16" border="0"/></a>&nbsp;
                                         </td>
                                     </tr>
-                                        <%
-                                        cnt++;
-
-                                }
-                                %>
+                                    <%
+                                        }
+                                    %>
                             </form>
+                            <%
+                                if (googleAnalyticsProfile == null || !googleAnalyticsProfile.isEnabled()) {
+                            %>
                             <table>
                                 <tbody>
 
@@ -200,14 +151,6 @@
                                         <fmt:message key="label.jahiaGAprofile"/>
                                         <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0"
                                                width="100%">
-                                            <tr class="evenLine">
-                                                <td><fmt:message
-                                                        key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/>
-                                                </td>
-                                                <td>
-                                                    <fmt:message key="label.jahiaGAprofileName"/>
-                                                </td>
-                                            </tr>
                                             <tr class="oddLine">
                                                 <td><fmt:message
                                                         key="org.jahia.admin.site.ManageAnalytics.gaUserAcc.label"/>
@@ -256,7 +199,15 @@
                                     </td>
                                 </tr>
                             </table>
-
+                            <%
+                                }
+                            %>
+                            </div>
+                            </div>
+                    </div>
+            </td>
+         </tr>
+     </table>
 
                             <div id="actionBar">
                             <span class="dex-PushButton">
@@ -266,11 +217,6 @@
                                         key="label.backToMenu"/></a>
                               </span>
                             </span>
-                           <span class="dex-PushButton">
-                            <span class="first-child">
-                              <a class="ico-ok" href="javascript:sendForm();"><fmt:message key="label.save"/></a>
-                            </span>
-                          </span>
 
                             </div>
                         </div>

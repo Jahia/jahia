@@ -102,12 +102,10 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         final ListStore<GWTJahiaAnalyticsProfile> profilesStore = new ListStore<GWTJahiaAnalyticsProfile>();
         analyticsProfileComboBox.setStore(profilesStore);
         analyticsProfileComboBox.setDisplayField("name");
-        JahiaContentManagementService.App.getInstance().getGAProfiles(new AsyncCallback<List<GWTJahiaAnalyticsProfile>>() {
-            public void onSuccess(List<GWTJahiaAnalyticsProfile> gwtJahiaAnalyticsProfiles) {
+        /*JahiaContentManagementService.App.getInstance().getGAProfiles(new AsyncCallback<GWTJahiaAnalyticsProfile>() {
+            public void onSuccess(GWTJahiaAnalyticsProfile gwtJahiaAnalyticsProfiles) {
                 Log.debug("Found " + gwtJahiaAnalyticsProfiles.size() + " profiles");
-                if (gwtJahiaAnalyticsProfiles.size() > 0) {
                     profilesStore.add(gwtJahiaAnalyticsProfiles);
-                    analyticsProfileComboBox.select(0);
                 }
             }
 
@@ -115,6 +113,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
                 Log.error("Error while retriving parofile", throwable);
             }
         });
+        */
         analyticsProfileComboBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaAnalyticsProfile>(){
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaAnalyticsProfile> event) {

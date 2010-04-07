@@ -248,8 +248,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public List<GWTJahiaAnalyticsProfile> getGAProfiles() {
-        return analytics.getActiveProfiles(getSite());
+    public GWTJahiaAnalyticsProfile getGAProfiles() {
+        return analytics.getProfile(getSite());
     }
 
     public List<GWTJahiaNode> getSavedSearch() throws GWTJahiaServiceException {
@@ -1109,28 +1109,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         // get google analytics account
-        final GoogleAnalyticsProfile googleAnalyticsProfile ;
-        if (query.getProfile() != null && query.getProfile().getName() != null) {
-            googleAnalyticsProfile = getSite().getGoogleAnalytics(query.getProfile().getName());
-        } else {
-            googleAnalyticsProfile = getSite().getGoogleAnalyticsProfile().iterator().next();
-        }
+        final GoogleAnalyticsProfile googleAnalyticsProfile = getSite().getGoogleAnalyticsProfile();
 
         // get its parameter
-        final String jahiaProfileName = googleAnalyticsProfile.getName();
         final String gaAccount = googleAnalyticsProfile.getAccount();
         final String login = googleAnalyticsProfile.getLogin();
         final String pwd = googleAnalyticsProfile.getPassword();
 
 
         // check parameters
-        if (jahiaProfileName == null || gaAccount == null) {
+        if (gaAccount == null) {
             logger.error("There is no google analytics account configured");
             throw new GWTJahiaServiceException("There is no google analytics account configured");
         }
 
         // get data
-        return analytics.queryData(jahiaProfileName, login, pwd, gaAccount, query);
+        return analytics.queryData(login, pwd, gaAccount, query);
     }
 
     public void synchro(Map<String, String> pathsToSyncronize) throws GWTJahiaServiceException {

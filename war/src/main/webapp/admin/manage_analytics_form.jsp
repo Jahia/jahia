@@ -51,13 +51,13 @@
         if (request.getParameter("sub").equals("displayEdit")) {
             jahiaGAprofile = request.getParameter("profile");
             operation = "saveEdit&profile=" + jahiaGAprofile;
-            gaUserAccount = currentSite.getGoogleAnalytics(jahiaGAprofile).getAccount();
-            gaLogin = currentSite.getGoogleAnalytics(jahiaGAprofile).getLogin();
-            gaProfile = currentSite.getGoogleAnalytics(jahiaGAprofile).getProfile();
-            gaPassword = currentSite.getGoogleAnalytics(jahiaGAprofile).getPassword();
-            trackingEnabled = currentSite.getGoogleAnalytics(jahiaGAprofile).isEnabled();
-            typeUrlVirtual = currentSite.getGoogleAnalytics(jahiaGAprofile).getTypeUrl().equals("virtual");
-            typeUrlReal = currentSite.getGoogleAnalytics(jahiaGAprofile).getTypeUrl().equals("real");
+            gaUserAccount = currentSite.getGoogleAnalytics().getAccount();
+            gaLogin = currentSite.getGoogleAnalytics().getLogin();
+            gaProfile = currentSite.getGoogleAnalytics().getProfile();
+            gaPassword = currentSite.getGoogleAnalytics().getPassword();
+            trackingEnabled = currentSite.getGoogleAnalytics().isEnabled();
+            typeUrlVirtual = currentSite.getGoogleAnalytics().getTypeUrl().equals("virtual");
+            typeUrlReal = currentSite.getGoogleAnalytics().getTypeUrl().equals("real");
         } else {
             operation = "add";
             gaUserAccount = (String) request.getAttribute("gaUserAccount");
@@ -131,17 +131,6 @@
 
                                     <tr>
                                         <td valign="top">
-                                            <label for="trackingEnabled"><fmt:message
-                                                    key="org.jahia.admin.site.ManageAnalytics.enableTracking.label"/></label>&nbsp;
-                                        </td>
-                                        <td valign="top">
-                                            :&nbsp;<input type="checkbox" name="trackingEnabled"
-                                                          <% if (trackingEnabled) { %>checked<% } %>
-                                                          id="trackingEnabled"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td valign="top">
                                             <label><fmt:message
                                                     key="org.jahia.admin.site.ManageAnalytics.trackedUrls.label"/></label>&nbsp;
                                         </td>
@@ -156,22 +145,6 @@
                                                    <% if(typeUrlVirtual) { %>checked<% }%> id="trackedUrls"/>
                                         </td>
                                     </tr>
-
-                                    <tr>
-                                        <td>
-                                            <fmt:message
-                                                    key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofileName.label"/>&nbsp;
-                                            <br><em><fmt:message
-                                                key="org.jahia.admin.site.ManageAnalytics.egJahiaGAprofileName.label"/></em>
-                                        </td>
-                                        <td>
-                                            :&nbsp;<input class="input" type="text" name="jahiaGAprofile"
-                                                          value="<%=(jahiaGAprofile == null ? "":jahiaGAprofile)%>" <%if(!operation.equals("add")){%>
-                                                          readonly="readonly" <%}%> size="<%=inputSize%>"
-                                                          maxlength="50">
-                                        </td>
-                                    </tr>
-
                                     <tr>
                                         <td>
                                             <fmt:message

@@ -39,10 +39,6 @@ public class GoogleAnalyticsProfile {
 
     private String typeUrl;
 
-
-    private boolean enabled;
-
-
     private String password;
 
 
@@ -54,11 +50,13 @@ public class GoogleAnalyticsProfile {
 
     private String account;
 
+    private boolean toDelete = false;
 
-    public GoogleAnalyticsProfile(String name, String typeUrl, boolean enabled, String password, String login, String profile, String account) {
-        this.name = name;
+    public GoogleAnalyticsProfile(){
+    }
+
+    public GoogleAnalyticsProfile(String typeUrl, String password, String login, String profile, String account) {
         this.typeUrl = typeUrl;
-        this.enabled = enabled;
         this.password = password;
         this.login = login;
         this.profile = profile;
@@ -82,11 +80,7 @@ public class GoogleAnalyticsProfile {
     }
 
     public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        return (this.password !=null && this.login != null && this.profile !=null && this.account !=null);
     }
 
     public String getPassword() {
@@ -121,5 +115,18 @@ public class GoogleAnalyticsProfile {
         this.account = account;
     }
 
+    public boolean isToDelete() {
+        return toDelete;
+    }
 
+    public void setToDelete(boolean toDelete) {
+        this.toDelete = toDelete;
+    }
+    public void delete() {
+        this.typeUrl = null;
+        this.password = null;
+        this.login = null;
+        this.account = null;
+        this.profile = null;
+    }
 }

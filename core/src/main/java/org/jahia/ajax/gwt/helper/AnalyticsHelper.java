@@ -30,12 +30,11 @@ public class AnalyticsHelper {
     /**
      * Get analytics data by several parameters
      *
-     * @param jahiaProfileName
      * @return
      */
-    public List<GWTJahiaAnalyticsData> queryData(String jahiaProfileName, String gaLogin, String gaPwd, String gaAccount, GWTJahiaAnalyticsQuery query) {
+    public List<GWTJahiaAnalyticsData> queryData(String gaLogin, String gaPwd, String gaAccount, GWTJahiaAnalyticsQuery query) {
         List<GWTJahiaAnalyticsData> results = new ArrayList<GWTJahiaAnalyticsData>();
-        List<DataEntry> dataEntries = analyticsService.queryData(query.getStartDate(), query.getEndDate(), query.getDimensions(), jahiaProfileName, gaLogin, gaPwd, gaAccount);
+        List<DataEntry> dataEntries = analyticsService.queryData(query.getStartDate(), query.getEndDate(), query.getDimensions(),  gaLogin, gaPwd, gaAccount);
         if (dataEntries != null) {
             for (DataEntry entry : dataEntries) {
                 String pageTitle = entry.stringValueOf("ga:pageTitle");
@@ -50,11 +49,9 @@ public class AnalyticsHelper {
                 if (viewDateAsStrg != null) {
                     viewDate = formatter.parse(viewDateAsStrg, pos);
                 }
-
-
-                //  if (query.getNode().getPath().equalsIgnoreCase(pagePath)) {
-                results.add(new GWTJahiaAnalyticsData(viewCountry, viewDate, Double.parseDouble(pageViews)));
-                //  }
+                if (query.getNode().getPath().equalsIgnoreCase(pagePath)) {
+                    results.add(new GWTJahiaAnalyticsData(viewCountry, viewDate, Double.parseDouble(pageViews)));
+                }
                 logger.debug(
                         "\nPage Title = " + entry.stringValueOf("ga:pageTitle") +
                                 "\nPage Path  = " + entry.stringValueOf("ga:pagePath") +
@@ -71,16 +68,9 @@ public class AnalyticsHelper {
      * @param site
      * @return
      */
-    public List<GWTJahiaAnalyticsProfile> getActiveProfiles(JCRSiteNode site) {
-        List<GWTJahiaAnalyticsProfile> list = new ArrayList<GWTJahiaAnalyticsProfile>();
-        final Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfile().iterator();
-        while (googleAnalyticsProfileIterator.hasNext()) {
-            final GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
-            if (googleAnalyticsProfile.isEnabled()) {
-                list.add(new GWTJahiaAnalyticsProfile(googleAnalyticsProfile.getName()));
-            }
-        }
-        return list;
+
+    public GWTJahiaAnalyticsProfile getProfile(JCRSiteNode site) {
+        return (new GWTJahiaAnalyticsProfile(site.getGoogleAnalyticsProfile().getAccount()));
     }
 }
 

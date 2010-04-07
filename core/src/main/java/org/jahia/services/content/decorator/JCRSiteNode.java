@@ -1,13 +1,11 @@
 package org.jahia.services.content.decorator;
 
-import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.utils.LanguageCodeConverters;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.util.*;
@@ -21,8 +19,6 @@ import java.util.*;
  */
 public class JCRSiteNode extends JCRNodeDecorator {
     private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCRSiteNode.class);
-
-    protected Map<String, GoogleAnalyticsProfile> googleAnalyticsProfiles;
 
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
@@ -229,65 +225,23 @@ public class JCRSiteNode extends JCRNodeDecorator {
         }
     }
 
-    public GoogleAnalyticsProfile getGoogleAnalytics(String jahiaProfileName) {
-
-        return null;
+    public GoogleAnalyticsProfile getGoogleAnalyticsProfile(){
+        String account = this.getPropertyAsString("j:gaAccount");
+        String login = this.getPropertyAsString("j:gaLogin");
+        String password = this.getPropertyAsString("j:gaPassword");
+        String profile = this.getPropertyAsString("j:gaProfile");
+        String typeUrl = this.getPropertyAsString("j:gaTypeUrl");
+        return new GoogleAnalyticsProfile(typeUrl, password, login, profile, account);
     }
+
 
     public boolean hasGoogleAnalyticsProfile(){
-        if (!initProfiles()) return false;
-        return !googleAnalyticsProfiles.isEmpty();
+        return getGoogleAnalyticsProfile().isEnabled();
     }
 
-    public boolean hasProfile(String jahiaProfileName){
-        if (!initProfiles()) return false;
-       return googleAnalyticsProfiles.containsKey(jahiaProfileName);
-    }
-
-    public Collection<GoogleAnalyticsProfile> getGoogleAnalyticsProfile(){
-        if (!initProfiles()) return null;
-        return googleAnalyticsProfiles.values();
-    }
 
     public boolean hasActivatedGoogleAnalyticsProfile(){
-        if (!initProfiles()) return false;
-        final Iterator<GoogleAnalyticsProfile> googleAnalyticsProfilIterator = googleAnalyticsProfiles.values().iterator();
-
-        // check if at list one profile is enabled
-        while (googleAnalyticsProfilIterator.hasNext()) {
-            GoogleAnalyticsProfile gaProfile = googleAnalyticsProfilIterator.next();
-            if (gaProfile.isEnabled()) {
-                return true;
-            }
-        }
-        return false;
-    }    
-
-    private boolean initProfiles() {
-        if (googleAnalyticsProfiles == null) {
-            googleAnalyticsProfiles = new HashMap<String, GoogleAnalyticsProfile>();
-            try {
-                NodeIterator ni = getNodes();
-                while (ni.hasNext()) {
-                    JCRNodeWrapper childNode = (JCRNodeWrapper) ni.next();
-                    logger.error(getPath()+","+getUUID()+" sub nodes: "+ni.getSize());
-                    if (childNode.getNodeTypes().contains(Constants.JAHIANT_GOOGLEANALYTICS)) {
-                        String name = childNode.getName();
-                        String account = childNode.getPropertyAsString("j:account");
-                        String login = childNode.getPropertyAsString("j:login");
-                        String password = childNode.getPropertyAsString("j:password");
-                        String profile = childNode.getPropertyAsString("j:profile");
-                        String typeUrl = childNode.getPropertyAsString("j:typeUrl");
-                        boolean enabled = childNode.getProperty("j:enabled").getBoolean();
-                        googleAnalyticsProfiles.put(name, new GoogleAnalyticsProfile(name, typeUrl, enabled, password, login, profile, account));
-                    }
-                }
-            } catch (RepositoryException e) {
-                logger.error(e,e);
-                return false;
-            }
-        }
-        return true;
+        return getGoogleAnalyticsProfile().isEnabled();
     }
 
 }

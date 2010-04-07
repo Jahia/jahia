@@ -87,7 +87,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
 
-    void getGAProfiles(AsyncCallback<List<GWTJahiaAnalyticsProfile>> async);
+    void getGAProfiles(AsyncCallback<GWTJahiaAnalyticsProfile> async);
 
 
     void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);

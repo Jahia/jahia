@@ -57,12 +57,8 @@ public class GoogleAnalyticsService {
     final static Logger logger = Logger.getLogger(GoogleAnalyticsService.class);
     // format must be "2006-04-01"
     final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-
-    private Map<String, AnalyticsService> analyticsServiceMap = new HashMap<String, AnalyticsService>();
-    private Map<String, AccountEntry> accountEntryMap = new HashMap<String, AccountEntry>();
-
-    private static GoogleAnalyticsService analyticsService = new GoogleAnalyticsService();
-
+    private AnalyticsService analyticsService;
+    private static GoogleAnalyticsService googleAnalyticsService = new GoogleAnalyticsService();
 
     /**
      * Get instance
@@ -70,10 +66,10 @@ public class GoogleAnalyticsService {
      * @return
      */
     public static GoogleAnalyticsService getInstance() {
-        if (analyticsService == null) {
-            analyticsService = new GoogleAnalyticsService();
+        if (googleAnalyticsService == null) {
+            googleAnalyticsService = new GoogleAnalyticsService();
         }
-        return analyticsService;
+        return googleAnalyticsService;
     }
 
     /**
@@ -83,52 +79,21 @@ public class GoogleAnalyticsService {
      * @param pwd
      * @return
      */
-    public boolean checkCredential(String jahiaProfileName, String email, String pwd) {
-        return getAnalyticsService(jahiaProfileName, email, pwd) != null;
+    public boolean checkCredential(String email, String pwd) {
+        return getAnalyticsService(email, pwd) != null;
     }
 
-    /**
-     * Check profile
-     *
-     * @param jahiaProfileName
-     * @return
-     */
-    public boolean checkProfile(String jahiaProfileName, String webPropertyId, String profileName) {
-        AccountEntry entry = getAccountEntry(jahiaProfileName, webPropertyId);
-        if (entry != null) {
-            final String currentProfileName = entry.getTitle().getPlainText();
-            if (currentProfileName != null && currentProfileName.equalsIgnoreCase(profileName)) {
-                logger.debug("Profil [" + profileName + "] and account [" + currentProfileName + "] are valid.");
-                return true;
-            } else {
-                logger.debug("Profil [" + profileName + "] doesn't match with account [" + currentProfileName + "]");
-                return false;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check account entry
-     *
-     * @param jahiaProfileName
-     * @return
-     */
-    public boolean checkAccount(String jahiaProfileName, String webPropertyId) {
-        return getAccountEntry(jahiaProfileName, webPropertyId) != null;
-    }
 
     /**
      * queryData
      *
      * @param startDate
      * @param endDate
-     * @param jahiaProfileName
      * @return
      */
-    public List<DataEntry> queryData(Date startDate, Date endDate, String dimensions, String jahiaProfileName, String login, String pwd, String webPropertyId) {
-        final AnalyticsService analyticsService = getAnalyticsService(jahiaProfileName, login, pwd);
-        final AccountEntry accountEntry = getAccountEntry(jahiaProfileName, webPropertyId);
+    public List<DataEntry> queryData(Date startDate, Date endDate, String dimensions, String login, String pwd, String webPropertyId) {
+        final AnalyticsService analyticsService = getAnalyticsService(login, pwd);
+        final AccountEntry accountEntry = getAccountEntry(webPropertyId);
 
         // default start date = this date -3 ont
         if (startDate == null) {
@@ -170,24 +135,21 @@ public class GoogleAnalyticsService {
                 logger.error(e, e);
             }
         }
-        logger.debug("AccountEntry is null for parameter [" + jahiaProfileName + "," + webPropertyId + "]");
+        logger.debug("AccountEntry is null for parameter ["+ webPropertyId + "]");
         return null;
     }
 
     /**
      * get ananlytics service
      *
-     * @param jahiaProfileName
      * @param login
      * @param pwd
      * @return
      */
-    private AnalyticsService getAnalyticsService(String jahiaProfileName, String login, String pwd) {
-        AnalyticsService analyticsService = analyticsServiceMap.get(jahiaProfileName);
+    private AnalyticsService getAnalyticsService(String login, String pwd) {
         try {
             if (analyticsService == null) {
                 analyticsService = connect(login, pwd);
-                analyticsServiceMap.put(jahiaProfileName, analyticsService);
             }
             logger.debug("Credential parameters are valid");
         } catch (AuthenticationException e) {
@@ -214,11 +176,10 @@ public class GoogleAnalyticsService {
     /**
      * Get analytics service by profil name
      *
-     * @param jahiaProfileName
      * @return
      */
-    private AnalyticsService getAnalyticsService(String jahiaProfileName) {
-        return analyticsServiceMap.get(jahiaProfileName);
+    private AnalyticsService getAnalyticsService() {
+        return analyticsService;
     }
 
     /**
@@ -227,11 +188,7 @@ public class GoogleAnalyticsService {
      * @param webPropertyId
      * @return
      */
-    private AccountEntry getAccountEntry(String jahiaProfileName, String webPropertyId) {
-        if (getAnalyticsService(jahiaProfileName) == null) {
-            logger.error("Analytics service [" + jahiaProfileName + "] not initialised");
-            return null;
-        }
+    private AccountEntry getAccountEntry(String webPropertyId) {
 
         if (webPropertyId == null) {
             logger.debug("webPropertyId (with pattern UA-xxxx-x) is null");
@@ -243,7 +200,7 @@ public class GoogleAnalyticsService {
                 URL queryUrl = new URL("https://www.google.com/analytics/feeds/accounts/default?max-results=50");
 
                 // Make request to the API, using AccountFeed class as the second parameter.
-                AccountFeed accountFeed = getAnalyticsService(jahiaProfileName).getFeed(queryUrl, AccountFeed.class);
+                AccountFeed accountFeed = getAnalyticsService().getFeed(queryUrl, AccountFeed.class);
                 for (AccountEntry entry : accountFeed.getEntries()) {
                     final String currentWebPropertyId = entry.getProperty("ga:webPropertyId");
 
@@ -253,10 +210,7 @@ public class GoogleAnalyticsService {
                             "\nProfile Id    = " + entry.getProperty("ga:profileId") +
                             "\nTable Id      = " + entry.getTableId().getValue());
 
-                    if (webPropertyId.equalsIgnoreCase(currentWebPropertyId)) {
-                        accountEntryMap.put(jahiaProfileName, entry);
                         return entry;
-                    }
                 }
             } catch (Exception e) {
                 logger.error(e, e);
@@ -304,9 +258,7 @@ public class GoogleAnalyticsService {
 
 
         // get enabled profiles
-        Iterator<GoogleAnalyticsProfile> googleAnalyticsProfileIterator = site.getGoogleAnalyticsProfile().iterator();
-        while (googleAnalyticsProfileIterator.hasNext()) {
-            GoogleAnalyticsProfile googleAnalyticsProfile = googleAnalyticsProfileIterator.next();
+            GoogleAnalyticsProfile googleAnalyticsProfile = site.getGoogleAnalyticsProfile();
 
             if (googleAnalyticsProfile.isEnabled()) {
                 String jahiaProfileName = googleAnalyticsProfile.getName();
@@ -335,7 +287,6 @@ public class GoogleAnalyticsService {
                 result.append(trackPageview);
             }
 
-        }
 
         return result.toString();
     }

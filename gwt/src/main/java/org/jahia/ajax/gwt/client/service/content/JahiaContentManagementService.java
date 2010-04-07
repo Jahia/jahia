@@ -86,7 +86,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException;
 
-      public List<GWTJahiaAnalyticsProfile> getGAProfiles() throws GWTJahiaServiceException;
+      public GWTJahiaAnalyticsProfile getGAProfiles() throws GWTJahiaServiceException;
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException;
 

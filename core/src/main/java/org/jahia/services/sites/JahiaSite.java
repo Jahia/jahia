@@ -41,7 +41,6 @@
 
 package org.jahia.services.sites;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -49,14 +48,11 @@ import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
 
-import javax.jcr.RepositoryException;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.*;
@@ -119,7 +115,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
     private String JCRLocalPath;
 
-    private Map<String, GoogleAnalyticsProfile> googleAnalyticsProfils = new HashMap<String, GoogleAnalyticsProfile>();
+    private GoogleAnalyticsProfile googleAnalyticsProfil;
 
     /**
      * Constructor, the purpose of this empty constructor is to enable
@@ -498,41 +494,24 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         this.JCRLocalPath = JCRLocalPath;
     }
 
-    public  GoogleAnalyticsProfile getGoogleAnalytics(String jahiaProfileName) {
-        return  googleAnalyticsProfils.get(jahiaProfileName);
+    public  GoogleAnalyticsProfile getGoogleAnalytics() {
+        return  googleAnalyticsProfil;
     }
 
 
-    public void addOrUpdateGoogleAnalyticsProfile(String name, String trackedUrls, boolean trackingEnabled, String password, String login, String profile, String account){
-       googleAnalyticsProfils.put(name,new GoogleAnalyticsProfile( name,  trackedUrls,  trackingEnabled,  password,  login,  profile,  account));
-    }
-
-    public boolean hasGoogleAnalyticsProfil(){
-        return !googleAnalyticsProfils.isEmpty();
-    }
-
-    public boolean hasProfile(String jahiaProfileName){
-       return googleAnalyticsProfils.containsKey(jahiaProfileName);
-    }
-
-    public void removeProfile(String jahiaProfileName){
-        googleAnalyticsProfils.remove(jahiaProfileName);
-    }
-
-    public Collection<GoogleAnalyticsProfile> getGoogleAnalyticsProfil(){
-        return googleAnalyticsProfils.values();
-    }
-
-    public boolean hasActivatedGoogleAnalyticsProfil(){
-        final Iterator<GoogleAnalyticsProfile> googleAnalyticsProfilIterator = googleAnalyticsProfils.values().iterator();
-
-        // check if at list one profile is enabled
-        while (googleAnalyticsProfilIterator.hasNext()) {
-            GoogleAnalyticsProfile gaProfile = googleAnalyticsProfilIterator.next();
-            if (gaProfile.isEnabled()) {
-                return true;
-            }
+    public void setGoogleAnalyticsProfile(String typeUrl, boolean trackingEnabled, String password, String login, String profile, String account){
+        if (googleAnalyticsProfil == null) {
+            googleAnalyticsProfil = new GoogleAnalyticsProfile(typeUrl, password,login,profile,account);
+        } else {
+            googleAnalyticsProfil.setLogin(login);
+            googleAnalyticsProfil.setPassword(password);
+            googleAnalyticsProfil.setProfile(profile);
+            googleAnalyticsProfil.setAccount(account);
+            googleAnalyticsProfil.setTypeUrl(typeUrl);
         }
-        return false;
+    }
+
+    public GoogleAnalyticsProfile getGoogleAnalyticsProfil(){
+        return googleAnalyticsProfil;
     }
 }

@@ -36,14 +36,14 @@
 <%@ attribute name="fieldId" required="true" type="java.lang.String"
               description="The input field ID to bind the date picker to." %>
 <%@ attribute name="theme" required="false" type="java.lang.String"
-              description="The name of the CSS file with corresponding jQuery theme. [jquery-ui.smoothness.css]" %>
+              description="The name of the CSS file with corresponding jQuery theme. [jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css]" %>
 <%@ attribute name="time" required="false" type="java.lang.Boolean"
               description="True if you want the time selector" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:if test="${empty requestScope['org.jahia.tags.dateSelector.resources']}">
-    <template:addResources type="css" resources="${not empty theme ? theme : 'jquery-ui.smoothness.css'}"/>
+    <template:addResources type="css" resources="${not empty theme ? theme : 'jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css'}"/>
     <template:addResources type="javascript"
                            resources="jquery.min.js,jquery-ui.core.min.js,jquery-ui.datepicker.min.js,jquery-ui.slider.min.js"/>
     <c:set var="locale" value="${renderContext.mainResource.locale}"/>

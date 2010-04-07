@@ -33,9 +33,15 @@
 --%>
 <%@ tag body-content="empty" description="Includes external resources (CSS, JavaScript, inline CSS styles, inline JavaScript), which are required for current page and were registered using addResources tag." %>
 <%@ attribute name="types" required="false" type="java.lang.String" description="Comma-separated list of resource types to include. [css,inlinecss,javascript,inlinejavascript]" %>
+<%@ attribute name="useMapping" required="false" type="java.lang.Boolean" description="Allow using static asset mapping e.g. for supporting Content Delivery Network (CDN)? [true]" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<jsp:useBean id="assetMapping" class="java.util.LinkedHashMap"/>
+<jsp:useBean id="includedAssets" class="java.util.LinkedHashMap"/>
+<c:if test="${functions:default(useMapping, true)}">
+    <c:set var="assetMapping" value="${renderContext.staticAssetMapping}"/>
+</c:if>
 <c:forTokens items="${fn:toLowerCase(functions:default(types, 'css,inlinecss,javascript,inlinejavascript'))}" delims="," var="resourceType">
 	<c:set var="resources" value="${renderContext.staticAssets[resourceType]}"/>
 	<c:if test="${not empty resources && 'inlinecss' == resourceType}">
@@ -49,10 +55,18 @@
 	<c:forEach var="resource" items="${resources}" varStatus="var">
 		<c:choose>
 			<c:when test="${'css' == resourceType}">
-				<link id="staticAsset${resourceType}${var.index}" rel="stylesheet" href="${resource}" media="screen" type="text/css"/>
+                <c:url var="toInclude" value="${functions:default(assetMapping[resource], resource)}"/>
+                <c:if test="${empty includedAssets[toInclude]}">
+                    <c:set target="${includedAssets}" property="${toInclude}" value="true"/>
+				    <link id="staticAsset${resourceType}${var.index}" rel="stylesheet" href="${toInclude}" media="screen" type="text/css"/>
+                </c:if>
 			</c:when>
 			<c:when test="${'javascript' == resourceType}">
-				<script id="staticAsset${resourceType}${var.index}" type="text/javascript" src="${resource}"></script>
+                <c:url var="toInclude" value="${functions:default(assetMapping[resource], resource)}"/>
+                <c:if test="${empty includedAssets[toInclude]}">
+                    <c:set target="${includedAssets}" property="${toInclude}" value="true"/>
+    				<script id="staticAsset${resourceType}${var.index}" type="text/javascript" src="${toInclude}"></script>
+                </c:if>
 			</c:when>
 			<c:when test="${'inlinecss' == resourceType || 'inlinejavascript' == resourceType}">
 				${resource}

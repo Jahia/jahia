@@ -38,6 +38,7 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerSe
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
 import org.jahia.services.content.rules.ModuleGlobalObject;
 import org.jahia.services.content.rules.RulesListener;
+import org.jahia.services.render.StaticAssetMapping;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.settings.SettingsBean;
 import org.jahia.bin.errors.ErrorHandler;
@@ -66,6 +67,8 @@ class TemplatePackageRegistry {
         private ChoiceListInitializerService choiceListInitializers;
         
         private ProfileExtensions profileExtensions;
+        
+        private Map<String, String> staticAssetMapping;
 
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             if (bean instanceof RenderFilter) {
@@ -108,6 +111,12 @@ class TemplatePackageRegistry {
                     logger.debug("Registering ProfileExtension '" + beanName + "'");
                 }
                 profileExtensions.registerExtension(profileExtension);
+            } else if (bean instanceof StaticAssetMapping) {
+                StaticAssetMapping mappings = (StaticAssetMapping) bean;
+                staticAssetMapping.putAll(mappings.getMapping());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Registering static asset mappings '" + mappings.getMapping() + "'");
+                }
             }
             return bean;
         }
@@ -132,6 +141,13 @@ class TemplatePackageRegistry {
          */
         public void setProfileExtensions(ProfileExtensions profileExtensions) {
             this.profileExtensions = profileExtensions;
+        }
+
+        /**
+         * @param staticAssetMapping the staticAssetMapping to set
+         */
+        public void setStaticAssetMapping(Map<String, String> staticAssetMapping) {
+            this.staticAssetMapping = staticAssetMapping;
         }
     }
 

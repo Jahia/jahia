@@ -7,6 +7,7 @@
 		<property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
         <property name="choiceListInitializers" ref="choiceListInitializers"/>
         <property name="profileExtensions" ref="profileExtensions"/>
+        <property name="staticAssetMapping" ref="org.jahia.services.render.StaticAssetMappingRegistry"/>
 	</bean>
 
     <bean class="org.jahia.modules.defaultmodule.MoveAction">

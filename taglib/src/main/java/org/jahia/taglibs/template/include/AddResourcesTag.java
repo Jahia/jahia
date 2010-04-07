@@ -100,8 +100,7 @@ public class AddResourcesTag extends BodyTagSupport {
             } else {
                 for (String lookupPath : lookupPaths){
                     String path = lookupPath + resource;
-                    String pathWithContext = renderContext.getRequest().getContextPath() + path;
-                    if (links != null && links.contains(pathWithContext)) {
+                    if (links != null && links.contains(path)) {
                         // we have it already
                         found = true;
                         break;  
@@ -109,7 +108,7 @@ public class AddResourcesTag extends BodyTagSupport {
                     try {
                         if (pageContext.getServletContext().getResource(path) != null) {
                             // we found it --> add it and stop
-                            renderContext.addStaticAsset(type, pathWithContext, insert);
+                            renderContext.addStaticAsset(type, path, insert);
                             found = true;
                             break;
                         }

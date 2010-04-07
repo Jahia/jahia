@@ -81,8 +81,6 @@ public interface JahiaContentDefinitionService extends RemoteService {
 
     GWTJahiaNodeType getNodeType(String names);
 
-    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeTypes() throws GWTJahiaServiceException ;
-
     List<GWTJahiaNodeType> getNodeTypes(List<String> names);
 
     /**

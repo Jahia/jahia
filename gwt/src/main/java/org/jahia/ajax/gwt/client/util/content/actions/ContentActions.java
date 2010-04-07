@@ -562,40 +562,9 @@ public class ContentActions {
      * Show content wizard with a selected node type
      *
      * @param linker
-     * @param nodeType
+     * @param nodeTypes
      */
-    public static void showContentWizard(final Linker linker, final String nodeType) {
-        if (nodeType == null) {
-            showContentWizardByNodeType(linker, null);
-            return;
-        }
-
-        // retrieve the jahiaNodeType and display the wizard
-        JahiaContentDefinitionService.App.getInstance().getNodeType(nodeType, new AsyncCallback<GWTJahiaNodeType>() {
-            public void onSuccess(GWTJahiaNodeType jahiaNodeType) {
-                if (jahiaNodeType != null) {
-                    Log.debug("jahia node type found" + jahiaNodeType.getLabel() + "," + jahiaNodeType.getName());
-                    showContentWizardByNodeType(linker, jahiaNodeType);
-                } else {
-                    Log.error("Error while triing to get GWTNodetype with type[" + nodeType + "]");
-                }
-            }
-
-            public void onFailure(Throwable throwable) {
-                MessageBox.alert("Alert", "Unable to display 'Add content page wizard' ", null);
-                Log.error("Error while triing to get GWTNodetype with type[" + nodeType + "]", throwable);
-            }
-        });
-    }
-
-    /**
-     * Show content wizard with a pre-seleected node Type
-     *
-     * @param linker
-     * @param nodeType
-     */
-    public static void showContentWizardByNodeType(final Linker linker, final GWTJahiaNodeType nodeType
-    ) {
+    public static void showContentWizard(final Linker linker, final String nodeTypes) {
         GWTJahiaNode parent = linker.getSelectedNode();
         if (parent == null) {
             parent = linker.getMainNode();
@@ -607,7 +576,7 @@ public class ContentActions {
             }
         }
         if (parent != null && !parent.isFile()) {
-            new ContentTypeWindow(linker, parent, nodeType).show();
+            new ContentTypeWindow(linker, parent, nodeTypes).show();
         }
     }
 

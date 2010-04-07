@@ -25,9 +25,9 @@ public class NewContentActionItem extends BaseActionItem  {
                 m = ((EditLinker) linker).getMainModule();
             }
             if (m instanceof ListModule) {
-                nodeTypes = ((ListModule) m).getNodeTypes();
+                nodeTypes = m.getNodeTypes();
             } else if (m instanceof AreaModule) {
-                nodeTypes = ((AreaModule) m).getNodeTypes();
+                nodeTypes = m.getNodeTypes();
             }
         }
 

@@ -99,23 +99,6 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
         set("isMixin",new Boolean(mixin));
     }
 
-    public String getPrimaryItemName() {
-        return get("primaryItemName");
-    }
-
-    public void setPrimaryItemName(String primaryItemName) {
-        set("primaryItemName",primaryItemName);
-    }
-
-    public String getValidator() {
-        return get("validator");
-    }
-
-    public void setValidator(String validator) {
-        set("validator",validator);
-    }
-
-
     public String getIcon() {
         return get("icon");
     }

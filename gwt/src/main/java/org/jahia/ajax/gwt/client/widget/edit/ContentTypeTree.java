@@ -34,7 +34,10 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.TreeGridEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.*;
@@ -51,11 +54,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.jahia.ajax.gwt.client.data.definition.ContentTypeModelData;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -75,8 +75,7 @@ import java.util.Map;
 public class ContentTypeTree extends LayoutContainer {
     private TreeGrid<GWTJahiaNodeType> treeGrid;
     private Linker linker;
-    private final GWTJahiaNodeType nodeType;
-    private final String baseType;
+    private final String baseTypes;
     private GWTJahiaNode parentNode;
     private final int width;
     private final int height;
@@ -85,12 +84,14 @@ public class ContentTypeTree extends LayoutContainer {
     private final Window window;
     private TreeStore<GWTJahiaNodeType> store;
 
-    public ContentTypeTree(Linker linker, GWTJahiaNodeType nodeType, String baseType, GWTJahiaNode parentNode,
-                           int width, int height, int rowHeight,
+    public ContentTypeTree(Linker linker, String nodeType, GWTJahiaNode parentNode, int width, int height, int rowHeight) {
+        this(linker, nodeType, parentNode, width, height, rowHeight, false, null);
+    }
+
+    public ContentTypeTree(Linker linker, String baseTypes, GWTJahiaNode parentNode, int width, int height, int rowHeight,
                            boolean isPopup, Window window) {
         this.linker = linker;
-        this.nodeType = nodeType;
-        this.baseType = baseType;
+        this.baseTypes = baseTypes;
         this.parentNode = parentNode;
         this.width = width;
         this.height = height;
@@ -100,27 +101,10 @@ public class ContentTypeTree extends LayoutContainer {
         createUI();
     }
 
-    public ContentTypeTree(Linker linker, GWTJahiaNodeType nodeType, String baseType, GWTJahiaNode parentNode,
-                           int width, int height, int rowHeight) {
-        this(linker, nodeType, baseType, parentNode, width, height, rowHeight, false, null);
-    }
-
 
     public void createUI() {
         store = new TreeStore<GWTJahiaNodeType>();
-        GWTJahiaNodeType rootEmptyContent = null;
-        if (nodeType == null) {
-            if (linker != null) {
-                if (parentNode != null) {
-                    filldataStore(parentNode);
-                } else {
-                    filldataStore();
-                }
-            }
-        } else {
-            rootEmptyContent = nodeType;
-            store.add(rootEmptyContent, false);
-        }
+        filldataStore();
         ColumnConfig name = new ColumnConfig("label", "Label", width - 40);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
@@ -166,7 +150,7 @@ public class ContentTypeTree extends LayoutContainer {
             treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent baseEvent) {
                     GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) (((TreeGridEvent) baseEvent).getModel());
-                    if (gwtJahiaNodeType != null && linker != null) {
+                    if (gwtJahiaNodeType != null && linker != null && !gwtJahiaNodeType.isMixin()) {
                         new CreateContentEngine(linker, parentNode, gwtJahiaNodeType, null, false).show();
                         window.hide();
                     }
@@ -192,33 +176,11 @@ public class ContentTypeTree extends LayoutContainer {
 
     private void filldataStore() {
         store.removeAll();
-        JahiaContentDefinitionService.App.getInstance().getNodeTypes(
+        JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(baseTypes, parentNode,
                 new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                     public void onFailure(Throwable caught) {
                         MessageBox.alert("Alert",
-                                "Unable to load content definitions for base type '" + baseType + "' and parent node '" + ContentTypeTree.this.parentNode.getPath() + "'. Cause: " + caught.getLocalizedMessage(),
-                                null);
-                    }
-
-                    public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
-                        for (Map.Entry<GWTJahiaNodeType, List<GWTJahiaNodeType>> entry : result.entrySet()) {
-                            store.add(entry.getKey(), true);
-                            for (GWTJahiaNodeType gwtJahiaNodeType : entry.getValue()) {
-                                store.add(entry.getKey(), gwtJahiaNodeType, true);
-                            }
-                        }
-                        store.sort("label", Style.SortDir.ASC);
-                    }
-                });
-    }
-
-    private void filldataStore(GWTJahiaNode parentNode) {
-        store.removeAll();
-        JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(baseType, parentNode,
-                new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
-                    public void onFailure(Throwable caught) {
-                        MessageBox.alert("Alert",
-                                "Unable to load content definitions for base type '" + baseType + "' and parent node '" + ContentTypeTree.this.parentNode.getPath() + "'. Cause: " + caught.getLocalizedMessage(),
+                                "Unable to load content definitions for base type '" + baseTypes + "' and parent node '" + ContentTypeTree.this.parentNode.getPath() + "'. Cause: " + caught.getLocalizedMessage(),
                                 null);
                     }
 
@@ -241,8 +203,6 @@ public class ContentTypeTree extends LayoutContainer {
 
     public void setLinker(Linker linker) {
         this.linker = linker;
-        this.parentNode = linker.getMainNode();
-        filldataStore();
     }
 
     public void refresh() {

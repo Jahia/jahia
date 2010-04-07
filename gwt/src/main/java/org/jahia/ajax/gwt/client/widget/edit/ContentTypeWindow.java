@@ -49,6 +49,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -57,7 +59,6 @@ import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
  *        Created : 12 nov. 2009
  */
 public class ContentTypeWindow extends Window {
-    private String baseType;
     private GWTJahiaNode parentNode;
     private final Linker linker;
     private ButtonBar buttonBar;
@@ -66,18 +67,10 @@ public class ContentTypeWindow extends Window {
     private ContentTypeTree contentTypeTree;
 
 
-    public ContentTypeWindow(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType nodeType) {
+    public ContentTypeWindow(Linker linker, GWTJahiaNode parent, String baseTypes) {
         this.linker = linker;
-        if (nodeType != null) {
-            this.baseType = nodeType.getName();
-        } else {
-            baseType = null;
-        }
-        if (parent != null) {
-            this.parentNode = parent;
-        } else {
-            this.parentNode = linker.getMainNode();
-        }
+        this.parentNode = parent;
+
         setLayout(new FillLayout());
         setBodyBorder(false);
         setSize(950, 750);
@@ -86,8 +79,7 @@ public class ContentTypeWindow extends Window {
         setModal(true);
         setMaximizable(true);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
-        contentTypeTree = new ContentTypeTree(linker, nodeType, baseType, parentNode,
-                695,500,25, true,this);
+        contentTypeTree = new ContentTypeTree(linker, baseTypes, parentNode, 695,500,25, true,this);
         add(contentTypeTree);
         contentTypeTree.layout(true);
         layout();

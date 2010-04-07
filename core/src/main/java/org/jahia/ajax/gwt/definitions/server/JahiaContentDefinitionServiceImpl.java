@@ -61,10 +61,6 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getNodeType(name, new HashMap<String, Object>(), getUILocale());
     }
 
-    public Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> getNodeTypes() throws GWTJahiaServiceException {
-        return contentDefinition.getNodeTypes(retrieveCurrentSession(), new HashMap<String, Object>(), getUILocale());
-    }
-
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names) {
         return contentDefinition.getNodeTypes(names, new HashMap<String, Object>(), getUILocale());
     }
@@ -73,15 +69,15 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type.
      * 
-     * @param baseType
+     * @param baseTypes
      *            the node type name to find sub-types
      * @param parentNode
      *            the parent node, where the wizard was called
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode) throws GWTJahiaServiceException {
-        return contentDefinition.getNodeSubtypes(baseType, parentNode, new HashMap<String, Object>(), getUILocale());
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseTypes, GWTJahiaNode parentNode) throws GWTJahiaServiceException {
+        return contentDefinition.getNodeSubtypes(baseTypes, parentNode, new HashMap<String, Object>(), getUILocale());
     }
 
     public List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException {

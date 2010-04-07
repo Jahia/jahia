@@ -43,6 +43,7 @@ import org.jahia.services.render.scripting.Script;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -177,17 +178,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     public int doEndTag() throws JspException {
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-            if (renderContext == null) {
-                // final JahiaData jData = (JahiaData) pageContext.getRequest().getAttribute("org.jahia.data.JahiaData");
-                // renderContext = new RenderContext((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), jData.getProcessingContext().getUser());
-                // renderContext.setSite(jData.getProcessingContext().getSite());
-            }
-//            if(templateWrapper != null) {
-//                renderContext.setTemplateWrapper(templateWrapper);
-//            }
-            // add custom parameters
-//            Map<String, Object> oldParams = new HashMap<String, Object>(renderContext.getModuleParams());
-//            renderContext.getModuleParams().clear();
 
             buffer = new StringBuffer();
 
@@ -218,6 +208,18 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
             if (node != null) {
                 Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+                try {
+                    if (node.isNodeType("jmix:listRestrictions") && node.hasProperty("j:allowedTypes")) {
+                        Value[] values = node.getProperty("j:allowedTypes").getValues();
+                        this.nodeTypes = "";
+                        for (Value value : values) {
+                            nodeTypes += value.getString() + " ";
+                        }
+                        nodeTypes = nodeTypes.trim();
+                    }
+                } catch (RepositoryException e) {
+                    logger.error("Error when getting list constraints",e);
+                }
                 String constrainedNodeTypes = null;
                 if (currentLevel != null) {
                     constrainedNodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);

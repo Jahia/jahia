@@ -40,16 +40,13 @@ import java.util.Locale;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Contribute;
 import org.jahia.bin.Edit;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -59,7 +56,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -123,7 +119,7 @@ public class URLResolver {
                     VanityUrl defaultVanityUrl = getVanityUrlService()
                             .getVanityUrlForWorkspaceAndLocale(getNode(),
                                     workspace, locale);
-                    if (defaultVanityUrl != null) {
+                    if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
                         setRedirectUrl(defaultVanityUrl.getUrl());
                     }
                 } catch (AccessDeniedException e) {
@@ -232,7 +228,7 @@ public class URLResolver {
                                 .getVanityUrlForWorkspaceAndLocale(getNode(),
                                         workspace, locale);
                         if (defaultVanityUrl != null
-                                && !resolvedVanityUrl.equals(defaultVanityUrl)) {
+                                && defaultVanityUrl.isActive() && !resolvedVanityUrl.equals(defaultVanityUrl)) {
                             setRedirectUrl(defaultVanityUrl.getUrl());
                         }
                     }

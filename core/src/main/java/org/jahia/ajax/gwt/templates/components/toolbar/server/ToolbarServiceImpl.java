@@ -50,22 +50,21 @@ import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAct
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.toolbar.bean.*;
-import org.jahia.services.toolbar.bean.custom.LanguageSwitcherItemsGroup;
-import org.jahia.services.toolbar.resolver.impl.LanguageItemsResolver;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 import javax.jcr.RepositoryException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -93,12 +92,11 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      */
     public GWTJahiaToolbarSet getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException {
         try {
-            JahiaData jData = retrieveJahiaData();
             // there is no pref or toolbar are hided
             // get all tool bars
             ToolbarSet toolbarSet = (ToolbarSet) SpringContextSingleton.getBean(toolbarGroup);
             Visibility visibility = toolbarSet.getVisibility();
-            if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
+            if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
                 GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(toolbarSet);
                 return gwtJahiaToolbarSet;
             } else {
@@ -123,14 +121,13 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             logger.debug("toolbar set list is empty");
             return null;
         }
-        JahiaData jData = retrieveJahiaData();
 
         // create  a gwtJahiaToolbarSet
         GWTJahiaToolbarSet gwtJahiaToolbarSet = new GWTJahiaToolbarSet();
         for (Toolbar toolbar : toolbarSet.getToolbars()) {
             // add only tool bar that the user can view
             Visibility visibility = toolbar.getVisibility();
-            if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
+            if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
                 GWTJahiaToolbar gwtToolbar = createGWTToolbar(toolbar);
                 // add toolbar only if not empty
                 if (gwtToolbar != null && gwtToolbar.getGwtToolbarItemsGroups() != null && !gwtToolbar.getGwtToolbarItemsGroups().isEmpty()) {
@@ -209,8 +206,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             return null;
         }
 
-        JahiaData jData = retrieveJahiaData();
-
         // create gwtTollbar
         GWTJahiaToolbar gwtToolbar = new GWTJahiaToolbar();
         gwtToolbar.setIndex(toolbar.getIndex());
@@ -235,17 +230,9 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 itemsGroup.setVisibility(item.getVisibility());
             }
 
-            // case of Language switcher
-            if(itemsGroup instanceof LanguageSwitcherItemsGroup){
-               String langCode = LanguageCodeConverters.localeToLanguageTag(getLocale());
-               itemsGroup.setTitle(LanguageItemsResolver.getDisplayName(langCode));
-               itemsGroup.setMinIconStyle(LanguageItemsResolver.getLangIconStyle(langCode));
-               itemsGroup.setMinIconStyle(LanguageItemsResolver.getLangIconStyle(langCode));
-            }
-
             // add only itemsgroup that the user can view
             Visibility visibility = itemsGroup.getVisibility();
-            if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
+            if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
                 GWTJahiaToolbarItemsGroup gwtItemsGroup = createGWTItemsGroup(gwtToolbar.getName(), index, itemsGroup);
 
                 // add itemsGroup only if not empty
@@ -274,10 +261,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      * @return
      */
     private GWTJahiaToolbarItemsGroup createGWTItemsGroup(String toolbarName, int index, ItemsGroup itemsGroup) {
-        JahiaData jData = retrieveJahiaData();
-
         // don't add the items group if  has no items group
-        List<Item> list = itemsGroup.getRealItems(jData);
+        List<Item> list = itemsGroup.getRealItems(getSite(), getRemoteJahiaUser(), getLocale());
         if (list == null || list.isEmpty()) {
             logger.debug("toolbar[" + toolbarName + "] itemlist is empty");
             return null;
@@ -287,7 +272,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         List<GWTJahiaToolbarItem> gwtToolbarItemsList = new ArrayList<GWTJahiaToolbarItem>();
         // create items from definition
         for (Item item : list) {
-            addItem(jData, gwtToolbarItemsList, item);
+            addItem(gwtToolbarItemsList, item);
         }
 
         // don't add the items group if  has no items group
@@ -346,14 +331,13 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
     /**
      * Add item
      *
-     * @param jData
      * @param gwtToolbarItemsList
      * @param item
      */
-    private void addItem(JahiaData jData, List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
+    private void addItem(List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
         if (item instanceof ItemsGroup) {
-            for (Item subItem : ((ItemsGroup) item).getRealItems(jData)) {
-                addItem(jData, gwtToolbarItemsList, subItem);
+            for (Item subItem : ((ItemsGroup) item).getRealItems(getSite(), getRemoteJahiaUser(), getLocale())) {
+                addItem(gwtToolbarItemsList, subItem);
             }
         } else {
             // add only item that the user can view
@@ -361,7 +345,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
             Visibility visibility = item.getVisibility();
 
             // add only visible items
-            if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
+            if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
                 GWTJahiaToolbarItem gwtToolbarItem = createGWTItem(item);
                 if (gwtToolbarItem != null) {
                     gwtToolbarItemsList.add(gwtToolbarItem);
@@ -411,8 +395,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      * @return
      */
     private GWTJahiaToolbarItem createGWTItem(Item item) {
-        JahiaData jData = retrieveJahiaData();
-
         // GWTJahiaToolbarItem
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
         if (item.getTitleKey() != null) {
@@ -430,7 +412,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         gwtToolbarItem.setMediumIconStyle(item.getMediumIconStyle());
         gwtToolbarItem.setMinIconStyle(item.getMinIconStyle());
         if (item.getSelected() != null) {
-            gwtToolbarItem.setSelected(item.getSelected().getRealValue(jData));
+            gwtToolbarItem.setSelected(item.getSelected().getRealValue(getSite(),  getRemoteJahiaUser(), getLocale()));
         } else {
             gwtToolbarItem.setSelected(false);
         }
@@ -438,7 +420,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         for (Property currentProperty : item.getProperties()) {
             GWTJahiaProperty gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName(currentProperty.getName());
-            gwtProperty.setValue(currentProperty.getRealValue(jData));
+            gwtProperty.setValue(currentProperty.getRealValue(getSite(),  getRemoteJahiaUser(), getLocale()));
             pMap.put(gwtProperty.getName(), gwtProperty);
         }
         gwtToolbarItem.setLayout(getLayoutAsInt(item.getLayout()));
@@ -454,7 +436,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
                 }
                 gwtToolbarItem.setProcesses(processes);
                 // todo : use the role assigned to the action for bypassing workflow ?
-                final WorkflowActionItem workflowActionItem = new WorkflowActionItem(processes, jData.getProcessingContext().getUser().isAdminMember(0), item.getActionItem());
+                final WorkflowActionItem workflowActionItem = new WorkflowActionItem(processes, getRemoteJahiaUser().isAdminMember(0), item.getActionItem());
                 gwtToolbarItem.setActionItem(workflowActionItem);
             } catch (RepositoryException e) {
                 logger.error("Cannot get workflows",e);

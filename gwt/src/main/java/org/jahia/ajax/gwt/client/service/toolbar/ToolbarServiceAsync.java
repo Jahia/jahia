@@ -35,7 +35,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
-import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParameter;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 
 import java.util.Map;

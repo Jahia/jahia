@@ -32,9 +32,11 @@
 package org.jahia.services.toolbar.bean;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.toolbar.resolver.PropertyResolver;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.usermanager.JahiaUser;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * User: jahia
@@ -47,8 +49,6 @@ public class Property implements Serializable {
     
     private String name;
     private String value;
-    private String classProvider;
-    private String inputProvider;
 
     public String getName() {
         return name;
@@ -66,34 +66,8 @@ public class Property implements Serializable {
         this.value = value;
     }
 
-    public String getClassProvider() {
-        return classProvider;
-    }
-
-    public void setClassProvider(String classProvider) {
-        this.classProvider = classProvider;
-    }
-
-    public String getInputProvider() {
-        return inputProvider;
-    }
-
-    public void setInputProvider(String inputProvider) {
-        this.inputProvider = inputProvider;
-    }
-
-    public String getRealValue(org.jahia.data.JahiaData jData) {
-        if (value != null) {
-            return value;
-        } else {
-            try {
-                PropertyResolver propertiesValuesProvider = (PropertyResolver) Class.forName(classProvider).newInstance();
-                return propertiesValuesProvider.getValue(jData,inputProvider);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                return null;
-            }
-        }
+    public String getRealValue(JCRSiteNode site, JahiaUser user, Locale locale) {
+        return value;
     }
 
 }

@@ -32,9 +32,11 @@
 package org.jahia.services.toolbar.bean;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.toolbar.resolver.SelectedResolver;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.usermanager.JahiaUser;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * User: jahia
@@ -47,8 +49,6 @@ public class Selected implements Serializable {
             .getLogger(Selected.class);
     
     private boolean value;
-    private String classResolver;
-    private String inputResolver;
 
     public boolean getValue() {
         return value;
@@ -58,33 +58,7 @@ public class Selected implements Serializable {
         this.value = value;
     }
 
-    public String getClassResolver() {
-        return classResolver;
-    }
-
-    public void setClassResolver(String classResolver) {
-        this.classResolver = classResolver;
-    }
-
-    public String getInputResolver() {
-        return inputResolver;
-    }
-
-    public void setInputResolver(String inputResolver) {
-        this.inputResolver = inputResolver;
-    }
-
-    public boolean getRealValue(org.jahia.data.JahiaData jData) {
-        if (inputResolver != null) {
-            try {
-                SelectedResolver resolver = (SelectedResolver) Class.forName(classResolver).newInstance();
-                return resolver.isSelected(jData,inputResolver);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                return true;
-            }
-        } else {
-            return value;
-        }
+    public boolean getRealValue(JCRSiteNode site, JahiaUser user, Locale locale) {
+        return value;
     }
 }

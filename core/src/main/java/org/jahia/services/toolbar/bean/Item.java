@@ -31,8 +31,8 @@
  */
 package org.jahia.services.toolbar.bean;
 
-import org.springframework.beans.factory.BeanNameAware;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
 import java.util.ArrayList;

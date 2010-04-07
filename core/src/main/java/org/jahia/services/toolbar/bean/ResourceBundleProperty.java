@@ -29,29 +29,53 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.toolbar.resolver.impl;
+package org.jahia.services.toolbar.bean;
 
-import org.jahia.data.JahiaData;
-import org.jahia.services.toolbar.resolver.SelectedResolver;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+
+import java.util.Locale;
 
 /**
  * User: jahia
- * Date: 4 juil. 2008
- * Time: 15:31:36
+ * Date: 11 juil. 2008
+ * Time: 10:04:15
  */
-public class CacheModeSelectedResolver implements SelectedResolver {
-    // cache
-    public static String CACHE_DEBUG = "cache_debug";
-    public static String CACHE_ON = "cache_on";
+public class ResourceBundleProperty extends Property {
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ResourceBundleProperty.class);
 
-    public boolean isSelected(JahiaData jData,String type) {
-        if (type.equalsIgnoreCase(CACHE_ON)) {
-            return true;
-        } else if (type.equalsIgnoreCase(CACHE_DEBUG)) {
-            return true;
-        } else {
-            return false;
-        }
+    private String key;
+
+    public String getKey() {
+        return key;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getRealValue(JCRSiteNode site, JahiaUser user, Locale locale) {
+        return getResources(key, locale);
+    }
+
+    /**
+     * Get resources
+     *
+     * @param key
+     * @param locale
+     * @return
+     */
+    private String getResources(String key, Locale locale) {
+        logger.debug("Resources key: " + key);
+        String value = JahiaResourceBundle.getJahiaInternalResource(key, locale);
+        if (value == null || value.equalsIgnoreCase("")) {
+            value = JahiaResourceBundle.getJahiaInternalResource(key, locale);
+        }
+        if (value == null || value.equalsIgnoreCase("")) {
+            // value = JahiaResourceBundle.getMessageResource(key, processingContext.getLocale(), null);
+        }
+        logger.debug("Resources value: " + value);
+        return JahiaResourceBundle.getJahiaInternalResource(key, locale);
+    }
 }

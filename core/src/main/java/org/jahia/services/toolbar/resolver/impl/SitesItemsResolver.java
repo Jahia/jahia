@@ -1,17 +1,17 @@
 package org.jahia.services.toolbar.resolver.impl;
 
-import org.jahia.services.toolbar.resolver.ItemsResolver;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.toolbar.bean.Item;
 import org.jahia.services.toolbar.bean.Selected;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.data.JahiaData;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.exceptions.JahiaException;
+import org.jahia.services.usermanager.JahiaUser;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,30 +23,16 @@ import java.util.ArrayList;
 public class SitesItemsResolver extends DefaultItemsResolver {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(SitesItemsResolver.class);
 
-    public List<Item> getItems(JahiaData jahiaData) {
+    public List<Item> getItems(JCRSiteNode currentsite, JahiaUser user, Locale locale) {
         List<Item> items = new ArrayList<Item>();
 
         try {
             JahiaGroupManagerService jahiaGroupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-            List<JahiaSite> sitesList = jahiaGroupManagerService.getAdminGrantedSites(jahiaData.getProcessingContext().getUser());
+            List<JahiaSite> sitesList = jahiaGroupManagerService.getAdminGrantedSites(user);
             if (sitesList != null && sitesList.size() > 1) {
                 for (JahiaSite site : sitesList) {
                     if (site.getHomePageID() > -1) {
-                        Item item = createRedirectItem(jahiaData, site.getTitle(), site.getHomePage());
-                        // add to itemsgroup
-                        if (item != null) {
-                            String minIconStyle = "gwt-toolbar-icon-site-min";
-                            String maxIconStyle = "gwt-toolbar-icon-site-min";
-                            item.setMediumIconStyle(maxIconStyle);
-                            item.setMinIconStyle(minIconStyle);
-                            if (jahiaData.getProcessingContext().getSiteID() == site.getID()) {
-                                Selected s = new Selected();
-                                s.setValue(true);
-                                item.setSelected(s);
-                            }
-                            // add to group lis
-                            items.add(item);
-                        }
+                        Item item = null;
                     }
                 }
             }

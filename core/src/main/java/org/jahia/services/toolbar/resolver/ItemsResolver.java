@@ -1,8 +1,12 @@
 package org.jahia.services.toolbar.resolver;
 
+import org.jahia.data.JahiaData;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.toolbar.bean.Item;
+import org.jahia.services.usermanager.JahiaUser;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,5 +16,5 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface ItemsResolver {
-    public List<Item> getItems(org.jahia.data.JahiaData jData);
+    public List<Item> getItems(JCRSiteNode site, JahiaUser user, Locale locale);
 }

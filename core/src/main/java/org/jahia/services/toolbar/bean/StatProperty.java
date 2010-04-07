@@ -29,45 +29,47 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.toolbar.resolver.impl;
+package org.jahia.services.toolbar.bean;
 
-import org.apache.log4j.Logger;
-import org.jahia.data.JahiaData;
-import org.jahia.services.toolbar.resolver.VisibilityResolver;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.usermanager.JahiaUser;
+
+import java.util.Locale;
 
 /**
- * Shows/hides the "Send as Newsletter" button depending on whether current page
- * definition has a special mixin type or not.
- * 
- * @author Sergiy Shyrkov
+ * User: ktlili
+ * Date: 7 nov. 2008
+ * Time: 12:40:16
  */
-public class SendAsNewsletterVisibilityResolver implements VisibilityResolver {
+public class StatProperty extends Property  {
+    public static String PAGE = "page";
+    public static String SITE = "site";
 
-    private static final transient Logger logger = Logger
-            .getLogger(SendAsNewsletterVisibilityResolver.class);
+    private String key;
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.jahia.services.toolbar.resolver.VisibilityResolver#isVisible(org.
-     * jahia.data.JahiaData, java.lang.String)
-     */
-    public boolean isVisible(JahiaData data, String type) {
-        boolean result = true;
-        try {
-            if (data != null && data.getProcessingContext() != null
-                    && data.getProcessingContext().getPage() != null) {
-                result = data.getProcessingContext().getPage()
-                        .getPageTemplate().getNodeType().isNodeType(
-                                "jmix:sendAsNewsletter");
-            }
-        } catch (Exception e) {
-            logger.warn(
-                    "Unable to resolve visibility for 'Send as newsletter' button. Cause: "
-                            + e.getMessage(), e);
-
-        }
-        return result;
+    public String getKey() {
+        return key;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getRealValue(JCRSiteNode site, JahiaUser user, Locale locale) {
+        String value = "";
+        if (key.equalsIgnoreCase(PAGE)) {
+            value = getPageStatistics();
+        } else if (key.equalsIgnoreCase(SITE)) {
+            value = getSiteStatistics();
+        }
+        return value;
+    }
+
+    private String getPageStatistics() {
+        return "<b>page statistics url</b>";
+    }
+
+    private String getSiteStatistics() {
+        return "<b>Site statistics url</b>";
+    }
 }

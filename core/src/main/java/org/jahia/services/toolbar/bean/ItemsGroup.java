@@ -31,12 +31,15 @@
  */
 package org.jahia.services.toolbar.bean;
 
-import org.springframework.beans.factory.BeanNameAware;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.toolbar.resolver.ItemsResolver;
+import org.jahia.services.usermanager.JahiaUser;
+import org.springframework.beans.factory.BeanNameAware;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * User: jahia
@@ -88,9 +91,9 @@ public class ItemsGroup extends Item implements Serializable, BeanNameAware {
         items.add(item);
     }
 
-    public List<Item> getRealItems(org.jahia.data.JahiaData jData) {
+    public List<Item> getRealItems(JCRSiteNode site, JahiaUser user, Locale locale) {
         if (itemsResolver != null) {
-            return itemsResolver.getItems(jData);
+            return itemsResolver.getItems(site, user, locale);
         }
         return items;
     }

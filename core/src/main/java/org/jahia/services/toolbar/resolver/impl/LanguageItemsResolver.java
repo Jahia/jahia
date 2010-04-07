@@ -1,10 +1,12 @@
 package org.jahia.services.toolbar.resolver.impl;
 
-import org.jahia.services.toolbar.bean.Item;
-import org.jahia.services.toolbar.bean.Selected;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.toolbar.bean.Item;
+import org.jahia.services.toolbar.bean.Selected;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 
 import java.util.*;
@@ -48,13 +50,11 @@ import java.util.*;
 public class LanguageItemsResolver extends DefaultItemsResolver {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageItemsResolver.class);
 
-    public List<Item> getItems(JahiaData jahiaData) {
+    public List<Item> getItems(JCRSiteNode currentSite, JahiaUser user, Locale selectedLang) {
         List<Item> items = new ArrayList<Item>();
 
         try {
-            final JahiaSite currentSite = jahiaData.getProcessingContext().getSite();
             final Set<String> languageSettings = currentSite != null ? currentSite.getLanguages() : null;
-            final Locale selectedLang = jahiaData.getProcessingContext().getLocale();
             if (languageSettings != null && languageSettings.size() > 0) {
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
                 orderedLangs.addAll(languageSettings);

@@ -244,7 +244,7 @@ public class JCRSitesProvider {
                         siteNode.setProperty("j:gaPassword", googleAnalyticsProfile.getPassword());
                         siteNode.setProperty("j:gaTypeUrl", googleAnalyticsProfile.getTypeUrl());
                     }
-                    if (googleAnalyticsProfile.isToDelete()) {
+                    if (googleAnalyticsProfile != null && googleAnalyticsProfile.isToDelete()) {
                         siteNode.getProperty("j:gaAccount").remove();
                         siteNode.getProperty("j:gaLogin").remove();
                         siteNode.getProperty("j:gaPassword").remove();

@@ -1,0 +1,30 @@
+Jahia Static Assets
+
+* Overview
+
+  This module contains common CSS and JavaScript resources and also allows enabling support for Content Delivery Network
+  or fine-grained mapping of resources.
+  
+  This module is used by the <Default Jahia Templates> module (the default Jahia module), thus the bundled resources
+  are available to all modules, which depends on the <Default Jahia Templates> module.
+  
+  The dependency to this module can be also specified explicitly in the module's deployment descriptor
+  (e.g. <<<my-custom-module/META-INF/MANIFEST.MF>>>, by including it into <<<depends>>> attribute:
+  
+------------------------------------------------
+  ...
+  package-name: My Custom Module
+  depends: Jahia Static Assets
+  ...
+------------------------------------------------
+   
+
+  Following sections describe module features in more details:
+
+    * {{{./usage.html} Usage}} - how to include assets into templates
+    
+    * Advanced configuration, achieved by using {{{./mapping.html}asset mapping}}, including
+      support for {{{./mapping.html#Delivery} Content Delivery Network (CDN)}}, {{{./mapping.html#Development} development mode}}
+      and {{{./mapping.html#Aggregating} aggregation of multiple resources}}.  
+
+    []

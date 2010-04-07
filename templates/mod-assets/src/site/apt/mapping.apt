@@ -1,0 +1,135 @@
+Asset Mapping
+
+* Providing mappings
+
+  The higher control upon the static assets is achieved by using mappings.
+  
+  A static asset can be mapped to a another internal asset or even an external asset.
+  As well as multiple assets can be mapped to one "aggregate" asset to optimize page loading time.
+
+  Mapping is configured in a module's Spring configuration file by using
+  <<<org.jahia.services.render.StaticAssetMapping>>> class as follows:
+  
+------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <!-- Google CDN for jQuery and jQuery UI -->
+    <bean class="org.jahia.services.render.StaticAssetMapping">
+        <property name="mapping">
+            <map>
+                <entry key="/templates/assets/javascript/jquery.min.js"
+                    value="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>
+------------------------------------------------
+
+  The key of the map entry is the original resolved asset. Under resolved, we mean the full context
+  related path of the resource (context path is not included).
+  The value of the map entry is the target resource, i.e. the replacement that will be included
+  by the <<<<template:includeResources/>>>> tag instead of the original resource.
+
+  Next sections show several common use cases for using mappings.
+
+* Content {Delivery} Network
+  
+  Enabling the Content Delivery Network ({{{http://en.wikipedia.org/wiki/Content_Delivery_Network}CDN}})
+  for assets brings a lot of benefits, from reducing the number of requests to your own server to the
+  optimized page loading (browser optimizes concurrent loading of resources from different domains).
+  
+  Following Spring configuration file snapshot shows the mapping from local resources to
+  their CDN-hosted versions:
+  
+------------------------------------------------
+  ...
+  <bean class="org.jahia.services.render.StaticAssetMapping">
+      <property name="mapping">
+          <map>
+              <!-- Microsoft CDN for jQuery -->
+              <entry key="/templates/assets/javascript/jquery.min.js"
+                  value="http://ajax.microsoft.com/ajax/jQuery/jquery-1.3.2.min.js"/>
+
+              <!-- Google CDN for Prototype -->
+              <entry key="/templates/assets/javascript/prototype.js"
+                  value="http://ajax.googleapis.com/ajax/libs/prototype/1.6.1.0/prototype.js"/>
+          </map>
+      </property>
+  </bean>
+  ...
+------------------------------------------------
+
+* {Development} mode
+
+  It can be useful during development phase to use the non-minified (non-compressed) versions
+  of the JavaScript libraries, mainly for debugging purpose.
+  
+  It can be achieved by mapping the minified version of the resource to the non-minified one:
+  
+------------------------------------------------
+  ...
+  <bean class="org.jahia.services.render.StaticAssetMapping">
+      <property name="mapping">
+          <map>
+              <!-- Map minified jQuery to the full one for debugging -->
+              <entry key="/templates/assets/javascript/jquery.min.js"
+                  value="/templates/assets/javascript/jquery.js"/>
+          </map>
+      </property>
+  </bean>
+  ...
+------------------------------------------------
+  
+  The benefit of using mappings in this case is that no changes needs to be done in the template
+  themselves. After the development phase is finished, removing the corresponding mapping will
+  bring back the minified versions of assets.
+  
+* {Aggregating} multiple assets
+
+  It is possible to optimize asset loading by combining them together. During development phase
+  it could be quite useful to use e.g. several small CSS or JavaScript files and later aggregate
+  them into larger ones.
+
+  Following mapping "tells" asset mapping service to use single jQuery UI file instead
+  of several components (Core, Datepicker and Slider):
+
+------------------------------------------------
+  ...
+  <bean class="org.jahia.services.render.StaticAssetMapping">
+      <property name="mapping">
+          <map>
+              <entry key="/templates/assets/javascript/jquery-ui.core.min.js"
+                  value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"/>
+              <entry key="/templates/assets/javascript/jquery-ui.datepicker.min.js"
+                  value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"/>
+              <entry key="/templates/assets/javascript/jquery-ui.slider.min.js"
+                  value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"/>
+            </map>
+        </property>
+    </bean>
+  ...
+------------------------------------------------
+
+  Similar configuration can be done for CSS files:
+
+------------------------------------------------
+  ...
+  <bean class="org.jahia.services.render.StaticAssetMapping">
+      <property name="mapping">
+          <map>
+              <entry key="/templates/templates-intranet/css/01web.css"
+                  value="/templates/templates-intranet/css/intranet-all.css"/>
+              <entry key="/templates/templates-intranet/css/02intra.css"
+                  value="/templates/templates-intranet/css/intranet-all.css"/>
+              <entry key="/templates/templates-intranet/css/03navigation.css"
+                  value="/templates/templates-intranet/css/intranet-all.css"/>
+            </map>
+        </property>
+    </bean>
+  ...
+------------------------------------------------
+

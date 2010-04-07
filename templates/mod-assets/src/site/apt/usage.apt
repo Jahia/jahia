@@ -1,0 +1,119 @@
+Usage
+
+* {Declaring} asset dependency
+
+  In order to declare static asset dependency in a template the <<<<template:addResources/>>>> tag is used.
+  
+  It supports four types of assets (the type name is case-insensitive):
+  
+    * <<<css>>> - an external CSS stylesheet
+  
+    * <<<javascript>>> - an external JavaScript resource, that will be included into
+  
+    * <<<inlinecss>>> - inline CSS stylesheet
+  
+    * <<<inlinejavascript>>> - inline JavaScript code.
+    
+    []
+  
+  An external resource is declared as:
+  
+------------------------------------------------
+  <%-- Declaring dependency to timepicker JS and CSS --%>
+  <template:addResources type="javascript" resources="timepicker.js"/>
+  <template:addResources type="css" resources="timepicker.css"/>
+
+  <%-- Declaring multiple dependencies --%>
+  <template:addResources type="javascript"
+    resources="jquery.min.js,jquery-ui.core.min.js,jquery-ui.datepicker.min.js,jquery-ui.slider.min.js"/>
+------------------------------------------------
+   
+  For inline resources the body of the <<<<template:addResources/>>>> tag is utilized: 
+
+------------------------------------------------
+  <template:addResources type="inlineJavaScript">
+    $(document).ready(function() { alert('document loaded'); });
+  </template:addResources>
+
+  <template:addResources type="inlineCss">
+    div#fancy_div {
+    background: #FFF;
+    color: #000;
+    overflow: auto;
+  }
+  </template:addResources>
+------------------------------------------------
+
+* Asset lookup
+
+  When an asset is declared it is looked up in the specific location, based on the
+  asset type and the current template module.
+  The asset <<<ui/xyz.js>>> (of type <<<javascript>>>), declared as follows:
+
+------------------------------------------------
+  <template:addResources type="javascript" resources="ui/xyz.js"/>
+------------------------------------------------
+
+   is searched in the following locations in that order:
+  
+    * <<</templates/my-custom-module/javascript/ui/xyz.js>>>
+
+    * <<</templates/direct-dependent-module-1/javascript/ui/xyz.js>>>
+
+    * <<</templates/direct-dependent-module-2/javascript/ui/xyz.js>>>
+
+    * <<</templates/indirect-dependent-module-1/javascript/ui/xyz.js>>>
+
+    * <<</templates/indirect-dependent-module-2/javascript/ui/xyz.js>>>
+    
+    []
+  i.e. in the current module, its dependent modules (defined by the <<<depends>>>
+  in the module's <<<MANIFEST.MF>>> descriptor file) and so forth in the dependencies of the
+  dependent modules. In this case the resource is specified by its relative path (<<<ui/xyz.js>>>).
+  
+  It is also possible to specify path, starting with "<<</>>>" or event an absolute path
+  (starting with "<<<http://>>>"). In this case the search in modules won't be performed
+  and the specified path will be used as-is.
+  
+  A real resource path can be overridden by providing asset mappings, e.g. for enabling
+  the {{{./cdn.html}CDN option}} or the {{{/aggregation.html} asset aggregation}}.
+  
+* Duplicate dependencies
+
+  Duplicate declarations of the same asset are handled automatically and have an effect
+  of including the asset only once.
+
+* Sharing common assets
+
+  If the project uses multiple modules, which make use of same static assets
+  (e.g. same jQuery library) it makes sense to share them in a common module
+  that all other module depends on. The same way, it is done in this module
+  (Jahia Static assets), whih is the dependency of the Default Jahia Templates module
+  and thus many others.
+  
+* Including declared dependencies
+
+  {{{Declaring} Declared}} dependencies are included automatically by the default
+  full page wrapper <<</templates/default/nt_base/html/base.wrapper.fullpage.jsp>>>.
+  
+  The <<<<template:includeResources/>>>> tag is used to perform the inclusion of all
+  assets declared in the templates into the HTML document's <<<head>>> section:
+
+------------------------------------------------
+  <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+  
+  <template:template>
+      <template:templateHead>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+          ...
+          <template:includeResources/>
+          ...
+    </template:templateHead>
+      <template:templateBody>
+          ${wrappedContent}
+      </template:templateBody>
+  </template:template>
+------------------------------------------------
+
+  If you build your wrappers manually or need higher control, please, take a look at the code of the
+  <<<includeResources.tag>>> tag file for details.

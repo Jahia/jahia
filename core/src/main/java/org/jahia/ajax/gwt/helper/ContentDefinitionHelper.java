@@ -207,7 +207,11 @@ public class ContentDefinitionHelper {
                 item.setName(def.getName());
                 item.setProtected(def.isProtected());
                 item.setDeclaringNodeType(def.getDeclaringNodeType().getName());
-                item.setDeclaringNodeTypeLabel(def.getDeclaringNodeType().getLabel(uiLocale));
+                if ("jcr:description".equals(def.getName())) {
+                    item.setDeclaringNodeTypeLabel(def.getLabel(uiLocale));
+                } else {
+                    item.setDeclaringNodeTypeLabel(def.getDeclaringNodeType().getLabel(uiLocale));
+                }                
                 item.setSelector(def.getSelector());
                 item.setSelectorOptions(new HashMap<String, String>(def.getSelectorOptions()));
                 if (def.isContentItem()) {

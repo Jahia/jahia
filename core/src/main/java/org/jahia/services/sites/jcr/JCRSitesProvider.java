@@ -243,12 +243,14 @@ public class JCRSitesProvider {
                         siteNode.setProperty("j:gaLogin", googleAnalyticsProfile.getLogin());
                         siteNode.setProperty("j:gaPassword", googleAnalyticsProfile.getPassword());
                         siteNode.setProperty("j:gaTypeUrl", googleAnalyticsProfile.getTypeUrl());
+                        siteNode.setProperty("j:gaProfile", googleAnalyticsProfile.getProfile());
                     }
                     if (googleAnalyticsProfile != null && googleAnalyticsProfile.isToDelete()) {
                         siteNode.getProperty("j:gaAccount").remove();
                         siteNode.getProperty("j:gaLogin").remove();
                         siteNode.getProperty("j:gaPassword").remove();
                         siteNode.getProperty("j:gaTypeUrl").remove();
+                        siteNode.getProperty("j:gaProfile").remove();
                     }
                     session.save();
                     return null;

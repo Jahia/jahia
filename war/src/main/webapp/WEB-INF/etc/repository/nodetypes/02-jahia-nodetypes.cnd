@@ -311,8 +311,8 @@
  - j:gaLogin (string) protected nofulltext
  - j:gaPassword (string) protected nofulltext
  - j:gaAccount (string) protected nofulltext
- - j:gaEnabled (boolean) = false
  - j:gaTypeUrl (string) protected nofulltext
+ - j:gaProfile (string) protected nofulltext
 
 //---------------------------------------------------------
 // Virtual sites

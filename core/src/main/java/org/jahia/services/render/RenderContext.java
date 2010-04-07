@@ -36,7 +36,6 @@ import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
@@ -203,11 +202,6 @@ public class RenderContext {
 
     public Map<String, Set<String>> getStaticAssets() {
         return staticAssets;
-    }
-
-    @SuppressWarnings("unchecked")
-    public Map<String, String> getStaticAssetMapping() {
-        return (Map<String, String>) SpringContextSingleton.getBean("org.jahia.services.render.StaticAssetMappingRegistry");
     }
 
     public void setMainResource(Resource mainResource) {

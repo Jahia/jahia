@@ -74,7 +74,7 @@ public class TemplateHelper {
             JCRSiteNode site = node.resolveSite();
             renderContext.setSite(site);
             String res = renderService.render(r, renderContext);
-            result = new GWTRenderResult(res, new HashMap(renderContext.getStaticAssets()));
+            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(renderContext.getStaticAssets()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (RenderException e) {

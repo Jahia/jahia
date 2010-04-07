@@ -34,6 +34,7 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
 
 import javax.servlet.jsp.JspException;
@@ -41,6 +42,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.net.MalformedURLException;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 import java.util.List;
 
@@ -80,6 +82,8 @@ public class AddResourcesTag extends BodyTagSupport {
             return;
         }
         
+        final Map<String, String> mapping = getStaticAssetMapping();
+        
         final Set<String> links = renderContext.getStaticAssets(type);
         String[] strings = resources.split(",");
 
@@ -94,21 +98,31 @@ public class AddResourcesTag extends BodyTagSupport {
             resource = resource.trim();
             if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
                 found = true;
+                resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
                 if (links == null || !links.contains(resource)) {
                     renderContext.addStaticAsset(type, resource, insert);
                 }
             } else {
                 for (String lookupPath : lookupPaths){
                     String path = lookupPath + resource;
-                    if (links != null && links.contains(path)) {
+                    String pathWithContext = renderContext.getRequest().getContextPath() + path;
+                    if (links != null && links.contains(pathWithContext)) {
                         // we have it already
                         found = true;
                         break;  
                     }
                     try {
                         if (pageContext.getServletContext().getResource(path) != null) {
-                            // we found it --> add it and stop
-                            renderContext.addStaticAsset(type, path, insert);
+                            // we found it
+
+                            // apply mapping
+                            if (mapping.containsKey(path)) {
+                                path = mapping.get(path);
+                                pathWithContext = !path.startsWith("http://") && !path.startsWith("https://") ? renderContext.getRequest().getContextPath() + path : path;
+                            }
+                            if (links == null || !links.contains(pathWithContext)) {
+                                renderContext.addStaticAsset(type, pathWithContext, insert);
+                            }
                             found = true;
                             break;
                         }
@@ -157,4 +171,10 @@ public class AddResourcesTag extends BodyTagSupport {
         resources = null;
         type = null;
     }
+    
+    @SuppressWarnings("unchecked")
+    protected Map<String, String> getStaticAssetMapping() {
+        return (Map<String, String>) SpringContextSingleton.getBean("org.jahia.services.render.StaticAssetMappingRegistry");
+    }
+
 }

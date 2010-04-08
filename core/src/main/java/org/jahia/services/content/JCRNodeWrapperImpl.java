@@ -2130,7 +2130,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         }
                         i++;
                     } catch (RepositoryException e) {
-                        e.printStackTrace();
+                        logger.warn(e.getMessage(), e);
                     }
                     fetched = true;
                 }
@@ -2304,7 +2304,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 });
             } catch (ItemNotFoundException e) {
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.warn(e.getMessage(), e);
             }
         }
 
@@ -2321,7 +2321,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 return provider.getNodeWrapper(node.clone((NodeImpl) sharedNode.getRealNode(), jrname), buildSubnodePath(name), session);
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e.getMessage(), e);
             }
         }
         throw new UnsupportedRepositoryOperationException();

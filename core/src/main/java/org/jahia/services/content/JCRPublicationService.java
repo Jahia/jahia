@@ -508,8 +508,8 @@ public class JCRPublicationService extends JahiaService {
 
         final String destinationWorkspaceName = destinationSession.getWorkspace().getName();
         final String destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
-
-        logger.info("Cloning node : " + sourceNode.getPath() + " source v=" + sourceNode.getBaseVersion().getName() +
+        final String sourceNodePath = sourceNode.getIndex() > 1 ? sourceNode.getPath() + "[" + sourceNode.getIndex() + "]": sourceNode.getPath();
+        logger.info("Cloning node : " + sourceNodePath + " source v=" + sourceNode.getBaseVersion().getName() +
                 " , source parent v=" + sourceNode.getParent().getBaseVersion().getName() +
                 " , dest parent v=" + destinationSession.getNode(destinationParentPath).getBaseVersion().getName());
 
@@ -564,11 +564,11 @@ public class JCRPublicationService extends JahiaService {
                     destinationVersionManager.checkout(destinationParentPath); // new parent
                     recurseCheckout(destinationSession.getNode(correspondingNodePath), null, destinationVersionManager); // node and sub nodes
 
-                    destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNode.getPath(), destinationPath, true);
+                    destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNodePath, destinationPath, true);
 //                    destinationVersionManager.checkin(destinationParentPath);
                 }
             } catch (ItemNotFoundException e) {
-                destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNode.getPath(), destinationPath, false);
+                destinationSession.getWorkspace().clone(sourceSession.getWorkspace().getName(), sourceNodePath, destinationPath, false);
             }
             JCRNodeWrapper destinationParent = destinationSession.getNode(destinationParentPath);
             if (destinationParent.getPrimaryNodeType().hasOrderableChildNodes()) {
@@ -615,7 +615,7 @@ public class JCRPublicationService extends JahiaService {
 //        } else {
 //            destinationNode.checkpoint();
         }
-        logger.info("Cloning node end : " + sourceNode.getPath() + " source v=" + sourceNode.getBaseVersion().getName() +
+        logger.info("Cloning node end : " + sourceNodePath + " source v=" + sourceNode.getBaseVersion().getName() +
                 " , dest node v=" + destinationNode.getBaseVersion().getName() +
                 " , source parent v=" + sourceNode.getBaseVersion().getName() +
                 " , dest parent v=" + destinationSession.getNode(destinationParentPath).getBaseVersion().getName());

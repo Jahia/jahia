@@ -173,7 +173,7 @@ public class CategoriesImportHandler extends DefaultHandler {
         try {
             ServicesRegistry.getInstance().getJCRPublicationService().publish("/categories", Constants.EDIT_WORKSPACE,  Constants.LIVE_WORKSPACE, null, true, true);
         } catch (RepositoryException e) {
-            logger.error("Cannot puiblish categories ",e);
+            logger.error("Cannot publish categories ",e);
         }
     }
 

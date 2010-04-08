@@ -81,6 +81,7 @@ public class RenderContext {
     private boolean liveMode = false;
 
     private Set<String> resourceFileNames = new LinkedHashSet<String>();
+    private boolean previewMode = false;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -256,5 +257,13 @@ public class RenderContext {
 
     public boolean isLiveMode() {
         return liveMode;
+    }
+
+    public void setPreviewMode(boolean previewMode) {
+        this.previewMode = previewMode;
+    }
+
+    public boolean isPreviewMode() {
+        return previewMode;
     }
 }

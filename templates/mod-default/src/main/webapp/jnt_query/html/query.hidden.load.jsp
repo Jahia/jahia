@@ -9,9 +9,6 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:statement" var="query"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:language" var="lang"/>
 <jcr:nodeProperty node="${currentNode}" name="maxItems" var="maxItems"/>
-<c:if test="${not empty title.string}">
-	<h3>${fn:escapeXml(title.string)}</h3>
-</c:if>
 <c:choose>
 	<c:when test="${lang.string == 'JCR-SQL2'}">
 		<jcr:sql var="result" sql="${query.string}" limit="${maxItems.long}"/>

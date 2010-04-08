@@ -561,6 +561,7 @@ public class Render extends HttpServlet implements Controller,
                         paramBean.setOperationMode(ProcessingContext.EDIT);
                     } else {
                         paramBean.setOperationMode(ProcessingContext.PREVIEW);
+                        renderContext.setPreviewMode(true);
                     }
                 } else if (renderContext.isLiveMode()) {
                     paramBean.setOperationMode(ProcessingContext.NORMAL);

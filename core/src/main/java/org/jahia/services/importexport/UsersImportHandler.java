@@ -31,6 +31,7 @@
  */
  package org.jahia.services.importexport;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -89,7 +90,7 @@ public class UsersImportHandler  extends DefaultHandler {
                             pass = v;
                         } else if (k.equals("user_homepage")) {
                             List<ContentPage> l = findPage(v);
-                            if (!l.isEmpty()) {
+                            if (!CollectionUtils.isEmpty(l)) {
                                 p.put(k, ""+((ContentPage) l.iterator().next()).getID());
                             } else {
                                 uuidProps.add(new String[] {name,k,v});
@@ -169,7 +170,7 @@ public class UsersImportHandler  extends DefaultHandler {
             try {
                 String[] s = (String[]) iterator.next();
                 List<ContentPage> l = findPage(s[2]);
-                if (!l.isEmpty()) {
+                if (!CollectionUtils.isEmpty(l)) {
                     int id = ((ContentPage) l.iterator().next()).getID();
                     if (s[1].equals("user_homepage")) {
                         JahiaUser user = u.lookupUser(s[0]);

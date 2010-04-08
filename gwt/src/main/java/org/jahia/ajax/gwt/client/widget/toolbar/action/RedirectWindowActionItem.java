@@ -35,6 +35,7 @@ import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class RedirectWindowActionItem extends BaseActionItem {
             Map preferences = getGwtToolbarItem().getProperties();
             final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(Constants.URL);
             if (windowUrl != null && windowUrl.getValue() != null) {
-                Window.Location.assign(windowUrl.getValue());
+                Window.Location.assign(URL.replacePlaceholders(linker, windowUrl.getValue()));
             }
         }
     }

@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.util;
 import com.google.gwt.core.client.GWT;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  * Created by Jahia.
@@ -172,4 +173,20 @@ public class URL {
     return $wnd.location.href;
 
 }-*/;
+
+    public static String replacePlaceholders(Linker linker, String value) {
+        if (value.contains("$context")) {
+            value = value.replace("$context", JahiaGWTParameters.getContextPath());
+        }
+        if (value.contains("$siteuuid")) {
+            value = value.replace("$siteuuid", JahiaGWTParameters.getSiteUUID());
+        }
+        if (value.contains("$lang")) {
+            value = value.replace("$lang", JahiaGWTParameters.getLanguage());
+        }
+        if (linker.getSelectedNode() != null && value.contains("$nodepath")) {
+            value = value.replace("$nodepath", linker.getSelectedNode().getPath());
+        }
+        return value;
+    }
 }

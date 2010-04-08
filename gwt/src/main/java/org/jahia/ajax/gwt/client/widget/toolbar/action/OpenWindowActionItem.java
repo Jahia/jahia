@@ -33,10 +33,10 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Hyperlink;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -89,26 +89,10 @@ public class OpenWindowActionItem extends BaseActionItem {
             String name = getGwtToolbarItem().getTitle().replaceAll(" ", "_");
             Window.open(JahiaGWTParameters.getParam(jsUrl), name, wOptions);
         } else if (windowUrl != null && windowUrl.getValue() != null) {
-            String value = replacePlaceholders(windowUrl.getValue());
+            String value = URL.replacePlaceholders(linker, windowUrl.getValue());
             String name = getGwtToolbarItem().getTitle().replaceAll(" ", "_");
             Window.open(value, name, wOptions);
         }
-    }
-
-    private String replacePlaceholders(String value) {
-        if (value.contains("$context")) {
-            value = value.replace("$context", JahiaGWTParameters.getContextPath());
-        }
-        if (value.contains("$siteuuid")) {
-            value = value.replace("$siteuuid", JahiaGWTParameters.getSiteUUID());
-        }
-        if (value.contains("$lang")) {
-            value = value.replace("$lang", JahiaGWTParameters.getLanguage());
-        }
-        if (linker.getSelectedNode() != null && value.contains("$nodepath")) {
-            value = value.replace("$nodepath", linker.getSelectedNode().getPath());
-        }
-        return value;
     }
 
 }

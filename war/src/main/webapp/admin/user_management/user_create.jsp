@@ -175,8 +175,8 @@
         <fmt:message key="org.jahia.admin.firstName.label"/>&nbsp;
     </td>
     <td>
-        <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"firstname"%>'
-               size="40" maxlength="255" value='<%=getUserProp(userProperties,"firstname")%>'>
+        <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:firstName"%>'
+               size="40" maxlength="255" value='<%=getUserProp(userProperties,"j:firstName")%>'>
     </td>
 </tr>
 <tr>
@@ -184,8 +184,8 @@
         <fmt:message key="org.jahia.admin.lastName.label"/>&nbsp;
     </td>
     <td>
-        <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"lastname"%>'
-               size="40" maxlength="255" value='<%=getUserProp(userProperties,"lastname")%>'>
+        <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:lastName"%>'
+               size="40" maxlength="255" value='<%=getUserProp(userProperties,"j:lastName")%>'>
     </td>
 </tr>
 <tr>
@@ -193,8 +193,8 @@
         <fmt:message key="label.email"/>&nbsp;
     </td>
     <td>
-        <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"email"%>'
-               size="40" maxlength="255" value='<%=getUserProp(userProperties,"email")%>'>
+        <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:email"%>'
+               size="40" maxlength="255" value='<%=getUserProp(userProperties,"j:email")%>'>
     </td>
 </tr>
 <tr>
@@ -202,8 +202,8 @@
         <fmt:message key="org.jahia.admin.organization.label"/>&nbsp;
     </td>
     <td>
-        <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"organization"%>'
-               size="40" maxlength="255" value='<%=getUserProp(userProperties,"organization")%>'>
+        <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:organization"%>'
+               size="40" maxlength="255" value='<%=getUserProp(userProperties,"j:organization")%>'>
     </td>
 </tr>
 <tr>

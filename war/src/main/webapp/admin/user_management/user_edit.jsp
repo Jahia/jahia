@@ -222,11 +222,11 @@
     <td>
         <%if (!isPopup) {%>
         <input class="input" type="text" size="40" maxlength="40"
-               <% if (isPropReadOnly(userProps, "firstname")) { %>disabled="true"<%}%>
-               name='<%=ManageUsers.USER_PROPERTY_PREFIX+"firstname"%>'
-               value='<%=getUserProp(userProps, "firstname")%>'/>
+               <% if (isPropReadOnly(userProps, "j:firstName")) { %>disabled="true"<%}%>
+               name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:firstName"%>'
+               value='<%=getUserProp(userProps, "j:firstName")%>'/>
         <%} else {%>
-        <b><%=getUserProp(userProps, "firstname")%>
+        <b><%=getUserProp(userProps, "j:firstName")%>
         </b>
         <%}%>
     </td>
@@ -238,11 +238,11 @@
     <td>
         <%if (!isPopup) {%>
         <input class="input" type="text" size="40" maxlength="255"
-               <% if (isPropReadOnly(userProps, "lastname")) { %>disabled="true"<%}%>
-               name='<%=ManageUsers.USER_PROPERTY_PREFIX+"lastname"%>'
-               value='<%=getUserProp(userProps, "lastname")%>'/>
+               <% if (isPropReadOnly(userProps, "j:lastName")) { %>disabled="true"<%}%>
+               name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:lastName"%>'
+               value='<%=getUserProp(userProps, "j:lastName")%>'/>
         <%} else {%>
-        <b><%=getUserProp(userProps, "lastname")%>
+        <b><%=getUserProp(userProps, "j:lastName")%>
         </b>
         <%}%>
     </td>
@@ -253,9 +253,9 @@
     </td>
     <td>
         <input class="input" type="text" size="40" maxlength="255"
-               <% if (isPropReadOnly(userProps, "email")) { %>disabled="true"<%}%>
-               name='<%=ManageUsers.USER_PROPERTY_PREFIX+"email"%>'
-               value='<%=getUserProp(userProps, "email")%>'/>
+               <% if (isPropReadOnly(userProps, "j:email")) { %>disabled="true"<%}%>
+               name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:email"%>'
+               value='<%=getUserProp(userProps, "j:email")%>'/>
     </td>
 </tr>
 <tr>
@@ -264,9 +264,9 @@
     </td>
     <td>
         <input class="input" type="text" size="40" maxlength="255"
-               <% if (isPropReadOnly(userProps, "organization")) { %>disabled="true"<%}%>
-               name='<%=ManageUsers.USER_PROPERTY_PREFIX+"organization"%>'
-               value='<%=getUserProp(userProps, "organization")%>'/>
+               <% if (isPropReadOnly(userProps, "j:organization")) { %>disabled="true"<%}%>
+               name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:organization"%>'
+               value='<%=getUserProp(userProps, "j:organization")%>'/>
     </td>
 </tr>
 <tr>

@@ -775,7 +775,7 @@ public class ManageUsers extends AbstractAdministrationModule {
     {
         logger.debug("Started");
 
-        session.setAttribute("selectedUsers", null);
+        /*session.setAttribute("selectedUsers", null);
         String userName = request.getParameter("username");
         if (!userName.equals("guest")) {
             // try to delete the user and memberships...
@@ -783,22 +783,13 @@ public class ManageUsers extends AbstractAdministrationModule {
                 JahiaUser user = userManager.lookupUser(userName);
                 JahiaUser currentUser = (JahiaUser)session.getAttribute(ProcessingContext.SESSION_USER);
                 if (!user.getUserKey().equals(currentUser.getUserKey())) {
-                    JahiaSiteUserManagerService siteUserManager =
-                        ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
-                    siteUserManager.removeMember(jParams.getSiteID(),user);
-//                    userManager.deleteUser(user);
+                    userManager.deleteUser(user);
                     userMessage = JahiaResourceBundle.getJahiaInternalResource("label.nextStep",
                         jParams.getLocale());
                     userMessage += " [" + userName + "] ";
                     userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.removed.label",
                         jParams.getLocale());
                     isError = false;
-
-                    // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - Begin
-                    JahiaEvent je = new JahiaEvent(this, jParams, user);
-                    JahiaEventGeneratorBaseService.getInstance().fireDeleteUser(je);
-                    // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - End
-
                   } else {
                   userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.cannotRemoveYourUser.label",
                       jParams.getLocale());
@@ -812,7 +803,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         } else {
           userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.cannotRemoveGuest.label",
               jParams.getLocale());
-        }
+        }*/
         displayUsers( request, response, session);
     }
 

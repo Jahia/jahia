@@ -333,8 +333,8 @@ public class PrincipalViewHelper implements Serializable {
                 properties.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.users.guest.label", Jahia.getThreadParamBean().getLocale()));
                 return JahiaString.adjustStringSize(properties.toString(), size);
             } else {
-                final String firstname = user.getProperty("firstname");
-                final String lastname = user.getProperty("lastname");
+                final String firstname = user.getProperty("j:firstName");
+                final String lastname = user.getProperty("j:lastName");
                 if (firstname != null) {
                     properties.append(firstname);
                     if (firstname.length() < size) {
@@ -344,7 +344,7 @@ public class PrincipalViewHelper implements Serializable {
                 if (lastname != null)
                     properties.append(lastname);
                 if ("".equals(properties.toString())) {
-                    String email = user.getProperty("email");
+                    String email = user.getProperty("j:email");
                     if (email != null)
                         properties.append(email);
                 }

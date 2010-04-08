@@ -366,7 +366,9 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
                     try {
                         isInPath = realStartLevel == 0
                                 || pathElement[realStartLevel - 1]
-                                        .equals(currentPathElement[realStartLevel - 1]);
+                                        .equals(currentPathElement[realStartLevel - 1 < 0
+                                                || realStartLevel - 1 >= currentPathElement.length ? 0
+                                                : realStartLevel - 1]);
 
                         if (isInPath) {
                             if (currentPath.equals(path)) {

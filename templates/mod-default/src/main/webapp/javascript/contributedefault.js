@@ -1,62 +1,59 @@
 var richTextEditors = {};
-
+var contributionI18n = {
+    'ok': 'OK',
+    'cancel': 'Cancel',
+    'edit': 'Click to edit',
+    'uploaded': 'file uploaded click on preview to see the new file'
+}
 function initEditFields(id) {
     $(".edit" + id).editable(function (value, settings) {
-        var url = $(this).attr('jcr:url');
+        var data = {'methodToCall':'put'};
         var submitId = $(this).attr('jcr:id');
-        var data = {};
         data[submitId] = value;
-        data['methodToCall'] = 'put';
-        $.post(url, data, null, "json");
+        $.post($(this).attr('jcr:url'), data, null, "json");
         return(value);
     }, {
         type    : 'text',
         onblur : 'ignore',
-        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
-        tooltip : 'Click to edit'
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        tooltip : contributionI18n['edit']
     });
 
     $(".ckeditorEdit" + id).editable(function (value, settings) {
-        var url = $(this).attr('jcr:url');
         var submitId = $(this).attr('jcr:id');
-        var data = {};
+        var data = {'methodToCall':'put'};
         data[submitId] = value;
-        data['methodToCall'] = 'put';
-        $.post(url, data, null, "json");
+        $.post($(this).attr('jcr:url'), data, null, "json");
         return(value);
     }, {
         type : 'ckeditor',
         onblur : 'ignore',
-        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
-        tooltip : 'Click to edit'
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        tooltip : contributionI18n['edit']
     });
 
     $(".dateEdit" + id).editable(function (value, settings) {
-        var url = $(this).attr('jcr:url');
         var submitId = $(this).attr('jcr:id');
-        var data = {};
+        var data = {'methodToCall':'put'};
         data[submitId] = value;
-        data['methodToCall'] = 'put';
-        $.post(url, data, function(result) {
+        $.post($(this).attr('jcr:url'), data, function(result) {
         }, "json");
         return(value.replace("T", " "));
     }, {
         type : 'datetimepicker',
         onblur : 'ignore',
-        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
-        tooltip : 'Click to edit'
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        tooltip : contributionI18n['edit']
     });
 
     $(".choicelistEdit" + id).editable(function (value, settings) {
-        var url = $(this).attr('jcr:url');
         var submitId = $(this).attr('jcr:id').replace("_", ":");
-        var data = {};
+        var data = {'methodToCall':'put'};
         data[submitId] = value;
-        data['methodToCall'] = 'put';
-        $.post(url, data, null, "json");
+        $.post($(this).attr('jcr:url'), data, null, "json");
         return eval("values=" + $(this).attr('jcr:options'))[value];
     }, {
         type    : 'select',
@@ -64,40 +61,32 @@ function initEditFields(id) {
             return $(this).attr('jcr:options');
         },
         onblur : 'ignore',
-        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
-        tooltip : 'Click to edit'
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        tooltip : contributionI18n['edit']
     });
 
     $(".file" + id).editable('', {
         type : 'ajaxupload',
         onblur : 'ignore',
-        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>OK</button>',
-        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>Cancel</button>',
-        tooltip : 'Click to edit',
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        tooltip : contributionI18n['edit'],
         target : function() {
             return $(this).attr('jcr:url');
         },
         callback : function (data, status,original) {
-            var datas = {};
+            var datas = {'methodToCall':'put'};
             datas[$(original).attr('jcr:id').replace("_", ":")] = data.uuids[0];
-            datas['methodToCall'] = 'put';
             $.post($(original).attr('jcr:url'), datas, function(result) {
-                $(original).html($('<span>file uploaded click on preview to see the new file</span>'));
+                $(original).html($('<span>' + contributionI18n['uploaded'] + '</span>'));
             }, "json");
         }
     });
 }
 
 function invert(source, target, urlbase, callbackId, callbackUrl) {
-    var data = {};
-    data["action"] = "moveBefore";
-    data["target"] = target;
-    data["source"] = source;
-    var url = urlbase + source + ".move.do";
-    $.post(
-        url,
-        data,
+    $.post(urlbase + source + ".move.do", {"action":"moveBefore", "target":target, "source":source},
         function(result) {
             replace(callbackId, callbackUrl, '');
         },
@@ -107,12 +96,7 @@ function invert(source, target, urlbase, callbackId, callbackUrl) {
 }
 
 function deleteNode(source, urlbase, callbackId, callbackUrl) {
-    var data = {};
-    data["methodToCall"] = "delete";
-    var url = urlbase + source;
-    $.post(
-        url,
-        data,
+    $.post(urlbase + source, {"methodToCall":"delete"},
         function(result) {
             replace(callbackId, callbackUrl, '');
         },
@@ -121,11 +105,7 @@ function deleteNode(source, urlbase, callbackId, callbackUrl) {
 }
 
 function startWorkflow(source, process, urlbase, callbackId, callbackUrl) {
-    var data = { process: process };
-    var url = urlbase + source + ".startWorkflow.do";
-    $.post(
-        url,
-        data,
+    $.post(urlbase + source + ".startWorkflow.do", {"process": process},
         function(result) {
             replace(callbackId, callbackUrl, '');
         },
@@ -134,11 +114,7 @@ function startWorkflow(source, process, urlbase, callbackId, callbackUrl) {
 }
 
 function executeTask(source, action, outcome, urlbase, callbackId, callbackUrl) {
-    var data = { action:action , outcome:outcome };
-    var url = urlbase + source + ".executeTask.do";
-    $.post(
-        url,
-        data,
+    $.post(urlbase + source + ".executeTask.do", {"action":action, "outcome":outcome},
         function(result) {
             replace(callbackId, callbackUrl, '');
         },

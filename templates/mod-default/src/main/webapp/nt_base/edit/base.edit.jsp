@@ -27,6 +27,7 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
                       scope="application"/>
@@ -45,7 +46,7 @@
                     <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
                         <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
                              jcr:url="${url.base}${currentNode.path}">
-                            <span><fmt:message key="add.file"/> </span>
+                            <span><fmt:message key="add.file"/></span>
                         </div>
                         <template:module node="${prop.node}" template="default" templateType="html"/>
                     </c:if>

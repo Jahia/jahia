@@ -16,6 +16,7 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
 <template:include templateType="html" template="hidden.header"/>
 <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
@@ -25,7 +26,7 @@
         <c:if test="${child.locked ne 'true'}">
              <button
                    onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields(\'${child.identifier}\')')">
-            <span class="icon-contribute icon-edit"></span>Edit</button>
+            <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/></button>
         </c:if>
         <c:if test="${child.locked eq 'true'}">
             <button>
@@ -33,24 +34,24 @@
         </c:if>
         <button
                onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.html?ajaxcall=true', '')">
-            <span class="icon-contribute icon-preview"></span>Preview</button>
+            <span class="icon-contribute icon-preview"></span><fmt:message key="label.preview"/></button>
 
         <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean}">
             <c:if test="${not status.first}">
                  <button id="moveUp-${currentNode.identifier}-${status.index}"
                        onclick="invert('${child.path}','${previousChild.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
-                     <span class="icon-contribute icon-moveup"></span>Move up</button>
+                     <span class="icon-contribute icon-moveup"></span><fmt:message key="label.move.up"/></button>
             </c:if>
             <c:if test="${not status.last}">
                 <button
                        onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()">
-                    <span class="icon-contribute icon-movedown"></span>Move down</button>
+                    <span class="icon-contribute icon-movedown"></span><fmt:message key="label.move.down"/></button>
             </c:if>
         </c:if>
         <c:if test="${child.locked ne 'true'}">
             <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
                 <button onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
-                    <span class="icon-contribute icon-delete"></span>Delete</button>
+                    <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
             </c:if>
 
             <workflow:workflowsForNode workflowAction="publish" var="workflows" node="${child}"/>
@@ -88,12 +89,12 @@
     <h3 class="titleaddnewcontent">
         <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content" />
     </h3>
-    <script type="text/javascript">
+    <template:addResources type="inlineJavaScript">
         <c:forEach items="${types}" var="type" varStatus="status">
             animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
         </c:forEach>
         animatedcollapse.init();
-    </script>
+    </template:addResources>
     <c:if test="${types != null}">
     <div class="listEditToolbar">
         <c:forEach items="${types}" var="type" varStatus="status">

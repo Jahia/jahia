@@ -32,6 +32,7 @@
                         <pagecontent jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
                             <row1 jcr:primaryType="jnt:row" column="2col124" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
                                 <col1 jcr:primaryType="jnt:contentList"/>
+                                <col2 jcr:primaryType="jnt:contentList"/>                                
                             </row1>
                         </pagecontent>
                     </simple>

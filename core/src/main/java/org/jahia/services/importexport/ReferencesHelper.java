@@ -1,5 +1,6 @@
 package org.jahia.services.importexport;
 
+import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class ReferencesHelper {
+    private static Logger logger = Logger.getLogger(LegacyImportHandler.class);    
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references) throws RepositoryException {
         Map<String, String> uuidMapping = session.getUuidMapping();
@@ -84,11 +86,11 @@ public class ReferencesHelper {
                             n.setProperty(pName, value);
                         }
                     } catch (ItemNotFoundException e) {
-                        e.printStackTrace();
+                        logger.warn("Item not found: " + pName, e);
                     }
                 }
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                logger.warn("Error updating reference: " + path, e);
             }
         }
     }

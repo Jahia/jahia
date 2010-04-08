@@ -17,11 +17,6 @@
  - j:appName (string) protected nofulltext
  - j:codePage (string) protected nofulltext
 
-[jmix:image] > jmix:extension mixin
- + * (jnt:extraResource)
- - j:height (long) protected
- - j:width (long) protected
- 
 [jmix:photo] > jmix:extension mixin
  - j:model (string) nofulltext
 

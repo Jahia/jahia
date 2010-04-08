@@ -11,6 +11,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ModuleDropTarget extends DropTarget {
-    
+
     private Module module;
     protected String targetType;
 
@@ -62,13 +63,14 @@ public class ModuleDropTarget extends DropTarget {
         }
     }
 
-    protected boolean checkNodeType(DNDEvent e, String nodetypes) {
+
+    private boolean checkNodeType(DNDEvent e, String nodetypes) {
         boolean allowed = true;
 
         if (nodetypes != null && nodetypes.length() > 0) {
             List<GWTJahiaNode> sources = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
             if (sources != null) {
-                String[] allowedTypes = nodetypes.split(" ");
+                String[] allowedTypes = nodetypes.split(" |,");
                 for (GWTJahiaNode source : sources) {
                     boolean nodeAllowed = false;
                     if (source.getReferencedNode() != null) {
@@ -98,7 +100,7 @@ public class ModuleDropTarget extends DropTarget {
         }
         return allowed;
     }
-    
+
     @Override
     protected void onDragEnter(DNDEvent e) {
 //        if (module.getMainModule().getConfig().getName().equals("studiomode") && !module.getParentModule().isLocked()) {
@@ -108,11 +110,30 @@ public class ModuleDropTarget extends DropTarget {
 //        }
 
         if (module.getParentModule().getNode().isWriteable() && !module.getParentModule().getNode().isLocked()) {
-            boolean allowed = checkNodeType(e, module.getParentModule().getNodeTypes());
+            String nodetypes = module.getParentModule().getNodeTypes();
+            boolean allowed = checkNodeType(e, nodetypes);
+
             if (allowed) {
                 e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, targetType);
+                e.getStatus().setData(EditModeDNDListener.TARGET_REFERENCE_TYPE, null);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
-                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getParentModule().getNode());
+                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : module.getParentModule().getNode());
+            } else if (module.getParentModule().getReferenceTypes().length() > 0 && e.getStatus().getData(EditModeDNDListener.SOURCE_NODES) != null) {
+                String[] refs = module.getParentModule().getReferenceTypes().split(" ");
+                List<String> allowedRefs = new ArrayList<String>();
+                for (String ref : refs) {
+                    String[] types = ref.split("\\[|\\]");
+                    if (checkNodeType(e, types[1])) {
+                        allowedRefs.add(types[0]);
+                    }
+                }
+                if (allowedRefs.size() > 0) {
+                    allowed = true;
+                    e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, targetType);
+                    e.getStatus().setData(EditModeDNDListener.TARGET_REFERENCE_TYPE, allowedRefs);
+                    e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
+                    e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : module.getParentModule().getNode());
+                }
             }
             e.getStatus().setStatus(allowed);
             e.setCancelled(false);

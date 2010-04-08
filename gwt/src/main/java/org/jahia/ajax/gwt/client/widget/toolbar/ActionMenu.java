@@ -100,7 +100,6 @@ public class ActionMenu extends Menu {
     private void checkLinkerSelection() {
         for (ActionItem item : actionItems) {
             try {
-                Log.info("handle : "+item.getClass().getName());
                 item.handleNewLinkerSelection();
             } catch (Exception e) {
             }

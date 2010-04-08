@@ -38,6 +38,9 @@ public class ModuleHelper {
         modulesById.put(m.getModuleId(), m);
 
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
+
+        Set<String> allNodetypes = new HashSet<String>();
+
         for (Element divElement : el) {
             String jahiatype = DOM.getElementAttribute(divElement, JahiaType.JAHIA_TYPE);
             if ("module".equals(jahiatype)) {
@@ -47,17 +50,19 @@ public class ModuleHelper {
                 String path = DOM.getElementAttribute(divElement, "path");
                 String template = DOM.getElementAttribute(divElement, "template");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
+                String referenceTypes = DOM.getElementAttribute(divElement, "referenceTypes");
                 String scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
                 Module module = null;
                 if (type.equals("area")) {
-                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateInfo, m);
+                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, referenceTypes, templateInfo, m);
                 } else if (type.equals("list")) {
-                    module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateInfo, m);
+                    module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, referenceTypes, templateInfo, m);
                 } else if (type.equals("existingNode")) {
-                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, templateInfo, m);
+                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, referenceTypes, templateInfo, m);
                 } else if (type.equals("placeholder")) {
-                    module = new PlaceholderModule(id, path, nodetypes, m);
+                    module = new PlaceholderModule(id, path, nodetypes, referenceTypes, m);
                 }
+                allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
                 if (module != null) {
                     if (!modulesByPath.containsKey(path)) {
                         modulesByPath.put(path, new ArrayList<Module>());

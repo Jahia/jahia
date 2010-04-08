@@ -57,14 +57,12 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -575,8 +573,28 @@ public class ContentActions {
                 parent = selectedItems.get(0);
             }
         }
+        showContentWizard(linker, nodeTypes, parent);
+    }
+
+    public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent) {
         if (parent != null && !parent.isFile()) {
-            new ContentTypeWindow(linker, parent, nodeTypes).show();
+            JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(nodeTypes,
+                    new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+                        public void onFailure(Throwable caught) {
+                            MessageBox.alert("Alert",
+                                    "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),
+                                    null);
+                        }
+
+                        public void onSuccess(
+                                Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
+                            if (result.size() == 1 && result.values().iterator().next().size() == 1) {
+                                new CreateContentEngine(linker, parent, result.values().iterator().next().iterator().next(), null, false).show();
+                            } else {
+                                new ContentTypeWindow(linker, parent, result, false).show();
+                            }
+                        }
+                    });
         }
     }
 

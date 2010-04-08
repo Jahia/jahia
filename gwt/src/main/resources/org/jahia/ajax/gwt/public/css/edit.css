@@ -56,6 +56,30 @@
     color: #333 !important;
 }
 
+.x-panel-placeholder {
+	padding: 4px;
+    color: #333 !important;
+	font-weight: bold;
+    font-size: 9px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+    border:none;
+    padding: 2px 5px ;
+	vertical-align: middle;
+    horizontal-align:middle;
+	margin-bottom:2px;
+    text-align:center;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size: 9px;
+}
+
+.button-placeholder {
+    padding: 0px !important;
+    border:none !important;
+}
+
 .selection-top-list {
     border-top: 1px solid #cc0033;
 }

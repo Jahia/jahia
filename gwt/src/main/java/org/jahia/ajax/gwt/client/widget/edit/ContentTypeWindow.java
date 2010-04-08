@@ -33,14 +33,16 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.google.gwt.user.client.Event;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -49,7 +51,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,11 +70,13 @@ public class ContentTypeWindow extends Window {
     private Button cancel;
     private ContentTypeTree contentTypeTree;
 
+    public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types, boolean createInParentAndMoveBefore) {
+        this(linker, parent, types, new HashMap<String, GWTJahiaNodeProperty>(), null, createInParentAndMoveBefore);
+    }
 
-    public ContentTypeWindow(Linker linker, GWTJahiaNode parent, String baseTypes) {
+    public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types, final Map<String, GWTJahiaNodeProperty> props, final String nodeName, final boolean createInParentAndMoveBefore) {
         this.linker = linker;
         this.parentNode = parent;
-
         setLayout(new FillLayout());
         setBodyBorder(false);
         setSize(950, 750);
@@ -79,19 +85,23 @@ public class ContentTypeWindow extends Window {
         setModal(true);
         setMaximizable(true);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
-        contentTypeTree = new ContentTypeTree(linker, baseTypes, parentNode, 695,500,25, true,this);
+        contentTypeTree = new ContentTypeTree(types, 695,500,25);
+        TreeGrid treeGrid = contentTypeTree.getTreeGrid();
+        treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
+        treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent baseEvent) {
+                GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) (((TreeGridEvent) baseEvent).getModel());
+                if (gwtJahiaNodeType != null && linker != null && !gwtJahiaNodeType.isMixin()) {
+                    new CreateContentEngine(linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore).show();
+                    hide();
+                }
+            }
+        });
+
         add(contentTypeTree);
         contentTypeTree.layout(true);
         layout();
-        initFooter();
-        setFooter(true);
-        ok.setEnabled(true);
-    }
 
-    /**
-     * init buttons
-     */
-    private void initFooter() {
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);
         final Window window = this;
@@ -109,7 +119,7 @@ public class ContentTypeWindow extends Window {
                 if (contentTypeModelData != null) {
                     final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData;
                     if (gwtJahiaNodeType != null) {
-                        new CreateContentEngine(linker, parentNode, gwtJahiaNodeType, null, false).show();
+                        new CreateContentEngine(ContentTypeWindow.this.linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore).show();
                         window.hide();
                     }
                 }
@@ -133,13 +143,15 @@ public class ContentTypeWindow extends Window {
 
         // copyrigths
         Text copyright = new Text(Messages.getResource("fm_copyright"));
-        ButtonBar container = new ButtonBar();
-        container.setAlignment(Style.HorizontalAlignment.CENTER);
-        container.add(copyright);
-        buttonsPanel.add(container);
+        ButtonBar container1 = new ButtonBar();
+        container1.setAlignment(Style.HorizontalAlignment.CENTER);
+        container1.add(copyright);
+        buttonsPanel.add(container1);
         setBottomComponent(buttonsPanel);
 
 
+        setFooter(true);
+        ok.setEnabled(true);
     }
 
 

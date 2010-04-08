@@ -21,6 +21,7 @@ public abstract class Module extends LayoutContainer {
     protected Module parentModule;
     protected MainModule mainModule;
     protected String nodeTypes;
+    protected String referenceTypes;
     protected boolean isDraggable = false;
     protected int depth;
     protected boolean selectable;
@@ -30,7 +31,7 @@ public abstract class Module extends LayoutContainer {
     public Module() {
     }
 
-    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, String templateInfo, MainModule mainModule) {
+    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, String referenceTypes, String templateInfo, MainModule mainModule) {
         super();
         this.id = id;
         this.path = path;
@@ -38,16 +39,18 @@ public abstract class Module extends LayoutContainer {
         this.scriptInfo = scriptInfo;
         this.nodeTypes = nodeTypes;
         this.templateInfo = templateInfo;
+        this.referenceTypes = referenceTypes;
         this.mainModule = mainModule;
     }
 
-    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, MainModule mainModule, Layout layout) {
+    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, String referenceTypes, MainModule mainModule, Layout layout) {
         super(layout);
         this.id = id;
         this.path = path;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.nodeTypes = nodeTypes;
+        this.referenceTypes = referenceTypes;
         this.mainModule = mainModule;
     }
 
@@ -125,6 +128,10 @@ public abstract class Module extends LayoutContainer {
 
     public String getNodeTypes() {
         return nodeTypes;
+    }
+
+    public String getReferenceTypes() {
+        return referenceTypes;
     }
 
     public String getTemplate() {

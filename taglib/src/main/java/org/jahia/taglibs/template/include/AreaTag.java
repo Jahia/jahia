@@ -38,6 +38,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.render.*;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
 import java.io.IOException;
 
 /**
@@ -67,7 +68,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     @Override
-    protected void missingResource(RenderContext renderContext, Resource currentResource) throws IOException {
+    protected void missingResource(RenderContext renderContext, Resource currentResource) throws RepositoryException, IOException {
         try {
             if (renderContext.isEditMode() || forceCreation) {
                 JCRSessionWrapper session = currentResource.getNode().getSession();
@@ -86,6 +87,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     session.save();
                 }
             }
+        } catch (ConstraintViolationException e) {
+            super.missingResource(renderContext, currentResource);
         } catch (RepositoryException e) {
             logger.error("Cannot create area",e);
         }

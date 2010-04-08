@@ -546,7 +546,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param captcha
      * @throws GWTJahiaServiceException
      */
-    public void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
+    public GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
         if (name == null) {
             List<GWTJahiaNodeProperty> l = langCodeProperties.get(getSite().getDefaultLanguage());
             if (l == null && langCodeProperties.size() > 0) {
@@ -581,6 +581,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 saveProperties(nodes, props, currentLangCode);
             }
         }
+        return jahiaNode;
     }
 
     /**

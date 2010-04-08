@@ -93,7 +93,7 @@
                 <entry key="nt:version" value="org.jahia.services.content.decorator.JCRVersion"/>
                 <entry key="nt:versionHistory" value="org.jahia.services.content.decorator.JCRVersionHistory"/>
                 <entry key="nt:frozenNode" value="org.jahia.services.content.decorator.JCRFrozenNode"/>
-                <entry key="jnt:nodeReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
+                <entry key="jmix:nodeReference" value="org.jahia.services.content.decorator.JCRReferenceNode"/>
                 <entry key="jnt:simplePreference"
                        value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
                 <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>

@@ -13,8 +13,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class ListModule extends SimpleModule {
 
-    public ListModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String templateInfo, MainModule mainModule) {
-        super(id, path, template, scriptInfo, nodeTypes, templateInfo, mainModule);
+    public ListModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String referenceType, String templateInfo, MainModule mainModule) {
+        super(id, path, template, scriptInfo, nodeTypes, referenceType, templateInfo, mainModule);
         head = new Header();
         add(head);
 

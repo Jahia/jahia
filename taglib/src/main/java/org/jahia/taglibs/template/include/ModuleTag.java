@@ -36,6 +36,7 @@ import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
@@ -50,10 +51,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -79,7 +77,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected boolean editable = true;
 
-    protected String nodeTypes;
+    protected String nodeTypes = "jmix:droppableContent";
 
     protected String forcedTemplate = null;
 
@@ -216,9 +214,16 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             nodeTypes += value.getString() + " ";
                         }
                         nodeTypes = nodeTypes.trim();
+                    } else if ("jmix:droppableContent".equals(nodeTypes)) {
+                        Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
+                        for (String s : cons) {
+                            if (!s.equals("nt:base")) {
+                                nodeTypes = (nodeTypes.equals("jmix:droppableContent")) ? s : nodeTypes + " " + s;
+                            }
+                        }
                     }
                 } catch (RepositoryException e) {
-                    logger.error("Error when getting list constraints",e);
+                    logger.error("Error when getting list constraints", e);
                 }
                 String constrainedNodeTypes = null;
                 if (currentLevel != null) {
@@ -229,24 +234,24 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
                     boolean found = false;
                     Node displayedNode = node;
-                    try {
-                        if (node.isNodeType("jnt:nodeReference") && node.hasProperty("j:node")) {
-                            displayedNode = node.getProperty("j:node").getNode();
-                        }
-                        while (st.hasMoreTokens()) {
-                            String tok = st.nextToken();
-                            try {
-                                if (displayedNode.isNodeType(tok)) {
-                                    found = true;
-                                    break;
-                                }
-                            } catch (RepositoryException e) {
-                                logger.error("Cannot test on " + tok, e);
+//                    try {
+//                        if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
+//                            displayedNode = node.getProperty("j:node").getNode();
+//                        }
+                    while (st.hasMoreTokens()) {
+                        String tok = st.nextToken();
+                        try {
+                            if (displayedNode.isNodeType(tok)) {
+                                found = true;
+                                break;
                             }
+                        } catch (RepositoryException e) {
+                            logger.error("Cannot test on " + tok, e);
                         }
-                    } catch (RepositoryException e) {
-                        logger.error(e, e);
                     }
+//                    } catch (RepositoryException e) {
+//                        logger.error(e, e);
+//                    }
                     if (!found) {
                         return EVAL_PAGE;
                     }
@@ -315,7 +320,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             templateWrapper = null;
             editable = true;
             templateType = null;
-            nodeTypes = null;
+            nodeTypes = "jmix:droppableContent";
             var = null;
             buffer = null;
 
@@ -330,14 +335,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return EVAL_PAGE;
     }
 
-    protected void printModuleStart(String type, boolean templateLocked, boolean templateShared, boolean templateDeployed, boolean parentLocked, String path, String resolvedTemplate, String scriptInfo) throws IOException {
-        String nodeTypes;
-        if ("list".equals(type) || "placeholder".equals(type)) {
-            Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-            nodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
-        } else {
-            nodeTypes = this.nodeTypes;
-        }
+    protected void printModuleStart(String type, boolean templateLocked, boolean templateShared, boolean templateDeployed, boolean parentLocked, String path, String resolvedTemplate, String scriptInfo) throws RepositoryException, IOException {
 
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
                 .append("id=\"module")
@@ -359,14 +357,48 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
                 .append(" path=\"").append(path)
                 .append("\" ")
-                .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "")
+                .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "");
+
+        String referenceTypes = getReferenceTypes();
+
+        buffer.append((referenceTypes != null) ? " referenceTypes=\"" + referenceTypes + "\"" : "");
+
+        buffer
                 .append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "")
                 .append(">");
+
         if (var == null) {
             pageContext.getOut().print(buffer);
             buffer.delete(0, buffer.length());
         }
 
+    }
+
+    private String getReferenceTypes() throws NoSuchNodeTypeException {
+        StringBuffer buffer = new StringBuffer();
+        List<ExtendedNodeType> refs = NodeTypeRegistry.getInstance().getNodeType("jmix:nodeReference").getSubtypesAsList();
+        for (ExtendedNodeType ref : refs) {
+            if (ref.getPropertyDefinitionsAsMap().get("j:node") != null) {
+                for (String s : nodeTypes.split(" ")) {
+                    if (ref.isNodeType(s)) {
+                        buffer.append(ref.getName());
+                        buffer.append("[");
+                        final String[] constraints = ref.getPropertyDefinitionsAsMap().get("j:node").getValueConstraints();
+                        if (constraints.length > 0) {
+                            for (int i = 0; i < constraints.length; i++) {
+                                buffer.append(constraints[i]);
+                                if (i+1 < constraints.length) buffer.append(",");
+                            }
+                        } else {
+                            buffer.append("jmix:droppableContent");
+                        }
+                        buffer.append("] ");
+                        break;
+                    }
+                }
+            }
+        }
+        return buffer.toString().trim();
     }
 
     protected void printModuleEnd() throws IOException {

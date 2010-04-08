@@ -53,7 +53,7 @@ public interface JahiaContentDefinitionServiceAsync {
 
     void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 
-    void getNodeSubtypes(String baseType, GWTJahiaNode parentNode, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
+    void getNodeSubtypes(String baseType, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
 
     void getPageTemplates(AsyncCallback<List<GWTJahiaNode>> async);
 

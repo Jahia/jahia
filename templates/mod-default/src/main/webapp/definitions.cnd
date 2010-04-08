@@ -5,7 +5,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jmix:sandboxContent] > jmix:content mixin
+[jmix:sandboxContent] > jmix:droppableContent mixin
 
 [jmix:sendAsNewsletter] mixin
 
@@ -120,22 +120,22 @@
  orderable
  + * (jmix:navMenuItem)
 
-[jnt:navMenuText] > jnt:text, jmix:navMenuItem, jmix:interactiveContent
+[jnt:navMenuText] > jnt:text, jmix:navMenuItem
 
-[jnt:navMenuExternalLink] > jnt:externalLink, jmix:navMenuItem, jmix:interactiveContent
+[jnt:navMenuExternalLink] > jnt:externalLink, jmix:navMenuItem
 
-[jnt:navMenuNodeLink] > jnt:nodeLink, jmix:navMenuItem, jmix:interactiveContent
+[jnt:navMenuNodeLink] > jnt:nodeLink, jmix:navMenuItem
 
-[jnt:navMenuQuery] > jnt:query, jmix:navMenuItem, jmix:interactiveContent
+[jnt:navMenuQuery] > jnt:query, jmix:navMenuItem
 
-[jnt:navMenuMultilevel] > jnt:content, jmix:navMenuItem, jmix:interactiveContent
+[jnt:navMenuMultilevel] > jnt:content, jmix:navMenuItem
  - j:startLevel (long) = 1
  - j:maxDepth (long) = 3
  - j:useVisitedNodeAsBaseline (boolean)
  - j:baselineNode (weakreference)
  - j:allowedTypes (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList;jnt:formElementValidation']) = 'jnt:page' multiple
  
-[jnt:navMenuChildNodes] > jnt:content, jmix:navMenuItem, jmix:interactiveContent
+[jnt:navMenuChildNodes] > jnt:content, jmix:navMenuItem
  - j:baselineNode (weakreference)
  - j:allowedTypes (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList;jnt:formElementValidation']) = 'jnt:page' multiple
 //---------------------------------------------------------

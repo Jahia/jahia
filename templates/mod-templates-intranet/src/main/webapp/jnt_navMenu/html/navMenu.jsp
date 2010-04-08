@@ -12,7 +12,7 @@
 <c:set var="items" value="${currentNode.nodes}"/>
 <c:set var="navMenuLevel" value="${fn:length(jcr:getParentsOfType(currentNode, 'jnt:navMenu')) + 1}"/>
 <c:if test="${navMenuLevel eq 1 and (renderContext.editMode or renderContext.contributionMode)}">
-    <p><a href="${url.base}${currentNode.path}.menuDesign.html"><span><fmt:message key="navMenu.label.edit"/></span></a></p>
+    <p><a href="${url.base}${currentNode.path}.menuDesignTmp.html"><span><fmt:message key="navMenu.label.edit"/></span></a></p>
 </c:if>
 <c:if test="${not empty items}">
     <c:if test="${navMenuLevel eq 1}">

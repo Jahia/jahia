@@ -1,81 +1,81 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jmix:formContent] > jmix:content mixin
+[jmix:formContent] > jmix:droppableContent mixin
 
-[jnt:formElementValidation] > jnt:content
+[jnt:formElementValidation] > jnt:content abstract
 orderable
 
-[jnt:formListElement] > jnt:content, jmix:formContent
+[jnt:formListElement] > jnt:content
 orderable
  - label (string) i18n
  - value (string)
 
-[jnt:formElement] > jnt:content
+[jnt:formElement] > jnt:content abstract
 orderable
 + * (jnt:formElementValidation)
 
-[jnt:formButton] > jnt:content
+[jnt:formButton] > jnt:content abstract
  orderable
 
 [jnt:responseToForm] > jnt:content,nt:unstructured
 
-[jnt:inputText] > jnt:formElement,  jmix:formContent
+[jnt:inputText] > jnt:formElement
  - label (string) mandatory
  - size (long) = 20 autocreated
  - maxLength (long) = 30 autocreated
  - defaultValue (string)
  - mask (string)
 
-[jnt:dateField] > jnt:formElement,  jmix:formContent
+[jnt:dateField] > jnt:formElement
  - label (string) mandatory
 
-[jnt:inputMultiline] > jnt:formElement,  jmix:formContent
+[jnt:inputMultiline] > jnt:formElement
  - label (string) mandatory
  - cols (long) = 20 autocreated
  - rows (long) = 6 autocreated
  - defaultValue (string)
 
-[jnt:passwordField] > jnt:formElement,  jmix:formContent
+[jnt:passwordField] > jnt:formElement
  - label (string)
 
-[jnt:fieldset] > jnt:content,  jmix:formContent
+[jnt:fieldset] > jnt:content
  - legend (string)
  + * (jnt:formElement)
 
-[jnt:checkboxField] > jnt:formElement,  jmix:formContent
+[jnt:checkboxField] > jnt:formElement
  - label (string) mandatory
  + * (jnt:formListElement)
 
-[jnt:selectField] > jnt:formElement,  jmix:formContent
+[jnt:selectField] > jnt:formElement
  - label (string)
  + * (jnt:formListElement)
 
-[jnt:radiobuttonField] > jnt:formElement,  jmix:formContent
+[jnt:radiobuttonField] > jnt:formElement
  - label (string) mandatory
  + * (jnt:formListElement)
 
-[jnt:submitButton] > jnt:formButton,  jmix:formContent
+[jnt:submitButton] > jnt:formButton
  - label (string) mandatory
  
-[jnt:resetButton] > jnt:formButton,  jmix:formContent
+[jnt:resetButton] > jnt:formButton
  - label (string) mandatory
 
-[jnt:birthdate] > jnt:formElement,  jmix:formContent
+[jnt:birthdate] > jnt:formElement
  - label (string)
 
-[jnt:addressBlock] > jnt:formElement,  jmix:formContent
+[jnt:addressBlock] > jnt:formElement
 
-[jnt:automaticList] > jnt:formElement,  jmix:formContent
+[jnt:automaticList] > jnt:formElement
  - label (string) mandatory
  - type (string, choicelist[choicelisttypes])
 
-[jnt:formAction] > jnt:content
+[jnt:formAction] > jnt:content abstract
 
-[jnt:mailFormAction] > jnt:formAction, jmix:formContent
+[jnt:mailFormAction] > jnt:formAction
  - j:action (string) = 'mail' autocreated hidden
  - j:to (string,choicelist[users]) mandatory
 
-[jnt:defaultFormAction] > jnt:formAction, jmix:formContent
+[jnt:defaultFormAction] > jnt:formAction
  - j:action (string) = 'default' autocreated hidden
 
 [jnt:form] > jnt:content, jmix:formContent, mix:title
@@ -86,17 +86,17 @@ orderable
  + formButtons (jnt:contentList)
  + responses (jnt:contentList)
 
-[jnt:required] > jnt:formElementValidation,  jmix:formContent
+[jnt:required] > jnt:formElementValidation
 
-[jnt:emailValidation] > jnt:formElementValidation,  jmix:formContent
+[jnt:emailValidation] > jnt:formElementValidation
 
-[jnt:dateValidation] > jnt:formElementValidation,  jmix:formContent
+[jnt:dateValidation] > jnt:formElementValidation
 
-[jnt:rangeValidation] > jnt:formElementValidation,  jmix:formContent
+[jnt:rangeValidation] > jnt:formElementValidation
  - min (long) mandatory
  - max (long) mandatory
 
-[jnt:captcha] > jnt:formElement,  jmix:formContent
+[jnt:captcha] > jnt:formElement
 
-[jnt:fileElement] > jnt:formElement, jmix:formContent
+[jnt:fileElement] > jnt:formElement
  - label (string) 

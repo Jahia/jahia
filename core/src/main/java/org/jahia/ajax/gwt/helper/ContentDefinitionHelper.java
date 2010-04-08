@@ -272,7 +272,7 @@ public class ContentDefinitionHelper {
     public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeTypes(Map<String, Object> ctx, Locale uiLocale) {
         Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
         try {
-            ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType("jmix:content");
+            ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType("jmix:droppableContent");
             NodeTypeIterator typeIterator = nt.getDeclaredSubtypes();
             while (typeIterator.hasNext()) {
                 ExtendedNodeType mainType = (ExtendedNodeType) typeIterator.next();
@@ -296,7 +296,6 @@ public class ContentDefinitionHelper {
      * the specified parent node (if the baseType parameter is null).
      *
      * @param baseTypes  the node type name to find sub-types
-     * @param parentNode the parent node, where the wizard was called
      * @param ctx        current processing context instance
      * @param uiLocale
      * @return a list of node types with name and label populated that are the
@@ -304,12 +303,11 @@ public class ContentDefinitionHelper {
      *         created in the specified parent node (if the baseType parameter
      *         is null)
      */
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseTypes, GWTJahiaNode parentNode, Map<String, Object> ctx, Locale uiLocale) {
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseTypes, Map<String, Object> ctx, Locale uiLocale) {
         Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> map = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
-        List<GWTJahiaNodeType> gwtNodeTypes = new ArrayList<GWTJahiaNodeType>();
         NodeTypeRegistry registry = NodeTypeRegistry.getInstance();
         try {
-            ExtendedNodeType content = registry.getNodeType("jmix:content");
+            ExtendedNodeType content = registry.getNodeType("jmix:droppableContent");
             NodeTypeIterator typeIterator = content.getDeclaredSubtypes();
             Map<String, ExtendedNodeType> contentTypes = new HashMap<String, ExtendedNodeType>();
             while (typeIterator.hasNext()) {
@@ -326,21 +324,22 @@ public class ContentDefinitionHelper {
 
 
             List<ExtendedNodeType> nodeTypes = new ArrayList<ExtendedNodeType>();
-            if (parentNode != null) {
-                Collection<ExtendedNodeDefinition> definitions = new ArrayList<ExtendedNodeDefinition>();
-
-                for (String nodeTypeName : parentNode.getNodeTypes()) {
-                    ExtendedNodeType nodeType = registry
-                            .getNodeType(nodeTypeName);
-                    definitions.addAll(nodeType.getUnstructuredChildNodeDefinitions().values());
-                }
-                for (ExtendedNodeDefinition nodeDef : definitions) {
-                    ExtendedNodeType[] requiredPrimaryTypes = nodeDef.getRequiredPrimaryTypes();
-                    for (ExtendedNodeType req : requiredPrimaryTypes) {
-                        recurseAdd(req, types, contentTypes, nodeTypes);
-                    }
-                }
-            } else if (baseTypes != null) {
+//            if (parentNode != null) {
+//                Collection<ExtendedNodeDefinition> definitions = new ArrayList<ExtendedNodeDefinition>();
+//
+//                for (String nodeTypeName : parentNode.getNodeTypes()) {
+//                    ExtendedNodeType nodeType = registry
+//                            .getNodeType(nodeTypeName);
+//                    definitions.addAll(nodeType.getUnstructuredChildNodeDefinitions().values());
+//                }
+//                for (ExtendedNodeDefinition nodeDef : definitions) {
+//                    ExtendedNodeType[] requiredPrimaryTypes = nodeDef.getRequiredPrimaryTypes();
+//                    for (ExtendedNodeType req : requiredPrimaryTypes) {
+//                        recurseAdd(req, types, contentTypes, nodeTypes);
+//                    }
+//                }
+//            } else
+            if (baseTypes != null) {
                 for (String type : types) {
                     recurseAdd(registry.getNodeType(type), types, contentTypes, nodeTypes);
                 }
@@ -352,7 +351,6 @@ public class ContentDefinitionHelper {
             while (typeIterator.hasNext()) {
                 ExtendedNodeType mainType = (ExtendedNodeType) typeIterator.next();
                 List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
-                map.put(getGWTJahiaNodeType(mainType, ctx, uiLocale), l);
 
                 NodeTypeIterator subtypes = mainType.getDeclaredSubtypes();
                 while (subtypes.hasNext()) {
@@ -360,8 +358,20 @@ public class ContentDefinitionHelper {
                     if (nodeTypes.contains(nodeType)) {
                         final GWTJahiaNodeType nt = getGWTJahiaNodeType(nodeType, ctx, uiLocale);
                         l.add(nt);
+                        nodeTypes.remove(nodeType);
                     }
                 }
+                if (!l.isEmpty()) {
+                    map.put(getGWTJahiaNodeType(mainType, ctx, uiLocale), l);
+                }
+            }
+            if (!nodeTypes.isEmpty()) {
+                List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>();
+                for (ExtendedNodeType nodeType : nodeTypes) {
+                    final GWTJahiaNodeType nt = getGWTJahiaNodeType(nodeType, ctx, uiLocale);
+                    l.add(nt);
+                }
+                map.put(null, l);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -371,19 +381,24 @@ public class ContentDefinitionHelper {
     }
 
     private void recurseAdd(ExtendedNodeType req, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes, List<ExtendedNodeType> result) {
-        add(req, baseTypes, contentTypes, result);
+        boolean excludeNonDroppable = false;
+        if (req.getName().equals("jmix:droppableContent") || contentTypes.keySet().contains(req.getName())) {
+            excludeNonDroppable = true;
+        }
+
+        add(req, baseTypes, contentTypes, result, excludeNonDroppable);
 
         NodeTypeIterator subtypes = req.getSubtypes();
         while (subtypes.hasNext()) {
             ExtendedNodeType subtype = (ExtendedNodeType) subtypes.next();
-            add(subtype, baseTypes, contentTypes, result);
+            add(subtype, baseTypes, contentTypes, result, excludeNonDroppable);
         }
     }
 
-    private void add(ExtendedNodeType type, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes, List<ExtendedNodeType> result) {
+    private void add(ExtendedNodeType type, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes, List<ExtendedNodeType> result, boolean excludeNonDroppable) {
         if (!excludedTypes.contains(type.getName()) && !type.isMixin() &&
                 !type.isAbstract() &&
-                CollectionUtils.containsAny(Arrays.asList(type.getDeclaredSupertypeNames()), contentTypes.keySet())) {
+                (!excludeNonDroppable || CollectionUtils.containsAny(Arrays.asList(type.getDeclaredSupertypeNames()), contentTypes.keySet()))) {
             if (!baseTypes.isEmpty()) {
                 for (String t : baseTypes) {
                     if (type.isNodeType(t)) {
@@ -526,11 +541,11 @@ public class ContentDefinitionHelper {
                         foundTypes.add(nodeType.getName());
                     }
                 }
-            } else if (type.getName().equals("jnt:nodeReference")) {
-                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:renderableReference");
-                res.add(getGWTJahiaNodeType(baseMixin, realType, ctx, uiLocale));
-                foundTypes.add("jmix:renderable");
-                foundTypes.add("jmix:renderableReference");
+//            } else if (type.getName().equals("jnt:nodeReference")) {
+//                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:renderableReference");
+//                res.add(getGWTJahiaNodeType(baseMixin, realType, ctx, uiLocale));
+//                foundTypes.add("jmix:renderable");
+//                foundTypes.add("jmix:renderableReference");
             }
 
 

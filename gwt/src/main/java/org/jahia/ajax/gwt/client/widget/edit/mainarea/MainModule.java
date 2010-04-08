@@ -42,7 +42,7 @@ public class MainModule extends Module {
     Map<Element, Module> m;
 
     public MainModule(final String html, final String path, final String template, GWTEditConfig config) {
-        super("main", path, template, null, null, null, new FlowLayout());
+        super("main", path, template, null, null, null, null, new FlowLayout());
         setScrollMode(Style.Scroll.AUTO);
 
         this.id = "main";

@@ -313,7 +313,7 @@ public class JCRStoreProvider {
                 Workspace workspace = session.getWorkspace();
 
                 try {
-                    workspace.getNodeTypeManager().getNodeType("jmix:content");
+                    workspace.getNodeTypeManager().getNodeType("jmix:droppableContent");
                 } catch (RepositoryException e) {
                     File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
                     f.delete();

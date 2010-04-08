@@ -794,7 +794,7 @@ public class NavigationHelper {
             }
         }
         try {
-            if (node.isNodeType("jnt:nodeReference") && node.hasProperty("j:node")) {
+            if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
                 n.setReferencedNode(getGWTJahiaNode((JCRNodeWrapper) node.getProperty("j:node").getNode()));
             }
         } catch (RepositoryException e) {

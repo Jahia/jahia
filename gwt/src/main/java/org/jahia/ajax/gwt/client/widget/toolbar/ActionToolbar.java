@@ -176,7 +176,6 @@ public class ActionToolbar extends ToolBar {
     public void handleNewLinkerSelection() {
         for (ActionItem item : items) {
             try {
-                Log.info("handle : "+item.getClass().getName());
                 item.handleNewLinkerSelection();
             } catch (Exception e) {
             }

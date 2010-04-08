@@ -170,6 +170,11 @@
 
 [jnt:file] > nt:file, jmix:lockable, jmix:hierarchyNode, jmix:basemetadata, jmix:thumbnail, jmix:publication
 
+[jmix:image] > jmix:extension mixin
+ + * (jnt:extraResource)
+ - j:height (long) protected
+ - j:width (long) protected
+
 //---------------------------------------------------------
 // Text extracts
 //---------------------------------------------------------
@@ -379,47 +384,18 @@
 
 
 //---------------------------------------------------------
-// References and links
-//---------------------------------------------------------
-
-[jmix:link] > mix:title, jmix:contentItem mixin
- - j:target (string, choicelist[resourceBundle]) nofulltext < '_blank','_parent','_self','_top'
-
-[jnt:nodeReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem
- - j:node (weakreference)
-
-[jmix:shareable] > mix:shareable mixin
- - j:movedFrom (string) multiple nofulltext
-
-[jnt:sharedNode] > nt:base, jmix:hierarchyNode, jmix:basemetadata
- + j:node (mix:shareable)
-
-[jnt:nodeLink] > jnt:nodeReference, jmix:link
-
-[jnt:externalLink] > nt:base, jmix:hierarchyNode, jmix:link, jmix:basemetadata, jmix:contentItem
- - j:url (string)
-
-[jnt:referenceInField] > nt:base
- - j:fieldName (string) nofulltext
- - j:id (long)
- - j:reference (weakreference)
-
-[jmix:referencesInField] mixin
- + j:referenceInField (jnt:referenceInField) multiple
-
-//---------------------------------------------------------
 // Definition organization (left panel)
 //---------------------------------------------------------
 
-[jmix:content] > mix:referenceable mixin
+[jmix:droppableContent] > mix:referenceable mixin
 
-[jmix:containerContent] > jmix:content mixin
+[jmix:containerContent] > jmix:droppableContent mixin
 
-[jmix:structuredContent] > jmix:content mixin
+[jmix:structuredContent] > jmix:droppableContent mixin
 
-[jmix:interactiveContent] > jmix:content mixin
+[jmix:interactiveContent] > jmix:droppableContent mixin
 
-[jmix:queryContent] > jmix:content mixin
+[jmix:queryContent] > jmix:droppableContent mixin
 
 //---------------------------------------------------------
 // Other mixins
@@ -443,6 +419,38 @@
 
 [jmix:googleanalytics] > jmix:option, jmix:contentMixin mixin
 - j:gaenabaled (boolean)
+
+//---------------------------------------------------------
+// References and links
+//---------------------------------------------------------
+
+[jmix:shareable] > mix:shareable mixin
+ - j:movedFrom (string) multiple nofulltext
+
+[jmix:link] > mix:title, jmix:contentItem mixin
+ - j:target (string, choicelist[resourceBundle]) nofulltext < '_blank','_parent','_self','_top'
+
+[jmix:nodeReference] mixin
+
+[jnt:fileReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:structuredContent
+ - j:node (weakreference) < jnt:file
+
+[jnt:embedReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:structuredContent
+ - j:node (weakreference) < jmix:image
+
+[jnt:nodeLink] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:link
+ - j:node (weakreference) < jmix:droppableContent, jnt:page
+
+[jnt:externalLink] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:link
+ - j:url (string)
+
+[jnt:referenceInField] > nt:base
+ - j:fieldName (string) nofulltext
+ - j:id (long)
+ - j:reference (weakreference)
+
+[jmix:referencesInField] mixin
+ + j:referenceInField (jnt:referenceInField) multiple
 
 //---------------------------------------------------------
 // Caches
@@ -483,7 +491,7 @@
 [jmix:template]
 
 [jmix:templateInformation] > jmix:template, jmix:contentMixin mixin
- - j:templateLocked (boolean)
+ - j:templateLocked (boolean) hidden
  - j:templateShared (boolean) hidden
  - j:templateDeployed (boolean) hidden
 

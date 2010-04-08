@@ -94,7 +94,7 @@ public interface JahiaContentDefinitionService extends RemoteService {
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseType, GWTJahiaNode parentNode)throws GWTJahiaServiceException ;
+    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseType)throws GWTJahiaServiceException ;
 
     List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException;
 

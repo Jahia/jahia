@@ -76,6 +76,9 @@ public class SidePanel extends ContentPanel {
 
     public void handleNewModuleSelection(Module selectedModule) {
         workflowTabItem.initList(selectedModule);
+        if(pagesTabItem instanceof TemplatesTabItem) {
+            ((TemplatesTabItem) pagesTabItem).refreshInformationPanel(selectedModule);
+        }
     }
 
     public void handleNewSidePanelSelection(GWTJahiaNode node) {

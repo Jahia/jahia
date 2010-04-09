@@ -145,11 +145,6 @@
 ## Pages
  
 [web_templates:home] = jnt:page
-   { addNode topMenu(jnt:navMenu) } 
-   { addNode topMenu.autoTopMenuLevel0(jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
-   { addNode topMenu.autoTopMenuLevel1(jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }   
-   { addNode pagecontent.row1.col2.sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
-   { addNode pagecontent.row1.col2.sideMenu.autoSideMenu(jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
  + banner = pagecontent.row1.col1.banner
  + promo = pagecontent.row1.col1.promo
    { setProperty [jmix:renderable.j:template=twoColumns] }
@@ -159,81 +154,41 @@
  + footerContainerList = footer(jnt:contentList)
    
 [web_templates:simple] = jnt:page   
-   { addNode topMenu(jnt:navMenu) } 
-   { addNode topMenu.autoTopMenuLevel0(jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
-   { addNode topMenu.autoTopMenuLevel1(jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }      
-   { addNode pagecontent.row1.col2.sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
-   { addNode pagecontent.row1.col2.sideMenu.autoSideMenu(jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
  + mainColumn_box = pagecontent.row1.col1
  + maincontent = pagecontent.row1.col1
  + columnB_box = pagecontent.row1.col1
 
 [web_templates:double] = jnt:page   
-   { addNode topMenu(jnt:navMenu) } 
-   { addNode topMenu.autoTopMenuLevel0(jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
-   { addNode topMenu.autoTopMenuLevel1(jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }      
-   { addNode pagecontent.row1.col2.sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
-   { addNode pagecontent.row1.col2.sideMenu.autoSideMenu(jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
  + mainColumn_box = pagecontent.row1.col1
  + maincontent = pagecontent.row1.col1
  + columnB_box = pagecontent.row1.col1
 
 [web_templates:events] = jnt:page   
-   { addNode topMenu(jnt:navMenu) } 
-   { addNode topMenu.autoTopMenuLevel0(jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
-   { addNode topMenu.autoTopMenuLevel1(jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }      
-   { addNode pagecontent.row1.col2.sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
-   { addNode pagecontent.row1.col2.sideMenu.autoSideMenu(jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
  + introduction = pagecontent.row1.col1
  + columnB_box = pagecontent.row1.col1
  + events = pagecontent.row1.col1.events
 
 [web_templates:publication] = jnt:page   
-   { addNode topMenu(jnt:navMenu) } 
-   { addNode topMenu.autoTopMenuLevel0(jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
-   { addNode topMenu.autoTopMenuLevel1(jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }      
-   { addNode pagecontent.row1.col2.sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
-   { addNode pagecontent.row1.col2.sideMenu.autoSideMenu(jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
  + introduction = pagecontent.row1.col1
  + publication = pagecontent.row1.col1.publication
  + columnB_box = pagecontent.row1.col1 
 
 [web_templates:news] = jnt:page   
-   { addNode topMenu(jnt:navMenu) } 
-   { addNode topMenu.autoTopMenuLevel0(jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
-   { addNode topMenu.autoTopMenuLevel1(jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }      
-   { addNode pagecontent.row1.col2.sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
-   { addNode pagecontent.row1.col2.sideMenu.autoSideMenu(jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
  + introduction = pagecontent.row1.col1
  + news = pagecontent.row1.col1.news
  + columnB_box = pagecontent.row1.col1
 
 [web_templates:people] = jnt:page   
-   { addNode topMenu(jnt:navMenu) } 
-   { addNode topMenu.autoTopMenuLevel0(jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
-   { addNode topMenu.autoTopMenuLevel1(jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }      
-   { addNode pagecontent.row1.col2.sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
-   { addNode pagecontent.row1.col2.sideMenu.autoSideMenu(jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
  + introduction = pagecontent.row1.col1
  + people = pagecontent.row1.col1.people
  + columnB_box = pagecontent.row1.col1
  
 [web_templates:pressRelease] = jnt:page   
-   { addNode topMenu(jnt:navMenu) } 
-   { addNode topMenu.autoTopMenuLevel0(jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
-   { addNode topMenu.autoTopMenuLevel1(jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }      
-   { addNode pagecontent.row1.col2.sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
-   { addNode pagecontent.row1.col2.sideMenu.autoSideMenu(jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
  + introduction = pagecontent.row1.col1
  + press = pagecontent.row1.col1.press
  + columnB_box = pagecontent.row1.col1
  
 [web_templates:job] = jnt:page   
-   { addNode topMenu(jnt:navMenu) } 
-   { addNode topMenu.autoTopMenuLevel0(jnt:navMenuMultilevel) [j:startLevel=0, j:maxDepth=1] }   
-   { addNode topMenu.autoTopMenuLevel1(jnt:navMenuMultilevel) [j:startLevel=1, j:maxDepth=1] }      
-   { addNode pagecontent.row1.col2.sideMenu(jnt:navMenu) [jmix:renderable.j:template=sideMenu] }
-   { addNode pagecontent.row1.col2.sideMenu.autoSideMenu(jnt:navMenuMultilevel) [j:startLevel=2, j:maxDepth=3] }
  + introduction = pagecontent.row1.col1
  + job = pagecontent.row1.col1.job
  + columnB_box = pagecontent.row1.col1

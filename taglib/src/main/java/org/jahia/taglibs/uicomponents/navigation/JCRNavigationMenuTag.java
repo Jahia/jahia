@@ -129,7 +129,8 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
             if (realStartLevel < 0) {
                 realStartLevel = 0;
             }
-
+            Resource res = (Resource) pageContext.getRequest().getAttribute("currentResource");
+            res.getDependencies().add(node);
             generateMenuAsFlatList(realStartLevel, baseNode, 1,
                     navMenuUItemsBeans, null, baseNode != null ? baseNode.getPath() : null);
             if (StringUtils.isNotEmpty(var)) {

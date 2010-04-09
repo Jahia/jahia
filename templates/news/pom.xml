@@ -125,6 +125,7 @@
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
                             <depends>Jahia SEO</depends>
+                            <root-folder>${artifactId}</root-folder>
                         </manifestEntries>
                     </archive>
                 </configuration>

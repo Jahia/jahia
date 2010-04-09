@@ -8,6 +8,6 @@
  - state (string, choicelist[resourceBundle]) = 'active' analyzer='keyword' < 'active', 'finished', 'suspended', 'cancelled'
  - type (string)
 
-[jnt:tasks] > jnt:content, mix:title, jmix:interactiveContent
+[jnt:tasks] > jnt:content, mix:title, jmix:formContent
  orderable
  + * (jnt:task)

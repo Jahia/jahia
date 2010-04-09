@@ -156,6 +156,8 @@
 // Files
 //---------------------------------------------------------
 
+[jmix:extension] mixin
+
 [jnt:resource] > nt:resource
  - j:extractedText (string)
  - j:lastExtractionDate (date)

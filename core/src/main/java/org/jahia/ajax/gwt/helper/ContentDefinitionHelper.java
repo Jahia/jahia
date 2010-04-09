@@ -94,7 +94,7 @@ public class ContentDefinitionHelper {
     public List<GWTJahiaNode> getPageTemplates(JCRSessionWrapper currentUserSession, JCRSiteNode site) throws GWTJahiaServiceException {
         try {
             List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-            JCRNodeWrapper node = currentUserSession.getNode("/sites/" + site.getSiteKey() + "/templates");
+            JCRNodeWrapper node = site.getNode("templates");
             NodeIterator iterator = node.getNodes();
             while (iterator.hasNext()) {
                 JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) iterator.next();

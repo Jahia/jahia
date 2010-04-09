@@ -218,7 +218,7 @@ public class JCRSitesProvider {
                             logger.error(e.getMessage(), e);
                         }
 
-                        JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + site.getTemplatePackageName() + "/defaultSite");
+                        JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + site.getTemplateFolder() + "/defaultSite");
                         defaultSite.copy(session.getNode("/sites"), site.getSiteKey(), false);
                         session.save();
                         session.getNode("/sites/"+site.getSiteKey()).clone(session.getNode("/users"), "users");

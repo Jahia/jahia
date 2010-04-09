@@ -1,7 +1,5 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jmix:formContent] > jmix:droppableContent mixin
-
 [jnt:formElementValidation] > jnt:content abstract
 orderable
 

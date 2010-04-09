@@ -7,8 +7,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 
 import java.util.*;
@@ -26,6 +28,7 @@ public class ModuleHelper {
     private static Map<String, Module> modulesById;
 
     private static Map<String, List<String>> children;
+    private static Map<String, GWTJahiaNodeType> nodeTypes;
 
     public static void initAllModules(final MainModule m, HTML html) {
         modules = new ArrayList<Module>();
@@ -101,7 +104,17 @@ public class ModuleHelper {
 
             public void onFailure(Throwable caught) {
                 Log.error("Unable to get node with publication info due to:",caught);
+            }
+        });
+        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new AsyncCallback<List<GWTJahiaNodeType>>() {
+            public void onSuccess(List<GWTJahiaNodeType> result) {
+                for (GWTJahiaNodeType type : result) {
+                    nodeTypes.put(type.getName(), type);
+                }
+            }
 
+            public void onFailure(Throwable caught) {
+                Log.error("Unable to get nodetypes :",caught);
             }
         });
     }

@@ -105,6 +105,7 @@
                                 </property>
                                 <property name="titleKey" value="label.templatesDeploy"/>
                             </bean>
+                            <ref bean="org.jahia.toolbar.item.export.template"/>
                             <ref bean="org.jahia.toolbar.item.Separator"/>
                             <ref bean="org.jahia.toolbar.itemsgroup.Managers"/>
                             <ref bean="org.jahia.toolbar.item.Separator"/>

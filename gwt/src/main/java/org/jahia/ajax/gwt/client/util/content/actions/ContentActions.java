@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
@@ -1047,7 +1048,10 @@ public class ContentActions {
 
     public static void exportTemplateContent(Linker linker) {
         final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() == 1) {
+
+        if (linker instanceof EditLinker) {
+            new ContentExportTemplate(linker, ((EditLinker)linker).getSidePanel().getRootTemplate()).show();
+        } else if (selectedItems != null && selectedItems.size() == 1) {
             GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {
                 new ContentExportTemplate(linker, selectedNode).show();

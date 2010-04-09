@@ -80,6 +80,13 @@ public class SidePanel extends ContentPanel {
             ((TemplatesTabItem) pagesTabItem).refreshInformationPanel(selectedModule);
         }
     }
+    
+    public GWTJahiaNode getRootTemplate() {
+        if(pagesTabItem instanceof TemplatesTabItem) {
+            return ((TemplatesTabItem) pagesTabItem).getRootTemplate();
+        }
+        return null;
+    }
 
     public void handleNewSidePanelSelection(GWTJahiaNode node) {
     }

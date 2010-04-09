@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.TreeModel;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -124,6 +125,14 @@ public class TemplatesTabItem extends SidePanelTabItem {
         factory.setOpenPath(path);
     }
 
+
+    public GWTJahiaNode getRootTemplate() {
+        GWTJahiaNode jahiaNode = tree.getSelectionModel().getSelectedItem();
+        while (jahiaNode.getParent() != null) {
+            jahiaNode = (GWTJahiaNode) jahiaNode.getParent();
+        }
+        return jahiaNode;
+    }
 
     public void refreshInformationPanel(Module selectedModule) {
         informationPanel.removeAll();

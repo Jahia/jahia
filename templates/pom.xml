@@ -60,43 +60,43 @@
 
     <modules>
         <!--<module>core-templates</module>-->
-        <!--<module>mod-6.0</module>-->
-		<module>mod-article</module>
-        <module>mod-assets</module>
-        <module>mod-blog</module>
-        <module>mod-contact</module>
-        <module>mod-default</module>
-        <module>mod-event</module>
-        <module>mod-faq</module>
-        <module>mod-formbuilder</module>
-        <module>mod-forum</module>
-        <module>mod-job</module>
-        <module>mod-location</module>
-        <module>mod-metrics</module>
-        <module>mod-news</module>
-        <module>mod-grid</module>
-        <module>mod-people</module>
-        <module>mod-portal</module>
-        <module>mod-press</module>
-        <module>mod-publication</module>
-        <module>mod-rating</module>
-        <module>mod-roles</module>
-        <module>mod-rss</module>
-        <module>mod-scriptlanguages</module>
-        <module>mod-search</module>
-        <module>mod-seo</module>        
-        <module>mod-sitemap</module>
-        <module>mod-skins</module>
-        <module>mod-tasks</module>
-        <module>mod-test</module>
-        <module>mod-templates-web</module>
-        <module>mod-templates-intranet</module>
-        <module>mod-topstories</module>
-        <module>mod-wiki</module>
+        <!--<module>6.0</module>-->
+		<module>article</module>
+        <module>assets</module>
+        <module>blog</module>
+        <module>contact</module>
+        <module>default</module>
+        <module>event</module>
+        <module>faq</module>
+        <module>formbuilder</module>
+        <module>forum</module>
+        <module>job</module>
+        <module>location</module>
+        <module>metrics</module>
+        <module>news</module>
+        <module>grid</module>
+        <module>people</module>
+        <module>portal</module>
+        <module>press</module>
+        <module>publication</module>
+        <module>rating</module>
+        <module>roles</module>
+        <module>rss</module>
+        <module>scriptlanguages</module>
+        <module>search</module>
+        <module>seo</module>
+        <module>sitemap</module>
+        <module>skins</module>
+        <module>tasks</module>
+        <module>test</module>
+        <module>templates-web</module>
+        <module>templates-intranet</module>
+        <module>topstories</module>
+        <module>wiki</module>
         <!--<module>test-templates</module>-->
         <module>web-templates</module>
-        <module>mod-latestPages</module>
-        <module>mod-docspace</module>
+        <module>latestPages</module>
+        <module>docspace</module>
     </modules>
 
 

@@ -11,7 +11,7 @@ Integration of auto-completion in templates
 
  Before going into details, here's overview of the full code (... indicates stripped code) that comes from our
  auto-completion integration into tag input. You can find the full source code in the following location in Jahia's
- source code at templates/mod-default/src/main/webapp/jmix_tagged/html/tagged.hidden.addTag.jsp.
+ source code at templates/default/src/main/webapp/jmix_tagged/html/tagged.hidden.addTag.jsp.
 
 ---------------------------------------
 <template:addResources type="css" resources="jquery.autocomplete.css" />
@@ -247,5 +247,5 @@ webapps/ROOT/templates/search/jnt_simpleSearchForm/html/simpleSearchForm.jsp
  Or in Jahia's source code at :
 
 ---------------------------------------
-templates/mod-search/src/main/webapp/jnt_simpleSearchForm/html/simpleSearchForm.jsp
+templates/search/src/main/webapp/jnt_simpleSearchForm/html/simpleSearchForm.jsp
 ---------------------------------------

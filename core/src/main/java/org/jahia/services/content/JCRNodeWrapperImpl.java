@@ -45,6 +45,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
@@ -1288,6 +1289,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
+        Map<String, List<String>> references = new HashMap<String, List<String>>();
+        boolean copy = copy(dest, name, allowsExternalSharedNodes, references);
+        ReferencesHelper.resolveCrossReferences(getSession(), references);
+        return copy;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes,Map<String, List<String>> references) throws RepositoryException {
         JCRNodeWrapper copy = null;
         try {
             copy = (JCRNodeWrapper) session
@@ -1322,22 +1333,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (hasProperty("jcr:language")) {
                 copy.setProperty("jcr:language", getProperty("jcr:language").getString());
             }
-            PropertyIterator props = getProperties();
-
-            while (props.hasNext()) {
-                Property property = props.nextProperty();
-                try {
-                    if (!copy.hasProperty(property.getName()) && !property.getDefinition().isProtected()) {
-                        if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                            copy.setProperty(property.getName(), property.getValues());
-                        } else {
-                            copy.setProperty(property.getName(), property.getValue());
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
-                }
-            }
+            copyProperties(copy, references);
         }
 
         NodeIterator ni = getNodes();
@@ -1351,15 +1347,52 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 } else if (allowsExternalSharedNodes) {
                     copy.clone(source, source.getName());
                 } else {
-                    source.copy(copy, source.getName(), allowsExternalSharedNodes);
+                    source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
                 }
             } else {
-                source.copy(copy, source.getName(), allowsExternalSharedNodes);
+                source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
             }
         }
 
         return true;
     }
+
+    public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
+        PropertyIterator props = getProperties();
+
+        while (props.hasNext()) {
+            Property property = props.nextProperty();
+            try {
+                if (!property.getDefinition().isProtected()) {
+                    if (property.getType() == PropertyType.REFERENCE || property.getType() == PropertyType.WEAKREFERENCE) {
+                        if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                            Value[] values = property.getValues();
+                            for (Value value : values) {
+                                keepReference(destinationNode, references, property, value.getString());
+                            }
+                        } else {
+                            keepReference(destinationNode, references, property, property.getValue().getString());
+                        }
+                    }
+                    if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                        destinationNode.setProperty(property.getName(), property.getValues());
+                    } else {
+                        destinationNode.setProperty(property.getName(), property.getValue());
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
+            }
+        }
+    }
+
+    private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property, String value) throws RepositoryException {
+        if (!references.containsKey(value)) {
+            references.put(value, new ArrayList<String>());
+        }
+        references.get(value).add(destinationNode.getIdentifier() + "/" + property.getName());
+    }
+
 
     /**
      * {@inheritDoc}

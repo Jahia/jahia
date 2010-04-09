@@ -6,8 +6,8 @@
 
 
     <templatesSet>
-        <Jahia_x0020_Web_x0020_templates jcr:primaryType="jnt:templatesSetFolder">
-            <defaultSite jcr:primaryType="jnt:virtualsite" j:installedModules="Jahia Web Templates">
+        <templates-web jcr:primaryType="jnt:templatesSetFolder">
+            <defaultSite jcr:primaryType="jnt:virtualsite" j:installedModules="templates-web">
                 <contents jcr:primaryType="jnt:folder">
                     <site_components jcr:primaryType="jnt:folder">
                     </site_components>
@@ -38,6 +38,6 @@
                     </simple>
                 </templates>
             </defaultSite>
-        </Jahia_x0020_Web_x0020_templates>
+        </templates-web>
     </templatesSet>
 </content>

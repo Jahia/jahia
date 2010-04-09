@@ -88,7 +88,7 @@ public class URLGenerator {
         contribute = baseContribute + resourcePath;
         studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templatesSet";
         if (context.getSite() != null) {
-            studio += "/" + context.getSite().getTemplatePackageName() + "/defaultSite/";
+            studio += "/" + context.getSite().getTemplateFolder() + "/defaultSite/";
             try {
                 if (resource.getNode().isNodeType("jnt:page") && resource.getNode().hasProperty("j:sourceTemplate")) {
                     studio += "templates/" + resource.getNode().getProperty("j:sourceTemplate").getNode().getName() + ".html";

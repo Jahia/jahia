@@ -1,5 +1,6 @@
 package org.jahia.services.sites.jcr;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
@@ -9,11 +10,12 @@ import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -167,19 +169,61 @@ public class JCRSitesProvider {
             }
             site.setID(id);
 
-            ServicesRegistry.getInstance().getJCRStoreService().deployNewSite(site, user);
-
             jcrTemplate.doExecuteWithSystemSession(new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
+                        Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:virtualsitesFolder]", Query.JCR_SQL2);
+                        QueryResult qr = q.execute();
+                        NodeIterator ni = qr.getNodes();
+                        try {
+                            while (ni.hasNext()) {
+                                Node sitesFolder = ni.nextNode();
+                                String options = "";
+                                if (sitesFolder.hasProperty("j:virtualsitesFolderConfig")) {
+                                    options = sitesFolder.getProperty("j:virtualsitesFolderConfig").getString();
+                                }
+
+                                Node f = JCRContentUtils.getPathFolder(sitesFolder, site.getSiteKey(), options);
+                                try {
+                                    f.getNode(site.getSiteKey());
+                                } catch (PathNotFoundException e) {
+                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
+                                    f.addNode(site.getSiteKey(), Constants.JAHIANT_VIRTUALSITE);
+                                    if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
+                                        InputStream is = null;
+                                        try {
+                                            is = new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString());
+                                            session.importXML(f.getPath()+"/"+ site.getSiteKey(), is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                        } finally {
+                                            IOUtils.closeQuietly(is);
+                                        }
+                                    }
+
+                                    Node siteNode = f.getNode(site.getSiteKey());
+                                    siteNode.setProperty("j:title", site.getTitle());
+                                    siteNode.setProperty("j:description", site.getDescr());
+                                    siteNode.setProperty("j:serverName", site.getServerName());
+                                    siteNode.setProperty("j:siteId", site.getID());
+                                    siteNode.setProperty("j:installedModules", new String[]{site.getTemplateFolder()});
+                                    siteNode.setProperty("j:defaultLanguage", site.getDefaultLanguage());
+                                    siteNode.setProperty("j:mixLanguage", site.isMixLanguagesActive());
+                                    siteNode.setProperty("j:languages", site.getLanguages().toArray(new String[site.getLanguages().size()]));
+                                    siteNode.setProperty("j:mandatoryLanguages", site.getMandatoryLanguages().toArray(new String[site.getMandatoryLanguages().size()]));
+                                    session.save();
+                                    session.getWorkspace().getVersionManager().checkin(f.getPath());
+                                    JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, true);
+                                }
+                            }
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+
                         JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + site.getTemplatePackageName() + "/defaultSite");
                         defaultSite.copy(session.getNode("/sites"), site.getSiteKey(), false);
                         session.save();
                         session.getNode("/sites/"+site.getSiteKey()).clone(session.getNode("/users"), "users");
                         session.save();
                     } catch (PathNotFoundException e) {
-                    } catch (RepositoryException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                     return null;
                 }
@@ -270,7 +314,7 @@ public class JCRSitesProvider {
         JahiaSite site = new JahiaSite(siteId, node.getProperty("j:title").getString(), node.getProperty("j:serverName").getString(),
                 node.getName(), node.getProperty("j:description").getString(), props, node.getPath());
         Value[] s = node.getProperty("j:installedModules").getValues();
-        site.setTemplatePackageName(s[0].getString());
+        site.setTemplatePackageName(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(s[0].getString()).getName());
         site.setMixLanguagesActive(node.getProperty("j:mixLanguage").getBoolean());
         site.setDefaultLanguage(node.getProperty("j:defaultLanguage").getString());
         Value[] languages = node.getProperty("j:languages").getValues();

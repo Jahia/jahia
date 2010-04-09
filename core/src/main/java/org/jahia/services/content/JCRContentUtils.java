@@ -37,6 +37,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -466,4 +467,16 @@ public final class JCRContentUtils {
         return fileExtensionIcons;
     }
 
+    public static Node getPathFolder(Node root, String name, String options) throws RepositoryException {
+        Node result = root;
+        if (options.contains("initials")) {
+            String s = "" + Character.toUpperCase(name.charAt(0));
+            if (!result.hasNode(s)) {
+                result = result.addNode(s, Constants.JAHIANT_SYSTEMFOLDER);
+            } else {
+                result = result.getNode(s);
+            }
+        }
+        return result;
+    }
 }

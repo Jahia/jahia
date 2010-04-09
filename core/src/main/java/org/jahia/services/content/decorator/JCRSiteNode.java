@@ -76,11 +76,6 @@ public class JCRSiteNode extends JCRNodeDecorator {
         return null;
     }
 
-    public String getTemplateFolder() {
-        return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackage(getTemplatePackageName()).getRootFolder();
-    }
-
     public String getDescr() {
         try {
             return getProperty("j:description").getString();
@@ -209,12 +204,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
         }
     }
 
-    /**
-     * Returns the corresponding template set name of this virtual site.
-     *
-     * @return the corresponding template set name of this virtual site
-     */
-    public String getTemplatePackageName() {
+    public String getTemplateFolder() {
         try {
             if (getParent().isNodeType("jnt:templatesSetFolder")) {
                 return getParent().getName();
@@ -223,6 +213,16 @@ public class JCRSiteNode extends JCRNodeDecorator {
         } catch (RepositoryException e) {
             return null;
         }
+    }
+
+    /**
+     * Returns the corresponding template set name of this virtual site.
+     *
+     * @return the corresponding template set name of this virtual site
+     */
+    public String getTemplatePackageName() {
+        return ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getTemplatePackageByFileName(getTemplateFolder()).getName();
     }
 
     public GoogleAnalyticsProfile getGoogleAnalyticsProfile(){

@@ -6,8 +6,8 @@
 
 
     <templatesSet>
-        <Jahia_x0020_Intranet_x0020_Templates jcr:primaryType="jnt:templatesSetFolder">
-            <defaultSite jcr:primaryType="jnt:virtualsite" j:installedModules="Jahia Intranet Templates">
+        <templates-intranet jcr:primaryType="jnt:templatesSetFolder">
+            <defaultSite jcr:primaryType="jnt:virtualsite" j:installedModules="templates-intranet">
                 <contents jcr:primaryType="jnt:folder">
                     <site_components jcr:primaryType="jnt:folder">
                         <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"
@@ -86,7 +86,7 @@
                     </double>
                 </templates>
             </defaultSite>
-        </Jahia_x0020_Intranet_x0020_Templates>
+        </templates-intranet>
     </templatesSet>
 </content>
         

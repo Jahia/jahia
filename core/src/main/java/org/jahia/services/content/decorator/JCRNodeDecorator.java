@@ -255,6 +255,15 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.copy(dest, name, allowsExternalSharedNodes);
     }
 
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes,Map<String, List<String>> references) throws RepositoryException {
+        return node.copy(dest, name, allowsExternalSharedNodes, references);
+    }    
+
+    public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
+        node.copyProperties(destinationNode, references);
+    }
+
+
     public boolean lockAndStoreToken() throws RepositoryException  {
         return node.lockAndStoreToken();
     }

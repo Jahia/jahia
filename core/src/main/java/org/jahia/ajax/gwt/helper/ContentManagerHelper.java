@@ -45,6 +45,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -760,17 +761,35 @@ public class ContentManagerHelper {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(currentUserSession.getUser().getUsername(),new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    HashMap<String, List<String>> references = new HashMap<String, List<String>>();
+                    List<JCRNodeWrapper> pageTemplates = new ArrayList<JCRNodeWrapper>();
                     for (Map.Entry<String, String> entry : pathsToSyncronize.entrySet()) {
                         JCRNodeWrapper originalNode = session.getNode(entry.getKey());
                         JCRNodeWrapper destinationNode = null;
                         try {
                             destinationNode = session.getNode(entry.getValue());
-                            synchro(originalNode, destinationNode, session, false);
+                            synchro(originalNode, destinationNode, session, false, references, pageTemplates);
                         } catch (PathNotFoundException e) {
                             destinationNode = session.getNode(StringUtils.substringBeforeLast(entry.getValue(),"/"));
                             originalNode.copy(destinationNode, StringUtils.substringAfterLast(entry.getValue(),"/"), true);
                         }
                         session.save();
+                    }
+                    ReferencesHelper.resolveCrossReferences(session, references);
+                    for (JCRNodeWrapper pageTemplate : pageTemplates) {
+                        List<JCRNodeWrapper> pages = new ArrayList<JCRNodeWrapper>();
+                        PropertyIterator pi = pageTemplate.getWeakReferences("j:sourceTemplate");
+                        while (pi.hasNext()) {
+                            JCRPropertyWrapper property = (JCRPropertyWrapper) pi.next();
+                            if (property.getParent().isNodeType("jnt:page")) {
+                                pages.add(property.getParent());
+                            }
+                        }
+                        for (JCRNodeWrapper page : pages) {
+                            references = new HashMap<String, List<String>>();
+                            synchro(pageTemplate, page, session, true, references, null);
+                            ReferencesHelper.resolveCrossReferences(session, references);
+                        }
                     }
                     return null;
                 }
@@ -783,7 +802,7 @@ public class ContentManagerHelper {
     }
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
-                        final boolean toPage) throws RepositoryException {
+                        final boolean toPage, Map<String, List<String>> references, List<JCRNodeWrapper> pageTemplates) throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
@@ -820,22 +839,7 @@ public class ContentManagerHelper {
             if (source.hasProperty("jcr:language")) {
                 destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
             }
-            PropertyIterator props = source.getProperties();
-
-            while (props.hasNext()) {
-                Property property = props.nextProperty();
-                try {
-                    if (!property.getDefinition().isProtected()) {
-                        if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                            destinationNode.setProperty(property.getName(), property.getValues());
-                        } else {
-                            destinationNode.setProperty(property.getName(), property.getValue());
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
-                }
-            }
+            source.copyProperties(destinationNode, references);
         } else {
             if (source.isNodeType("jmix:templateInformation")) {
                 destinationNode.addMixin("jmix:templateInformation");
@@ -869,7 +873,7 @@ public class ContentManagerHelper {
                     session.save();
                     if (destinationNode.hasNode(child.getName())) {
                         JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                        synchro(child, node, session, toPage);
+                        synchro(child, node, session, toPage, references, pageTemplates);
                     } else {
                         destinationNode.clone(session.getNodeByUUID(uuidMapping.get(child.getIdentifier())),
                                 child.getName());
@@ -877,7 +881,7 @@ public class ContentManagerHelper {
                 } else {
                     if (destinationNode.hasNode(child.getName())) {
                         JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                        synchro(child, node, session, toPage);
+                        synchro(child, node, session, toPage, references, pageTemplates);
                     } else {
                         if (!toPage) {
                             destinationNode.clone(child, child.getName());
@@ -893,7 +897,7 @@ public class ContentManagerHelper {
             } else {
                 if (destinationNode.hasNode(child.getName())) {
                     JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                    synchro(child, node, session, toPage);
+                    synchro(child, node, session, toPage, references, pageTemplates);
                 } else {
                     if (!child.hasProperty("j:templateDeployed")) {
                         child.addMixin("jmix:templateInformation");
@@ -914,21 +918,10 @@ public class ContentManagerHelper {
 //        session.save();
         // deploy to pages
         if (!toPage && source.isNodeType("jnt:page")) {
-            List<JCRNodeWrapper> pages = new ArrayList<JCRNodeWrapper>();
-            PropertyIterator pi = destinationNode.getWeakReferences("j:sourceTemplate");
-            while (pi.hasNext()) {
-                JCRPropertyWrapper property = (JCRPropertyWrapper) pi.next();
-                if (property.getParent().isNodeType("jnt:page")) {
-                    pages.add(property.getParent());
-                }
-            }
-
-
-            for (JCRNodeWrapper page : pages) {
-                synchro(destinationNode, page, session, true);
-            }
+            pageTemplates.add(destinationNode);
         }
 
     }
+
 
 }

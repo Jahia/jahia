@@ -38,7 +38,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -613,68 +612,6 @@ public class JCRStoreProvider {
     }
 
 
-    public void deployNewSite(JahiaSite site, JahiaUser user) throws RepositoryException {
-        JCRSessionWrapper session = sessionFactory.getSystemSession(user.getUsername(), null);
-        try {
-            if (session.getWorkspace().getQueryManager() != null) {
-                Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:virtualsitesFolder]", Query.JCR_SQL2);
-                QueryResult qr = q.execute();
-                NodeIterator ni = qr.getNodes();
-                try {
-                    while (ni.hasNext()) {
-                        Node sitesFolder = ni.nextNode();
-                        String options = "";
-                        if (sitesFolder.hasProperty("j:virtualsitesFolderConfig")) {
-                            options = sitesFolder.getProperty("j:virtualsitesFolderConfig").getString();
-                        }
-
-                        Node f = getPathFolder(sitesFolder, site.getSiteKey(), options);
-                        try {
-                            f.getNode(site.getSiteKey());
-                        } catch (PathNotFoundException e) {
-                            session.getWorkspace().getVersionManager().checkout(f.getPath());
-                            f.addNode(site.getSiteKey(), Constants.JAHIANT_VIRTUALSITE);
-                            if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
-                                InputStream is = null;
-                                try {
-                                    is = new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString());
-                                    session.importXML(f.getPath()+"/"+site.getSiteKey(), is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
-                                } finally {
-                                    IOUtils.closeQuietly(is);
-                                }
-                            }
-
-                            Node siteNode = f.getNode(site.getSiteKey());
-                            siteNode.setProperty("j:title", site.getTitle());
-                            siteNode.setProperty("j:description", site.getDescr());
-                            siteNode.setProperty("j:serverName", site.getServerName());
-                            siteNode.setProperty("j:siteId", site.getID());
-                            siteNode.setProperty("j:installedModules", new String[]{site.getTemplatePackageName()});
-                            siteNode.setProperty("j:defaultLanguage", site.getDefaultLanguage());
-                            siteNode.setProperty("j:mixLanguage",site.isMixLanguagesActive());
-                            siteNode.setProperty("j:languages",site.getLanguages().toArray(new String[site.getLanguages().size()]));
-                            siteNode.setProperty("j:mandatoryLanguages",site.getMandatoryLanguages().toArray(new String[site.getMandatoryLanguages().size()]));
-//                            try {
-//                                Node home = siteNode.getNode("home");
-//                                home.setProperty("j:template", ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(site.getTemplatePackageName()).getHomePageName());
-//                            } catch (RepositoryException e1) {
-//                                e1.printStackTrace();
-//                            }
-
-                            session.save();
-                            session.getWorkspace().getVersionManager().checkin(f.getPath());
-                            publicationService.publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, true);
-                        }
-                    }
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-        } finally {
-            session.logout();
-        }
-    }
-
     public void deployExternalUser(String username, String providerName) throws RepositoryException {
         JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
         try {
@@ -690,7 +627,7 @@ public class JCRStoreProvider {
                         options = usersFolderNode.getProperty("j:usersFolderConfig").getString();
                     }
 
-                    Node f = getPathFolder(usersFolderNode, username, options);
+                    Node f = JCRContentUtils.getPathFolder(usersFolderNode, username, options);
 
                     try {
                         f.getNode(username);
@@ -732,19 +669,6 @@ public class JCRStoreProvider {
         } finally {
             session.logout();
         }
-    }
-
-    private Node getPathFolder(Node root, String name, String options) throws RepositoryException {
-        Node result = root;
-        if (options.contains("initials")) {
-            String s = "" + Character.toUpperCase(name.charAt(0));
-            if (!result.hasNode(s)) {
-                result = result.addNode(s,Constants.JAHIANT_SYSTEMFOLDER);
-            } else {
-                result = result.getNode(s);
-            }
-        }
-        return result;
     }
 
     public List<JCRNodeWrapper> getUserFolders(String site, JahiaUser user) throws RepositoryException {

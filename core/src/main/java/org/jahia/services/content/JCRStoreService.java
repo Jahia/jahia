@@ -153,11 +153,6 @@ public class JCRStoreService extends JahiaService  {
         }
     }
 
-    public void deployNewSite(JahiaSite site, JahiaUser user) throws RepositoryException {
-        JCRStoreProvider provider = sessionFactory.getMountPoints().get("/");
-        provider.deployNewSite(site, user);
-    }
-
     public void deployExternalUser(String username, String providerName) throws RepositoryException {
         JCRStoreProvider provider = sessionFactory.getMountPoints().get("/");
         provider.deployExternalUser(username, providerName);

@@ -575,6 +575,10 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes) throws RepositoryException;
 
+    boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes,Map<String, List<String>> references) throws RepositoryException;
+
+    void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException;
+
     /**
      * Get a lock on this node and store the lock token
      * @see #lock(boolean, boolean)

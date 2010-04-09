@@ -41,9 +41,9 @@ public class AnalyticsTabItem extends EditEngineTabItem {
         } else {
             lastQuery = new GWTJahiaAnalyticsQuery();
             lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:date");
-            lastQuery.setNode(engine.getNode());
             lastQuery.setMetrics("ga:pageviews");
             lastQuery.setSort("-ga:pageviews");
+            lastQuery.setFilters("ga:pagePath==" + engine.getNode());
             display(locale);
         }
         layout();
@@ -65,7 +65,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
                 }
                 @Override
                 public void onTextButtonSelected() {
-                    lastQuery.setDimensions("ga:source,ga:medium,ga:country,ga:hostname,ga:networkDomain");
+                    lastQuery.setDimensions("ga:pagePath,ga:source,ga:medium,ga:country,ga:hostname,ga:networkDomain");
                     lastQuery.setMetrics("ga:visits");
                     lastQuery.setSort("-ga:visits");
                     loadData(lastQuery);

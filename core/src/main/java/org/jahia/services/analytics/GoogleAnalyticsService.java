@@ -240,7 +240,7 @@ public class GoogleAnalyticsService {
             GoogleAnalyticsProfile googleAnalyticsProfile = site.getGoogleAnalyticsProfile();
 
             if (googleAnalyticsProfile.isEnabled()) {
-                String jahiaProfileName = googleAnalyticsProfile.getName();
+                String jahiaProfileName = googleAnalyticsProfile.getProfile();
                 String trackerName = jahiaProfileName.replaceAll(" ", "_") + "Tracker";
 
                 // create tracker
@@ -253,15 +253,15 @@ public class GoogleAnalyticsService {
 
                 // add tracked url
                 String trackedUrls = googleAnalyticsProfile.getTypeUrl();
-                String url = node.getUrl();
+                String path = node.getPath();
                 if (trackedUrls.equals("virtual")) {
                     try {
-                        url = "'/Unique_Universal_id/" + node.getUUID();
+                        path = "'/Unique_Universal_id/" + node.getIdentifier();
                     } catch (Exception e) {
                         logger.error("Error in gaTrackingCode", e);
                     }
                 }
-                String trackPageview = trackerName + "._trackPageview('" + url + "');\n";
+                String trackPageview = trackerName + "._trackPageview('" + path + "');\n";
 
                 result.append(trackPageview);
             }

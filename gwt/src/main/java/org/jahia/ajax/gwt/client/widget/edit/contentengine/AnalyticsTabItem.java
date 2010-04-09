@@ -43,7 +43,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
             lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:date");
             lastQuery.setMetrics("ga:pageviews");
             lastQuery.setSort("-ga:pageviews");
-            lastQuery.setFilters("ga:pagePath==" + engine.getNode());
+            //lastQuery.setFilters("ga:pagePath==" + engine.getNode());
             display(locale);
         }
         layout();
@@ -65,7 +65,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
                 }
                 @Override
                 public void onTextButtonSelected() {
-                    lastQuery.setDimensions("ga:pagePath,ga:source,ga:medium,ga:country,ga:hostname,ga:networkDomain");
+                    lastQuery.setDimensions("ga:pagePath,ga:source,ga:country,ga:hostname,ga:networkDomain,ga:browser,ga:browserVersion");
                     lastQuery.setMetrics("ga:visits");
                     lastQuery.setSort("-ga:visits");
                     loadData(lastQuery);

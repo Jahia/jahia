@@ -369,7 +369,7 @@
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-core</artifactId>
-            <version>${jackrabbit.version}-patch2</version>
+            <version>${jackrabbit.version}-patch4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>

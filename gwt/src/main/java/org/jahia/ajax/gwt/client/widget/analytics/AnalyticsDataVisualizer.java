@@ -31,31 +31,23 @@
  */
 package org.jahia.ajax.gwt.client.widget.analytics;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.data.BaseListLoader;
-import com.extjs.gxt.ui.client.data.ListLoader;
-import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,7 +63,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
     public static final int GOOGLE_MAP_VIEW = 1;
 
     public static final int ANNOTATED_TIME_LINE = 2;
-    private int view = LABEL_VIEW;
+    private int view = ANNOTATED_TIME_LINE;
 
 
     public AnalyticsDataVisualizer() {
@@ -95,33 +87,6 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         mainContainer = new LayoutContainer();
 
         add(mainContainer);
-
-
-        // profiles selector
-        final ComboBox<GWTJahiaAnalyticsProfile> analyticsProfileComboBox = new ComboBox<GWTJahiaAnalyticsProfile>();       
-        final ListStore<GWTJahiaAnalyticsProfile> profilesStore = new ListStore<GWTJahiaAnalyticsProfile>();
-        analyticsProfileComboBox.setStore(profilesStore);
-        analyticsProfileComboBox.setDisplayField("name");
-        /*JahiaContentManagementService.App.getInstance().getGAProfiles(new AsyncCallback<GWTJahiaAnalyticsProfile>() {
-            public void onSuccess(GWTJahiaAnalyticsProfile gwtJahiaAnalyticsProfiles) {
-                Log.debug("Found " + gwtJahiaAnalyticsProfiles.size() + " profiles");
-                    profilesStore.add(gwtJahiaAnalyticsProfiles);
-                }
-            }
-
-            public void onFailure(Throwable throwable) {
-                Log.error("Error while retriving parofile", throwable);
-            }
-        });
-        */
-        analyticsProfileComboBox.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaAnalyticsProfile>(){
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaAnalyticsProfile> event) {
-                oneProfileChanged(event.getSelectedItem());
-            }
-        });
-
-
         // start date / end date
         final DateField startDate = new DateField();
         final DateField endDate = new DateField();
@@ -143,11 +108,18 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         final Button worldMapButton = new Button("Geo map");
         final Button annotatedTimeLineButton = new Button("Annotated Time Line");
 
+        annotatedTimeLineButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                view = ANNOTATED_TIME_LINE;
+                oneAnnotatedTimeLineSelected();
+            }
+        });
         textButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 view = LABEL_VIEW;
-                oneGeoMapSelected();
+                onTextButtonSelected();
             }
         });
         worldMapButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -157,25 +129,16 @@ public class AnalyticsDataVisualizer extends ContentPanel {
                 oneGeoMapSelected();
             }
         });
-        annotatedTimeLineButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                view = ANNOTATED_TIME_LINE;
-                oneAnnotatedTimeLineSelected();
-            }
-        });
 
         // create toolbar
         final ToolBar toolbar = new ToolBar();
-        toolbar.add(new Label(" Profile: "));
-        toolbar.add(analyticsProfileComboBox);
         toolbar.add(new Label(" Start date: "));
         toolbar.add(startDate);
         toolbar.add(new Label(" End date"));
         toolbar.add(endDate);
+        toolbar.add(annotatedTimeLineButton);
         toolbar.add(textButton);
         toolbar.add(worldMapButton);
-        toolbar.add(annotatedTimeLineButton);
 
         displayDataNotAvailble(null);
         setTopComponent(toolbar);
@@ -236,42 +199,15 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         GroupingStore<GWTJahiaAnalyticsData> store = new GroupingStore<GWTJahiaAnalyticsData>();
         store.add(dataList);
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-
-        ColumnConfig column = new ColumnConfig();
-        column.setId("date");
-        column.setHeader("date");
-        column.setWidth(300);
-        column.setRenderer(new GridCellRenderer<GWTJahiaAnalyticsData>() {
-            public Object render(GWTJahiaAnalyticsData gwtJahiaAnalyticsData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaAnalyticsData> gwtJahiaAnalyticsDataListStore, Grid<GWTJahiaAnalyticsData> gwtJahiaNodeGrid) {
-                Date d = gwtJahiaAnalyticsData.getDate();
-                if (d != null) {
-                    return DateTimeFormat.getFormat("d/MM/y").format(d);
-                } else {
-                    return "-";
-                }
-            }
-        });
-        configs.add(column);
-
-        column = new ColumnConfig();
-        column.setId("country");
-        column.setHeader("Country");
-        column.setWidth(100);
-        configs.add(column);
-
-        column = new ColumnConfig();
-        column.setId("value");
-        column.setHeader("Views");
-        column.setWidth(100);
-        configs.add(column);
-        store.groupBy("country");
-
-
+        for (Map.Entry entry : dataList.get(0).getProperties().entrySet()) {
+            ColumnConfig  column = new ColumnConfig();
+            column.setId((String) entry.getKey());
+            column.setHeader((String) entry.getKey());
+            column.setWidth(100);
+            configs.add(column);
+        }
         // Grouping view
-        GroupingView view = new GroupingView();
-        view.setShowGroupedColumn(false);
         final Grid<GWTJahiaAnalyticsData> grid = new Grid<GWTJahiaAnalyticsData>(store, new ColumnModel(configs));
-        grid.setView(view);
         mainContainer.add(grid);
         mainContainer.layout();
     }
@@ -308,6 +244,12 @@ public class AnalyticsDataVisualizer extends ContentPanel {
     }
 
     /**
+     * before switching to text
+     */
+    public void onTextButtonSelected() {
+    }
+
+    /**
      * before switching to chart
      */
     public void oneAnnotatedTimeLineSelected() {
@@ -321,7 +263,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      */
     public String getCountry(int dataIndex) {
         GWTJahiaAnalyticsData data = dataList.get(dataIndex);
-        return data.getCountry();
+        return data.get("country");
     }
 
     /**
@@ -330,10 +272,16 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      * @param dataIndex
      * @return
      */
-    public double getValue(int dataIndex) {
+    public int getVisits(int dataIndex) {
         GWTJahiaAnalyticsData data = dataList.get(dataIndex);
-        return data.getValue();
+        return Integer.parseInt((String) data.get("visits"));
     }
+
+    public int getPageviews(int dataIndex) {
+        GWTJahiaAnalyticsData data = dataList.get(dataIndex);
+        return Integer.parseInt((String) data.get("pageviews"));
+    }
+
 
     /**
      * Get data index
@@ -341,9 +289,9 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      * @param dataIndex
      * @return
      */
-    public Date getDate(int dataIndex) {
+    public String getDate(int dataIndex) {
         GWTJahiaAnalyticsData data = dataList.get(dataIndex);
-        return data.getDate();
+        return data.get("date");
     }
 
     /**
@@ -351,7 +299,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
      */
     private native void displayGeoMap(Element element, int size)
         /*-{
-            if(!$wnd.google && !wnd.google.visualisation) {
+            if(!$wnd.google && !$wnd.google.visualisation) {
                return;
            }
            var data = new $wnd.google.visualization.DataTable();
@@ -365,7 +313,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
               var country = this.@org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer::getCountry(I)(i);
               data.setValue(i, 0, country);
 
-              var value = this.@org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer::getValue(I)(i);
+              var value = this.@org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer::getVisits(I)(i);
               data.setValue(i, 1, value);
           }
 
@@ -383,7 +331,7 @@ public class AnalyticsDataVisualizer extends ContentPanel {
     public native void displayAnnotatedTimeLine(Element element, int size)
         /*-{
 
-        if(!$wnd.google && !wnd.google.visualisation)
+        if(!$wnd.google && !$wnd.google.visualisation)
            {
                return;
            }
@@ -396,10 +344,12 @@ public class AnalyticsDataVisualizer extends ContentPanel {
         for(var i=0; i < size ; i++)
         {
             var date = this.@org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer::getDate(I)(i);
-            data.setValue(i, 0, date);
-
-            var value = this.@org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer::getValue(I)(i);
-            data.setValue(i, 1, value);
+            data.setCell(
+                    i,
+                    0,
+                    new $wnd.Date(date.substr(0,4),date.substr(4,2) - 1,date.substr(6,2)));
+            var value = this.@org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer::getPageviews(I)(i);
+            data.setCell(i, 1, value);
         }
 
          var options={};

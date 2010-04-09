@@ -56,7 +56,6 @@ import java.util.*;
 public class GoogleAnalyticsService {
     final static Logger logger = Logger.getLogger(GoogleAnalyticsService.class);
     // format must be "2006-04-01"
-    final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
     private AnalyticsService analyticsService;
     private static GoogleAnalyticsService googleAnalyticsService = new GoogleAnalyticsService();
 
@@ -87,37 +86,15 @@ public class GoogleAnalyticsService {
     /**
      * queryData
      *
-     * @param startDate
-     * @param endDate
      * @return
      */
-    public List<DataEntry> queryData(Date startDate, Date endDate, String dimensions, String login, String pwd, String webPropertyId) {
+    public List<DataEntry> queryData(DataQuery query, String login, String pwd, String webPropertyId) {
         final AnalyticsService analyticsService = getAnalyticsService(login, pwd);
         final AccountEntry accountEntry = getAccountEntry(webPropertyId);
 
-        // default start date = this date -3 ont
-        if (startDate == null) {
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MONTH, -3);
-            startDate = cal.getTime();
-        }
-
-        // default end-date = today
-        if (endDate == null) {
-            Calendar cal = Calendar.getInstance();
-            endDate = cal.getTime();
-        }
         if (accountEntry != null) {
             try {
-                DataQuery query = new DataQuery(new URL("https://www.google.com/analytics/feeds/data"));
-                query.setStartDate(dateFormatter.format(startDate));
-                query.setEndDate(dateFormatter.format(endDate));
-                query.setDimensions(dimensions);
-                query.setMetrics("ga:pageviews");
-                query.setSort("-ga:pageviews");
-                query.setMaxResults(10);
                 query.setIds(accountEntry.getTableId().getValue());
-
                 // Make a request to the API, using DataFeed class as the second parameter.
                 DataFeed dataFeed = analyticsService.getFeed(query.getUrl(), DataFeed.class);
                 // Output data to the screen.
@@ -210,8 +187,10 @@ public class GoogleAnalyticsService {
                             "\nProfile Id    = " + entry.getProperty("ga:profileId") +
                             "\nTable Id      = " + entry.getTableId().getValue());
 
+                    if (webPropertyId.equalsIgnoreCase(currentWebPropertyId)) {
                         return entry;
-                }
+                    }
+                 }
             } catch (Exception e) {
                 logger.error(e, e);
             }

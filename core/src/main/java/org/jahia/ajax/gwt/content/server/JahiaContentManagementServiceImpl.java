@@ -1125,7 +1125,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         // get data
-        query.setProfile(new GWTJahiaAnalyticsProfile(googleAnalyticsProfile.getProfile()));
         return analytics.queryData(login, pwd, gaAccount, query);
     }
 

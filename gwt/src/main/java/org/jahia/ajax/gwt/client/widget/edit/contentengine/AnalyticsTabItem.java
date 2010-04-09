@@ -40,8 +40,10 @@ public class AnalyticsTabItem extends EditEngineTabItem {
             return;
         } else {
             lastQuery = new GWTJahiaAnalyticsQuery();
-            lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:country,ga:date");
+            lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:date");
             lastQuery.setNode(engine.getNode());
+            lastQuery.setMetrics("ga:pageviews");
+            lastQuery.setSort("-ga:pageviews");
             display(locale);
         }
         layout();
@@ -61,22 +63,21 @@ public class AnalyticsTabItem extends EditEngineTabItem {
                     lastQuery.setEndDate(newEndDate);
                     loadData(lastQuery);
                 }
-
+                @Override
+                public void onTextButtonSelected() {
+                    lastQuery.setDimensions("ga:source,ga:medium,ga:country,ga:hostname,ga:networkDomain");
+                    lastQuery.setMetrics("ga:visits");
+                    lastQuery.setSort("-ga:visits");
+                    loadData(lastQuery);
+                }
                 @Override
                 public void oneGeoMapSelected() {
                     lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:country,ga:date");
                     loadData(lastQuery);
                 }
-
                 @Override
                 public void oneAnnotatedTimeLineSelected() {
                     lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:date");
-                    loadData(lastQuery);
-                }
-
-                @Override
-                public void oneProfileChanged(GWTJahiaAnalyticsProfile profile) {
-                    lastQuery.setProfile(profile);
                     loadData(lastQuery);
                 }
             };

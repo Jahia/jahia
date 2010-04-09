@@ -18,6 +18,10 @@ public class GWTJahiaAnalyticsQuery implements Serializable {
     private Date endDate;
     private GWTJahiaNode node;
     private GWTJahiaAnalyticsProfile profile;
+    private String metrics;
+    private String filters;
+    private String sort;
+    private String startIndex;
 
     public GWTJahiaAnalyticsQuery() {
     }
@@ -46,19 +50,43 @@ public class GWTJahiaAnalyticsQuery implements Serializable {
         this.endDate = endDate;
     }
 
-    public GWTJahiaAnalyticsProfile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(GWTJahiaAnalyticsProfile profile) {
-        this.profile = profile;
-    }
-
     public GWTJahiaNode getNode() {
         return node;
     }
 
     public void setNode(GWTJahiaNode node) {
         this.node = node;
+    }
+
+    public String getMetrics() {
+        return metrics;
+    }
+
+    public void setMetrics(String metrics) {
+        this.metrics = metrics;
+    }
+
+    public String getFilters() {
+        return filters;
+    }
+
+    public void setFilters(String filters) {
+        this.filters = filters;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
+    public String getStartIndex() {
+        return startIndex;
+    }
+
+    public void setStartIndex(String startIndex) {
+        this.startIndex = startIndex;
     }
 }

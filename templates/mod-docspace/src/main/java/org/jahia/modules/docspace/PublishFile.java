@@ -3,10 +3,10 @@ package org.jahia.modules.docspace;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.ActionResult;
-import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,9 +41,20 @@ public class PublishFile implements org.jahia.bin.Action {
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale());
+        JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(
+                resource.getWorkspace(), resource.getLocale());
         try {
-             JCRPublicationService.getInstance().publish(resource.getNode().getPath(), resource.getWorkspace(), Constants.LIVE_WORKSPACE, Collections.singleton(resource.getLocale().toString()), true, false);
+            final JCRPublicationService service = JCRPublicationService.getInstance();
+            final Set<String> languages = Collections.singleton(resource.getLocale().toString());
+            final PublicationInfo publicationInfo = service.getPublicationInfo(resource.getNode().getPath(), languages,
+                                                                               false, false);
+            if (publicationInfo.getStatus() == PublicationInfo.UNPUBLISHABLE) {
+                service.publish(resource.getNode().getParent().getPath(), resource.getWorkspace(),
+                                Constants.LIVE_WORKSPACE, languages, true, false);
+            }
+            boolean publishChildren = req.getParameter("publishChildren")!=null && Boolean.valueOf(req.getParameter("publishChildren"));
+            service.publish(resource.getNode().getPath(), resource.getWorkspace(), Constants.LIVE_WORKSPACE, languages,
+                            true, publishChildren);
             jcrSessionWrapper.save();
             return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
         } catch (RepositoryException e) {

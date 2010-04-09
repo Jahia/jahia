@@ -52,7 +52,7 @@
         </c:forEach>
         <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
         <template:removePager id="${currentNode.identifier}"/>
-        <template:module node="${currentNode}" template="newPostForm"/>
+        <template:include template="newPostForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
                 ${fn:length(currentNode.children)}&nbsp;<fmt:message key="posts"/>

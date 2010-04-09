@@ -48,6 +48,7 @@
             </div>
         </div>
     </div>
+    <c:if test="${jcr:hasPermission(currentNode, 'write')}">
     <!--stop boxdocspace -->
     <div class="boxdocspace">
         <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">
@@ -82,7 +83,7 @@
                                                        alert('you must fill the title ');
                                                        return false;
                                                    }
-                                                   document.newDocspace.action = '${currentNode.name}/'+noAccent(document.newDocspace.elements['jcr:title'].value.replace(' ',''));
+                                                   document.newDocspace.action = '${url.basePreview}${currentNode.path}/'+noAccent(document.newDocspace.elements['jcr:title'].value.replace(' ',''));
                                                    document.newDocspace.submit();
                                                "
                                             />
@@ -95,6 +96,7 @@
             </div>
         </div>
     </div>
+        </c:if>
     <!--stop boxdocspace -->
 
     <div class='clear'></div>

@@ -23,18 +23,18 @@
     });
 </script>
 
-    <ul class="docspacelistcomment" id="${currentNode.UUID}">
-        <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
-        <c:set var="listTotalSize" value="${fn:length(currentNode.nodes)}" scope="request"/>
-        <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
-        <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
-        	<template:param name="callback" value="initCuteTime();"/>
-        </template:option>
-        <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
-                <template:module node="${subchild}" template="default"/>
-        </c:forEach>
-        <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
-        <template:removePager id="${currentNode.identifier}"/>
-        <template:module node="${currentNode}" template="newPostForm"/>
-    </ul>
+<ul class="docspacelistcomment" id="${currentNode.UUID}">
+    <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
+    <c:set var="listTotalSize" value="${fn:length(currentNode.nodes)}" scope="request"/>
+    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
+    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
+        <template:param name="callback" value="initCuteTime();"/>
+    </template:option>
+    <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
+        <template:module node="${subchild}" template="default"/>
+    </c:forEach>
+    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
+</ul>
+<template:include template="newPostForm"/>
+<template:removePager id="${currentNode.identifier}"/>
 

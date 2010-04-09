@@ -1,5 +1,3 @@
-<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
-<%@ page import="org.jahia.utils.FileUtils" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
@@ -23,7 +21,7 @@
 
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
-
+<c:set value="${jcr:hasPermission(currentNode, 'write')}" var="hasWriteAccess"/>
 <script>
     $(document).ready(function() {
         $("#ckeditorEditDescription").editable(function (value, settings) {
@@ -43,7 +41,7 @@
         });
 
         $("#actions").click(function() {
-            if ($(this).hasClass( 'delete' )) {
+            if ($(this).hasClass('delete')) {
                 if (confirm("Do you REALLY want to delete this file SPACE?")) {
                     var data = {};
                     data['methodToCall'] = 'delete';
@@ -55,12 +53,21 @@
                 }
             }
         });
+
+        $('#publishFile').submit(function() {
+            $.post('${url.base}${currentNode.path}.publishFile.do', $(this).serializeArray(), null, "json");
+            return false;
+        });
     });
 </script>
 <div class='grid_12'><!--start grid_12-->
-<a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html"><fmt:message key="docspace.label.back"/> ${currentNode.parent.name}</a>
-<a href="#" id="actions" title="Delete" class="delete"><fmt:message key="docspace.label.file.delete"/></a>
-<div class='clear'></div></div>
+    <a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html"><fmt:message
+            key="docspace.label.back"/> ${currentNode.parent.name}</a>
+    <c:if test="${hasWriteAccess}">
+        <a href="#" id="actions" title="Delete" class="delete"><fmt:message key="docspace.label.file.delete"/></a>
+    </c:if>
+    <div class='clear'></div>
+</div>
 <div class='grid_12'><!--start grid_12-->
     <div class="boxdocspace "><!--start boxdocspace -->
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
@@ -68,10 +75,14 @@
                 <div class="boxdocspace-inner-border">
                     <div class="imagefloatleft">
                         <div class="itemImage itemImageLeft"><a
-                                href="${currentNode.url}"><img title="Download" value="download" src="${url.currentModule}/css/img/documentbig.png"/></a>
+                                href="${currentNode.url}"><img title="Download" value="download"
+                                                               src="${url.currentModule}/css/img/documentbig.png"/></a>
                         </div>
                     </div>
-                    <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}"><img title="Download" value="download" src="${url.currentModule}/css/img/download.png"/>  ${currentNode.name} ${currentNode.baseVersion.name}</a></h3>
+                    <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}"><img
+                            title="Download" value="download"
+                            src="${url.currentModule}/css/img/download.png"/> ${currentNode.name} ${currentNode.baseVersion.name}
+                    </a></h3>
 
                     <p class="clearMaringPadding docspacedate "><fmt:message key="label.created"/> : <fmt:formatDate
                             value="${currentNode.properties['jcr:created'].time}" pattern="yyyy/MM/dd"/>, <fmt:message
@@ -85,14 +96,15 @@
                         <fmt:message key="docspace.label.document.createdBy"/> <span class="author"><a
                                 href="${url.base}/users/${currentNode.properties['jcr:lastModifiedBy'].string}.html">${currentNode.properties['jcr:lastModifiedBy'].string}</a></span>
                     </p>
-<div class="clear"></div>
-<hr/>    
+
                     <div class="clear"></div>
-                   <template:option node="${currentNode}" template="hidden.tags"
-                                        nodetype="jmix:tagged"/><template:option node="${currentNode}"
-                                                                                      template="hidden.addTag"
-                                                                                      nodetype="jmix:tagged"/>
-<hr/>
+                    <hr/>
+                    <div class="clear"></div>
+                    <template:option node="${currentNode}" template="hidden.tags"
+                                     nodetype="jmix:tagged"/><template:option node="${currentNode}"
+                                                                              template="hidden.addTag"
+                                                                              nodetype="jmix:tagged"/>
+                    <hr/>
                     <template:option node="${currentNode}" template="hidden.average" nodetype="jmix:rating"/>
                     <!--stop boxdocspace -->
                     <div class="clear"></div>
@@ -101,50 +113,52 @@
         </div>
     </div>
     <!--stop boxdocspace -->
-<div class="boxdocspace"><!--start boxdocspace -->
-        <div class="boxdocspacegrey boxdocspacepadding10 boxdocspacemarginbottom16">
+    <c:if test="${hasWriteAccess}">
+        <div class="boxdocspace"><!--start boxdocspace -->
+            <div class="boxdocspacegrey boxdocspacepadding10 boxdocspacemarginbottom16">
+                <div class="boxdocspace-inner">
+                    <div class="boxdocspace-inner-border">
+
+
+                        <form action="${url.base}${currentNode.parent.path}/*" method="POST" name="uploadFile"
+                              enctype="multipart/form-data">
+                            <input type="hidden" name="nodeType" value="jnt:file"/>
+                            <input type="hidden" name="redirectTo"
+                                   value="${url.base}${renderContext.mainResource.node.path}"/>
+                            <input type="hidden" name="newNodeOutputFormat" value="docspace.html"/>
+                            <input type="hidden" name="targetDirectory" value="${currentNode.parent.path}"/>
+                            <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
+                            <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
+                            <input type="hidden" name="jcr:mixinTypes" value="jnt:docspaceFile"/>
+                            <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
+                            <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
+                            <input type="hidden" name="version" value="true"/>
+                            <label><fmt:message key="docspace.label.document.add.version"/></label>
+
+                            <input type="file" name="file">
+                            <input class="button" type="submit" id="upload" value="Upload"/>
+                        </form>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </c:if>
+    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.document.history.tile"/></h4>
+
+
+    <div class="boxdocspace">
+        <div class="boxdocspacepadding10 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
-                <div class="boxdocspace-inner-border">
-                                
+                <div class="boxdocspace-inner-border"><!--start boxdocspace -->
 
-                                <form action="${url.base}${currentNode.parent.path}/*" method="POST" name="uploadFile"
-                                      enctype="multipart/form-data">
-                                        <input type="hidden" name="nodeType" value="jnt:file"/>
-                                        <input type="hidden" name="redirectTo"
-                                               value="${url.base}${renderContext.mainResource.node.path}"/>
-                                        <input type="hidden" name="newNodeOutputFormat" value="docspace.html"/>
-                                        <input type="hidden" name="targetDirectory" value="${currentNode.parent.path}"/>
-                                        <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
-                                        <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
-                                        <input type="hidden" name="jcr:mixinTypes" value="jnt:docspaceFile"/>
-                                        <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
-                                        <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
-                                        <input type="hidden" name="version" value="true"/>
-										<label><fmt:message key="docspace.label.document.add.version"/></label>
+                    <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}"/>
 
-                                            <input type="file" name="file">
-                                            <input class="button" type="submit" id="upload" value="Upload"/>
-                                </form>
-              <div class="clear"></div></div>
+                </div>
             </div>
         </div>
     </div>
-    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.document.history.tile"/></h4>
-    
-        
-
-                            <div class="boxdocspace">
-                                <div class="boxdocspacepadding10 boxdocspacemarginbottom16">
-                                    <div class="boxdocspace-inner">
-                                        <div class="boxdocspace-inner-border"><!--start boxdocspace -->
-                                        
-                                            <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}"/>
-                        
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--stop boxdocspace -->
+    <!--stop boxdocspace -->
 
     <div class='clear'></div>
 </div>
@@ -159,11 +173,13 @@
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
                     <p class="clearMaringPadding">
+                        <c:if test="${hasWriteAccess}">
                         <span jcr:id="jcr:description" id="ckeditorEditDescription"
-                              jcr:url="${url.base}${currentNode.path}">
+                              jcr:url="${url.base}${currentNode.path}"></c:if>
                         <c:if test="${not empty currentNode.properties['jcr:description'].string}">${currentNode.properties['jcr:description'].string}</c:if>
-                        <c:if test="${empty currentNode.properties['jcr:description'].string}"><fmt:message key="docspace.label.add.description"/></c:if>
-                    </span>
+                        <c:if test="${hasWriteAccess and (empty currentNode.properties['jcr:description'].string)}"><fmt:message
+                                key="docspace.label.add.description"/></c:if>
+                    <c:if test="${hasWriteAccess}"></span></c:if>
 
                     </p>
 
@@ -214,10 +230,12 @@
             </li>
         </c:forEach>
     </ul>
-    <form method="POST" name="publishFile" action="${url.base}${currentNode.path}.publishFile.do">
-   		 <p><fmt:message key="docspace.text.document.publish"/></p>
-        <input class="button" type="submit" value="<fmt:message key="docspace.label.document.publish"/>"/>
-    </form>
+    <c:if test="${hasWriteAccess}">
+        <form method="POST" name="publishFile" action="${url.base}${currentNode.path}.publishFile.do" id="publishFile">
+            <p><fmt:message key="docspace.text.document.publish"/></p>
+            <input class="button" type="submit" value="<fmt:message key="docspace.label.document.publish"/>"/>
+        </form>
+    </c:if>
 </div>
 <!--stop grid_4-->
 

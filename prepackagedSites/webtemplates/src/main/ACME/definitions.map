@@ -17,7 +17,7 @@
 
 #[jnt:fileContainer] = #shareable
 # + file = #shareableSource
-[jnt:fileContainer] = jnt:nodeReference
+[jnt:fileContainer] = jnt:fileReference
  - file = j:node
  - fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
    true = details
@@ -25,7 +25,7 @@
 
 ## Portlet containers
 
-[jnt:portletContainer] = jnt:nodeReference
+[jnt:portletContainer] = jnt:portletReference
  - portlet = j:node
 
 [jnt:page] = jnt:page
@@ -49,7 +49,7 @@
 
 #[web_templates:fileContainer] = #shareable
 # + file = #shareableSource
-[web_templates:fileContainer] = jnt:nodeReference
+[web_templates:fileContainer] = jnt:fileReference
  - file = j:node 
  - fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
    true = details
@@ -121,7 +121,7 @@
    { setProperty [j:template=introduction] }
  - introduction = jnt:bigText.text
 
-[web_templates:logoContainer] = jnt:nodeReference
+[web_templates:logoContainer] = jnt:imageReference
  - logo = j:node
 
 [web_templates:footerContentContainer] = jnt:bigText

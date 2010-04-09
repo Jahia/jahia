@@ -437,8 +437,9 @@
 [jnt:fileReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:structuredContent
  - j:node (weakreference) < jnt:file
 
-[jnt:embedReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:structuredContent
+[jnt:imageReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:structuredContent
  - j:node (weakreference) < jmix:image
+ - j:alternateText (string)
 
 [jnt:nodeLink] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:link
  - j:node (weakreference) < jmix:droppableContent, jnt:page
@@ -526,6 +527,9 @@
  - j:definition (string)
  - j:cacheScope (string, choicelist) nofulltext < 'private','public'
  - j:expirationTime (long)
+
+[jnt:portletReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:structuredContent
+ - j:node (weakreference) < jnt:portlet
 
 //---------------------------------------------------------
 // Internal //

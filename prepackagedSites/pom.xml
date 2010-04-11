@@ -15,7 +15,6 @@
   <modules>
     <module>webtemplates</module>
     <module>webtemplates65</module>
-    <module>testSite</module>
   </modules>
 
 

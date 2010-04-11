@@ -93,8 +93,6 @@
         <module>templates-intranet</module>
         <module>topstories</module>
         <module>wiki</module>
-        <!--<module>test-templates</module>-->
-        <module>web-templates</module>
         <module>latestPages</module>
         <module>docspace</module>
     </modules>

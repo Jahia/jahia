@@ -1,7 +1,0 @@
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
-<%@ page language="java" contentType="text/html;charset=UTF-8" %>
-
-<template:area path="/sites/${renderContext.site.siteKey}/home/sideMenu" />
-
-<template:area path="columnB_box" template="default"  />

@@ -7,6 +7,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -41,19 +42,5 @@ class CreateContentTabItem extends SidePanelTabItem {
         super.initWithLinker(linker);
 //        contentTypeTree.setLinker(linker);
         gridDragSource.addDNDListener(linker.getDndListener());
-    }
-
-    public void refresh(int flag) {
-        JahiaContentDefinitionService.App.getInstance()
-                .getNodeSubtypes(null, new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
-                    public void onFailure(Throwable caught) {
-                        MessageBox.alert("Alert",
-                                "Unable to load content definitions. Cause: " + caught.getLocalizedMessage(), null);
-                    }
-
-                    public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
-                        contentTypeTree.filldataStore(result);
-                    }
-                });
     }
 }

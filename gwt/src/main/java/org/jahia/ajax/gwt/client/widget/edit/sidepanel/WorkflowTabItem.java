@@ -22,6 +22,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
@@ -162,7 +163,9 @@ public class WorkflowTabItem extends SidePanelTabItem {
 
     @Override
     public void refresh(int flag) {
-        fillStore();
-        layout();
+        if ((flag & Linker.REFRESH_WORKFLOW) != 0) {
+            fillStore();
+            layout();
+        }
     }
 }

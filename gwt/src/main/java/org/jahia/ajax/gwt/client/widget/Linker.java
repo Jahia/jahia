@@ -44,11 +44,11 @@ import java.util.List;
  *        Created : 23 sept. 2009
  */
 public interface Linker {
-    public final static int REFRESH_ALL = 1;
-    int REFRESH_MAIN = 2;
-    int REFRESH_PAGES = 4;
-    int REFRESH_WORKFLOW = 8;
-    int REFRESH_FOLDERS = 16;
+    public final static int REFRESH_ALL = 255;
+    public final static int REFRESH_MAIN = 1;
+    public final static int REFRESH_PAGES = 2;
+    public final static int REFRESH_WORKFLOW = 4;
+    public final static int REFRESH_FOLDERS = 8;
 
     public GWTJahiaNode getMainNode();
 

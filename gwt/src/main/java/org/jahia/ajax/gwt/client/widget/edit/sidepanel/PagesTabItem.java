@@ -106,8 +106,10 @@ public class PagesTabItem extends SidePanelTabItem {
 
     @Override
     public void refresh(int flag) {
-        tree.getTreeStore().removeAll();
-        tree.getTreeStore().getLoader().load();
+        if ((flag & Linker.REFRESH_PAGES) != 0) {
+            tree.getTreeStore().removeAll();
+            tree.getTreeStore().getLoader().load();
+        }
     }
 
     public void addOpenPath(String path) {

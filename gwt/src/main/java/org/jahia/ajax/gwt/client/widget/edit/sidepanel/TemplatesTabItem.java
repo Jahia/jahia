@@ -28,6 +28,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
@@ -116,8 +117,10 @@ public class TemplatesTabItem extends SidePanelTabItem {
 
     @Override
     public void refresh(int flag) {
-        tree.getTreeStore().removeAll();
-        tree.getTreeStore().getLoader().load();
+        if ((flag & Linker.REFRESH_PAGES) != 0) {
+            tree.getTreeStore().removeAll();
+            tree.getTreeStore().getLoader().load();
+        }
     }
 
     public void addOpenPath(String path) {

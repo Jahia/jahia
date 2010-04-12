@@ -592,11 +592,9 @@ public class ExtendedNodeType implements NodeType {
     public String getLabel(Locale locale) {
         String label = labels.get(locale);
         if (label == null) {
-            JahiaSite site = Jahia.getThreadParamBean().getSite();
-            final String packageName = site != null ? site.getTemplatePackageName() : null;
             String key = getName().replace(':', '_');
-            label = new JahiaResourceBundle(getResourceBundleId(), locale, packageName, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), packageName)).getString(key, key);
+            label = new JahiaResourceBundle(getResourceBundleId(), locale, null, JahiaTemplatesRBLoader
+                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(key, key);
             labels.put(locale, label);
         }
         return label;

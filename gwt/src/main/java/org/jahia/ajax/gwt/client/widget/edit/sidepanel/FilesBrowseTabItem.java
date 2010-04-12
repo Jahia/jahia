@@ -18,7 +18,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,9 +3,9 @@ package org.jahia.ajax.gwt.module.edit.client;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
-import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfiguration;
-import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
 
 import java.util.Arrays;
 

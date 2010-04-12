@@ -1,4 +1,4 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.data.toolbar;
 
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 

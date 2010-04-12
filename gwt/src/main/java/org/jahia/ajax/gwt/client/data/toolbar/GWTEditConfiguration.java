@@ -1,8 +1,8 @@
-package org.jahia.ajax.gwt.client.widget.edit;
+package org.jahia.ajax.gwt.client.data.toolbar;
 
-import org.jahia.ajax.gwt.client.widget.edit.GWTEngine;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
-import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 
 import java.util.List;
 

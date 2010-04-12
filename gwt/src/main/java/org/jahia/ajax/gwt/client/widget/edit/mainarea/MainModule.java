@@ -112,7 +112,9 @@ public class MainModule extends Module {
     }
 
     public void refresh(int flag) {
-        refresh();
+        if ((flag & Linker.REFRESH_MAIN) != 0) {
+            refresh();
+        }
     }
 
     private void refresh() {

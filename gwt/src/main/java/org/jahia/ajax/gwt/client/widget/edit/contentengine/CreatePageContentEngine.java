@@ -22,7 +22,6 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class CreatePageContentEngine extends CreateContentEngine {
-    protected CreatePageTabItem createPageTab;
     protected GWTJahiaNode defaultTemplate;
     public CreatePageContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetName) {
         super(linker, parent, type, targetName);
@@ -37,24 +36,8 @@ public class CreatePageContentEngine extends CreateContentEngine {
         this.defaultTemplate = defaultTemplate;
     }
 
-    @Override
-    protected void initTabs() {
-        createPageTab = new CreatePageTabItem(this);
-        if (linker instanceof EditLinker && ((EditLinker) linker).getMainModule().getConfig().getName().equals("studiomode")) {
-            tabs.add(createPageTab);
-            tabs.add(new TemplateOptionsTabItem(this));
-            tabs.add(new OptionsTabItem(this));
-            tabs.add(new RightsTabItem(this));
-        } else {
-            tabs.add(createPageTab);
-            tabs.add(new MetadataTabItem(this));
-            tabs.add(new ClassificationTabItem(this));
-            tabs.add(new OptionsTabItem(this));
-            tabs.add(new RightsTabItem(this));
-        }
-    }
-
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
+        CreatePageTabItem createPageTab = (CreatePageTabItem) tabs.getItems().get(0);
         if (createPageTab.getTemplate().isEmpty()) {
             super.doSave(nodeName, props, langCodeProperties, mixin, newNodeACL, closeAfterSave);
         } else {

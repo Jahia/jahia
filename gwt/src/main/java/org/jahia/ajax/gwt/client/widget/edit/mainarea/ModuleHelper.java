@@ -108,6 +108,7 @@ public class ModuleHelper {
         });
         JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new AsyncCallback<List<GWTJahiaNodeType>>() {
             public void onSuccess(List<GWTJahiaNodeType> result) {
+                nodeTypes = new HashMap<String, GWTJahiaNodeType>();
                 for (GWTJahiaNodeType type : result) {
                     nodeTypes.put(type.getName(), type);
                 }

@@ -20,7 +20,9 @@ public class GWTEditConfiguration {
     private GWTJahiaToolbar contextMenu;
 
     private List<GWTSidePanelTab> tabs;
-    private List<GWTEngine> engines;
+
+    private List<GWTEngine> createEngines;
+    private List<GWTEngine> editEngines;
 
     public GWTEditConfiguration() {
     }
@@ -57,11 +59,19 @@ public class GWTEditConfiguration {
         this.tabs = tabs;
     }
 
-    public List<GWTEngine> getEngines() {
-        return engines;
+    public List<GWTEngine> getCreateEngines() {
+        return createEngines;
     }
 
-    public void setEngines(List<GWTEngine> engines) {
-        this.engines = engines;
+    public void setCreateEngines(List<GWTEngine> createEngines) {
+        this.createEngines = createEngines;
+    }
+
+    public List<GWTEngine> getEditEngines() {
+        return editEngines;
+    }
+
+    public void setEditEngines(List<GWTEngine> editEngines) {
+        this.editEngines = editEngines;
     }
 }

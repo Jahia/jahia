@@ -43,6 +43,8 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
@@ -77,7 +79,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * @param linker the edit linker for refresh purpose
      */
     public EditContentEngine(GWTJahiaNode node, Linker linker) {
-        super(linker);
+        super(getEditConfig(node, ((EditLinker)linker).getConfig()), linker);
         contentPath = node.getPath();
         nodeName = node.getName();
         heading = "Edit " + nodeName + " (" + node.getCurrentVersion() + ")";
@@ -87,29 +89,13 @@ public class EditContentEngine extends AbstractContentEngine {
         //setTopComponent(toolBar);
     }
 
-    /**
-     * Creates and initializes all window tabs.
-     */
-    protected void initTabs() {
-        if (linker instanceof EditLinker && ((EditLinker) linker).getMainModule().getConfig().getName().equals("studiomode")) {
-            tabs.add(new ContentTabItem(this));
-            tabs.add(new TemplateOptionsTabItem(this));
-            tabs.add(new LayoutTabItem(this));
-            tabs.add(new OptionsTabItem(this));
-            tabs.add(new RightsTabItem(this));
-            tabs.add(new UsagesTabItem(this));
-        } else {
-            tabs.add(new ContentTabItem(this));
-            tabs.add(new LayoutTabItem(this));
-            tabs.add(new MetadataTabItem(this));
-            tabs.add(new ClassificationTabItem(this));
-            tabs.add(new OptionsTabItem(this));
-            tabs.add(new RightsTabItem(this));
-            tabs.add(new UsagesTabItem(this));
-            tabs.add(new PublicationTabItem(this));
-            tabs.add(new SeoTabItem(this));
-            tabs.add(new AnalyticsTabItem(this));
+    public static GWTEngine getEditConfig(GWTJahiaNode node, GWTEditConfiguration config) {
+        for (GWTEngine engine : config.getEditEngines()) {
+            if (node.getNodeTypes().contains(engine.getNodeType()) || node.getInheritedNodeTypes().contains(engine.getNodeType())) {
+                return engine;
+            }
         }
+        return null;
     }
 
     /**

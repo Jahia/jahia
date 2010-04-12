@@ -13,9 +13,25 @@ public class GWTEngine {
     public static final int OPERATION_CREATE = 0;
     public static final int OPERATION_EDIT = 1;
 
-    private String nodeTypes;
-    private int operation;
+    private String nodeType;
 
     private List<String> tabs;
-    
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
+    public List<String> getTabs() {
+        return tabs;
+    }
+
+    public void setTabs(List<String> tabs) {
+        this.tabs = tabs;
+    }
+
+
 }

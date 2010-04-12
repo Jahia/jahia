@@ -12,6 +12,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -34,8 +35,11 @@ import java.util.Map;
 public abstract class AbstractContentEngine extends Window {
     public static final int BUTTON_HEIGHT = 24;
 
-    protected static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
-    protected static JahiaContentDefinitionServiceAsync definitionService = JahiaContentDefinitionService.App.getInstance();
+    protected static JahiaContentManagementServiceAsync contentService =
+            JahiaContentManagementService.App.getInstance();
+    protected static JahiaContentDefinitionServiceAsync definitionService =
+            JahiaContentDefinitionService.App.getInstance();
+    protected GWTEngine config;
     protected Linker linker = null;
     protected List<GWTJahiaNodeType> nodeTypes;
     protected List<GWTJahiaNodeType> mixin;
@@ -49,8 +53,8 @@ public abstract class AbstractContentEngine extends Window {
     protected ButtonBar buttonBar;
     protected String heading;
 
-
-    protected AbstractContentEngine(Linker linker) {
+    protected AbstractContentEngine(GWTEngine config, Linker linker) {
+        this.config = config;
         this.linker = linker;
     }
 
@@ -158,9 +162,37 @@ public abstract class AbstractContentEngine extends Window {
     }
 
     /**
-     * init tabs
+     * Creates and initializes all window tabs.
      */
-    protected abstract void initTabs();
+    protected void initTabs() {
+        for (String tab : config.getTabs()) {
+            if (tab.equals("content")) {
+                tabs.add(new ContentTabItem(this));
+            } else if (tab.equals("createPage")) {
+                tabs.add(new CreatePageTabItem(this));
+            } else if (tab.equals("template")) {
+                tabs.add(new TemplateOptionsTabItem(this));
+            } else if (tab.equals("layout")) {
+                tabs.add(new LayoutTabItem(this));
+            } else if (tab.equals("metadata")) {
+                tabs.add(new MetadataTabItem(this));
+            } else if (tab.equals("classification")) {
+                tabs.add(new ClassificationTabItem(this));
+            } else if (tab.equals("option")) {
+                tabs.add(new OptionsTabItem(this));
+            } else if (tab.equals("rights")) {
+                tabs.add(new RightsTabItem(this));
+            } else if (tab.equals("usages")) {
+                tabs.add(new UsagesTabItem(this));
+            } else if (tab.equals("publication")) {
+                tabs.add(new PublicationTabItem(this));
+            } else if (tab.equals("seo")) {
+                tabs.add(new SeoTabItem(this));
+            } else if (tab.equals("analytics")) {
+                tabs.add(new AnalyticsTabItem(this));
+            }
+        }
+    }
 
     /**
      * init footer

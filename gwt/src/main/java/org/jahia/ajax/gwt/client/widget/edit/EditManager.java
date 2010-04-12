@@ -45,7 +45,7 @@ public class EditManager extends ContentPanel {
         mainModule = new MainModule(html, path, template, config);
         add(mainModule, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
-        editLinker = new EditLinker(mainModule, sidePanel, toolbar);
+        editLinker = new EditLinker(mainModule, sidePanel, toolbar, config);
         editLinker.setLocale(locale);
 
 

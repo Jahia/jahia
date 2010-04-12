@@ -12,6 +12,8 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
@@ -76,7 +78,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param createInParentAndMoveBefore
      */
     public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore) {
-        super(linker);
+        super(getCreateConfig(type, ((EditLinker)linker).getConfig()), linker);
         this.existingNode = false;
         this.parentNode = parent;
         this.type = type;
@@ -94,24 +96,13 @@ public class CreateContentEngine extends AbstractContentEngine {
         init();
     }
 
-    /**
-     * Creates and initializes all window tabs.
-     */
-    protected void initTabs() {
-        if (linker instanceof EditLinker && ((EditLinker) linker).getMainModule().getConfig().getName().equals("studiomode")) {
-            tabs.add(new ContentTabItem(this));
-            tabs.add(new TemplateOptionsTabItem(this));
-            tabs.add(new LayoutTabItem(this));
-            tabs.add(new OptionsTabItem(this));
-        } else {
-            tabs.add(new ContentTabItem(this));
-            tabs.add(new LayoutTabItem(this));
-            tabs.add(new MetadataTabItem(this));
-            tabs.add(new ClassificationTabItem(this));
-            tabs.add(new OptionsTabItem(this));
-            tabs.add(new RightsTabItem(this));
+    public static GWTEngine getCreateConfig(GWTJahiaNodeType type, GWTEditConfiguration config) {
+        for (GWTEngine engine : config.getCreateEngines()) {
+            if (type.getName().equals(engine.getNodeType()) || type.getSuperTypes().contains(engine.getNodeType())) {
+                return engine;
+            }
         }
-//        tabs.add(new CreatePageTabItem(this));
+        return null;
     }
 
 

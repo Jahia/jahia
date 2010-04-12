@@ -37,6 +37,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanel;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
  */
 public class EditLinker implements Linker {
 
+    private GWTEditConfiguration config;
     private GWTJahiaNode sidePanelSelectedNode;
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private Module selectedModule;
@@ -68,12 +70,13 @@ public class EditLinker implements Linker {
 
     private String locale;
 
-    public EditLinker(MainModule mainModule, SidePanel sidePanel, ActionToolbarLayoutContainer toolbar) {
+    public EditLinker(MainModule mainModule, SidePanel sidePanel, ActionToolbarLayoutContainer toolbar,
+                      GWTEditConfiguration config) {
         this.dndListener = new EditModeDNDListener(this);
         this.mainModule = mainModule;
         this.sidePanel = sidePanel;
         this.toolbar = toolbar;
-
+        this.config = config;
         registerLinker();
     }
 
@@ -88,6 +91,10 @@ public class EditLinker implements Linker {
 
     public MainModule getMainModule() {
         return mainModule;
+    }
+
+    public GWTEditConfiguration getConfig() {
+        return config;
     }
 
     public EditModeDNDListener getDndListener() {

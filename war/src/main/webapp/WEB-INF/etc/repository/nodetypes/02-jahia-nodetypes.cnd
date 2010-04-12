@@ -75,7 +75,7 @@
 [jnt:role] > nt:base, mix:referenceable, mix:title, jmix:observable
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
   
-[jnt:roles] > nt:base, jmix:hierarchyNode
+[jnt:roles] > nt:base, jmix:hierarchyNode, mix:versionable
  + * (jnt:role)
  
 [jnt:permission] > nt:base, mix:referenceable, mix:title, jmix:observable
@@ -83,7 +83,7 @@
 [jnt:permissionGroup] > nt:base, jmix:observable
  + * (jnt:permission)
 
-[jnt:permissions] > nt:base, jmix:hierarchyNode
+[jnt:permissions] > nt:base, jmix:hierarchyNode, mix:versionable
  + * (jnt:permissionGroup)
  
 [jmix:roleBasedAccessControlled] mixin

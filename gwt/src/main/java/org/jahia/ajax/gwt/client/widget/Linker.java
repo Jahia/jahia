@@ -45,19 +45,29 @@ import java.util.List;
  */
 public interface Linker {
     public final static int REFRESH_ALL = 1;
+    int REFRESH_MAIN = 2;
+    int REFRESH_PAGES = 4;
+    int REFRESH_WORKFLOW = 8;
+    int REFRESH_FOLDERS = 16;
+
     public GWTJahiaNode getMainNode();
+
     public GWTJahiaNode getSelectedNode();
+
     public List<GWTJahiaNode> getSelectedNodes();
+
     public void loaded();
+
     public void loading(String resource);
-    public void refresh();
+
     public void refresh(int flag);
-    public void refreshMainComponent();
+
     public void select(Object o);
+
     public void setSelectPathAfterDataUpdate(String path);
-    public void refreshLeftPanel();
-    public void refreshLeftPanel(int flag);
+
     public LinkerSelectionContext getSelectionContext();
+
     public void syncSelectionContext();
 
 }

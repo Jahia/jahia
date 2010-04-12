@@ -15,6 +15,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
@@ -74,7 +75,7 @@ public class EditModeDNDListener extends DNDListener {
         }
         final String sourceType = e.getStatus().getData(SOURCE_TYPE);
         final String targetType = e.getStatus().getData(TARGET_TYPE);
-        
+
         AsyncCallback callback = new DropAsyncCallback();
         if (PLACEHOLDER_TYPE.equals(targetType)) {
             final String targetPath = e.getStatus().getData(TARGET_PATH);
@@ -89,11 +90,10 @@ public class EditModeDNDListener extends DNDListener {
                 final GWTJahiaNode selectedNode = nodes.get(0);
                 JahiaContentDefinitionService.App.getInstance().getNodeTypes((List<String>) e.getStatus().getData(EditModeDNDListener.TARGET_REFERENCE_TYPE), new AsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onFailure(Throwable caught) {
-                        Window.alert(
-                                "Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage());
-                        Log.error("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage(),
-                                caught);
+                        Window.alert("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage());
+                        Log.error("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage(), caught);
                     }
+
                     public void onSuccess(List<GWTJahiaNodeType> result) {
                         Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
                         props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(selectedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
@@ -133,20 +133,14 @@ public class EditModeDNDListener extends DNDListener {
                             type.getName(), null, null,
                             new ArrayList<GWTJahiaNodeProperty>(), null,
                             new AsyncCallback<GWTJahiaNode>() {
-                                public void onFailure(
-                                        Throwable throwable) {
-                                    Window.alert(
-                                            "Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                    Log.error(
-                                            "failed",
-                                            throwable);
+                                public void onFailure(Throwable throwable) {
+                                    Window.alert( "Properties save failed\n\n" + throwable.getLocalizedMessage());
+                                    Log.error( "failed", throwable);
                                 }
 
-                                public void onSuccess(
-                                        GWTJahiaNode o) {
-                                    Info.display("",
-                                            "Node created");
-                                    editLinker.refreshMainComponent();
+                                public void onSuccess(GWTJahiaNode o) {
+                                    Info.display("", "Node created");
+                                    editLinker.refresh(Linker.REFRESH_MAIN);
                                 }
                             });
                 } else {
@@ -178,6 +172,7 @@ public class EditModeDNDListener extends DNDListener {
                         Log.error("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage(),
                                 caught);
                     }
+
                     public void onSuccess(List<GWTJahiaNodeType> result) {
                         Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
                         props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(selectedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
@@ -212,22 +207,16 @@ public class EditModeDNDListener extends DNDListener {
                 if ((type.getItems() == null || type.getItems().size() == 0) && (type.getInheritedItems() == null || type.getInheritedItems().size() == 0)) {
                     JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parent.getPath(), null,
                             type.getName(), null, null,
-                            new ArrayList<GWTJahiaNodeProperty>(),new HashMap<String,List<GWTJahiaNodeProperty>>(), null,
+                            new ArrayList<GWTJahiaNodeProperty>(), new HashMap<String, List<GWTJahiaNodeProperty>>(), null,
                             new AsyncCallback<GWTJahiaNode>() {
-                                public void onFailure(
-                                        Throwable throwable) {
-                                    com.google.gwt.user.client.Window.alert(
-                                            "Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                    Log.error(
-                                            "failed",
-                                            throwable);
+                                public void onFailure(Throwable throwable) {
+                                    com.google.gwt.user.client.Window.alert( "Properties save failed\n\n" + throwable.getLocalizedMessage());
+                                    Log.error("failed", throwable);
                                 }
 
-                                public void onSuccess(
-                                        GWTJahiaNode o) {
-                                    Info.display("",
-                                            "Node created");
-                                    editLinker.refreshMainComponent();
+                                public void onSuccess(GWTJahiaNode o) {
+                                    Info.display("", "Node created");
+                                    editLinker.refresh(Linker.REFRESH_MAIN);
                                 }
                             });
                 } else {
@@ -273,7 +262,7 @@ public class EditModeDNDListener extends DNDListener {
 
                     public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
                         List<GWTJahiaNode> sources = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
-                        new CreatePageContentEngine(editLinker, node, gwtJahiaNodeType, new HashMap<String, GWTJahiaNodeProperty>(),sources.get(0), null, false).show();
+                        new CreatePageContentEngine(editLinker, node, gwtJahiaNodeType, new HashMap<String, GWTJahiaNodeProperty>(), sources.get(0), null, false).show();
                     }
                 });
 
@@ -293,7 +282,7 @@ public class EditModeDNDListener extends DNDListener {
 
     private class DropAsyncCallback implements AsyncCallback {
         public void onSuccess(Object o) {
-            editLinker.getMainModule().refresh();
+            editLinker.getMainModule().refresh(Linker.REFRESH_MAIN);
         }
 
         public void onFailure(Throwable throwable) {

@@ -22,9 +22,8 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
@@ -45,7 +44,8 @@ public class WorkflowTabItem extends SidePanelTabItem {
     private JahiaContentManagementServiceAsync jahiaContentManagementServiceAsync;
     private boolean isInitialized;
 
-    public WorkflowTabItem() {
+    public WorkflowTabItem(GWTSidePanelTab c) {
+        super(c);
         setIconStyle("gwt-toolbar-icon-workflowaction-min");
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
@@ -76,14 +76,12 @@ public class WorkflowTabItem extends SidePanelTabItem {
                         item.addSelectionListener(new SelectionListener<MenuEvent>() {
                             @Override
                             public void componentSelected(MenuEvent ce) {
-                                editLinker.getMainModule().mask("Executing","x-mask-loading");
-                                jahiaContentManagementServiceAsync.assignAndCompleteTask(node.getPath(), action,
-                                                                                         outcome, new AsyncCallback() {
+                                editLinker.getMainModule().mask("Executing", "x-mask-loading");
+                                jahiaContentManagementServiceAsync
+                                        .assignAndCompleteTask(node.getPath(), action, outcome, new AsyncCallback() {
                                             public void onSuccess(Object result) {
                                                 editLinker.getMainModule().unmask();
                                                 Info.display("Workflow executed", "Workflow executed");
-                                                editLinker.getSidePanel().refresh();
-                                                editLinker.refresh();
                                             }
 
                                             public void onFailure(Throwable caught) {
@@ -122,7 +120,7 @@ public class WorkflowTabItem extends SidePanelTabItem {
     }
 
     public void initList(Module selectedModule) {
-        if(!isInitialized) {
+        if (!isInitialized) {
             fillStore();
             layout();
             isInitialized = true;
@@ -163,7 +161,7 @@ public class WorkflowTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(int flag) {
         fillStore();
         layout();
     }

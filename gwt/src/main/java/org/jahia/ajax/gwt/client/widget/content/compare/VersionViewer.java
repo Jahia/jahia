@@ -169,7 +169,6 @@ public class VersionViewer extends ContentPanel {
                 }
             };
             headerToolBar.initWithLinker(linker);
-            headerToolBar.init();
             // add to widget
             setTopComponent(headerToolBar);
         } else {

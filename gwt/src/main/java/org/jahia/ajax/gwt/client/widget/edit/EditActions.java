@@ -183,7 +183,7 @@ public class EditActions {
 
                 public void onSuccess(Object result) {
                     Info.display(Messages.getResource("publication_published_title"), Messages.getResource("publication_published_text"));
-                    linker.refresh();
+                    linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });
         }
@@ -223,35 +223,10 @@ public class EditActions {
 
                 public void onSuccess(Object result) {
                     Info.display(Messages.getResource("publication_unpublished_title"), Messages.getResource("publication_unpublished_text"));
-                    linker.refresh();
+                    linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });
         }
-    }
-
-
-    /**
-     * Switch lock
-     *
-     * @param linker
-     */
-    public static void switchLock(final Linker linker) {
-        if (linker.getSelectedNode() != null) {
-            List<String> paths = new ArrayList<String>(1);
-            paths.add(linker.getSelectedNode().getPath());
-            final boolean isLock = !linker.getSelectedNode().isLocked();
-            JahiaContentManagementService.App.getInstance().setLock(paths, isLock, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
-                    Log.error("", throwable);
-                    com.google.gwt.user.client.Window.alert("-switch lock->" + throwable.getMessage());
-                }
-
-                public void onSuccess(Object o) {
-                    linker.refreshMainComponent();
-                }
-            });
-        }
-
     }
 
 
@@ -276,7 +251,7 @@ public class EditActions {
                             }
 
                             public void onSuccess(Object o) {
-                                linker.refresh(EditLinker.REFRESH_PAGES);
+                                linker.refresh(EditLinker.REFRESH_ALL);
                                 linker.select(null);
                             }
                         });
@@ -328,7 +303,7 @@ public class EditActions {
 
                         public void onSuccess(Object result) {
                             Info.display(Messages.getResource("publication_published_title"), Messages.getResource("publication_published_text"));
-                            linker.refresh();
+                            linker.refresh(EditLinker.REFRESH_ALL);
                             hide();
                         }
                     });

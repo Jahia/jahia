@@ -37,8 +37,6 @@ import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
-import java.util.List;
-
 /**
  * The action toolbar container.
  *
@@ -62,7 +60,6 @@ public class ContentToolbar extends TopBar {
        //ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getGwtToolbarSet());
         ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getToolbarGroup());
         toolbarContainer.initWithLinker(getLinker());
-        toolbarContainer.init();
         m_component = toolbarContainer;
     }
 

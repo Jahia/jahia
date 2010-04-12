@@ -1,8 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.*;
@@ -14,16 +12,13 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeTreeGridDragSource;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.*;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -44,7 +39,8 @@ public class PagesTabItem extends SidePanelTabItem {
     protected String path;
     protected GWTJahiaNodeTreeFactory factory;
 
-    public PagesTabItem() {
+    public PagesTabItem(GWTSidePanelTab config) {
+        super(config);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.tabPages());
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
@@ -82,7 +78,7 @@ public class PagesTabItem extends SidePanelTabItem {
         });
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         
-        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.pages", tree.getSelectionModel()));
+        tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
 
         add(tree);
     }
@@ -108,7 +104,7 @@ public class PagesTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(int flag) {
         tree.getTreeStore().removeAll();
         tree.getTreeStore().getLoader().load();
     }
@@ -167,8 +163,8 @@ public class PagesTabItem extends SidePanelTabItem {
         public AsyncCallback<Object> getCallback() {
             AsyncCallback<Object> callback = new AsyncCallback<Object>() {
                 public void onSuccess(Object o) {
-                    editLinker.getMainModule().refresh();
-                    refresh();
+                    editLinker.refresh(Linker.REFRESH_MAIN);
+                    refresh(0);
                 }
 
                 public void onFailure(Throwable throwable) {

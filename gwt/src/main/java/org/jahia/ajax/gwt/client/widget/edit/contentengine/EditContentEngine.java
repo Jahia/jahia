@@ -80,7 +80,7 @@ public class EditContentEngine extends AbstractContentEngine {
         super(linker);
         contentPath = node.getPath();
         nodeName = node.getName();
-        heading = "Edit " + nodeName + " ("+node.getCurrentVersion()+")";
+        heading = "Edit " + nodeName + " (" + node.getCurrentVersion() + ")";
         loadNode(true);
         init();
 
@@ -170,7 +170,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguageCode(), result);
                 }
 
-                
+
                 if (updateAvailableLanguages) {
                     setAvailableLanguages(result.getAvailabledLanguages());
                 }
@@ -252,7 +252,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         }
                     } else {
                         if (pe != null) {
-                            properties.addAll(pe.getProperties(true,true,true));
+                            properties.addAll(pe.getProperties(true, true, true));
                         }
                     }
 
@@ -290,7 +290,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 public void onSuccess(Object o) {
                     Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
                     EditContentEngine.this.hide();
-                    linker.refreshMainComponent();
+                    linker.refresh(Linker.REFRESH_MAIN);
                 }
             });
         }

@@ -1,6 +1,10 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
+import org.jahia.ajax.gwt.client.widget.edit.GWTEngine;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,13 +13,16 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
  * Time: 4:38:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTEditConfig {
+public class GWTEditConfiguration {
     private String name;
 
     private GWTJahiaToolbar topToolbar;
     private GWTJahiaToolbar contextMenu;
 
-    public GWTEditConfig() {
+    private List<GWTSidePanelTab> tabs;
+    private List<GWTEngine> engines;
+
+    public GWTEditConfiguration() {
     }
 
     public String getName() {
@@ -40,5 +47,21 @@ public class GWTEditConfig {
 
     public void setContextMenu(GWTJahiaToolbar contextMenu) {
         this.contextMenu = contextMenu;
+    }
+
+    public List<GWTSidePanelTab> getTabs() {
+        return tabs;
+    }
+
+    public void setTabs(List<GWTSidePanelTab> tabs) {
+        this.tabs = tabs;
+    }
+
+    public List<GWTEngine> getEngines() {
+        return engines;
+    }
+
+    public void setEngines(List<GWTEngine> engines) {
+        this.engines = engines;
     }
 }

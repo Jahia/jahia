@@ -1,9 +1,10 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.TreeModel;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -21,20 +22,17 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Side panel tab item for browsing the pages tree.
@@ -51,7 +49,8 @@ public class TemplatesTabItem extends SidePanelTabItem {
     private ContentPanel informationPanel;
     private ComboBox<GWTJahiaBasicDataBean> templateBox;
 
-    public TemplatesTabItem() {
+    public TemplatesTabItem(GWTSidePanelTab config) {
+        super(config);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.tabPages());
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
@@ -82,8 +81,8 @@ public class TemplatesTabItem extends SidePanelTabItem {
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
                 super.handleMouseClick(e);
                 if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
-                    if (!getSelectedItem().getNodeTypes().contains(
-                            "jnt:templatesFolder") && !getSelectedItem().getNodeTypes().contains("jnt:virtualsite")) {
+                    if (!getSelectedItem().getNodeTypes().contains("jnt:templatesFolder") &&
+                            !getSelectedItem().getNodeTypes().contains("jnt:virtualsite")) {
                         editLinker.getMainModule().goTo(getSelectedItem().getPath(), null);
                     }
                 }
@@ -91,7 +90,7 @@ public class TemplatesTabItem extends SidePanelTabItem {
         });
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
 
-        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.templates", tree.getSelectionModel()));
+        tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
 
         treeContainer.add(tree, new RowData(1, 0.65));
         RowLayout rowLayout = new RowLayout(Style.Orientation.VERTICAL);
@@ -116,7 +115,7 @@ public class TemplatesTabItem extends SidePanelTabItem {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(int flag) {
         tree.getTreeStore().removeAll();
         tree.getTreeStore().getLoader().load();
     }
@@ -134,7 +133,7 @@ public class TemplatesTabItem extends SidePanelTabItem {
         return jahiaNode;
     }
 
-    public void refreshInformationPanel(Module selectedModule) {
+    public void handleNewModuleSelection(Module selectedModule) {
         informationPanel.removeAll();
         if (selectedModule != null) {
             informationPanel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
@@ -151,27 +150,28 @@ public class TemplatesTabItem extends SidePanelTabItem {
             informationPanel.add(widget, data);
 
             boolean contributionActivated = selectedModule.getNode().getNodeTypes().contains("jmix:contributeMode");
-            widget = new Text("Contribution Mode: "+ (contributionActivated?"activated":"disabled"));
+            widget = new Text("Contribution Mode: " + (contributionActivated ? "activated" : "disabled"));
             widget.setStyleName(style);
-            widget.setStyleAttribute("font-weight","bold");
+            widget.setStyleAttribute("font-weight", "bold");
             informationPanel.add(widget, data);
 
-            widget = new Text(contributionActivated?"This object is editable in contribution mode":"This object is not editable in contribution mode");
+            widget = new Text(contributionActivated ? "This object is editable in contribution mode" :
+                    "This object is not editable in contribution mode");
             widget.setStyleName(style);
             informationPanel.add(widget, data);
 
             widget = new Text("Content types allowed: ");
             widget.setStyleName(style);
-            widget.setStyleAttribute("font-weight","bold");
+            widget.setStyleAttribute("font-weight", "bold");
             informationPanel.add(widget, data);
 
-            widget = new Text(!"".equals(selectedModule.getNodeTypes())?selectedModule.getNodeTypes():"All");
+            widget = new Text(!"".equals(selectedModule.getNodeTypes()) ? selectedModule.getNodeTypes() : "All");
             widget.setStyleName(style);
             informationPanel.add(widget, data);
 
-            FormPanel formPanel = generateFormPanel(selectedModule,style);
+            FormPanel formPanel = generateFormPanel(selectedModule, style);
             data = new RowData(1, 0.5);
-            informationPanel.add(formPanel, data);                       
+            informationPanel.add(formPanel, data);
         }
         informationPanel.layout();
     }
@@ -210,7 +210,8 @@ public class TemplatesTabItem extends SidePanelTabItem {
             }
         });
         formPanel.add(radioGroup);
-        widget = new Text((selectedModule.isLocked()?"Users are not allowed to update this node":"Users are allowed to update this node"));
+        widget = new Text((selectedModule.isLocked() ? "Users are not allowed to update this node" :
+                "Users are allowed to update this node"));
         widget.setStyleName(style);
         formPanel.add(widget);
         radioGroup = new RadioGroup("Shared");
@@ -241,7 +242,9 @@ public class TemplatesTabItem extends SidePanelTabItem {
             }
         });
         formPanel.add(radioGroup);
-        widget = new Text((selectedModule.isLocked()?"All instances of this content are linked any change will apply on all instances":"All instances of this content are unlinked any change will apply only on this instance"));
+        widget = new Text((selectedModule.isLocked() ?
+                "All instances of this content are linked any change will apply on all instances" :
+                "All instances of this content are unlinked any change will apply only on this instance"));
         widget.setStyleName(style);
         formPanel.add(widget);
         return formPanel;

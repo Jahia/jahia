@@ -1,10 +1,13 @@
 package org.jahia.ajax.gwt.module.edit.client;
 
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
-import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfig;
+import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
+
+import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,14 +19,24 @@ import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfig;
 public class EditEntryPoint extends CommonEntryPoint {
     public void afterPermissionsLoad() {
         super.afterPermissionsLoad();
-        RootPanel panel = RootPanel.get("editmode") ;
+        RootPanel panel = RootPanel.get("editmode");
         if (panel != null) {
-            GWTEditConfig config = new GWTEditConfig();
+            GWTEditConfiguration config = new GWTEditConfiguration();
 
             config.setName(DOM.getElementAttribute(panel.getElement(), "config"));
-
-            panel.add(new EditPanelViewport(DOM.getInnerHTML(panel.getElement()),DOM.getElementAttribute(panel.getElement(), "path"),DOM.getElementAttribute(panel.getElement(), "template"),
-                    DOM.getElementAttribute(panel.getElement(), "locale"), config)) ;
+            if (config.getName().equals("studiomode")) {
+                config.setTabs(Arrays.asList(new GWTSidePanelTab("templates"), new GWTSidePanelTab("createContent"),
+                        new GWTSidePanelTab("content"), new GWTSidePanelTab("images"), new GWTSidePanelTab("files"),
+                        new GWTSidePanelTab("mashups"), new GWTSidePanelTab("search"), new GWTSidePanelTab("workflow")));
+            } else {
+                config.setTabs(Arrays.asList(new GWTSidePanelTab("pages"), new GWTSidePanelTab("createContent"),
+                        new GWTSidePanelTab("content"), new GWTSidePanelTab("images"), new GWTSidePanelTab("files"),
+                        new GWTSidePanelTab("mashups"), new GWTSidePanelTab("search"), new GWTSidePanelTab("workflow")));
+            }
+            panel.add(new EditPanelViewport(DOM.getInnerHTML(panel.getElement()),
+                    DOM.getElementAttribute(panel.getElement(), "path"),
+                    DOM.getElementAttribute(panel.getElement(), "template"),
+                    DOM.getElementAttribute(panel.getElement(), "locale"), config));
         }
     }
 }

@@ -9,7 +9,8 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfig;
+import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
 import java.util.ArrayList;
@@ -24,41 +25,44 @@ import java.util.List;
  */
 public class SidePanel extends ContentPanel {
     private final List<SidePanelTabItem> tabs;
-    private final SidePanelTabItem pagesTabItem;
-    private final WorkflowTabItem workflowTabItem;
+    private SidePanelTabItem templatesTabItem;
 
-    public SidePanel(GWTEditConfig config) {
+    public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
         setHeaderVisible(true);
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                refresh();
+                refresh(EditLinker.REFRESH_ALL);
             }
         }));
         tabs = new ArrayList<SidePanelTabItem>();
 
-        if (config.getName().equals("editmode")) {
-            pagesTabItem = new PagesTabItem();
-            tabs.add(pagesTabItem);
-        } else {
-            pagesTabItem = new TemplatesTabItem();
-            tabs.add(pagesTabItem);
+        for (GWTSidePanelTab tab : config.getTabs()) {
+            SidePanelTabItem tabItem;
+            if (tab.getName().equals("pages")) {
+                tabItem = new PagesTabItem(tab);
+            } else if (tab.getName().equals("templates")) {
+                tabItem = new TemplatesTabItem(tab);
+                templatesTabItem = tabItem;
+            } else if (tab.getName().equals("createContent")) {
+                tabItem = new CreateContentTabItem(tab);
+            } else if (tab.getName().equals("content")) {
+                tabItem = new ContentBrowseTabItem(tab);
+            } else if (tab.getName().equals("images")) {
+                tabItem = new ImagesBrowseTabItem(tab);
+            } else if (tab.getName().equals("files")) {
+                tabItem = new FilesBrowseTabItem(tab);
+            } else if (tab.getName().equals("mashups")) {
+                tabItem = new MashupBrowseTabItem(tab);
+            } else if (tab.getName().equals("search")) {
+                tabItem = new SearchTabItem(tab);
+            } else if (tab.getName().equals("workflow")) {
+                tabItem = new WorkflowTabItem(tab);
+            } else {
+                continue;
+            }
+            tabs.add(tabItem);
         }
-
-        tabs.add(new CreateContentTabItem());
-
-        tabs.add(new ContentBrowseTabItem());
-
-        tabs.add(new ImagesBrowseTabItem());
-
-        tabs.add(new FilesBrowseTabItem());
-
-        tabs.add(new MashupBrowseTabItem());
-
-        tabs.add(new SearchTabItem());
-
-        workflowTabItem = new WorkflowTabItem();
-        tabs.add(workflowTabItem);
 
         TabPanel tabPanel = new TabPanel();
 
@@ -75,35 +79,25 @@ public class SidePanel extends ContentPanel {
     }
 
     public void handleNewModuleSelection(Module selectedModule) {
-        workflowTabItem.initList(selectedModule);
-        if(pagesTabItem instanceof TemplatesTabItem) {
-            ((TemplatesTabItem) pagesTabItem).refreshInformationPanel(selectedModule);
+        for (SidePanelTabItem tab : tabs) {
+            tab.handleNewModuleSelection(selectedModule);
         }
-    }
-    
-    public GWTJahiaNode getRootTemplate() {
-        if(pagesTabItem instanceof TemplatesTabItem) {
-            return ((TemplatesTabItem) pagesTabItem).getRootTemplate();
-        }
-        return null;
     }
 
     public void handleNewSidePanelSelection(GWTJahiaNode node) {
     }
 
+    public GWTJahiaNode getRootTemplate() {
+        if (templatesTabItem != null) {
+            return ((TemplatesTabItem) templatesTabItem).getRootTemplate();
+        }
+        return null;
+    }
 
-    public void refresh() {
+
+    public void refresh(int flag) {
         for (SidePanelTabItem tab : tabs) {
-            tab.refresh();
+            tab.refresh(flag);
         }
     }
-
-    public void refreshPageTabItem() {
-        pagesTabItem.refresh();
-    }
-
-    public void refreshWorkflowTabItem() {
-        workflowTabItem.refresh();
-    }
-
 }

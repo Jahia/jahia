@@ -22,7 +22,7 @@ public class EditManager extends ContentPanel {
     private EditLinker editLinker;
     private BorderLayout borderLayout ;
 
-    public EditManager(String html, String path, String template, String locale, GWTEditConfig config) {
+    public EditManager(String html, String path, String template, String locale, GWTEditConfiguration config) {
         borderLayout =  new BorderLayout();
         setLayout(borderLayout);
         setHeaderVisible(false);
@@ -36,7 +36,6 @@ public class EditManager extends ContentPanel {
         add(sidePanel, data);
 
         toolbar =  new ActionToolbarLayoutContainer(config.getName());
-        toolbar.init();
         toolbar.setStyleAttribute("z-index", "999");
         toolbar.setStyleAttribute("position", "relative");
         setTopComponent(toolbar);

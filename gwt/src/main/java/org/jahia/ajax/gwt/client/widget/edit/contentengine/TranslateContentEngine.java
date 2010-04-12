@@ -162,7 +162,7 @@ public class TranslateContentEngine extends Window {
                 public void onSuccess(Object o) {
                     Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
                     TranslateContentEngine.this.hide();
-                    linker.refreshMainComponent();
+                    linker.refresh(Linker.REFRESH_MAIN);
                 }
             });
         }

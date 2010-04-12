@@ -25,6 +25,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDragSource;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,8 @@ class SearchTabItem extends SidePanelTabItem {
     private Grid<GWTJahiaNode> grid;
     final PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
 
-    public SearchTabItem() {
+    public SearchTabItem(GWTSidePanelTab config) {
+        super(config);
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());
@@ -111,13 +113,12 @@ class SearchTabItem extends SidePanelTabItem {
 
         final CheckBoxGroup scopeCheckGroup = new CheckBoxGroup();
         scopeCheckGroup.setOrientation(Style.Orientation.VERTICAL);
-        scopeCheckGroup.setFieldLabel(Messages.get("label_searchScope","Search scope"));
+        scopeCheckGroup.setFieldLabel(Messages.get("label_searchScope", "Search scope"));
         // scope name field
         inNameField = createNameField();
         scopeCheckGroup.add(inNameField);
 
 
-        
         // scope tag field
         inTagField = createTagField();
         scopeCheckGroup.add(inTagField);
@@ -134,7 +135,7 @@ class SearchTabItem extends SidePanelTabItem {
         inFileField = createFileField();
         scopeCheckGroup.add(inFileField);
 
-        fieldSet.add(scopeCheckGroup,new FormData("-20"));
+        fieldSet.add(scopeCheckGroup, new FormData("-20"));
 
 
         searchForm.addButton(ok);
@@ -170,7 +171,8 @@ class SearchTabItem extends SidePanelTabItem {
         ColumnConfig col = new ColumnConfig("ext", "", 40);
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
+                                 ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                 return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
             }
         });
@@ -217,7 +219,9 @@ class SearchTabItem extends SidePanelTabItem {
      * @return
      */
     private ContentPickerField createPageSelectorField() {
-        ContentPickerField field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"), Messages.get("picker_link_selection", "Selected page"), null, "/", "", null, "", ManagerConfigurationFactory.LINKPICKER, false, false);
+        ContentPickerField field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"),
+                Messages.get("picker_link_selection", "Selected page"), null, "/", "", null, "",
+                ManagerConfigurationFactory.LINKPICKER, false, false);
         field.setFieldLabel(Messages.get("picker_link_header", "Pages"));
         return field;
     }
@@ -274,7 +278,7 @@ class SearchTabItem extends SidePanelTabItem {
     private CheckBox createContentField() {
         CheckBox field = new CheckBox();
         field.setValue(true);
-        field.setFieldLabel(Messages.get("label_content","Content"));
+        field.setFieldLabel(Messages.get("label_content", "Content"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("content");
         return field;
@@ -335,13 +339,15 @@ class SearchTabItem extends SidePanelTabItem {
             offset = loadConfig.getOffset();
         }
 
-        Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," + inNameField.getValue() + "," + inTagField.getValue());
+        Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," +
+                inNameField.getValue() + "," + inTagField.getValue());
         JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, callback);
 
     }
 
     /**
      * Get the GWTJahiaSearchQuery that corresponds to what is selected in fields
+     *
      * @return
      */
     private GWTJahiaSearchQuery getGWTJahiaSearchQuery() {

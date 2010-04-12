@@ -57,12 +57,12 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  */
 public class ImageCrop extends Window {
 
-    private Linker m_linker ;
+    private Linker linker;
 
     public ImageCrop(final Linker linker, final GWTJahiaNode n) {
-        super() ;
+        super();
 
-        m_linker = linker ;
+        this.linker = linker;
         int w = n.getWidth();
         int h = n.getHeight();
         if (w > 800) {
@@ -75,12 +75,12 @@ public class ImageCrop extends Window {
         }
 
         if (w < 328) {
-            w = 328 ;
+            w = 328;
         }
         setSize(w + 12, h + 105);
         setHeading(Messages.getResource("fm_crop"));
 
-        setLayout(new FlowLayout()) ;
+        setLayout(new FlowLayout());
 
         FlowPanel flowPanel = new FlowPanel();
         final NumberField top = new NumberField();
@@ -111,9 +111,9 @@ public class ImageCrop extends Window {
         form.setHeaderVisible(false);
         form.setBorders(false);
         newname.setName("newname");
-        int extIndex = n.getName().lastIndexOf(".") ;
+        int extIndex = n.getName().lastIndexOf(".");
         if (extIndex > 0) {
-            String dotExt = n.getName().substring(extIndex) ;
+            String dotExt = n.getName().substring(extIndex);
             newname.setValue(n.getName().replaceAll(dotExt, "_crop" + dotExt));
         } else {
             newname.setValue(n.getName() + "_crop");
@@ -121,10 +121,10 @@ public class ImageCrop extends Window {
         newname.setFieldLabel(Messages.getResource("fm_newname"));
         form.add(newname);
 
-        ButtonBar buttons = new ButtonBar() ;
+        ButtonBar buttons = new ButtonBar();
         Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                hide() ;
+                hide();
             }
         });
         Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ButtonEvent>() {
@@ -133,12 +133,12 @@ public class ImageCrop extends Window {
                         Integer.parseInt(top.getValue().toString()),
                         Integer.parseInt(left.getValue().toString()),
                         Integer.parseInt(width.getValue().toString()),
-                        Integer.parseInt(height.getValue().toString()), false) ;
+                        Integer.parseInt(height.getValue().toString()), false);
 
             }
-        }) ;
-        buttons.add(submit) ;
-        buttons.add(cancel) ;
+        });
+        buttons.add(submit);
+        buttons.add(cancel);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
 
@@ -151,22 +151,22 @@ public class ImageCrop extends Window {
     }
 
     private void cropImage(final String path, final String targetName, final int top, final int left, final int width, final int height, final boolean force) {
-         JahiaContentManagementService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new AsyncCallback() {
-             public void onFailure(Throwable throwable) {
-                 if (throwable instanceof ExistingFileException) {
+        JahiaContentManagementService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new AsyncCallback() {
+            public void onFailure(Throwable throwable) {
+                if (throwable instanceof ExistingFileException) {
                     if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n" + Messages.getResource("fm_confOverwrite"))) {
-                         cropImage(path, targetName, top, left, width, height, true);
-                     }
+                        cropImage(path, targetName, top, left, width, height, true);
+                    }
                 } else {
                     com.google.gwt.user.client.Window.alert(Messages.getResource("fm_failCrop") + "\n" + throwable.getLocalizedMessage());
                     Log.error(Messages.getResource("fm_failCrop"), throwable);
                 }
-             }
+            }
 
-             public void onSuccess(Object result) {
+            public void onSuccess(Object result) {
                 hide();
-                m_linker.refreshMainComponent();
-             }
-         });
+                linker.refresh(Linker.REFRESH_MAIN);
+            }
+        });
     }
 }

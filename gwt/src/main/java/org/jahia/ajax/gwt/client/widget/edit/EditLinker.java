@@ -56,12 +56,10 @@ import java.util.ArrayList;
  *        Created : 24 août 2009
  */
 public class EditLinker implements Linker {
-    public static int REFRESH_PAGES = 1;
 
     private GWTJahiaNode sidePanelSelectedNode;
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private Module selectedModule;
-    private Module previouslySelectedModule;
     private EditModeDNDListener dndListener;
     private ActionToolbarLayoutContainer toolbar;
     private MainModule mainModule;
@@ -130,17 +128,6 @@ public class EditLinker implements Linker {
 
     public void onModuleSelection(Module selection) {
         selectedModule = selection;
-//        if (selectedModule != null) {
-//            selection.setDraggable(false);
-//            if (previouslySelectedModule != null) {
-//                final String path = previouslySelectedModule.getPath();
-//                final String s = selectedModule.getPath();
-//                if (!path.equals(s) && path.contains(s)) {
-//                    previouslySelectedModule = null;
-//                    return;
-//                }
-//            }
-//        }
 
         handleNewModuleSelection();
         if (selectedModule != null) {
@@ -148,23 +135,11 @@ public class EditLinker implements Linker {
         }
     }
 
-    public void refresh() {
-        refresh(Linker.REFRESH_ALL);
-    }
-
     public void refresh(int flag) {
-        mainModule.refresh();
-        syncSelectionContext();
-        toolbar.handleNewLinkerSelection();
-        refreshSidePanel(flag);
-    }
-
-    private void refreshSidePanel(int flag) {
-        if (flag == REFRESH_PAGES) {
-            sidePanel.refreshPageTabItem();
-        } else {
-            sidePanel.refresh();
-        }
+        mainModule.refresh(flag);
+        sidePanel.refresh(flag);
+//        syncSelectionContext();
+//        toolbar.handleNewLinkerSelection();
     }
 
     public GWTJahiaNode getSelectedNode() {
@@ -175,7 +150,6 @@ public class EditLinker implements Linker {
     }
 
     public void handleNewModuleSelection() {
-        previouslySelectedModule = selectedModule;
         syncSelectionContext();
         toolbar.handleNewLinkerSelection();
         mainModule.handleNewModuleSelection(selectedModule);
@@ -223,10 +197,6 @@ public class EditLinker implements Linker {
         }
     }
 
-    public void refreshMainComponent() {
-        getMainModule().refresh();
-    }
-
     public GWTJahiaNode getMainNode() {
         return getMainModule().getNode();
     }
@@ -253,14 +223,6 @@ public class EditLinker implements Linker {
 
     public LinkerSelectionContext getSelectionContext() {
         return selectionContext;
-    }
-
-    public void refreshLeftPanel() {
-        sidePanel.refresh();
-    }
-
-    public void refreshLeftPanel(int flag) {
-        refreshSidePanel(flag);
     }
 
     public void syncSelectionContext() {

@@ -164,9 +164,9 @@ public class ContentActions {
                     copyPasteEngine.onPastedPath();
                     linker.loaded();
                     if (refresh) {
-                        linker.refresh();
+                        linker.refresh(EditLinker.REFRESH_ALL);
                     } else {
-                        linker.refreshMainComponent();
+                        linker.refresh(Linker.REFRESH_MAIN);
                     }
                 }
             });
@@ -207,9 +207,9 @@ public class ContentActions {
                     copyPasteEngine.onPastedPath();
                     linker.loaded();
                     if (refresh) {
-                        linker.refresh();
+                        linker.refresh(EditLinker.REFRESH_ALL);
                     } else {
-                        linker.refreshMainComponent();
+                        linker.refresh(Linker.REFRESH_MAIN);
                     }
                 }
             });
@@ -242,9 +242,9 @@ public class ContentActions {
 
                 linker.loaded();
                 if (refresh) {
-                    linker.refresh();
+                    linker.refresh(EditLinker.REFRESH_ALL);
                 } else {
-                    linker.refreshMainComponent();
+                    linker.refresh(Linker.REFRESH_MAIN);
                 }
             }
         });
@@ -388,7 +388,7 @@ public class ContentActions {
 
                     public void onSuccess(Object o) {
                         linker.loaded();
-                        linker.refresh();
+                        linker.refresh(Linker.REFRESH_FOLDERS);
                     }
                 });
             }
@@ -416,7 +416,7 @@ public class ContentActions {
                 JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, new AsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
                         linker.loaded();
-                        linker.refresh();
+                        linker.refresh(EditLinker.REFRESH_ALL);
                     }
 
                     public void onFailure(Throwable throwable) {
@@ -470,7 +470,7 @@ public class ContentActions {
             w.setWidth(350);
             w.add(new FormQuickRSS(parent.getPath()) {
                 public void onMashupCreated() {
-                    linker.refreshMainComponent();
+                    linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });
             w.setScrollMode(Style.Scroll.AUTO);
@@ -503,7 +503,7 @@ public class ContentActions {
             w.add(new FormQuickGoogleGadget(parent.getPath()) {
                 @Override
                 public void onMashupCreated() {
-                    linker.refreshMainComponent();
+                    linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });
             w.setScrollMode(Style.Scroll.AUTO);
@@ -640,7 +640,7 @@ public class ContentActions {
 
                     public void onSuccess(Object o) {
                         linker.loaded();
-                        linker.refresh();
+                        linker.refresh(Linker.REFRESH_FOLDERS);
                     }
                 });
             }
@@ -692,9 +692,9 @@ public class ContentActions {
                         public void onSuccess(Object o) {
                             linker.loaded();
                             if (refreshTree) {
-                                linker.refresh();
+                                linker.refresh(EditLinker.REFRESH_ALL);
                             } else {
-                                linker.refreshMainComponent();
+                                linker.refresh(Linker.REFRESH_MAIN);
                             }
                         }
                     });
@@ -725,9 +725,9 @@ public class ContentActions {
                         public void onSuccess(Object o) {
                             linker.loaded();
                             if (folder) {
-                                linker.refresh();
+                                linker.refresh(EditLinker.REFRESH_ALL);
                             } else {
-                                linker.refreshMainComponent();
+                                linker.refresh(Linker.REFRESH_MAIN);
                             }
                         }
                     });
@@ -787,7 +787,7 @@ public class ContentActions {
 
             public void onSuccess(Object o) {
                 linker.loaded();
-                linker.refreshMainComponent();
+                linker.refresh(Linker.REFRESH_MAIN);
             }
         });
     }
@@ -810,7 +810,7 @@ public class ContentActions {
 
                 public void onSuccess(Object o) {
                     linker.loaded();
-                    linker.refresh();
+                    linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });
         }
@@ -851,12 +851,12 @@ public class ContentActions {
                     public void onFailure(Throwable throwable) {
                         MessageBox.alert("Error", throwable.getLocalizedMessage(), null);
                         linker.loaded();
-                        linker.refreshMainComponent();
+                        linker.refresh(Linker.REFRESH_MAIN);
                     }
 
                     public void onSuccess(Object o) {
                         linker.loaded();
-                        linker.refreshMainComponent();
+                        linker.refresh(Linker.REFRESH_MAIN);
                     }
                 });
             }
@@ -990,7 +990,7 @@ public class ContentActions {
                     } else {
                         Info.display("Component unlocked","Component unlocked.");
                     }
-                    linker.refreshMainComponent();
+                    linker.refresh(Linker.REFRESH_MAIN);
                 }
             });
 
@@ -1021,7 +1021,7 @@ public class ContentActions {
                     } else {
                         Info.display("Component unshared","Component unshared.");
                     }
-                    linker.refreshMainComponent();
+                    linker.refresh(Linker.REFRESH_MAIN);
                 }
             });
 
@@ -1038,7 +1038,7 @@ public class ContentActions {
 
                 public void onSuccess(Object result) {
                     Info.display("Shared component","Component shared.");
-                    linker.refreshLeftPanel();   
+                    linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });
         }

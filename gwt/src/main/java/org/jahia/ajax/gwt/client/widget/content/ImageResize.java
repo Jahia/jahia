@@ -56,12 +56,12 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  */
 public class ImageResize extends Window {
 
-    private Linker m_linker ;
+    private Linker linker;
 
     public ImageResize(final Linker linker, final GWTJahiaNode n) {
         super() ;
 
-        m_linker = linker ;
+        this.linker = linker ;
 
         int w = n.getWidth();
         int h = n.getHeight();
@@ -165,7 +165,7 @@ public class ImageResize extends Window {
 
              public void onSuccess(Object result) {
                 hide();
-                m_linker.refreshMainComponent();
+                 linker.refresh(Linker.REFRESH_MAIN);
              }
          });
     }

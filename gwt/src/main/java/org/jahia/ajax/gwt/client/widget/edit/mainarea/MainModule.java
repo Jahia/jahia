@@ -1,30 +1,31 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
-import com.extjs.gxt.ui.client.widget.Header;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Header;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfig;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
 
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,11 +38,11 @@ public class MainModule extends Module {
     private String originalHtml;
     private EditLinker editLinker;
     private ActionMenu contextMenu;
-    private GWTEditConfig config;
+    private GWTEditConfiguration config;
 
     Map<Element, Module> m;
 
-    public MainModule(final String html, final String path, final String template, GWTEditConfig config) {
+    public MainModule(final String html, final String path, final String template, GWTEditConfiguration config) {
         super("main", path, template, null, null, null, null, new FlowLayout());
         setScrollMode(Style.Scroll.AUTO);
 
@@ -83,16 +84,17 @@ public class MainModule extends Module {
         // on double click listener
         addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, editLinker));
 
-        // contextMenu
-        contextMenu = new ActionMenu("contextmenu-"+config.getName(), editLinker) {
-            @Override
-            public void beforeShow() {
-                makeSelected();
-                super.beforeShow();
-            }
-        };
-        setContextMenu(contextMenu);
-
+        if (config.getContextMenu() != null) {
+            // contextMenu
+            contextMenu = new ActionMenu(config.getContextMenu(), editLinker) {
+                @Override
+                public void beforeShow() {
+                    makeSelected();
+                    super.beforeShow();
+                }
+            };
+            setContextMenu(contextMenu);
+        }
 
     }
 
@@ -109,29 +111,35 @@ public class MainModule extends Module {
         return editLinker;
     }
 
-    public void refresh() {
-        JahiaContentManagementService.App.getInstance().getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true, config.getName(), new AsyncCallback<GWTRenderResult>() {
-            public void onSuccess(GWTRenderResult result) {
-                int i = getVScrollPosition();
-                head.setText("Page : " + path);
-                removeAll();
-                Selection.getInstance().hide();
-                Hover.getInstance().removeAll();
-                display(result.getResult());
+    public void refresh(int flag) {
+        refresh();
+    }
 
-                setVScrollPosition(i);
-                List<String> list = new ArrayList<String>(1);
-                list.add(path);
-                editLinker.getMainModule().unmask();
-                editLinker.onModuleSelection(MainModule.this);
-                editLinker.getSidePanel().refreshWorkflowTabItem();
-                switchStaticAssets(result.getStaticAssets());
-            }
+    private void refresh() {
+        JahiaContentManagementService.App.getInstance()
+                .getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true,
+                        config.getName(), new AsyncCallback<GWTRenderResult>() {
+                            public void onSuccess(GWTRenderResult result) {
+                                int i = getVScrollPosition();
+                                head.setText("Page : " + path);
+                                removeAll();
+                                Selection.getInstance().hide();
+                                Hover.getInstance().removeAll();
+                                display(result.getResult());
 
-            public void onFailure(Throwable caught) {
-                GWT.log("error", caught);
-            }
-        });
+                                setVScrollPosition(i);
+                                List<String> list = new ArrayList<String>(1);
+                                list.add(path);
+                                editLinker.getMainModule().unmask();
+                                editLinker.onModuleSelection(MainModule.this);
+                                editLinker.getSidePanel().refresh(Linker.REFRESH_WORKFLOW);
+                                switchStaticAssets(result.getStaticAssets());
+                            }
+
+                            public void onFailure(Throwable caught) {
+                                GWT.log("error", caught);
+                            }
+                        });
 
     }
 
@@ -230,14 +238,15 @@ public class MainModule extends Module {
         }
         if (node.isShared()) {
 //            this.setStyleAttribute("background","rgb(210,50,50) url("+ JahiaGWTParameters.getContextPath()+"/css/images/andromeda/rayure.png)");
-            this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
+            this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"),
+                    Messages.get("info_sharednode", "This is a shared node")));
         }
         if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
             JahiaGWTParameters.setSiteUUID(node.getSiteUUID());
         }
     }
 
-    public GWTEditConfig getConfig() {
+    public GWTEditConfiguration getConfig() {
         return config;
     }
 

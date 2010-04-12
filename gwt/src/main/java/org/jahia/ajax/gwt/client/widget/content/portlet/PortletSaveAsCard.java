@@ -39,6 +39,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  * User: ktlili
@@ -87,7 +88,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
             public void onSuccess(GWTJahiaNode result) {
                 if (getLinker() != null) {
                     getLinker().setSelectPathAfterDataUpdate(result.getPath());
-                    getLinker().refreshMainComponent();
+                    getLinker().refresh(Linker.REFRESH_MAIN);
                 }
                 getPortletWizardWindow().onPortletCreated();
                 getPortletWizardWindow().hide();

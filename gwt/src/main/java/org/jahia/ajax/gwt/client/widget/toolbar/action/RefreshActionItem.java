@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.widget.Linker;
+
 /**
  * Created by IntelliJ IDEA.
 * User: toto
@@ -9,6 +11,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 */
 public class RefreshActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        linker.refresh();
+        linker.refresh(Linker.REFRESH_ALL);
     }
 }

@@ -5,7 +5,6 @@ import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -66,7 +65,7 @@ public class WorkflowActionItem extends BaseActionItem {
                                 JahiaContentManagementService.App.getInstance().startWorkflow(node.getPath(), wf, new AsyncCallback() {
                                     public void onSuccess(Object result) {
                                         Info.display("Workflow started","Workflow started");
-                                        linker.refresh();
+                                        linker.refresh(Linker.REFRESH_ALL);
                                     }
 
                                     public void onFailure(Throwable caught) {

@@ -19,6 +19,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +36,8 @@ class MashupBrowseTabItem extends BrowseTabItem {
     protected ListStore<GWTJahiaNode> contentStore;
     protected ImageDragSource dragSource;
 
-    public MashupBrowseTabItem() {
-        super(JCRClientUtils.ALL_MASHUPS, JCRClientUtils.FOLDER_NODETYPES);
+    public MashupBrowseTabItem(GWTSidePanelTab config) {
+        super(JCRClientUtils.ALL_MASHUPS, JCRClientUtils.FOLDER_NODETYPES, config);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.mashup());
 
         contentContainer = new LayoutContainer();
@@ -49,7 +50,8 @@ class MashupBrowseTabItem extends BrowseTabItem {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:portlet", null, null, true, listAsyncCallback);
+                JahiaContentManagementService.App.getInstance()
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:portlet", null, null, true, listAsyncCallback);
             }
         };
 
@@ -153,6 +155,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
 
     /**
      * Mashup template
+     *
      * @return
      */
     public native String getMashupTemplate() /*-{

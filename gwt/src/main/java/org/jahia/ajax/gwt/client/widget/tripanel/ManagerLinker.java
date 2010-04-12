@@ -343,10 +343,6 @@ public class ManagerLinker implements Linker {
         extraComponents.add(l);
     }
 
-    public void refreshMainComponent() {
-        refreshTable();
-    }
-
     public void select(Object o) {
         List<GWTJahiaNode> nodes = null;
         if (o != null) {
@@ -376,14 +372,6 @@ public class ManagerLinker implements Linker {
 
     public LinkerSelectionContext getSelectionContext() {
         return selectionContext;
-    }
-
-    public void refreshLeftPanel() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void refreshLeftPanel(int flag) {
-        refreshLeftPanel();
     }
 
     public void syncSelectionContext() {

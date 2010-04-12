@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.ContentWizardCard;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
@@ -64,9 +65,8 @@ public class ContentFormCard extends ContentWizardCard {
      * Initializes an instance of this class.
      */
     public ContentFormCard() {
-        super(Messages.get("add_content_wizard_card_form_title",
-                "Content add form"), Messages.get(
-                "add_content_wizard_card_form_text", "Fill in field values:"));
+        super(Messages.get("add_content_wizard_card_form_title", "Content add form"),
+                Messages.get("add_content_wizard_card_form_text", "Fill in field values:"));
         setLayout(new FitLayout());
     }
 
@@ -74,11 +74,11 @@ public class ContentFormCard extends ContentWizardCard {
      * (non-Javadoc)
      * @see org.jahia.ajax.gwt.client.widget.wizard.WizardCard#createUI()
      */
+
     @Override
     public void createUI() {
-        JahiaContentDefinitionService.App.getInstance().getNodeType(
-                getWizardData().getNodeType().getName(),
-                new AsyncCallback<GWTJahiaNodeType>() {
+        JahiaContentDefinitionService.App.getInstance()
+                .getNodeType(getWizardData().getNodeType().getName(), new AsyncCallback<GWTJahiaNodeType>() {
                     public void onFailure(Throwable caught) {
                         Log.error("error", caught);
                     }
@@ -88,14 +88,14 @@ public class ContentFormCard extends ContentWizardCard {
                         types.add(result);
                         Map<String, GWTJahiaNodeProperty> defaultValues = new HashMap<String, GWTJahiaNodeProperty>();
 
-                        formEditor = new PropertiesEditor(types, defaultValues,
-                                false, true, GWTJahiaItemDefinition.CONTENT, null, null);
+                        formEditor =
+                                new PropertiesEditor(types, defaultValues, false, true, GWTJahiaItemDefinition.CONTENT,
+                                        null, null);
                         if (formEditor != null) {
                             setFormPanel(formEditor);
                             layout();
                         } else {
-                            add(new Label(Messages.get(
-                                    "add_content_wizard_card_form_error_props",
+                            add(new Label(Messages.get("add_content_wizard_card_form_error_props",
                                     "Unable to load properties panel")));
                         }
                     }
@@ -108,50 +108,34 @@ public class ContentFormCard extends ContentWizardCard {
      * (non-Javadoc)
      * @see org.jahia.ajax.gwt.client.widget.wizard.WizardCard#next()
      */
+
     @Override
     public void next() {
-        JahiaContentManagementService.App.getInstance().createNode(
-                getWizardWindow().getParentNode().getPath(),
-                getWizardData().getNodeName(),
-                getWizardData().getNodeType().getName(), null, null,
-                formEditor.getProperties(), null,
-                new AsyncCallback<GWTJahiaNode>() {
-                    public void onFailure(Throwable caught) {
-                        Log.error("Error", caught);
-                        MessageBox.alert(Messages.get(
-                                                "add_content_wizard_card_form_error_title",
-                                                "Error"),
-                                        Messages
-                                                .get(
-                                                        "add_content_wizard_card_form_error_save",
-                                                        "Unable to create new content. Cause: ")
-                                                + caught.getMessage(), null);
-                    }
+        JahiaContentManagementService.App.getInstance()
+                .createNode(getWizardWindow().getParentNode().getPath(), getWizardData().getNodeName(),
+                        getWizardData().getNodeType().getName(), null, null, formEditor.getProperties(), null,
+                        new AsyncCallback<GWTJahiaNode>() {
+                            public void onFailure(Throwable caught) {
+                                Log.error("Error", caught);
+                                MessageBox.alert(Messages.get("add_content_wizard_card_form_error_title", "Error"),
+                                        Messages.get("add_content_wizard_card_form_error_save",
+                                                "Unable to create new content. Cause: ") + caught.getMessage(), null);
+                            }
 
-                    public void onSuccess(GWTJahiaNode result) {
-                        if (getWizardWindow().getLinker() != null) {
-                            getWizardWindow().getLinker()
-                                    .setSelectPathAfterDataUpdate(
-                                            result.getPath());
-                            getWizardWindow().getLinker().refreshMainComponent();
-                        }
-                        MessageBox
-                                .info(
-                                        Messages
-                                                .get(
-                                                "add_content_wizard_card_form_success_title",
-                                                "Info"),
-                                        Messages
-                                                .get(
-                                                        "add_content_wizard_card_form_success_save",
-                                                        "Content node created successfully: ")
-                                                + getWizardData().getNodeName(),
+                            public void onSuccess(GWTJahiaNode result) {
+                                if (getWizardWindow().getLinker() != null) {
+                                    getWizardWindow().getLinker().setSelectPathAfterDataUpdate(result.getPath());
+                                    getWizardWindow().getLinker().refresh(Linker.REFRESH_MAIN);
+                                }
+                                MessageBox.info(Messages.get("add_content_wizard_card_form_success_title", "Info"),
+                                        Messages.get("add_content_wizard_card_form_success_save",
+                                                "Content node created successfully: ") + getWizardData().getNodeName(),
                                         null);
-                        getWizardWindow().hide();
-                        getWizardWindow().getLinker().loaded();
-                        getWizardWindow().getLinker().refresh();
-                    }
-                });
+                                getWizardWindow().hide();
+                                getWizardWindow().getLinker().loaded();
+                                getWizardWindow().getLinker().refresh(Linker.REFRESH_ALL);
+                            }
+                        });
     }
 
     @Override

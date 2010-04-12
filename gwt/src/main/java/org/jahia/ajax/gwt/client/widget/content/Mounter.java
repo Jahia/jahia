@@ -121,7 +121,7 @@ public class Mounter extends Window {
                         bar.reset() ;
                         linker.loaded() ;
                         hide();
-                        linker.refresh();
+                        linker.refresh(Linker.REFRESH_ALL);
                     }
 
                 });

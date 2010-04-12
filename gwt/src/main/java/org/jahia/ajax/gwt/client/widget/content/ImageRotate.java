@@ -124,7 +124,7 @@ public class ImageRotate extends Window {
 
              public void onSuccess(Object result) {
                 hide();
-                m_linker.refreshMainComponent();
+                m_linker.refresh(Linker.REFRESH_MAIN);
              }
          });
     }

@@ -47,27 +47,25 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
 
 /**
- *
- *
  * User: toto
  * Date: Nov 13, 2008 - 7:31:46 PM
  */
 public class ContentImport extends Window {
 
-    private Linker m_linker ;
+    private Linker m_linker;
 
     public ContentImport(final Linker linker, final GWTJahiaNode n) {
-        super() ;
+        super();
 
-        m_linker = linker ;
+        m_linker = linker;
 
         setHeading(Messages.getResource("fm_export"));
         setSize(500, 150);
         setResizable(false);
         setModal(true);
-        ButtonBar buttons = new ButtonBar() ;
+        ButtonBar buttons = new ButtonBar();
 
-        final FormPanel form = new FormPanel() ;
+        final FormPanel form = new FormPanel();
         form.setFrame(false);
         form.setHeaderVisible(false);
         form.setBorders(false);
@@ -78,25 +76,25 @@ public class ContentImport extends Window {
 
         Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                doImport(n.getPath(), field.getValue()) ;
-            }
-        }) ;
-
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                hide() ;
+                doImport(n.getPath(), field.getValue());
             }
         });
 
-        buttons.add(submit) ;
-        buttons.add(cancel) ;
+        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                hide();
+            }
+        });
+
+        buttons.add(submit);
+        buttons.add(cancel);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
         add(form);
     }
 
     public void doImport(String path, Object value) {
-        Log.debug(path + " "+value);
+        Log.debug(path + " " + value);
         JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), new AsyncCallback() {
 
             public void onFailure(Throwable caught) {
@@ -105,7 +103,7 @@ public class ContentImport extends Window {
             }
 
             public void onSuccess(Object result) {
-                m_linker.refresh();
+                m_linker.refresh(Linker.REFRESH_ALL);
                 hide();
             }
         });

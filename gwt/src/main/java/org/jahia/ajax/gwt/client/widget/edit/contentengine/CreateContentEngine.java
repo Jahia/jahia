@@ -170,7 +170,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                                     break;
                                 }
                             }
-                            setAvailableLanguages(gwtJahiaLanguages);                            
+                            setAvailableLanguages(gwtJahiaLanguages);
                         }
                         fillCurrentTab();
                     }
@@ -249,38 +249,37 @@ public class CreateContentEngine extends AbstractContentEngine {
         }
 
         doSave(nodeName, props, langCodeProperties, mixin, newNodeACL, closeAfterSave);
-                }
+    }
 
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
         final AsyncCallback<GWTJahiaNode> callback = new AsyncCallback<GWTJahiaNode>() {
-                public void onFailure(Throwable throwable) {
-                    com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
-                    Log.error("failed", throwable);
-                }
+            public void onFailure(Throwable throwable) {
+                com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                Log.error("failed", throwable);
+            }
 
-                public void onSuccess(GWTJahiaNode node) {
-                    if (closeAfterSave) {
-                        Info.display("", "Node " + node.getName() + " created");
-                        CreateContentEngine.this.hide();
-                    } else {
-                        CreateContentEngine.this.tabs.removeAll();
-                        CreateContentEngine.this.initTabs();
-                        CreateContentEngine.this.layout(true);
-                    }
+            public void onSuccess(GWTJahiaNode node) {
+                if (closeAfterSave) {
+                    Info.display("", "Node " + node.getName() + " created");
+                    CreateContentEngine.this.hide();
+                } else {
+                    CreateContentEngine.this.tabs.removeAll();
+                    CreateContentEngine.this.initTabs();
+                    CreateContentEngine.this.layout(true);
+                }
 
 
                 if (node.isPage()) {
-                    linker.refreshMainComponent();
-                    linker.refreshLeftPanel(EditLinker.REFRESH_PAGES);
+                    linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                 } else {
-                    linker.refreshMainComponent();
+                    linker.refresh(Linker.REFRESH_MAIN);
                 }
-                }
+            }
         };
         if (createInParentAndMoveBefore) {
-            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props,langCodeProperties, null, callback);
+            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, null, callback);
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props,langCodeProperties, null, callback);
+            JahiaContentManagementService.App.getInstance().createNode(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, null, callback);
         }
     }
 

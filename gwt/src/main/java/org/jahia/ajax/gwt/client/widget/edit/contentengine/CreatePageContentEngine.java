@@ -75,8 +75,7 @@ public class CreatePageContentEngine extends CreateContentEngine {
                         CreatePageContentEngine.this.layout(true);
                     }
 
-                    linker.refreshMainComponent();
-                    linker.refreshLeftPanel(EditLinker.REFRESH_PAGES);
+                    linker.refresh(Linker.REFRESH_MAIN+ Linker.REFRESH_PAGES);
                 }
             });
         }

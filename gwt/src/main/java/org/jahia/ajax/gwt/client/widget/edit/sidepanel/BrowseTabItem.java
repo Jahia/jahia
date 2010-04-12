@@ -18,7 +18,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.Arrays;
@@ -37,7 +37,8 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     protected String repositoryType;
     protected String folderTypes;
 
-    public BrowseTabItem(final String repositoryType, final String folderTypes) {
+    public BrowseTabItem(final String repositoryType, final String folderTypes, GWTSidePanelTab config) {
+        super(config);
         this.repositoryType = repositoryType;
         this.folderTypes = folderTypes;
         VBoxLayout l = new VBoxLayout();
@@ -51,7 +52,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(this.repositoryType);
         factory.setNodeTypes(this.folderTypes);
 
-        ColumnConfig columnConfig = new ColumnConfig("displayName","Name",80);
+        ColumnConfig columnConfig = new ColumnConfig("displayName", "Name", 80);
         columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
 //        ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
         tree = factory.getTreeGrid(new ColumnModel(Arrays.asList(columnConfig)));
@@ -69,7 +70,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         add(treeContainer, treeVBoxData);
 
         treeDropTarget = new BrowseTreeGridDropTarget();
-        
+
     }
 
     @Override
@@ -115,11 +116,11 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         public AsyncCallback<Object> getCallback() {
             AsyncCallback<Object> callback = new AsyncCallback<Object>() {
                 public void onSuccess(Object o) {
-                    refresh();
+                    refresh(0);
                 }
 
                 public void onFailure(Throwable throwable) {
-                    Window.alert("Failed : "+throwable);
+                    Window.alert("Failed : " + throwable);
                 }
             };
             return callback;

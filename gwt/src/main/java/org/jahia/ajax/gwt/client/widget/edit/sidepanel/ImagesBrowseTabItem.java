@@ -22,24 +22,25 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
-* Side panel tab item for browsing image resources in the repository.
-* User: toto
-* Date: Dec 21, 2009
-* Time: 2:22:24 PM
-*/
+ * Side panel tab item for browsing image resources in the repository.
+ * User: toto
+ * Date: Dec 21, 2009
+ * Time: 2:22:24 PM
+ */
 class ImagesBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected ListStore<GWTJahiaNode> contentStore;
     protected ImageDragSource dragSource;
 
-    public ImagesBrowseTabItem() {
-        super(JCRClientUtils.ALL_FILES, JCRClientUtils.FOLDER_NODETYPES);
+    public ImagesBrowseTabItem(GWTSidePanelTab config) {
+        super(JCRClientUtils.ALL_FILES, JCRClientUtils.FOLDER_NODETYPES, config);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.img());
 
         contentContainer = new LayoutContainer();
@@ -51,8 +52,9 @@ class ImagesBrowseTabItem extends BrowseTabItem {
         RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName()) ;
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", "image/*", null, true, listAsyncCallback);
+                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
+                JahiaContentManagementService.App.getInstance()
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", "image/*", null, true, listAsyncCallback);
             }
         };
 
@@ -71,15 +73,15 @@ class ImagesBrowseTabItem extends BrowseTabItem {
         tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                contentContainer.mask("Loading","x-mask-loading");
+                contentContainer.mask("Loading", "x-mask-loading");
                 listLoader.load(event.getSelectedItem());
             }
         });
 
-        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.images", tree.getSelectionModel()));
+        tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
 
         final ThumbsListView listView = new ThumbsListView(true);
-        listView.setStyleAttribute("overflow-x",  "hidden");
+        listView.setStyleAttribute("overflow-x", "hidden");
         listView.setStore(contentStore);
         contentStore.setSortField("display");
         contentContainer.add(listView);
@@ -88,7 +90,7 @@ class ImagesBrowseTabItem extends BrowseTabItem {
         contentVBoxData.setFlex(2);
         add(contentContainer, contentVBoxData);
 
-        listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<GWTJahiaNode>>(){
+        listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<GWTJahiaNode>>() {
             public void handleEvent(ListViewEvent<GWTJahiaNode> be) {
                 Window w = new Window();
                 GWTJahiaNode node = listView.getSelectionModel().getSelectedItem();
@@ -99,7 +101,7 @@ class ImagesBrowseTabItem extends BrowseTabItem {
                 w.setModal(true);
                 w.setClosable(true);
                 w.setMaximizable(true);
-                w.setSize(Math.max(node.getWidth()+60, 400), Math.max(node.getHeight()+80, 50));
+                w.setSize(Math.max(node.getWidth() + 60, 400), Math.max(node.getHeight() + 80, 50));
                 w.setBlinkModal(true);
                 w.setPlain(true);
                 w.setToolTip(text);
@@ -110,8 +112,8 @@ class ImagesBrowseTabItem extends BrowseTabItem {
             }
         });
 
-        listView.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.images.preview", listView.getSelectionModel()));
-        
+        listView.setContextMenu(createContextMenu(config.getTableContextMenu(), listView.getSelectionModel()));
+
         dragSource = new ImageDragSource(listView);
     }
 

@@ -17,26 +17,26 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.edit.sidepanel.DisplayGridDragSource;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.GWTSidePanelTab;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
-* Side panel tab item for browsing the content repository.
-* User: toto
-* Date: Dec 21, 2009
-* Time: 2:22:24 PM
-*/
+ * Side panel tab item for browsing the content repository.
+ * User: toto
+ * Date: Dec 21, 2009
+ * Time: 2:22:24 PM
+ */
 class ContentBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected ListStore<GWTJahiaNode> contentStore;
     protected DisplayGridDragSource displayGridSource;
 
-    public ContentBrowseTabItem() {
-        super(JCRClientUtils.ALL_CONTENT, JCRClientUtils.FOLDER_NODETYPES);
+    public ContentBrowseTabItem(GWTSidePanelTab config) {
+        super(JCRClientUtils.ALL_CONTENT, JCRClientUtils.FOLDER_NODETYPES, config);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.tabBrowseContent());
 
         contentContainer = new LayoutContainer();
@@ -48,8 +48,9 @@ class ContentBrowseTabItem extends BrowseTabItem {
         RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName()) ;
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:content", null, null, true, listAsyncCallback);
+                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
+                JahiaContentManagementService.App.getInstance()
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:content", null, null, true, listAsyncCallback);
             }
         };
 
@@ -70,7 +71,8 @@ class ContentBrowseTabItem extends BrowseTabItem {
         ColumnConfig col = new ColumnConfig("ext", "", 40);
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
+            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
+                                 ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                 return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
             }
         });
@@ -84,13 +86,13 @@ class ContentBrowseTabItem extends BrowseTabItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 listLoader.load(event.getSelectedItem());
-                contentContainer.mask("Loading","x-mask-loading");
+                contentContainer.mask("Loading", "x-mask-loading");
             }
         });
 
-        tree.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.contentBrowsing", tree.getSelectionModel()));
-        grid.setContextMenu(createContextMenu("org.jahia.toolbar.sidePanel.contentBrowsing.preview", grid.getSelectionModel()));
-        
+        tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
+        grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
+
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
         add(contentContainer, contentVBoxData);

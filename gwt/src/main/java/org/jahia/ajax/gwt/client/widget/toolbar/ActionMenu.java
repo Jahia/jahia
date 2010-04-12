@@ -7,7 +7,6 @@ import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
@@ -31,22 +30,35 @@ public class ActionMenu extends Menu {
     private List<ActionItem> actionItems = new ArrayList<ActionItem>();
 
 
+    public ActionMenu(final GWTJahiaToolbar toolbar, final Linker linker) {
+        super();
+        this.linker = linker;
+
+        createMenu(toolbar);
+
+        // add listener on BedoreShow Event
+        addListener(Events.BeforeShow, new Listener<MenuEvent>() {
+            public void handleEvent(MenuEvent baseEvent) {
+                beforeShow();
+            }
+        });
+    }
+
     public ActionMenu(final String toolbar, final Linker linker) {
         super();
         this.linker = linker;
-        ToolbarService.App.getInstance().getGWTToolbars(toolbar, 
-                new AsyncCallback<GWTJahiaToolbarSet>() {
-                    public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
-                        if (gwtJahiaToolbarSet != null && !gwtJahiaToolbarSet.getToolbarList().isEmpty()) {
-                            createMenu(gwtJahiaToolbarSet, linker);
-                        }
-                        layout();
-                    }
+        ToolbarService.App.getInstance().getGWTToolbars(toolbar, new AsyncCallback<GWTJahiaToolbarSet>() {
+            public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
+                if (gwtJahiaToolbarSet != null && !gwtJahiaToolbarSet.getToolbarList().isEmpty()) {
+                    createMenu(gwtJahiaToolbarSet);
+                }
+                layout();
+            }
 
-                    public void onFailure(Throwable throwable) {
-                        Log.error("Unable to get toolbar bean '" + toolbar + "'", throwable);
-                    }
-                });
+            public void onFailure(Throwable throwable) {
+                Log.error("Unable to get toolbar bean '" + toolbar + "'", throwable);
+            }
+        });
 
         // add listener on BedoreShow Event
         addListener(Events.BeforeShow, new Listener<MenuEvent>() {
@@ -68,27 +80,30 @@ public class ActionMenu extends Menu {
      * Create menu
      *
      * @param gwtJahiaToolbarSet
-     * @param linker
      */
-    private void createMenu(final GWTJahiaToolbarSet gwtJahiaToolbarSet, final Linker linker) {
+    private void createMenu(final GWTJahiaToolbarSet gwtJahiaToolbarSet) {
         // add all items found in the defined menus
         for (GWTJahiaToolbar gwtJahiaToolbar : gwtJahiaToolbarSet.getToolbarList()) {
             if (gwtJahiaToolbar.isContextMenu()) {
-                for (int i = 0; i < gwtJahiaToolbar.getGwtToolbarItemsGroups().size(); i++) {
-                    GWTJahiaToolbarItemsGroup itemsGroup = gwtJahiaToolbar.getGwtToolbarItemsGroups().get(i);
-                    if (i > 0 && i <= gwtJahiaToolbar.getGwtToolbarItemsGroups().size()
-                            && itemsGroup.getGwtToolbarItems().isEmpty()) {
-                        add(new SeparatorMenuItem());
-                    }
-                    for (GWTJahiaToolbarItem gwtJahiaToolbarItem : itemsGroup.getGwtToolbarItems()) {
-                        ActionItem actionItem = gwtJahiaToolbarItem.getActionItem();
-                        if (actionItem != null) {
-                            actionItem.init(gwtJahiaToolbarItem, linker);
-                            actionItems.add(actionItem);
-                            Log.debug("add action-menu : " + gwtJahiaToolbarItem.getTitle());
-                            add(actionItem.getContextMenuItem());
-                        }
-                    }
+                createMenu(gwtJahiaToolbar);
+            }
+        }
+    }
+
+    private void createMenu(GWTJahiaToolbar gwtJahiaToolbar) {
+        for (int i = 0; i < gwtJahiaToolbar.getGwtToolbarItemsGroups().size(); i++) {
+            GWTJahiaToolbarItemsGroup itemsGroup = gwtJahiaToolbar.getGwtToolbarItemsGroups().get(i);
+            if (i > 0 && i <= gwtJahiaToolbar.getGwtToolbarItemsGroups().size() &&
+                    itemsGroup.getGwtToolbarItems().isEmpty()) {
+                add(new SeparatorMenuItem());
+            }
+            for (GWTJahiaToolbarItem gwtJahiaToolbarItem : itemsGroup.getGwtToolbarItems()) {
+                ActionItem actionItem = gwtJahiaToolbarItem.getActionItem();
+                if (actionItem != null) {
+                    actionItem.init(gwtJahiaToolbarItem, linker);
+                    actionItems.add(actionItem);
+                    Log.debug("add action-menu : " + gwtJahiaToolbarItem.getTitle());
+                    add(actionItem.getContextMenuItem());
                 }
             }
         }

@@ -52,17 +52,10 @@ import com.extjs.gxt.ui.client.Style;
 public class ContentPicker extends TriPanelBrowserLayout {
     private PickedContent pickedContent;
 
-    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple) {
+    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, ManagerConfiguration config, boolean multiple) {
         super();
         //setWidth("714px");
         setHeight("700px");
-
-        ManagerConfiguration config;
-        if (conf == null || conf.length() == 0) {
-            config = ManagerConfigurationFactory.getFilePickerConfiguration(linker);
-        } else {
-            config = ManagerConfigurationFactory.getConfiguration(conf, linker);
-        }
 
         if (types != null && types.length() > 0) {
             config.setNodeTypes(types);
@@ -76,7 +69,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         // construction of the UI components
         BottomRightComponent bottomComponents;
-        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
+        if (config.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
             boolean externalAllowed = true;
             boolean internalAllowed = true;
             if (selectorOptions != null) {
@@ -90,17 +83,17 @@ public class ContentPicker extends TriPanelBrowserLayout {
                 externalAllowed = false;
                 internalAllowed = true;
             }
-            bottomComponents = new PickedPageView(conf, externalAllowed, internalAllowed, selectedNodes, multiple, config, false);
+            bottomComponents = new PickedPageView(config.getName(), externalAllowed, internalAllowed, selectedNodes, multiple, config, false);
         } else {
-            bottomComponents = new PickedContentView(selectionLabel, conf, selectedNodes, multiple, config);
+            bottomComponents = new PickedContentView(selectionLabel, config.getName(), selectedNodes, multiple, config);
         }
-        TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, multiple);
+        TopRightComponent contentPicker = new ContentPickerBrowser(config.getName(), rootPath, selectedNodes, config, multiple);
 
         MyStatusBar statusBar = new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes());
 
         // setup widgets in layout
 
-        if (conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
+        if (config.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
             setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 300));
             initWidgets(null, bottomComponents.getComponent(), contentPicker.getComponent(), null, statusBar);
         } else {

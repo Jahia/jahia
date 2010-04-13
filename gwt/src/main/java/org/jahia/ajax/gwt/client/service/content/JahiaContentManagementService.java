@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 
 import java.util.List;
 import java.util.Map;
@@ -68,6 +69,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
 
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
+
+    public ManagerConfiguration getConfiguration(String name) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException;
 

@@ -41,7 +41,6 @@ import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 // ToDO: [ManagerConfiguration-Spring] Springify the ManagerConfiguration and remove the ManagerConfigurationFactory
 public class ManagerConfigurationFactory {
 
-    public static final String MANAGER_CONFIG = "conf";
     public static final String FILEMANAGER = "filemanager";
     public static final String MASHUPMANAGER = "mashupmanager";
     public static final String CATEGORYMANAGER = "categorymanager";

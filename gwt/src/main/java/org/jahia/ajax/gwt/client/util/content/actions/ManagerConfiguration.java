@@ -42,6 +42,7 @@ import java.util.ArrayList;
 
 public class ManagerConfiguration implements Serializable {
 
+    private String name;
     private boolean enableTextMenu;
 
     private List<String> tableColumns;
@@ -83,6 +84,14 @@ public class ManagerConfiguration implements Serializable {
         tableColumns = new ArrayList<String>();
         accordionPanels = new ArrayList<String>();
         tabs = new ArrayList<String>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void addColumn(String col) {

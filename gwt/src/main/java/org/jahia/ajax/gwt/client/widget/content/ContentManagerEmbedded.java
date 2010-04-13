@@ -9,7 +9,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import com.extjs.gxt.ui.client.widget.Component;
 
@@ -48,22 +47,28 @@ import com.extjs.gxt.ui.client.widget.Component;
 
 public class ContentManagerEmbedded extends TriPanelBrowserLayout {
 
-    public ContentManagerEmbedded(final String rootPath,String types, String filters, String mimeTypes, String conf) {
+    public ContentManagerEmbedded(final String rootPath,final String nodeTypes,final String filters,final String mimeTypes,final ManagerConfiguration config) {
         // superclass constructor (define linker)
         super();
         setWidth("100%");
-
         setHeight("700px");
         setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 500));
-        ManagerConfiguration config ;
-        if (conf != null && conf.length() > 0) {
-            config = ManagerConfigurationFactory.getConfiguration(conf, linker) ;
-        } else {
-            config = ManagerConfigurationFactory.getFileManagerConfiguration(linker) ;
-        }
 
-        if (types != null && types.length() > 0) {
-            config.setNodeTypes(types);
+
+        init(rootPath, nodeTypes, filters, mimeTypes, config);
+    }
+
+    /**
+     * initialize
+     * @param rootPath
+     * @param nodeTypes
+     * @param filters
+     * @param mimeTypes
+     * @param config
+     */
+    private void init(final String rootPath,final String nodeTypes,final String filters,final String mimeTypes, final ManagerConfiguration config) {
+        if (nodeTypes != null && nodeTypes.length() > 0) {
+            config.setNodeTypes(nodeTypes);
         }
         if (mimeTypes != null && mimeTypes.length() > 0) {
             config.setMimeTypes(mimeTypes);
@@ -80,7 +85,7 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
             tree = new ContentRepositoryTabs(config);
             leftTree = tree.getComponent();
         }
-      
+
 
         final ContentViews contentViews = new ContentViews(config);
         BottomRightComponent tabs = new ContentDetails(config);

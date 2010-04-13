@@ -57,15 +57,20 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.manager.bean.Item;
+import org.jahia.services.manager.bean.ManagerConfiguration;
+import org.jahia.services.toolbar.bean.Visibility;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
@@ -177,6 +182,64 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
+
+    public org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration getConfiguration(String name) throws GWTJahiaServiceException {
+        try {
+            ManagerConfiguration config = (ManagerConfiguration) SpringContextSingleton.getBean(name);
+            if (config != null) {
+                logger.debug("Config. " + name + " found.");
+                org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration gwtConfig = new org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration();
+                gwtConfig.setName(name);
+
+                //  create the gwt configuration
+                gwtConfig.setEnableTextMenu(config.isEnableTextMenu());
+                gwtConfig.setDisplayProvider(config.isDisplayProvider());
+                gwtConfig.setDisplaySearchInPage(config.isDisplaySearchInPage());
+                gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
+                gwtConfig.setDisplaySearchInFile(config.isDisplaySearchInFile());
+                gwtConfig.setDisplaySearchInTag(config.isDisplaySearchInTag());
+
+                // set toolbar group : ToDo replace it by toolbar bean
+                gwtConfig.setToolbarGroup(config.getToolbarGroup());
+
+                // add table columns
+                for (Item item : config.getTableColumns()) {
+                    Visibility visibility = item.getVisibility();
+                    if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
+                        gwtConfig.addColumn(item.getKey());
+                    }
+                }
+
+                // add tabs
+                for (Item item : config.getTabs()) {
+                    Visibility visibility = item.getVisibility();
+                    if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
+                        gwtConfig.addTab(item.getKey());
+                    }
+
+                }
+
+                // add accordion panels
+                for (Item item : config.getAccordionPanels()) {
+                    Visibility visibility = item.getVisibility();
+                    if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
+                        gwtConfig.addAccordion(item.getKey());
+                    }
+
+                }
+
+                gwtConfig.setNodeTypes(config.getNodeTypes());
+                gwtConfig.setFolderTypes(config.getFolderTypes());
+                return gwtConfig;
+            } else {
+                logger.error("Config. " + name + " not found.");
+                throw new GWTJahiaServiceException("Config. " + name + " not found.");
+            }
+        } catch (GWTJahiaServiceException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
         return navigation.ls(folder, nodeTypes, mimeTypes, filters, noFolders, true, retrieveCurrentSession());
@@ -506,7 +569,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
         if (name == null) {
             String defaultLanguage = getLocale().toString();
-            if(getSite()!=null) {
+            if (getSite() != null) {
                 defaultLanguage = getSite().getDefaultLanguage();
             }
             List<GWTJahiaNodeProperty> l = langCodeProperties.get(defaultLanguage);
@@ -672,7 +735,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public String getExportUrl(String path) throws GWTJahiaServiceException {
         try {
             JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession();
-            return "/jahia"+ Export.getExportServletPath()+"/"+jcrSessionWrapper.getWorkspace().getName()+path;
+            return "/jahia" + Export.getExportServletPath() + "/" + jcrSessionWrapper.getWorkspace().getName() + path;
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }

@@ -38,6 +38,9 @@ import com.google.gdata.data.analytics.DataEntry;
 import com.google.gdata.data.analytics.DataFeed;
 import com.google.gdata.util.AuthenticationException;
 import org.apache.log4j.Logger;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.JahiaService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 
@@ -53,11 +56,22 @@ import java.util.*;
  * Time: 5:09:32 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GoogleAnalyticsService {
+public class GoogleAnalyticsService extends JahiaService {
     final static Logger logger = Logger.getLogger(GoogleAnalyticsService.class);
     // format must be "2006-04-01"
     private AnalyticsService analyticsService;
     private static GoogleAnalyticsService googleAnalyticsService = new GoogleAnalyticsService();
+
+
+    @Override
+    public void start() throws JahiaInitializationException {
+
+    }
+
+    @Override
+    public void stop() throws JahiaException {
+        
+    }
 
     /**
      * Get instance

@@ -282,7 +282,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
         boolean validAccount = false;
         boolean validProfile = false;
 
-        GoogleAnalyticsService analyticsService = GoogleAnalyticsService.getInstance();
+        GoogleAnalyticsService analyticsService = ServicesRegistry.getInstance().getGoogleAnalyticsService();
         if (!emptyField) {
             if (credentialsOK = analyticsService.checkCredential(gaLogin, gaPassword)) {
                 validAccount = true;

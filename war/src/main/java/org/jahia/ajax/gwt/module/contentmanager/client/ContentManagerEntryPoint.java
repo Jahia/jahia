@@ -31,8 +31,14 @@
  */
 package org.jahia.ajax.gwt.module.contentmanager.client;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.Layout;
+import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.content.ContentManager;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 import org.jahia.ajax.gwt.client.util.DOMUtil;
@@ -45,21 +51,37 @@ import org.jahia.ajax.gwt.client.util.DOMUtil;
  */
 public class ContentManagerEntryPoint extends CommonEntryPoint {
 
-    public void afterPermissionsLoad() {
-        super.afterPermissionsLoad();
-        RootPanel panel = RootPanel.get("contentmanager");
+    public void onModuleLoad() {
+        /* todo The following two lines are a hack to get development mode to work on Mac OS X, should be removed once this
+           problem is fixed.
+         */
+        @SuppressWarnings("unused")
+        Layout junk = new AnchorLayout();
+
+        final RootPanel panel = RootPanel.get("contentmanager");
         if (panel != null) {
-            boolean embedded = DOMUtil.getRootAttrAsBoolean(panel, "embedded");
-            String nodeTypes = DOMUtil.getRootAttr(panel, "nodeTypes");
-            String filters = DOMUtil.getRootAttr(panel, "filters");
-            String mimeTypes = DOMUtil.getRootAttr(panel, "mimeTypes");
-            String config = DOMUtil.getRootAttr(panel, "config");
-            String rootPath = DOMUtil.getRootAttr(panel, "rootPath");
-            if (embedded) {
-                panel.add(new ContentManagerEmbedded(rootPath,nodeTypes,filters,mimeTypes,config));
-            } else {
-                panel.add(new ContentManager(rootPath,nodeTypes,filters,mimeTypes,config));
-            }
+            final boolean embedded = DOMUtil.getRootAttrAsBoolean(panel, "embedded");
+            final String nodeTypes = DOMUtil.getRootAttr(panel, "nodeTypes");
+            final String filters = DOMUtil.getRootAttr(panel, "filters");
+            final String mimeTypes = DOMUtil.getRootAttr(panel, "mimeTypes");
+            final String config = DOMUtil.getRootAttr(panel, "config");
+            final String rootPath = DOMUtil.getRootAttr(panel, "rootPath");
+
+            JahiaContentManagementService.App.getInstance().getConfiguration(config, new AsyncCallback<ManagerConfiguration>() {
+                public void onSuccess(ManagerConfiguration config) {
+                    if (embedded) {
+                        panel.add(new ContentManagerEmbedded(rootPath, nodeTypes, filters, mimeTypes, config));
+                    } else {
+                        panel.add(new ContentManager(rootPath, nodeTypes, filters, mimeTypes, config));
+                    }
+                }
+
+                public void onFailure(Throwable throwable) {
+                    Log.error("Error while loading user permission", throwable);
+                }
+            });
+
+
         }
     }
 

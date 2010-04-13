@@ -43,9 +43,7 @@ import java.util.List;
  * Time: 09:04:48
  */
 public class Toolbar implements Serializable, BeanNameAware {
-    private static List<Toolbar> alls = new ArrayList<Toolbar>();
 
-    private int index;
     private String name;
     private String titleKey;
     private String type;
@@ -55,20 +53,9 @@ public class Toolbar implements Serializable, BeanNameAware {
     private Visibility visibility;
     private boolean contextMenu;
 
-    public static List<Toolbar> getAlls() {
-        return alls;
-    }
+
 
     public Toolbar() {
-        alls.add(this);
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     public String getTitleKey() {
@@ -119,9 +106,6 @@ public class Toolbar implements Serializable, BeanNameAware {
         this.items = items;
     }
 
-    public void addItemsGroup(ItemsGroup itemsGroup) {
-        this.items.add(itemsGroup);
-    }
 
     public Visibility getVisibility() {
         return visibility;

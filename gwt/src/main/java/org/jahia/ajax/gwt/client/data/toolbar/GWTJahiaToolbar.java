@@ -39,7 +39,6 @@ import java.io.Serializable;
  * Time: 15:39:36
  */
 public class GWTJahiaToolbar implements Serializable {
-    private int index;
     private String name;
     private String title;
     private String type;
@@ -47,13 +46,6 @@ public class GWTJahiaToolbar implements Serializable {
     private boolean contextMenu;
     private List<GWTJahiaToolbarItemsGroup> gwtToolbarItemsGroups;
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
 
     public String getTitle() {
         return title;

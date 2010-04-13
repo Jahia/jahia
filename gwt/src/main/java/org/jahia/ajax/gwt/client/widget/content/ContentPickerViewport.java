@@ -64,36 +64,30 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
     public static final int BUTTON_HEIGHT = 24;
 
 
-    public ContentPickerViewport(String jahiaContextPath, String jahiaServletPath, String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, String conf, boolean multiple, boolean allowThumbs, String callback) {
+    public ContentPickerViewport(final String jahiaContextPath,final String jahiaServletPath,final  String selectionLabel, final String rootPath,final  Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,final  String types,final  String filters,final  String mimeTypes,final ManagerConfiguration managerConfiguration,final  boolean multiple,final  boolean allowThumbs, String callback) {
         super();
-        ManagerConfiguration config;
-        if (conf == null || conf.length() == 0) {
-            config = ManagerConfigurationFactory.getFilePickerConfiguration(linker);
-        } else {
-            config = ManagerConfigurationFactory.getConfiguration(conf, linker);
-        }
 
         if (types != null && types.length() > 0) {
-            config.setNodeTypes(types);
+            managerConfiguration.setNodeTypes(types);
         }
         if (mimeTypes != null && mimeTypes.length() > 0) {
-            config.setMimeTypes(mimeTypes);
+            managerConfiguration.setMimeTypes(mimeTypes);
         }
         if (filters != null && filters.length() > 0) {
-            config.setFilters(filters);
+            managerConfiguration.setFilters(filters);
         }
 
         // construction of the UI components
-        boolean linkPicker = conf.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER);
+        boolean linkPicker = managerConfiguration.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER);
         final BottomRightComponent bottomComponents;
         if (linkPicker) {
-            bottomComponents = new PickedPageView(conf, false, true, selectedNodes, multiple, config, true);
+            bottomComponents = new PickedPageView(managerConfiguration.getName(), false, true, selectedNodes, multiple, managerConfiguration, true);
         } else {
-            bottomComponents = new PickedContentView(selectionLabel, conf, selectedNodes, multiple, config);
+            bottomComponents = new PickedContentView(selectionLabel, managerConfiguration.getName(), selectedNodes, multiple, managerConfiguration);
         }
 
         // top right componet
-        final TopRightComponent contentPicker = new ContentPickerBrowser(conf, rootPath, selectedNodes, config, multiple);
+        final TopRightComponent contentPicker = new ContentPickerBrowser(managerConfiguration.getName(), rootPath, selectedNodes, managerConfiguration, multiple);
 
         // buttom component
         final Component bar = initButtonBar(jahiaContextPath,jahiaServletPath,callback);

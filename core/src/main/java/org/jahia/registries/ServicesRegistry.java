@@ -34,6 +34,7 @@ package org.jahia.registries;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.JahiaService;
+import org.jahia.services.analytics.GoogleAnalyticsService;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.applications.DispatchingService;
 import org.jahia.services.cache.CacheService;
@@ -434,7 +435,12 @@ public class ServicesRegistry {
     
     public SearchService getSearchService() {
         return (SearchService) getService("SearchService");
-    }    
+    }
+
+
+    public GoogleAnalyticsService getGoogleAnalyticsService() {
+        return (GoogleAnalyticsService) getService("GoogleAnalyticsService");
+    }
 
     /**
      * Default constructor, creates a new <code>ServiceRegistry</code> instance.

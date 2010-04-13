@@ -32,6 +32,7 @@
 package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.analytics.GoogleAnalyticsService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -154,7 +155,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
             // add google visualizer api if there is at least one active google analytics profile and if its the edit mode
             if (renderContext != null && renderContext.isEditMode() && renderContext.getSite() != null && renderContext.getSite().hasActivatedGoogleAnalyticsProfile()) {
-                buf.append(GoogleAnalyticsService.getInstance().renderBaseVisualisationCode());
+                buf.append(ServicesRegistry.getInstance().getGoogleAnalyticsService().renderBaseVisualisationCode());
             }
 
             pageContext.getOut().println(buf.toString());
@@ -190,9 +191,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
 
             if (renderContext.getSite() != null && renderContext.getSite().hasGoogleAnalyticsProfile() /*&& renderContext.isLiveMode()*/) {
-                buf.append(GoogleAnalyticsService.getInstance().renderBaseTrackingCode(renderContext.getRequest().getProtocol()));
+                buf.append(ServicesRegistry.getInstance().getGoogleAnalyticsService().renderBaseTrackingCode(renderContext.getRequest().getProtocol()));
                 List<JCRNodeWrapper> trackedNodes = (List<JCRNodeWrapper>) renderContext.getRequest().getAttribute(GoogleAnalyticsFilter.GOOGLE_ANALYTICS_TRACKED_NODES);
-                buf.append(GoogleAnalyticsService.getInstance().renderNodeTrackingCode(trackedNodes, renderContext.getSite()));
+                buf.append(ServicesRegistry.getInstance().getGoogleAnalyticsService().renderNodeTrackingCode(trackedNodes, renderContext.getSite()));
 
             }
 

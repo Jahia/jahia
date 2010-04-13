@@ -38,10 +38,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
-
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import com.extjs.gxt.ui.client.widget.Component;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,17 +49,14 @@ import com.extjs.gxt.ui.client.widget.Component;
  */
 public class ContentManager extends TriPanelBrowserViewport {
 
-    public ContentManager(final String rootPath, final String types, final String filters, final String mimeTypes, final String conf) {
+    public ContentManager(final String rootPath, final String types, final String filters, final String mimeTypes, final ManagerConfiguration config) {
         // superclass constructor (define linker)
         super();
+        init(rootPath, types, filters, mimeTypes, config);
 
-        ManagerConfiguration config;
-        if (conf != null && conf.length() > 0) {
-            config = ManagerConfigurationFactory.getConfiguration(conf, linker);
-        } else {
-            config = ManagerConfigurationFactory.getFileManagerConfiguration(linker);
-        }
+    }
 
+    private void init(final String rootPath, String types, String filters, String mimeTypes, final ManagerConfiguration config) {
         if (types != null && types.length() > 0) {
             config.setNodeTypes(types);
         }
@@ -137,6 +132,5 @@ public class ContentManager extends TriPanelBrowserViewport {
         } else {
             linker.handleNewSelection();
         }
-
     }
 }

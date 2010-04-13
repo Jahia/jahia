@@ -31,8 +31,16 @@
  */
 package org.jahia.ajax.gwt.module.contentpicker.client;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.Layout;
+import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.widget.content.ContentManager;
+import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerViewport;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -54,8 +62,17 @@ import com.google.gwt.user.client.DOM;
  *         Time: 17:59:59
  */
 public class ContentPickerEntryPoint extends CommonEntryPoint {
-    public void afterPermissionsLoad() {
-        super.afterPermissionsLoad();
+
+
+    /**
+     * On module load
+     */
+    public void onModuleLoad() {
+        /* todo The following two lines are a hack to get development mode to work on Mac OS X, should be removed once this
+           problem is fixed.
+         */
+        @SuppressWarnings("unused")
+        Layout junk = new AnchorLayout();
         JahiaGWT.init();
         final RootPanel panel = RootPanel.get("contentpicker");
         if (panel != null) {
@@ -63,16 +80,25 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
             final String jahiaServletPath = DOM.getElementAttribute(panel.getElement(), "jahiaServletPath");
             final String selectionLabel = DOM.getElementAttribute(panel.getElement(), "selectionLabel");
             final String rootPath = DOM.getElementAttribute(panel.getElement(), "rootPath");
-            final Map<String, String> selectorOptions = new HashMap<String,String>();
+            final Map<String, String> selectorOptions = new HashMap<String, String>();
             final List<GWTJahiaNode> selectedNodes = ContentHelper.getSelectedContentNodesFromHTML();
             final String types = DOM.getElementAttribute(panel.getElement(), "nodeTypes");
             final String filters = DOM.getElementAttribute(panel.getElement(), "filters");
             final String mimeTypes = DOM.getElementAttribute(panel.getElement(), "mimeTypes");
             final String conf = DOM.getElementAttribute(panel.getElement(), "config");
-            boolean multiple = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple"));
-            boolean allowThumbs =  Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs"));
+            final boolean multiple = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple"));
+            final boolean allowThumbs = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs"));
             final String callback = DOM.getElementAttribute(panel.getElement(), "callback");
-            panel.add(new ContentPickerViewport(jahiaContextPath,jahiaServletPath,selectionLabel,rootPath,selectorOptions,selectedNodes,types,filters,mimeTypes,conf,multiple,allowThumbs,callback));
+
+            JahiaContentManagementService.App.getInstance().getConfiguration(conf, new AsyncCallback<ManagerConfiguration>() {
+                public void onSuccess(ManagerConfiguration config) {
+                    panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, selectionLabel, rootPath, selectorOptions, selectedNodes, types, filters, mimeTypes, config, multiple, allowThumbs, callback));
+                }
+
+                public void onFailure(Throwable throwable) {
+                    Log.error("Error while loading user permission", throwable);
+                }
+            });
         }
     }
 

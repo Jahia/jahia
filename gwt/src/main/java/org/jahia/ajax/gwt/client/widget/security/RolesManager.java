@@ -1,12 +1,17 @@
 package org.jahia.ajax.gwt.client.widget.security;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
+import org.jahia.ajax.gwt.client.widget.content.ContentManager;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 
 /**
@@ -15,7 +20,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
  * Time: 10:58:17 AM
  */
 public class RolesManager extends LayoutContainer {
-    
+
     private String rootPath;
     private String siteKey;
 
@@ -31,22 +36,33 @@ public class RolesManager extends LayoutContainer {
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         setLayout(new FillLayout());
-        final ContentManagerEmbedded cm = new ContentManagerEmbedded(rootPath,null, null, null, ManagerConfigurationFactory.ROLESMANAGER);
-        final PermissionRolePanel pr = new PermissionRolePanel(siteKey);
-        cm.getLinker().registerExtraComponent(pr);
-        
-        TabPanel tabPanel = new TabPanel();
-        tabPanel.setBorders(false);
-        tabPanel.setSize(600, 500);
-        TabItem managerItem = new TabItem(Messages.get("label_rolemanager","Role manager"));
-        managerItem.add(cm);
-        tabPanel.add(managerItem);
 
-        TabItem rolePermisionItem = new TabItem(Messages.get("label_rolepermissionmapping","Role/permission mapping"));
-        rolePermisionItem.add(pr);
-        tabPanel.add(rolePermisionItem);
+        JahiaContentManagementService.App.getInstance().getConfiguration(ManagerConfigurationFactory.ROLESMANAGER, new AsyncCallback<ManagerConfiguration>() {
+            public void onSuccess(ManagerConfiguration config) {
+                final ContentManagerEmbedded cm = new ContentManagerEmbedded(rootPath, null, null, null, config);
+                final PermissionRolePanel pr = new PermissionRolePanel(siteKey);
+                cm.getLinker().registerExtraComponent(pr);
+
+                TabPanel tabPanel = new TabPanel();
+                tabPanel.setBorders(false);
+                tabPanel.setSize(600, 500);
+                TabItem managerItem = new TabItem(Messages.get("label_rolemanager", "Role manager"));
+                managerItem.add(cm);
+                tabPanel.add(managerItem);
+
+                TabItem rolePermisionItem = new TabItem(Messages.get("label_rolepermissionmapping", "Role/permission mapping"));
+                rolePermisionItem.add(pr);
+                tabPanel.add(rolePermisionItem);
 
 
-        add(tabPanel);
+                add(tabPanel);
+                layout();
+            }
+
+            public void onFailure(Throwable throwable) {
+                Log.error(throwable.getMessage(), throwable);
+            }
+        });
+
     }
 }

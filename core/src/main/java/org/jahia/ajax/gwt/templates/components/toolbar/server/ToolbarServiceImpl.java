@@ -208,7 +208,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
 
         // create gwtTollbar
         GWTJahiaToolbar gwtToolbar = new GWTJahiaToolbar();
-        gwtToolbar.setIndex(toolbar.getIndex());
         gwtToolbar.setName(toolbar.getName());
         gwtToolbar.setTitle(getResources(toolbar.getTitleKey(), getUILocale() != null ? getUILocale() : getLocale(), getSite()));
         gwtToolbar.setType(toolbar.getType());

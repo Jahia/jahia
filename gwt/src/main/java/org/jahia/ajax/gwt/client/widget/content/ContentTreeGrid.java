@@ -35,7 +35,6 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -48,12 +47,12 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
@@ -85,7 +84,7 @@ public class ContentTreeGrid extends ContentPanel {
      * @param multiple
      * @param configuration
      */
-    public ContentTreeGrid(String repoType, List<GWTJahiaNode> selectedNodes, boolean multiple, ManagerConfiguration configuration) {
+    public ContentTreeGrid(String repoType, List<GWTJahiaNode> selectedNodes, boolean multiple, GWTManagerConfiguration configuration) {
         this.multiple = multiple;
         this.linker = new ManagerLinker();
         setLayout(new FitLayout());
@@ -132,13 +131,13 @@ public class ContentTreeGrid extends ContentPanel {
      */
     private class TreeGridTopRightComponent extends TopRightComponent {
         private String repositoryType;
-        private ManagerConfiguration configuration;
+        private GWTManagerConfiguration configuration;
         private boolean init = true;
         private TreeGrid<GWTJahiaNode> m_treeGrid;
         private TreeLoader<GWTJahiaNode> loader;
         private List<GWTJahiaNode> selectedNodes;
 
-        private TreeGridTopRightComponent(String repositoryType, ManagerConfiguration configuration, List<GWTJahiaNode> selectedNodes) {
+        private TreeGridTopRightComponent(String repositoryType, GWTManagerConfiguration configuration, List<GWTJahiaNode> selectedNodes) {
             this.repositoryType = repositoryType;
             this.configuration = configuration;
             this.selectedNodes = selectedNodes;

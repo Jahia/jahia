@@ -33,10 +33,9 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.List;
@@ -48,7 +47,7 @@ import java.util.ArrayList;
  */
 public class ContentPickerBrowser extends TopRightComponent {
 
-    private ManagerConfiguration config;
+    private GWTManagerConfiguration config;
     private String pickerType;
     private ContentPanel m_component;
     private List<ContentTreeGrid> contentTreeGrids = new ArrayList<ContentTreeGrid>();
@@ -57,7 +56,7 @@ public class ContentPickerBrowser extends TopRightComponent {
     private TabItem searchTabItem;
     private GWTJahiaNode lastSelection;
 
-    public ContentPickerBrowser(String pickerType, String rootPath, List<GWTJahiaNode> selectedNodes, ManagerConfiguration config, boolean multiple) {
+    public ContentPickerBrowser(String pickerType, String rootPath, List<GWTJahiaNode> selectedNodes, GWTManagerConfiguration config, boolean multiple) {
         this.pickerType = pickerType;
         this.config = config;
 

@@ -57,7 +57,6 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
@@ -183,12 +182,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
 
-    public org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration getConfiguration(String name) throws GWTJahiaServiceException {
+    public GWTManagerConfiguration getConfiguration(String name) throws GWTJahiaServiceException {
         try {
             ManagerConfiguration config = (ManagerConfiguration) SpringContextSingleton.getBean(name);
             if (config != null) {
                 logger.debug("Config. " + name + " found.");
-                org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration gwtConfig = new org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration();
+                GWTManagerConfiguration gwtConfig = new GWTManagerConfiguration();
                 gwtConfig.setName(name);
 
                 //  create the gwt configuration

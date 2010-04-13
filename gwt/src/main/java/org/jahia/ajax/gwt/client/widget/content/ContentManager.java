@@ -35,10 +35,10 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 
 
 /**
@@ -49,14 +49,14 @@ import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
  */
 public class ContentManager extends TriPanelBrowserViewport {
 
-    public ContentManager(final String rootPath, final String types, final String filters, final String mimeTypes, final ManagerConfiguration config) {
+    public ContentManager(final String rootPath, final String types, final String filters, final String mimeTypes, final GWTManagerConfiguration config) {
         // superclass constructor (define linker)
         super();
         init(rootPath, types, filters, mimeTypes, config);
 
     }
 
-    private void init(final String rootPath, String types, String filters, String mimeTypes, final ManagerConfiguration config) {
+    private void init(final String rootPath, String types, String filters, String mimeTypes, final GWTManagerConfiguration config) {
         if (types != null && types.length() > 0) {
             config.setNodeTypes(types);
         }

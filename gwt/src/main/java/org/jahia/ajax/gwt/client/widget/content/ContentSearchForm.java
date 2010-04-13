@@ -16,13 +16,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
@@ -45,9 +45,9 @@ public class ContentSearchForm extends ContentPanel {
     private CheckBox inFileField;
     private CheckBox inMetadataField;
     private ManagerLinker linker;
-    private ManagerConfiguration config;
+    private GWTManagerConfiguration config;
 
-    public ContentSearchForm(ManagerConfiguration config) {
+    public ContentSearchForm(GWTManagerConfiguration config) {
         this.config = config;
         setLayout(new RowLayout(Style.Orientation.VERTICAL));
         setWidth("100%");

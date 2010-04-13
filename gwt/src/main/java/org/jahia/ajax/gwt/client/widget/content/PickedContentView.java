@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.data.ModelComparer;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -47,7 +46,7 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
@@ -68,7 +67,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
     private GroupingStore<GWTJahiaNode> store;
     private Grid<GWTJahiaNode> m_grid;
     private ThumbsListView m_thumbsListView;
-    private ManagerConfiguration config;
+    private GWTManagerConfiguration config;
     private boolean readOnly = false;
     private boolean multiple;
     private List<GWTJahiaNode> selectedNodes;
@@ -76,7 +75,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
     private String selectionHeaderMessage = "Image selected: ";
     private TabItem itemPreview = new TabItem("Preview");
 
-    public PickedContentView(String selectionLabel,String pickerType, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config) {
+    public PickedContentView(String selectionLabel,String pickerType, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config) {
         this.selectionHeaderMessage =  selectionLabel;
         this.config = config;
         this.pickerType = pickerType;

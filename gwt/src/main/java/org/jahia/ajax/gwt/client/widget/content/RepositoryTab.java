@@ -39,17 +39,13 @@ import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Command;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
@@ -79,7 +75,7 @@ public class RepositoryTab extends ContentPanel {
      * @param label     the repository label
      * @param config    the configuration to use
      */
-    public RepositoryTab(ContentRepositoryTabs container, final JahiaContentManagementServiceAsync service, String type, String label, final ManagerConfiguration config) {
+    public RepositoryTab(ContentRepositoryTabs container, final JahiaContentManagementServiceAsync service, String type, String label, final GWTManagerConfiguration config) {
         super(new FitLayout());
         setBorders(false);
         setBodyBorder(false);

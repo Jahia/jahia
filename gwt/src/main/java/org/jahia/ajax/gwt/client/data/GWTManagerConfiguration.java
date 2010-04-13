@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.util.content.actions;
+package org.jahia.ajax.gwt.client.data;
 
 import java.io.Serializable;
 import java.util.List;
@@ -40,7 +40,7 @@ import java.util.ArrayList;
  * Date: 7 janv. 2009 - 11:24:10
  */
 
-public class ManagerConfiguration implements Serializable {
+public class GWTManagerConfiguration implements Serializable {
 
     private String name;
     private boolean enableTextMenu;
@@ -80,7 +80,7 @@ public class ManagerConfiguration implements Serializable {
     private boolean displaySearchInContent = true;
 
 
-    public ManagerConfiguration() {
+    public GWTManagerConfiguration() {
         tableColumns = new ArrayList<String>();
         accordionPanels = new ArrayList<String>();
         tabs = new ArrayList<String>();

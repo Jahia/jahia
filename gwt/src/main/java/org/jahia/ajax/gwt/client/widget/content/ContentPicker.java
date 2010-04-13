@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -52,7 +52,7 @@ import com.extjs.gxt.ui.client.Style;
 public class ContentPicker extends TriPanelBrowserLayout {
     private PickedContent pickedContent;
 
-    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, ManagerConfiguration config, boolean multiple) {
+    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, GWTManagerConfiguration config, boolean multiple) {
         super();
         //setWidth("714px");
         setHeight("700px");

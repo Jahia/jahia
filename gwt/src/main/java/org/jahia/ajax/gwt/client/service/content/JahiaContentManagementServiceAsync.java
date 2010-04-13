@@ -48,7 +48,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 
 import java.util.List;
 import java.util.Map;
@@ -62,7 +62,7 @@ import java.util.Set;
  */
 public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsync {
 
-    void getConfiguration(String name, AsyncCallback<ManagerConfiguration> async);
+    void getConfiguration(String name, AsyncCallback<GWTManagerConfiguration> async);
 
 
     void ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);

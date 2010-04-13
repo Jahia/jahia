@@ -37,8 +37,8 @@ import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.content.ContentManager;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 import org.jahia.ajax.gwt.client.util.DOMUtil;
@@ -67,8 +67,8 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
             final String config = DOMUtil.getRootAttr(panel, "config");
             final String rootPath = DOMUtil.getRootAttr(panel, "rootPath");
 
-            JahiaContentManagementService.App.getInstance().getConfiguration(config, new AsyncCallback<ManagerConfiguration>() {
-                public void onSuccess(ManagerConfiguration config) {
+            JahiaContentManagementService.App.getInstance().getConfiguration(config, new AsyncCallback<GWTManagerConfiguration>() {
+                public void onSuccess(GWTManagerConfiguration config) {
                     if (embedded) {
                         panel.add(new ContentManagerEmbedded(rootPath, nodeTypes, filters, mimeTypes, config));
                     } else {

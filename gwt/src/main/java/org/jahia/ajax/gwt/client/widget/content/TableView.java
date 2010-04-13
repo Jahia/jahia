@@ -49,13 +49,13 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.content.FileStoreSorter;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
@@ -119,9 +119,9 @@ public class TableView extends TopRightComponent {
     private Grid<GWTJahiaNode> m_grid;
     private ListStore<GWTJahiaNode> store;
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
-    private ManagerConfiguration configuration;
+    private GWTManagerConfiguration configuration;
 
-    public TableView(final ManagerConfiguration config) {
+    public TableView(final GWTManagerConfiguration config) {
         m_component = new LayoutContainer(new FitLayout());
         m_component.setBorders(false);
 

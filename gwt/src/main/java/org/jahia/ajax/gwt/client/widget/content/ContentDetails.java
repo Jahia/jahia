@@ -50,6 +50,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -66,7 +67,6 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.content.versioning.VersioningPanel;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -85,7 +85,7 @@ import java.util.List;
  * @version 23 juin 2008 - 16:15:46
  */
 public class ContentDetails extends BottomRightComponent {
-    private ManagerConfiguration config;
+    private GWTManagerConfiguration config;
     private ContentPanel m_component;
     private AsyncTabItem infoTabItem;
     private AsyncTabItem propertiesTabItem;
@@ -112,7 +112,7 @@ public class ContentDetails extends BottomRightComponent {
     private final JahiaContentDefinitionServiceAsync cDefService = JahiaContentDefinitionService.App.getInstance();
 
 
-    public ContentDetails(ManagerConfiguration config) {
+    public ContentDetails(GWTManagerConfiguration config) {
         super();
         this.config = config;
         m_component = new ContentPanel(new FitLayout());

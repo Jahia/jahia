@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
@@ -51,7 +51,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.google.gwt.user.client.Window;
 
 /**
  * File and folder picker control.
@@ -64,7 +63,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
     public static final int BUTTON_HEIGHT = 24;
 
 
-    public ContentPickerViewport(final String jahiaContextPath,final String jahiaServletPath,final  String selectionLabel, final String rootPath,final  Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,final  String types,final  String filters,final  String mimeTypes,final ManagerConfiguration managerConfiguration,final  boolean multiple,final  boolean allowThumbs, String callback) {
+    public ContentPickerViewport(final String jahiaContextPath,final String jahiaServletPath,final  String selectionLabel, final String rootPath,final  Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,final  String types,final  String filters,final  String mimeTypes,final GWTManagerConfiguration managerConfiguration,final  boolean multiple,final  boolean allowThumbs, String callback) {
         super();
 
         if (types != null && types.length() > 0) {

@@ -1,20 +1,18 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -80,7 +78,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
     public static String INTERNAL_PICKER = "internalPicker";
 
 
-    public PickedPageView(String pickerType, boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final ManagerConfiguration config, boolean htmlEditor) {
+    public PickedPageView(String pickerType, boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config, boolean htmlEditor) {
 
         m_component = new LayoutContainer(new FitLayout());
         //m_component.setBodyBorder(false);

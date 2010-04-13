@@ -38,7 +38,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -77,14 +77,14 @@ public class ContentRepositoryTabs extends LeftComponent {
     // my search
     private ContentPanel savedSearchPanel;
     private DataList queryList;
-    private ManagerConfiguration config;
+    private GWTManagerConfiguration config;
 
     /**
      * Constructor (UI)
      *
      * @param config the configuration to use (generated in ManagerConfigurationFactory)
      */
-    public ContentRepositoryTabs(ManagerConfiguration config) {
+    public ContentRepositoryTabs(GWTManagerConfiguration config) {
         this.config = config;
         m_component = new TabPanel();
         m_component.setBodyBorder(false);

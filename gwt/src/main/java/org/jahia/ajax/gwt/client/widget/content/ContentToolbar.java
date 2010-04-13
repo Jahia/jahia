@@ -32,7 +32,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.Component;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
@@ -47,9 +47,9 @@ public class ContentToolbar extends TopBar {
 
     private ActionToolbarLayoutContainer m_component;
 
-    private ManagerConfiguration configuration;
+    private GWTManagerConfiguration configuration;
 
-    public ContentToolbar(ManagerConfiguration config, ManagerLinker linker) {
+    public ContentToolbar(GWTManagerConfiguration config, ManagerLinker linker) {
         configuration = config;
         initWithLinker(linker);
         createDynamicUi();

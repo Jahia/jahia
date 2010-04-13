@@ -32,17 +32,15 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.SearchField;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -72,15 +70,15 @@ public class SearchGrid extends ContentPanel {
     private Grid<GWTJahiaNode> grid;
     private ListStore<GWTJahiaNode> store;
 
-    private ManagerConfiguration config;
+    private GWTManagerConfiguration config;
     private boolean multiple = false;
 
-    public SearchGrid(ManagerConfiguration config, boolean multiple) {
+    public SearchGrid(GWTManagerConfiguration config, boolean multiple) {
         this(config);
         this.multiple = multiple;
     }
 
-    public SearchGrid(ManagerConfiguration config) {
+    public SearchGrid(GWTManagerConfiguration config) {
         this.config = config;
         setLayout(new FitLayout());
         setBorders(false);

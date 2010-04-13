@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
@@ -56,7 +57,7 @@ public class ManagerConfigurationFactory {
     public static final String ROLESMANAGER = "rolesmanager";
     public static final String SITEROLESMANAGER = "siterolesmanager";
 
-    public static ManagerConfiguration getConfiguration(String config, ManagerLinker linker) {
+    public static GWTManagerConfiguration getConfiguration(String config, ManagerLinker linker) {
         if (config != null) {
             if (config.contains(FILEMANAGER)) {
                 return getFileManagerConfiguration(linker);
@@ -104,8 +105,8 @@ public class ManagerConfigurationFactory {
         return getCompleteManagerConfiguration(linker);
     }
 
-    public static ManagerConfiguration getCompleteManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getCompleteManagerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(true);
 
         configuration.setToolbarGroup("content-manager");
@@ -134,8 +135,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getFileManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getFileManagerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(true);
         configuration.setDisplayProvider(true);
 
@@ -176,8 +177,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getFilePickerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getFilePickerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(false);
         configuration.setToolbarGroup("file-picker");
         configuration.setHideLeftPanel(true);
@@ -200,8 +201,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getContentPickerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getContentPickerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(false);
         configuration.setToolbarGroup("content-picker");
         configuration.setHideLeftPanel(true);
@@ -223,8 +224,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getPagePickerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getPagePickerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(false);
         configuration.addAccordion(JCRClientUtils.SITE_REPOSITORY);
         configuration.setToolbarGroup("file-picker");
@@ -243,8 +244,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getMashupManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getMashupManagerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(true);
         configuration.setEnableFileDoubleClick(false);
         configuration.setDisplayExt(false);
@@ -285,8 +286,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getMashupPickerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getMashupPickerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(false);
         configuration.setEnableFileDoubleClick(false);
         configuration.setDisplayExt(false);
@@ -319,8 +320,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getCategoryManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getCategoryManagerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(true);
         configuration.setDisplayExt(false);
         configuration.setDisplaySize(false);
@@ -348,8 +349,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getTagManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getTagManagerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setHideLeftPanel(true);
         configuration.setEnableTextMenu(true);
         configuration.setDisplayExt(false);
@@ -380,8 +381,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getRolesManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getRolesManagerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setHideLeftPanel(true);
         configuration.setEnableTextMenu(true);
         configuration.setDisplayExt(false);
@@ -406,8 +407,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getSiteRolesManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = getRolesManagerConfiguration(linker);
+    public static GWTManagerConfiguration getSiteRolesManagerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = getRolesManagerConfiguration(linker);
         configuration.getAccordionPanels().clear();
         configuration.addAccordion(JCRClientUtils.SITE_ROLE_REPOSITORY);
         configuration.setDisplaySearchInPage(true);
@@ -417,8 +418,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getCategoryPickerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getCategoryPickerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(false);
         configuration.setEnableFileDoubleClick(false);
         configuration.setDisplayExt(false);
@@ -450,8 +451,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getPortletDefinitionManagerConfiguration(final ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getPortletDefinitionManagerConfiguration(final ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
 
         configuration.setEnableTextMenu(false);
         configuration.setEnableFileDoubleClick(false);
@@ -482,8 +483,8 @@ public class ManagerConfigurationFactory {
         return configuration;
     }
 
-    public static ManagerConfiguration getSiteManagerConfiguration(ManagerLinker linker) {
-        ManagerConfiguration configuration = new ManagerConfiguration();
+    public static GWTManagerConfiguration getSiteManagerConfiguration(ManagerLinker linker) {
+        GWTManagerConfiguration configuration = new GWTManagerConfiguration();
         configuration.setEnableTextMenu(true);
         configuration.setDisplaySize(false);
         configuration.setDisplayDate(false);

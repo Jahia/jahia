@@ -43,10 +43,10 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 
 import java.util.List;
@@ -119,8 +119,8 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         if (disabled || isReadOnly()) {
             return;
         }
-        JahiaContentManagementService.App.getInstance().getConfiguration(configuration, new AsyncCallback<ManagerConfiguration>() {
-            public void onSuccess(ManagerConfiguration config) {
+        JahiaContentManagementService.App.getInstance().getConfiguration(configuration, new AsyncCallback<GWTManagerConfiguration>() {
+            public void onSuccess(GWTManagerConfiguration config) {
                 final Window w = new Window();
                 w.setLayout(new FitLayout());
                 final ContentPicker contentPicker = new ContentPicker(selectionLabel, rootPath, selectorOptions, getValue(), types, filters, mimeTypes,config, multiple);

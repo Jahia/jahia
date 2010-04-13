@@ -48,11 +48,11 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
@@ -71,9 +71,9 @@ public class ThumbView extends TopRightComponent {
     private SimpleComboBox<String> sort;
     private ToggleButton sortOrder ;
 
-    private ManagerConfiguration configuration;
+    private GWTManagerConfiguration configuration;
 
-    public ThumbView(final ManagerConfiguration config, boolean detailed) {
+    public ThumbView(final GWTManagerConfiguration config, boolean detailed) {
         configuration = config;
 
         m_component = new ContentPanel(new FitLayout());

@@ -39,9 +39,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -60,7 +60,7 @@ public class TemplateView extends TopRightComponent {
     private LayoutContainer m_component;
     private HTML html;
 
-    public TemplateView(final ManagerConfiguration config) {
+    public TemplateView(final GWTManagerConfiguration config) {
         m_component = new LayoutContainer(new FitLayout());
         m_component.setBorders(false);
 

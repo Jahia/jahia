@@ -34,20 +34,12 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.Window;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.SearchField;
-import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.List;
 
@@ -68,11 +60,11 @@ public class ContentViews extends TopRightComponent {
 
     private ActionMenu contextMenu;
 
-    private ManagerConfiguration configuration;
+    private GWTManagerConfiguration configuration;
 
     private List<GWTJahiaNode> searchResults = null;
 
-    public ContentViews(ManagerConfiguration config) {
+    public ContentViews(GWTManagerConfiguration config) {
         configuration = config;
         tableView = new TableView(config);
         thumbView = new ThumbView(config, false);

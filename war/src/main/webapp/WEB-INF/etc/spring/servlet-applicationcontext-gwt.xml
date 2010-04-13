@@ -66,6 +66,7 @@
         <property name="zip" ref="ZipHelper"/>
         <property name="diff" ref="DiffHelper"/>
         <property name="seo" ref="SeoHelper"/>
+        <property name="toolbar" ref="ToolbarHelper"/>
         <property name="analytics" ref="AnalyticsHelper"/>
     </bean>
 

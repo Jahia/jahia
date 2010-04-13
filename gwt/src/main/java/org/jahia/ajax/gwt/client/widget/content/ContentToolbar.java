@@ -57,8 +57,8 @@ public class ContentToolbar extends TopBar {
 
     private void createDynamicUi() {
        // ToDO: [ManagerConfiguration-Spring] get the set of toolbars from the ManagerConfiguration
-       //ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getGwtToolbarSet());
-        ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getToolbarGroup());
+       ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getGwtJahiaToolbarSet());
+       // ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getToolbarGroup());
         toolbarContainer.initWithLinker(getLinker());
         m_component = toolbarContainer;
     }

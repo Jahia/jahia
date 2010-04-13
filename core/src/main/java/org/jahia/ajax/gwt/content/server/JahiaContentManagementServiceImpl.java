@@ -109,6 +109,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ACLHelper acl;
     private DiffHelper diff;
     private SeoHelper seo;
+    private ToolbarHelper toolbar;
     private AnalyticsHelper analytics;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
@@ -177,7 +178,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.zip = zip;
     }
 
-// ------------------------ INTERFACE METHODS ------------------------
+    public void setToolbar(ToolbarHelper toolbar) {
+        this.toolbar = toolbar;
+    }
+
+    // ------------------------ INTERFACE METHODS ------------------------
 
 
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
@@ -200,6 +205,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
                 // set toolbar group : ToDo replace it by toolbar bean
                 gwtConfig.setToolbarGroup(config.getToolbarGroup());
+                gwtConfig.setGwtJahiaToolbarSet(toolbar.getGWTToolbars(getSite(), getRemoteJahiaUser(), getLocale(),getUILocale(), getRequest(),config.getToolbarGroup()));
+
 
                 // add table columns
                 for (Item item : config.getTableColumns()) {

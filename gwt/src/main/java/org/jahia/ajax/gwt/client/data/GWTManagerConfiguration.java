@@ -31,6 +31,8 @@
  */
 package org.jahia.ajax.gwt.client.data;
 
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
@@ -67,6 +69,7 @@ public class GWTManagerConfiguration implements Serializable {
     private boolean useCheckboxForSelection = true;
 
     private String toolbarGroup;
+    private GWTJahiaToolbarSet gwtJahiaToolbarSet;
 
     private boolean expandRoot = false;
 
@@ -248,6 +251,14 @@ public class GWTManagerConfiguration implements Serializable {
 
     public void setToolbarGroup(String toolbarGroup) {
         this.toolbarGroup = toolbarGroup;
+    }
+
+    public GWTJahiaToolbarSet getGwtJahiaToolbarSet() {
+        return gwtJahiaToolbarSet;
+    }
+
+    public void setGwtJahiaToolbarSet(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
+        this.gwtJahiaToolbarSet = gwtJahiaToolbarSet;
     }
 
     public boolean isUseCheckboxForSelection() {

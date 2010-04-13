@@ -25,6 +25,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
     private Linker linker;
     private String toolbarGroup;
     private GWTJahiaToolbar toolbar;
+    private GWTJahiaToolbarSet toolbarSet;
 
     public ActionToolbarLayoutContainer(String toolbarGroup) {
         super();
@@ -36,6 +37,12 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         super();
         this.toolbar = toolbar;
         setLayout(new RowLayout());
+    }
+
+    public ActionToolbarLayoutContainer(GWTJahiaToolbarSet toolbarSet) {
+        super();
+        setLayout(new RowLayout());
+        this.toolbarSet = toolbarSet;
     }
 
     /**
@@ -130,7 +137,9 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
         this.linker = linker;
         if (toolbar != null) {
             addActionToolbar(toolbar);
-        } else if (toolbarGroup != null) {
+        } else if (toolbarSet != null) {
+            createToolbarUI(toolbarSet);
+        }else if (toolbarGroup != null) {
             loadToolbars();
         }
     }

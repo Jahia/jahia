@@ -15,8 +15,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Module filter for parameter resolution.
@@ -73,6 +72,8 @@ public class TemplateAttributesFilter extends AbstractFilter {
             if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(pkey))) {
                 if (node.isNodeType(mixin.getName()) && node.hasProperty(key)) {
                     params.put(pkey, node.getProperty(key).getString());
+                } else {
+                    params.put(pkey, null);
                 }
             }
         }

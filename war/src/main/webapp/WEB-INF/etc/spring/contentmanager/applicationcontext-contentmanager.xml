@@ -434,7 +434,7 @@
 
     </bean>
 
-    <!-- file manager -->
+    <!-- sitemanager manager -->
     <bean id="sitemanager" class="org.jahia.services.manager.bean.ManagerConfiguration">
         <property name="enableTextMenu" value="true"/>
         <property name="displaySize" value="false"/>
@@ -446,6 +446,14 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <property name="defaultView" value="1"/>
+
+
+        <!-- accordion -->
+        <property name="accordionPanels">
+            <list>
+                <ref bean="repository.siteRole"/>
+            </list>
+        </property>
 
          <!-- columns -->
         <property name="tableColumns">

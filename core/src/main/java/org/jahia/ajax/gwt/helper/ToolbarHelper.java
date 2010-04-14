@@ -1,20 +1,65 @@
+/**
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
+import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
+import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
+import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
+import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
+import org.jahia.bin.Jahia;
+import org.jahia.data.JahiaData;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.preferences.JahiaPreferencesService;
+import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.toolbar.bean.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -28,20 +73,27 @@ import java.util.*;
  */
 public class ToolbarHelper {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ToolbarHelper.class);
+    private static Map<String, Class<?>> CLASS_CACHE = new HashMap<String, Class<?>>();
+    private static transient SchedulerService SCHEDULER_SERVICE;
 
+    private JahiaPreferencesService preferencesService;
+
+    public void setPreferencesService(JahiaPreferencesService preferencesService) {
+        this.preferencesService = preferencesService;
+    }
     /**
      * Get gwt toolbar for the current user
      *
      * @return
      */
-    public GWTJahiaToolbarSet getGWTToolbars(JCRSiteNode site, JahiaUser jahiaUser, Locale locale,Locale uiLocale, HttpServletRequest request, String toolbarGroup) throws GWTJahiaServiceException {
+    public GWTJahiaToolbarSet getGWTToolbars(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarGroup) throws GWTJahiaServiceException {
         try {
             // there is no pref or toolbar are hided
             // get all tool bars
             ToolbarSet toolbarSet = (ToolbarSet) SpringContextSingleton.getBean(toolbarGroup);
             Visibility visibility = toolbarSet.getVisibility();
             if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
-                GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(site, jahiaUser, locale,uiLocale, request, toolbarSet);
+                GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, toolbarSet);
                 return gwtJahiaToolbarSet;
             } else {
                 logger.info("Toolbar are not visible.");
@@ -60,7 +112,7 @@ public class ToolbarHelper {
      * @param toolbarSet
      * @return
      */
-    public GWTJahiaToolbarSet createGWTToolbarSet(JCRSiteNode site, JahiaUser jahiaUser, Locale locale,Locale uiLocale, HttpServletRequest request, ToolbarSet toolbarSet) {
+    public GWTJahiaToolbarSet createGWTToolbarSet(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, ToolbarSet toolbarSet) {
         if (toolbarSet.getToolbars() == null || toolbarSet.getToolbars().isEmpty()) {
             logger.debug("toolbar set list is empty");
             return null;
@@ -72,7 +124,7 @@ public class ToolbarHelper {
             // add only tool bar that the user can view
             Visibility visibility = toolbar.getVisibility();
             if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
-                GWTJahiaToolbar gwtToolbar = createGWTToolbar(site, jahiaUser, locale,uiLocale, request,toolbar);
+                GWTJahiaToolbar gwtToolbar = createGWTToolbar(site, jahiaUser, locale, uiLocale, request, toolbar);
                 // add toolbar only if not empty
                 if (gwtToolbar != null && gwtToolbar.getGwtToolbarItemsGroups() != null && !gwtToolbar.getGwtToolbarItemsGroups().isEmpty()) {
                     gwtJahiaToolbarSet.addGWTToolbar(gwtToolbar);
@@ -85,6 +137,301 @@ public class ToolbarHelper {
         }
         return gwtJahiaToolbarSet;
 
+    }
+
+    /**
+     * Execute action
+     * ToDo:  remove JahiaData
+     * @param gwtPropertiesMap
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTJahiaAjaxActionResult execute(JahiaData jData, Map<String, GWTJahiaProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
+        final GWTJahiaProperty classActionProperty = gwtPropertiesMap.get(Constants.CLASS_ACTION);
+        final GWTJahiaProperty actionProperty = gwtPropertiesMap.get(Constants.ACTION);
+
+        GWTJahiaAjaxActionResult actionResult = new GWTJahiaAjaxActionResult("");
+
+        // execute actionProperty depending on classAction and the actionProperty
+        if (classActionProperty != null) {
+            String classActionValue = classActionProperty.getValue();
+            if (classActionValue != null && classActionValue.length() > 0) {
+                String actionValue = null;
+                if (actionProperty != null) {
+                    actionValue = actionProperty.getValue();
+                }
+
+                // execute action
+                try {
+                    // remove useless properties
+                    gwtPropertiesMap.remove(Constants.CLASS_ACTION);
+                    gwtPropertiesMap.remove(Constants.ACTION);
+
+                    // execute actionProperty
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Execute [" + classActionValue + "," + actionValue + "]");
+                    }
+                    AjaxAction ajaxAction = (AjaxAction) getClassInstance(classActionValue);
+                    return ajaxAction.execute(jData, actionValue, gwtPropertiesMap);
+                } catch (Exception e) {
+                    logger.error(e, e);
+                }
+
+
+            } else {
+                logger.info("Class Action property found but EMPTY");
+            }
+
+        } else {
+            logger.info("Class Action property not found");
+        }
+        return actionResult;
+    }
+
+    /**
+     * Update GWT Jahia State Info
+     *
+     * @param gwtJahiaStateInfo
+     * @return
+     */
+    public GWTJahiaStateInfo updateGWTJahiaStateInfo(JCRSiteNode site, JahiaUser jahiaUser, Locale uiLocale,GWTJahiaStateInfo gwtJahiaStateInfo) throws GWTJahiaServiceException {
+        try {
+            if (gwtJahiaStateInfo == null) {
+                gwtJahiaStateInfo = new GWTJahiaStateInfo();
+                gwtJahiaStateInfo.setLastViewTime(System.currentTimeMillis());
+                if (gwtJahiaStateInfo.isNeedRefresh()) {
+                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-refresh");
+                }
+            } else {
+                if (gwtJahiaStateInfo.isNeedRefresh()) {
+                    return gwtJahiaStateInfo;
+                }
+            }
+
+            // remove last alert message
+            gwtJahiaStateInfo.setAlertMessage(null);
+
+            // check pdisplay
+            if (gwtJahiaStateInfo.isCheckProcessInfo()) {
+                GWTJahiaProcessJobInfo gwtProcessJobInfo = updateGWTProcessJobInfo(jahiaUser,gwtJahiaStateInfo.getGwtProcessJobInfo());
+                gwtJahiaStateInfo.setGwtProcessJobInfo(gwtProcessJobInfo);
+                if (gwtProcessJobInfo.isJobExecuting()) {
+                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-wait-min");
+                    gwtJahiaStateInfo.setText("Job is running (" + gwtProcessJobInfo.getNumberWaitingJobs() + ") waiting");
+                } else if (gwtProcessJobInfo.getNumberWaitingJobs() > 0) {
+                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-information");
+                    gwtJahiaStateInfo.setText(gwtProcessJobInfo.getNumberWaitingJobs() + " waiting jobs");
+                } else {
+                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-ok");
+                }
+
+                // pdisplay need refresh need refresh
+                if (gwtProcessJobInfo.isJobFinished()) {
+                    gwtJahiaStateInfo.setAlertMessage(getResources("label.processManagering.jobfinished",uiLocale,site));
+
+                    // current user job ended
+                    if (gwtProcessJobInfo.isCurrentUserJob() && !gwtProcessJobInfo.isSystemJob()) {
+                        gwtJahiaStateInfo.setCurrentUserJobEnded(true);
+                    } else {
+                        gwtJahiaStateInfo.setCurrentUserJobEnded(false);
+                    }
+                    // do we need to refresh ?
+                    if (gwtJahiaStateInfo.isNeedRefresh() || gwtProcessJobInfo.isCurrentPageValidated()) {
+                        gwtJahiaStateInfo.setNeedRefresh(true);
+                        gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-refresh");
+                        gwtJahiaStateInfo.setText(getResources("label.processManagering.reloadPage",uiLocale,site));
+                        gwtJahiaStateInfo.setRefreshMessage(getResources("label.processManagering.reloadPage",uiLocale,site));
+                    }
+
+                } else {
+                    gwtJahiaStateInfo.setCurrentUserJobEnded(false);
+                    gwtJahiaStateInfo.setNeedRefresh(false);
+                }
+            }
+
+
+            return gwtJahiaStateInfo;
+        } catch (Exception e) {
+            logger.error("Error when triing to load Jahia state info due to", e);
+            throw new GWTJahiaServiceException("Error when triing to load Jahia state.");
+        }
+    }
+
+    /**
+     * Get Process Job stat
+     *
+     * @return
+     */
+    private GWTJahiaProcessJobInfo updateGWTProcessJobInfo(JahiaUser jahiaUser, GWTJahiaProcessJobInfo gwtProcessJobInfo) throws GWTJahiaServiceException {
+        long lastExecutedJob = getSchedulerService().getLastJobCompletedTime();
+        if (gwtProcessJobInfo == null) {
+            gwtProcessJobInfo = new GWTJahiaProcessJobInfo();
+            gwtProcessJobInfo.setLastViewTime(lastExecutedJob);
+        }
+        boolean isCurrentUser = false;
+        boolean isSystemJob = true;
+        boolean isCurrentPageValided = false;
+        String lastExecutedJobLabel = "";
+        String lastExecutionJobTitle = "";
+        String link = null;
+        JobDetail lastExecutedJobDetail = getSchedulerService().getLastCompletedJobDetail();
+        if (lastExecutedJobDetail != null) {
+            link = Jahia.getContextPath() + "/processing/jobreport.jsp?name=" + lastExecutedJobDetail.getName() + "&groupName=" + lastExecutedJobDetail.getGroup();
+            JobDataMap lastExecutedJobDataMap = lastExecutedJobDetail.getJobDataMap();
+            if (lastExecutedJobDataMap != null) {
+
+                // set 'is current user' flag
+                String lastExecutedJobUserKey = lastExecutedJobDataMap.getString(BackgroundJob.JOB_USERKEY);
+                if (lastExecutedJobUserKey != null) {
+                    isCurrentUser = lastExecutedJobUserKey.equalsIgnoreCase(jahiaUser.getUserKey());
+                }
+
+                // set title if any
+                lastExecutionJobTitle = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TITLE);
+
+                // set 'is System Job'
+                String lastExecutedJobType = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TYPE);
+                if (lastExecutedJobType != null) {
+                    // is system job
+//                    isSystemJob = !lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE);
+
+                    // workflow
+//                    if (lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE)) {
+//                        lastExecutedJobLabel = getLocaleJahiaEnginesResource("org.jahia.engines.processDisplay.op.workflow.label");
+//                    }
+                }
+            }
+        }
+
+
+        // current executing jobs
+        try {
+
+            List currentlyExecutingJobs = getSchedulerService().getCurrentlyExecutingJobs();
+            if (currentlyExecutingJobs != null && currentlyExecutingJobs.size() > 0) {
+                gwtProcessJobInfo.setJobExecuting(true);
+            } else {
+                gwtProcessJobInfo.setJobExecuting(false);
+            }
+            // get all job list
+            List jobList = ProcessDisplayServiceImpl.getAllActiveJobsDetails();
+            int waitingJobNumber = 0;
+            int nextJobCurrentUserIndex = -1;
+            String nextJobCurrentUserType = "-";
+            int maxIndex = jobList.size();
+            gwtProcessJobInfo.setNumberJobs(maxIndex);
+            for (int jobIndex = 0; jobIndex < maxIndex; jobIndex++) {
+                JobDetail currentJobDetail = (JobDetail) jobList.get(jobIndex);
+                JobDataMap currentJobDataMap = currentJobDetail.getJobDataMap();
+                // job: type
+                String type = currentJobDataMap.getString(BackgroundJob.JOB_TYPE);
+
+                // job: status
+                String currentJobStatus = currentJobDataMap.getString(BackgroundJob.JOB_STATUS);
+
+                // job: user key
+                String currentJobUserKey = currentJobDataMap.getString(BackgroundJob.JOB_USERKEY);
+                if (currentJobStatus.equalsIgnoreCase(BackgroundJob.STATUS_WAITING)) {
+                    waitingJobNumber++;
+                    if (currentJobUserKey != null && jahiaUser != null) {
+                        if (currentJobUserKey.equalsIgnoreCase(jahiaUser.getUserKey())) {
+                            if (nextJobCurrentUserIndex == -1) {
+                                nextJobCurrentUserType = type;
+                            }
+                        } else {
+                            // update nex job index
+                            nextJobCurrentUserIndex++;
+                        }
+                    }
+                }
+                if (currentJobStatus.equalsIgnoreCase(BackgroundJob.STATUS_RUNNING)) {
+                    // update nex job index
+                    nextJobCurrentUserIndex++;
+                    nextJobCurrentUserType = type;
+
+                }
+            }
+
+            // set need to refresh flag
+            gwtProcessJobInfo.setJobFinished(gwtProcessJobInfo.getLastViewTime() < lastExecutedJob);
+
+            boolean pageRefresh = false;
+            String value = preferencesService.getGenericPreferenceValue(ProcessDisplayServiceImpl.PREF_PAGE_REFRESH, jahiaUser);
+            if (value != null && value.length() > 0) {
+                try {
+                    pageRefresh = Boolean.parseBoolean(value);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+
+            }
+
+
+            // set values
+            gwtProcessJobInfo.setCurrentUserJob(isCurrentUser);
+            gwtProcessJobInfo.setCurrentPageValidated(false);
+            gwtProcessJobInfo.setSystemJob(isSystemJob);
+            gwtProcessJobInfo.setJobReportUrl(link);
+            if (lastExecutionJobTitle == null) {
+                lastExecutionJobTitle = "";
+            }
+            gwtProcessJobInfo.setJobType(lastExecutedJobLabel);
+            gwtProcessJobInfo.setLastTitle(lastExecutionJobTitle);
+            gwtProcessJobInfo.setAutoRefresh(pageRefresh);
+            gwtProcessJobInfo.setLastViewTime(lastExecutedJob);
+            gwtProcessJobInfo.setNumberWaitingJobs(waitingJobNumber);
+            gwtProcessJobInfo.setNextJobCurrentUserIndex(nextJobCurrentUserIndex);
+            gwtProcessJobInfo.setNextJobCurrentUserType(nextJobCurrentUserType);
+        } catch (Exception e) {
+            logger.error("Unable to get number of running job.", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        return gwtProcessJobInfo;
+    }
+
+
+    /**
+     * Get Scheduler Service
+     *
+     * @return
+     */
+    private SchedulerService getSchedulerService() {
+        if (SCHEDULER_SERVICE == null) {
+            SCHEDULER_SERVICE = ServicesRegistry.getInstance().getSchedulerService();
+        }
+        return SCHEDULER_SERVICE;
+    }
+
+    /**
+     * Create object from the given className
+     *
+     * @param className
+     * @return
+     */
+    private Object getClassInstance(String className) {
+        Class<?> clazz = CLASS_CACHE.get(className);
+        if (null == clazz) {
+            synchronized (ToolbarHelper.class) {
+                if (null == clazz) {
+                    try {
+                        clazz = Class.forName(className);
+                        CLASS_CACHE.put(className, clazz);
+                    } catch (ClassNotFoundException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                }
+            }
+        }
+
+        Object classInstance = null;
+        try {
+            classInstance = clazz.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return classInstance;
     }
 
 
@@ -127,7 +474,7 @@ public class ToolbarHelper {
             // add only itemsgroup that the user can view
             Visibility visibility = itemsGroup.getVisibility();
             if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
-                GWTJahiaToolbarItemsGroup gwtItemsGroup = createGWTItemsGroup(site, jahiaUser, locale,uiLocale, request,gwtToolbar.getName(), index, itemsGroup);
+                GWTJahiaToolbarItemsGroup gwtItemsGroup = createGWTItemsGroup(site, jahiaUser, locale, uiLocale, request, gwtToolbar.getName(), index, itemsGroup);
 
                 // add itemsGroup only if not empty
                 if (gwtItemsGroup != null && gwtItemsGroup.getGwtToolbarItems() != null && !gwtItemsGroup.getGwtToolbarItems().isEmpty()) {
@@ -166,7 +513,7 @@ public class ToolbarHelper {
         List<GWTJahiaToolbarItem> gwtToolbarItemsList = new ArrayList<GWTJahiaToolbarItem>();
         // create items from definition
         for (Item item : list) {
-            addItem(site, jahiaUser, locale,uiLocale, request,gwtToolbarItemsList, item);
+            addItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, item);
         }
 
         // don't add the items group if  has no items group
@@ -231,7 +578,7 @@ public class ToolbarHelper {
     private void addItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
         if (item instanceof ItemsGroup) {
             for (Item subItem : ((ItemsGroup) item).getRealItems(site, jahiaUser, locale)) {
-                addItem(site, jahiaUser, locale,uiLocale, request,gwtToolbarItemsList, subItem);
+                addItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, subItem);
             }
         } else {
             // add only item that the user can view
@@ -240,7 +587,7 @@ public class ToolbarHelper {
 
             // add only visible items
             if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
-                GWTJahiaToolbarItem gwtToolbarItem = createGWTItem(site, jahiaUser, locale,uiLocale, request,item);
+                GWTJahiaToolbarItem gwtToolbarItem = createGWTItem(site, jahiaUser, locale, uiLocale, request, item);
                 if (gwtToolbarItem != null) {
                     gwtToolbarItemsList.add(gwtToolbarItem);
                 }
@@ -313,6 +660,7 @@ public class ToolbarHelper {
 
     /**
      * Get resources
+     *
      * @param key
      * @param locale
      * @param site

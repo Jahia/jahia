@@ -81,7 +81,7 @@
         <property name="remoteServiceName" value="gwtToolbarService"/>
     </bean>
     <bean name="gwtToolbarService" class="org.jahia.ajax.gwt.templates.components.toolbar.server.ToolbarServiceImpl" scope="prototype">
-        <property name="preferencesService" ref="JahiaPreferencesService"/>
+        <property name="toolbar" ref="ToolbarHelper"/>
     </bean>
     
     <bean name="sessionManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">

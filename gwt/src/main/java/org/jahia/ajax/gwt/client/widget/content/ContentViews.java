@@ -134,7 +134,7 @@ public class ContentViews extends TopRightComponent {
     }
 
     public void initContextMenu() {
-        contextMenu = new ActionMenu(configuration.getToolbarGroup(),getLinker());
+        contextMenu = new ActionMenu(configuration.getToolbarSet(),getLinker());
         current.setContextMenu(contextMenu);
     }
 

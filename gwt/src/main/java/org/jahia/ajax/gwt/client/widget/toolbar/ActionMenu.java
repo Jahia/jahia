@@ -44,6 +44,20 @@ public class ActionMenu extends Menu {
         });
     }
 
+    public ActionMenu(final GWTJahiaToolbarSet toolbarSet, final Linker linker) {
+        super();
+        this.linker = linker;
+
+        createMenu(toolbarSet);
+
+        // add listener on BedoreShow Event
+        addListener(Events.BeforeShow, new Listener<MenuEvent>() {
+            public void handleEvent(MenuEvent baseEvent) {
+                beforeShow();
+            }
+        });
+    }
+
     public ActionMenu(final String toolbar, final Linker linker) {
         super();
         this.linker = linker;
@@ -90,6 +104,10 @@ public class ActionMenu extends Menu {
         }
     }
 
+    /**
+     * Create Menu
+     * @param gwtJahiaToolbar
+     */
     private void createMenu(GWTJahiaToolbar gwtJahiaToolbar) {
         for (int i = 0; i < gwtJahiaToolbar.getGwtToolbarItemsGroups().size(); i++) {
             GWTJahiaToolbarItemsGroup itemsGroup = gwtJahiaToolbar.getGwtToolbarItemsGroups().get(i);

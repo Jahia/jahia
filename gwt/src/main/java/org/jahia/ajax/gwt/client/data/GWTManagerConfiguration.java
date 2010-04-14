@@ -69,7 +69,7 @@ public class GWTManagerConfiguration implements Serializable {
     private boolean useCheckboxForSelection = true;
 
     private String toolbarGroup;
-    private GWTJahiaToolbarSet gwtJahiaToolbarSet;
+    private GWTJahiaToolbarSet toolbarSet;
 
     private boolean expandRoot = false;
 
@@ -245,20 +245,13 @@ public class GWTManagerConfiguration implements Serializable {
         this.allowCollections = allowConnections;
     }
 
-    public String getToolbarGroup() {
-        return toolbarGroup;
+
+    public GWTJahiaToolbarSet getToolbarSet() {
+        return toolbarSet;
     }
 
-    public void setToolbarGroup(String toolbarGroup) {
-        this.toolbarGroup = toolbarGroup;
-    }
-
-    public GWTJahiaToolbarSet getGwtJahiaToolbarSet() {
-        return gwtJahiaToolbarSet;
-    }
-
-    public void setGwtJahiaToolbarSet(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
-        this.gwtJahiaToolbarSet = gwtJahiaToolbarSet;
+    public void setToolbarSet(GWTJahiaToolbarSet toolbarSet) {
+        this.toolbarSet = toolbarSet;
     }
 
     public boolean isUseCheckboxForSelection() {

@@ -213,17 +213,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 gwtConfig.setDisplayDate(config.isDisplayDate());
                 gwtConfig.setDisplayProvider(config.isDisplayProvider());
                 gwtConfig.setUseCheckboxForSelection(config.isUseCheckboxForSelection());
-                gwtConfig.setToolbarGroup(gwtConfig.getToolbarGroup());
-                gwtConfig.setExpandRoot(gwtConfig.isExpandRoot());
-                gwtConfig.setAllowCollections(gwtConfig.isAllowCollections());
-                gwtConfig.setDisplaySearch(gwtConfig.isDisplaySearch());
-                gwtConfig.setDisplaySearchInPage(gwtConfig.isDisplaySearchInPage());
-                gwtConfig.setDisplaySearchInTag(gwtConfig.isDisplaySearchInTag());
-                gwtConfig.setDisplaySearchInFile(gwtConfig.isDisplaySearchInFile());
-                gwtConfig.setDisplaySearchInContent(gwtConfig.isDisplaySearchInContent());
+                gwtConfig.setExpandRoot(config.isExpandRoot());
+                gwtConfig.setAllowCollections(config.isAllowCollections());
+                gwtConfig.setDisplaySearch(config.isDisplaySearch());
+                gwtConfig.setDisplaySearchInPage(config.isDisplaySearchInPage());
+                gwtConfig.setDisplaySearchInTag(config.isDisplaySearchInTag());
+                gwtConfig.setDisplaySearchInFile(config.isDisplaySearchInFile());
+                gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
 
-                // set toolbar group : ToDo replace it by toolbar bean
-                gwtConfig.setGwtJahiaToolbarSet(toolbar.getGWTToolbars(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(), config.getToolbarGroup()));
+                // set toolbar
+                gwtConfig.setToolbarSet(toolbar.getGWTToolbars(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(), config.getToolbarGroup()));
 
                 // add table columns
                 for (Item item : config.getTableColumns()) {

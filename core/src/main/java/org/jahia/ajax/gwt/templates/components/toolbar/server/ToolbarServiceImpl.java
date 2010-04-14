@@ -34,36 +34,12 @@ package org.jahia.ajax.gwt.templates.components.toolbar.server;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
-import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
-import org.jahia.ajax.gwt.client.util.Constants;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.helper.ToolbarHelper;
-import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
-import org.jahia.bin.Jahia;
-import org.jahia.data.JahiaData;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.preferences.JahiaPreferencesService;
-import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.toolbar.bean.*;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-
-import javax.jcr.RepositoryException;
 import java.util.*;
 
 

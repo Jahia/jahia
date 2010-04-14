@@ -119,7 +119,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         if (disabled || isReadOnly()) {
             return;
         }
-        JahiaContentManagementService.App.getInstance().getConfiguration(configuration, new AsyncCallback<GWTManagerConfiguration>() {
+        JahiaContentManagementService.App.getInstance().getManagerConfiguration(configuration, new AsyncCallback<GWTManagerConfiguration>() {
             public void onSuccess(GWTManagerConfiguration config) {
                 final Window w = new Window();
                 w.setLayout(new FitLayout());

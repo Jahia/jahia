@@ -7,47 +7,7 @@
     <bean id="editmode" class="org.jahia.services.toolbar.bean.ToolbarSet">
         <property name="toolbars">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Toolbar">
-                    <property name="items">
-                        <list>
-                            <ref bean="org.jahia.toolbar.item.Live"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <bean id="org.jahia.toolbar.itemsgroup.NewAction" class="org.jahia.services.toolbar.bean.ItemsGroup">
-                                <property name="layout" value="menu"/>
-                                <property name="titleKey" value="label.new"/>
-                                <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
-                                <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
-                                <property name="items">
-                                    <list>
-                                        <ref bean="org.jahia.toolbar.item.createPage"/>
-                                        <ref bean="org.jahia.toolbar.item.createContent"/>
-                                    </list>
-                                </property>
-                            </bean>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.Managers"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.User"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.item.Admin"/>
-                            <ref bean="org.jahia.toolbar.item.Studio"/>
-                        </list>
-                    </property>
-                    <property name="visibility">
-                        <bean class="org.jahia.services.toolbar.bean.Visibility">
-                            <property name="siteActionPermission" value="actions/edit-mode"/>
-                        </bean>
-                    </property>
-                    <property name="contextMenu" value="true"/>
-                </bean>
+               <ref bean="editmode-topbar"/>
             </list>
         </property>
     </bean>
@@ -55,22 +15,7 @@
     <bean id="contextmenu-editmode" class="org.jahia.services.toolbar.bean.ToolbarSet">
         <property name="toolbars">
             <list>
-                <bean class="org.jahia.services.toolbar.bean.Toolbar">
-                    <property name="items">
-                        <list>
-                            <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
-                        </list>
-                    </property>
-                    <property name="visibility">
-                        <bean class="org.jahia.services.toolbar.bean.Visibility">
-                            <property name="siteActionPermission" value="actions/edit-mode"/>
-                        </bean>
-                    </property>
-                    <property name="contextMenu" value="true"/>
-                </bean>
+                <ref bean="editmode-contextmenu"/>
             </list>
         </property>
     </bean>
@@ -265,7 +210,68 @@
         </property>
     </bean>
 
-     <!-- compare-mode -->
+    <bean id="editmode-topbar" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.Live"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Preview"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <bean id="org.jahia.toolbar.itemsgroup.NewAction"
+                      class="org.jahia.services.toolbar.bean.ItemsGroup">
+                    <property name="layout" value="menu"/>
+                    <property name="titleKey" value="label.new"/>
+                    <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
+                    <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="org.jahia.toolbar.item.createPage"/>
+                            <ref bean="org.jahia.toolbar.item.createContent"/>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Managers"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.User"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.Admin"/>
+                <ref bean="org.jahia.toolbar.item.Studio"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="actions/edit-mode"/>
+            </bean>
+        </property>
+        <property name="contextMenu" value="true"/>
+    </bean>
+
+
+    <bean id="editmode-contextmenu" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="actions/edit-mode"/>
+            </bean>
+        </property>
+        <property name="contextMenu" value="true"/>
+    </bean>
+
+    <!-- compare-mode -->
     <bean id="org.jahia.toolbar.compareEngine" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
             <list>
@@ -277,7 +283,7 @@
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="siteActionPermission" value="actions/edit-mode"/>
             </bean>
-         </property>
+        </property>
     </bean>
 
     <!-- Category Manager -->

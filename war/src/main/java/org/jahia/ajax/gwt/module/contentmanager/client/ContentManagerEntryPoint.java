@@ -67,7 +67,7 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
             final String config = DOMUtil.getRootAttr(panel, "config");
             final String rootPath = DOMUtil.getRootAttr(panel, "rootPath");
 
-            JahiaContentManagementService.App.getInstance().getConfiguration(config, new AsyncCallback<GWTManagerConfiguration>() {
+            JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new AsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
                     if (embedded) {
                         panel.add(new ContentManagerEmbedded(rootPath, nodeTypes, filters, mimeTypes, config));

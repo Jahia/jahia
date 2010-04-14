@@ -62,7 +62,7 @@ import java.util.Set;
  */
 public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsync {
 
-    void getConfiguration(String name, AsyncCallback<GWTManagerConfiguration> async);
+    void getManagerConfiguration(String name, AsyncCallback<GWTManagerConfiguration> async);
 
 
     void ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);

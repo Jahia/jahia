@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
@@ -60,16 +61,12 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.manager.bean.Item;
-import org.jahia.services.manager.bean.ManagerConfiguration;
-import org.jahia.services.toolbar.bean.Visibility;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
@@ -109,7 +106,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private ACLHelper acl;
     private DiffHelper diff;
     private SeoHelper seo;
-    private ToolbarHelper toolbar;
+    private UIConfigHelper uiConfig;
     private AnalyticsHelper analytics;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
@@ -178,8 +175,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.zip = zip;
     }
 
-    public void setToolbar(ToolbarHelper toolbar) {
-        this.toolbar = toolbar;
+    public void setUiConfig(UIConfigHelper uiConfig) {
+        this.uiConfig = uiConfig;
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -187,79 +184,25 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
 
-    public GWTManagerConfiguration getConfiguration(String name) throws GWTJahiaServiceException {
-        try {
-            ManagerConfiguration config = (ManagerConfiguration) SpringContextSingleton.getBean(name);
-            if (config != null) {
-                logger.debug("Config. " + name + " found.");
-                GWTManagerConfiguration gwtConfig = new GWTManagerConfiguration();
-                gwtConfig.setName(name);
-
-                //  set all properties
-                gwtConfig.setNodeTypes(config.getNodeTypes());
-                gwtConfig.setFolderTypes(config.getFolderTypes());
-                gwtConfig.setEnableTextMenu(config.isEnableTextMenu());
-                gwtConfig.setSelectedAccordion(config.getSelectedAccordion());
-                gwtConfig.setHideLeftPanel(config.isHideLeftPanel());
-                gwtConfig.setFolderTypes(config.getFolderTypes());
-                gwtConfig.setNodeTypes(config.getNodeTypes());
-                gwtConfig.setFilters(config.getFilters());
-                gwtConfig.setMimeTypes(config.getMimeTypes());
-                gwtConfig.setDefaultView(config.getDefaultView());
-                gwtConfig.setEnableFileDoubleClick(config.isEnableFileDoubleClick());
-                gwtConfig.setDisplaySize(config.isDisplaySize());
-                gwtConfig.setDisplayExt(config.isDisplayExt());
-                gwtConfig.setDisplayLock(config.isDisplayLock());
-                gwtConfig.setDisplayDate(config.isDisplayDate());
-                gwtConfig.setDisplayProvider(config.isDisplayProvider());
-                gwtConfig.setUseCheckboxForSelection(config.isUseCheckboxForSelection());
-                gwtConfig.setExpandRoot(config.isExpandRoot());
-                gwtConfig.setAllowCollections(config.isAllowCollections());
-                gwtConfig.setDisplaySearch(config.isDisplaySearch());
-                gwtConfig.setDisplaySearchInPage(config.isDisplaySearchInPage());
-                gwtConfig.setDisplaySearchInTag(config.isDisplaySearchInTag());
-                gwtConfig.setDisplaySearchInFile(config.isDisplaySearchInFile());
-                gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
-
-                // set toolbar
-                gwtConfig.setToolbarSet(toolbar.getGWTToolbars(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(), config.getToolbarGroup()));
-
-                // add table columns
-                for (Item item : config.getTableColumns()) {
-                    Visibility visibility = item.getVisibility();
-                    if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
-                        gwtConfig.addColumn(item.getKey());
-                    }
-                }
-
-                // add tabs
-                for (Item item : config.getTabs()) {
-                    Visibility visibility = item.getVisibility();
-                    if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
-                        gwtConfig.addTab(item.getKey());
-                    }
-
-                }
-
-                // add accordion panels
-                for (Item item : config.getAccordionPanels()) {
-                    Visibility visibility = item.getVisibility();
-                    if ((visibility != null && visibility.getRealValue(getSite(), getRemoteJahiaUser(), getLocale(), getRequest())) || visibility == null) {
-                        gwtConfig.addAccordion(item.getKey());
-                    }
-
-                }
+    /**
+     * Get ManageConfiguratin
+     * @param name
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException {
+        return uiConfig.getGWTManagerConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(),name);
+    }
 
 
-                return gwtConfig;
-            } else {
-                logger.error("Config. " + name + " not found.");
-                throw new GWTJahiaServiceException("Config. " + name + " not found.");
-            }
-        } catch (GWTJahiaServiceException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
+    /**
+     * Get edit configuration
+     *
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTEditConfiguration getEditConfiguration(String name) throws GWTJahiaServiceException {
+        return uiConfig.getGWTEditConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(),name);
     }
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {

@@ -102,7 +102,7 @@
     	<property name="urlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
     </bean>
 
-    <bean name="ToolbarHelper" class="org.jahia.ajax.gwt.helper.ToolbarHelper">
+    <bean name="UiConfigHelper" class="org.jahia.ajax.gwt.helper.UIConfigHelper">
         <property name="preferencesService" ref="JahiaPreferencesService"/>
     </bean>
 

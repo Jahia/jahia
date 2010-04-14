@@ -70,7 +70,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
 
-    public GWTManagerConfiguration getConfiguration(String name) throws GWTJahiaServiceException;
+    public GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException;
 

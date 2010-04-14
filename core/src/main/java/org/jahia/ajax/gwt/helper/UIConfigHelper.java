@@ -33,10 +33,8 @@ package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
+import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.*;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -49,10 +47,16 @@ import org.jahia.data.JahiaData;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.edit.bean.EditConfiguration;
+import org.jahia.services.edit.bean.Engine;
+import org.jahia.services.edit.bean.EngineTab;
+import org.jahia.services.edit.bean.SidePanelTab;
+import org.jahia.services.manager.bean.*;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.toolbar.bean.*;
+import org.jahia.services.toolbar.bean.Item;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
@@ -71,8 +75,8 @@ import java.util.*;
  * Time: 5:25:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ToolbarHelper {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ToolbarHelper.class);
+public class UIConfigHelper {
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(UIConfigHelper.class);
     private static Map<String, Class<?>> CLASS_CACHE = new HashMap<String, Class<?>>();
     private static transient SchedulerService SCHEDULER_SERVICE;
 
@@ -86,7 +90,7 @@ public class ToolbarHelper {
      *
      * @return
      */
-    public GWTJahiaToolbarSet getGWTToolbars(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarGroup) throws GWTJahiaServiceException {
+    public GWTJahiaToolbarSet getGWTToolbarSet(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarGroup) throws GWTJahiaServiceException {
         try {
             // there is no pref or toolbar are hided
             // get all tool bars
@@ -411,7 +415,7 @@ public class ToolbarHelper {
     private Object getClassInstance(String className) {
         Class<?> clazz = CLASS_CACHE.get(className);
         if (null == clazz) {
-            synchronized (ToolbarHelper.class) {
+            synchronized (UIConfigHelper.class) {
                 if (null == clazz) {
                     try {
                         clazz = Class.forName(className);
@@ -441,7 +445,7 @@ public class ToolbarHelper {
      * @param toolbar
      * @return
      */
-    private GWTJahiaToolbar createGWTToolbar(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Toolbar toolbar) {
+    public GWTJahiaToolbar createGWTToolbar(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Toolbar toolbar) {
         // don't add the tool bar if  has no items group
         if (toolbar.getItems() == null || toolbar.getItems().isEmpty()) {
             logger.debug("toolbar[" + toolbar.getName() + "] itemsgroup list is empty");
@@ -492,6 +496,88 @@ public class ToolbarHelper {
         return gwtToolbar;
     }
 
+    /**
+     * Get manage configuration
+     * @param site
+     * @param jahiaUser
+     * @param locale
+     * @param uiLocale
+     * @param request
+     * @param name
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTManagerConfiguration getGWTManagerConfiguration(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request,String name) throws GWTJahiaServiceException {
+        try {
+            ManagerConfiguration config = (ManagerConfiguration) SpringContextSingleton.getBean(name);
+            if (config != null) {
+                logger.debug("Config. " + name + " found.");
+                GWTManagerConfiguration gwtConfig = new GWTManagerConfiguration();
+                gwtConfig.setName(name);
+
+                //  set all properties
+                gwtConfig.setNodeTypes(config.getNodeTypes());
+                gwtConfig.setFolderTypes(config.getFolderTypes());
+                gwtConfig.setEnableTextMenu(config.isEnableTextMenu());
+                gwtConfig.setSelectedAccordion(config.getSelectedAccordion());
+                gwtConfig.setHideLeftPanel(config.isHideLeftPanel());
+                gwtConfig.setFolderTypes(config.getFolderTypes());
+                gwtConfig.setNodeTypes(config.getNodeTypes());
+                gwtConfig.setFilters(config.getFilters());
+                gwtConfig.setMimeTypes(config.getMimeTypes());
+                gwtConfig.setDefaultView(config.getDefaultView());
+                gwtConfig.setEnableFileDoubleClick(config.isEnableFileDoubleClick());
+                gwtConfig.setDisplaySize(config.isDisplaySize());
+                gwtConfig.setDisplayExt(config.isDisplayExt());
+                gwtConfig.setDisplayLock(config.isDisplayLock());
+                gwtConfig.setDisplayDate(config.isDisplayDate());
+                gwtConfig.setDisplayProvider(config.isDisplayProvider());
+                gwtConfig.setUseCheckboxForSelection(config.isUseCheckboxForSelection());
+                gwtConfig.setExpandRoot(config.isExpandRoot());
+                gwtConfig.setAllowCollections(config.isAllowCollections());
+                gwtConfig.setDisplaySearch(config.isDisplaySearch());
+                gwtConfig.setDisplaySearchInPage(config.isDisplaySearchInPage());
+                gwtConfig.setDisplaySearchInTag(config.isDisplaySearchInTag());
+                gwtConfig.setDisplaySearchInFile(config.isDisplaySearchInFile());
+                gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
+
+                // set toolbar
+                gwtConfig.setToolbarSet(getGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, config.getToolbarGroup()));
+
+                // add table columns
+                for (org.jahia.services.manager.bean.Item item : config.getTableColumns()) {
+                    if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
+                        gwtConfig.addColumn(item.getKey());
+                    }
+                }
+
+                // add tabs
+                for (org.jahia.services.manager.bean.Item item : config.getTabs()) {
+                    if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
+                        gwtConfig.addTab(item.getKey());
+                    }
+
+                }
+
+                // add accordion panels
+                for (org.jahia.services.manager.bean.Item item : config.getAccordionPanels()) {
+                    if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
+                        gwtConfig.addAccordion(item.getKey());
+                    }
+                }
+
+
+                return gwtConfig;
+            } else {
+                logger.error("Config. " + name + " not found.");
+                throw new GWTJahiaServiceException("Config. " + name + " not found.");
+            }
+        } catch (GWTJahiaServiceException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
 
     /**
      * Create gwt items group
@@ -513,7 +599,7 @@ public class ToolbarHelper {
         List<GWTJahiaToolbarItem> gwtToolbarItemsList = new ArrayList<GWTJahiaToolbarItem>();
         // create items from definition
         for (Item item : list) {
-            addItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, item);
+            addToolbarItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, item);
         }
 
         // don't add the items group if  has no items group
@@ -575,10 +661,10 @@ public class ToolbarHelper {
      * @param gwtToolbarItemsList
      * @param item
      */
-    private void addItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
+    private void addToolbarItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
         if (item instanceof ItemsGroup) {
             for (Item subItem : ((ItemsGroup) item).getRealItems(site, jahiaUser, locale)) {
-                addItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, subItem);
+                addToolbarItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, subItem);
             }
         } else {
             // add only item that the user can view
@@ -659,6 +745,88 @@ public class ToolbarHelper {
     }
 
     /**
+     * Get edit configuration
+     *
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTEditConfiguration getGWTEditConfiguration(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String name) throws GWTJahiaServiceException {
+        try {
+            EditConfiguration config = (EditConfiguration) SpringContextSingleton.getBean(name);
+            if (config != null) {
+                GWTEditConfiguration gwtConfig = new GWTEditConfiguration();
+                gwtConfig.setName(config.getName());
+                gwtConfig.setTopToolbar(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, config.getTopToolbar()));
+                gwtConfig.setContextMenu(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, config.getContextMenu()));
+                gwtConfig.setTabs(createGWTSidePanelTabList(site, jahiaUser, locale, uiLocale, request, config.getTabs()));
+                gwtConfig.setCreateEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getCreateEngines()));
+                gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getEditEngines()));
+                return gwtConfig;
+            } else {
+                throw new GWTJahiaServiceException("Bean. 'editconfig'  not found in spring config file");
+            }
+        } catch (GWTJahiaServiceException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    /**
+     * Create GWTSidePanelTab list
+     * @param site
+     * @param jahiaUser
+     * @param locale
+     * @param uiLocale
+     * @param request
+     * @param tabs
+     * @return
+     */
+    private List<GWTSidePanelTab> createGWTSidePanelTabList(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<SidePanelTab> tabs) {
+        // create side panel tabs
+        List<GWTSidePanelTab> gwtSidePanelTabList = new ArrayList<GWTSidePanelTab>();
+        for (SidePanelTab sidePanelTab : tabs) {
+            if (checkVisibility(site,jahiaUser,locale,request,sidePanelTab.getVisibility())) {
+                final GWTSidePanelTab gwtSidePanel = new GWTSidePanelTab(sidePanelTab.getName());
+                gwtSidePanel.setTreeContextMenu(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, sidePanelTab.getTreeContextMenu()));
+                gwtSidePanel.setTableContextMenu(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, sidePanelTab.getTableContextMenu()));
+                gwtSidePanel.setParams(sidePanelTab.getParams());
+                gwtSidePanelTabList.add(gwtSidePanel);
+            }
+        }
+        return gwtSidePanelTabList;
+    }
+
+    /**
+     * Create gwt engine list
+     * @param site
+     * @param jahiaUser
+     * @param locale
+     * @param request
+     * @param engines
+     * @return
+     */
+    private List<GWTEngine> createGWTEngineList(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request, List<Engine> engines) {
+        // edit engine
+        List<GWTEngine> gwtEngineList = new ArrayList<GWTEngine>();
+        for (Engine engine : engines) {
+            if (checkVisibility(site,jahiaUser,locale,request,engine.getVisibility())) {
+                final GWTEngine gwtEngine = new GWTEngine();
+                gwtEngine.setNodeType(engine.getNodeType());
+
+                final List<String> engineTabs = new ArrayList<String>();
+                for (EngineTab engineTab : engine.getTabs()) {
+                    if (checkVisibility(site,jahiaUser,locale,request,engineTab.getVisibility())) {
+                        engineTabs.add(engineTab.getName());
+                    }
+                }
+                gwtEngine.setTabs(engineTabs);
+                gwtEngineList.add(gwtEngine);
+            }
+        }
+        return gwtEngineList;
+    }
+
+    /**
      * Get resources
      *
      * @param key
@@ -682,6 +850,17 @@ public class ToolbarHelper {
         }
 
         return value;
+    }
+
+
+    /**
+     * Return tru
+     *
+     * @param visibility
+     * @return
+     */
+    private boolean checkVisibility(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request,Visibility visibility) {
+        return visibility == null || (visibility != null && visibility.getRealValue(site, jahiaUser, locale, request));
     }
 
 

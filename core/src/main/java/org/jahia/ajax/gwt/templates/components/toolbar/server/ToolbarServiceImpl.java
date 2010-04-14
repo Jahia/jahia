@@ -39,7 +39,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.helper.ToolbarHelper;
+import org.jahia.ajax.gwt.helper.UIConfigHelper;
 import java.util.*;
 
 
@@ -50,10 +50,10 @@ import java.util.*;
  */
 public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ToolbarServiceImpl.class);
-    private ToolbarHelper toolbar;
+    private UIConfigHelper uiConfigHelper;
 
-    public void setToolbar(ToolbarHelper toolbar) {
-        this.toolbar = toolbar;
+    public void setUiConfigHelper(UIConfigHelper uiConfigHelper) {
+        this.uiConfigHelper = uiConfigHelper;
     }
 
 
@@ -63,7 +63,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      * @return
      */
     public GWTJahiaToolbarSet getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException {
-        return toolbar.getGWTToolbars(getSite(), getRemoteJahiaUser(), getLocale(),getUILocale(), getRequest(), toolbarGroup);
+        return uiConfigHelper.getGWTToolbarSet(getSite(), getRemoteJahiaUser(), getLocale(),getUILocale(), getRequest(), toolbarGroup);
     }
 
 
@@ -75,7 +75,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      */
     public GWTJahiaAjaxActionResult execute(Map<String, GWTJahiaProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
         // ToDO : remove JahiaData
-        return toolbar.execute(retrieveJahiaData(),gwtPropertiesMap);
+        return uiConfigHelper.execute(retrieveJahiaData(),gwtPropertiesMap);
     }
 
 
@@ -86,9 +86,8 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      * @return
      */
     public GWTJahiaStateInfo updateGWTJahiaStateInfo(GWTJahiaStateInfo gwtJahiaStateInfo) throws GWTJahiaServiceException {
-        return toolbar.updateGWTJahiaStateInfo(getSite(), getRemoteJahiaUser(), getUILocale(),gwtJahiaStateInfo);
+        return uiConfigHelper.updateGWTJahiaStateInfo(getSite(), getRemoteJahiaUser(), getUILocale(),gwtJahiaStateInfo);
     }
-
 
 
 }

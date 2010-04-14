@@ -88,7 +88,7 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
             final boolean allowThumbs = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs"));
             final String callback = DOM.getElementAttribute(panel.getElement(), "callback");
 
-            JahiaContentManagementService.App.getInstance().getConfiguration(conf, new AsyncCallback<GWTManagerConfiguration>() {
+            JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, new AsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
                     panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, selectionLabel, rootPath, selectorOptions, selectedNodes, types, filters, mimeTypes, config, multiple, allowThumbs, callback));
                 }

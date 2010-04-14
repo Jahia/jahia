@@ -5,7 +5,7 @@
        <bean class="org.jahia.modules.filter.SkinFilter">
             <property name="priority" value="45" />
         </bean>
-        <bean id="skinsInitializer" class="org.jahia.modules.render.SkinsChoiceListInitializerImpl">
-            <property name="key" value="skins"/>
-        </bean>
+        <!--<bean id="skinsInitializer" class="org.jahia.modules.render.SkinsChoiceListInitializerImpl">-->
+            <!--<property name="key" value="skins"/>-->
+        <!--</bean>-->
 </beans>

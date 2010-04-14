@@ -97,9 +97,9 @@ public class FileSystemScriptResolver implements ScriptResolver {
 
     private Template resolveTemplate(Resource resource, RenderContext context, String template, ExtendedNodeType st, SortedSet<JahiaTemplatesPackage> sortedPackages) {
         for (JahiaTemplatesPackage aPackage : sortedPackages) {
-            if ("siteLayout".equals(aPackage.getModuleType()) && (context.getSite() == null || !aPackage.getName().equals(context.getSite().getTemplatePackageName()))) {
-                continue;
-            }
+//            if ("siteLayout".equals(aPackage.getModuleType()) && (context.getSite() == null || !aPackage.getName().equals(context.getSite().getTemplatePackageName()))) {
+//                continue;
+//            }
             String currentTemplatePath = aPackage.getRootFolderPath();
             String templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
             if (templatePath != null) {

@@ -206,9 +206,6 @@ public class JCRSiteNode extends JCRNodeDecorator {
 
     public String getTemplateFolder() {
         try {
-            if (getParent().isNodeType("jnt:templatesSetFolder")) {
-                return getParent().getName();
-            }
             return getProperty("j:installedModules").getValues()[0].getString();
         } catch (RepositoryException e) {
             return null;

@@ -6,134 +6,129 @@
 
 
     <templatesSet>
-        <templates-web xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
-                       xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
-                       xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
-                       jcr:uuid="223da7b5-aa15-46d8-9436-588bd9c61765" jcr:primaryType="jnt:templatesSetFolder">
-            <defaultSite jcr:uuid="cb34763e-9eec-4ccb-accd-d6507f401c6e" jcr:mixinTypes="jmix:sitemap"
-                         jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web"
-                         priority="0.5">
-                <contents jcr:uuid="9cfb3cf2-e3a7-43b5-bdac-4123cd0070dc" jcr:mixinTypes="jmix:templateInformation"
-                          j:templateDeployed="true" jcr:primaryType="jnt:folder">
-                    <site_components jcr:uuid="0e9e5457-2b3c-452d-ac01-d5cd37ab2cee"
-                                     jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
-                                     jcr:primaryType="jnt:folder">
-                        <top-menu jcr:uuid="ada2433c-13cd-49e4-ba74-5b9b74ab3ae5"
-                                  jcr:mixinTypes="jmix:templateInformation jmix:shareable" j:templateDeployed="true"
-                                  jcr:primaryType="jnt:navMenu" j:templateLocked="true">
-                            <j:translation jcr:uuid="0a8b9bbd-7494-49d7-9e5d-8e69e79b4f52"
-                                           jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
-                                           jcr:primaryType="jnt:translation" jcr:language="en"/>
-                            <home j:node="7af840a0-a720-45a6-9f11-8aa7f5ba485e"
-                                  jcr:uuid="1b95bf84-4059-4cef-9afc-56f4d9f29d64"
-                                  jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:navMenuNodeLink"
-                                  j:templateDeployed="true" j:templateLocked="true">
-                                <j:translation j:node="7af840a0-a720-45a6-9f11-8aa7f5ba485e"
-                                               jcr:uuid="4e4e712a-df2b-4531-841f-a4d24aff3cb5"
-                                               jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Home"/>
-                            </home>
-                            <navMenuMultilevel jcr:uuid="c7aaaa5f-a725-402f-9332-468ab531addc" j:maxDepth="1"
-                                               jcr:mixinTypes="jmix:templateInformation"
-                                               j:useVisitedNodeAsBaseline="false"
-                                               jcr:primaryType="jnt:navMenuMultilevel" j:templateDeployed="true"
-                                               j:startLevel="1" j:allowedTypes="jnt:page" j:templateLocked="true"/>
-                        </top-menu>
-                        <simple-search jcr:uuid="7471752f-01d5-49b0-8c1c-ae779cb4de86"
-                                       jcr:mixinTypes="jmix:templateInformation jmix:shareable"
-                                       j:templateDeployed="true" jcr:primaryType="jnt:simpleSearchForm"
-                                       j:templateLocked="true">
-                            <j:translation jcr:uuid="4e0cf8ab-91e9-40a1-91fe-cb5ee2aa6cc5"
-                                           jcr:primaryType="jnt:translation" jcr:language="en"
-                                           jcr:title_en="Simple search"/>
-                        </simple-search>
-                        <side-menu jcr:uuid="657173ba-234e-4a66-be16-725192162719"
-                                   jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable"
-                                   j:template="sideMenu" j:templateDeployed="true" jcr:primaryType="jnt:navMenu"
+        <templates-web jcr:uuid="cb34763e-9eec-4ccb-accd-d6507f401c6e" jcr:mixinTypes="jmix:sitemap"
+                       jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web"
+                       j:bodywrapper="web.bodywrapper" priority="0.5">
+            <contents jcr:uuid="9cfb3cf2-e3a7-43b5-bdac-4123cd0070dc" jcr:mixinTypes="jmix:templateInformation"
+                      j:templateDeployed="true" jcr:primaryType="jnt:folder">
+                <site_components jcr:uuid="0e9e5457-2b3c-452d-ac01-d5cd37ab2cee"
+                                 jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
+                                 jcr:primaryType="jnt:folder">
+                    <top-menu jcr:uuid="ada2433c-13cd-49e4-ba74-5b9b74ab3ae5"
+                              jcr:mixinTypes="jmix:templateInformation jmix:shareable" j:templateDeployed="true"
+                              jcr:primaryType="jnt:navMenu" j:templateLocked="true">
+                        <j:translation jcr:uuid="0a8b9bbd-7494-49d7-9e5d-8e69e79b4f52"
+                                       jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
+                                       jcr:primaryType="jnt:translation" jcr:language="en"/>
+                        <home j:node="7af840a0-a720-45a6-9f11-8aa7f5ba485e"
+                              jcr:uuid="1b95bf84-4059-4cef-9afc-56f4d9f29d64"
+                              jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:navMenuNodeLink"
+                              j:templateDeployed="true" j:templateLocked="true">
+                            <j:translation j:node="7af840a0-a720-45a6-9f11-8aa7f5ba485e"
+                                           jcr:uuid="4e4e712a-df2b-4531-841f-a4d24aff3cb5"
+                                           jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Home"/>
+                        </home>
+                        <navMenuMultilevel jcr:uuid="c7aaaa5f-a725-402f-9332-468ab531addc" j:maxDepth="1"
+                                           jcr:mixinTypes="jmix:templateInformation"
+                                           j:useVisitedNodeAsBaseline="false"
+                                           jcr:primaryType="jnt:navMenuMultilevel" j:templateDeployed="true"
+                                           j:startLevel="1" j:allowedTypes="jnt:page" j:templateLocked="true"/>
+                    </top-menu>
+                    <simple-search jcr:uuid="7471752f-01d5-49b0-8c1c-ae779cb4de86"
+                                   jcr:mixinTypes="jmix:templateInformation jmix:shareable"
+                                   j:templateDeployed="true" jcr:primaryType="jnt:simpleSearchForm"
                                    j:templateLocked="true">
-                            <j:translation jcr:uuid="f307cb03-d20b-4834-9494-371119973b32" j:template="sideMenu"
-                                           jcr:primaryType="jnt:translation" jcr:language="en"/>
-                            <navMenuMultilevel jcr:uuid="c3cdc407-9af2-4efa-99df-22d452ac9641"
-                                               jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2"
-                                               j:useVisitedNodeAsBaseline="false"
-                                               jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="2"
-                                               j:allowedTypes="jnt:page" j:templateLocked="true"/>
-                        </side-menu>
-                    </site_components>
-                </contents>
-                <files jcr:uuid="e95e1703-1865-4c2a-8f58-104424bfb545" jcr:primaryType="jnt:folder"/>
-                <mashups jcr:uuid="3be9b630-bb75-41d8-9962-ad1027eabffa" jcr:primaryType="jnt:folder"/>
-                <themes jcr:uuid="5014f951-90c6-4f03-a5a7-a03f4fa18a55" jcr:primaryType="jnt:folder"/>
-                <home jcr:uuid="7af840a0-a720-45a6-9f11-8aa7f5ba485e" jcr:mixinTypes="jmix:sitemap" j:template="default"
-                      jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
-                    <j:translation jcr:title_en="Home" jcr:language="en" jcr:uuid="9fefe840-5a77-4d54-9f1b-98b1bf45fc17"
-                                   jcr:primaryType="jnt:translation"/>
-                    <pagecontent jcr:uuid="32d69f6a-00cd-4105-ad05-7540f5103ccc"
-                                 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"
-                                 j:templateLocked="true">
-                        <row1 column="2col124" jcr:uuid="9e8a1374-7e0d-4a45-b3ce-10b7953300f7"
-                              jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row"
-                              j:templateLocked="true">
-                            <col1 jcr:uuid="8ec8e73a-61ed-4daf-9c44-d84e43a1fdae" jcr:primaryType="jnt:contentList"/>
-                            <col2 jcr:uuid="ad6713f0-9ece-49d3-b7fe-aa264668f863" jcr:primaryType="jnt:contentList">
+                        <j:translation jcr:uuid="4e0cf8ab-91e9-40a1-91fe-cb5ee2aa6cc5"
+                                       jcr:primaryType="jnt:translation" jcr:language="en"
+                                       jcr:title_en="Simple search"/>
+                    </simple-search>
+                    <side-menu jcr:uuid="657173ba-234e-4a66-be16-725192162719"
+                               jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable"
+                               j:template="sideMenu" j:templateDeployed="true" jcr:primaryType="jnt:navMenu"
+                               j:templateLocked="true">
+                        <j:translation jcr:uuid="f307cb03-d20b-4834-9494-371119973b32" j:template="sideMenu"
+                                       jcr:primaryType="jnt:translation" jcr:language="en"/>
+                        <navMenuMultilevel jcr:uuid="c3cdc407-9af2-4efa-99df-22d452ac9641"
+                                           jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2"
+                                           j:useVisitedNodeAsBaseline="false"
+                                           jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="2"
+                                           j:allowedTypes="jnt:page" j:templateLocked="true"/>
+                    </side-menu>
+                </site_components>
+            </contents>
+            <files jcr:uuid="e95e1703-1865-4c2a-8f58-104424bfb545" jcr:primaryType="jnt:folder"/>
+            <mashups jcr:uuid="3be9b630-bb75-41d8-9962-ad1027eabffa" jcr:primaryType="jnt:folder"/>
+            <themes jcr:uuid="5014f951-90c6-4f03-a5a7-a03f4fa18a55" jcr:primaryType="jnt:folder"/>
+            <home jcr:uuid="7af840a0-a720-45a6-9f11-8aa7f5ba485e" jcr:mixinTypes="jmix:sitemap" j:template="default"
+                  jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+                <j:translation jcr:title_en="Home" jcr:language="en" jcr:uuid="9fefe840-5a77-4d54-9f1b-98b1bf45fc17"
+                               jcr:primaryType="jnt:translation"/>
+                <pagecontent jcr:uuid="32d69f6a-00cd-4105-ad05-7540f5103ccc"
+                             jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"
+                             j:templateLocked="true">
+                    <row1 column="2col124" jcr:uuid="9e8a1374-7e0d-4a45-b3ce-10b7953300f7"
+                          jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row"
+                          j:templateLocked="true">
+                        <col1 jcr:uuid="8ec8e73a-61ed-4daf-9c44-d84e43a1fdae" jcr:primaryType="jnt:contentList"/>
+                        <col2 jcr:uuid="ad6713f0-9ece-49d3-b7fe-aa264668f863" jcr:primaryType="jnt:contentList">
+                            <simple-search jcr:uuid="7471752f-01d5-49b0-8c1c-ae779cb4de86"/>
+                        </col2>
+                    </row1>
+                </pagecontent>
+                <header jcr:uuid="c427ea27-1042-44d6-b86a-a5f9fadbd19a" jcr:primaryType="jnt:contentList"/>
+                <logo jcr:uuid="a10e3486-3391-450a-9ab8-d86dd86cd053" jcr:primaryType="jnt:contentList"/>
+                <topMenu jcr:uuid="bd8f3b07-f391-4a1d-920a-fda68262f636" jcr:mixinTypes="jmix:templateInformation"
+                         jcr:primaryType="jnt:contentList" j:templateLocked="true">
+                    <navMenuMultilevel jcr:uuid="cc27025a-46cb-407f-a0cc-caeb923525da" j:maxDepth="1"
+                                       j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
+                                       j:startLevel="1" j:allowedTypes="jnt:page"/>
+                    <top-menu jcr:uuid="ada2433c-13cd-49e4-ba74-5b9b74ab3ae5"/>
+                </topMenu>
+                <logoFooter jcr:uuid="0ec9d082-ea8f-45af-8a33-2b5f147d3120" jcr:primaryType="jnt:contentList"/>
+                <footer jcr:uuid="dab4ce95-7b55-4bd4-9f00-a857f06497b9" jcr:primaryType="jnt:contentList"/>
+            </home>
+            <templates jcr:uuid="0d965a5d-415b-41df-88a5-501f54e9ae2b" jcr:primaryType="jnt:templatesFolder">
+                <simple jcr:uuid="e4ec8aee-1674-4d73-b7af-d85d92fa21c4" j:template="default"
+                        jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:templateDeployed="true"
+                        jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+                    <j:translation jcr:uuid="133c0d7a-72fb-43c8-a2fc-e9dac822a8bf" jcr:title_en="Simple"
+                                   jcr:language="en" jcr:mixinTypes="jmix:templateInformation"
+                                   j:templateDeployed="true" jcr:primaryType="jnt:translation"/>
+                    <pagecontent jcr:uuid="c23b835b-46f2-4ff7-b3eb-9879628bc2ea"
+                                 jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
+                                 jcr:primaryType="jnt:contentList" j:templateLocked="true">
+                        <row1 column="2col124" jcr:uuid="387e55d3-a017-4097-b6b8-87a29a17c47d"
+                              jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
+                              jcr:primaryType="jnt:row" j:templateLocked="true">
+                            <col1 jcr:uuid="8c8ec2a6-0960-4da7-8eec-bb6db42134b4"
+                                  jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
+                                  jcr:primaryType="jnt:contentList"/>
+                            <col2 jcr:uuid="09d46de8-9eaa-41a4-a390-5538db565e7e"
+                                  jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
+                                  jcr:primaryType="jnt:contentList">
                                 <simple-search jcr:uuid="7471752f-01d5-49b0-8c1c-ae779cb4de86"/>
+                                <side-menu jcr:uuid="657173ba-234e-4a66-be16-725192162719"/>
                             </col2>
                         </row1>
                     </pagecontent>
-                    <header jcr:uuid="c427ea27-1042-44d6-b86a-a5f9fadbd19a" jcr:primaryType="jnt:contentList"/>
-                    <logo jcr:uuid="a10e3486-3391-450a-9ab8-d86dd86cd053" jcr:primaryType="jnt:contentList"/>
-                    <topMenu jcr:uuid="bd8f3b07-f391-4a1d-920a-fda68262f636" jcr:mixinTypes="jmix:templateInformation"
+                    <header jcr:uuid="a7526a43-e53e-42bf-8f62-1b4c017b66b0"
+                            jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
+                            jcr:primaryType="jnt:contentList"/>
+                    <logo jcr:uuid="8618309f-8f5c-4b29-a447-dd09bc2e20aa" jcr:mixinTypes="jmix:templateInformation"
+                          j:templateDeployed="true" jcr:primaryType="jnt:contentList"/>
+                    <topMenu jcr:uuid="7906ebce-edb3-4a79-812e-f0d10bc9d16a"
+                             jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
                              jcr:primaryType="jnt:contentList" j:templateLocked="true">
-                        <navMenuMultilevel jcr:uuid="cc27025a-46cb-407f-a0cc-caeb923525da" j:maxDepth="1"
-                                           j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
-                                           j:startLevel="1" j:allowedTypes="jnt:page"/>
                         <top-menu jcr:uuid="ada2433c-13cd-49e4-ba74-5b9b74ab3ae5"/>
                     </topMenu>
-                    <logoFooter jcr:uuid="0ec9d082-ea8f-45af-8a33-2b5f147d3120" jcr:primaryType="jnt:contentList"/>
-                    <footer jcr:uuid="dab4ce95-7b55-4bd4-9f00-a857f06497b9" jcr:primaryType="jnt:contentList"/>
-                </home>
-                <templates jcr:uuid="0d965a5d-415b-41df-88a5-501f54e9ae2b" jcr:primaryType="jnt:templatesFolder">
-                    <simple jcr:uuid="e4ec8aee-1674-4d73-b7af-d85d92fa21c4" j:template="default"
-                            jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:templateDeployed="true"
-                            jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
-                        <j:translation jcr:uuid="133c0d7a-72fb-43c8-a2fc-e9dac822a8bf" jcr:title_en="Simple"
-                                       jcr:language="en" jcr:mixinTypes="jmix:templateInformation"
-                                       j:templateDeployed="true" jcr:primaryType="jnt:translation"/>
-                        <pagecontent jcr:uuid="c23b835b-46f2-4ff7-b3eb-9879628bc2ea"
-                                     jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
-                                     jcr:primaryType="jnt:contentList" j:templateLocked="true">
-                            <row1 column="2col124" jcr:uuid="387e55d3-a017-4097-b6b8-87a29a17c47d"
-                                  jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
-                                  jcr:primaryType="jnt:row" j:templateLocked="true">
-                                <col1 jcr:uuid="8c8ec2a6-0960-4da7-8eec-bb6db42134b4"
-                                      jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
-                                      jcr:primaryType="jnt:contentList"/>
-                                <col2 jcr:uuid="09d46de8-9eaa-41a4-a390-5538db565e7e"
-                                      jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
-                                      jcr:primaryType="jnt:contentList">
-                                    <simple-search jcr:uuid="7471752f-01d5-49b0-8c1c-ae779cb4de86"/>
-                                    <side-menu jcr:uuid="657173ba-234e-4a66-be16-725192162719"/>
-                                </col2>
-                            </row1>
-                        </pagecontent>
-                        <header jcr:uuid="a7526a43-e53e-42bf-8f62-1b4c017b66b0"
+                    <logoFooter jcr:uuid="031ad235-2630-4942-ab6d-1344564cef14"
                                 jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
                                 jcr:primaryType="jnt:contentList"/>
-                        <logo jcr:uuid="8618309f-8f5c-4b29-a447-dd09bc2e20aa" jcr:mixinTypes="jmix:templateInformation"
-                              j:templateDeployed="true" jcr:primaryType="jnt:contentList"/>
-                        <topMenu jcr:uuid="7906ebce-edb3-4a79-812e-f0d10bc9d16a"
-                                 jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
-                                 jcr:primaryType="jnt:contentList" j:templateLocked="true">
-                            <top-menu jcr:uuid="ada2433c-13cd-49e4-ba74-5b9b74ab3ae5"/>
-                        </topMenu>
-                        <logoFooter jcr:uuid="031ad235-2630-4942-ab6d-1344564cef14"
-                                    jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
-                                    jcr:primaryType="jnt:contentList"/>
-                        <footer jcr:uuid="e1891158-b67a-43c5-a265-5d2356449ea8"
-                                jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
-                                jcr:primaryType="jnt:contentList"/>
-                    </simple>
-                </templates>
-            </defaultSite>
+                    <footer jcr:uuid="e1891158-b67a-43c5-a265-5d2356449ea8"
+                            jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true"
+                            jcr:primaryType="jnt:contentList"/>
+                </simple>
+            </templates>
         </templates-web>
     </templatesSet>
 </content>

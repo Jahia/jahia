@@ -81,7 +81,7 @@ public class LayoutTabItem extends PropertiesTabItem {
      */
     private void updatePreview(String template, Map<String, String> contextParams) {
         if (engine.getNode() != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(engine.getNode().getPath(), null, null, template, "wrapper.previewwrapper", contextParams, false, null, new AsyncCallback<GWTRenderResult>() {
+            JahiaContentManagementService.App.getInstance().getRenderedContent(engine.getNode().getPath(), null, null, template, "previewwrapper", contextParams, false, null, new AsyncCallback<GWTRenderResult>() {
                 public void onSuccess(GWTRenderResult result) {
                     HTML html = new HTML(result.getResult());
                     setHTML(html);

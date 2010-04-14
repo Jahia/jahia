@@ -88,12 +88,14 @@ public class URLGenerator {
         contribute = baseContribute + resourcePath;
         studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templatesSet";
         if (context.getSite() != null) {
-            studio += "/" + context.getSite().getTemplateFolder() + "/defaultSite/";
             try {
-                if (resource.getNode().isNodeType("jnt:page") && resource.getNode().hasProperty("j:sourceTemplate")) {
-                    studio += "templates/" + resource.getNode().getProperty("j:sourceTemplate").getNode().getName() + ".html";
-                } else {
-                    studio += "home.html";
+                if (context.getSite().hasProperty("j:sourceTemplate")) {
+                    studio += "/" + context.getSite().getProperty("j:sourceTemplate").getNode().getName() + "/";
+                    if (resource.getNode().isNodeType("jnt:page") && resource.getNode().hasProperty("j:sourceTemplate")) {
+                        studio += "templates/" + resource.getNode().getProperty("j:sourceTemplate").getNode().getName() + ".html";
+                    } else {
+                        studio += "home.html";
+                    }
                 }
             } catch (RepositoryException e) {
                 logger.error("Cannot get studio url",e);

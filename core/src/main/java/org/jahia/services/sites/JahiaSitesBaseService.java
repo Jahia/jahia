@@ -303,8 +303,10 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         site.setMixLanguagesActive(false);
         // check there is no site with same server name before adding
         if (getSiteByKey (site.getSiteKey ()) == null) {
-            siteProvider.addSite(site, jParams.getUser());
-            if (site.getID () == -1) {
+            siteProvider.addSite(site, site.getSiteKey(), site.getTemplatePackageName(), site.getTitle(),
+                    site.getDescr(), site.getServerName(), site.getDefaultLanguage(), site.isMixLanguagesActive(), site.getLanguages(),
+                    site.getMandatoryLanguages());
+            if (site.getID() == -1) {
                 return null;
             }
 

@@ -32,6 +32,7 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -41,7 +42,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
-import org.jahia.services.sites.JahiaSite;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
@@ -58,7 +58,10 @@ import java.util.*;
 public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer {
     private transient static Logger logger = Logger.getLogger(TemplatesChoiceListInitializerImpl.class);
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition,
+                                                     ExtendedNodeType realNodeType, String param,
+                                                     List<ChoiceListValue> values, Locale locale,
+                                                     Map<String, Object> context) {
         if (context == null) {
             return new ArrayList<ChoiceListValue>();
         }
@@ -87,36 +90,25 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         SortedSet<Template> templates;
         JCRSiteNode site = null;
         try {
-            if ("j:template".equals(declaringPropertyDefinition.getName())) {
-                templates = new TreeSet<Template>();
-                for (String s : nodeTypeList) {
-                    templates.addAll(RenderService.getInstance().getTemplatesSet(
-                            NodeTypeRegistry.getInstance().getNodeType(s)));
-                }
-            } else if ("j:referenceTemplate".equals(declaringPropertyDefinition.getName())) {
-                templates = new TreeSet<Template>();
-                if (node.hasProperty("j:node")) {
-                    JCRNodeWrapper ref = (JCRNodeWrapper) node.getProperty("j:node").getNode();
-
-                    for (String s : ref.getNodeTypes()) {
-                        templates.addAll(RenderService.getInstance().getTemplatesSet(
-                                NodeTypeRegistry.getInstance().getNodeType(s)));
-                    }
-                }
-            } else if (node != null && node.isNodeType("jmix:list")) {
+            if ("subnodes".equals(param)) {
                 templates = new TreeSet<Template>();
                 NodeIterator children = node.getNodes();
                 while (children.hasNext()) {
                     JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
                     final List<String> nodeTypesList = child.getNodeTypes();
                     for (String s : nodeTypesList) {
-                        final SortedSet<Template> templateSortedSet = RenderService.getInstance().getTemplatesSet(
-                                NodeTypeRegistry.getInstance().getNodeType(s));
+                        final SortedSet<Template> templateSortedSet = RenderService.getInstance()
+                                .getTemplatesSet(NodeTypeRegistry.getInstance().getNodeType(s));
                         templates.addAll(templateSortedSet);
                     }
                 }
+                param = "";
             } else {
-                templates = RenderService.getInstance().getAllTemplatesSet();
+                templates = new TreeSet<Template>();
+                for (String s : nodeTypeList) {
+                    templates.addAll(RenderService.getInstance().getTemplatesSet(
+                            NodeTypeRegistry.getInstance().getNodeType(s)));
+                }
             }
 
             site = node != null ? node.resolveSite() : null;
@@ -127,19 +119,20 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
         for (Template template : templates) {
-            if (!"false".equals(template.getProperties().getProperty("visible")) && !template.getKey().startsWith("wrapper.")
-                    && !template.getKey().startsWith("skins.")
-                    && !template.getKey().startsWith("debug.")
-                    && !template.getKey().contains("hidden.")
-                    && (site == null || !"siteLayout".equals(template.getModule().getModuleType()) || template.getModule().getName().equals(site.getTemplatePackageName()))
-                    ) {           
+            if (!"false".equals(template.getProperties().getProperty("visible")) &&
+                    ((StringUtils.isEmpty(param) && template.getProperties().get("type") == null) ||
+                            param.equals(template.getProperties().get("type"))) &&
+                    !template.getKey().startsWith("wrapper.") && !template.getKey().contains("hidden.")
+//                    && (site == null || !"siteLayout".equals(template.getModule().getModuleType()) ||
+//                            template.getModule().getName().equals(site.getTemplatePackageName()))
+                    ) {
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 Properties properties = template.getProperties();
                 for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                     map.put(entry.getKey().toString(), entry.getValue());
                 }
-                vs.add(new ChoiceListValue(template.getKey(), map, new ValueImpl(
-                        template.getKey(), PropertyType.STRING, false)));
+                vs.add(new ChoiceListValue(template.getKey(), map,
+                        new ValueImpl(template.getKey(), PropertyType.STRING, false)));
             }
         }
         return vs;

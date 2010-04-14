@@ -158,7 +158,9 @@ public class JCRSitesProvider {
     }
 
 
-    public void addSite(final JahiaSite site, JahiaUser user) {
+    public void addSite(final JahiaSite site, final String siteKey, final String templatePackage, final String title,
+                       final String descr, final String serverName, final String defaultLanguage, final boolean mixLanguagesActive, final Set<String> languages,
+                       final Set<String> mandatoryLanguages) {
         try {
             int id = 1;
             List<JahiaSite> sites = getSites();
@@ -167,6 +169,7 @@ public class JCRSitesProvider {
                     id = jahiaSite.getID() + 1;
                 }
             }
+            final int siteId = id;
             site.setID(id);
 
             jcrTemplate.doExecuteWithSystemSession(new JCRCallback() {
@@ -183,45 +186,46 @@ public class JCRSitesProvider {
                                     options = sitesFolder.getProperty("j:virtualsitesFolderConfig").getString();
                                 }
 
-                                Node f = JCRContentUtils.getPathFolder(sitesFolder, site.getSiteKey(), options);
+                                Node f = JCRContentUtils.getPathFolder(sitesFolder, siteKey, options);
                                 try {
-                                    f.getNode(site.getSiteKey());
+                                    f.getNode(siteKey);
                                 } catch (PathNotFoundException e) {
                                     session.getWorkspace().getVersionManager().checkout(f.getPath());
-                                    f.addNode(site.getSiteKey(), Constants.JAHIANT_VIRTUALSITE);
+
+                                    JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + templatePackage);
+                                    defaultSite.copy(session.getNode("/sites"), siteKey, false);
+
                                     if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
                                         InputStream is = null;
                                         try {
                                             is = new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString());
-                                            session.importXML(f.getPath()+"/"+ site.getSiteKey(), is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                            session.importXML(f.getPath()+"/"+ siteKey, is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
                                         } finally {
                                             IOUtils.closeQuietly(is);
                                         }
                                     }
 
-                                    Node siteNode = f.getNode(site.getSiteKey());
-                                    siteNode.setProperty("j:title", site.getTitle());
-                                    siteNode.setProperty("j:description", site.getDescr());
-                                    siteNode.setProperty("j:serverName", site.getServerName());
-                                    siteNode.setProperty("j:siteId", site.getID());
-                                    siteNode.setProperty("j:installedModules", new String[]{site.getTemplateFolder()});
-                                    siteNode.setProperty("j:defaultLanguage", site.getDefaultLanguage());
-                                    siteNode.setProperty("j:mixLanguage", site.isMixLanguagesActive());
-                                    siteNode.setProperty("j:languages", site.getLanguages().toArray(new String[site.getLanguages().size()]));
-                                    siteNode.setProperty("j:mandatoryLanguages", site.getMandatoryLanguages().toArray(new String[site.getMandatoryLanguages().size()]));
+                                    Node siteNode = f.getNode(siteKey);
+                                    siteNode.setProperty("j:title", title);
+                                    siteNode.setProperty("j:description", descr);
+                                    siteNode.setProperty("j:serverName", serverName);
+                                    siteNode.setProperty("j:siteId", siteId);
+                                    siteNode.setProperty("j:defaultLanguage", defaultLanguage);
+                                    siteNode.setProperty("j:mixLanguage", mixLanguagesActive);
+                                    siteNode.setProperty("j:languages", languages.toArray(new String[languages.size()]));
+                                    siteNode.setProperty("j:mandatoryLanguages", mandatoryLanguages.toArray(new String[mandatoryLanguages
+                                            .size()]));
+                                    siteNode.setProperty("j:sourceTemplate", defaultSite);
                                     session.save();
-                                    session.getWorkspace().getVersionManager().checkin(f.getPath());
-                                    JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, true);
+                                    session.getNode("/sites/"+ siteKey).clone(session.getNode("/users"), "users");
+                                    session.save();
+                                    JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, false);
                                 }
                             }
                         } catch (IOException e) {
                             logger.error(e.getMessage(), e);
                         }
 
-                        JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + site.getTemplateFolder() + "/defaultSite");
-                        defaultSite.copy(session.getNode("/sites"), site.getSiteKey(), false);
-                        session.save();
-                        session.getNode("/sites/"+site.getSiteKey()).clone(session.getNode("/users"), "users");
                         session.save();
                     } catch (PathNotFoundException e) {
                     }

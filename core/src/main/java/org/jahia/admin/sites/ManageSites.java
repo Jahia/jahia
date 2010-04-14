@@ -80,6 +80,7 @@ import org.jahia.admin.AbstractAdministrationModule;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
+import javax.jcr.NodeIterator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -871,60 +872,62 @@ public class ManageSites extends AbstractAdministrationModule {
                                           HttpServletResponse response,
                                           HttpSession session)
             throws IOException, ServletException {
-        logger.debug("Display template set choice started ");
+        try {
+            logger.debug("Display template set choice started ");
 
-        // retrieve previous form values...
-        String jahiaDisplayMessage = (String) request.getAttribute(CLASS_NAME + "jahiaDisplayMessage");
-        // set default values...
-        if (jahiaDisplayMessage == null) {
-            jahiaDisplayMessage = Jahia.COPYRIGHT;
+            // retrieve previous form values...
+            String jahiaDisplayMessage = (String) request.getAttribute(CLASS_NAME + "jahiaDisplayMessage");
+            // set default values...
+            if (jahiaDisplayMessage == null) {
+                jahiaDisplayMessage = Jahia.COPYRIGHT;
+            }
+
+            String selectedTmplSet = (String) request.getAttribute("selectedTmplSet");
+
+            TreeMap<String, JCRNodeWrapper> orderedTemplateSets = new TreeMap<String, JCRNodeWrapper>();
+            final JCRNodeWrapper templatesSet =
+                    JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode("/templatesSet");
+            NodeIterator templates = templatesSet.getNodes();
+            while (templates.hasNext()) {
+                JCRNodeWrapper node = (JCRNodeWrapper) templates.next();
+                orderedTemplateSets.put(node.getName(), node);
+            }
+
+            // try to select the default set if not selected
+            if (selectedTmplSet == null) {
+                selectedTmplSet = orderedTemplateSets.firstKey();
+            }
+
+            JCRNodeWrapper selectedPackage = selectedTmplSet != null ? templatesSet.getNode(selectedTmplSet)
+                    : null;
+            request.setAttribute("selectedTmplSet", selectedTmplSet);
+            request.setAttribute("tmplSets", orderedTemplateSets.values());
+            request.setAttribute("selectedPackage", selectedPackage);
+            Locale currentLocale = (Locale) session
+                    .getAttribute(ProcessingContext.SESSION_LOCALE);
+            if (currentLocale == null) {
+                currentLocale = request.getLocale();
+            }
+            Locale selectedLocale = (Locale) session.getAttribute(CLASS_NAME
+                    + "selectedLocale");
+            if (selectedLocale == null) {
+                selectedLocale = LanguageCodeConverters.languageCodeToLocale(Jahia
+                        .getSettings().getDefaultLanguageCode());
+            }
+            session.setAttribute(CLASS_NAME + "selectedLocale", selectedLocale);
+            request.setAttribute("selectedLocale", selectedLocale);
+            request.setAttribute("currentLocale", currentLocale);
+
+            logger.debug("Nb template set found " + orderedTemplateSets.size());
+
+            // redirect...
+            JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_choose_template_set.jsp");
+
+            // set default values...
+            session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", Jahia.COPYRIGHT);
+        } catch (RepositoryException e) {
+            throw new ServletException(e);
         }
-
-        String selectedTmplSet = (String) request.getAttribute("selectedTmplSet");
-
-        JahiaTemplateManagerService templateService = ServicesRegistry
-                .getInstance().getJahiaTemplateManagerService();
-        List<JahiaTemplatesPackage> templateSets = templateService.getAvailableTemplatePackages();
-
-        TreeMap<String, JahiaTemplatesPackage> orderedTemplateSets = new TreeMap<String, JahiaTemplatesPackage>();
-        for (JahiaTemplatesPackage tmp : templateSets) {
-            orderedTemplateSets.put(tmp.getName(), tmp);
-        }
-
-        // try to select the default set if not selected
-        if (selectedTmplSet == null) {
-            selectedTmplSet = templateService.getDefaultTemplatePackage()
-                    .getName();
-        }
-
-        JahiaTemplatesPackage selectedPackage = selectedTmplSet != null ? templateService
-                .getTemplatePackage(selectedTmplSet)
-                : null;
-        request.setAttribute("selectedTmplSet", selectedTmplSet);
-        request.setAttribute("tmplSets", orderedTemplateSets.values());
-        request.setAttribute("selectedPackage", selectedPackage);
-        Locale currentLocale = (Locale) session
-                .getAttribute(ProcessingContext.SESSION_LOCALE);
-        if (currentLocale == null) {
-            currentLocale = request.getLocale();
-        }
-        Locale selectedLocale = (Locale) session.getAttribute(CLASS_NAME
-                + "selectedLocale");
-        if (selectedLocale == null) {
-            selectedLocale = LanguageCodeConverters.languageCodeToLocale(Jahia
-                    .getSettings().getDefaultLanguageCode());
-        }
-        session.setAttribute(CLASS_NAME + "selectedLocale", selectedLocale);
-        request.setAttribute("selectedLocale", selectedLocale);
-        request.setAttribute("currentLocale", currentLocale);
-
-        logger.debug("Nb template set found " + templateSets.size());
-
-        // redirect...
-        JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_choose_template_set.jsp");
-
-        // set default values...
-        session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", Jahia.COPYRIGHT);
     }
 
     /**
@@ -1317,8 +1320,9 @@ public class ManageSites extends AbstractAdministrationModule {
             JahiaTemplateManagerService templateMgr = ServicesRegistry
                     .getInstance().getJahiaTemplateManagerService();
 
-            JahiaTemplatesPackage tmplPack = templateMgr
-                    .getTemplatePackage(selectedTmplSet);
+            final JCRNodeWrapper tmplPack =
+                    JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode("/templatesSet/"+selectedTmplSet);
+
 
             String enforcePasswordPolicy = "true";
             request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY, enforcePasswordPolicy != null ? enforcePasswordPolicy : "false");
@@ -1807,9 +1811,20 @@ public class ManageSites extends AbstractAdministrationModule {
         }
         if (jParams.getSessionState().getAttribute("importsInfos") != null) {
             if (!((List<?>) jParams.getSessionState().getAttribute("importsInfos")).isEmpty()) {
-                request.setAttribute("tmplSets", ServicesRegistry.getInstance()
-                        .getJahiaTemplateManagerService()
-                        .getAvailableTemplatePackages());
+                try {
+                    TreeMap<String, JCRNodeWrapper> orderedTemplateSets = new TreeMap<String, JCRNodeWrapper>();
+                    final JCRNodeWrapper templatesSet =
+                            JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode("/templatesSet");
+                    NodeIterator templates = templatesSet.getNodes();
+                    while (templates.hasNext()) {
+                        JCRNodeWrapper node = (JCRNodeWrapper) templates.next();
+                        orderedTemplateSets.put(node.getName(), node);
+                    }
+
+                    request.setAttribute("tmplSets", new ArrayList<JCRNodeWrapper>(orderedTemplateSets.values()));
+                } catch (RepositoryException e) {
+                    logger.error("Error when getting templates",e);
+                }
                 JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "import_choose.jsp");
                 return;
             } else {

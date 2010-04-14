@@ -124,8 +124,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 if (o1.isDefault()) return 99;
                 if (o2.isDefault()) return -99;
                 if (context.getSite() != null) {
-                    if (o1.getName().equals(context.getSite().getTemplatePackageName())) return -99;
-                    if (o2.getName().equals(context.getSite().getTemplatePackageName())) return 99;
+//                    if (o1.getName().equals(context.getSite().getTemplatePackageName())) return -99;
+//                    if (o2.getName().equals(context.getSite().getTemplatePackageName())) return 99;
                 }
                 return o1.getName().compareTo(o2.getName());
             }

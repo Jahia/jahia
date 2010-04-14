@@ -322,6 +322,33 @@
  - j:gaProfile (string) protected nofulltext
 
 //---------------------------------------------------------
+// Rendering
+//---------------------------------------------------------
+
+[jmix:layout] mixin
+
+[jmix:renderable] > jmix:layout, jmix:contentMixin mixin
+ - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
+
+[jmix:bodywrapper] mixin
+ - j:bodywrapper (string, choicelist[templates=bodywrapper])
+
+[jmix:renderableList] > jmix:layout, jmix:listMixin mixin
+ - j:subNodesTemplate (string, choicelist[templates=subnodes,resourceBundle,image]) nofulltext
+
+[jmix:renderableReference] > jmix:layout mixin
+ - j:referenceTemplate (string, choicelist[templates,resourceBundle,image]) nofulltext
+
+[jmix:positionable] > jmix:layout mixin
+ - j:columnIndex (long)
+ - j:rowIndex (long)
+ - j:columnSpan (long)
+ - j:rowSpan (long)
+
+[jmix:theme] > jmix:layout, jmix:pageMixin mixin
+ - j:theme (weakreference,choicelist[nodes='/sites/$currentSite/themes;jnt:folder'])
+
+//---------------------------------------------------------
 // Virtual sites
 //---------------------------------------------------------
 
@@ -330,7 +357,7 @@
  - j:virtualsitesFolderConfig (string) nofulltext
  - j:virtualsitesFolderSkeleton (string) nofulltext
 
-[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication, jmix:googleAnalyticsAccount
+[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication, jmix:bodywrapper, jmix:googleAnalyticsAccount
  - j:title (string) protected nofulltext
  - j:serverName (string) protected nofulltext
  - j:description (string) protected
@@ -340,6 +367,7 @@
  - j:mandatoryLanguages (string) multiple nofulltext
  - j:defaultLanguage (string) nofulltext
  - j:mixLanguage (boolean) = false
+ - j:sourceTemplate (weakreference)
  + users (nt:base) = nt:base
  + * (jmix:hierarchyNode)
 
@@ -358,32 +386,6 @@
 
 [jnt:vfsMountPoint] > jnt:mountPoint
  - j:root (string) nofulltext
-
-//---------------------------------------------------------
-// Rendering
-//---------------------------------------------------------
-
-[jmix:layout] mixin
-
-[jmix:renderable] > jmix:layout, jmix:contentMixin mixin
- - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
-
-[jmix:renderableList] > jmix:layout, jmix:listMixin mixin
- - j:subNodesTemplate (string, choicelist[templates,resourceBundle,image]) nofulltext
-
-[jmix:renderableReference] > jmix:layout mixin
- - j:referenceTemplate (string, choicelist[templates,resourceBundle,image]) nofulltext
-
-[jmix:positionable] > jmix:layout mixin
- - j:columnIndex (long)
- - j:rowIndex (long)
- - j:columnSpan (long)
- - j:rowSpan (long)
-
-
-[jmix:theme] > jmix:layout, jmix:pageMixin mixin
- - j:theme (weakreference,choicelist[nodes='/sites/$currentSite/themes;jnt:folder'])
-
 
 //---------------------------------------------------------
 // Definition organization (left panel)
@@ -479,9 +481,6 @@
  orderable
  + * (nt:base) = nt:base version
 
-[jnt:templatesSetFolder] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
- + * (jnt:virtualsite)
-
 [jnt:templatesFolder] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
  + * (jnt:page)
 
@@ -539,9 +538,6 @@
 
 [jnt:systemRoot] > nt:folder, jmix:hierarchyNode, jmix:collection
  + * (jmix:hierarchyNode)
-
-[jnt:jahiaLegacyRoot] > nt:base, jmix:collection
- + * (jnt:virtualsite) version
 
 [jnt:reference] > nt:base, jmix:hierarchyNode
  - j:node (weakreference)

@@ -185,6 +185,23 @@ public class Resource {
         return wrappers.push(wrapper);
     }
 
+    public String pushBodyWrapper() {
+        JCRNodeWrapper current = node;
+        try {
+            while (true) {
+                if (current.hasProperty("j:bodywrapper")) {
+                    return wrappers.push(current.getProperty("j:bodywrapper").getString());
+                }
+                current = current.getParent();
+            }
+        } catch (ItemNotFoundException e) {
+            wrappers.push("bodywrapper");
+        } catch (RepositoryException e) {
+            logger.error("Cannot find wrapper",e);
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "Resource{" +

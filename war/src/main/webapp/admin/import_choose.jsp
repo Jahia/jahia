@@ -42,7 +42,7 @@
 <%@ page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
 <%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ page import="org.jahia.data.JahiaData" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -215,7 +215,7 @@ function sendForm(){
                                 <td>
                                     <% if (tpls != null){
                                         for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
-                                            JahiaTemplatesPackage pack = (JahiaTemplatesPackage) iterator1.next();
+                                            JCRNodeWrapper pack = (JCRNodeWrapper) iterator1.next();
                                             if (pack.getName().equals(infos.get("templates"))) {
 
                                     %>
@@ -280,13 +280,11 @@ function sendForm(){
 
                                             <% if (tpls != null)
                                                 for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
-                                                    JahiaTemplatesPackage pack = (JahiaTemplatesPackage) iterator1.next();
-                                                    if ("siteLayout".equals(pack.getModuleType())) {
+                                                    JCRNodeWrapper pack = (JCRNodeWrapper) iterator1.next();
                                             %>
                                             <option value="<%=pack.getName()%>"<% if (pack.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=pack.getName() %></option>
 
                                             <%
-                                                        }
                                                     } %>
                                         </select>
                                     </td>

@@ -596,7 +596,7 @@ public class Render extends HttpServlet implements Controller,
 
                     renderContext.setSite(site);
                     resource.pushWrapper("wrapper.fullpage");
-                    resource.pushWrapper("wrapper.bodywrapper");
+                    resource.pushBodyWrapper();
 
                     long lastModified = getLastModified(resource, renderContext);
 

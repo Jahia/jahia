@@ -69,7 +69,11 @@ public class TemplateHelper {
                     r.getModuleParams().put(entry.getKey(), entry.getValue());
                 }
             }
-            r.pushWrapper(templateWrapper);
+            if ("bodywrapper".equals(templateWrapper)) {
+                r.pushBodyWrapper();
+            } else {
+                r.pushWrapper(templateWrapper);
+            }
 
             JCRSiteNode site = node.resolveSite();
             renderContext.setSite(site);

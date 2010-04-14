@@ -119,7 +119,7 @@ public class MainModule extends Module {
 
     private void refresh() {
         JahiaContentManagementService.App.getInstance()
-                .getRenderedContent(path, null, editLinker.getLocale(), template, "wrapper.bodywrapper", null, true,
+                .getRenderedContent(path, null, editLinker.getLocale(), template, "bodywrapper", null, true,
                         config.getName(), new AsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
                                 int i = getVScrollPosition();

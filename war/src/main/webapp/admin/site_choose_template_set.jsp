@@ -133,11 +133,9 @@
                                                         <select id="selectTmplSet" name="selectTmplSet" onChange="submitForm('change');">
                                                             <c:forEach items="${tmplSets}" var="tmplPack">
                                                                 <c:set var="displayName" value="" scope="request"/>
-                                                                <c:if test="${tmplPack.moduleType == 'siteLayout'}">
                                                                 <option value="<c:out value='${tmplPack.name}'/>"
                                                                         <c:if test="${tmplPack.name == selectedTmplSet}">selected="selected"</c:if>>
                                                                     <c:out value="${tmplPack.name}"/></option>
-                                                                </c:if>
                                                             </c:forEach>
                                                         </select>
                                                     </td>
@@ -152,28 +150,28 @@
                                                 function swapImage(imgId,imgToSwitch){
                                                     var image = document.getElementById(imgId);
                                                     var dropd = document.getElementById(imgToSwitch);
-                                                    var themePreview = '${selectedPackage.thumbnail}';
+                                                    var themePreview = '${selectedPackage.thumbnailUrls['thumbnail']}';
                                                     var themePreviewBegin = themePreview.substr(0,themePreview.lastIndexOf("."));
                                                     var themePreviewEnd = themePreview.substr(themePreview.lastIndexOf("."),themePreview.length);
                                                     if (image != null) {
                                                         if (dropd.value.length > 0) {
-                                                            image.src = '<%=URL%>../${selectedPackage.rootFolderPath}/' + themePreviewBegin + '_' + dropd.value + themePreviewEnd;
+                                                            image.src = '<%=URL%>../${selectedPackage.name}/' + themePreviewBegin + '_' + dropd.value + themePreviewEnd;
                                                         } else {
-                                                            image.src = '<%=URL%>../${selectedPackage.rootFolderPath}/' + themePreview;
+                                                            image.src = '<%=URL%>../${selectedPackage.name}/' + themePreview;
                                                         }
                                                     }
                                                 };
                                                 swapImage('themePreview','selectTmplSet');
                                             </script>
                                             <tr>
-                                                <c:if test="${not empty selectedPackage && not empty selectedPackage.thumbnail}">
+                                                <c:if test="${not empty selectedPackage && not empty selectedPackage.thumbnailUrls['thumbnail']}">
                                                     <td>&nbsp;</td>
                                                     <td>
-                                                        <img id ="themePreview" src="<%=URL%>../templates/<c:out value="${selectedPackage.rootFolder}"/>/<c:out value="${selectedPackage.thumbnail}"/>"
+                                                        <img id ="themePreview" src="<%=URL%>../templates/<c:out value="${selectedPackage.rootFolder}"/>/<c:out value="${selectedPackage.thumbnailUrls['thumbnail']}"/>"
                                                              width="270" height="141" alt="">
                                                     </td>
                                                 </c:if>
-                                                <c:if test="${empty selectedPackage || empty selectedPackage.thumbnail}">
+                                                <c:if test="${empty selectedPackage || empty selectedPackage.thumbnailUrls['thumbnail']}">
                                                     <td>&nbsp;</td>
                                                     <td>
                                                         <fmt:message key="org.jahia.admin.site.ManageSites.NoTemplatePreview.label"/>

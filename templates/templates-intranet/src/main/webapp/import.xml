@@ -6,86 +6,104 @@
 
 
     <templatesSet>
-        <templates-intranet jcr:primaryType="jnt:templatesSetFolder">
-            <defaultSite jcr:primaryType="jnt:virtualsite" j:installedModules="templates-intranet">
-                <contents jcr:primaryType="jnt:folder">
-                    <site_components jcr:primaryType="jnt:folder">
-                        <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"
-                                          jcr:primaryType="jnt:simpleSearchForm" jcr:mixinTypes="jmix:templateInformation"  j:templateLocked="true" />
-                        <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68" jcr:primaryType="jnt:navMenu">
-                            <navMenuMultilevel jcr:uuid="1dee5898-893b-43eb-817f-49f07bee4367" j:maxDepth="2" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="1"/>
-                        </topBar>
-                        <shortcuts jcr:uuid="6796e0e7-4e22-47fe-8c59-607d66722c3a"
-                                   jcr:primaryType="jnt:shortcuts" jcr:mixinTypes="jmix:templateInformation"  j:templateLocked="true" />
-                        <login-to-jahia jcr:primaryType="jnt:loginForm" jcr:mixinTypes="jmix:templateInformation"  j:templateLocked="true"
-                                        jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646">
-                            <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Login to Jahia"
-                                           jcr:language="en"/>
-                        </login-to-jahia>
-                    </site_components>
-                </contents>
-                <files jcr:primaryType="jnt:folder"/>
-                <mashups jcr:primaryType="jnt:folder"/>
-                <themes jcr:primaryType="jnt:folder"/>
-                <home j:template="default" jcr:primaryType="jnt:page">
-                    <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Home" jcr:language="en"/>
-                    <maincontent jcr:primaryType="jnt:contentList"/>
-                    <logo jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true" >
-                    </logo>
-                    <simpleSearch jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
-                        <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492" />
+        <templates-intranet jcr:primaryType="jnt:virtualsite" j:installedModules="templates-intranet"
+                            j:bodywrapper="intranet.bodywrapper">
+            <contents jcr:primaryType="jnt:folder">
+                <site_components jcr:primaryType="jnt:folder">
+                    <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"
+                                      jcr:primaryType="jnt:simpleSearchForm" jcr:mixinTypes="jmix:templateInformation"
+                                      j:templateLocked="true"/>
+                    <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68" jcr:primaryType="jnt:navMenu">
+                        <navMenuMultilevel jcr:uuid="1dee5898-893b-43eb-817f-49f07bee4367" j:maxDepth="2"
+                                           j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
+                                           j:startLevel="1"/>
+                    </topBar>
+                    <shortcuts jcr:uuid="6796e0e7-4e22-47fe-8c59-607d66722c3a"
+                               jcr:primaryType="jnt:shortcuts" jcr:mixinTypes="jmix:templateInformation"
+                               j:templateLocked="true"/>
+                    <login-to-jahia jcr:primaryType="jnt:loginForm" jcr:mixinTypes="jmix:templateInformation"
+                                    j:templateLocked="true"
+                                    jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646">
+                        <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Login to Jahia"
+                                       jcr:language="en"/>
+                    </login-to-jahia>
+                </site_components>
+            </contents>
+            <files jcr:primaryType="jnt:folder"/>
+            <mashups jcr:primaryType="jnt:folder"/>
+            <themes jcr:primaryType="jnt:folder"/>
+            <home j:template="default" jcr:primaryType="jnt:page">
+                <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Home" jcr:language="en"/>
+                <maincontent jcr:primaryType="jnt:contentList"/>
+                <logo jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                      j:templateLocked="true">
+                </logo>
+                <simpleSearch jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                              j:templateLocked="true">
+                    <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"/>
+                </simpleSearch>
+                <topMenu jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                         j:templateLocked="true">
+                    <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
+                    <shortcuts jcr:uuid="6796e0e7-4e22-47fe-8c59-607d66722c3a"/>
+                </topMenu>
+                <footer jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                        j:templateLocked="true"/>
+                <pagecontent jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                             j:templateLocked="true">
+                    <row1 jcr:primaryType="jnt:row" column="2col106" jcr:mixinTypes="jmix:templateInformation"
+                          j:templateLocked="true">
+                        <col1 jcr:primaryType="jnt:contentList"/>
+                        <col2 jcr:primaryType="jnt:contentList">
+                            <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
+                        </col2>
+                    </row1>
+                </pagecontent>
+            </home>
+            <templates jcr:primaryType="jnt:templatesFolder">
+                <simple j:template="default" jcr:primaryType="jnt:page">
+                    <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Simple" jcr:language="en"/>
+                    <logo jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                          j:templateLocked="true"/>
+                    <simpleSearch jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                                  j:templateLocked="true">
+                        <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"/>
                     </simpleSearch>
-                    <topMenu jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
+                    <topMenu jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                             j:templateLocked="true">
                         <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
-                        <shortcuts jcr:uuid="6796e0e7-4e22-47fe-8c59-607d66722c3a" />
+                        <shortcuts jcr:uuid="6796e0e7-4e22-47fe-8c59-607d66722c3a"/>
                     </topMenu>
-                    <footer jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true"/>
-                    <pagecontent jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
-                        <row1 jcr:primaryType="jnt:row" column="2col106" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
+                    <footer jcr:primaryType="jnt:contentList"/>
+                    <pagecontent jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                                 j:templateLocked="true">
+                        <row1 jcr:primaryType="jnt:row" column="2col124" jcr:mixinTypes="jmix:templateInformation"
+                              j:templateLocked="true">
                             <col1 jcr:primaryType="jnt:contentList"/>
-                            <col2 jcr:primaryType="jnt:contentList">
-                                <login-to-jahia jcr:uuid="97fbc26d-dac2-4ee8-9fac-d13fe2609646"/>
-                            </col2>
                         </row1>
                     </pagecontent>
-                </home>
-                <templates jcr:primaryType="jnt:templatesFolder">
-                    <simple j:template="default" jcr:primaryType="jnt:page">
-                        <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Simple" jcr:language="en"/>
-                        <logo jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"  j:templateLocked="true"/>
-                        <simpleSearch jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
-                            <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"/>
-                        </simpleSearch>
-                        <topMenu jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
-                            <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
-                            <shortcuts jcr:uuid="6796e0e7-4e22-47fe-8c59-607d66722c3a" />
-                        </topMenu>
-                        <footer jcr:primaryType="jnt:contentList"/>
-                        <pagecontent jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
-                            <row1 jcr:primaryType="jnt:row" column="2col124" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
-                                <col1 jcr:primaryType="jnt:contentList"/>
-                            </row1>
-                        </pagecontent>
-                    </simple>
-                    <double j:template="default" jcr:primaryType="jnt:page">
-                        <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Double" jcr:language="en"/>
-                        <logo jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"  j:templateLocked="true"/>
-                        <simpleSearch jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
-                            <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"/>
-                        </simpleSearch>
-                        <topMenu jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation" j:templateLocked="true">
-                            <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
-                            <shortcuts jcr:uuid="6796e0e7-4e22-47fe-8c59-607d66722c3a" />
-                        </topMenu>
-                        <footer jcr:primaryType="jnt:contentList"/>
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <row1 jcr:primaryType="jnt:row" column="3col664">
-                                <col1 jcr:primaryType="jnt:contentList"/>
-                            </row1>
-                        </pagecontent>
-                    </double>
-                </templates>
-            </defaultSite>
+                </simple>
+                <double j:template="default" jcr:primaryType="jnt:page">
+                    <j:translation jcr:primaryType="jnt:translation" jcr:title_en="Double" jcr:language="en"/>
+                    <logo jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                          j:templateLocked="true"/>
+                    <simpleSearch jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                                  j:templateLocked="true">
+                        <simpleSearchForm jcr:uuid="2dccbc65-fe83-4d18-b685-789a7b0f1492"/>
+                    </simpleSearch>
+                    <topMenu jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:templateInformation"
+                             j:templateLocked="true">
+                        <topBar jcr:uuid="d26538fe-693c-4ab0-a565-a7a0ae6ced68"/>
+                        <shortcuts jcr:uuid="6796e0e7-4e22-47fe-8c59-607d66722c3a"/>
+                    </topMenu>
+                    <footer jcr:primaryType="jnt:contentList"/>
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <row1 jcr:primaryType="jnt:row" column="3col664">
+                            <col1 jcr:primaryType="jnt:contentList"/>
+                        </row1>
+                    </pagecontent>
+                </double>
+            </templates>
         </templates-intranet>
     </templatesSet>
 </content>

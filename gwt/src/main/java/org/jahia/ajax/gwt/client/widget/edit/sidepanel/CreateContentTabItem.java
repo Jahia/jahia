@@ -11,6 +11,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,10 +32,19 @@ class CreateContentTabItem extends SidePanelTabItem {
         setLayout(new FitLayout());
 
         contentTypeTree = new ContentTypeTree(null, 400, 0, 25);
-        refresh(0);
 
-        add(contentTypeTree);
-        gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
+        JahiaContentDefinitionService.App.getInstance()
+                .getNodeSubtypes(null, new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+                    public void onFailure(Throwable caught) {
+                        MessageBox.alert("Alert",
+                                "Unable to load content definitions. Cause: " + caught.getLocalizedMessage(), null);
+                    }
+
+                    public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
+                        contentTypeTree.filldataStore(result);
+                    }
+                });
+
     }
 
     @Override

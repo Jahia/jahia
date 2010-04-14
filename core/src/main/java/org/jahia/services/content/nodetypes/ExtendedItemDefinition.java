@@ -165,10 +165,8 @@ public class ExtendedItemDefinition implements ItemDefinition {
     public String getLabel(Locale locale) {
         String label = labels.get(locale);
         if (label == null) {
-            JahiaSite site = Jahia.getThreadParamBean().getSite();
-            final String packageName = site != null ? site.getTemplatePackageName() : null;
-            label = new JahiaResourceBundle(getResourceBundleId(), locale, packageName, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), packageName)).getString(
+            label = new JahiaResourceBundle(getResourceBundleId(), locale, null, JahiaTemplatesRBLoader
+                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
                     getResourceBundleKey(), getName().replace(':', '_'));
             labels.put(locale, label);
         }

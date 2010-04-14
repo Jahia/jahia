@@ -195,18 +195,35 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 GWTManagerConfiguration gwtConfig = new GWTManagerConfiguration();
                 gwtConfig.setName(name);
 
-                //  create the gwt configuration
+                //  set all properties
+                gwtConfig.setNodeTypes(config.getNodeTypes());
+                gwtConfig.setFolderTypes(config.getFolderTypes());
                 gwtConfig.setEnableTextMenu(config.isEnableTextMenu());
+                gwtConfig.setSelectedAccordion(config.getSelectedAccordion());
+                gwtConfig.setHideLeftPanel(config.isHideLeftPanel());
+                gwtConfig.setFolderTypes(config.getFolderTypes());
+                gwtConfig.setNodeTypes(config.getNodeTypes());
+                gwtConfig.setFilters(config.getFilters());
+                gwtConfig.setMimeTypes(config.getMimeTypes());
+                gwtConfig.setDefaultView(config.getDefaultView());
+                gwtConfig.setEnableFileDoubleClick(config.isEnableFileDoubleClick());
+                gwtConfig.setDisplaySize(config.isDisplaySize());
+                gwtConfig.setDisplayExt(config.isDisplayExt());
+                gwtConfig.setDisplayLock(config.isDisplayLock());
+                gwtConfig.setDisplayDate(config.isDisplayDate());
                 gwtConfig.setDisplayProvider(config.isDisplayProvider());
-                gwtConfig.setDisplaySearchInPage(config.isDisplaySearchInPage());
-                gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
-                gwtConfig.setDisplaySearchInFile(config.isDisplaySearchInFile());
-                gwtConfig.setDisplaySearchInTag(config.isDisplaySearchInTag());
+                gwtConfig.setUseCheckboxForSelection(config.isUseCheckboxForSelection());
+                gwtConfig.setToolbarGroup(gwtConfig.getToolbarGroup());
+                gwtConfig.setExpandRoot(gwtConfig.isExpandRoot());
+                gwtConfig.setAllowCollections(gwtConfig.isAllowCollections());
+                gwtConfig.setDisplaySearch(gwtConfig.isDisplaySearch());
+                gwtConfig.setDisplaySearchInPage(gwtConfig.isDisplaySearchInPage());
+                gwtConfig.setDisplaySearchInTag(gwtConfig.isDisplaySearchInTag());
+                gwtConfig.setDisplaySearchInFile(gwtConfig.isDisplaySearchInFile());
+                gwtConfig.setDisplaySearchInContent(gwtConfig.isDisplaySearchInContent());
 
                 // set toolbar group : ToDo replace it by toolbar bean
-                gwtConfig.setToolbarGroup(config.getToolbarGroup());
-                gwtConfig.setGwtJahiaToolbarSet(toolbar.getGWTToolbars(getSite(), getRemoteJahiaUser(), getLocale(),getUILocale(), getRequest(),config.getToolbarGroup()));
-
+                gwtConfig.setGwtJahiaToolbarSet(toolbar.getGWTToolbars(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(), config.getToolbarGroup()));
 
                 // add table columns
                 for (Item item : config.getTableColumns()) {
@@ -234,8 +251,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
                 }
 
-                gwtConfig.setNodeTypes(config.getNodeTypes());
-                gwtConfig.setFolderTypes(config.getFolderTypes());
+
                 return gwtConfig;
             } else {
                 logger.error("Config. " + name + " not found.");

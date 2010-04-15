@@ -183,6 +183,7 @@
     border: none;
     font-size: 2em;
     font-weight: normal;
+	line-height:1em;
 }
 
 #bodywrapper .newsListItem h4 a,

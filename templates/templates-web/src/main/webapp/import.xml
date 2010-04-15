@@ -79,9 +79,6 @@
                 <logo jcr:uuid="a10e3486-3391-450a-9ab8-d86dd86cd053" jcr:primaryType="jnt:contentList"/>
                 <topMenu jcr:uuid="bd8f3b07-f391-4a1d-920a-fda68262f636" jcr:mixinTypes="jmix:templateInformation"
                          jcr:primaryType="jnt:contentList" j:templateLocked="true">
-                    <navMenuMultilevel jcr:uuid="cc27025a-46cb-407f-a0cc-caeb923525da" j:maxDepth="1"
-                                       j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
-                                       j:startLevel="1" j:allowedTypes="jnt:page"/>
                     <top-menu jcr:uuid="ada2433c-13cd-49e4-ba74-5b9b74ab3ae5"/>
                 </topMenu>
                 <logoFooter jcr:uuid="0ec9d082-ea8f-45af-8a33-2b5f147d3120" jcr:primaryType="jnt:contentList"/>

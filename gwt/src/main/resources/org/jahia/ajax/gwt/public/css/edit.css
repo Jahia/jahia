@@ -74,15 +74,27 @@
 
 }
 
-.button-placeholder {
+#bodywrapper button.button-placeholder {
     padding: 0px !important;
     border:none !important;
 	font-family:tahoma,arial,verdana,sans-serif;
 	font-size:9px;
 	font-weight:bold;
 	text-align:center;
+	text-transform:none;
+	background:#4CA20B  url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder.png) repeat-x scroll left bottom;
+	border:1px solid #e1ebf1;
+	color:#fff;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	margin-top:1px
 }
-
+#bodywrapper button.button-placeholder:hover {
+	background:none;
+	background-color:#295d01;
+	border:1px solid #72b42d;
+	color:#fff;
+}
 .selection-top-list {
     border-top: 1px solid #cc0033;
 }
@@ -182,7 +194,6 @@
 
 
 .hover-top-simple-secondary {
-
     border-top: 0px solid #999;
 }
 .hover-bottom-simple-secondary {

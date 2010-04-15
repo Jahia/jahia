@@ -4,6 +4,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  * Time: 4:38:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTEditConfiguration {
+public class GWTEditConfiguration implements Serializable {
     private String name;
 
     private GWTJahiaToolbar topToolbar;

@@ -1,5 +1,6 @@
 package org.jahia.services.manager.bean;
 
+import org.jahia.services.toolbar.bean.ToolbarSet;
 import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
@@ -39,7 +40,8 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     private boolean displayProvider = false;
     private boolean useCheckboxForSelection = true;
 
-    private String toolbarGroup;
+    private ToolbarSet toolbarSet;
+
 
     private boolean expandRoot = false;
 
@@ -204,12 +206,13 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.allowCollections = allowConnections;
     }
 
-    public String getToolbarGroup() {
-        return toolbarGroup;
+
+    public ToolbarSet getToolbarSet() {
+        return toolbarSet;
     }
 
-    public void setToolbarGroup(String toolbarGroup) {
-        this.toolbarGroup = toolbarGroup;
+    public void setToolbarSet(ToolbarSet toolbarSet) {
+        this.toolbarSet = toolbarSet;
     }
 
     public boolean isUseCheckboxForSelection() {

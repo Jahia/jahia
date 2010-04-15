@@ -8,7 +8,7 @@
     <bean id="filemanager" class="org.jahia.services.manager.bean.ManagerConfiguration">
         <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint,jnt:portlet"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
-        <property name="toolbarGroup" value="document-manager"/>
+        <property name="toolbarSet" ref="document-manager"/>
         <property name="enableTextMenu" value="true"/>
         <property name="displayProvider" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -52,7 +52,7 @@
     <bean id="mashupmanager" class="org.jahia.services.manager.bean.ManagerConfiguration">
         <property name="nodeTypes" value="nt:folder,jnt:mountPoint,jnt:portlet"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
-        <property name="toolbarGroup" value="mashup-manager"/>
+        <property name="toolbarSet" ref="mashup-manager"/>
         <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displayExt" value="false"/>
@@ -94,7 +94,7 @@
     <bean id="categorymanager" class="org.jahia.services.manager.bean.ManagerConfiguration">
         <property name="nodeTypes" value="nt:folder,jnt:mountPoint,jnt:portlet"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
-        <property name="toolbarGroup" value="category-manager"/>
+        <property name="toolbarSet" ref="category-manager"/>
         <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displayExt" value="false"/>
@@ -134,7 +134,7 @@
     <bean id="tagmanager" class="org.jahia.services.manager.bean.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:tag"/>
         <property name="folderTypes" value="jnt:tag"/>
-        <property name="toolbarGroup" value="tag-manager"/>
+        <property name="toolbarSet" ref="tag-manager"/>
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>
         <property name="displayExt" value="false"/>
@@ -179,7 +179,7 @@
 
         <property name="nodeTypes" value="jnt:portletDefinitions"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
-        <property name="toolbarGroup" value="portlet-definition-manager"/>
+        <property name="toolbarSet" ref="portlet-definition-manager"/>
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="false"/>
         <property name="enableFileDoubleClick" value="false"/>
@@ -221,7 +221,7 @@
         <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint,jnt:portlet"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
         <property name="enableTextMenu" value="false"/>
-        <property name="toolbarGroup" value="file-picker"/>
+        <property name="toolbarSet" ref="file-picker"/>
         <property name="hideLeftPanel" value="true"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
@@ -253,7 +253,7 @@
         <property name="nodeTypes" value=""/>
         <property name="folderTypes" value=""/>
         <property name="enableTextMenu" value="false"/>
-        <property name="toolbarGroup" value="content-picker"/>
+        <property name="toolbarSet" ref="content-picker"/>
         <property name="hideLeftPanel" value="true"/>
 
         <property name="displaySearchInPage" value="true"/>
@@ -288,7 +288,7 @@
 
         <property name="nodeTypes" value="jnt:page"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
-        <property name="toolbarGroup" value="file-picker"/>
+        <property name="toolbarSet" ref="file-picker"/>
         <property name="enableTextMenu" value="false"/>
         <property name="hideLeftPanel" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -320,7 +320,7 @@
 
         <property name="nodeTypes" value="nt:folder,jnt:mountPoint,jnt:portlet"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
-        <property name="toolbarGroup" value="mashup-picker"/>
+        <property name="toolbarSet" ref="mashup-picker"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
@@ -368,7 +368,7 @@
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displayExt" value="false"/>
         <property name="displaySize" value="false"/>
-        <property name="toolbarGroup" value="category-picker"/>
+        <property name="toolbarSet" ref="category-picker"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
@@ -408,7 +408,7 @@
         <property name="nodeTypes" value=""/>
         <property name="folderTypes" value=""/>
         <property name="enableTextMenu" value="true"/>
-        <property name="toolbarGroup" value="content-manager"/>
+        <property name="toolbarSet" ref="content-manager"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="true"/>
         <property name="displaySearchInFile" value="true"/>
@@ -440,7 +440,7 @@
         <property name="displaySize" value="false"/>
         <property name="displayDate" value="false"/>
         <property name="allowCollections" value="true"/>
-        <property name="toolbarGroup" value="site-manager"/>
+        <property name="toolbarSet" ref="site-manager"/>
         <property name="displaySearchInPage" value="true"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
@@ -482,7 +482,7 @@
     <bean id="rolesmanager" class="org.jahia.services.manager.bean.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:role"/>
         <property name="folderTypes" value="jnt:role"/>
-        <property name="toolbarGroup" value="role-manager"/>
+        <property name="toolbarSet" ref="role-manager"/>
 
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>
@@ -522,7 +522,7 @@
     <bean id="siterolesmanager" class="org.jahia.services.manager.bean.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:role"/>
         <property name="folderTypes" value="jnt:role"/>
-        <property name="toolbarGroup" value="role-manager"/>
+        <property name="toolbarSet" ref="role-manager"/>
 
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>

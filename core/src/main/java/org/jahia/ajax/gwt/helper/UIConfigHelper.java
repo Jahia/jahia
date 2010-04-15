@@ -446,6 +446,11 @@ public class UIConfigHelper {
      * @return
      */
     public GWTJahiaToolbar createGWTToolbar(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Toolbar toolbar) {
+        if(toolbar == null){
+            logger.debug("Toolbar parameter is null.");
+            return null;
+        }
+
         // don't add the tool bar if  has no items group
         if (toolbar.getItems() == null || toolbar.getItems().isEmpty()) {
             logger.debug("toolbar[" + toolbar.getName() + "] itemsgroup list is empty");
@@ -542,7 +547,7 @@ public class UIConfigHelper {
                 gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
 
                 // set toolbar
-                gwtConfig.setToolbarSet(getGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, config.getToolbarGroup()));
+                gwtConfig.setToolbarSet(createGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, config.getToolbarSet()));
 
                 // add table columns
                 for (org.jahia.services.manager.bean.Item item : config.getTableColumns()) {
@@ -786,7 +791,7 @@ public class UIConfigHelper {
         List<GWTSidePanelTab> gwtSidePanelTabList = new ArrayList<GWTSidePanelTab>();
         for (SidePanelTab sidePanelTab : tabs) {
             if (checkVisibility(site,jahiaUser,locale,request,sidePanelTab.getVisibility())) {
-                final GWTSidePanelTab gwtSidePanel = new GWTSidePanelTab(sidePanelTab.getName());
+                final GWTSidePanelTab gwtSidePanel = new GWTSidePanelTab(sidePanelTab.getKey());
                 gwtSidePanel.setTreeContextMenu(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, sidePanelTab.getTreeContextMenu()));
                 gwtSidePanel.setTableContextMenu(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, sidePanelTab.getTableContextMenu()));
                 gwtSidePanel.setParams(sidePanelTab.getParams());
@@ -816,7 +821,7 @@ public class UIConfigHelper {
                 final List<String> engineTabs = new ArrayList<String>();
                 for (EngineTab engineTab : engine.getTabs()) {
                     if (checkVisibility(site,jahiaUser,locale,request,engineTab.getVisibility())) {
-                        engineTabs.add(engineTab.getName());
+                        engineTabs.add(engineTab.getKey());
                     }
                 }
                 gwtEngine.setTabs(engineTabs);

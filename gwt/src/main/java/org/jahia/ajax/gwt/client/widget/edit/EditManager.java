@@ -36,7 +36,7 @@ public class EditManager extends ContentPanel {
         sidePanel.setStyleAttribute("z-index", "999");
         add(sidePanel, data);
 
-        toolbar =  new ActionToolbarLayoutContainer(config.getName());
+        toolbar =  new ActionToolbarLayoutContainer(config.getTopToolbar());
         toolbar.setStyleAttribute("z-index", "999");
         toolbar.setStyleAttribute("position", "relative");
         setTopComponent(toolbar);

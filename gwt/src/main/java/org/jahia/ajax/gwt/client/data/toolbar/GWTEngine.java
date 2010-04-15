@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * Time: 12:25:21 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTEngine {
+public class GWTEngine  implements Serializable {
     public static final int OPERATION_CREATE = 0;
     public static final int OPERATION_EDIT = 1;
 

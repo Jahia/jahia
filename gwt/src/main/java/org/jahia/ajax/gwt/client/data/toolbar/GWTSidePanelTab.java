@@ -1,7 +1,6 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
-
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -11,11 +10,15 @@ import java.util.Map;
  * Time: 7:27:40 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTSidePanelTab {
+public class GWTSidePanelTab  implements Serializable {
     private String name;
     private GWTJahiaToolbar treeContextMenu;
     private GWTJahiaToolbar tableContextMenu;
     private Map<String, String> params;
+ 
+    public GWTSidePanelTab() {
+    }
+
 
     public GWTSidePanelTab(String name) {
         this.name = name;

@@ -1,11 +1,16 @@
 package org.jahia.ajax.gwt.module.edit.client;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.Layout;
+import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
 
 import java.util.Arrays;
@@ -18,54 +23,26 @@ import java.util.Arrays;
  * To change this template use File | Settings | File Templates.
  */
 public class EditEntryPoint extends CommonEntryPoint {
-    public void afterPermissionsLoad() {
-        super.afterPermissionsLoad();
-        RootPanel panel = RootPanel.get("editmode");
+    public void onModuleLoad() {
+        @SuppressWarnings("unused")
+        Layout junk = new AnchorLayout();
+
+        final RootPanel panel = RootPanel.get("editmode");
         if (panel != null) {
-            GWTEditConfiguration config = new GWTEditConfiguration();
+            JahiaContentManagementService.App.getInstance().getEditConfiguration(DOM.getElementAttribute(panel.getElement(), "config"), new AsyncCallback<GWTEditConfiguration>() {
+                public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
+                    panel.add(new EditPanelViewport(DOM.getInnerHTML(panel.getElement()),
+                            DOM.getElementAttribute(panel.getElement(), "path"),
+                            DOM.getElementAttribute(panel.getElement(), "template"),
+                            DOM.getElementAttribute(panel.getElement(), "locale"), gwtEditConfiguration));
+                }
 
-            config.setName(DOM.getElementAttribute(panel.getElement(), "config"));
-            if (config.getName().equals("studiomode")) {
-                config.setTabs(Arrays.asList(new GWTSidePanelTab("templates"), new GWTSidePanelTab("createContent"),
-                        new GWTSidePanelTab("content"), new GWTSidePanelTab("images"), new GWTSidePanelTab("files"),
-                        new GWTSidePanelTab("mashups"), new GWTSidePanelTab("search"),
-                        new GWTSidePanelTab("workflow")));
-
-                final GWTEngine edit = new GWTEngine();
-                edit.setNodeType("nt:base");
-                edit.setTabs(Arrays.asList("content", "template", "layout", "options", "rights", "usages"));
-                final GWTEngine createPage = new GWTEngine();
-                createPage.setNodeType("jnt:page");
-                createPage.setTabs(Arrays.asList("createPage", "template", "options", "rights"));
-                final GWTEngine create = new GWTEngine();
-                create.setNodeType("nt:base");
-                create.setTabs(Arrays.asList("content", "template", "layout", "options"));
-
-                config.setEditEngines(Arrays.asList(edit));
-                config.setCreateEngines(Arrays.asList(createPage, create));
-
-            } else {
-                config.setTabs(Arrays.asList(new GWTSidePanelTab("pages"), new GWTSidePanelTab("createContent"),
-                        new GWTSidePanelTab("content"), new GWTSidePanelTab("images"), new GWTSidePanelTab("files"),
-                        new GWTSidePanelTab("mashups"), new GWTSidePanelTab("search"),
-                        new GWTSidePanelTab("workflow")));
-                final GWTEngine edit = new GWTEngine();
-                edit.setNodeType("nt:base");
-                edit.setTabs(Arrays.asList("content", "layout", "metadata", "classification", "options", "rights", "usages","publication", "seo", "analytics"));
-                final GWTEngine createPage = new GWTEngine();
-                createPage.setNodeType("jnt:page");
-                createPage.setTabs(Arrays.asList("createPage", "metadata", "classification", "options", "rights"));
-                final GWTEngine create = new GWTEngine();
-                create.setNodeType("nt:base");
-                create.setTabs(Arrays.asList("content", "layout", "metadata", "classification", "options", "rights"));
-
-                config.setEditEngines(Arrays.asList(edit));
-                config.setCreateEngines(Arrays.asList(createPage, create));
-            }
-            panel.add(new EditPanelViewport(DOM.getInnerHTML(panel.getElement()),
-                    DOM.getElementAttribute(panel.getElement(), "path"),
-                    DOM.getElementAttribute(panel.getElement(), "template"),
-                    DOM.getElementAttribute(panel.getElement(), "locale"), config));
+                public void onFailure(Throwable throwable) {
+                    Log.error("Error when loading EditConfiguration", throwable);
+                }
+            });
         }
     }
+
+
 }

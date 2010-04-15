@@ -6,8 +6,8 @@
 
     <!-- studiomode -->
     <bean id="studiomode" class="org.jahia.services.edit.bean.EditConfiguration">
-        <property name="topToolbar" ref="editmode-topbar"/>
-        <property name="contextMenu" ref="editmode-contextmenu"/>
+        <property name="topToolbar" ref="studiomode-topbar"/>
+        <property name="contextMenu" ref="studiomode-contextmenu"/>
 
         <!-- edit engine -->
         <property name="editEngines">
@@ -40,7 +40,7 @@
 
     </bean>
 
-    <bean id="editmode-config" class="org.jahia.services.edit.bean.EditConfiguration">
+    <bean id="editmode" class="org.jahia.services.edit.bean.EditConfiguration">
         <property name="topToolbar" ref="editmode-topbar"/>
         <property name="contextMenu" ref="editmode-contextmenu"/>
 
@@ -163,10 +163,61 @@
     <!-- side tabs-->
     <bean id="sidePanelTab.templates" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="templates"/>
+        <property name="tableContextMenu">
+            <bean id="org.jahia.toolbar.sidePanel.templates" class="org.jahia.services.toolbar.bean.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="org.jahia.toolbar.item.createTemplate"/>
+                        <bean class="org.jahia.services.toolbar.bean.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
+                            </property>
+                            <property name="titleKey" value="label.templatesDeploy"/>
+                        </bean>
+                        <ref bean="org.jahia.toolbar.item.createPage"/>
+                        <bean class="org.jahia.services.toolbar.bean.Item" parent="org.jahia.toolbar.item.edit">
+                            <property name="titleKey" value="label.rename"/>
+                            <property name="minIconStyle" value="gwt-toolbar-icon-rename"/>
+                            <property name="mediumIconStyle" value="gwt-toolbar-icon-rename"/>
+                        </bean>
+                        <ref bean="org.jahia.toolbar.item.edit"/>
+                        <ref bean="org.jahia.toolbar.item.delete"/>
+                        <ref bean="org.jahia.toolbar.item.Separator"/>
+                        <ref bean="org.jahia.toolbar.item.copy"/>
+                        <ref bean="org.jahia.toolbar.item.cut"/>
+                        <ref bean="org.jahia.toolbar.item.paste"/>
+                        <ref bean="org.jahia.toolbar.item.pasteReference"/>
+                    </list>
+                </property>
+                <property name="contextMenu" value="true"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="sidePanelTab.pages" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="pages"/>
+        <property name="tableContextMenu">
+            <bean class="org.jahia.services.toolbar.bean.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="org.jahia.toolbar.item.createPage"/>
+                        <bean class="org.jahia.services.toolbar.bean.Item" parent="org.jahia.toolbar.item.edit">
+                            <property name="titleKey" value="label.rename"/>
+                            <property name="minIconStyle" value="gwt-toolbar-icon-rename"/>
+                            <property name="mediumIconStyle" value="gwt-toolbar-icon-rename"/>
+                        </bean>
+                        <ref bean="org.jahia.toolbar.item.edit"/>
+                        <ref bean="org.jahia.toolbar.item.delete"/>
+                        <ref bean="org.jahia.toolbar.item.Separator"/>
+                        <ref bean="org.jahia.toolbar.item.copy"/>
+                        <ref bean="org.jahia.toolbar.item.cut"/>
+                        <ref bean="org.jahia.toolbar.item.paste"/>
+                        <ref bean="org.jahia.toolbar.item.pasteReference"/>
+                    </list>
+                </property>
+                <property name="contextMenu" value="true"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="sidePanelTab.createContent" class="org.jahia.services.edit.bean.SidePanelTab">
@@ -175,14 +226,61 @@
 
     <bean id="sidePanelTab.content" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="content"/>
+        <property name="tableContextMenu">
+            <bean class="org.jahia.services.toolbar.bean.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="org.jahia.toolbar.item.createFolder"/>
+                        <ref bean="org.jahia.toolbar.item.createContent"/>
+                        <ref bean="org.jahia.toolbar.item.Separator"/>
+                        <ref bean="org.jahia.toolbar.item.rename"/>
+                        <ref bean="org.jahia.toolbar.item.delete"/>
+                        <ref bean="org.jahia.toolbar.item.Separator"/>
+                        <ref bean="org.jahia.toolbar.item.copy"/>
+                        <ref bean="org.jahia.toolbar.item.cut"/>
+                        <ref bean="org.jahia.toolbar.item.paste"/>
+                        <ref bean="org.jahia.toolbar.item.pasteReference"/>
+                    </list>
+                </property>
+                <property name="contextMenu" value="true"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="sidePanelTab.images" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="images"/>
+        <property name="tableContextMenu">
+            <bean class="org.jahia.services.toolbar.bean.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="org.jahia.toolbar.item.createFolder"/>
+                        <ref bean="org.jahia.toolbar.item.upload"/>
+                        <ref bean="org.jahia.toolbar.item.Separator"/>
+                        <ref bean="org.jahia.toolbar.item.rename"/>
+                        <ref bean="org.jahia.toolbar.item.delete"/>
+                    </list>
+                </property>
+                <property name="contextMenu" value="true"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="sidePanelTab.files" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="files"/>
+        <property name="tableContextMenu">
+            <bean class="org.jahia.services.toolbar.bean.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="org.jahia.toolbar.item.createFolder"/>
+                        <ref bean="org.jahia.toolbar.item.upload"/>
+                        <ref bean="org.jahia.toolbar.item.Separator"/>
+                        <ref bean="org.jahia.toolbar.item.rename"/>
+                        <ref bean="org.jahia.toolbar.item.delete"/>
+                    </list>
+                </property>
+                <property name="contextMenu" value="true"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="sidePanelTab.mashups" class="org.jahia.services.edit.bean.SidePanelTab">
@@ -191,10 +289,12 @@
 
     <bean id="sidePanelTab.search" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="search"/>
+
     </bean>
 
     <bean id="sidePanelTab.workflow" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="workflow"/>
+
     </bean>
 
     <!-- Engine tabs-->
@@ -241,7 +341,7 @@
     <bean id="editenginestab.seo" class="org.jahia.services.edit.bean.EngineTab">
         <property name="key" value="seo"/>
     </bean>
-    
+
     <bean id="editenginestab.analytics" class="org.jahia.services.edit.bean.EngineTab">
         <property name="key" value="analytics"/>
     </bean>

@@ -4,92 +4,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean id="editmode" class="org.jahia.services.toolbar.bean.ToolbarSet">
-        <property name="toolbars">
-            <list>
-               <ref bean="editmode-topbar"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="contextmenu-editmode" class="org.jahia.services.toolbar.bean.ToolbarSet">
-        <property name="toolbars">
-            <list>
-                <ref bean="editmode-contextmenu"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="studiomode" class="org.jahia.services.toolbar.bean.ToolbarSet">
-        <property name="toolbars">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Toolbar">
-                    <property name="items">
-                        <list>
-                            <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <bean class="org.jahia.services.toolbar.bean.ItemsGroup">
-                                <property name="layout" value="menu"/>
-                                <property name="titleKey" value="label.new"/>
-                                <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
-                                <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
-                                <property name="items">
-                                    <list>
-                                        <ref bean="org.jahia.toolbar.item.createTemplate"/>
-                                        <ref bean="org.jahia.toolbar.item.createPage"/>
-                                        <ref bean="org.jahia.toolbar.item.createContent"/>
-                                    </list>
-                                </property>
-                            </bean>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.EditStudioAction"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <bean class="org.jahia.services.toolbar.bean.Item">
-                                <property name="actionItem">
-                                    <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
-                                </property>
-                                <property name="titleKey" value="label.templatesDeploy"/>
-                            </bean>
-                            <ref bean="org.jahia.toolbar.item.export.template"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.Managers"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.itemsgroup.User"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.item.Admin"/>
-                        </list>
-                    </property>
-                    <property name="visibility">
-                        <bean class="org.jahia.services.toolbar.bean.Visibility">
-                            <property name="siteActionPermission" value="actions/edit-mode"/>
-                        </bean>
-                    </property>
-                    <property name="contextMenu" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="contextmenu-studiomode" class="org.jahia.services.toolbar.bean.ToolbarSet">
-        <property name="toolbars">
-            <list>
-                <bean class="org.jahia.services.toolbar.bean.Toolbar">
-                    <property name="items">
-                        <list>
-                            <ref bean="org.jahia.toolbar.itemsgroup.EditStudioAction"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                        </list>
-                    </property>
-                    <property name="visibility">
-                        <bean class="org.jahia.services.toolbar.bean.Visibility">
-                            <property name="serverActionPermission" value="global/studio-mode"/>
-                        </bean>
-                    </property>
-                    <property name="contextMenu" value="true"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
 
     <bean id="category-manager" class="org.jahia.services.toolbar.bean.ToolbarSet">
         <property name="toolbars">
@@ -253,6 +167,50 @@
         <property name="contextMenu" value="true"/>
     </bean>
 
+    <bean id="studiomode-topbar" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <bean class="org.jahia.services.toolbar.bean.ItemsGroup">
+                    <property name="layout" value="menu"/>
+                    <property name="titleKey" value="label.new"/>
+                    <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
+                    <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="org.jahia.toolbar.item.createTemplate"/>
+                            <ref bean="org.jahia.toolbar.item.createPage"/>
+                            <ref bean="org.jahia.toolbar.item.createContent"/>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.EditStudioAction"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <bean class="org.jahia.services.toolbar.bean.Item">
+                    <property name="actionItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
+                    </property>
+                    <property name="titleKey" value="label.templatesDeploy"/>
+                </bean>
+                <ref bean="org.jahia.toolbar.item.export.template"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.Managers"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.User"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.Admin"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="siteActionPermission" value="actions/edit-mode"/>
+            </bean>
+        </property>
+        <property name="contextMenu" value="true"/>
+    </bean>
+
 
     <bean id="editmode-contextmenu" class="org.jahia.services.toolbar.bean.Toolbar">
         <property name="items">
@@ -266,6 +224,21 @@
         <property name="visibility">
             <bean class="org.jahia.services.toolbar.bean.Visibility">
                 <property name="siteActionPermission" value="actions/edit-mode"/>
+            </bean>
+        </property>
+        <property name="contextMenu" value="true"/>
+    </bean>
+
+    <bean id="studiomode-contextmenu" class="org.jahia.services.toolbar.bean.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.EditStudioAction"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.toolbar.bean.Visibility">
+                <property name="serverActionPermission" value="global/studio-mode"/>
             </bean>
         </property>
         <property name="contextMenu" value="true"/>

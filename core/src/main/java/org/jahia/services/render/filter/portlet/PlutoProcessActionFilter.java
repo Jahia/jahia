@@ -43,7 +43,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
             final ParamBean jParams = (ParamBean) Jahia.getThreadParamBean();
             final JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(renderContext.getUser(), renderContext.getRequest());
             final HttpServletResponse response = renderContext.getResponse();
-            final ServletContext servletContext = jParams.getContext();
+            final ServletContext servletContext = Jahia.getStaticServletConfig().getServletContext();
             final PortletContainer container = (PortletContainer) servletContext.getAttribute(AttributeKeys.PORTLET_CONTAINER);
             final PortalRequestContext portalRequestContext = new PortalRequestContext(servletContext, request, response);
             final PortalURL portalURL = portalRequestContext.getRequestedPortalURL();

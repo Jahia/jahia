@@ -66,7 +66,7 @@
         <!-- accordion panels-->
         <property name="accordionPanels">
             <list>
-                <ref bean="repository.website"/>
+                <ref bean="repository.websitemahsup"/>
                 <ref bean="repository.shared"/>
                 <ref bean="repository.mymashup"/>
             </list>
@@ -343,7 +343,7 @@
         <!-- accordion panels-->
         <property name="accordionPanels">
             <list>
-                <ref bean="repository.website"/>
+                <ref bean="repository.websitemahsup"/>
                 <ref bean="repository.sharedmashup"/>
                 <ref bean="repository.mymashup"/>
             </list>
@@ -565,6 +565,10 @@
 
     <bean id="repository.website" class="org.jahia.services.manager.bean.Item">
         <property name="key" value="websiteRepository"/>
+    </bean>
+
+    <bean id="repository.websitemahsup" class="org.jahia.services.manager.bean.Item">
+        <property name="key" value="websiteMashupRepository"/>
     </bean>
 
     <bean id="repository.shared" class="org.jahia.services.manager.bean.Item">

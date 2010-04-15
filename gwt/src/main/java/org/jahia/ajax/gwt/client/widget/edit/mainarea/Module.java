@@ -146,6 +146,10 @@ public abstract class Module extends LayoutContainer {
         return isDraggable;
     }
 
+    public Header getHeader() {
+        return head;
+    }
+
     protected void setHeaderText(String headerText) {
         if (mainModule.getConfig().getName().equals("studiomode")) {
             if (isShared() && isLocked()) {

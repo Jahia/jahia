@@ -331,7 +331,7 @@ public class JCRPublicationService extends JahiaService {
 
         final List<String> prunedSourcePath = new ArrayList<String>();
         for (JCRNodeWrapper node : pruneSourceNodes) {
-            prunedSourcePath.add(node.getPath());
+            prunedSourcePath.add(node.getIdentifier());
         }
 
         try {
@@ -350,13 +350,15 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void cloneParents(JCRNodeWrapper node, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession, Calendar calendar) throws RepositoryException {
+        String path;
         try {
-            String path = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
-            JCRNodeWrapper destinationNode = doClone(node, null, sourceSession, destinationSession);
-            checkin(destinationSession, destinationSession.getNode(path), destinationSession.getWorkspace().getVersionManager(), calendar);
+            path = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
         } catch (ItemNotFoundException e) {
             cloneParents(node.getParent(), sourceSession, destinationSession, calendar);
+            path = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
         }
+        JCRNodeWrapper destinationNode = doClone(node, null, sourceSession, destinationSession);
+        checkin(destinationSession, destinationSession.getNode(path), destinationSession.getWorkspace().getVersionManager(), calendar);
     }
 
     void mergeToDestinationWorkspace(final List<JCRNodeWrapper> toPublish, final List<String> prunedSourcePath, final List<String> prunedDestPath, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession, Calendar calendar) throws RepositoryException {
@@ -598,7 +600,7 @@ public class JCRPublicationService extends JahiaService {
             NodeIterator it = sourceNode.getNodes();
             while (it.hasNext()) {
                 JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
-                if (!pruneNodes.contains(nodeWrapper.getPath()) && nodeWrapper.isVersioned()) {
+                if (!pruneNodes.contains(nodeWrapper.getIdentifier()) && nodeWrapper.isVersioned()) {
                     try {
                         // Check if the child has a corresponding path - if not, clone it
                         nodeWrapper.getCorrespondingNodePath(destinationWorkspaceName);

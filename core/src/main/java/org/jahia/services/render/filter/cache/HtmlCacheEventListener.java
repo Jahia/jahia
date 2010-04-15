@@ -90,33 +90,34 @@ public class HtmlCacheEventListener extends DefaultEventListener {
             Event event = (Event) events.next();
             try {
                 String path = event.getPath();
-                boolean flushParent = false;
-                if(path.contains("j:template")) {
-                    flushParent = true;
-                }
-                final int type = event.getType();
-                if(type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
-                    path = path.substring(0,path.lastIndexOf("/"));
-                } else if (type==Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
-                    flushParent = true;
-                }
-                if(path.contains("j:acl") || path.contains("jnt:group") || type == Event.NODE_MOVED) {
-                    // Flushing cache of acl key for users as a group or an acl has been updated
-                    CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
-                    if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
-                        DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
-                        generator.flushUsersGroupsKey();
+                if (!path.startsWith("/jcr:system")) {
+                    boolean flushParent = false;
+                    if (path.contains("j:template")) {
+                        flushParent = true;
                     }
-                }
-                path = StringUtils.substringBeforeLast(path, "/j:translation");
-                flushDependenciesOfPath(depCache, flushed, path);
-                flushSharedNode(depCache, flushed, path);
-                if(flushParent) {
-                    path = StringUtils.substringBeforeLast(path, "/");
+                    final int type = event.getType();
+                    if (type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
+                        path = path.substring(0, path.lastIndexOf("/"));
+                    } else if (type == Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
+                        flushParent = true;
+                    }
+                    if (path.contains("j:acl") || path.contains("jnt:group") || type == Event.NODE_MOVED) {
+                        // Flushing cache of acl key for users as a group or an acl has been updated
+                        CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
+                        if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {
+                            DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
+                            generator.flushUsersGroupsKey();
+                        }
+                    }
+                    path = StringUtils.substringBeforeLast(path, "/j:translation");
                     flushDependenciesOfPath(depCache, flushed, path);
                     flushSharedNode(depCache, flushed, path);
+                    if (flushParent) {
+                        path = StringUtils.substringBeforeLast(path, "/");
+                        flushDependenciesOfPath(depCache, flushed, path);
+                        flushSharedNode(depCache, flushed, path);
+                    }
                 }
-
 
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

@@ -110,6 +110,8 @@ public class ModuleCacheProvider implements InitializingBean {
             blockingCache.remove(dep);
             try {
                 blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.load"));
+                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.header"));
+                blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.footer"));
             } catch (ParseException e) {
                 logger.warn(e.getMessage(), e);
             }

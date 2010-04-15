@@ -92,7 +92,11 @@ public class URLGenerator {
                 if (context.getSite().hasProperty("j:sourceTemplate")) {
                     studio += "/" + context.getSite().getProperty("j:sourceTemplate").getNode().getName() + "/";
                     if (resource.getNode().isNodeType("jnt:page") && resource.getNode().hasProperty("j:sourceTemplate")) {
-                        studio += "templates/" + resource.getNode().getProperty("j:sourceTemplate").getNode().getName() + ".html";
+                        try {
+                            studio += "templates/" + resource.getNode().getProperty("j:sourceTemplate").getNode().getName() + ".html";
+                        } catch (RepositoryException e) {
+                            studio += "home.html";
+                        }
                     } else {
                         studio += "home.html";
                     }

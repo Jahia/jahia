@@ -31,6 +31,7 @@
  */
 package org.jahia.bin;
 
+import net.htmlparser.jericho.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
@@ -54,6 +55,7 @@ import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -195,12 +197,26 @@ public class Render extends HttpServlet implements Controller,
         loggingService.startProfiler("MAIN");
         String out = RenderService.getInstance()
                 .render(resource, renderContext);
+        Source source = new Source(out);
+        final List<Element> elementList = source.getAllElements(HTMLElementName.HEAD);
+        OutputDocument outputDocument = new OutputDocument(source);
+        for (Element element : elementList) {
+            final EndTag tag = element.getEndTag();
+            final String staticsAsset = RenderService.getInstance().render(new Resource(resource.getNode(), "html",
+                                                                                        "html.statics.assets",
+                                                                                        "html.statics.assets"),
+                                                                           renderContext);
+            outputDocument.replace(tag.getBegin(),tag.getBegin()+1,"\n"+ AggregateCacheFilter.removeEsiTags(staticsAsset)+"\n<");
+        }
+        PrintWriter writer = resp.getWriter();
+        out = outputDocument.toString();
+        final SourceFormatter sourceFormatter = new SourceFormatter(new Source(out));
+        sourceFormatter.setIndentString("  ");
+        out = sourceFormatter.toString();
         resp.setContentType(renderContext.getContentType() != null ? renderContext
                 .getContentType() : "text/html; charset=UTF-8");
         resp.setCharacterEncoding("UTF-8");
         resp.setContentLength(out.getBytes("UTF-8").length);
-
-        PrintWriter writer = resp.getWriter();
         writer.print(out);
         writer.close();
         String sessionID = "";

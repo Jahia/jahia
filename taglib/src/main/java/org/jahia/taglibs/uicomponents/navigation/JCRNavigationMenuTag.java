@@ -131,6 +131,18 @@ public class JCRNavigationMenuTag extends AbstractJahiaTag {
             }
             Resource res = (Resource) pageContext.getRequest().getAttribute("currentResource");
             res.getDependencies().add(node);
+            if (baseNode != null && !CollectionUtils.isEmpty(getTypesToFilterBy())) {
+                final NodeIterator iterator = baseNode.getNodes();
+                while (iterator.hasNext()) {
+                    JCRNodeWrapper wrapper = (JCRNodeWrapper) iterator.next();
+                    boolean found = false;
+                    for (String typeValue : getTypesToFilterBy()) {
+                        if (wrapper.isNodeType(typeValue)) {
+                            res.getDependencies().add(wrapper);
+                        }
+                    }
+                }
+            }
             generateMenuAsFlatList(realStartLevel, baseNode, 1,
                     navMenuUItemsBeans, null, baseNode != null ? baseNode.getPath() : null);
             if (StringUtils.isNotEmpty(var)) {

@@ -266,4 +266,15 @@ public class RenderContext {
     public boolean isPreviewMode() {
         return previewMode;
     }
+
+    public void addStaticAsset(Map<String, Set<String>> staticAssets) {
+        for (Map.Entry<String, Set<String>> entry : staticAssets.entrySet()) {
+            final Set<String> assets = getStaticAssets(entry.getKey());
+            if(assets!=null) {
+                assets.addAll(entry.getValue());
+            } else {
+                this.staticAssets.put(entry.getKey(),entry.getValue());
+            }
+        }
+    }
 }

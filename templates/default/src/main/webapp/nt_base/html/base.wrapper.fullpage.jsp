@@ -56,7 +56,6 @@
 			</c:forEach>
 		</c:if>
         <utility:applicationResources/>
-        <template:includeResources/>
 	</template:templateHead>
     <template:templateBody>
         ${wrappedContent}

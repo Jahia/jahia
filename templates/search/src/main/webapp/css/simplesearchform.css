@@ -1,6 +1,10 @@
 #bodywrapper form.simplesearchform {
 	position:relative;
-	width:180px
+	width:180px;
+	margin-bottom:0.5em
+}
+#bodywrapper form.simplesearchform label {
+	display:none;
 }
 #bodywrapper form.simplesearchform .text-input {
 	background-image:url(img/search-bar-bg.png);

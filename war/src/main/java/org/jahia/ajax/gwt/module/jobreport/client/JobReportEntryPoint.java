@@ -47,8 +47,8 @@ public class JobReportEntryPoint extends CommonEntryPoint {
 
     public static final String ID = "jobreport";
 
-    public void afterPermissionsLoad() {
-        super.afterPermissionsLoad();
+    public void onModuleLoad() {
+        super.onModuleLoad();
         // init panel
         RootPanel jahiaTypePanel = RootPanel.get(ID);
 

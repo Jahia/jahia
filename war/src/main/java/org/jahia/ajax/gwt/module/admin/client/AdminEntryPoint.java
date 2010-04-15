@@ -53,8 +53,8 @@ import java.util.List;
  */
 public class AdminEntryPoint extends CommonEntryPoint {
 
-    public void afterPermissionsLoad() {
-        super.afterPermissionsLoad();
+    public void onModuleLoad() {
+        super.onModuleLoad();
         JahiaGWT.init();
         AclNameEditor.initACLNameEditors();
         RoleEditor.init();

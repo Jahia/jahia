@@ -53,8 +53,8 @@ public class UserGroupSelectEntryPoint extends CommonEntryPoint {
 
     private static UserGroupSelect userGroupSelect;
 
-    public void afterPermissionsLoad() {
-        super.afterPermissionsLoad();
+    public void onModuleLoad() {
+        super.onModuleLoad();
         JahiaGWT.init();
         initJavaScriptApi();
     }

@@ -40,8 +40,8 @@ import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
  * Time: 18:15:27
  */
 public class SimpleEntryPoint extends CommonEntryPoint {
-    public void afterPermissionsLoad() {
-        super.afterPermissionsLoad();
+    public void onModuleLoad() {
+        super.onModuleLoad();
         GXT.init();
     }
 }

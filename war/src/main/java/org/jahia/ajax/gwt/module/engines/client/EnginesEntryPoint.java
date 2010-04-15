@@ -42,8 +42,8 @@ import org.jahia.ajax.gwt.client.widget.calendar.DatePickerManager;
  */
 public class EnginesEntryPoint extends CommonEntryPoint {
 
-    public void afterPermissionsLoad() {
-        super.afterPermissionsLoad();
+    public void onModuleLoad() {
+        super.onModuleLoad();
         JahiaGWT.init();
         new DatePickerManager();
     }

@@ -87,6 +87,7 @@ public class TranslateContentEngine extends Window {
 
 
 
+/*
         // add the properties editors
         mainComponent = new LayoutContainer();
         mainComponent.setBorders(false);
@@ -96,6 +97,7 @@ public class TranslateContentEngine extends Window {
         mainComponent.add(sourceLangPropertiesEditor, eastData);
         mainComponent.add(targetLangPropertiesEditor, centerData);
         //add(mainComponent);
+*/
 
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);

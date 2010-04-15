@@ -451,7 +451,7 @@
         <!-- accordion -->
         <property name="accordionPanels">
             <list>
-                <ref bean="repository.siteRole"/>
+                <ref bean="repository.site"/>
             </list>
         </property>
 
@@ -601,6 +601,10 @@
 
     <bean id="repository.siteRole" class="org.jahia.services.manager.bean.Item">
         <property name="key" value="siteRoleRepository"/>
+    </bean>
+
+    <bean id="repository.site" class="org.jahia.services.manager.bean.Item">
+        <property name="key" value="siteRepository"/>
     </bean>
 
     <bean id="repository.portletdefinition" class="org.jahia.services.manager.bean.Item">

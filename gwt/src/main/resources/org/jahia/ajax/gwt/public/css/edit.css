@@ -82,17 +82,19 @@
 	font-weight:bold;
 	text-align:center;
 	text-transform:none;
-	background:#4CA20B  url(../images/xtheme-jahia-andromeda/panel/bg-button-placeholder.png) repeat-x scroll left bottom;
-	border:1px solid #e1ebf1;
+	background:transparent  url(../images/xtheme-jahia-andromeda/panel/add-placeholder.png) repeat-x scroll left bottom;
+	border:none;
 	color:#fff;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	margin-top:1px
+	line-height:0px;
+	font-size:0px;
+	margin-top:1px;
+	display:block;
+	height:16px;
+	width:16px;
 }
 #bodywrapper button.button-placeholder:hover {
-	background:none;
-	background-color:#295d01;
-	border:1px solid #72b42d;
+	background:transparent  url(../images/xtheme-jahia-andromeda/panel/add-placeholder-on.png) repeat-x scroll left bottom;
+	border:none;
 	color:#fff;
 }
 .selection-top-list {

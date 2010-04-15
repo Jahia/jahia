@@ -153,7 +153,9 @@ public class NavigationHelper {
                     GWTJahiaNode theNode = getGWTJahiaNode(f);
                     theNode.setMatchFilters(matchNodeType && matchFilters);
                     try {
-                        theNode.setPublicationInfo(publication.getPublicationInfo(f.getPath(), Collections.singleton(currentUserSession.getLocale().toString()), false, currentUserSession));
+                        theNode.setPublicationInfo(publication.getPublicationInfo(f.getIdentifier(), Collections.singleton(currentUserSession.getLocale().toString()), false, currentUserSession));
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
                     } catch (GWTJahiaServiceException e) {
                         logger.error(e.getMessage(), e);
                     }

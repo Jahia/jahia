@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -11,6 +12,7 @@ import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
@@ -34,16 +36,16 @@ public class PublicationHelper {
     /**
      * Get the publication status information for a particular path.
      *
-     * @param path to get publication info from
+     * @param uuid to get publication info from
      * @param currentUserSession
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public GWTJahiaPublicationInfo getPublicationInfo(String path, Set<String> languages, boolean full, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTJahiaPublicationInfo getPublicationInfo(String uuid, Set<String> languages, boolean full, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            PublicationInfo pubInfo = publicationService.getPublicationInfo(path, languages, full, true);
-            return convert(path, pubInfo, full, currentUserSession);
+            PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, full, true);
+            return convert(pubInfo, full, currentUserSession);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -51,41 +53,47 @@ public class PublicationHelper {
 
     }
 
-    private GWTJahiaPublicationInfo convert(String path, PublicationInfo pubInfo, boolean full, JCRSessionWrapper currentUserSession) {
-        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(path, pubInfo.getStatus(), pubInfo.isCanPublish());
+    private GWTJahiaPublicationInfo convert(PublicationInfo pubInfo, boolean full, JCRSessionWrapper currentUserSession) {
+        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getPath(), pubInfo.getStatus(), pubInfo.isCanPublish());
         if (full) {
             try {
-                JCRNodeWrapper n = currentUserSession.getNode(path);
+                JCRNodeWrapper n = currentUserSession.getNode(pubInfo.getPath());
                 if (n.hasProperty("jcr:title")) {
                     gwtInfo.setTitle(n.getProperty("jcr:title").getString());
                 } else {
                     gwtInfo.setTitle(n.getName());
                 }
             } catch (RepositoryException e) {
-                gwtInfo.setTitle(path);
+                gwtInfo.setTitle(pubInfo.getPath());
             }
         }
 
-        GWTJahiaPublicationInfo lastPub = gwtInfo;
+        Map<String, GWTJahiaPublicationInfo> gwtInfos = new HashMap<String, GWTJahiaPublicationInfo>();
+        gwtInfos.put(pubInfo.getPath(), gwtInfo);
         for (Map.Entry<String, PublicationInfo> entry : pubInfo.getSubnodes().entrySet()) {
             PublicationInfo pi = entry.getValue();
-            if (entry.getKey().contains(lastPub.getPath()+"/j:translation")) {
-                if (pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHABLE && pi.getStatus() > gwtInfo.getStatus()) {
-                    lastPub.setStatus(pi.getStatus());
-                }
-                if (gwtInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED && pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHED) {
-                    lastPub.setStatus(pi.getStatus());
+            if (entry.getKey().contains("/j:translation")) {
+                String key = StringUtils.substringBeforeLast(entry.getKey(), "/j:translation");
+                GWTJahiaPublicationInfo lastPub = gwtInfos.get(key);
+                if (lastPub != null) {
+                    if (pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHABLE && pi.getStatus() > gwtInfo.getStatus()) {
+                        lastPub.setStatus(pi.getStatus());
+                    }
+                    if (gwtInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED && pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHED) {
+                        lastPub.setStatus(pi.getStatus());
+                    }
                 }
             } else if (full && entry.getKey().indexOf("/j:translation") == -1) {
-                lastPub = convert(entry.getKey(), pi, full, currentUserSession);
+                GWTJahiaPublicationInfo lastPub = convert(pi, full, currentUserSession);
                 gwtInfo.add(lastPub);
+                gwtInfos.put(lastPub.getPath(), lastPub);
             }
             gwtInfo.addSubnodesStatus(pi.getStatus());
         }
 
         for (String p : pubInfo.getReferences().keySet()) {
             PublicationInfo pi = pubInfo.getReferences().get(p);
-            gwtInfo.add(convert(p, pi, full, currentUserSession));
+            gwtInfo.add(convert(pi, full, currentUserSession));
         }
 
         return gwtInfo;

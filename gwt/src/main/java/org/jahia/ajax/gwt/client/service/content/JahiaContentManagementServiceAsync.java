@@ -237,18 +237,18 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     /**
      * Get the publication status information for a particular path.
      *
-     * @param path path to get publication info from
+     * @param uuid uuid to get publication info from
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
-    void getPublicationInfo(String path, boolean includeReferences, AsyncCallback<GWTJahiaPublicationInfo> async);
+    void getPublicationInfo(String uuid, boolean includeReferences, AsyncCallback<GWTJahiaPublicationInfo> async);
 
     /**
      * Get the publication status information for a particular path.
      *
-     * @param pathes path to get publication info from
+     * @param uuids uuids to get publication info from
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
-    void getPublicationInfo(List<String> pathes, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
+    void getPublicationInfo(List<String> uuids, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
 
 
     /**

@@ -25,6 +25,7 @@ public class PublicationInfo {
     private boolean canPublish;
 
     private boolean isVersioned;
+    private String path;
     private String liveVersion;
     private String stagingVersion;
 
@@ -50,6 +51,14 @@ public class PublicationInfo {
 
     public void setCanPublish(boolean canPublish) {
         this.canPublish = canPublish;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public boolean isVersioned() {

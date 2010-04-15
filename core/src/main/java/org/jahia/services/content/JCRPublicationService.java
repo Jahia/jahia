@@ -750,15 +750,15 @@ public class JCRPublicationService extends JahiaService {
      * and if requested you will be able to get the infos also for the subnodes and the referenced nodes.
      * As language dependent data is always stored in subnodes you need to set includesSubnodes to true, if you also specify a list of languages.
      *
-     * @param path               The path of the node to get publication info
+     * @param uuid               The uuid of the node to get publication info
      * @param languages          Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
      * @param includesReferences If true include info for referenced nodes
      * @param includesSubnodes   If true include info for subnodes
      * @return the <code>PublicationInfo</code> for the requested node(s)
      * @throws RepositoryException
      */
-    public PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, boolean includesSubnodes) throws RepositoryException {
-        return getPublicationInfo(path, languages, includesReferences, includesSubnodes, new HashSet<String>());
+    public PublicationInfo getPublicationInfo(String uuid, Set<String> languages, boolean includesReferences, boolean includesSubnodes) throws RepositoryException {
+        return getPublicationInfo(uuid, languages, includesReferences, includesSubnodes, new HashSet<String>());
     }
 
     /**
@@ -767,24 +767,24 @@ public class JCRPublicationService extends JahiaService {
      * and if requested you will be able to get the infos also for the subnodes and the referenced nodes.
      * As language dependent data is always stored in subnodes you need to set includesSubnodes to true, if you also specify a list of languages.
      *
-     * @param path               The path of the node to get publication info
+     * @param uuid               The uuid of the node to get publication info
      * @param languages          Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
      * @param includesReferences If true include info for referenced nodes
      * @param includesSubnodes   If true include info for subnodes
-     * @param pathes             a Set of pathes, which don't need to be checked or have already been checked
+     * @param uuids              a Set of uuids, which don't need to be checked or have already been checked
      * @return the <code>PublicationInfo</code> for the requested node(s)
      * @throws RepositoryException
      */
-    private PublicationInfo getPublicationInfo(String path, Set<String> languages, boolean includesReferences, boolean includesSubnodes, Set<String> pathes)
+    private PublicationInfo getPublicationInfo(String uuid, Set<String> languages, boolean includesReferences, boolean includesSubnodes, Set<String> uuids)
             throws RepositoryException {
-        pathes.add(path);
+        uuids.add(uuid);
 
         JCRSessionWrapper session = getSessionFactory().getCurrentUserSession();
         JCRSessionWrapper liveSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
         PublicationInfo info = new PublicationInfo();
 
-        JCRNodeWrapper stageNode = session.getNode(path);
-
+        JCRNodeWrapper stageNode = session.getNodeByUUID(uuid);
+        info.setPath(stageNode.getPath());
         JCRNodeWrapper publishedNode = null;
         try {
             publishedNode = liveSession.getNode(stageNode.getCorrespondingNodePath(liveSession.getWorkspace().getName()));
@@ -803,16 +803,16 @@ public class JCRPublicationService extends JahiaService {
 
             if (includesReferences) {
                 for (JCRNodeWrapper referencedNode : referencedNodes) {
-                    if (!pathes.contains(referencedNode.getPath())) {
-                        info.addReference(referencedNode.getPath(), getPublicationInfo(referencedNode.getPath(), languages, true, false, pathes));
+                    if (!uuids.contains(referencedNode.getIdentifier())) {
+                        info.addReference(referencedNode.getPath(), getPublicationInfo(referencedNode.getIdentifier(), languages, true, false, uuids));
                     }
                 }
             }
             if (includesSubnodes) {
                 toPublish.remove(0);
                 for (JCRNodeWrapper sub : toPublish) {
-                    if (!pathes.contains(sub.getPath())) {
-                        info.addSubnode(sub.getPath(), getPublicationInfo(sub.getPath(), languages, false, false, pathes));
+                    if (!uuids.contains(sub.getIdentifier())) {
+                        info.addSubnode(sub.getPath(), getPublicationInfo(sub.getIdentifier(), languages, false, false, uuids));
                     }
                 }
             }
@@ -840,7 +840,7 @@ public class JCRPublicationService extends JahiaService {
                 Date pubProp = stageNode.getLastPublishedAsDate();
                 Date liveModProp = publishedNode.getLastModifiedAsDate();
                 if (modProp == null || pubProp == null || liveModProp == null) {
-                    logger.warn(path + " : Some property is null : "+modProp + "/"+pubProp + "/"+ liveModProp);
+                    logger.warn(uuid + " : Some property is null : "+modProp + "/"+pubProp + "/"+ liveModProp);
                     info.setStatus(PublicationInfo.MODIFIED);
                 } else {
                     long mod = modProp.getTime();

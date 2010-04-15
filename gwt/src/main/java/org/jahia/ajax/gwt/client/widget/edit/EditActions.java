@@ -148,7 +148,7 @@ public class EditActions {
         }
         if (selectedNode != null) {
             final GWTJahiaNode s = selectedNode;
-            JahiaContentManagementService.App.getInstance().getPublicationInfo(s.getPath(), true,
+            JahiaContentManagementService.App.getInstance().getPublicationInfo(s.getUUID(), true,
                     new AsyncCallback<GWTJahiaPublicationInfo>() {
                         public void onSuccess(GWTJahiaPublicationInfo result) {
                             new PublicationStatusWindow(linker, s, result).show();

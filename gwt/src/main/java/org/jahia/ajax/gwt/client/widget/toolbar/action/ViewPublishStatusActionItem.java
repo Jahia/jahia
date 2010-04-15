@@ -70,10 +70,10 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                 GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
                 if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
                     allPublished = false;
+                    if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
+                        continue;
+                    }
                     if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                        if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
-                            continue;
-                        }
                         lastUnpublished = module.getNode().getPath();
                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
                             addInfoLayer(module, "Never published - publish parent first", "black", "black", left, top, right, bottom, removeListener, false);

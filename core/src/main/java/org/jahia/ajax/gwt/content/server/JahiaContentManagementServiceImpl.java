@@ -865,7 +865,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         for (String path : pathes) {
             try {
                 GWTJahiaNode gwtJahiaNode = navigation.getNode(path, retrieveCurrentSession());
-                gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getPath(), false));
+                gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getUUID(), false));
                 gwtJahiaNode.setWorkflowInfo(getWorkflowInfo(gwtJahiaNode.getPath()));
                 list.add(gwtJahiaNode);
             } catch (GWTJahiaServiceException e) {
@@ -922,13 +922,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Get the publication status information for a particular path.
      *
-     * @param path path to get publication info from
+     * @param uuid path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaPublicationInfo getPublicationInfo(String path, boolean full) throws GWTJahiaServiceException {
+    public GWTJahiaPublicationInfo getPublicationInfo(String uuid, boolean full) throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession();
-        return publication.getPublicationInfo(path, Collections.singleton(session.getLocale().toString()), full, session);
+        return publication.getPublicationInfo(uuid, Collections.singleton(session.getLocale().toString()), full, session);
     }
 
 
@@ -939,15 +939,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Get the publication status information for multiple pathes.
      *
-     * @param pathes path to get publication info from
+     * @param uuids path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
      */
-    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
+    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids) throws GWTJahiaServiceException {
         Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
-        for (String path : pathes) {
+        for (String uuid : uuids) {
             JCRSessionWrapper session = retrieveCurrentSession();
-            map.put(path, publication.getPublicationInfo(path, Collections.singleton(session.getLocale().toString()), false, session));
+            map.put(uuid, publication.getPublicationInfo(uuid, Collections.singleton(session.getLocale().toString()), false, session));
         }
 
         return map;

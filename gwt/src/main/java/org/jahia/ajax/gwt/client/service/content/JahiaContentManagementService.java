@@ -242,18 +242,18 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     /**
      * Get the publication status information for a particular path.
      *
-     * @param path path to get publication info from
+     * @param uuid path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      */
-    public GWTJahiaPublicationInfo getPublicationInfo(String path, boolean includeReferences) throws GWTJahiaServiceException;
+    public GWTJahiaPublicationInfo getPublicationInfo(String uuid, boolean includeReferences) throws GWTJahiaServiceException;
 
     /**
      * Get the publication status information for multiple pathes.
      *
-     * @param pathes path to get publication info from
+     * @param uuids path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      */
-    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> pathes) throws GWTJahiaServiceException;
+    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids) throws GWTJahiaServiceException;
 
     public String getHighlighted(String original, String amendment)  throws GWTJahiaServiceException;
 

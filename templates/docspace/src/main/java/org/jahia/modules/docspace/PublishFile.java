@@ -46,7 +46,7 @@ public class PublishFile implements org.jahia.bin.Action {
         try {
             final JCRPublicationService service = JCRPublicationService.getInstance();
             final Set<String> languages = Collections.singleton(resource.getLocale().toString());
-            final PublicationInfo publicationInfo = service.getPublicationInfo(resource.getNode().getPath(), languages,
+            final PublicationInfo publicationInfo = service.getPublicationInfo(resource.getNode().getIdentifier(), languages,
                                                                                false, false);
             if (publicationInfo.getStatus() == PublicationInfo.UNPUBLISHABLE) {
                 service.publish(resource.getNode().getParent().getPath(), resource.getWorkspace(),

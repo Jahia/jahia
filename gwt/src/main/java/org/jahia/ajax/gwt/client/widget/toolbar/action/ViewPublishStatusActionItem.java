@@ -2,27 +2,20 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.ScrollListener;
-import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.util.Size;
-import com.google.gwt.user.client.Event;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,9 +43,9 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
             }
         }
 
-        final ContentPanel mainPanel = (ContentPanel) modules.iterator().next().getContainer();
-        Point p = mainPanel.getBody().getXY();
-        Size s = mainPanel.getBody().getSize();
+        final Module mainModule = modules.iterator().next();
+        Point p = mainModule.getContainer().getPosition(false);
+        Size s = mainModule.getContainer().getSize();
         final int left = p.x;
         final int top = p.y;
         final int right = left + s.width;
@@ -109,7 +102,7 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
             public void widgetScrolled(ComponentEvent ce) {
                 for (LayoutContainer infoLayer : containers.keySet()) {
                     El el = containers.get(infoLayer);
-                    if (el != mainPanel.getHeader().el()) {
+                    if (el != mainModule.getHeader().el()) {
                         position(infoLayer, el, top, bottom, left, right);
                     }
                 }

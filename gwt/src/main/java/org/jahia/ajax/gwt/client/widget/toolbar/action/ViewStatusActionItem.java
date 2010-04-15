@@ -81,6 +81,7 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
         LayoutContainer infoLayer = new LayoutContainer();
         RootPanel.get().add(infoLayer);
         infoLayer.el().makePositionable(true);
+        infoLayer.setZIndex(1010);
         LayoutContainer container = module.getContainer();
         El el = container.el();
 

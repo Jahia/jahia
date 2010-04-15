@@ -7,11 +7,9 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +42,8 @@ class CreateContentTabItem extends SidePanelTabItem {
                         contentTypeTree.filldataStore(result);
                     }
                 });
-
+        add(contentTypeTree);
+        gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
     }
 
     @Override

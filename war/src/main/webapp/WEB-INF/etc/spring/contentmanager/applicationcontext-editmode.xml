@@ -47,7 +47,7 @@
         <!-- edit engine -->
         <property name="editEngines">
             <list>
-                <ref bean="studio.engine.edit.editcontent"/>
+                <ref bean="engine.edit.editcontent"/>
             </list>
         </property>
 

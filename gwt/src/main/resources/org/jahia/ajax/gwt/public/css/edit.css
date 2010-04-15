@@ -1,9 +1,9 @@
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
-    background : #009933 url(../images/xtheme-jahia-andromeda/panel/white-top-bottom2.png) top left;
+    background : #ccc url(../images/xtheme-jahia-andromeda/panel/simplemodule.png) top left;
 	padding: 4px;
-    color: #fff !important;
+    color: #333 !important;
 	font-weight: bold;
     font-size: 9px;
 	-moz-border-radius: 3px;
@@ -18,7 +18,7 @@
 }
 
 .x-panel-header-listmodule {
-    background : #333333 url(../images/xtheme-jahia-andromeda/panel/white-top-bottom2.png) top left;
+    background : #333333 url(../images/xtheme-jahia-andromeda/panel/lismodule.png) top left;
 	padding: 4px;
     color: #fff !important;
 	font-weight: bold;
@@ -35,8 +35,9 @@
 }
 
 .x-panel-header-areamodule {
+    background : #5f7f94 url(../images/xtheme-jahia-andromeda/panel/areamodule.png) top left;
 	padding: 4px;
-    color: #333 !important;
+    color: #fff !important;
 	font-weight: bold;
     font-size: 9px;
 	-moz-border-radius: 3px;
@@ -51,33 +52,35 @@
 }
 
 .x-panel-header-lockedmodule {
-    background-image: none;
-    background-color: #ff9999;
-    color: #333 !important;
+    background : #330066 url(../images/xtheme-jahia-andromeda/panel/lockedmodule.png) top left;
+    color: #ffcccc !important;
 }
 
 .x-panel-placeholder {
-	padding: 4px;
+    background : #e1ebf1 url(../images/xtheme-jahia-andromeda/panel/placeholder.png) top left;
     color: #333 !important;
 	font-weight: bold;
     font-size: 9px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-moz-box-shadow: 0 1px 3px #999;
-	-webkit-box-shadow: 0 1px 3px #999;
-    border:none;
-    padding: 2px 5px ;
+    border:1px solid #bfcfd9;
+	padding: 2px 5px ;
 	vertical-align: middle;
     horizontal-align:middle;
 	margin-bottom:2px;
     text-align:center;
     font-family: tahoma, arial, verdana, sans-serif;
     font-size: 9px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+
 }
 
 .button-placeholder {
     padding: 0px !important;
     border:none !important;
+	font-family:tahoma,arial,verdana,sans-serif;
+	font-size:9px;
+	font-weight:bold;
+	text-align:center;
 }
 
 .selection-top-list {
@@ -179,6 +182,7 @@
 
 
 .hover-top-simple-secondary {
+
     border-top: 0px solid #999;
 }
 .hover-bottom-simple-secondary {

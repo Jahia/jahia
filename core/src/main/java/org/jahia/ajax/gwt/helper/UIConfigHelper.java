@@ -47,16 +47,17 @@ import org.jahia.data.JahiaData;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.edit.bean.EditConfiguration;
-import org.jahia.services.edit.bean.Engine;
-import org.jahia.services.edit.bean.EngineTab;
-import org.jahia.services.edit.bean.SidePanelTab;
-import org.jahia.services.manager.bean.*;
+import org.jahia.services.uicomponents.bean.Visibility;
+import org.jahia.services.uicomponents.bean.editmode.*;
+import org.jahia.services.uicomponents.bean.editmode.EngineTab;
+import org.jahia.services.uicomponents.bean.editmode.SidePanelTab;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.toolbar.bean.*;
-import org.jahia.services.toolbar.bean.Item;
+import org.jahia.services.uicomponents.bean.editmode.Engine;
+import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
+import org.jahia.services.uicomponents.bean.toolbar.*;
+import org.jahia.services.uicomponents.bean.toolbar.Item;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
@@ -550,14 +551,14 @@ public class UIConfigHelper {
                 gwtConfig.setToolbarSet(createGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, config.getToolbarSet()));
 
                 // add table columns
-                for (org.jahia.services.manager.bean.Item item : config.getTableColumns()) {
+                for (org.jahia.services.uicomponents.bean.contentmanager.Item item : config.getTableColumns()) {
                     if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
                         gwtConfig.addColumn(item.getKey());
                     }
                 }
 
                 // add tabs
-                for (org.jahia.services.manager.bean.Item item : config.getTabs()) {
+                for (org.jahia.services.uicomponents.bean.contentmanager.Item item : config.getTabs()) {
                     if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
                         gwtConfig.addTab(item.getKey());
                     }
@@ -565,7 +566,7 @@ public class UIConfigHelper {
                 }
 
                 // add accordion panels
-                for (org.jahia.services.manager.bean.Item item : config.getAccordionPanels()) {
+                for (org.jahia.services.uicomponents.bean.contentmanager.Item item : config.getAccordionPanels()) {
                     if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
                         gwtConfig.addAccordion(item.getKey());
                     }

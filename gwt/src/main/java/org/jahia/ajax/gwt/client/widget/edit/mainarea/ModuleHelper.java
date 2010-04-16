@@ -189,7 +189,7 @@ public class ModuleHelper {
     }
 
     public static void tranformLinks(final HTML html) {
-        String baseUrl = JahiaGWTParameters.getParam(JahiaGWTParameters.BASE_URL);
+        String baseUrl = JahiaGWTParameters.getBaseUrl();
         List<Element> el = getAllLinks(html.getElement());
         for (Element element : el) {
             String link = DOM.getElementAttribute(element, "href");

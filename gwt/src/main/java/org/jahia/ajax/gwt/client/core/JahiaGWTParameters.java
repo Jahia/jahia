@@ -65,6 +65,7 @@ public class JahiaGWTParameters {
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
     private static Dictionary jahiaParamDictionary = Dictionary.getDictionary(JAHIA_GWT_PARAMETERS);
+    private static String baseUrl;
     private static String language;
     private static String siteUUID;
 
@@ -126,6 +127,8 @@ public class JahiaGWTParameters {
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();
         }
+        baseUrl = getBaseUrl();
+        baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/')+1) + newLanguage;
     }
 
     public static String getSiteUUID() {
@@ -158,6 +161,12 @@ public class JahiaGWTParameters {
         return jahiaParamDictionary.get(name);
     }
 
+    public static String getBaseUrl() {
+        if (baseUrl == null) {
+            baseUrl = jahiaParamDictionary.get(BASE_URL);
+        }
+        return baseUrl;
+    }
 
     /**
      * @param name the parameter to get

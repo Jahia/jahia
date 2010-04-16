@@ -1,0 +1,84 @@
+/******************************************************************************
+*  Publication generic
+******************************************************************************/
+#bodywrapper div.publicationListItemFloat {
+	float:left;
+	width:50%;
+}
+#bodywrapper div.publicationListItemInline {
+	padding-bottom:0.5em;
+	margin-bottom:0.5em;
+    border-bottom: 1px solid #eaeaea;
+}
+#bodywrapper div.publicationListItemInline p{
+	margin: 0;
+	padding:0;
+}
+
+#bodywrapper div.publicationListSpace {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #eaeaea;
+}
+
+#bodywrapper div.publicationPhoto {
+    float: left;
+    width: 48px;
+    height: 48px;
+    display: block;
+    overflow: hidden;
+}
+
+#bodywrapper .publicationAuthor {
+    font-size: 85%;
+    margin: 0;
+	padding:0;
+}
+
+#bodywrapper .publicationSource {
+    font-size: 85%;
+    margin: 0;
+	padding:0;
+}
+
+#bodywrapper .publicationDate {
+    font-size: 85%;
+    margin: 0;
+	padding:0;
+}
+
+#bodywrapper .publicationDescription {
+    font-size: 85%;
+    margin: 0;
+	padding:0;
+}
+
+#bodywrapper .publicationBody {
+    margin: 0 0 0 60px;
+}
+
+#bodywrapper .publicationAction {
+    font-size: 85%;
+}
+
+#bodywrapper .publicationAction a,
+#bodywrapper .publicationAction a:link,
+#bodywrapper .publicationAction a:visited {
+    margin-right: 0.5em;
+}
+
+#bodywrapper .publicationAction a:hover,
+    #bodywrapper .publicationAction a:active {
+    text-decoration: underline;
+}
+
+#bodywrapper a.publicationDownload {
+    background: transparent url( img/publicationdownload.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper span.publicationDocSize {
+    font-size: 80%;
+    margin-left: 0.2em;
+    font-weight: normal
+}

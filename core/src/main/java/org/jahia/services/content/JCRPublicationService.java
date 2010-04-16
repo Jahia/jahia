@@ -661,7 +661,7 @@ public class JCRPublicationService extends JahiaService {
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();
-            if (prune == null || !prune.contains(sub.getPath())) {
+            if (prune == null || !prune.contains(sub.getIdentifier())) {
                 recurseSetPublicationDate(sub, prune, c, userID);
             }
         }
@@ -680,7 +680,7 @@ public class JCRPublicationService extends JahiaService {
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();
-            if (prune == null || !prune.contains(sub.getPath())) {
+            if (prune == null || !prune.contains(sub.getIdentifier())) {
                 recurseCheckin(session, sub, prune, versionManager, calendar);
             }
         }
@@ -693,7 +693,7 @@ public class JCRPublicationService extends JahiaService {
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();
-            if (prune == null || !prune.contains(sub.getPath())) {
+            if (prune == null || !prune.contains(sub.getIdentifier())) {
                 recurseCheckout(sub, prune, versionManager);
             }
         }

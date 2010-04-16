@@ -10,6 +10,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.content.JCRStoreService;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.collections.Transformer;
+import org.jahia.settings.SettingsBean;
 
 import javax.jcr.RepositoryException;
 import java.util.Map;
@@ -59,6 +60,7 @@ public class URLGenerator {
     private String baseContribute;
     private String baseEdit;
     private String basePreview;
+    private String ckeditor;
 
     public URLGenerator(RenderContext context, Resource resource, JCRStoreService jcrStoreService) {
         this.context = context;
@@ -87,6 +89,7 @@ public class URLGenerator {
         baseContribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         contribute = baseContribute + resourcePath;
         studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templatesSet";
+        ckeditor = SettingsBean.getInstance().getJahiaCkEditorDiskPath();
         if (context.getSite() != null) {
             try {
                 if (context.getSite().hasProperty("j:sourceTemplate")) {
@@ -345,5 +348,9 @@ public class URLGenerator {
 
     public String getBasePreview() {
         return basePreview;
+    }
+
+    public String getCkEditor() {
+        return ckeditor;
     }
 }

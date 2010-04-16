@@ -37,6 +37,7 @@ create the file jboss-service.xml :
         <attribute name="JndiName">jcr/baseRepository</attribute>
         <attribute name="JcrRepositoryName">baseAlfrescoRepository</attribute>
         <depends>jboss:service=Naming</depends>
+        <root-folder>${artifactId}</root-folder>
     </mbean>
 </server>
 

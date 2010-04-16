@@ -18,7 +18,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="selectorType" type="org.jahia.services.content.nodetypes.SelectorType"--%>
 <template:addResources type="javascript"
-                       resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
+                       resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
 <label for="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
 <input type="hidden" name="${propertyDefinition.name}"
        id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>

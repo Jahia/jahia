@@ -12,7 +12,7 @@
 <template:addResources type="css" resources="blog.css"/>
 <template:addWrapper name="hidden.blogWrapper"/>
 <template:addResources type="javascript"
-                       resources="${url.context}/gwt/resources/ckeditor/ckeditor.js"/>
+                       resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
 <script type="text/javascript">
     $(document).ready(function() {
         $.each(['editContent'], function(index, element) {

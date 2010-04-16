@@ -108,8 +108,8 @@
 
     <!-- GXT resources-->
      <rule>
-        <from>^(.*?)/gwt/(.*?)/ckeditor/(.*?)</from>
-        <to last="true">$1/gwt/resources/ckeditor/$3</to>
+        <from>^(.*?)/gwt/(.*?)/ckeditor(.*?)/(.*?)</from>
+        <to last="true">$1/gwt/resources/ckeditor$3/$4</to>
     </rule>
     <rule>
         <from>^(.*?)/gwt/(.*?)/images/(.*?)</from>

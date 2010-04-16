@@ -44,6 +44,7 @@ jahiaSharedTemplatesDiskPath                           =
 jahiaImportsDiskPath                                   =
 jahiaWebAppsDiskPath                                   =
 
+jahiaCkEditorDiskPath                                  =    ckeditor-3.2.1
 
 ######################################################################
 ### URL's  ###########################################################

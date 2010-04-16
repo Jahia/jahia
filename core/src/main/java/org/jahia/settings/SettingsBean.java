@@ -101,6 +101,7 @@ public class SettingsBean {
     private String jahiaImportsDiskPath;
     private String jahiaSharedTemplatesDiskPath;
     private String jahiaDatabaseScriptsPath;
+    private String jahiaCkEditorDiskPath;
 
     public String getJahiaDatabaseScriptsPath() {
         return jahiaDatabaseScriptsPath;
@@ -262,6 +263,7 @@ public class SettingsBean {
             jahiaNewWebAppsDiskPath = JahiaTools.convertContexted (getString("jahiaNewWebAppsDiskPath"), pathResolver);
             jahiaImportsDiskPath = JahiaTools.convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
+            jahiaCkEditorDiskPath = JahiaTools.convertContexted (getString("jahiaCkEditorDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
 
             jahiaHostHttpPath = getString("jahiaHostHttpPath");
@@ -1182,5 +1184,9 @@ public class SettingsBean {
 
     public boolean isPermanentMoveForVanityURL() {
         return permanentMoveForVanityURL;
+    }
+
+    public String getJahiaCkEditorDiskPath() {
+        return jahiaCkEditorDiskPath;
     }
 }

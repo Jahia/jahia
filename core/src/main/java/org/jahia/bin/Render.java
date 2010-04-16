@@ -195,6 +195,9 @@ public class Render extends HttpServlet implements Controller,
             RenderContext renderContext, Resource resource)
             throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
+        resp.setContentType(renderContext.getContentType() != null ? renderContext
+                .getContentType() : "text/html; charset=UTF-8");
+        resp.setCharacterEncoding("UTF-8");
         String out = RenderService.getInstance()
                 .render(resource, renderContext);
         Source source = new Source(out);
@@ -213,9 +216,6 @@ public class Render extends HttpServlet implements Controller,
         final SourceFormatter sourceFormatter = new SourceFormatter(new Source(out));
         sourceFormatter.setIndentString("  ");
         out = sourceFormatter.toString();
-        resp.setContentType(renderContext.getContentType() != null ? renderContext
-                .getContentType() : "text/html; charset=UTF-8");
-        resp.setCharacterEncoding("UTF-8");
         resp.setContentLength(out.getBytes("UTF-8").length);
         writer.print(out);
         writer.close();

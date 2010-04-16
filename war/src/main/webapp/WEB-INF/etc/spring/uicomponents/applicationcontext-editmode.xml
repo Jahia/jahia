@@ -19,8 +19,8 @@
         <!-- create engine-->
         <property name="createEngines">
             <list>
-                <ref bean="studio.engine.edit.createcontent"/>
                 <ref bean="studio.engine.edit.createpage"/>
+                <ref bean="studio.engine.edit.createcontent"/>
             </list>
         </property>
 
@@ -54,8 +54,8 @@
         <!-- create engine-->
         <property name="createEngines">
             <list>
-                <ref bean="engine.edit.createcontent"/>
                 <ref bean="engine.edit.createpage"/>
+                <ref bean="engine.edit.createcontent"/>               
             </list>
         </property>
 
@@ -359,7 +359,7 @@
     </bean>
 
     <bean id="editenginestab.createpage" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="createpage"/>
+        <property name="key" value="createPage"/>
     </bean>
 
     <bean id="editenginestab.template" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">

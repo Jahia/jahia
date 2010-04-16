@@ -163,7 +163,7 @@
     <!-- side tabs-->
     <bean id="sidePanelTab.templates" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="templates"/>
-        <property name="tableContextMenu">
+        <property name="treeContextMenu">
             <bean id="org.jahia.toolbar.sidePanel.templates" class="org.jahia.services.toolbar.bean.Toolbar">
                 <property name="items">
                     <list>
@@ -196,7 +196,7 @@
 
     <bean id="sidePanelTab.pages" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="pages"/>
-        <property name="tableContextMenu">
+        <property name="treeContextMenu">
             <bean class="org.jahia.services.toolbar.bean.Toolbar">
                 <property name="items">
                     <list>
@@ -226,7 +226,7 @@
 
     <bean id="sidePanelTab.content" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="content"/>
-        <property name="tableContextMenu">
+        <property name="treeContextMenu">
             <bean class="org.jahia.services.toolbar.bean.Toolbar">
                 <property name="items">
                     <list>
@@ -249,7 +249,7 @@
 
     <bean id="sidePanelTab.images" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="images"/>
-        <property name="tableContextMenu">
+        <property name="treeContextMenu">
             <bean class="org.jahia.services.toolbar.bean.Toolbar">
                 <property name="items">
                     <list>
@@ -267,7 +267,7 @@
 
     <bean id="sidePanelTab.files" class="org.jahia.services.edit.bean.SidePanelTab">
         <property name="key" value="files"/>
-        <property name="tableContextMenu">
+        <property name="treeContextMenu">
             <bean class="org.jahia.services.toolbar.bean.Toolbar">
                 <property name="items">
                     <list>

@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="option" type="org.jahia.services.content.nodetypes.initializers.ChoiceListValue"--%>
-<%@ page contentType="text/xml;UTF-8" language="java" %>
+<c:set target="${renderContext}" property="contentType" value="text/html;charset=UTF-8"/>
 <template:addResources type="css" resources="slickmap.css"/>
 
 

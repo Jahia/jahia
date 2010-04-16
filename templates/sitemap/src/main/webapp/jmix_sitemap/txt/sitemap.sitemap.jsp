@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ page contentType="text/xml;UTF-8" language="java" %>
+<c:set target="${renderContext}" property="contentType" value="text/plain;charset=UTF-8"/>
 <jcr:jqom var="sitemaps">
     <query:selector nodeTypeName="jmix:sitemap" selectorName="stmp"/>
     <query:or>

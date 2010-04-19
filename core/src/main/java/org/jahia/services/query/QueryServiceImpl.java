@@ -61,7 +61,7 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.Source;
 
-import org.apache.axis.utils.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.query.qom.AbstractQOMNode;
 import org.apache.jackrabbit.spi.commons.query.qom.AndImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.BindVariableValueImpl;

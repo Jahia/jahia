@@ -6,8 +6,18 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 CKEDITOR.editorConfig = function( config )
 {
     config.contextPath = (typeof jahiaGWTParameters != 'undefined') ? jahiaGWTParameters.contextPath : '';
-    config.language = (typeof jahiaGWTParameters != 'undefined') ? jahiaGWTParameters.lang : 'en';
+    config.language = (typeof jahiaGWTParameters != 'undefined') ? jahiaGWTParameters.uilang : 'en';
 	config.skin = 'jahia';
+    
+    config.filebrowserWindowWidth = '810';
+    config.filebrowserWindowHeight = '650';
+    config.filebrowserLinkWindowHeight = '800';
+    config.filebrowserBrowseUrl = config.contextPath + '/engines/gwtcontentpicker/contentpicker.jsp';
+    config.filebrowserImageBrowseUrl = config.contextPath + '/engines/gwtcontentpicker/contentpicker.jsp?mime=image%2F*';
+    config.filebrowserFlashBrowseUrl = config.contextPath + '/engines/gwtcontentpicker/contentpicker.jsp?mime=application%2Fx-shockwave-flash%2Cvideo%2Fx-flv';
+    config.filebrowserLinkBrowseUrl = config.contextPath + '/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker';
+    config.image_previewText = '';
+
     config.toolbar = 'Engine';
     config.toolbar_Engine =
         [
@@ -40,11 +50,4 @@ CKEDITOR.editorConfig = function( config )
             ['TextColor','BGColor'],
             ['Maximize', 'ShowBlocks']
         ];
-    config.filebrowserWindowWidth = '810';
-    config.filebrowserWindowHeight = '650';
-    config.filebrowserLinkWindowHeight = '800';
-    config.filebrowserBrowseUrl = config.contextPath + '/engines/gwtcontentpicker/contentpicker.jsp';
-    config.filebrowserImageBrowseUrl = config.contextPath + '/engines/gwtcontentpicker/contentpicker.jsp?mime=image%2F*';
-    config.filebrowserFlashBrowseUrl = config.contextPath + '/engines/gwtcontentpicker/contentpicker.jsp?mime=application%2Fx-shockwave-flash%2Cvideo%2Fx-flv';
-    config.filebrowserLinkBrowseUrl = config.contextPath + '/engines/gwtcontentpicker/contentpicker.jsp?type=linkpicker';
 };

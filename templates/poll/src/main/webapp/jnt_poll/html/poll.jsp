@@ -1,0 +1,63 @@
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
+<script type="text/javascript">
+function doVote(answers) {
+
+    var answersList = document.forms['form_${currentNode.name}'].voteAnswer;
+    answerUUID = null;
+
+    for (i=0; i< answersList.length; i++) {
+    	answer = answersList[i];
+    	if (answer.checked) {
+    		answerUUID = answer.value;
+    		break;
+    	}
+    }
+
+    alert(answerUUID);
+
+    if (answerUUID == null) {
+        alert("Please select an answer");
+    }
+
+    var data = {};
+    data["answerUUID"] = answerUUID;
+    $.post("${url.base}${currentNode.path}.vote.do", data, function(data) {
+        alert("Vote done");
+    });
+}
+
+</script>
+
+<h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
+
+
+<div class="intro">
+    ${currentNode.propertiesAsString['question']}
+</div>
+
+<c:if test="${not renderContext.editMode}">
+    <form name="form_${currentNode.name}" method="post" id="${currentNode.name}">
+</c:if>
+
+        <c:if test="${renderContext.editMode}">
+            <div class="addanswers">
+            <span>Add the answers here</span>
+        </c:if>
+
+        <template:area path="${currentNode.path}/answers" nodeTypes="jnt:answer" editable="true"/>
+
+        <c:if test="${renderContext.editMode}">
+            </div>
+        </c:if>
+
+<c:if test="${not renderContext.editMode}">
+    <div class="validation"></div>
+    <input type="button" value="Vote" onclick="doVote($('${currentNode.name}_voteAnswer').value);" />
+    </form>
+</c:if>

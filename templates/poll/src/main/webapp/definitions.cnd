@@ -1,0 +1,13 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:answer] > jnt:content
+ - label (string)
+ - nbOfVotes (long) = 0  autocreated
+
+[jnt:poll] > jnt:content, mix:title, jmix:structuredContent
+ - question (string) mandatory
+ + answers (jnt:contentList)
+ - totalOfVotes (long) = 0  autocreated
+
+
+

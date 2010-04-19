@@ -22,7 +22,7 @@
             <c:if test="${jcr:isNodeType(menuItem, 'jnt:navMenu')}"><li class="${listItemCssClass}"></c:if>
             <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
             <template:module node="${menuItem}" editable="true"
-                             template="${jcr:isNodeType(menuItem, 'jnt:navMenu') ? template:'hidden.menuElement'}">
+                             template="${not jcr:isNodeType(menuItem, 'jnt:navMenu') ? 'hidden.menuElement' : template}">
                 <template:param name="subNodesTemplate" value="hidden.menuElement"/>
                 <template:param name="omitFormatting" value="true"/>
             </template:module>

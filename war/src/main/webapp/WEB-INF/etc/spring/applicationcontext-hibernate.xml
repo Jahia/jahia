@@ -26,7 +26,6 @@
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.hbm2ddl.auto">none</prop>
                 <prop key="hibernate.show_sql">false</prop>
-                <!-- prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.TreeCacheProvider</prop-->
                 <!-- prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.JahiaClusterCacheHibernateProvider</prop-->
                 <!--prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider</prop-->
                 <!--prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop-->

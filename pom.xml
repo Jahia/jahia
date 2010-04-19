@@ -355,6 +355,7 @@
           <doUpdate>false</doUpdate>
           <useLastCommittedRevision>true</useLastCommittedRevision>
           <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+          <revisionOnScmFailure>00000</revisionOnScmFailure>
           <!-- seems this doesn't work well yet, but maybe in a new future ?
           <providerImplementations>
             <svn>javasvn</svn>

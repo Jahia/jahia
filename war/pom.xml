@@ -553,6 +553,13 @@
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
+         <dependency>
+            <groupId>org.jahia.templates</groupId>
+            <artifactId>poll</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.jahia.prepackagedsites</groupId>
             <artifactId>webtemplates</artifactId>
@@ -563,13 +570,6 @@
         <dependency>
             <groupId>org.jahia.prepackagedsites</groupId>
             <artifactId>webtemplates65</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>zip</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.prepackagedsites</groupId>
-            <artifactId>testSite</artifactId>
             <version>${jahia.package.version}</version>
             <type>zip</type>
             <scope>runtime</scope>

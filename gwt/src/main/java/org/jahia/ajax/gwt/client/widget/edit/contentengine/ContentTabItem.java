@@ -35,7 +35,7 @@ public class ContentTabItem extends PropertiesTabItem {
     }
 
     @Override
-    public void postCreate() {
+    public void attachPropertiesEditor() {
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
             if (wrapperPanel == null) {
                 wrapperPanel = new VerticalPanel();
@@ -47,7 +47,7 @@ public class ContentTabItem extends PropertiesTabItem {
             wrapperPanel.add(propertiesEditor);
             return;
         }
-        super.postCreate();
+        super.attachPropertiesEditor();
     }
 
     /**

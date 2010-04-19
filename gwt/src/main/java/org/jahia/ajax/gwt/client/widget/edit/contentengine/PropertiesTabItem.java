@@ -109,7 +109,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
 
                 setPropertiesEditorByLang(locale);
 
-                postCreate();
+                attachPropertiesEditor();
 
             }
 
@@ -133,9 +133,12 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
 
 
     /**
-     * call after created
+     * Warning: this current layout is a FitLayout. That means that if you overide this method in order to add other subelement, you have to use a wrapper.
+     * See ContentTabItem as an example of overriding
+     *
+     * call after created:
      */
-    public void postCreate() {
+    public void attachPropertiesEditor() {
         add(propertiesEditor);
     }
 

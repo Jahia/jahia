@@ -5,8 +5,11 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -27,7 +30,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class LayoutTabItem extends PropertiesTabItem {
-
+    private LayoutContainer wrapperPanel;
     private LayoutContainer htmlPreview;
 
     public LayoutTabItem(AbstractContentEngine engine) {
@@ -36,9 +39,7 @@ public class LayoutTabItem extends PropertiesTabItem {
     }
 
     @Override
-    public void postCreate() {
-        super.postCreate();
-
+    public void attachPropertiesEditor() {
         if (engine.getNode() != null) {
             final ComboBox<GWTJahiaValueDisplayBean> templateField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:template");
             final ComboBox<GWTJahiaValueDisplayBean> skinField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:skin");
@@ -64,13 +65,19 @@ public class LayoutTabItem extends PropertiesTabItem {
             if (subNodesTemplateField != null) {
                 subNodesTemplateField.addSelectionChangedListener(listener);
             }
+
+
+            if (wrapperPanel == null) {
+                wrapperPanel = new LayoutContainer(new RowLayout());
+                add(wrapperPanel);
+            }
+            wrapperPanel.add(propertiesEditor);
+
             htmlPreview = new LayoutContainer(new FitLayout());
-            //htmlPreview.setHeight(250);
             htmlPreview.addStyleName("x-panel");
             htmlPreview.setScrollMode(Style.Scroll.AUTO);
-            add(htmlPreview);
+            wrapperPanel.add(htmlPreview);
         }
-
     }
 
     /**

@@ -31,7 +31,7 @@ public class CreatePageTabItem extends PropertiesTabItem {
 
 
     @Override
-    public void postCreate() {
+    public void attachPropertiesEditor() {
         FieldSet fieldSet = new FieldSet();
         fieldSet.setHeading("Template");
         fieldSet.setId("template");
@@ -76,7 +76,7 @@ public class CreatePageTabItem extends PropertiesTabItem {
         });
 
 
-        super.postCreate();
+        super.attachPropertiesEditor();
     }
 
 //    class VisibilityPanel extends LayoutContainer {

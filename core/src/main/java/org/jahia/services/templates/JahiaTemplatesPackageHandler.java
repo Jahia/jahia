@@ -142,8 +142,7 @@ final class JahiaTemplatesPackageHandler {
             templatePackage.setName(FilenameUtils.getBaseName(file.getPath()));
         }
         if (StringUtils.isEmpty(templatePackage.getRootFolder())) {
-            templatePackage.setRootFolder((FilenameUtils.getBaseName(file
-                    .getPath()).replace('-', '_')).toLowerCase());
+            templatePackage.setRootFolder((FilenameUtils.getBaseName(file.getPath())).toLowerCase());
         }
         if (templatePackage.getDefinitionsFiles().isEmpty()) {
             // check if there is a definitions file

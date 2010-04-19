@@ -56,11 +56,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * JCR based preferences provider implementation.
  * User: jahia
  * Date: 11 mars 2009
  * Time: 12:18:34
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements JahiaPreferencesProvider<T> {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPreferencesJCRProviders.class);
@@ -116,14 +115,18 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
      */
     public JahiaPreference createJahiaPreferenceNode(Principal principal) {
         try {
-            logger.debug("Create Jahia Preference Node [" + principal + "]");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Create Jahia Preference Node [" + principal + "]");
+            }
 
             Node preferencesNode = getProviderPreferencesNode(principal);
             if (preferencesNode != null) {
                 Node newChildNode = preferencesNode.addNode(PREFERENCE, nodeType);
                 return createJahiaPreference(principal, newChildNode);
             } else {
-                logger.debug("Preferences node not found for user [" + principal + "]");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Preferences node not found for user [" + principal + "]");
+                }
                 return null;
             }
         } catch (Exception e) {
@@ -172,13 +175,17 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
      * @return a JahiaPreference if prefrence found or notNull is true, null otherwise
      */
     public JahiaPreference getJahiaPreference(Principal principal, String sqlConstraint, boolean notNull) {
-        logger.debug("Get preference -" + getType() + " - " + principal.getName() + " - " + sqlConstraint + "- ");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Get preference -" + getType() + " - " + principal.getName() + " - " + sqlConstraint + "- ");
+        }
         List<JahiaPreference<T>> jahiaPreferences = findJahiaPreferences(principal, sqlConstraint);
         if (jahiaPreferences != null && !jahiaPreferences.isEmpty()) {
             return jahiaPreferences.get(0);
         }
 
-        logger.debug("Preference - " + sqlConstraint + "- not found.");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Preference - " + sqlConstraint + "- not found.");
+        }
         if (notNull) {
             return createJahiaPreferenceNode(principal);
         }
@@ -258,7 +265,9 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
      * @param jahiaPreference the preference to delete
      */
     public void deleteJahiaPreference(JahiaPreference jahiaPreference) {
-        logger.debug("Delete Jahia Preference");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Delete Jahia Preference");
+        }
         if (jahiaPreference == null) {
             return;
         }
@@ -284,9 +293,10 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         try {
             JCRNodeWrapper node = jahiaPreference.getNode();
             node.getParent().save();
-            logger.debug("Jahia preference [" + jahiaPreference + "] saved.");
-
-            logger.debug("[" + node.getPath() + JahiaPreferencesQueryHelper.convertToSQLPureStringProperties(node.getPropertiesAsString()) + "] saved.");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Jahia preference [" + jahiaPreference + "] saved.");
+                logger.debug("[" + node.getPath() + JahiaPreferencesQueryHelper.convertToSQLPureStringProperties(node.getPropertiesAsString()) + "] saved.");
+            }
         } catch (RepositoryException re) {
             logger.error("Error while setting preference " + jahiaPreference, re);
         }
@@ -356,7 +366,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     }
 
     private String getPreferenceProviderNodePath(Principal principal) {
-        return getPreferencesNodePath(principal) + getType() + "/";
+        return getPreferencesNodePath(principal) + "/" + getType();
     }
 
     private String getPreferencesNodePath(Principal principal) {
@@ -366,7 +376,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         } else {
             principalName = ((JahiaGroup) principal).getGroupname();
         }
-        return "/users/" + ISO9075.encode(principalName) + "/preferences/";
+        return "/users/" + ISO9075.encode(principalName) + "/preferences";
     }
 
     private NodeIterator findPreferenceNodeByJahiaPreferenceSQL(Principal p, String sqlConstraint) {
@@ -375,7 +385,9 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
     }
 
     private NodeIterator findNodeIteratorBySQL(Principal p, String sqlRequest) {
-        logger.debug("Find node by xpath[ " + sqlRequest + " ]");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Find node by xpath[ " + sqlRequest + " ]");
+        }
         if (p instanceof JahiaGroup) {
             logger.warn("Preference provider not implemented for JahiaGroup");
             return null;
@@ -390,10 +402,14 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
                 // get node iterator
                 NodeIterator ni = queryResult.getNodes();
                 if (ni.hasNext()) {
-                    logger.debug("Path[" + sqlRequest + "] --> found [" + ni.getSize() + "] values.");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Path[" + sqlRequest + "] --> found [" + ni.getSize() + "] values.");
+                    }
                     return ni;
                 } else {
-                    logger.debug("Path[" + sqlRequest + "] --> empty result.");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Path[" + sqlRequest + "] --> empty result.");
+                    }
                 }
             }
         } catch (javax.jcr.PathNotFoundException e) {

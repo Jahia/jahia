@@ -133,7 +133,7 @@ public class FacetedSearchTest extends TestCase {
             while (ni.hasNext()) {
                 results.add((JCRNodeWrapper) ni.next());
             }
-            assertEquals("",26, results);
+            assertEquals("",26, results.size());
 
         } catch (RepositoryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

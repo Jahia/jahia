@@ -90,7 +90,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         SortedSet<Template> templates;
         JCRSiteNode site = null;
         try {
-            if ("subnodes".equals(param)) {
+            if ("subnodes".equals(param) && node != null) {
                 templates = new TreeSet<Template>();
                 NodeIterator children = node.getNodes();
                 while (children.hasNext()) {

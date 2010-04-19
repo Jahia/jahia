@@ -34,7 +34,8 @@ FRAG2(frag_size=60000)</value>
     <bean id="FileListSync" class="org.jahia.services.deamons.filewatcher.FileListSync" factory-method="getInstance">
         <property name="clusterService" ref="clusterService" />
         <property name="schedulerService" ref="SchedulerService" />
-        <property name="syncDelay" value="10000" />
+        <!-- enable the synchronization by setting proper syncDelay in milliseconds, e.g. 60000 -->
+        <property name="syncDelay" value="-1" />
         <property name="syncUrl" value="http://${localIp}:${localPort}" />
         <property name="pathsToSync">
             <set>

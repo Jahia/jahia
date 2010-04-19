@@ -59,6 +59,7 @@ import org.jahia.services.cluster.ClusterListener;
 import org.jahia.services.cluster.ClusterMessage;
 import org.jahia.services.cluster.ClusterService;
 import org.jahia.services.scheduler.SchedulerService;
+import org.jahia.settings.SettingsBean;
 import org.jgroups.Address;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -106,6 +107,8 @@ public class FileListSync implements ClusterListener {
     private String key;
     private long syncDelay;
     private String syncUrl;
+    
+    private boolean started;
 
     public FileListSync() {
         key = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator().nextIdentifier().toString();
@@ -147,7 +150,7 @@ public class FileListSync implements ClusterListener {
     }
 
     public void replaceEntries(Map newEntries) {
-        if (clusterService.isActivated()) {
+        if (started) {
             removed = entries;
             removed.keySet().removeAll(newEntries.keySet());
             for (Iterator iterator = removed.keySet().iterator(); iterator.hasNext();) {
@@ -161,7 +164,7 @@ public class FileListSync implements ClusterListener {
     }
 
     public void sendMessage() {
-        if (!clusterService.isActivated())
+        if (!started)
               return;
         try {
             if (syncUrl != null) {
@@ -174,18 +177,18 @@ public class FileListSync implements ClusterListener {
     }
 
     public void start() {
-        if (!clusterService.isActivated()) {
+        if (!clusterService.isActivated() || syncDelay <= 0 || pathsToSync.isEmpty()) {
             return;
         }
+        started = true;
 
         contextPath = JahiaContextLoaderListener.getServletContext().getRealPath("/");
 
-        if (clusterService.isActivated())
-            clusterService.addListener(this);
+        clusterService.addListener(this);
 
         trigger();
 
-        if (org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode() && syncDelay > 0) {
+        if (SettingsBean.getInstance().isDevelopmentMode() && syncDelay > 0) {
             JobDetail jobDetail = new JobDetail("Checkfiles_Job", Scheduler.DEFAULT_GROUP,
                     FileListCheckerJob.class);
             JobDataMap jobDataMap = new JobDataMap();
@@ -210,7 +213,7 @@ public class FileListSync implements ClusterListener {
     }
 
     public void trigger() {
-        if (!clusterService.isActivated()) {
+        if (!started) {
             return;
         }
         Map newEntries = new HashMap();

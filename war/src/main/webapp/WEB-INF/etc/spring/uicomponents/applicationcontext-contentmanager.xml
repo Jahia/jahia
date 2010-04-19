@@ -656,6 +656,12 @@
     <!-- columns -->
     <bean id="column.providerKey" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
         <property name="key" value="providerKey"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
+                <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
+                <property name="alsoCountDynamicProviders" value="false"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="column.ext" class="org.jahia.services.uicomponents.bean.contentmanager.Item">

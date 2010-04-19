@@ -69,9 +69,9 @@ public class ContentExport extends Window {
         JahiaContentManagementService.App.getInstance().getExportUrl(n.getPath(), new AsyncCallback<String>() {
 
             public void onSuccess(String result) {
-                HTML link = new HTML("<br /><a href=\"" + result + ".xml"+ "\" target=\"_new\">" + n.getName() + ".xml</a>");
+                HTML link = new HTML("<br /><a href=\"" + result + ".xml?cleanup=simple"+ "\" target=\"_new\">" + n.getName() + ".xml</a>");
                 add(link);
-                link = new HTML("<br /><a href=\"" + result + ".zip"+ "\"  target=\"_new\">" + n.getName() + ".zip</a>");
+                link = new HTML("<br /><a href=\"" + result + ".zip?cleanup=simple"+ "\"  target=\"_new\">" + n.getName() + ".zip</a>");
                 add(link);
                 layout();
             }

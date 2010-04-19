@@ -31,10 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.util.content.actions;
 
-import org.jahia.ajax.gwt.client.data.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-
 /**
  * User: rfelden
  * Date: 7 janv. 2009 - 14:04:14

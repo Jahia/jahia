@@ -148,12 +148,15 @@ public class NavigationHelper {
             boolean matchNodeType = matchesNodeType(f, nodeTypesToApply);
             if (f.isVisible() && (matchNodeType || (!noFolders && f.isCollection()))) {
                 // in case of a folder, it allows to know if the node is selectable
-                boolean matchFilters = matchesMimeTypeFilters(f.isFile(), f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply);
+                boolean isFile = f.isFile();
+                boolean matchFilters = matchesMimeTypeFilters(isFile, isFile ? f.getFileContent().getContentType() : null, mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply);
                 if (f.isCollection() || matchFilters) {
                     GWTJahiaNode theNode = getGWTJahiaNode(f);
                     theNode.setMatchFilters(matchNodeType && matchFilters);
                     try {
                         theNode.setPublicationInfo(publication.getPublicationInfo(f.getIdentifier(), Collections.singleton(currentUserSession.getLocale().toString()), false, currentUserSession));
+                    } catch (UnsupportedRepositoryOperationException e) {
+                        // do nothing
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     } catch (GWTJahiaServiceException e) {

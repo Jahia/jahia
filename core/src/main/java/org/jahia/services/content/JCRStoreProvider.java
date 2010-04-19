@@ -43,6 +43,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.jaas.JahiaLoginModule;
@@ -115,7 +116,9 @@ public class JCRStoreProvider {
     private boolean isMainStorage = false;
     private boolean isDynamicallyMounted = false;
     private boolean initialized = false;
-
+    
+    private boolean providesDynamicMountPoints;
+    
     public String getKey() {
         return key;
     }
@@ -288,6 +291,7 @@ public class JCRStoreProvider {
             initObservers();
             initialized = true;
             initContent();
+            initDynamicMountPoints();
 
             if (rmibind != null) {
                 try {
@@ -388,6 +392,30 @@ public class JCRStoreProvider {
                 session.save();
             } finally {
                 IOUtils.closeQuietly(stream);
+                session.logout();
+            }
+        }
+    }
+
+    protected void initDynamicMountPoints() {
+        if (!providesDynamicMountPoints) {
+            return;
+        }
+
+        JCRSessionWrapper session = null;
+        try {
+            session = sessionFactory.getSystemSession();
+            List<JCRNodeWrapper> result = queryFolders(session, "select * from [jnt:mountPoint]");
+            for (JCRNodeWrapper mountPointNode : result) {
+                if (mountPointNode instanceof JCRMountPointNode) {
+                    ((JCRMountPointNode) mountPointNode).checkValidity();
+                    logger.info("Registered mount point: " + mountPointNode.getPath());
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Unable to register dynamic mount points", e);
+        } finally {
+            if (session != null) {
                 session.logout();
             }
         }
@@ -812,6 +840,10 @@ public class JCRStoreProvider {
 
     public boolean isInitialized() {
         return initialized;
+    }
+
+    public void setProvidesDynamicMountPoints(boolean providesDynamicMountPoints) {
+        this.providesDynamicMountPoints = providesDynamicMountPoints;
     }
 
 }

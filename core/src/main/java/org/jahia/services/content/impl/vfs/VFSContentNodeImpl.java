@@ -170,11 +170,11 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public NodeIterator getNodes() throws RepositoryException {
-        return new VFSNodeIteratorImpl(session,new ArrayList().iterator(),0);
+        return VFSNodeIteratorImpl.EMPTY;
     }
 
     public NodeIterator getNodes(String s) throws RepositoryException {
-        return new VFSNodeIteratorImpl(session,new ArrayList().iterator(),0);
+        return VFSNodeIteratorImpl.EMPTY;
     }
 
     public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
@@ -232,7 +232,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public PropertyIterator getProperties() throws RepositoryException {
-        List l = new ArrayList();
+        List l = new ArrayList(2);
         l.add(getProperty(Constants.JCR_DATA));
         l.add(getProperty(Constants.JCR_MIMETYPE));
 
@@ -256,7 +256,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public PropertyIterator getReferences() throws RepositoryException {
-        return new PropertyIteratorImpl(new ArrayList().iterator(),0);
+        return PropertyIteratorImpl.EMPTY;
     }
 
     public boolean hasNode(String s) throws RepositoryException {

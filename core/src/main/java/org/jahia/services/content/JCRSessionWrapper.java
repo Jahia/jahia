@@ -201,7 +201,7 @@ public class JCRSessionWrapper implements Session {
     public JCRItemWrapper getItem(String path) throws PathNotFoundException, RepositoryException {
         Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
         for (Map.Entry<String, JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
-            if (path.startsWith(mp + "/")) {
+            if (path.startsWith(mp.getKey() + "/")) {
                 String localPath = path.substring(mp.getKey().length());
                 JCRStoreProvider provider = mp.getValue();
                 Item item = getProviderSession(provider).getItem(
@@ -442,11 +442,13 @@ public class JCRSessionWrapper implements Session {
             NamespaceRegistry providerNamespaceRegistry = s.getWorkspace().getNamespaceRegistry();
 
 
-            for (String prefix : namespaceRegistryWrapper.getPrefixes()) {
-                try {
-                    providerNamespaceRegistry.getURI(prefix);
-                } catch (RepositoryException e) {
-                    providerNamespaceRegistry.registerNamespace(prefix, namespaceRegistryWrapper.getURI(prefix));
+            if (providerNamespaceRegistry != null) {
+                for (String prefix : namespaceRegistryWrapper.getPrefixes()) {
+                    try {
+                        providerNamespaceRegistry.getURI(prefix);
+                    } catch (RepositoryException e) {
+                        providerNamespaceRegistry.registerNamespace(prefix, namespaceRegistryWrapper.getURI(prefix));
+                    }
                 }
             }
 
@@ -692,11 +694,11 @@ public class JCRSessionWrapper implements Session {
                 node = node.getParent();
             } else {
                 String absPath = node.getPath();
-                VersionManager versionManager = getWorkspace().getVersionManager();
-                if (!versionManager.isCheckedOut(absPath)) {
-                    versionManager.checkout(absPath);
-                }
-            }
+        VersionManager versionManager = getWorkspace().getVersionManager();
+        if (!versionManager.isCheckedOut(absPath)) {
+            versionManager.checkout(absPath);
+        }
+    }
         }
     }
 

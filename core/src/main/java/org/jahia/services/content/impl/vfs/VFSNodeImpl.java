@@ -226,7 +226,11 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
                     throw new PathNotFoundException(s);
                 }
             } else {
-                return new VFSNodeImpl(fileObject.getChild(s), session);
+                FileObject child = fileObject.getChild(s);
+                if (child == null) {
+                    throw new PathNotFoundException(s);
+                }
+                return new VFSNodeImpl(child, session);
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
@@ -238,8 +242,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
             if (fileObject.getType() == FileType.FILE) {
                 return  new VFSContentNodeIteratorImpl(session, fileObject.getContent());
             } else {
-                FileObject[] fo = fileObject.getChildren();
-                return new VFSNodeIteratorImpl(session, Arrays.asList(fo).iterator(), fo.length);
+                return new VFSNodeIteratorImpl(session, fileObject.getChildren());
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
@@ -248,12 +251,8 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
 
     public NodeIterator getNodes(String s) throws RepositoryException {
         try {
-            if (fileObject.getType() == FileType.FILE) {
-                return  new VFSContentNodeIteratorImpl(session, fileObject.getContent());
-            } else {
-                FileObject[] fo = fileObject.getChildren();
-                return new VFSNodeIteratorImpl(session, Arrays.asList(fo).iterator(), fo.length);
-            }
+            FileObject child = fileObject.getType() == FileType.FOLDER ? fileObject.getChild(s) : null;
+            return child != null ? new VFSNodeIteratorImpl(session, child) : VFSNodeIteratorImpl.EMPTY;
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
         }
@@ -264,11 +263,11 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public PropertyIterator getProperties() throws RepositoryException {
-        return new PropertyIteratorImpl(new ArrayList().iterator(),0);
+        return PropertyIteratorImpl.EMPTY;
     }
 
     public PropertyIterator getProperties(String s) throws RepositoryException {
-        return new PropertyIteratorImpl(new ArrayList().iterator(),0);
+        return PropertyIteratorImpl.EMPTY;
     }
 
     public Item getPrimaryItem() throws ItemNotFoundException, RepositoryException {
@@ -284,7 +283,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public PropertyIterator getReferences() throws RepositoryException {
-        return new PropertyIteratorImpl(new ArrayList().iterator(),0);
+        return PropertyIteratorImpl.EMPTY;
     }
 
     public boolean hasNode(String s) throws RepositoryException {
@@ -437,27 +436,27 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return VFSNodeIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public PropertyIterator getProperties(String[] strings) throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return PropertyIteratorImpl.EMPTY;
     }
 
     public String getIdentifier() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedRepositoryOperationException();
     }
 
     public PropertyIterator getReferences(String name) throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return PropertyIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public PropertyIterator getWeakReferences() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return PropertyIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return PropertyIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void setPrimaryType(String nodeTypeName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
@@ -465,7 +464,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public NodeIterator getSharedSet() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return VFSNodeIteratorImpl.EMPTY;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void removeSharedSet() throws VersionException, LockException, ConstraintViolationException, RepositoryException {

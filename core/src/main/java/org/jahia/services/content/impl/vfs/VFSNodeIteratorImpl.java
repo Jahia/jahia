@@ -31,25 +31,30 @@
  */
 package org.jahia.services.content.impl.vfs;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.vfs.FileObject;
 import org.jahia.services.content.RangeIteratorImpl;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.Node;
-import java.util.Iterator;
+
+import java.util.Arrays;
 
 /**
- * Created by IntelliJ IDEA.
+ * JCR node iterator over {@link FileObject} items.
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:47:04 AM
- * To change this template use File | Settings | File Templates.
  */
 public class VFSNodeIteratorImpl extends RangeIteratorImpl implements NodeIterator {
+    
+    public static VFSNodeIteratorImpl EMPTY = new VFSNodeIteratorImpl(null);
+    
     private VFSSessionImpl session;
 
-    public VFSNodeIteratorImpl(VFSSessionImpl session, Iterator iterator, long size) {
-        super(iterator, size);
+    public VFSNodeIteratorImpl(VFSSessionImpl session, FileObject... items) {
+        super(items != null && items.length > 0 ? Arrays.asList(items).iterator() : IteratorUtils.EMPTY_ITERATOR,
+                items != null && items.length > 0 ? items.length : 0);
         this.session = session;
     }
 

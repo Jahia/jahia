@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content.impl.vfs;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.jahia.services.content.JCRPropertyWrapperImpl;
 import org.jahia.services.content.RangeIteratorImpl;
 
@@ -45,6 +46,7 @@ import java.util.*;
  * @author toto 
  */
 public class PropertyIteratorImpl extends RangeIteratorImpl implements PropertyIterator, Map {
+    public static final PropertyIteratorImpl EMPTY = new PropertyIteratorImpl(IteratorUtils.EMPTY_ITERATOR, 0);
     private Map map = null;
 
     public PropertyIteratorImpl(List<JCRPropertyWrapperImpl> list, long size) {

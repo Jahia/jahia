@@ -84,7 +84,7 @@ public class TestHelper {
     public static final String INTRANET_TEMPLATES = "Jahia Intranet Templates";
 
     public static JahiaSite createSite(String name) throws Exception {
-        return createSite(name, "localhost"+System.currentTimeMillis(), TCK_TEMPLATES, null);
+        return createSite(name, "localhost"+System.currentTimeMillis(), "templates-web", null);
     }
 
     public static JahiaSite createSite(String name, String serverName, String templateSet, File importFile)

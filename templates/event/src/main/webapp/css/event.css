@@ -108,7 +108,8 @@
 	margin: 0;
 	border:none;
 	font-size:2em;
-	font-weight:normal
+	font-weight:normal;
+	line-height:normal;
 }
 #bodywrapper .eventsListItem h4 a,
 #bodywrapper .eventsListItem h4 a:link,

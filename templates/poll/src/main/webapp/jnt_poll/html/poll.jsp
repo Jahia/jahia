@@ -19,7 +19,6 @@ function doVote(answers) {
     	}
     }
 
-    alert(answerUUID);
 
     if (answerUUID == null) {
         alert("Please select an answer");
@@ -27,9 +26,54 @@ function doVote(answers) {
 
     var data = {};
     data["answerUUID"] = answerUUID;
-    $.post("${url.base}${currentNode.path}.vote.do", data, function(data) {
-        alert("Vote done");
-    });
+    $.post("${url.base}${currentNode.path}.vote.do", data, function(result) {
+
+
+        var answers = result.answerNodes;
+        /* strAnswers = "";
+        for (i=0; i<answers.length; i++) {
+            strAnswers += "\nAnswer["+[i]+"] label : " + answers[i].label + "\nAnswer["+[i]+"] votes: " + answers[i].nbOfVotes;
+        }
+
+        alert("Question: " + result.question + "\nTotal votes: " + result.totalOfVotes + "\nanswers: " + strAnswers);
+           */
+
+	statDivTest = document.getElementById("statContainer_${currentNode.name}");
+	if (statDivTest != null) {
+	    statDivTest.parentNode.removeChild(statDivTest);
+	}
+
+
+        var statDiv = document.createElement("div");
+        statDiv.id = "statContainer_${currentNode.name}";
+        // statDiv.style.zIndex = 99999;
+	pollVotes = Math.floor(result.totalOfVotes);
+
+        for (i=0; i<answers.length; i++) {
+            var statAnswerLabel = document.createElement("div");
+            statAnswerLabel.id = "statContainer_${currentNode.name}_label_a"+[i];
+            statAnswerLabel.innerHTML = answers[i].label;
+
+
+            var statAnswerValue = document.createElement("div");
+            statAnswerValue.id = "statContainer_${currentNode.name}_value_a"+[i];
+            statAnswerValue.innerHTML = answers[i].nbOfVotes;
+	    answerVotes = Math.floor(answers[i].nbOfVotes);
+	    percentage = (answerVotes == 0 || pollVotes == 0)?0:answerVotes/pollVotes*100;
+            statAnswerValue.style.width = (percentage * 5) + "px";
+            statAnswerValue.style.backgroundColor = "#3399CC";
+
+            statDiv.appendChild(statAnswerLabel);
+            statDiv.appendChild(statAnswerValue);
+
+        }
+
+       document.getElementById("stats_${currentNode.name}").appendChild(statDiv);
+
+
+    }, "json");
+
+
 }
 
 </script>
@@ -41,10 +85,11 @@ function doVote(answers) {
     ${currentNode.propertiesAsString['question']}
 </div>
 
-<c:if test="${not renderContext.editMode}">
-    <form name="form_${currentNode.name}" method="post" id="${currentNode.name}">
-</c:if>
 
+<c:if test="${not renderContext.editMode}">
+    <div id="formContainer_${currentNode.name}">
+    <form id="form_${currentNode.name}" name="form_${currentNode.name}" method="post" >
+</c:if>
         <c:if test="${renderContext.editMode}">
             <div class="addanswers">
             <span>Add the answers here</span>
@@ -60,4 +105,9 @@ function doVote(answers) {
     <div class="validation"></div>
     <input type="button" value="Vote" onclick="doVote($('${currentNode.name}_voteAnswer').value);" />
     </form>
+    </div>
 </c:if>
+
+<div id="stats_${currentNode.name}">
+
+</div>

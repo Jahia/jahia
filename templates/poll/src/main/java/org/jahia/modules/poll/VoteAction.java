@@ -9,8 +9,11 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.json.JSONObject;
 
+import javax.jcr.NodeIterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
@@ -38,10 +41,9 @@ public class VoteAction implements Action {
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
         String answerUUID = req.getParameter("answerUUID");
-	    logger.info("answerUUID: " + answerUUID);
-
+	    
         JCRNodeWrapper pollNode = renderContext.getMainResource().getNode();
-	    logger.info("pollNode: " + pollNode);
+
         JCRNodeWrapper answerNode = pollNode.getSession().getNodeByUUID(answerUUID);
 
         long totalOfVotes = pollNode.getProperty("totalOfVotes").getLong();
@@ -53,6 +55,36 @@ public class VoteAction implements Action {
 
         pollNode.getSession().save();
 
-        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+        return new ActionResult(HttpServletResponse.SC_OK, null, generateJSONObject(pollNode));
+    }
+
+    private JSONObject generateJSONObject(JCRNodeWrapper pollNode) throws Exception {
+        NodeIterator answerNodes = pollNode.getNode("answers").getNodes();
+
+        Map<String, Object> props = new HashMap<String, Object>();
+        ArrayList<Map<String, Object>> answersContainer = new ArrayList<Map<String, Object>>();
+
+        long totalVote = pollNode.getProperty("totalOfVotes").getLong();
+
+        // Poll name + total votes
+        props.put("totalOfVotes", totalVote);
+        props.put("question", pollNode.getProperty("question").getString());
+
+        // Each answer name + total vote
+        while (answerNodes.hasNext()) {
+            Map<String, Object> answerProperties = new HashMap<String, Object>();
+            javax.jcr.Node answer = answerNodes.nextNode();
+            long answerVotes = answer.getProperty("nbOfVotes").getLong();
+
+            answerProperties.put("label", answer.getProperty("label").getString());
+            answerProperties.put("nbOfVotes", answerVotes);
+            answerProperties.put("percentage", (totalVote == 0 || answerVotes == 0)?0:(answerVotes/totalVote)*100);
+
+            answersContainer.add(answerProperties);
+        }
+
+        props.put("answerNodes", answersContainer.toArray());
+
+        return new JSONObject(props);
     }
 }

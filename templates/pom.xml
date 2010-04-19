@@ -76,6 +76,7 @@
         <module>news</module>
         <module>grid</module>
         <module>people</module>
+        <module>poll</module>
         <module>portal</module>
         <module>press</module>
         <module>publication</module>

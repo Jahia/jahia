@@ -29,7 +29,7 @@ public class DocumentViewExporter {
     private boolean skipBinary;
     private Set<String> typesToIgnore = new HashSet<String>();
     private Map<String, String> prefixes;
-    private Set<String> exportedShareable;
+    private HashMap<String, String> exportedShareable;
     private JCRNodeWrapper rootNode;
     private Stack<String> stack;
 
@@ -51,7 +51,7 @@ public class DocumentViewExporter {
         prefixes.put(Constants.JAHIA_PREF, Constants.JAHIA_NS);
         prefixes.put(Constants.JAHIAMIX_PREF, Constants.JAHIAMIX_NS);
 
-        exportedShareable = new HashSet<String>();
+        exportedShareable = new HashMap<String, String>();
     }
 
     public void setTypesToIgnore(Set<String> typesToIgnore) {
@@ -140,14 +140,14 @@ public class DocumentViewExporter {
             AttributesImpl atts = new AttributesImpl();
             if (node.isNodeType("jmix:shareable")) {
 
-                if (exportedShareable.contains(node.getIdentifier())) {
-                    atts.addAttribute(Constants.JCR_NS, "uuid", "jcr:uuid", CDATA, node.getIdentifier());
+                if (exportedShareable.containsKey(node.getIdentifier())) {
+                    atts.addAttribute(Constants.JCR_NS,  "share", "j:share", CDATA, exportedShareable.get(node.getIdentifier()));
                     String encodedName = ISO9075.encode(node.getName());
                     startElement(encodedName, atts);
                     endElement(encodedName);
                     return;
                 } else {
-                    exportedShareable.add(node.getIdentifier());
+                    exportedShareable.put(node.getIdentifier(), node.getPath());
                 }                
             }
             PropertyIterator propsIterator = node.getProperties();
@@ -166,13 +166,13 @@ public class DocumentViewExporter {
 
                     String value;
                     if (!property.isMultiple()) {
-                        value = property.getString();
+                        value = getValue(property.getValue());
                     } else {
                         Value[] vs = property.getValues();
                         StringBuffer b = new StringBuffer();
                         for (int i = 0; i < vs.length; i++) {
                             Value v = vs[i];
-                            b.append(v.getString());
+                            b.append(getValue(v));
                             if (i + 1 < vs.length) {
                                 b.append(" ");
                             }
@@ -205,6 +205,17 @@ public class DocumentViewExporter {
                 }
             }
         }
+    }
+
+    private String getValue(Value v) throws RepositoryException {
+        if (v.getType() == PropertyType.REFERENCE || v.getType() == PropertyType.WEAKREFERENCE) {
+            try {
+                return ISO9075.encodePath(session.getNodeByUUID(v.getString()).getPath()); 
+            } catch (PathNotFoundException e) {
+                return "";
+            }
+        }
+        return v.getString();
     }
 
     private void startElement(String qualifiedName, AttributesImpl atts) throws SAXException {

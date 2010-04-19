@@ -1986,9 +1986,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-        if (!isCheckedOut()) {
-            session.getWorkspace().getVersionManager().checkout(getPath());
-        }
+        session.checkout(this);
     }
 
     /**

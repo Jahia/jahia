@@ -59,12 +59,6 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
         this.value = value;
     }
 
-    public GWTJahiaNodePropertyValue(GWTJahiaNode reference) {
-        this.type = GWTJahiaNodePropertyType.REFERENCE;
-        this.reference = reference;
-        this.value = reference.getUUID();
-    }
-
     public GWTJahiaNodePropertyValue(GWTJahiaNode node, int type) {
         this.type = type;
         if (type == GWTJahiaNodePropertyType.REFERENCE || type == GWTJahiaNodePropertyType.WEAKREFERENCE) {

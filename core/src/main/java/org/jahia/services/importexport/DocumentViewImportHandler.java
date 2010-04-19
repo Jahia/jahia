@@ -74,7 +74,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
     private Stack<String> pathes = new Stack<String>();
 
     private Map<String, String> uuidMapping;
-    private Map<String, String> pathMapping = new HashMap<String, String>();
+    private Map<String, String> pathMapping;
     private Map<String, List<String>> references = new HashMap<String, List<String>>();
 
     private String currentFilePath = null;
@@ -99,6 +99,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         try {
             this.session = session;
             this.uuidMapping = session.getUuidMapping();
+            this.pathMapping = session.getPathMapping();
             if (rootPath == null) {
                 node = (JCRNodeWrapper) session.getRootNode();
             } else {
@@ -201,8 +202,17 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     }
 
                     String uuid = atts.getValue("jcr:uuid");
+                    String share = atts.getValue("j:share");
                     if (!StringUtils.isEmpty(uuid) && uuidMapping.containsKey(uuid)) {
                         child = nodes.peek().clone(session.getNodeByUUID(uuidMapping.get(uuid)), decodedQName);
+                    } else if (!StringUtils.isEmpty(share)) {
+                        for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
+                            if (share.startsWith(entry.getKey())) {
+                                share = entry.getValue() + StringUtils.substringAfter(share, entry.getKey());
+                                break;
+                            }
+                        }
+                        child = nodes.peek().clone(session.getNode(share), decodedQName);
                     } else {
                         if (!StringUtils.isEmpty(uuid)) {
                             switch (uuidBehavior) {
@@ -327,25 +337,17 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     continue;
                 }
 
-                if (propDef.getRequiredType() == PropertyType.REFERENCE) {
+                if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
                     if (attrValue.length() > 0) {
-                        if (!references.containsKey(attrValue)) {
-                            references.put(attrValue, new ArrayList<String>());
+                        String[] values = attrValue.split(" ");
+                        for (String value : values) {
+                            if (!references.containsKey(value)) {
+                                references.put(value, new ArrayList<String>());
+                            }
+                            references.get(value).add(child.getIdentifier() + "/" + attrName);                            
                         }
-                        references.get(attrValue).add(child.getIdentifier() + "/" + attrName);
-                    }
-                } else if (propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
-                    if (attrValue.length() > 0) {
-                        if (!references.containsKey(attrValue)) {
-                            references.put(attrValue, new ArrayList<String>());
-                        }
-                        references.get(attrValue).add(child.getIdentifier() + "/" + attrName);
                     }
                 } else {
-                    if (propDef.isProtected()) {
-                        continue;
-                    }
-
                     if (propDef.isMultiple()) {
                         String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
                         Value[] v = new Value[s.length];
@@ -425,18 +427,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
         } catch (RepositoryException e) {
             throw new SAXException(e);
         }
-    }
-
-    public Map<String, String> getPathMapping() {
-        return pathMapping;
-    }
-
-    public Map<String, List<String>> getReferences() {
-        return references;
-    }
-
-    public void setPathMapping(Map<String, String> pathMapping) {
-        this.pathMapping = pathMapping;
     }
 
     public void setReferences(Map<String, List<String>> references) {

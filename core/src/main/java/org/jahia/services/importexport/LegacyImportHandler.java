@@ -69,6 +69,7 @@ public class LegacyImportHandler extends DefaultHandler {
             DefinitionsMapping mapping, Locale locale) {
         this.session = session;
         this.uuidMapping = session.getUuidMapping();
+        this.pathMapping = session.getPathMapping();
         this.currentSiteNode = currentSiteNode;
 
         this.registry = registry;
@@ -79,14 +80,6 @@ public class LegacyImportHandler extends DefaultHandler {
 
         this.mapping = mapping;
         this.locale = locale;
-    }
-
-    public void setPathMapping(Map<String, String> pathMapping) {
-        this.pathMapping = pathMapping;
-    }
-
-    public Map<String, List<String>> getReferences() {
-        return references;
     }
 
     public void setReferences(Map<String, List<String>> references) {

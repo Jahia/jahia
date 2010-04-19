@@ -116,7 +116,7 @@ public class Export extends HttpServlet implements Controller {
         params.put(ImportExportService.VIEW_METADATA, !"false".equals(request.getParameter("viewMetadata")));
         params.put(ImportExportService.VIEW_JAHIALINKS, !"false".equals(request.getParameter("viewLinks")));
         params.put(ImportExportService.VIEW_WORKFLOW, "true".equals(request.getParameter("viewWorkflow")));
-        params.put(ImportExportService.CLEANUP, "true".equals(request.getParameter(ImportExportService.CLEANUP)));
+        params.put(ImportExportService.CLEANUP, request.getParameter(ImportExportService.CLEANUP));
 
         OutputStream outputStream = resp.getOutputStream();
         try {
@@ -170,15 +170,20 @@ public class Export extends HttpServlet implements Controller {
                 }
             } else if ("xml".equals(exportFormat)) {
                 resp.setContentType("text/xml");
-                if ((Boolean) params.get(ImportExportService.CLEANUP)) {
-                    generateCleanedUpXML(request, resp, nodePath);
+                if ("template".equals(params.get(ImportExportService.CLEANUP))) {
+                    generateCleanedUpXML(request, resp, nodePath, "templatesCleanup.xsl");
+                } else if ("simple".equals(params.get(ImportExportService.CLEANUP))) {
+                    generateCleanedUpXML(request, resp, nodePath, "cleanup.xsl");
                 } else {
                     getXml(nodePath, outputStream);
                 }
             } else if ("zip".equals(exportFormat)) {
                 resp.setContentType("application/zip");
-                String id = request.getRealPath("/WEB-INF/etc/repository/export/" + "templatesCleanup.xsl");
-                params.put(ImportExportService.XSL_PATH, id);
+                if ("template".equals(params.get(ImportExportService.CLEANUP))) {
+                    params.put(ImportExportService.XSL_PATH, request.getRealPath("/WEB-INF/etc/repository/export/" + "templatesCleanup.xsl"));
+                } else if ("simple".equals(params.get(ImportExportService.CLEANUP))) {
+                    params.put(ImportExportService.XSL_PATH, request.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
+                }
                 JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
                 JCRNodeWrapper node = session.getNode(nodePath);
                 ie.exportZip(node, outputStream, params);
@@ -190,7 +195,8 @@ public class Export extends HttpServlet implements Controller {
         }
     }
 
-    private void generateCleanedUpXML(HttpServletRequest request, HttpServletResponse resp, String nodePath)
+    private void generateCleanedUpXML(HttpServletRequest request, HttpServletResponse resp, String nodePath,
+                                      final String xsl)
             throws IOException, RepositoryException, JDOMException {
         OutputStream outputStream;
         File tempFile = File.createTempFile("exportTemplates", "xml");
@@ -204,7 +210,7 @@ public class Export extends HttpServlet implements Controller {
             inputStream = new ByteArrayInputStream(stream.getData());
         }
         XSLTransformer xslTransformer = new XSLTransformer(request.getRealPath(
-                "/WEB-INF/etc/repository/export/" + "templatesCleanup.xsl"));
+                "/WEB-INF/etc/repository/export/" + xsl));
         SAXBuilder saxBuilder = new SAXBuilder(false);
         Document document = saxBuilder.build(inputStream);
         Document document1 = xslTransformer.transform(document);

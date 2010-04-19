@@ -454,7 +454,7 @@ public class ContentDefinitionHelper {
                 }
                 return convertedValue;
             case PropertyType.REFERENCE:
-                return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode()));
+                return new GWTJahiaNodePropertyValue(navigation.getGWTJahiaNode((JCRNodeWrapper) ((JCRValueWrapper) val).getNode()), GWTJahiaNodePropertyType.REFERENCE);
             case PropertyType.STRING:
                 type = GWTJahiaNodePropertyType.STRING;
                 theValue = val.getString();

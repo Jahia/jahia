@@ -7,6 +7,7 @@
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 
 <jcr:nodeProperty node="${currentNode}" name="maxNews" var="maxNews"/>
-<query:definition var="listQuery" statement="select * from [jnt:news] as news  order by news.[date] desc"
+<jcr:nodeProperty node="${currentNode}" name="filter" var="filter"/>
+<query:definition var="listQuery" statement="select * from [jnt:news] as news where news.[j:defaultCategory]='${filter.string}' order by news.[date] desc"
          limit="${maxNews.long}"  scope="request" />
 <c:set var="editable" value="false" scope="request" />

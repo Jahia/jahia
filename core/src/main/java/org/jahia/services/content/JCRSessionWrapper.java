@@ -94,6 +94,7 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> prefixToNs = new HashMap<String, String>();
 
     private Map<String, String> uuidMapping = new HashMap<String,String>();
+    private Map<String, String> pathMapping = new HashMap<String,String>();
 
     private boolean eventsDisabled = false;
     private boolean isSystem;
@@ -686,18 +687,16 @@ public class JCRSessionWrapper implements Session {
      * @see VersionManager#checkout(String) for details
      */
     public void checkout(Node node) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-        checkout(node.getPath());
-    }
-
-    /**
-     * Performs check out of the specified node.
-     * @param absPath the path of the node to perform the check out
-     * @see VersionManager#checkout(String) for details
-     */
-    public void checkout(String absPath) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-        VersionManager versionManager = getWorkspace().getVersionManager();
-        if (!versionManager.isCheckedOut(absPath)) {
-            versionManager.checkout(absPath);
+        while (!node.isCheckedOut()) {
+            if (!node.isNodeType("mix:versionable")) {
+                node = node.getParent();
+            } else {
+                String absPath = node.getPath();
+                VersionManager versionManager = getWorkspace().getVersionManager();
+                if (!versionManager.isCheckedOut(absPath)) {
+                    versionManager.checkout(absPath);
+                }
+            }
         }
     }
 
@@ -707,6 +706,10 @@ public class JCRSessionWrapper implements Session {
 
     public Map<String, String> getUuidMapping() {
         return uuidMapping;
+    }
+
+    public Map<String, String> getPathMapping() {
+        return pathMapping;
     }
 
     public Locale getFallbackLocale() {

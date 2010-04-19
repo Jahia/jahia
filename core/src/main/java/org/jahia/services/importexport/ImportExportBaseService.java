@@ -61,7 +61,6 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import org.jdom.transform.XSLTransformException;
 import org.jdom.transform.XSLTransformer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -306,7 +305,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
 
         OutputStream outputStream = zout;
-        if ((Boolean) params.get(CLEANUP)) {
+        if (params.get(CLEANUP) != null) {
             String filename = rootNode.getName().replace(" ", "_");
             File tempFile = File.createTempFile("exportTemplates-" + filename, "xml");
             outputStream = new DeferredFileOutputStream(1024 * 1024 * 10, tempFile);
@@ -318,7 +317,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exporter.setTypesToIgnore(typesToIgnore);
         exporter.export(rootNode, sorted);
         dw.flush();
-        if ((Boolean) params.get(CLEANUP)) {
+        if (params.get(CLEANUP) != null) {
             DeferredFileOutputStream stream = (DeferredFileOutputStream) outputStream;
             InputStream inputStream = new BufferedInputStream(new FileInputStream(stream.getFile()));
             fileCleaningTracker.track(stream.getFile(), inputStream);
@@ -488,7 +487,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
         zis.reallyClose();
 
-        Map<String, String> pathMapping = new HashMap<String, String>();
+        Map<String, String> pathMapping = session.getPathMapping();
 
         if (sizes.containsKey(USERS_XML)) {
             // Import users first
@@ -518,7 +517,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, (site != null ? site.getSiteKey(): null));
 
                     documentViewImportHandler.setReferences(references);
-                    documentViewImportHandler.setPathMapping(pathMapping);
                     documentViewImportHandler.setNoRoot(true);
                     documentViewImportHandler.setResolveReferenceAtEnd(false);
 
@@ -531,7 +529,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             zis.reallyClose();
         } else {
             // No repository descriptor - prepare to import files directly
-            pathMapping = new HashMap<String, String>();
+            pathMapping = session.getPathMapping();
             List<JCRNodeWrapper> sitesFolder = jcrStoreService.getSiteFolders(site.getSiteKey());
             if (!sitesFolder.isEmpty()) {
                 pathMapping.put("/", sitesFolder.iterator().next().getPath() + "/");
@@ -555,7 +553,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (zipentry == null) break;
                 String name = zipentry.getName();
                 if (name.indexOf('/') > -1) {
-                    if (sizes.containsKey(REPOSITORY_XML)) {
+                    if (!sizes.containsKey(REPOSITORY_XML)) {
                         // No repository descriptor - Old import format only
                         name = "/" + name;
                         if (!zipentry.isDirectory()) {
@@ -563,7 +561,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 name = pathMapping.get("/") + name.substring(1);
                                 String filename = name.substring(name.lastIndexOf('/') + 1);
                                 String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename);
-                                ensureFile(jcrStoreService.getSessionFactory().getCurrentUserSession(), name, zis, contentType, site, pathMapping);
+                                ensureFile(jcrStoreService.getSessionFactory().getCurrentUserSession(), name, zis, contentType, site);
                             } catch (Exception e) {
                                 logger.error("Cannot upload file " + zipentry.getName(), e);
                             }
@@ -619,7 +617,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode));
                         importHandler.setReferences(references);
-                        importHandler.setPathMapping(pathMapping);
                         handleImport(zis, importHandler);
                         siteFolder.getSession().save();
                     }
@@ -640,7 +637,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
 
-    private JCRNodeWrapper ensureDir(JCRSessionWrapper session, String name, JahiaSite site, Map<String, String> pathMapping) throws RepositoryException {
+    private JCRNodeWrapper ensureDir(JCRSessionWrapper session, String name, JahiaSite site) throws RepositoryException {
         JCRNodeWrapper dir;
         try {
             dir = session.getNode(name);
@@ -655,10 +652,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         break;
                     }
                     String newName = current.substring(0, current.lastIndexOf('/')) + "/" + site.getSiteKey();
-                    pathMapping.put(current, newName);
+                    session.getPathMapping().put(current, newName);
                     name = name.replace(current, newName);
 
-                    return ensureDir(session, name, site, pathMapping);
+                    return ensureDir(session, name, site);
                 }
                 int endIndex = current.lastIndexOf('/');
                 current = current.substring(0, endIndex);
@@ -673,7 +670,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 logger.warn("Cannot create folder " + name);
                 return null;
             }
-            JCRNodeWrapper parentDir = ensureDir(session, name.substring(0, endIndex), site, pathMapping);
+            JCRNodeWrapper parentDir = ensureDir(session, name.substring(0, endIndex), site);
             if (parentDir == null) {
                 return null;
             }
@@ -692,10 +689,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return dir;
     }
 
-    private void ensureFile(JCRSessionWrapper session, String path, InputStream inputStream, String type, JahiaSite destSite, Map<String, String> pathMapping) {
+    private void ensureFile(JCRSessionWrapper session, String path, InputStream inputStream, String type, JahiaSite destSite) {
         String name = path.substring(path.lastIndexOf('/') + 1);
         try {
-            JCRNodeWrapper parentDir = ensureDir(session, path.substring(0, path.lastIndexOf('/')), destSite, pathMapping);
+            JCRNodeWrapper parentDir = ensureDir(session, path.substring(0, path.lastIndexOf('/')), destSite);
 
             if (!parentDir.hasNode(name)) {
                 if (parentDir == null) {
@@ -964,8 +961,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             zis.reallyClose();
         }
 
-        Map<String, String> pathMapping = new HashMap<String, String>();
-
 //        if (sizes.containsKey(REPOSITORY_XML)) {
             // Import repository content
             zis = new NoCloseZipInputStream(new FileInputStream(file));
@@ -978,7 +973,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList, null);
 
                     documentViewImportHandler.setReferences(references);
-                    documentViewImportHandler.setPathMapping(pathMapping);
                     documentViewImportHandler.setNoRoot(noRoot);
                     
                     handleImport(zis, documentViewImportHandler);

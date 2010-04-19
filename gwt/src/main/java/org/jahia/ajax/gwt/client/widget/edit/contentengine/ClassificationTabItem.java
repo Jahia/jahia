@@ -61,7 +61,7 @@ public class ClassificationTabItem extends EditEngineTabItem {
         List<GWTJahiaNode> gwtJahiaNodes = classificationEditor.getCatStore().getAllItems();
         List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>(gwtJahiaNodes.size());
         for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
-            values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode));
+            values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode, GWTJahiaNodePropertyType.REFERENCE));
         }
         GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
         gwtJahiaNodeProperty.setMultiple(true);

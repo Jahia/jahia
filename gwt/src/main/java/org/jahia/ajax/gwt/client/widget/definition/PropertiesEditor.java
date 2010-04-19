@@ -416,7 +416,7 @@ public class PropertiesEditor extends FormPanel {
                 ContentPickerField pck = (ContentPickerField) fld;
                 List<GWTJahiaNode> selection = pck.getValue();
                 for (GWTJahiaNode node : selection) {
-                    GWTJahiaNodePropertyValue propertyValue = new GWTJahiaNodePropertyValue(node);
+                    GWTJahiaNodePropertyValue propertyValue = new GWTJahiaNodePropertyValue(node, propDef.getRequiredType());
                     values.add(propertyValue);
                 }
             } else {

@@ -1,0 +1,186 @@
+Jahia Crazy Jane - Core module - UiComponents framework
+
+  UiComponents framework allows developers to customize a part of the Edit mode and Content managers.
+
+* Content manager
+
+  The content manager is divided in four parts:
+    - Toobar, that allows to trigger an action on the selected node  as "Edit", "Delete" , "Create folder" ,
+    - Rigth panel, that is composed by several repository. Each repository is represent by a navigation tree.
+    - Left panel, that displays sub-nodes of the selected node in a grid composed by several columns
+    - Bottom panel, that is composed by several tab. Each tab displays useful informations about the node selected in the left panel
+
+     -- image --
+
+    Thanks to spring configuration file , /WEB-INF/ect/spring/uicomponents/applicationcontext-contentmanager.xml ,Jahia allows you to customize different aspects of the content manager as:
+    - the action that can be triggered in the toolbar
+    - the displayed repositories in the rigth panel
+    - the displayed columns in the left panel
+    - the displayed tab in the bottom panel
+    - ...
+
+    As an example, here is how the configuration of the file manager has beean created:
+
+    [[1]] create a bean that extends  org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration and with id "filemanager"
+
+-------------------------------------------
+   <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+   </bean>
+-------------------------------------------
+
+    [[2]] set some simple properties
+
+
+-------------------------------------------
+   <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint,jnt:portlet"/>
+        <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
+        <property name="toolbarSet" ref="document-manager"/>
+        <property name="enableTextMenu" value="true"/>
+        <property name="displayProvider" value="true"/>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+   </bean>
+-------------------------------------------
+
+    [[3]] set the list of the displayed repositories of the rigth panel
+
+-------------------------------------------
+   <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+       ...
+       <!-- accordion panels-->
+        <property name="tableColumns">
+            <list>
+                <ref bean="column.providerKey"/>
+                <ref bean="column.ext"/>
+                <ref bean="column.name"/>
+                <ref bean="column.locked"/>
+                <ref bean="column.path"/>
+                <ref bean="column.size"/>
+                <ref bean="column.lastModified"/>
+            </list>
+        </property>
+       ...
+   </bean>
+-------------------------------------------
+
+    [[4]] set the list of the displayed columns of the left panel
+
+-------------------------------------------
+   <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+      ...
+      <!-- tabs -->
+        <property name="tabs">
+            <list>
+                <ref bean="tab.info"/>
+                <ref bean="tab.authorizations"/>
+                <ref bean="tab.usage"/>
+                <ref bean="tab.versioning"/>
+            </list>
+        </property>
+      ...
+   </bean>
+-------------------------------------------
+
+    [[5]] set the list of the displayed tab info of the bottom panel
+
+-------------------------------------------
+   <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+      ...
+      <!-- tabs -->
+        <property name="tabs">
+            <list>
+                <ref bean="tab.info"/>
+                <ref bean="tab.authorizations"/>
+                <ref bean="tab.usage"/>
+                <ref bean="tab.versioning"/>
+            </list>
+        </property>
+      ...
+   </bean>
+-------------------------------------------
+
+    [[6]] add a the visibility rule if nested
+
+-------------------------------------------
+   <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        ...
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="contentmanager/filemanager"/>
+            </bean>
+        </property>
+        ...
+   </bean>
+-------------------------------------------
+
+    [[7]] Set the toolbars (see applicationcontext-toolbar.xml for toolbar set beans)
+
+-------------------------------------------
+   <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+      ...
+      <property name="toolbarSet" ref="document-manager"/>
+      ...
+   </bean>
+-------------------------------------------
+
+    At the end, the configuration of the file manager is:
+
+-------------------------------------------
+ <!-- file manager -->
+    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint,jnt:portlet"/>
+        <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
+        <property name="toolbarSet" ref="document-manager"/>
+        <property name="enableTextMenu" value="true"/>
+        <property name="displayProvider" value="true"/>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <!-- accordion panels-->
+        <property name="accordionPanels">
+            <list>
+                <ref bean="repository.website"/>
+                <ref bean="repository.shared"/>
+                <ref bean="repository.myexternal"/>
+                <ref bean="repository.my"/>
+                <ref bean="repository.users"/>
+            </list>
+        </property>
+        <!-- tabs -->
+        <property name="tabs">
+            <list>
+                <ref bean="tab.info"/>
+                <ref bean="tab.authorizations"/>
+                <ref bean="tab.usage"/>
+                <ref bean="tab.versioning"/>
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list>
+                <ref bean="column.providerKey"/>
+                <ref bean="column.ext"/>
+                <ref bean="column.name"/>
+                <ref bean="column.locked"/>
+                <ref bean="column.path"/>
+                <ref bean="column.size"/>
+                <ref bean="column.lastModified"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="contentmanager/filemanager"/>
+            </bean>
+        </property>
+    </bean>    
+-------------------------------------------
+
+
+* Edit Mode ?
+ 
+
+* How to set permissions?

@@ -37,6 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.ItemNotFoundException;
@@ -51,7 +52,9 @@ import javax.jcr.query.RowIterator;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
 import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
+import org.apache.jackrabbit.core.query.lucene.JahiaMultiColumnQueryResult;
 import org.apache.jackrabbit.value.StringValue;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -63,11 +66,10 @@ import org.jahia.services.content.JCRStoreProvider;
  * 
  * @author Thomas Draier
  */
-class QueryResultWrapper implements QueryResult {
-    
+public class QueryResultWrapper implements QueryResult {
+
     /**
-     * Invocation handler to decorate the {@link NodeIterator} instance of the
-     * query result in order to wrap each {@link Node} into
+     * Invocation handler to decorate the {@link NodeIterator} instance of the query result in order to wrap each {@link Node} into
      * {@link JCRNodeWrapper}.
      * 
      * @author Sergiy Shyrkov
@@ -80,8 +82,9 @@ class QueryResultWrapper implements QueryResult {
             this.underlying = underlying;
         }
 
-        public Object invoke(Object proxy, Method method, Object[] args) throws IllegalArgumentException,
-                IllegalAccessException, InvocationTargetException, RepositoryException {
+        public Object invoke(Object proxy, Method method, Object[] args)
+                throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
+                RepositoryException {
             Object result = method.invoke(underlying, args);
             if (!(result instanceof JCRNodeWrapper)
                     && ("nextNode".equals(method.getName()) || "next".equals(method.getName()))) {
@@ -98,11 +101,11 @@ class QueryResultWrapper implements QueryResult {
             return result;
         }
     }
-    
+
     private JCRStoreProvider provider;
     private QueryResult result;
     private JCRSessionWrapper session;
-    
+
     /**
      * A facade for a single query result row.
      * 
@@ -112,10 +115,12 @@ class QueryResultWrapper implements QueryResult {
         private Node node;
         private Map<String, Node> nodesBySelector = new HashMap<String, Node>(1);
         private Row row;
-        
+
         /**
          * Initializes an instance of this class.
-         * @param decoratedRow the row to be decorated
+         * 
+         * @param decoratedRow
+         *            the row to be decorated
          */
         RowDecorator(Row decoratedRow) {
             super();
@@ -139,7 +144,7 @@ class QueryResultWrapper implements QueryResult {
         }
 
         private String getDerivedPath(String originalPath) throws RepositoryException {
-            originalPath = originalPath.replaceFirst(getProvider().getRelativeRoot(),"");
+            originalPath = originalPath.replaceFirst(getProvider().getRelativeRoot(), "");
             String mountPoint = getProvider().getMountPoint();
             return mountPoint.equals("/") ? originalPath : mountPoint + originalPath;
         }
@@ -167,8 +172,10 @@ class QueryResultWrapper implements QueryResult {
             Value result = row.getValue(columnName);
             if (result == null && session.getLocale() != null) {
                 JCRPropertyWrapper property = null;
-                if (!columnName.startsWith("rep:spellcheck(") && !columnName.startsWith("rep:excerpt(") && !row.getNode().hasProperty(columnName)) {
-                    JCRNodeWrapper node = (JCRNodeWrapper)getNode();
+                if (!columnName.startsWith("rep:spellcheck(")
+                        && !columnName.startsWith("rep:excerpt(")
+                        && !row.getNode().hasProperty(columnName)) {
+                    JCRNodeWrapper node = (JCRNodeWrapper) getNode();
                     try {
                         property = node.getProperty(columnName);
                     } catch (RepositoryException e) {
@@ -179,26 +186,26 @@ class QueryResultWrapper implements QueryResult {
                     result = property.getValue();
                 }
             }
-            
+
             return result;
         }
 
         public Value[] getValues() throws RepositoryException {
             return row.getValues();
         }
-        
+
         private Node wrap(Node node) throws RepositoryException {
             return getProvider().getNodeWrapper(node, getSession());
         }
-        
+
         public String getSpellcheck() throws ItemNotFoundException, RepositoryException {
             Value suggestion = row.getValue("rep:spellcheck()");
-            return suggestion != null ? suggestion.getString() : null; 
+            return suggestion != null ? suggestion.getString() : null;
         }
     };
 
-
-    public QueryResultWrapper(QueryResult result, JCRStoreProvider provider, JCRSessionWrapper session) {
+    public QueryResultWrapper(QueryResult result, JCRStoreProvider provider,
+            JCRSessionWrapper session) {
         this.result = result;
         this.provider = provider;
         this.session = session;
@@ -228,10 +235,53 @@ class QueryResultWrapper implements QueryResult {
                 new Class[] { NodeIterator.class }, new NodeWrapperInvocationHandler(ni));
     }
 
+    public List<FacetField> getFacetFields() {
+        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
+                .getFacetFields()
+                : null;
+    }
+
+    public List<FacetField> getFacetDates() {
+        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
+                .getFacetDates()
+                : null;
+    }
+
+    /**
+     * get
+     * 
+     * @param name
+     *            the name of the
+     * @return the FacetField by name or null if it does not exist
+     */
+    public FacetField getFacetField(String name) {
+        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
+                .getFacetField(name)
+                : null;
+    }
+
+    public FacetField getFacetDate(String name) {
+        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
+                .getFacetDate(name)
+                : null;
+    }
+
+    public Map<String, Integer> getFacetQuery() {
+        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
+                .getFacetQuery()
+                : null;
+    }
+
+    public List<FacetField> getLimitingFacets() {
+        return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
+                .getLimitingFacets()
+                : null;
+    }
+
     public String[] getSelectorNames() throws RepositoryException {
         return result.getSelectorNames();
     }
-    
+
     JCRSessionWrapper getSession() {
         return session;
     }

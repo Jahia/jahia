@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.query.impl.jackrabbit;
+package org.apache.jackrabbit.core.query.lucene;
 
 import java.io.ByteArrayInputStream;
 import java.util.Set;
@@ -129,9 +129,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
      *            registries)
      */
     public JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider, NamespaceMappings mappings,
-            Executor executor, Parser parser, NodeTypeRegistry nodeTypeRegistry, QueryHandlerContext context) {
+            Executor executor, Parser parser, QueryHandlerContext context) {
         super(node, stateProvider, mappings, executor, parser);
-        this.nodeTypeRegistry = nodeTypeRegistry;
+        this.nodeTypeRegistry = NodeTypeRegistry.getInstance();
         this.namespaceRegistry = context.getNamespaceRegistry();
         this.parser = parser;
         try {

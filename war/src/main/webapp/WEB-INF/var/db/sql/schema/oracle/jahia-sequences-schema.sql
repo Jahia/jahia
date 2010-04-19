@@ -1,15 +1,9 @@
-drop sequence seq_grps;
-create sequence seq_grps start with 1 increment by 20;
-drop sequence seq_link;
-create sequence seq_link start with 1 increment by 20;
 drop sequence seq_pwd_policies;
 create sequence seq_pwd_policies start with 1 increment by 20;
 drop sequence seq_pwd_policy_rules;
 create sequence seq_pwd_policy_rules start with 1 increment by 20;
 drop sequence seq_pwd_policy_rule_params;
 create sequence seq_pwd_policy_rule_params start with 1 increment by 20;
-drop sequence seq_users;
-create sequence seq_users start with 1 increment by 20;
 drop sequence seq_version;
 create sequence seq_version start with 1 increment by 20;
 drop sequence seq_installedpatch;

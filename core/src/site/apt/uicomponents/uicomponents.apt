@@ -195,11 +195,11 @@ Jahia Crazy Jane - Core module - UiComponents framework
 
      - toobar: a panel that is composed by a set of buttons. Each button allows to trigger an action on the selected node  as "Edit", "Delete" , "Create Content" , "Create page" ...
 
-     - side panel: a panel thats is composed by several tabs from witch you can drag and drop contents, view the site map, ....
+     - side panel, usually called the "Selector": a panel that is composed by several tabs from witch you can drag and drop content, view the site map, ....
 
-     - create engine: a wizard that allows to create new content from definition. Actually the is two differents types: create page and create content
+     - create engine: a wizard that allows to create new content from definition. Actually the is two different types: create page and create content
 
-     - edit engines: window that is composed by different part tab. Each tab displays a set of properties such as fields, acl, opptions, ....
+     - edit engines: window that is composed by different part tab. Each tab displays a set of properties such as fields, acl, options, ....
     
 
 [../images/uicomponents/editmode.png]
@@ -213,9 +213,9 @@ Jahia Crazy Jane - Core module - UiComponents framework
 
     - ...
 
-   As an example, here is how the configuration of the default edit mode manager has beean created:
+   As an example, here is how the configuration of the default edit mode manager has been created:
 
-    [[1]] create a edit mode configuration bean
+    [[1]] create an edit mode configuration bean
 
 ----------------
  <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
@@ -368,9 +368,9 @@ Jahia Crazy Jane - Core module - UiComponents framework
 
    The bean "visibility" is defined by the following properties:
      - siteActionPermission: allows to define the site permissions that the user must have
-     - serverActionPermission: allows to define the server permission that the user must have
-     - needAuthentication: allows to define is the user must be authenticated or not
-     - userAgent: allows to define the userAgent (ie, modzilla, ....)
+     - serverActionPermission: allows to define the server permissions that the user must have
+     - needAuthentication: allows to define if the user must be authenticated or not
+     - userAgent: allows to define the userAgent (ie, mozilla, ....)
      - value: allows to define the value (true false)
 
 

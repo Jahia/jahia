@@ -79,7 +79,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * @param linker the edit linker for refresh purpose
      */
     public EditContentEngine(GWTJahiaNode node, Linker linker) {
-        super(getEditConfig(node, ((EditLinker)linker).getConfig()), linker);
+        super(getEditConfig(node, (GWTEditConfiguration) linker.getConfig()), linker);
         contentPath = node.getPath();
         nodeName = node.getName();
         heading = "Edit " + nodeName + " (" + node.getCurrentVersion() + ")";

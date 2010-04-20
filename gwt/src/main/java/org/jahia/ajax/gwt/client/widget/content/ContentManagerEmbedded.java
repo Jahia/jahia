@@ -49,7 +49,7 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
 
     public ContentManagerEmbedded(final String rootPath,final String nodeTypes,final String filters,final String mimeTypes,final GWTManagerConfiguration config) {
         // superclass constructor (define linker)
-        super();
+        super(config);
         setWidth("100%");
         setHeight("700px");
         setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 500));

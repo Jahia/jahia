@@ -14,7 +14,7 @@ import java.util.List;
  * Time: 4:38:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTEditConfiguration implements Serializable {
+public class GWTEditConfiguration extends GWTConfiguration implements Serializable {
     private String name;
 
     private GWTJahiaToolbar topToolbar;

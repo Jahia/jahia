@@ -82,24 +82,19 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                                 GWTJahiaNode node = linker.getSelectedNode();
                                 GWTJahiaSite site = ce.getItem().getData("site");
                                 String nodePath = node.getPath();
-                                String originalPath;
-                                if(nodePath.substring(0,nodePath.lastIndexOf("/")).equals("/templatesSet")) {
-                                    originalPath = nodePath+"/defaultSite/templates";
-                                } else if (nodePath.contains("/defaultSite/templates")){
-                                    originalPath = nodePath;
-                                } else {
-                                    MessageBox.alert("Error","Error could not deploy the selected path, please select a particular template or the root level of your templateSet",null);
-                                    return;
+                                String originalPath = nodePath;
+
+                                String s = null;
+                                try {
+                                    s = nodePath.substring(nodePath.indexOf("/",nodePath.indexOf("/",1)+1));
+                                } catch (Exception e) {
+                                    s = "";
                                 }
-                                String s = "/" + (originalPath.substring(originalPath.lastIndexOf(
-                                        "/defaultSite/") + "/defaultSite/".length()));
+
                                 String destinationPath = "/sites/" + site.getSiteKey() + s;
                                 Map<String, String> pathsToSyncronize = new LinkedHashMap<String, String>();
                                 pathsToSyncronize.put(originalPath,destinationPath);
-                                destinationPath = "/sites/" + site.getSiteKey() + "/contents";
-                                originalPath = originalPath.substring(0, originalPath.indexOf(
-                                        "/defaultSite/templates")) + "/defaultSite/contents";
-                                pathsToSyncronize.put(originalPath,destinationPath);
+
                                 JahiaContentManagementService.App.getInstance().synchro(pathsToSyncronize,new AsyncCallback() {
                                     public void onFailure(Throwable caught) {
                                         Info.display("Deploy Templates","Error during your templates deployment");

@@ -33,6 +33,8 @@
 package org.jahia.ajax.gwt.client.widget;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 
 import java.util.List;
 
@@ -69,5 +71,7 @@ public interface Linker {
     public LinkerSelectionContext getSelectionContext();
 
     public void syncSelectionContext();
+
+    public GWTConfiguration getConfig();
 
 }

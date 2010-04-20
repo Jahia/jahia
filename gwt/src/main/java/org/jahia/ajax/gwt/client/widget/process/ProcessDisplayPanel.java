@@ -67,7 +67,7 @@ public class ProcessDisplayPanel extends TriPanelBrowserViewport {
 
     public ProcessDisplayPanel() {
         // superclass constructor (define linker)
-        super();
+        super(null);
 
         ProcessDisplayService.App.getInstance().getPreferences(new AsyncCallback<GWTJahiaProcessJobPreference>() {
             public void onFailure(Throwable throwable) {

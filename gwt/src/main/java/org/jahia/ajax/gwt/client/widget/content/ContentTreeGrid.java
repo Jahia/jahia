@@ -86,7 +86,7 @@ public class ContentTreeGrid extends ContentPanel {
      */
     public ContentTreeGrid(String repoType, List<GWTJahiaNode> selectedNodes, boolean multiple, GWTManagerConfiguration configuration) {
         this.multiple = multiple;
-        this.linker = new ManagerLinker();
+        this.linker = new ManagerLinker(configuration);
         setLayout(new FitLayout());
         setHeaderVisible(false);
         setBorders(false);

@@ -64,7 +64,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
 
 
     public ContentPickerViewport(final String jahiaContextPath,final String jahiaServletPath,final  String selectionLabel, final String rootPath,final  Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,final  String types,final  String filters,final  String mimeTypes,final GWTManagerConfiguration managerConfiguration,final  boolean multiple,final  boolean allowThumbs, String callback) {
-        super();
+        super(managerConfiguration);
 
         if (types != null && types.length() > 0) {
             managerConfiguration.setNodeTypes(types);

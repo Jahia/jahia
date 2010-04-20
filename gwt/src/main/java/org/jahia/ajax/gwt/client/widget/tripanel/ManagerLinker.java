@@ -34,6 +34,8 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
 import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerComponent;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
@@ -59,8 +61,10 @@ public class ManagerLinker implements Linker {
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private GWTJahiaNode leftPanelSelectionWhenHidden;
     private List<LinkerComponent> extraComponents = new ArrayList<LinkerComponent>();
+    private GWTManagerConfiguration config;
 
-    public ManagerLinker() {
+    public ManagerLinker(GWTManagerConfiguration configuration) {
+    this.config = configuration;
     }
 
     /**
@@ -381,4 +385,10 @@ public class ManagerLinker implements Linker {
         selectionContext.setSelectedNodes(getSelectedNodes());
         selectionContext.refresh();
     }
+
+    public GWTConfiguration getConfig() {
+        return config;
+    }
+
+
 }

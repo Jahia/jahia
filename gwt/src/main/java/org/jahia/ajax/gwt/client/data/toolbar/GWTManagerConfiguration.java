@@ -42,7 +42,7 @@ import java.util.ArrayList;
  * Date: 7 janv. 2009 - 11:24:10
  */
 
-public class GWTManagerConfiguration implements Serializable {
+public class GWTManagerConfiguration extends GWTConfiguration implements Serializable {
 
     private String name;
     private boolean enableTextMenu;

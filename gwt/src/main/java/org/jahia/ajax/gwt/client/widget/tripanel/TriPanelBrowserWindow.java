@@ -58,7 +58,7 @@ public class TriPanelBrowserWindow extends Window {
     protected TriPanelBrowserWindow() {
         super();
         setLayout(new FitLayout());
-        linker = new ManagerLinker() ;
+        linker = new ManagerLinker(null) ;
     }
 
     protected void initWidgets(Component leftTree, Component topTable, Component bottomTabs, Component topToolbar, Component statusBar) {

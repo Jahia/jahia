@@ -33,9 +33,9 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
 
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,13 +47,14 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
  * in the target page.
  */
 public class TriPanelBrowserViewport extends Viewport {
-    private TriPanelBrowserLayout layout = new TriPanelBrowserLayout();
+    private TriPanelBrowserLayout layout;
     protected ManagerLinker linker;
 
-    protected TriPanelBrowserViewport() {
+    protected TriPanelBrowserViewport(GWTManagerConfiguration config) {
         super();
         setLayout(new FillLayout());
-        linker = new ManagerLinker();
+        layout = new TriPanelBrowserLayout(config);
+        linker = new ManagerLinker(config);
     }
 
     protected void initWidgets(Component leftTree, Component topTable, Component bottomTabs, Component topToolbar, Component statusBar) {
@@ -62,10 +63,6 @@ public class TriPanelBrowserViewport extends Viewport {
 
         // layout is the main widget contained in the viewport
         add(layout);
-    }
-
-    public ManagerLinker getLinker() {
-        return linker;
     }
 
     public BorderLayoutData getCenterData() {

@@ -53,7 +53,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
     private PickedContent pickedContent;
 
     public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, GWTManagerConfiguration config, boolean multiple) {
-        super();
+        super(config);
         //setWidth("714px");
         setHeight("700px");
 

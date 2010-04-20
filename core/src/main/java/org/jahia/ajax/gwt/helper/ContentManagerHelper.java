@@ -806,10 +806,11 @@ public class ContentManagerHelper {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
-        if (!destinationNode.isCheckedOut() && destinationNode.isVersioned()) {
-            session.checkout(destinationNode);
-        }
+
+        session.checkout(destinationNode);
+
         if (!source.hasProperty("j:templateDeployed")) {
+            source.checkout();
             source.addMixin("jmix:templateInformation");
             source.setProperty("j:templateDeployed", true);
         }
@@ -910,7 +911,7 @@ public class ContentManagerHelper {
         ni = destinationNode.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
-            if (!names.contains(oldChild.getName()) && oldChild.hasProperty("j:templateDeployed") && oldChild.getProperty("j:templateDeployed").getBoolean()) {
+            if (!names.contains(oldChild.getName()) && !oldChild.hasProperty("j:sourceTemplate") && oldChild.hasProperty("j:templateDeployed") && oldChild.getProperty("j:templateDeployed").getBoolean()) {
                 oldChild.remove();
             }
         }

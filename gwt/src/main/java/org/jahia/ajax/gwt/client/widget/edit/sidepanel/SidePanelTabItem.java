@@ -3,6 +3,7 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -118,6 +119,12 @@ public class SidePanelTabItem extends TabItem {
         public void setSelectPathAfterDataUpdate(String path) {
             // do nothing
         }
+
+        public GWTConfiguration getConfig() {
+            return editLinker.getConfig();
+        }
+
+
     }
 
 

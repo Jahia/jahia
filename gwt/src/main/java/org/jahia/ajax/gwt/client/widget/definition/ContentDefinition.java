@@ -43,7 +43,7 @@ public class ContentDefinition extends TriPanelBrowserViewport {
 
     public ContentDefinition() {
         // superclass constructor (define linker)
-        super() ;
+        super(null) ;
 
         // construction of the UI components
         LeftComponent tree = new LeftPanel();

@@ -51,7 +51,7 @@ public class ContentManager extends TriPanelBrowserViewport {
 
     public ContentManager(final String rootPath, final String types, final String filters, final String mimeTypes, final GWTManagerConfiguration config) {
         // superclass constructor (define linker)
-        super();
+        super(config);
         init(rootPath, types, filters, mimeTypes, config);
 
     }

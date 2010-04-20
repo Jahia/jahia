@@ -78,7 +78,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param createInParentAndMoveBefore
      */
     public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore) {
-        super(getCreateConfig(type, ((EditLinker)linker).getConfig()), linker);
+        super(getCreateConfig(type, (GWTEditConfiguration) linker.getConfig()), linker);
         this.existingNode = false;
         this.parentNode = parent;
         this.type = type;

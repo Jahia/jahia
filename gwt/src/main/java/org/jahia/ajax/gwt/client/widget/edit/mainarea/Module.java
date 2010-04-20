@@ -107,19 +107,19 @@ public abstract class Module extends LayoutContainer {
     }
 
     public boolean isLocked() {
-        return templateInfo.contains("-locked-");
+        return templateInfo != null && templateInfo.contains("-locked-");
     }
 
     public boolean isShared() {
-        return templateInfo.contains("-shared-");
+        return templateInfo != null && templateInfo.contains("-shared-");
     }
 
     public boolean isDeployed() {
-        return templateInfo.contains("-deployed-");
+        return templateInfo != null && templateInfo.contains("-deployed-");
     }
 
     public boolean isParentLocked() {
-        return templateInfo.contains("-parentlocked-");
+        return templateInfo != null && templateInfo.contains("-parentlocked-");
     }
 
     public MainModule getMainModule() {

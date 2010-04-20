@@ -221,6 +221,7 @@ public class SearchHelper {
 
     /**
      * Save search
+     *
      * @param search
      * @param path
      * @param name
@@ -234,13 +235,27 @@ public class SearchHelper {
                 throw new GWTJahiaServiceException("Could not store query with null name");
             }
 
-            JCRNodeWrapper parent = session.getNode(path);
-            name = contentManager.findAvailableName(parent, name, session);
-            Query q = createQuery(search, session);
-            q.storeAsNode(path + "/" + name);
-            parent.saveSession();
+            JCRNodeWrapper parent = null;
+            if (path == null) {
+                List<JCRNodeWrapper> userFolders = jcrService.getUserFolders(null, session.getUser());
+                if (userFolders != null && !userFolders.isEmpty()) {
+                    parent = userFolders.get(0);
+                } else {
+                    logger.error("there is no defined user floder.");
+                }
+            } else {
+                parent = session.getNode(path);
+            }
 
-            return navigation.getGWTJahiaNode(session.getNode(path + "/" + name));
+            final String saveSearchPath = parent.getPath() + "/" + contentManager.findAvailableName(parent, name, session);
+            logger.debug("Save search path: " + saveSearchPath);
+            Query q = createQuery(search, session);
+
+            q.storeAsNode(saveSearchPath);
+
+            session.save();
+
+            return navigation.getGWTJahiaNode(session.getNode(saveSearchPath));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Could not store query");
@@ -293,6 +308,7 @@ public class SearchHelper {
 
     /**
      * Create JCR query
+     *
      * @param gwtQuery
      * @param session
      * @return

@@ -18,6 +18,7 @@
     <pluto.version>2.0.0</pluto.version>
     <spring.version>2.5.6</spring.version>
     <jackrabbit.version>2.0.0</jackrabbit.version>
+    <jackrabbit.patch.version>patch4</jackrabbit.patch.version>
     <lucene.version>2.4.1</lucene.version>
     <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
 

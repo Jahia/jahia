@@ -44,14 +44,13 @@ import javax.security.auth.Subject;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.jackrabbit.core.RepositoryImpl;
-import org.apache.jackrabbit.core.config.AccessManagerConfig;
 import org.apache.jackrabbit.core.config.LoginModuleConfig;
 import org.apache.jackrabbit.core.config.SecurityConfig;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
 import org.apache.jackrabbit.core.security.authentication.AuthContextProvider;
 import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
 import org.jahia.jaas.JahiaPrincipal;
-import org.jahia.jaas.JahiaLoginModule;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

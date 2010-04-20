@@ -29,11 +29,13 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.jaas;
+package org.apache.jackrabbit.core.security;
 
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
+import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
 import org.jahia.api.user.JahiaUserService;
+import org.jahia.jaas.JahiaPrincipal;
 
 import javax.jcr.Credentials;
 import javax.jcr.SimpleCredentials;
@@ -62,7 +64,7 @@ public class JahiaLoginModule implements LoginModule {
     private static JahiaUserService userService;
 
     private Subject subject;
-    private Principal user = null;
+    private Set<Principal> principals = new HashSet<Principal>();
     private CallbackHandler callbackHandler;
     private Map sharedState;
     private Map options;
@@ -86,24 +88,30 @@ public class JahiaLoginModule implements LoginModule {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
                     if (token != null) {
-                        user = new JahiaPrincipal(SYSTEM, true, false);
+                        principals.add(new JahiaPrincipal(SYSTEM, true, false));
+                        principals.add(new SystemPrincipal());
                     }
                 } else if (name.startsWith(SYSTEM)) {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
                     if (token != null) {
-                        user = new JahiaPrincipal(name.substring(SYSTEM.length()), true, false);
+                        principals.add(new JahiaPrincipal(name.substring(SYSTEM.length()), true, false));
+                        principals.add(new SystemPrincipal());
                     }
                 } else if (GUEST.equals(name)) {
-                    user = new JahiaPrincipal(GUEST, false, true);
+                    principals.add(new JahiaPrincipal(GUEST, false, true));
+                    principals.add(new AnonymousPrincipal());
                 } else {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
                     if ((token != null) || getUserService().checkPassword(name,key)) {
-                        user = new JahiaPrincipal(name);
+                        principals.add(new JahiaPrincipal(name));
+                        if (getUserService().isServerAdmin(name)) {
+                            principals.add(new AdminPrincipal(name));
+                        }
                     }
                 }
-                if (user == null) {
+                if (principals.isEmpty()) {
                     throw new FailedLoginException();
                 }
             }
@@ -112,7 +120,7 @@ public class JahiaLoginModule implements LoginModule {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return user != null;
+        return !principals.isEmpty();
     }
 
     public static Token removeToken(String name, String key) {
@@ -130,17 +138,17 @@ public class JahiaLoginModule implements LoginModule {
     }
 
     public boolean commit() throws LoginException {
-        if (user == null) {
+        if (principals.isEmpty()) {
             return false;
         } else {
             // add a principals (authenticated identities) to the Subject
-            subject.getPrincipals().add(user);
+            subject.getPrincipals().addAll(principals);
             return true;
         }
     }
 
     public boolean abort() throws LoginException {
-        if (user == null) {
+        if (principals.isEmpty()) {
             return false;
         } else {
             logout();
@@ -149,8 +157,8 @@ public class JahiaLoginModule implements LoginModule {
     }
 
     public boolean logout() throws LoginException {
-        subject.getPrincipals().remove(user);
-        user = null;
+        subject.getPrincipals().removeAll(principals);
+        principals.clear();
         return true;
     }
 
@@ -168,14 +176,16 @@ public class JahiaLoginModule implements LoginModule {
         if (username == null) {
             return getSystemCredentials();
         }
-        return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(JahiaLoginModule.SYSTEM + username, null).toCharArray());
+        return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(
+                JahiaLoginModule.SYSTEM + username, null).toCharArray());
     }
 
     public static Credentials getSystemCredentials(String username, List<String> deniedPathes) {
         if (username == null) {
             return getSystemCredentials();
         }
-        return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(JahiaLoginModule.SYSTEM + username, deniedPathes).toCharArray());
+        return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(
+                JahiaLoginModule.SYSTEM + username, deniedPathes).toCharArray());
     }
 
     public static Credentials getGuestCredentials() {

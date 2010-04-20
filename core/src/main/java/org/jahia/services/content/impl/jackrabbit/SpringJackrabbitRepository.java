@@ -45,7 +45,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.api.user.JahiaUserService;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.jaas.JahiaLoginModule;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.core.io.Resource;
 

@@ -34,7 +34,7 @@ package org.jahia.services.content;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
-import org.jahia.jaas.JahiaLoginModule;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;

@@ -1,6 +1,6 @@
 package org.jahia.services.content;
 
-import org.jahia.jaas.JahiaLoginModule;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;

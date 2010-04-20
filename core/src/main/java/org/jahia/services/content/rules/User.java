@@ -31,7 +31,7 @@
  */
 package org.jahia.services.content.rules;
 
-import org.jahia.jaas.JahiaLoginModule;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;

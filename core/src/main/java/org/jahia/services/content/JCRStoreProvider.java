@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.commons.io.IOUtils;
@@ -46,7 +47,6 @@ import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.*;

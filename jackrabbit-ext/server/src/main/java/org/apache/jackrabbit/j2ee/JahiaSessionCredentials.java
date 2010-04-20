@@ -32,7 +32,7 @@
 package org.apache.jackrabbit.j2ee;
 
 import org.apache.jackrabbit.server.BasicCredentialsProvider;
-import org.jahia.jaas.JahiaLoginModule;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 
 import javax.jcr.Credentials;
 import javax.jcr.LoginException;

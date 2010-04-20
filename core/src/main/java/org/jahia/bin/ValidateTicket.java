@@ -31,7 +31,7 @@
  */
 package org.jahia.bin;
 
-import org.jahia.jaas.JahiaLoginModule;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

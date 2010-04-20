@@ -32,14 +32,14 @@
 package org.jahia.services.content.decorator;
 
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.NodeIteratorImpl;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.NodeIterator;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.util.List;
 import java.util.ArrayList;
@@ -60,14 +60,29 @@ public class JCRQueryNode extends JCRNodeDecorator {
 
     public NodeIterator getNodes() {
         try {
-            Query q = getSession().getWorkspace().getQueryManager().getQuery(getRealNode());
-            QueryResult qr = q.execute();
-            NodeIterator ni = qr.getNodes();
-            return ni;
+            final Query q = getSession().getWorkspace().getQueryManager().getQuery(getRealNode());
+            final QueryResult qr = q.execute();
+            final NodeIterator ni = qr.getNodes();
+            if (ni != null) {
+                // TODO try to do it with index aggregates in Jackrabbit's indexing configuration
+                final List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
+                    if (Constants.JCR_CONTENT.equals(n.getName())) {
+                        try {
+                            n = n.getParent();
+                        } catch (ItemNotFoundException e) {
+                            // keep same node
+                        }
+                    }
+                    list.add(n);
+                }
+                return new NodeIteratorImpl(list.iterator(), 0);
+            }
         } catch (RepositoryException e) {
-            logger.debug("Cannot execute query",e);
+            logger.debug("Cannot execute query", e);
         }
-        return new NodeIteratorImpl( new ArrayList<JCRNodeWrapper>().iterator(),0);
+        return new NodeIteratorImpl(new ArrayList<JCRNodeWrapper>().iterator(), 0);
     }
 
 

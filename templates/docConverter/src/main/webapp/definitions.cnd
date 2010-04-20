@@ -1,0 +1,14 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:convertedFile] > jnt:content
+ - originDocName (string)
+ - originDocFormat (string)
+ - convertedDocFormat (string)
+ - convertedDocFile (weakreference) < jnt:file
+ - conversionDate (string)
+ - conversionStatus (string)
+ - conversionStatusMessage (string)
+
+[jnt:documentConversion] > jnt:content, jmix:structuredContent
+ + convertedFiles (jnt:contentList)
+ 

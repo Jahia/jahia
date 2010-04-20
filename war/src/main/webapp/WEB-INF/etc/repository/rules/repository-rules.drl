@@ -47,7 +47,7 @@ rule "Properties extraction"
         A file content has been modified
     then
         Log "Properties extraction fired"
-        Extract the properties from the file
+        Extract properties from the file
 end
 
 // These rules check if some data have been extracted, and then assign type and properties

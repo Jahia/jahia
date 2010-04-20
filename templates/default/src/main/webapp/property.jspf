@@ -32,7 +32,7 @@
 
 --%>
 <div class="property type-${fn:toLowerCase(jcr:propertyTypeName(property.type))}">
-    <span class="label">${fn:escapeXml(jcr:label(property))}:</span>
+    <span class="label">${fn:escapeXml(jcr:label(property,currentResource.locale))}:</span>
 	<span class="value">
         <c:if test="${property.definition.multiple && fn:length(property.values) > 0}">
             <c:forEach items="${property.values}" var="val">

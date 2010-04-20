@@ -28,7 +28,7 @@
                         <p>
                             <span><fmt:message key="navMenu.label.submenu"/></span><br/>
                             <span><fmt:message
-                                    key="navMenu.label.submenu.name"/>&nbsp;${fn:escapeXml(not empty menuItem.properties['jcr:title'].string ? menuItem.properties['jcr:title'].string : jcr:label(menuItem.primaryNodeType))}</span>
+                                    key="navMenu.label.submenu.name"/>&nbsp;${fn:escapeXml(not empty menuItem.properties['jcr:title'].string ? menuItem.properties['jcr:title'].string : jcr:label(menuItem.primaryNodeType, currentResource.locale))}</span>
                         </p>
                     </c:when>
                     <c:when test="${jcr:isNodeType(menuItem, 'jnt:navMenuQuery')}">

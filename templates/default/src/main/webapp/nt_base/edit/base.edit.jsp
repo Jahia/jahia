@@ -40,7 +40,7 @@
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>
-            <label>${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}&nbsp;:</label>
+            <label>${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}&nbsp;:</label>
             <c:choose>
                 <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
                     <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">

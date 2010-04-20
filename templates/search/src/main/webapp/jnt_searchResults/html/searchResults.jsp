@@ -50,7 +50,7 @@
 
 <c:if test="${renderContext.editMode}">
 	<fieldset>
-		<legend>${fn:escapeXml(jcr:label(currentNode.primaryNodeType))}</legend>
+		<legend>${fn:escapeXml(jcr:label(currentNode.primaryNodeType,currentResource.locale))}</legend>
 </c:if>
 <s:results var="resultsHits">
 	<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>

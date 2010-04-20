@@ -99,7 +99,7 @@
     <div class="listEditToolbar">
         <c:forEach items="${types}" var="type" varStatus="status">
             <jcr:nodeType name="${type.string}" var="nodeType"/>
-            <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span class="icon-contribute icon-add"></span>${jcr:labelForLocale(nodeType, renderContext.mainResourceLocale)}</button>
+            <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}</button>
         </c:forEach>
     </div>
 

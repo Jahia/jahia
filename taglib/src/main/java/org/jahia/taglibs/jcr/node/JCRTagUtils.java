@@ -68,16 +68,6 @@ public class JCRTagUtils {
     private static final transient Logger logger = Logger.getLogger(JCRTagUtils.class);
 
     /**
-     * Get the label value depending on the current local
-     *
-     * @param nodeObject
-     * @return
-     */
-    public static String label(Object nodeObject) {
-        return label(nodeObject, Jahia.getThreadParamBean().getLocale());
-    }
-
-    /**
      * Get the node or property display name depending on the locale
      *
      * @param item the item to get the label for

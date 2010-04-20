@@ -70,7 +70,7 @@
 	<c:if test="${param.skipProperties && template == 'tree' && jcr:isNodeType(currentNode, 'nt:resource')}">
 		<jcr:nodeProperty node="${currentNode}" name="jcr:data" var="dataProp"/>
 		<div class="property type-binary">
-			<span class="label">${fn:escapeXml(jcr:label(dataProp.definition))}:</span>
+			<span class="label">${fn:escapeXml(jcr:label(dataProp.definition,currentResource.locale))}:</span>
 			<span class="value">
 				<a href ="<c:url value='${currentNode.parent.url}'/>">&lt;binary&gt;</a>
 			</span>

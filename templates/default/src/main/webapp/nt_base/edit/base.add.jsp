@@ -33,7 +33,7 @@
         <%-- Define the output format for the newly created node by default html or by redirectTo--%>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
         <fieldset>
-            <legend>${jcr:labelForLocale(type,renderContext.mainResourceLocale)}</legend>
+            <legend>${jcr:label(type,renderContext.mainResourceLocale)}</legend>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
                 <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem}">
                     <p class="field">
@@ -57,7 +57,7 @@
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BOOLEAN}">
                                 <label class="left"
-                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
                                 <input type="radio" value="true" class="radio"
                                        id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                        name="${propertyDefinition.name}" checked="true"/><fmt:message key="label.yes"/>
@@ -67,7 +67,7 @@
                             </c:when>
                             <c:otherwise>
                                 <label class="left"
-                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelForLocale(propertyDefinition,renderContext.mainResourceLocale)}</label>
+                                       for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
                                 <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                                        name="${propertyDefinition.name}"/>
                             </c:otherwise>

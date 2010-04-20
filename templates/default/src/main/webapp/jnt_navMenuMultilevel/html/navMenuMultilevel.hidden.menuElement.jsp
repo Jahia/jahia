@@ -37,6 +37,6 @@
 
 <c:if test="${empty menu && renderContext.editMode}">
 	<fieldset>
-		<legend>${fn:escapeXml(not empty title.string ? title.string : jcr:label(currentNode.primaryNodeType))}</legend>
+		<legend>${fn:escapeXml(not empty title.string ? title.string : jcr:label(currentNode.primaryNodeType, currentResource.locale))}</legend>
 	</fieldset>
 </c:if>

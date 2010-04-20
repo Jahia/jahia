@@ -57,7 +57,7 @@
     		</c:if>
     		<c:if test="${option != 'any'}">
     			<jcr:nodeType name="${option}" var="type"/>
-            	<option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>${jcr:label(type)}</option>
+            	<option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>${jcr:label(type,currentResource.locale)}</option>
     		</c:if>
     	</c:forTokens>
     </select>

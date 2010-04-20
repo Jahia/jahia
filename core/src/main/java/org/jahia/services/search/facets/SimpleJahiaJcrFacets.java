@@ -41,6 +41,7 @@ import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.params.FacetParams.FacetDateOther;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
+import org.apache.solr.util.DateMathParser;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -49,13 +50,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Set;
 import java.util.EnumSet;
+import java.util.TimeZone;
 import java.util.TreeSet;
 
 import javax.jcr.NamespaceException;
@@ -78,6 +88,33 @@ public class SimpleJahiaJcrFacets {
     private static final Logger logger = LoggerFactory.getLogger(SimpleJahiaJcrFacets.class);
 
     public static final String SELECTOR_PROPNAME_SEPARATOR = "@";
+    public static final String PROPNAME_INDEX_SEPARATOR = "#";    
+
+    protected static String NOW = "NOW";
+    protected static char Z = 'Z';
+
+    public static TimeZone UTC = TimeZone.getTimeZone("UTC");
+    /** TimeZone for DateMath (UTC) */
+    protected static final TimeZone MATH_TZ = UTC;
+    /** Locale for DateMath (Locale.US) */
+    protected static final Locale MATH_LOCALE = Locale.US;
+
+    /**
+     * Fixed TimeZone (UTC) needed for parsing/formating Dates in the canonical representation.
+     */
+    protected static final TimeZone CANONICAL_TZ = UTC;
+    /**
+     * Fixed Locale needed for parsing/formating Milliseconds in the canonical representation.
+     */
+    protected static final Locale CANONICAL_LOCALE = Locale.US;
+
+    /**
+     * Thread safe DateFormat that can <b>format</b> in the canonical ISO8601 date format, not including the trailing "Z" (since it is left
+     * off in the internal indexed values)
+     */
+    private final static ThreadLocalDateFormat fmtThreadLocal = new ThreadLocalDateFormat(
+            new ISO8601CanonicalDateFormat());
+
     /** The main set of documents all facet counts should be relative to */
     protected OpenBitSet docs;
     /** Configuration params behavior should be driven by */
@@ -162,7 +199,7 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
-    public NamedList<Object> getTermCounts(String selectorName, String field) throws IOException,
+    public NamedList<Object> getTermCounts(String selectorName, String field, String fieldName) throws IOException,
             RepositoryException {
         int offset = params.getFieldInt(field, FacetParams.FACET_OFFSET, 0);
         int limit = params.getFieldInt(field, FacetParams.FACET_LIMIT, 100);
@@ -181,18 +218,18 @@ public class SimpleJahiaJcrFacets {
         String prefix = params.getFieldParam(field, FacetParams.FACET_PREFIX);
 
         NamedList<Object> counts;
-        ExtendedPropertyDefinition epd = getExtendedPropertyDefinition(selectorName, field);
+        ExtendedPropertyDefinition epd = getExtendedPropertyDefinition(selectorName, fieldName);
 
         if (epd.isMultiple() || epd.getIndex() == ExtendedPropertyDefinition.INDEXED_TOKENIZED
                 || epd.getRequiredType() == PropertyType.BOOLEAN) {
             // Always use filters for booleans... we know the number of values is very small.
-            counts = getFacetTermEnumCounts(searcher, docs, field, offset, limit, mincount,
-                    missing, sort, prefix, epd);
+            counts = getFacetTermEnumCounts(searcher, docs, field, getFieldNameInIndex(fieldName, epd), offset, limit, mincount,
+                    missing, sort, prefix);
         } else {
             // TODO: future logic could use filters instead of the fieldcache if
             // the number of terms in the field is small enough.
-            counts = getFieldCacheCounts(searcher, docs, field, offset, limit, mincount, missing,
-                    sort, prefix, epd);
+            counts = getFieldCacheCounts(searcher, docs, getFieldNameInIndex(fieldName, epd), offset, limit, mincount, missing,
+                    sort, prefix);
         }
 
         return counts;
@@ -213,8 +250,11 @@ public class SimpleJahiaJcrFacets {
             for (String f : facetFs) {
                 String selectorName = StringUtils.substringBefore(f, SELECTOR_PROPNAME_SEPARATOR);
                 f = StringUtils.substringAfter(f, SELECTOR_PROPNAME_SEPARATOR);
+                String index = StringUtils.substringAfterLast(f, PROPNAME_INDEX_SEPARATOR);                
+                f = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);                
+               
                 try {
-                    res.add(f, getTermCounts(selectorName, f));
+                    res.add(f, getTermCounts(selectorName, f + index, f));
                 } catch (RepositoryException e) {
                     logger.error("Cant display facets for: " + f, e);
                 }
@@ -253,7 +293,7 @@ public class SimpleJahiaJcrFacets {
      */
     public static NamedList<Object> getFieldCacheCounts(IndexSearcher searcher, OpenBitSet docs,
             String fieldName, int offset, int limit, int mincount, boolean missing, boolean sort,
-            String prefix, ExtendedPropertyDefinition epd) throws IOException {
+            String prefix) throws IOException {
         // TODO: If the number of terms is high compared to docs.size(), and zeros==false,
         // we should use an alternate strategy to avoid
         // 1) creating another huge int[] for the counts
@@ -266,7 +306,7 @@ public class SimpleJahiaJcrFacets {
         // TODO: this function is too big and could use some refactoring, but
         // we also need a facet cache, and refactoring of SimpleFacets instead of
         // trying to pass all the various params around.
-
+        
         NamedList<Object> res = new NamedList<Object>();
 
         FieldCache.StringIndex si = FieldCache.DEFAULT.getStringIndex(searcher.getIndexReader(),
@@ -377,8 +417,8 @@ public class SimpleJahiaJcrFacets {
      * @see FacetParams#FACET_MISSING
      */
     public NamedList<Object> getFacetTermEnumCounts(IndexSearcher searcher, OpenBitSet docs,
-            String field, int offset, int limit, int mincount, boolean missing, boolean sort,
-            String prefix, ExtendedPropertyDefinition epd) throws IOException {
+            String field, String fieldName, int offset, int limit, int mincount, boolean missing, boolean sort,
+            String prefix) throws IOException {
 
         /*
          * :TODO: potential optimization... cache the Terms with the highest docFreq and try them first don't enum if we get our max from
@@ -400,16 +440,6 @@ public class SimpleJahiaJcrFacets {
         int lim = limit >= 0 ? limit : Integer.MAX_VALUE;
 
         String startTerm = prefix == null ? "" : prefix; // ft.toInternal(prefix);
-        String fieldName = field;
-        try {
-            fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(epd.getPrefix(),
-                    epd.getName()));
-            int idx = fieldName.indexOf(':');
-            fieldName = fieldName.substring(0, idx + 1)
-                    + FieldNames.FULLTEXT_PREFIX + fieldName.substring(idx + 1);
-        } catch (NamespaceException e) {
-            // will never happen
-        }
         TermEnum te = r.terms(new Term(fieldName, startTerm));
         TermDocs td = r.termDocs();
 
@@ -485,6 +515,20 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
+    private String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd) {
+        String fieldName = field;
+        try {
+            fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(epd.getPrefix(),
+                    epd.getName()));
+            int idx = fieldName.indexOf(':');
+            fieldName = fieldName.substring(0, idx + 1) + FieldNames.FULLTEXT_PREFIX
+                    + fieldName.substring(idx + 1);
+        } catch (NamespaceException e) {
+            // will never happen
+        }
+        return fieldName;
+    }
+
     /**
      * Returns a list of value constraints and the associated facet counts for each facet date field, range, and interval specified in the
      * SolrParams
@@ -505,76 +549,84 @@ public class SimpleJahiaJcrFacets {
         for (String f : fields) {
             String selectorName = StringUtils.substringBefore(f, SELECTOR_PROPNAME_SEPARATOR);
             f = StringUtils.substringAfter(f, SELECTOR_PROPNAME_SEPARATOR);
+            String index = StringUtils.substringAfterLast(f, PROPNAME_INDEX_SEPARATOR);
+            f = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);                
+            String fieldWithIndex = f + index;
             final NamedList<Object> resInner = new SimpleOrderedMap<Object>();
             resOuter.add(f, resInner);
             ExtendedPropertyDefinition epd = getExtendedPropertyDefinition(selectorName, f);
+            String fieldName = getFieldNameInIndex(f, epd);
             if (!(epd.getRequiredType() == PropertyType.DATE)) {
                 throw new JahiaException("Can not date facet on a field which is not a DateField: "
                         + f, "Can not date facet on a field which is not a DateField: " + f,
                         JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
             }
-            final String startS = required.getFieldParam(f, FacetParams.FACET_DATE_START);
+            final String startS = required.getFieldParam(fieldWithIndex, FacetParams.FACET_DATE_START);
             final Date start;
-            // try {
-            // start = ft.parseMath(NOW, startS);
-            // } catch (SolrException e) {
-            // throw new SolrException(SolrException.ErrorCode.BAD_REQUEST,
-            // "date facet 'start' is not a valid Date string: " + startS, e);
-            // }
-            final String endS = required.getFieldParam(f, FacetParams.FACET_DATE_END);
+            try {
+                start = parseMath(NOW, startS);
+            } catch (JahiaException e) {
+                throw new JahiaException(
+                        "date facet 'start' is not a valid Date string: " + startS,
+                        "date facet 'start' is not a valid Date string: " + startS,
+                        JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY, e);
+            }
+            final String endS = required.getFieldParam(fieldWithIndex, FacetParams.FACET_DATE_END);
             Date end; // not final, hardend may change this
-            // try {
-            // end = ft.parseMath(NOW, endS);
-            // } catch (SolrException e) {
-            // throw new SolrException(SolrException.ErrorCode.BAD_REQUEST,
-            // "date facet 'end' is not a valid Date string: " + endS, e);
-            // }
-            //
-            // if (end.before(start)) {
-            // throw new SolrException(SolrException.ErrorCode.BAD_REQUEST,
-            // "date facet 'end' comes before 'start': " + endS + " < " + startS);
-            // }
-            //
-            final String gap = required.getFieldParam(f, FacetParams.FACET_DATE_GAP);
-            // final DateMathParser dmp = new DateMathParser(ft.UTC, Locale.US);
-            // dmp.setNow(NOW);
+            try {
+                end = parseMath(NOW, endS);
+            } catch (JahiaException e) {
+                throw new JahiaException("date facet 'end' is not a valid Date string: " + endS,
+                        "date facet 'end' is not a valid Date string: " + endS,
+                        JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY, e);
+            }
 
-            // try {
-            //
-            // Date low = start;
-            // while (low.before(end)) {
-            // dmp.setNow(low);
-            // final String lowI = low.toString();
-            // final String label = lowI;
-            // Date high = dmp.parseMath(gap);
-            // if (end.before(high)) {
-            // if (params.getFieldBool(f, FacetParams.FACET_DATE_HARD_END, false)) {
-            // high = end;
-            // } else {
-            // end = high;
-            // }
-            // }
-            // if (high.before(low)) {
-            // throw new JahiaException("date facet infinite loop (is gap negative?)",
-            // "date facet infinite loop (is gap negative?)",
-            // JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
-            // }
-            // final String highI = ft.toInternal(high);
-            // resInner.add(label, rangeCount(f, lowI, highI, true, true));
-            // low = high;
-            // }
-            // } catch (java.text.ParseException e) {
-            // throw new JahiaException(
-            // "date facet 'gap' is not a valid Date Math string: " + gap,
-            // "date facet 'gap' is not a valid Date Math string: " + gap,
-            // JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY, e);
-            // }
-            //
-            // // explicitly return the gap and end so all the counts are meaningful
-            // resInner.add("gap", gap);
-            // resInner.add("end", end);
+            if (end.before(start)) {
+                throw new JahiaException("date facet 'end' comes before 'start': " + endS + " < "
+                        + startS,
+                        "date facet 'end' comes before 'start': " + endS + " < " + startS,
+                        JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
+            }
 
-            final String[] othersP = params.getFieldParams(f, FacetParams.FACET_DATE_OTHER);
+            final String gap = required.getFieldParam(fieldWithIndex, FacetParams.FACET_DATE_GAP);
+            final DateMathParser dmp = new DateMathParser(UTC, Locale.US);
+            dmp.setNow(NOW);
+            try {
+
+                Date low = start;
+                while (low.before(end)) {
+                    dmp.setNow(low);
+                    final String lowI = low.toString();
+                    final String label = lowI;
+                    Date high = dmp.parseMath(gap);
+                    if (end.before(high)) {
+                        if (params.getFieldBool(fieldWithIndex, FacetParams.FACET_DATE_HARD_END, false)) {
+                            high = end;
+                        } else {
+                            end = high;
+                        }
+                    }
+                    if (high.before(low)) {
+                        throw new JahiaException("date facet infinite loop (is gap negative?)",
+                                "date facet infinite loop (is gap negative?)",
+                                JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
+                    }
+                    final String highI = toInternal(high);
+                    resInner.add(label, rangeCount(fieldName, lowI, highI, true, true));
+                    low = high;
+                }
+            } catch (java.text.ParseException e) {
+                throw new JahiaException(
+                        "date facet 'gap' is not a valid Date Math string: " + gap,
+                        "date facet 'gap' is not a valid Date Math string: " + gap,
+                        JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY, e);
+            }
+
+            // explicitly return the gap and end so all the counts are meaningful
+            resInner.add("gap", gap);
+            resInner.add("end", end);
+
+            final String[] othersP = params.getFieldParams(fieldWithIndex, FacetParams.FACET_DATE_OTHER);
             if (null != othersP && 0 < othersP.length) {
                 Set<FacetDateOther> others = EnumSet.noneOf(FacetDateOther.class);
 
@@ -585,23 +637,23 @@ public class SimpleJahiaJcrFacets {
                 // no matter what other values are listed, we don't do
                 // anything if "none" is specified.
                 if (!others.contains(FacetDateOther.NONE)) {
-                    // final String startI = start.toString();
-                    // final String endI = end.toString();
-                    //
-                    // boolean all = others.contains(FacetDateOther.ALL);
-                    //
-                    // if (all || others.contains(FacetDateOther.BEFORE)) {
-                    // resInner.add(FacetDateOther.BEFORE.toString(), rangeCount(f, null, startI,
-                    // false, false));
-                    // }
-                    // if (all || others.contains(FacetDateOther.AFTER)) {
-                    // resInner.add(FacetDateOther.AFTER.toString(), rangeCount(f, endI, null,
-                    // false, false));
-                    // }
-                    // if (all || others.contains(FacetDateOther.BETWEEN)) {
-                    // resInner.add(FacetDateOther.BETWEEN.toString(), rangeCount(f, startI, endI,
-                    // true, true));
-                    // }
+                    final String startI = start.toString();
+                    final String endI = end.toString();
+
+                    boolean all = others.contains(FacetDateOther.ALL);
+
+                    if (all || others.contains(FacetDateOther.BEFORE)) {
+                        resInner.add(FacetDateOther.BEFORE.toString(), rangeCount(fieldName, null, startI,
+                                false, false));
+                    }
+                    if (all || others.contains(FacetDateOther.AFTER)) {
+                        resInner.add(FacetDateOther.AFTER.toString(), rangeCount(fieldName, endI, null,
+                                false, false));
+                    }
+                    if (all || others.contains(FacetDateOther.BETWEEN)) {
+                        resInner.add(FacetDateOther.BETWEEN.toString(), rangeCount(fieldName, startI, endI,
+                                true, true));
+                    }
                 }
             }
         }
@@ -692,6 +744,156 @@ public class SimpleJahiaJcrFacets {
             }
         }
         return foundSelector;
+    }
+
+    /**
+     * Parses a String which may be a date (in the standard format) followed by an optional math expression.
+     * 
+     * @param now
+     *            an optional fixed date to use as "NOW" in the DateMathParser
+     * @param val
+     *            the string to parse
+     */
+    public Date parseMath(Date now, String val) throws JahiaException {
+        String math = null;
+        final DateMathParser p = new DateMathParser(MATH_TZ, MATH_LOCALE);
+
+        if (null != now)
+            p.setNow(now);
+
+        if (val.startsWith(NOW)) {
+            math = val.substring(NOW.length());
+        } else {
+            final int zz = val.indexOf(Z);
+            if (0 < zz) {
+                math = val.substring(zz + 1);
+                try {
+                    p.setNow(toObject(val.substring(0, zz)));
+                } catch (java.text.ParseException e) {
+                    throw new JahiaException("Invalid Date in Date Math String:'" + val + '\'',
+                            "Invalid Date in Date Math String:'" + val + '\'',
+                            JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY, e);
+                }
+            } else {
+                throw new JahiaException("Invalid Date String:'" + val + '\'',
+                        "Invalid Date String:'" + val + '\'', JahiaException.PARAMETER_ERROR,
+                        JahiaException.ERROR_SEVERITY);
+            }
+        }
+
+        if (null == math || math.equals("")) {
+            return p.getNow();
+        }
+
+        try {
+            return p.parseMath(math);
+        } catch (java.text.ParseException e) {
+            throw new JahiaException("Invalid Date Math String:'" + val + '\'',
+                    "Invalid Date Math String:'" + val + '\'', JahiaException.PARAMETER_ERROR,
+                    JahiaException.ERROR_SEVERITY, e);
+        }
+    }
+
+    public Date toObject(String indexedForm) throws java.text.ParseException {
+        return parseDate(indexedToReadable(indexedForm));
+    }
+
+    public String indexedToReadable(String indexedForm) {
+        return indexedForm + Z;
+    }
+
+    /**
+     * Thread safe method that can be used by subclasses to parse a Date that is already in the internal representation
+     */
+    protected Date parseDate(String s) throws java.text.ParseException {
+        return fmtThreadLocal.get().parse(s);
+    }
+
+    private static class ThreadLocalDateFormat extends ThreadLocal<DateFormat> {
+        DateFormat proto;
+
+        public ThreadLocalDateFormat(DateFormat d) {
+            super();
+            proto = d;
+        }
+
+        protected DateFormat initialValue() {
+            return (DateFormat) proto.clone();
+        }
+    }
+
+    private static class ISO8601CanonicalDateFormat extends SimpleDateFormat {
+
+        /** The serialVersionUID. */
+        private static final long serialVersionUID = -2326743191824994338L;
+
+        protected NumberFormat millisParser = NumberFormat.getIntegerInstance(CANONICAL_LOCALE);
+
+        protected NumberFormat millisFormat = new DecimalFormat(".###", new DecimalFormatSymbols(
+                CANONICAL_LOCALE));
+
+        public ISO8601CanonicalDateFormat() {
+            super("yyyy-MM-dd'T'HH:mm:ss", CANONICAL_LOCALE);
+            this.setTimeZone(CANONICAL_TZ);
+        }
+
+        public Date parse(String i, ParsePosition p) {
+            /* delegate to SimpleDateFormat for easy stuff */
+            Date d = super.parse(i, p);
+            int milliIndex = p.getIndex();
+            /* worry aboutthe milliseconds ourselves */
+            if (null != d && -1 == p.getErrorIndex() && milliIndex + 1 < i.length()
+                    && '.' == i.charAt(milliIndex)) {
+                p.setIndex(++milliIndex); // NOTE: ++ to chomp '.'
+                Number millis = millisParser.parse(i, p);
+                if (-1 == p.getErrorIndex()) {
+                    int endIndex = p.getIndex();
+                    d = new Date(d.getTime()
+                            + (long) (millis.doubleValue() * Math.pow(10,
+                                    (3 - endIndex + milliIndex))));
+                }
+            }
+            return d;
+        }
+
+        public StringBuffer format(Date d, StringBuffer toAppendTo, FieldPosition pos) {
+            /* delegate to SimpleDateFormat for easy stuff */
+            super.format(d, toAppendTo, pos);
+            /* worry aboutthe milliseconds ourselves */
+            long millis = d.getTime() % 1000l;
+            if (0l == millis) {
+                return toAppendTo;
+            }
+            int posBegin = toAppendTo.length();
+            toAppendTo.append(millisFormat.format(millis / 1000d));
+            if (DateFormat.MILLISECOND_FIELD == pos.getField()) {
+                pos.setBeginIndex(posBegin);
+                pos.setEndIndex(toAppendTo.length());
+            }
+            return toAppendTo;
+        }
+
+        public Object clone() {
+            ISO8601CanonicalDateFormat c = (ISO8601CanonicalDateFormat) super.clone();
+            c.millisParser = NumberFormat.getIntegerInstance(CANONICAL_LOCALE);
+            c.millisFormat = new DecimalFormat(".###", new DecimalFormatSymbols(CANONICAL_LOCALE));
+            return c;
+        }
+    }
+
+    public String toInternal(String val) throws JahiaException {
+        return toInternal(parseMath(null, val));
+    }
+
+    public String toInternal(Date val) {
+        return formatDate(val);
+    }
+
+    /**
+     * Thread safe method that can be used by subclasses to format a Date using the Internal representation.
+     */
+    protected String formatDate(Date d) {
+        return fmtThreadLocal.get().format(d);
     }
 
 }

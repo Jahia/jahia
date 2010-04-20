@@ -16,6 +16,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.RowIterator;
 import javax.jcr.query.qom.Column;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.ItemManager;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.security.AccessManager;
@@ -118,6 +119,8 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
      */
     private static final Name REP_FACET_LPAR = NameFactoryImpl.getInstance().create(
             Name.NS_REP_URI, FACET_FUNC_LPAR);
+    
+    private static final String FIELD_SPECIFIC_PREFIX = "f.";
 
     public JahiaMultiColumnQueryResult(SearchIndex index, ItemManager itemMgr, SessionImpl session,
             AccessManager accessMgr, AbstractQueryImpl queryImpl, MultiColumnQuery query,
@@ -270,12 +273,38 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         IndexSearcher searcher = new IndexSearcher(reader);
         NamedList<Object> res = null;
         try {
+            String facetFunctionPrefix = session.getJCRName(REP_FACET_LPAR);
             NamedList<Object> parameters = new NamedList<Object>();
+            int counter = 0;
             for (Column column : columns.values()) {
                 if (isFacetFunction(column.getColumnName())) {
                     parameters.add(FacetParams.FACET_FIELD, column.getSelectorName()
                             + SimpleJahiaJcrFacets.SELECTOR_PROPNAME_SEPARATOR
-                            + column.getPropertyName());
+                            + column.getPropertyName()
+                            + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter);
+                    String facetOptions = StringUtils.substring(column.getColumnName(), StringUtils
+                            .indexOf(column.getColumnName(), facetFunctionPrefix)
+                            + facetFunctionPrefix.length(), StringUtils.lastIndexOf(column
+                            .getColumnName(), ")"));
+                    String propertyName = column.getPropertyName() + counter;                    
+                    for (String option : StringUtils.split(facetOptions, "&")) {
+                        String key = StringUtils.substringBefore(option, "=");
+                        String value = StringUtils.substringAfter(option, "=");
+                        int index = 0;
+                        if (StringUtils.startsWith(key, FIELD_SPECIFIC_PREFIX)) {
+                            index = FIELD_SPECIFIC_PREFIX.length() + StringUtils.substringBetween(key, ".", ".").length() + 1;
+                        }
+                        int indexOfFacetPrefix = StringUtils.indexOf(key, FacetParams.FACET + ".",
+                                index);
+                        if (indexOfFacetPrefix == index) {
+                            index = FacetParams.FACET.length() + 1;
+                        }
+
+                        parameters.add(FIELD_SPECIFIC_PREFIX + propertyName + "."
+                                + FacetParams.FACET + "." + StringUtils.substring(key, index),
+                                value);
+                    }
+                    counter++;
                 }
             }
 
@@ -556,7 +585,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
      */
     private boolean isFacetFunction(String name) {
         try {
-            return name.startsWith(session.getJCRName(REP_FACET_LPAR));
+            return name.trim().startsWith(session.getJCRName(REP_FACET_LPAR));
         } catch (NamespaceException e) {
             // will never happen
             return false;

@@ -97,7 +97,7 @@
         });
     });
 </script>
-<s:form method="get" class="simplesearchform">
+<s:form method="get" class="simplesearchform" action="${url.base}${currentNode.properties.result.node.path}.html">
 
 		<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 		<c:if test="${not empty title.string}">

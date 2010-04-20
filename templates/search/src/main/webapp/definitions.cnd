@@ -5,6 +5,7 @@
 [jmix:searchFormContent] > jmix:droppableContent mixin
 
 [jnt:simpleSearchForm] > jnt:content, mix:title, jmix:searchFormContent
+- result (weakreference) < jnt:page
 
 [jnt:advancedSearchForm] > jnt:content, mix:title, jmix:searchFormContent
 

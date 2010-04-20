@@ -253,7 +253,11 @@
                 </entry>
 
                 <entry key="image/jpeg">
-                    <bean class="org.jahia.services.content.rules.ExifExtractor"/>
+                    <bean class="org.jahia.services.content.rules.JpegExtractor"/>
+                </entry>
+
+                <entry key="image/tiff">
+                    <bean class="org.jahia.services.content.rules.TiffExtractor"/>
                 </entry>
 
                 <entry key="application/pdf">

@@ -553,7 +553,7 @@
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>org.jahia.templates</groupId>
             <artifactId>poll</artifactId>
             <version>${jahia.package.version}</version>
@@ -596,7 +596,7 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
-            <version>4.0.3</version>
+            <version>4.0.7</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
@@ -876,6 +876,14 @@
               <exclusion>
                   <groupId>commons-collections</groupId>
                   <artifactId>commons-collections</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>net.sf.ehcache</groupId>
+                  <artifactId>ehcache</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>jdom</groupId>
+                  <artifactId>jdom</artifactId>
               </exclusion>
           </exclusions>
         </dependency>

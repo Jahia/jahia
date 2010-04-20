@@ -42,13 +42,12 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 
 /**
- * Created by IntelliJ IDEA.
+ * Extracts properties from a JPEG file.
  * User: toto
  * Date: 3 août 2007
  * Time: 15:15:56
- * To change this template use File | Settings | File Templates.
  */
-public class ExifExtractor implements Extractor {
+public class JpegExtractor implements Extractor {
 
     public Map<String, Object> extract(InputStream content) throws Exception {
         Map<String, Object> m = new HashMap<String, Object>();

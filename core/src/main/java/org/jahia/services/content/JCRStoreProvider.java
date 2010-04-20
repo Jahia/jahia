@@ -408,8 +408,12 @@ public class JCRStoreProvider {
             List<JCRNodeWrapper> result = queryFolders(session, "select * from [jnt:mountPoint]");
             for (JCRNodeWrapper mountPointNode : result) {
                 if (mountPointNode instanceof JCRMountPointNode) {
-                    ((JCRMountPointNode) mountPointNode).checkValidity();
-                    logger.info("Registered mount point: " + mountPointNode.getPath());
+                    try {
+                        ((JCRMountPointNode) mountPointNode).checkValidity();
+                        logger.info("Registered mount point: " + mountPointNode.getPath());
+                    } catch (Exception e) {
+                        logger.error("Unable to register dynamic mount point for path " + mountPointNode.getPath(), e);
+                    }
                 }
             }
         } catch (RepositoryException e) {

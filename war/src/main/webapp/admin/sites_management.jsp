@@ -230,19 +230,19 @@
                             src="<%=URL%>images/icons/admin/adromeda/edit.png"
                             alt="<fmt:message key='label.edit'/>"
                             title="<fmt:message key='label.edit'/>" width="16"
-                            height="16" border="0"/></a>&nbsp;<a href="#delete"
+                            height="16" border="0" style="cursor: pointer;"/></a>&nbsp;<a href="#delete"
                                                                  onclick="sendDeleteForm('<%=site.getSiteKey()%>'); return false;"
                                                                  title="<fmt:message key='label.delete'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/delete.png"
                         alt="<fmt:message key='label.delete'/>"
                         title="<fmt:message key='label.delete'/>" width="16"
-                        height="16" border="0"/></a>&nbsp;<% if (homeContentPage != null) { %>
-                    &nbsp;<a href="#export" onclick="sendExportForm('<%=site.getSiteKey()%>'); return false;"
+                        height="16" border="0" style="cursor: pointer;"/></a>&nbsp;
+                        <a href="#export" onclick="sendExportForm('<%=site.getSiteKey()%>'); return false;"
                              title="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/export1.png"
                         alt="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"
                         title="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"
-                        width="16" height="16" border="0"/></a><% } %>
+                        width="16" height="16" border="0" style="cursor: pointer;"/></a>
                 </td>
             </tr>
             <%

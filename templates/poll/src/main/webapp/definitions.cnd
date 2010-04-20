@@ -2,12 +2,12 @@
 
 [jnt:answer] > jnt:content
  - label (string)
- - nbOfVotes (long) = 0  autocreated
+ - nbOfVotes (long) = 0  hidden autocreated
 
 [jnt:poll] > jnt:content, mix:title, jmix:structuredContent
  - question (string) mandatory
  + answers (jnt:contentList)
- - totalOfVotes (long) = 0  autocreated
+ - totalOfVotes (long) = 0  hidden autocreated
 
 
 

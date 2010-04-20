@@ -13,16 +13,12 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 
-import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.query.qom.QueryObjectModelFactory;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -94,6 +90,7 @@ public class FacetedSearchTest extends TestCase {
         createEvent(node, SHOW, GENEVA);
         createEvent(node, SHOW, GENEVA);
         createEvent(node, SHOW, GENEVA);
+        createEvent(node, SHOW, GENEVA);
         createEvent(node, PRESS_CONFERENCE, PARIS);
         createEvent(node, PRESS_CONFERENCE, PARIS);
         createEvent(node, PRESS_CONFERENCE, PARIS);
@@ -104,40 +101,99 @@ public class FacetedSearchTest extends TestCase {
         session.save();
 
         try {
-            QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
-            QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
-            qomBuilder.setSource(factory.selector("jnt:event", "event"));
-            qomBuilder.getColumns().add(factory.column("event", "eventsType", "rep:facet()"));
-//            qomBuilder.getColumns().add(factory.column("event", "location", "rep:facet()"));
+            FacetField field;
+            QueryResultWrapper res;
 
-            QueryObjectModel qom  = qomBuilder.createQOM();
-            QueryResultWrapper res = (QueryResultWrapper) qom.execute();
+            // check facets
+            res = doQuery(session, "rep:facet()");
+            checkResultSize(res, 27);
+            field = res.getFacetField("eventsType");
 
-            List<FacetField> fields = (res.getFacetFields());
-            Map<String, Long> facets = new HashMap<String, Long>();
-            for (FacetField field : fields) {
-                for (FacetField.Count count : field.getValues()) {
-                    facets.put(field.getName()+"-"+count.getName(), count.getCount());
-                }
+            assertEquals("Query did not return correct number of facets",6,field.getValues().size());
+            Iterator<FacetField.Count> counts = field.getValues().iterator();
 
+            checkFacet(counts.next(), SHOW, 7);
+            checkFacet(counts.next(), PRESS_CONFERENCE, 6);
+            checkFacet(counts.next(), CONFERENCE, 5);
+            checkFacet(counts.next(), ROAD_SHOW, 4);
+            checkFacet(counts.next(), CONSUMER_SHOW, 3);
+            checkFacet(counts.next(), MEETING, 2);
+
+            for (FacetField.Count count : field.getValues()) {
+                QueryResultWrapper resCheck = doFilteredQuery(session, count.getName());
+                checkResultSize(resCheck, (int) count.getCount());                
             }
-            assertEquals("",2, facets.get("eventsType-"+MEETING.toLowerCase()).intValue());
-            assertEquals("",3, facets.get("eventsType-"+CONSUMER_SHOW.toLowerCase()).intValue());
-            assertEquals("",4, facets.get("eventsType-"+ROAD_SHOW.toLowerCase()).intValue());
-            assertEquals("",5, facets.get("eventsType-"+CONFERENCE.toLowerCase()).intValue());
-            assertEquals("",6, facets.get("eventsType-"+SHOW.toLowerCase()).intValue());
-            assertEquals("",6, facets.get("eventsType-"+PRESS_CONFERENCE.toLowerCase()).intValue());
 
-            NodeIterator ni = res.getNodes();
-            List<JCRNodeWrapper> results = new ArrayList<JCRNodeWrapper>();
-            while (ni.hasNext()) {
-                results.add((JCRNodeWrapper) ni.next());
-            }
-            assertEquals("",26, results.size());
+            // test facet options : prefix
+            res = doQuery(session, "rep:facet(prefix=c)");
+            field = res.getFacetField("eventsType");
+            assertEquals("Query did not return correct number of facets",2,field.getValues().size());
+            counts = field.getValues().iterator();
+
+            checkFacet(counts.next(), CONFERENCE, 5);
+            checkFacet(counts.next(), CONSUMER_SHOW, 3);
+
+            // test facet options : sort=false  - lexicographic order
+            res = doQuery(session, "rep:facet(sort=false)");
+            field = res.getFacetField("eventsType");
+
+            assertEquals("Query did not return correct number of facets",6,field.getValues().size());
+            counts = field.getValues().iterator();
+
+            checkFacet(counts.next(), CONFERENCE, 5);
+            checkFacet(counts.next(), CONSUMER_SHOW, 3);
+            checkFacet(counts.next(), MEETING, 2);
+            checkFacet(counts.next(), PRESS_CONFERENCE, 6);
+            checkFacet(counts.next(), ROAD_SHOW, 4);
+            checkFacet(counts.next(), SHOW, 7);
 
         } catch (RepositoryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    private QueryResultWrapper doQuery(JCRSessionWrapper session, final String facet)
+            throws RepositoryException {
+        QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
+        QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
+
+        qomBuilder.setSource(factory.selector("jnt:event", "event"));
+        qomBuilder.getColumns().add(factory.column("event", "eventsType", facet));
+
+        QueryObjectModel qom  = qomBuilder.createQOM();
+        QueryResultWrapper res = (QueryResultWrapper) qom.execute();
+        return res;
+    }
+
+    private QueryResultWrapper doFilteredQuery(JCRSessionWrapper session, final String value)
+            throws RepositoryException {
+        QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
+        QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
+
+        qomBuilder.setSource(factory.selector("jnt:event", "event"));
+
+        qomBuilder.andConstraint(factory.comparison(factory.propertyValue("event", "eventsType"),
+                QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
+                factory.literal(session.getValueFactory().createValue(value))));
+
+        QueryObjectModel qom  = qomBuilder.createQOM();
+        QueryResultWrapper res = (QueryResultWrapper) qom.execute();
+        return res;
+    }
+
+    private void checkResultSize(QueryResultWrapper res, final int expected) throws RepositoryException {
+        // check total results
+        NodeIterator ni = res.getNodes();
+        List<JCRNodeWrapper> results = new ArrayList<JCRNodeWrapper>();
+        while (ni.hasNext()) {
+            results.add((JCRNodeWrapper) ni.next());
+        }
+        assertEquals("", expected, results.size());
+    }
+
+    private void checkFacet(FacetField.Count c, final String name, final int count) {
+        assertEquals("Facet are not correctly ordered or has incorrect name", name, c.getName());
+        assertEquals("Facet count is incorrect", count, c.getCount());
     }
 
     private void createEvent(JCRNodeWrapper node, final String eventType, String location) throws RepositoryException {

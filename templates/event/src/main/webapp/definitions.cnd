@@ -1,7 +1,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:event] > jnt:content, jmix:structuredContent, mix:title
- - startDate (date)
+ - startDate (date) facetable
  - endDate (date)
  - location (string) i18n facetable
  - eventsType (string, choicelist[resourceBundle]) facetable  < meeting,consumerShow,roadShow,conference,show,pressConference

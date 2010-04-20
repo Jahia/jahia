@@ -128,8 +128,15 @@ public class NavigationHelper {
         if (!node.hasPermission(JCRNodeWrapper.READ)) {
             throw new GWTJahiaServiceException(new StringBuilder("User ").append(currentUserSession.getUser().getUsername()).append(" has no read access to ").append(node.getName()).toString());
         }
-        List<JCRNodeWrapper> list = node.getChildren();
-        if (list == null) {
+        //List<JCRNodeWrapper> childrenNodes = getNodesAsList(node);
+         NodeIterator nodesIterator = null;
+        try {
+            nodesIterator = node.getNodes();
+        } catch (RepositoryException e) {
+            logger.error(e,e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        if (nodesIterator == null) {
             throw new GWTJahiaServiceException("Children list is null");
         }
         if (nodeTypes == null) {
@@ -140,7 +147,10 @@ public class NavigationHelper {
         String[] filtersToApply = getFiltersToApply(filters);
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         boolean displayTags = nodeTypes != null && nodeTypes.contains(JCRClientUtils.TAG_NODETYPES);
-        for (JCRNodeWrapper f : list) {
+
+        while (nodesIterator.hasNext()) {
+            JCRNodeWrapper f = (JCRNodeWrapper) nodesIterator.nextNode();
+            // for (JCRNodeWrapper f : childrenNodes) {
             if (logger.isDebugEnabled()) {
                 logger.debug(new StringBuilder("processing ").append(f.getPath()).toString());
             }
@@ -392,13 +402,13 @@ public class NavigationHelper {
                 } else if (key.equals(JCRClientUtils.SITE_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/sites", currentUserSession);
                     if (root != null) {
-                        List<GWTJahiaNode> list = ls(root, "jnt:virtualsite", null,null,false,false, currentUserSession);
+                        List<GWTJahiaNode> list = ls(root, "jnt:virtualsite", null, null, false, false, currentUserSession);
                         userNodes.addAll(list);
                     }
                 } else if (key.equals(JCRClientUtils.TEMPLATES_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/templatesSet", currentUserSession);
                     if (root != null) {
-                        List<GWTJahiaNode> list = ls(root, "jnt:templatesSetFolder", null,null,false,false, currentUserSession);
+                        List<GWTJahiaNode> list = ls(root, "jnt:templatesSetFolder", null, null, false, false, currentUserSession);
                         userNodes.addAll(list);
                     }
                 } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
@@ -408,7 +418,7 @@ public class NavigationHelper {
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
             }
         }
         List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>(userNodes);
@@ -714,8 +724,27 @@ public class NavigationHelper {
             hasChildren = true;
             hasFolderChildren = true;
         } else if (!node.isFile()) {
+            try {
+                final NodeIterator nodesIterator = node.getNodes();
+                while (nodesIterator.hasNext()) {
+                    JCRNodeWrapper w = (JCRNodeWrapper) nodesIterator.nextNode();
+                    try {
+                        hasChildren = true;
+                        if (w.isCollection() || w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
+                            hasFolderChildren = true;
+                            break;
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.error(e, e);
+            }
+
+
             // TODO consider current node types, mime types and filters when checking for children
-            for (JCRNodeWrapper w : node.getChildren()) {
+            /*for (JCRNodeWrapper w : getNodesAsList(node)) {
                 try {
                     hasChildren = true;
                     if (w.isCollection() || w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
@@ -725,7 +754,7 @@ public class NavigationHelper {
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
-            }
+            }*/
         }
         n.setHasChildren(hasChildren);
         n.setHasFolderChildren(hasFolderChildren);
@@ -859,7 +888,7 @@ public class NavigationHelper {
                 n.setUrl(node.getUrl() + "?v=" + v.getName());
                 GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime(), null);
                 jahiaNodeVersion.setNode(n);
-                
+
                 versions.add(jahiaNodeVersion);
             }
         }
@@ -931,6 +960,28 @@ public class NavigationHelper {
 
     public Map<String, String> getNodetypeIcons() {
         return nodetypeIcons;
+    }
+
+    /**
+     * Get children node as list: ToDo: remove this method and call directly getNodes() when nested for better performance
+     *
+     * @return
+     */
+    public List<JCRNodeWrapper> getNodesAsList(Node node) {
+        try {
+            if (node == null) {
+                return null;
+            }
+            NodeIterator nodesIterator = node.getNodes();
+            final List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
+            while (nodesIterator.hasNext()) {
+                list.add((JCRNodeWrapper) nodesIterator.next());
+            }
+            return list;
+        } catch (RepositoryException e) {
+            logger.error(e, e);
+            return null;
+        }
     }
 
 

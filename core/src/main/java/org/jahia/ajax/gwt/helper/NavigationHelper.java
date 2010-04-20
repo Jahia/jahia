@@ -402,13 +402,13 @@ public class NavigationHelper {
                 } else if (key.equals(JCRClientUtils.SITE_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/sites", currentUserSession);
                     if (root != null) {
-                        List<GWTJahiaNode> list = ls(root, "jnt:virtualsite", null, null, false, false, currentUserSession);
+                        List<GWTJahiaNode> list = ls(root, "jnt:virtualsite", null,null,false,false, currentUserSession);
                         userNodes.addAll(list);
                     }
                 } else if (key.equals(JCRClientUtils.TEMPLATES_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/templatesSet", currentUserSession);
                     if (root != null) {
-                        List<GWTJahiaNode> list = ls(root, "jnt:templatesSetFolder", null, null, false, false, currentUserSession);
+                        List<GWTJahiaNode> list = ls(root, "jnt:templatesSetFolder", null,null,false,false, currentUserSession);
                         userNodes.addAll(list);
                     }
                 } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
@@ -418,7 +418,7 @@ public class NavigationHelper {
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+                logger.error(e.getMessage(),e);
             }
         }
         List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>(userNodes);
@@ -595,9 +595,10 @@ public class NavigationHelper {
                 }
             }
             if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
-                // use for pickers 
-                boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n.isFile(), n.getFileContent().getContentType(), mimeTypesToMatch);
-                if (n.isCollection() || matchFilter) {
+                // use for pickers
+                boolean isFile = n.isFile();
+                boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(isFile, isFile ? n.getFileContent().getContentType() : null, mimeTypesToMatch);
+                if (matchFilter || n.isCollection()) {
                     GWTJahiaNode node = getGWTJahiaNode(n);
                     node.setMatchFilters(matchFilter);
                     result.add(node);
@@ -755,7 +756,7 @@ public class NavigationHelper {
                     logger.error(e.getMessage(), e);
                 }
             }*/
-        }
+            }
         n.setHasChildren(hasChildren);
         n.setHasFolderChildren(hasFolderChildren);
 
@@ -888,7 +889,7 @@ public class NavigationHelper {
                 n.setUrl(node.getUrl() + "?v=" + v.getName());
                 GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime(), null);
                 jahiaNodeVersion.setNode(n);
-
+                
                 versions.add(jahiaNodeVersion);
             }
         }

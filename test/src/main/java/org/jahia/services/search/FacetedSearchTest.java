@@ -48,6 +48,11 @@ public class FacetedSearchTest extends TestCase {
         try {
             site = TestHelper.createSite(TESTSITE_NAME);
             assertNotNull(site);
+
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                    LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+            initContent(session);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
         }
@@ -62,121 +67,188 @@ public class FacetedSearchTest extends TestCase {
         }
     }
 
-    public void testFacets() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+    public void testSimpleFacets() throws Exception {
 
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-        JCRNodeWrapper node = session.getNode("/sites/jcrFacetTest/contents");
-        i = 0;
-        createEvent(node, MEETING, PARIS);
-        createEvent(node, MEETING, GENEVA);
-        createEvent(node, CONSUMER_SHOW, PARIS);
-        createEvent(node, CONSUMER_SHOW, PARIS);
-        createEvent(node, CONSUMER_SHOW, GENEVA);
-        createEvent(node, ROAD_SHOW, PARIS);
-        createEvent(node, ROAD_SHOW, PARIS);
-        createEvent(node, ROAD_SHOW, GENEVA);
-        createEvent(node, ROAD_SHOW, GENEVA);
-        createEvent(node, CONFERENCE, PARIS);
-        createEvent(node, CONFERENCE, PARIS);
-        createEvent(node, CONFERENCE, PARIS);
-        createEvent(node, CONFERENCE, GENEVA);
-        createEvent(node, CONFERENCE, GENEVA);
-        createEvent(node, SHOW, PARIS);
-        createEvent(node, SHOW, PARIS);
-        createEvent(node, SHOW, PARIS);
-        createEvent(node, SHOW, GENEVA);
-        createEvent(node, SHOW, GENEVA);
-        createEvent(node, SHOW, GENEVA);
-        createEvent(node, SHOW, GENEVA);
-        createEvent(node, PRESS_CONFERENCE, PARIS);
-        createEvent(node, PRESS_CONFERENCE, PARIS);
-        createEvent(node, PRESS_CONFERENCE, PARIS);
-        createEvent(node, PRESS_CONFERENCE, PARIS);
-        createEvent(node, PRESS_CONFERENCE, GENEVA);
-        createEvent(node, PRESS_CONFERENCE, GENEVA);
+        FacetField field;
+        QueryResultWrapper res;
 
-        session.save();
+        // check facets
+        res = doQuery(session, "eventsType", "rep:facet()");
+        checkResultSize(res, 27);
+        field = res.getFacetField("eventsType");
 
-        try {
-            FacetField field;
-            QueryResultWrapper res;
+        assertEquals("Query did not return correct number of facets", 6, field.getValues().size());
+        Iterator<FacetField.Count> counts = field.getValues().iterator();
 
-            // check facets
-            res = doQuery(session, "rep:facet()");
-            checkResultSize(res, 27);
-            field = res.getFacetField("eventsType");
+        checkFacet(counts.next(), SHOW, 7);
+        checkFacet(counts.next(), PRESS_CONFERENCE, 6);
+        checkFacet(counts.next(), CONFERENCE, 5);
+        checkFacet(counts.next(), ROAD_SHOW, 4);
+        checkFacet(counts.next(), CONSUMER_SHOW, 3);
+        checkFacet(counts.next(), MEETING, 2);
 
-            assertEquals("Query did not return correct number of facets",6,field.getValues().size());
-            Iterator<FacetField.Count> counts = field.getValues().iterator();
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doFilteredQuery(session, "eventsType", count.getName());
+            checkResultSize(resCheck, (int) count.getCount());
+        }
 
-            checkFacet(counts.next(), SHOW, 7);
-            checkFacet(counts.next(), PRESS_CONFERENCE, 6);
-            checkFacet(counts.next(), CONFERENCE, 5);
-            checkFacet(counts.next(), ROAD_SHOW, 4);
-            checkFacet(counts.next(), CONSUMER_SHOW, 3);
-            checkFacet(counts.next(), MEETING, 2);
+        // test facet options : prefix
+        res = doQuery(session, "eventsType", "rep:facet(prefix=c)");
+        field = res.getFacetField("eventsType");
+        assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
+        counts = field.getValues().iterator();
 
-            for (FacetField.Count count : field.getValues()) {
-                QueryResultWrapper resCheck = doFilteredQuery(session, count.getName());
-                checkResultSize(resCheck, (int) count.getCount());                
-            }
+        checkFacet(counts.next(), CONFERENCE, 5);
+        checkFacet(counts.next(), CONSUMER_SHOW, 3);
 
-            // test facet options : prefix
-            res = doQuery(session, "rep:facet(prefix=c)");
-            field = res.getFacetField("eventsType");
-            assertEquals("Query did not return correct number of facets",2,field.getValues().size());
-            counts = field.getValues().iterator();
+        // test facet options : sort=false  - lexicographic order
+        res = doQuery(session, "eventsType", "rep:facet(sort=false)");
+        field = res.getFacetField("eventsType");
 
-            checkFacet(counts.next(), CONFERENCE, 5);
-            checkFacet(counts.next(), CONSUMER_SHOW, 3);
+        assertEquals("Query did not return correct number of facets", 6, field.getValues().size());
+        counts = field.getValues().iterator();
 
-            // test facet options : sort=false  - lexicographic order
-            res = doQuery(session, "rep:facet(sort=false)");
-            field = res.getFacetField("eventsType");
+        checkFacet(counts.next(), CONFERENCE, 5);
+        checkFacet(counts.next(), CONSUMER_SHOW, 3);
+        checkFacet(counts.next(), MEETING, 2);
+        checkFacet(counts.next(), PRESS_CONFERENCE, 6);
+        checkFacet(counts.next(), ROAD_SHOW, 4);
+        checkFacet(counts.next(), SHOW, 7);
 
-            assertEquals("Query did not return correct number of facets",6,field.getValues().size());
-            counts = field.getValues().iterator();
+    }
+    public void testDateFacets() throws Exception {
 
-            checkFacet(counts.next(), CONFERENCE, 5);
-            checkFacet(counts.next(), CONSUMER_SHOW, 3);
-            checkFacet(counts.next(), MEETING, 2);
-            checkFacet(counts.next(), PRESS_CONFERENCE, 6);
-            checkFacet(counts.next(), ROAD_SHOW, 4);
-            checkFacet(counts.next(), SHOW, 7);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-        } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        FacetField field;
+        QueryResultWrapper res;
+
+        // test date facets
+        res = doQuery(session, "startDate", "rep:facet()");
+        field = res.getFacetField("startDate");
+
+        assertEquals("Query did not return correct number of facets", 9, field.getValues().size());
+        Iterator<FacetField.Count> counts = field.getValues().iterator();
+
+        res = doQuery(session, "startDate", "rep:facet(date.gap=+1MONTH)");
+        field = res.getFacetField("startDate");
+
+        assertEquals("Query did not return correct number of facets", 3, field.getValues().size());
+        counts = field.getValues().iterator();
+
+        res = doQuery(session, "startDate", "rep:facet(date.gap=+1YEAR)");
+        field = res.getFacetField("startDate");
+
+        assertEquals("Query did not return correct number of facets", 1, field.getValues().size());
+        counts = field.getValues().iterator();
+    }
+
+    public void testI18NFacets() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        FacetField field;
+        QueryResultWrapper res;
+
+        // test i18n facets
+        res = doQuery(session, "location", "rep:facet()");
+        field = res.getFacetField("location");
+
+        assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
+        Iterator<FacetField.Count> counts = field.getValues().iterator();
+
+        checkFacet(counts.next(), GENEVA, 15);
+        checkFacet(counts.next(), PARIS, 12);
+
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doFilteredQuery(session, "location", count.getName());
+            checkResultSize(resCheck, (int) count.getCount());
         }
     }
 
-    private QueryResultWrapper doQuery(JCRSessionWrapper session, final String facet)
-            throws RepositoryException {
+    private void initContent(JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper node = session.getNode("/sites/jcrFacetTest/contents");
+        i = 0;
+        Calendar calendar = new GregorianCalendar(2000, 1, 1);
+        createEvent(node, MEETING, PARIS, calendar);
+        createEvent(node, MEETING, GENEVA, calendar);
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        createEvent(node, CONSUMER_SHOW, PARIS, calendar);
+        createEvent(node, CONSUMER_SHOW, PARIS, calendar);
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        createEvent(node, CONSUMER_SHOW, GENEVA, calendar);
+        createEvent(node, ROAD_SHOW, PARIS, calendar);
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        createEvent(node, ROAD_SHOW, PARIS, calendar);
+        createEvent(node, ROAD_SHOW, GENEVA, calendar);
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        createEvent(node, ROAD_SHOW, GENEVA, calendar);
+        createEvent(node, CONFERENCE, PARIS, calendar);
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        createEvent(node, CONFERENCE, PARIS, calendar);
+        createEvent(node, CONFERENCE, PARIS, calendar);
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        createEvent(node, CONFERENCE, GENEVA, calendar);
+        createEvent(node, CONFERENCE, GENEVA, calendar);
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        createEvent(node, SHOW, PARIS, calendar);
+        createEvent(node, SHOW, PARIS, calendar);
+        calendar.add(Calendar.DAY_OF_MONTH, 5);
+        createEvent(node, SHOW, PARIS, calendar);
+        createEvent(node, SHOW, GENEVA, calendar);
+        createEvent(node, SHOW, GENEVA, calendar);
+        createEvent(node, SHOW, GENEVA, calendar);
+        createEvent(node, SHOW, GENEVA, calendar);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar);
+        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar);
+        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar);
+
+        session.save();
+    }
+
+    private QueryResultWrapper doQuery(JCRSessionWrapper session, final String... facet) throws RepositoryException {
         QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
         QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
 
         qomBuilder.setSource(factory.selector("jnt:event", "event"));
-        qomBuilder.getColumns().add(factory.column("event", "eventsType", facet));
 
-        QueryObjectModel qom  = qomBuilder.createQOM();
+        for (int j = 0; j < facet.length; j++) {
+            String prop = facet[j++];
+            String col = facet[j];
+            qomBuilder.getColumns().add(factory.column("event", prop, col));
+        }
+
+        QueryObjectModel qom = qomBuilder.createQOM();
         QueryResultWrapper res = (QueryResultWrapper) qom.execute();
         return res;
     }
 
-    private QueryResultWrapper doFilteredQuery(JCRSessionWrapper session, final String value)
+    private QueryResultWrapper doFilteredQuery(JCRSessionWrapper session, final String... constraints)
             throws RepositoryException {
         QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
         QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
 
         qomBuilder.setSource(factory.selector("jnt:event", "event"));
 
-        qomBuilder.andConstraint(factory.comparison(factory.propertyValue("event", "eventsType"),
-                QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
-                factory.literal(session.getValueFactory().createValue(value))));
+        for (int j = 0; j < constraints.length; j++) {
+            String prop = constraints[j++];
+            String val = constraints[j];
 
-        QueryObjectModel qom  = qomBuilder.createQOM();
+            qomBuilder.andConstraint(factory.comparison(factory.propertyValue("event", prop),
+                    QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
+                    factory.literal(session.getValueFactory().createValue(val))));
+        }
+
+
+        QueryObjectModel qom = qomBuilder.createQOM();
         QueryResultWrapper res = (QueryResultWrapper) qom.execute();
         return res;
     }
@@ -196,12 +268,14 @@ public class FacetedSearchTest extends TestCase {
         assertEquals("Facet count is incorrect", count, c.getCount());
     }
 
-    private void createEvent(JCRNodeWrapper node, final String eventType, String location) throws RepositoryException {
+    private void createEvent(JCRNodeWrapper node, final String eventType, String location, Calendar calendar)
+            throws RepositoryException {
         final String name = eventType + (i++);
         final JCRNodeWrapper event = node.addNode(name, "jnt:event");
         event.setProperty("jcr:title", name);
         event.setProperty("eventsType", eventType);
         event.setProperty("location", location);
+        event.setProperty("startDate", calendar);
     }
 
 

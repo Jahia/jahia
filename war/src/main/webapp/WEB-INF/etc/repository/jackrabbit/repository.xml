@@ -29,7 +29,7 @@
         <AccessManager class="org.apache.jackrabbit.core.security.JahiaAccessManager">
         </AccessManager>
 
-        <LoginModule class="org.jahia.jaas.JahiaLoginModule">
+        <LoginModule class="org.apache.jackrabbit.core.security.JahiaLoginModule">
         </LoginModule>
     </Security>
     <!--

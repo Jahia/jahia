@@ -42,14 +42,18 @@ public class JCRSitesProvider {
                     while (ni.hasNext()) {
                         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
                         if (nodeWrapper.isNodeType("jnt:virtualsite")) {
-                            list.add(getSite(nodeWrapper));
+                            try {
+                                list.add(getSite(nodeWrapper));
+                            } catch (RepositoryException e) {
+                                logger.error("Cannot get site",e);
+                            }
                         }
                     }
                     return list;
                 }
             });
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error("Cannot get sites",e);
         }
         return null;
     }

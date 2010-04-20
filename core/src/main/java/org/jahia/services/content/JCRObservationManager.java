@@ -1,7 +1,5 @@
 package org.jahia.services.content;
 
-import org.apache.log4j.Logger;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
@@ -25,8 +23,6 @@ public class JCRObservationManager implements ObservationManager {
     public static final int NODE_RESTORE = 1 << 10;
     public static final int NODE_UPDATE = 1 << 11;
     public static final int NODE_MERGE = 1 << 12;
-
-    private static Logger logger = Logger.getLogger(JCRObservationManager.class);
 
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();
     private static ThreadLocal<Boolean> inEvents = new ThreadLocal<Boolean>();
@@ -85,7 +81,7 @@ public class JCRObservationManager implements ObservationManager {
      * @throws javax.jcr.RepositoryException If an error occurs.
      */
     public void addEventListener(EventListener listener, int eventTypes, String absPath, boolean isDeep, String[] uuid, String[] nodeTypeName, boolean noLocal) throws RepositoryException {
-        listeners.add(new EventConsumer(ws.getSession(), listener,  eventTypes, absPath, isDeep, uuid, nodeTypeName, noLocal));
+        listeners.add(new EventConsumer(ws.getSession(), listener,  eventTypes));
     }
 
     /**
@@ -145,7 +141,7 @@ public class JCRObservationManager implements ObservationManager {
         map = events.get();
 
         JCRSessionWrapper session = currentSession.get();
-        if (session != null && !session.isEventsDisabled()) {
+        if (session != null) {
             if (!map.containsKey(session)) {
                 map.put(session, new ArrayList<Event>());
             }
@@ -204,26 +200,16 @@ public class JCRObservationManager implements ObservationManager {
         private JCRSessionWrapper session;
         private EventListener listener;
         private int eventTypes;
-        private String absPath;
-        private boolean isDeep;
-        private String[] uuid;
-        private String[] nodeTypeName;
-        private boolean noLocal;
 
-        EventConsumer(JCRSessionWrapper session, EventListener listener, int eventTypes, String absPath, boolean deep, String[] uuid, String[] nodeTypeName, boolean noLocal) {
+        EventConsumer(JCRSessionWrapper session, EventListener listener, int eventTypes) {
             this.session = session;
             this.listener = listener;
             this.eventTypes = eventTypes;
-            this.absPath = absPath;
-            isDeep = deep;
-            this.uuid = uuid;
-            this.nodeTypeName = nodeTypeName;
-            this.noLocal = noLocal;
         }
     }
 
     class EventListenerIteratorImpl extends RangeIteratorImpl implements EventListenerIterator {
-        EventListenerIteratorImpl(Iterator iterator, long size) {
+        EventListenerIteratorImpl(Iterator<EventConsumer> iterator, long size) {
             super(iterator, size);
         }
 

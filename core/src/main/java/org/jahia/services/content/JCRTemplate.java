@@ -14,7 +14,7 @@ import java.util.Locale;
  * <p/>
  * Requires a {@link JCRSessionFactory} to provide access to a JCR repository.
  *
- * @author Cï¿½dric Mailleux
+ * @author Cédric Mailleux
  */
 public class JCRTemplate {
     private JCRSessionFactory sessionFactory;
@@ -50,7 +50,7 @@ public class JCRTemplate {
      * @throws RepositoryException in case of JCR errors
      */
     public <X> X doExecuteWithSystemSession(JCRCallback<X> callback) throws RepositoryException {
-        return doExecuteWithSystemSession(null, null, null, false, callback);
+        return doExecuteWithSystemSession(null, null, null, callback);
     }
 
     /**
@@ -68,7 +68,7 @@ public class JCRTemplate {
      * @throws RepositoryException in case of JCR errors
      */
     public <X> X doExecuteWithSystemSession(String username, JCRCallback<X> callback) throws RepositoryException {
-        return doExecuteWithSystemSession(username, null, null, false, callback);
+        return doExecuteWithSystemSession(username, null, null, callback);
     }
 
     /**
@@ -88,7 +88,7 @@ public class JCRTemplate {
      * @throws RepositoryException in case of JCR errors
      */
     public <X> X doExecuteWithSystemSession(String username, String workspace, JCRCallback<X> callback) throws RepositoryException {
-        return doExecuteWithSystemSession(username, workspace, null, false, callback);
+        return doExecuteWithSystemSession(username, workspace, null, callback);
     }
 
     /**
@@ -103,16 +103,15 @@ public class JCRTemplate {
      * @param username       the user name to open the session with
      * @param workspace      the workspace name to log into
      * @param locale         the locale of the session, null to use unlocalized session
-     * @param eventsDisabled
      * @param callback       the <code>JCRCallback</code> that executes the client
      *                       operation
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
-    public <X> X doExecuteWithSystemSession(String username, String workspace, Locale locale, boolean eventsDisabled, JCRCallback<X> callback) throws RepositoryException {
+    public <X> X doExecuteWithSystemSession(String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
-            session = sessionFactory.getSystemSession(username, workspace, locale, eventsDisabled);
+            session = sessionFactory.getSystemSession(username, workspace, locale);
             return callback.doInJCR(session);
         } finally {
             if (session != null) {
@@ -197,9 +196,8 @@ public class JCRTemplate {
      * @throws RepositoryException in case of JCR errors
      */
     public <X> X doExecute(boolean useSystemSession, String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
-        JCRSessionWrapper session = null;
         if (useSystemSession) {
-            return doExecuteWithSystemSession(username, workspace, locale, false, callback);
+            return doExecuteWithSystemSession(username, workspace, locale, callback);
         } else {
             return doExecuteWithUserSession(username, workspace, locale, callback);
         }
@@ -224,7 +222,6 @@ public class JCRTemplate {
      * @throws RepositoryException in case of JCR errors
      */
     public <X> X doExecute(boolean useSystemSession, String username, String workspace, JCRCallback<X> callback) throws RepositoryException {
-        JCRSessionWrapper session = null;
         if (useSystemSession) {
             return doExecuteWithSystemSession(username, workspace, callback);
         } else {

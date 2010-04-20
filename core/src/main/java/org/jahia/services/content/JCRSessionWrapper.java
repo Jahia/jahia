@@ -33,6 +33,7 @@ package org.jahia.services.content;
 
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
+import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.services.importexport.DocumentViewExporter;
@@ -76,8 +77,7 @@ import java.util.*;
  * @author toto
  */
 public class JCRSessionWrapper implements Session {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JCRSessionWrapper.class);
+    private static Logger logger = Logger.getLogger(JCRSessionWrapper.class);
 
     private JCRSessionFactory sessionFactory;
     private JahiaUser user;
@@ -96,13 +96,12 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> uuidMapping = new HashMap<String,String>();
     private Map<String, String> pathMapping = new HashMap<String,String>();
 
-    private boolean eventsDisabled = false;
     private boolean isSystem;
 
     private Locale fallbackLocale;
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
-                             boolean eventsDisabled, JCRSessionFactory sessionFactory, Locale fallbackLocale) {
+                             JCRSessionFactory sessionFactory, Locale fallbackLocale) {
         this.user = user;
         this.credentials = credentials;
         this.isSystem = isSystem;
@@ -117,7 +116,6 @@ public class JCRSessionWrapper implements Session {
         if (locale == null) {
             interceptorsEnabled = false;
         }
-        this.eventsDisabled = eventsDisabled;
         this.sessionFactory = sessionFactory;
     }
 
@@ -256,7 +254,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        JCRObservationManager.doWorkspaceWriteCall(this, JCRObservationManager.SESSION_SAVE, new JCRCallback() {
+        JCRObservationManager.doWorkspaceWriteCall(this, JCRObservationManager.SESSION_SAVE, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper thisSession) throws RepositoryException {
                 for (Session session : sessions.values()) {
                     session.save();
@@ -700,10 +698,6 @@ public class JCRSessionWrapper implements Session {
         }
     }
         }
-    }
-
-    public boolean isEventsDisabled() {
-        return eventsDisabled;
     }
 
     public Map<String, String> getUuidMapping() {

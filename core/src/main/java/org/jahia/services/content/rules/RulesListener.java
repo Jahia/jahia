@@ -278,7 +278,7 @@ public class RulesListener extends DefaultEventListener {
                 events.add(event);
             }
             JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    userId, workspace, locale, false, new JCRCallback<Object>() {
+                    userId, workspace, locale, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                             Iterator<Event> it = events.iterator();
 
@@ -369,10 +369,12 @@ public class RulesListener extends DefaultEventListener {
                             }
                             if (!list.isEmpty()) {
                                 long time = System.currentTimeMillis();
-                                if (list.size() > 3) {
-                                    logger.debug("Executing rules for " + list.subList(0, 3) + " ... and " + (list.size() - 3) + " other nodes");
-                                } else {
-                                    logger.debug("Executing rules for " + list);
+                                if (logger.isDebugEnabled()) {
+                                    if (list.size() > 3) {
+                                        logger.debug("Executing rules for " + list.subList(0, 3) + " ... and " + (list.size() - 3) + " other nodes");
+                                    } else {
+                                        logger.debug("Executing rules for " + list);
+                                    }
                                 }
                                 final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
 
@@ -389,8 +391,11 @@ public class RulesListener extends DefaultEventListener {
 
                                 if (s.hasPendingChanges()) {
                                     inRules.set(Boolean.TRUE);
-                                    s.save();
-                                    inRules.set(null);
+                                    try {
+                                        s.save();
+                                    } finally {
+                                        inRules.set(null);
+                                    }
                                 }
 
                                 if (!delayedUpdates.isEmpty()) {
@@ -398,23 +403,24 @@ public class RulesListener extends DefaultEventListener {
                                     rulesTimer.schedule(t, UPDATE_DELAY_FOR_LOCKED_NODE);
                                 }
 
-                                Set<Object> objects = new HashSet<Object>();
-                                for (Iterator<Object> iterator = list.iterator(); iterator.hasNext();) {
-                                    Object o = iterator.next();
-                                    if (o instanceof NodeWrapper) {
-                                        objects.add(o);
-                                    } else if (o instanceof PropertyWrapper) {
-                                        objects.add(((PropertyWrapper) o).getNode());
-                                    }
-                                }
-                                for (Iterator<Object> iterator = objects.iterator(); iterator.hasNext();) {
-                                    NodeWrapper nodeWrapper = (NodeWrapper) iterator.next();
-                                    Node n = nodeWrapper.getNode();
-//                        if (n.isNodeType(Constants.MIX_VERSIONABLE)) {
-//                            n.checkin();
-//                            n.checkout();
-//                        }
-                                }
+                                
+//                                Set<Object> objects = new HashSet<Object>();
+//                                for (Iterator<Object> iterator = list.iterator(); iterator.hasNext();) {
+//                                    Object o = iterator.next();
+//                                    if (o instanceof NodeWrapper) {
+//                                        objects.add(o);
+//                                    } else if (o instanceof PropertyWrapper) {
+//                                        objects.add(((PropertyWrapper) o).getNode());
+//                                    }
+//                                }
+//                                for (Iterator<Object> iterator = objects.iterator(); iterator.hasNext();) {
+//                                    NodeWrapper nodeWrapper = (NodeWrapper) iterator.next();
+//                                    Node n = nodeWrapper.getNode();
+////                        if (n.isNodeType(Constants.MIX_VERSIONABLE)) {
+////                            n.checkin();
+////                            n.checkout();
+////                        }
+//                                }
                             }
                             return null;
                         }

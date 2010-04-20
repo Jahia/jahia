@@ -67,7 +67,7 @@ public class VanityUrlService {
             final JCRNodeWrapper contentNode, String workspace, Locale locale)
             throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(
-                null, workspace, locale, false, new JCRCallback<VanityUrl>() {
+                null, workspace, locale, new JCRCallback<VanityUrl>() {
                     public VanityUrl doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
                         return vanityUrlManager.getVanityUrlForCurrentLocale(

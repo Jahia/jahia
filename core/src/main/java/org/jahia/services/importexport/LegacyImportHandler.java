@@ -376,6 +376,7 @@ public class LegacyImportHandler extends DefaultHandler {
             if (template != null) {
                 template.copy(parent, nodeName, true);
                 node = parent.getNode(nodeName);
+                node.setProperty("j:sourceTemplate", template);
             } else {
                 node = parent.addNode(nodeName, Constants.JAHIANT_PAGE);
             }

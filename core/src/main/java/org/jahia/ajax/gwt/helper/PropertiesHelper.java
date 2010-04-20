@@ -279,7 +279,9 @@ public class PropertiesHelper {
                     if (prop.isMultiple()) {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {
-                            values.add(contentDefinition.convertValue(val));
+                            if (val.getString() != null) {
+                                values.add(contentDefinition.convertValue(val));
+                            }
                         }
                         Value[] finalValues = new Value[values.size()];
                         values.toArray(finalValues);

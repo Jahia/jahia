@@ -32,10 +32,13 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import java.io.ByteArrayInputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.jcr.NamespaceRegistry;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
@@ -56,6 +59,7 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.solr.schema.DateField;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
@@ -71,14 +75,18 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 
 /**
- * Creates a lucene <code>Document</code> object from a {@link javax.jcr.Node}
- * and use Jahia sepecific definitions for index creation.
+ * Creates a lucene <code>Document</code> object from a {@link javax.jcr.Node} and use Jahia sepecific definitions for index creation.
  */
 public class JahiaNodeIndexer extends NodeIndexer {
     /**
      * The logger instance for this class.
      */
     private static final Logger logger = LoggerFactory.getLogger(JahiaNodeIndexer.class);
+
+    /**
+     * Prefix for all field names that are facet indexed by property name.
+     */
+    public static final String FACET_PREFIX = "FACET:";
 
     /**
      * The persistent node type registry
@@ -96,20 +104,20 @@ public class JahiaNodeIndexer extends NodeIndexer {
     protected ExtendedNodeType nodeType;
 
     /**
-     * Parser used for extracting text content from binary properties for full
-     * text indexing.
+     * Parser used for extracting text content from binary properties for full text indexing.
      */
     private final Parser parser;
 
     /**
-     * If set to <code>true</code> the fulltext field is also stored with
-     * site/locale suffix
+     * If set to <code>true</code> the fulltext field is also stored with site/locale suffix
      */
     protected boolean supportSpellchecking = false;
 
     private static Name siteTypeName = null;
 
     private static Name siteFolderTypeName = null;
+
+    private static final DateField dateType = new DateField();
 
     /**
      * Creates a new node indexer.
@@ -125,28 +133,29 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * @param nodeTypeRegistry
      *            Jahia's node type registry
      * @param context
-     *            the query handler context (for getting other services and
-     *            registries)
+     *            the query handler context (for getting other services and registries)
      */
-    public JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider, NamespaceMappings mappings,
-            Executor executor, Parser parser, QueryHandlerContext context) {
+    public JahiaNodeIndexer(NodeState node, ItemStateManager stateProvider,
+            NamespaceMappings mappings, Executor executor, Parser parser,
+            QueryHandlerContext context) {
         super(node, stateProvider, mappings, executor, parser);
         this.nodeTypeRegistry = NodeTypeRegistry.getInstance();
         this.namespaceRegistry = context.getNamespaceRegistry();
         this.parser = parser;
         try {
             Name nodeTypeName = node.getNodeTypeName();
-            nodeType = nodeTypeRegistry != null ? nodeTypeRegistry.getNodeType(namespaceRegistry.getPrefix(nodeTypeName
-                    .getNamespaceURI())
+            nodeType = nodeTypeRegistry != null ? nodeTypeRegistry.getNodeType(namespaceRegistry
+                    .getPrefix(nodeTypeName.getNamespaceURI())
                     + ":" + nodeTypeName.getLocalName()) : null;
             if (siteTypeName == null && nodeTypeRegistry != null) {
-                ExtendedNodeType nodeType = nodeTypeRegistry.getNodeType(Constants.JAHIANT_VIRTUALSITE);
+                ExtendedNodeType nodeType = nodeTypeRegistry
+                        .getNodeType(Constants.JAHIANT_VIRTUALSITE);
                 if (nodeType != null) {
-                    siteTypeName = NameFactoryImpl.getInstance().create(nodeType.getNameObject().getUri(),
-                            nodeType.getLocalName());
+                    siteTypeName = NameFactoryImpl.getInstance().create(
+                            nodeType.getNameObject().getUri(), nodeType.getLocalName());
                     nodeType = nodeTypeRegistry.getNodeType(Constants.JAHIAMIX_VIRTUALSITES_FOLDER);
-                    siteFolderTypeName = NameFactoryImpl.getInstance().create(nodeType.getNameObject().getUri(),
-                            nodeType.getLocalName());
+                    siteFolderTypeName = NameFactoryImpl.getInstance().create(
+                            nodeType.getNameObject().getUri(), nodeType.getLocalName());
                 }
             }
         } catch (NoSuchNodeTypeException e) {
@@ -157,18 +166,17 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     /**
-     * Returns <code>true</code> if the content of the property with the given
-     * name should the used to create an excerpt.
+     * Returns <code>true</code> if the content of the property with the given name should the used to create an excerpt.
      * 
      * @param propertyName
      *            the name of a property.
-     * @return <code>true</code> if it should be used to create an excerpt;
-     *         <code>false</code> otherwise.
+     * @return <code>true</code> if it should be used to create an excerpt; <code>false</code> otherwise.
      */
     protected boolean useInExcerpt(Name propertyName) {
         ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(getPropertyName(propertyName));
 
-        boolean useInExcerpt = propDef != null ? propDef.isFullTextSearchable() : super.useInExcerpt(propertyName);
+        boolean useInExcerpt = propDef != null ? propDef.isFullTextSearchable() : super
+                .useInExcerpt(propertyName);
         return useInExcerpt;
     }
 
@@ -194,9 +202,11 @@ public class JahiaNodeIndexer extends NodeIndexer {
             NodeState current = node;
             do {
                 if (isNodeType(current, siteTypeName)) {
-                    NodeState siteParent = (NodeState) stateProvider.getItemState(current.getParentId());
+                    NodeState siteParent = (NodeState) stateProvider.getItemState(current
+                            .getParentId());
                     if (isNodeType(siteParent, siteFolderTypeName)) {
-                        return siteParent.getChildNodeEntry(current.getNodeId()).getName().getLocalName();
+                        return siteParent.getChildNodeEntry(current.getNodeId()).getName()
+                                .getLocalName();
                     }
                 }
                 NodeId id = current.getParentId();
@@ -237,7 +247,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
                         if ("language".equals(propName.getLocalName())
                                 && Constants.JCR_NS.equals(propName.getNamespaceURI())) {
                             PropertyId id = new PropertyId(node.getNodeId(), propName);
-                            PropertyState propState = (PropertyState) stateProvider.getItemState(id);
+                            PropertyState propState = (PropertyState) stateProvider
+                                    .getItemState(id);
                             language = propState.getValues()[0].getString();
                             break;
                         }
@@ -250,16 +261,17 @@ public class JahiaNodeIndexer extends NodeIndexer {
         return language;
     }
 
-    protected ExtendedPropertyDefinition findDefinitionForPropertyInNode(String fieldName, NodeState givenNode)
-            throws RepositoryException {
+    protected ExtendedPropertyDefinition findDefinitionForPropertyInNode(String fieldName,
+            NodeState givenNode) throws RepositoryException {
         ExtendedPropertyDefinition propDef = null;
         if (givenNode == null && nodeType != null) {
             propDef = nodeType.getPropertyDefinitionsAsMap().get(fieldName);
             if (propDef == null) {
                 for (Name mixinTypeName : node.getMixinTypeNames()) {
                     ExtendedNodeType mixinType = nodeTypeRegistry != null ? nodeTypeRegistry
-                            .getNodeType(namespaceRegistry.getPrefix(mixinTypeName.getNamespaceURI()) + ":"
-                                    + mixinTypeName.getLocalName()) : null;
+                            .getNodeType(namespaceRegistry.getPrefix(mixinTypeName
+                                    .getNamespaceURI())
+                                    + ":" + mixinTypeName.getLocalName()) : null;
                     propDef = mixinType.getPropertyDefinitionsAsMap().get(fieldName);
                     if (propDef != null) {
                         break;
@@ -267,15 +279,17 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 }
             }
         } else if (givenNode != null) {
-            ExtendedNodeType nodeType = nodeTypeRegistry != null ? nodeTypeRegistry.getNodeType(namespaceRegistry
-                    .getPrefix(givenNode.getNodeTypeName().getNamespaceURI())
-                    + ":" + givenNode.getNodeTypeName().getLocalName()) : null;
+            ExtendedNodeType nodeType = nodeTypeRegistry != null ? nodeTypeRegistry
+                    .getNodeType(namespaceRegistry.getPrefix(givenNode.getNodeTypeName()
+                            .getNamespaceURI())
+                            + ":" + givenNode.getNodeTypeName().getLocalName()) : null;
             propDef = nodeType.getPropertyDefinitionsAsMap().get(fieldName);
             if (propDef == null) {
                 for (Name mixinTypeName : givenNode.getMixinTypeNames()) {
                     ExtendedNodeType mixinType = nodeTypeRegistry != null ? nodeTypeRegistry
-                            .getNodeType(namespaceRegistry.getPrefix(mixinTypeName.getNamespaceURI()) + ":"
-                                    + mixinTypeName.getLocalName()) : null;
+                            .getNodeType(namespaceRegistry.getPrefix(mixinTypeName
+                                    .getNamespaceURI())
+                                    + ":" + mixinTypeName.getLocalName()) : null;
                     propDef = mixinType.getPropertyDefinitionsAsMap().get(fieldName);
                     if (propDef != null) {
                         break;
@@ -293,11 +307,12 @@ public class JahiaNodeIndexer extends NodeIndexer {
             try {
                 String language = resolveLanguage(fieldName);
                 if (language != null) {
-                    propDef = findDefinitionForPropertyInNode(fieldName.endsWith("_" + language) ? fieldName.substring(
-                            0, fieldName.lastIndexOf("_" + language)) : fieldName, (NodeState) stateProvider
-                            .getItemState(node.getParentId()));
+                    propDef = findDefinitionForPropertyInNode(
+                            fieldName.endsWith("_" + language) ? fieldName.substring(0, fieldName
+                                    .lastIndexOf("_" + language)) : fieldName,
+                            (NodeState) stateProvider.getItemState(node.getParentId()));
                     if (propDef == null) {
-                        propDef = findDefinitionForPropertyInNode(fieldName, null);                        
+                        propDef = findDefinitionForPropertyInNode(fieldName, null);
                     }
                 } else {
                     propDef = findDefinitionForPropertyInNode(fieldName, null);
@@ -318,46 +333,41 @@ public class JahiaNodeIndexer extends NodeIndexer {
      */
     protected float getPropertyBoost(Name propertyName) {
         ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(getPropertyName(propertyName));
-        float scoreBoost = propDef != null ? (float) propDef.getScoreboost() : super.getPropertyBoost(propertyName);
+        float scoreBoost = propDef != null ? (float) propDef.getScoreboost() : super
+                .getPropertyBoost(propertyName);
         return scoreBoost;
     }
 
     /**
-     * Returns <code>true</code> if the property with the given name should also
-     * be added to the node scope index.
+     * Returns <code>true</code> if the property with the given name should also be added to the node scope index.
      * 
      * @param propertyName
      *            the name of a property.
-     * @return <code>true</code> if it should be added to the node scope index;
-     *         <code>false</code> otherwise.
+     * @return <code>true</code> if it should be added to the node scope index; <code>false</code> otherwise.
      */
     protected boolean isIncludedInNodeIndex(Name propertyName) {
         return useInExcerpt(propertyName);
     }
 
     /**
-     * Returns <code>true</code> if the property with the given name should be
-     * indexed.
+     * Returns <code>true</code> if the property with the given name should be indexed.
      * 
      * @param propertyName
      *            name of a property.
-     * @return <code>true</code> if the property should be fulltext indexed;
-     *         <code>false</code> otherwise.
+     * @return <code>true</code> if the property should be fulltext indexed; <code>false</code> otherwise.
      */
     protected boolean isIndexed(Name propertyName) {
         ExtendedPropertyDefinition propDef = getExtendedPropertyDefinition(getPropertyName(propertyName));
-        boolean isIndexed = propDef != null ? propDef.getIndex() != ExtendedPropertyDefinition.INDEXED_NO : super
-                .isIndexed(propertyName);
+        boolean isIndexed = propDef != null ? propDef.getIndex() != ExtendedPropertyDefinition.INDEXED_NO
+                : super.isIndexed(propertyName);
         return isIndexed;
     }
 
     /**
-     * Adds the string value to the document both as the named field and
-     * optionally for full text indexing if <code>tokenized</code> is
+     * Adds the string value to the document both as the named field and optionally for full text indexing if <code>tokenized</code> is
      * <code>true</code>.
      * 
-     * The Jahia specific functionality is to strip off HTML markup from
-     * richtext fields.
+     * The Jahia specific functionality is to strip off HTML markup from richtext fields.
      * 
      * @param doc
      *            The document to which to add the field
@@ -366,34 +376,20 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * @param internalValue
      *            The value for the field to add to the document.
      * @param tokenized
-     *            If <code>true</code> the string is also tokenized and fulltext
-     *            indexed.
+     *            If <code>true</code> the string is also tokenized and fulltext indexed.
      * @param includeInNodeIndex
-     *            If <code>true</code> the string is also tokenized and added to
-     *            the node scope fulltext index.
+     *            If <code>true</code> the string is also tokenized and added to the node scope fulltext index.
      * @param boost
      *            the boost value for this string field.
      * @param useInExcerpt
      *            If <code>true</code> the string may show up in an excerpt.
      */
     @Override
-    protected void addStringValue(Document doc, String fieldName, Object internalValue, boolean tokenized,
-            boolean includeInNodeIndex, float boost, boolean useInExcerpt) {
-        String propertyName = fieldName;
-        if (fieldName.contains(":")) {
-            try {
-                String prefix = namespaceRegistry.getPrefix(mappings.getURI(fieldName.substring(0, fieldName
-                        .indexOf(':'))));
-                if (StringUtils.isEmpty(prefix)) {
-                    propertyName = fieldName.substring(fieldName.indexOf(':') + 1);
-                } else {
-                    propertyName = fieldName.replaceFirst("(\\d+)", prefix);
-                }
-            } catch (RepositoryException e) {
-                logger.debug("Cannot convert Lucene fieldName '" + fieldName + "' to property name", e);
-            }
-        }
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(propertyName);
+    protected void addStringValue(Document doc, String fieldName, Object internalValue,
+            boolean tokenized, boolean includeInNodeIndex, float boost, boolean useInExcerpt) {
+
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
+
         if (definition != null && SelectorType.RICHTEXT == definition.getSelector()) {
             try {
                 ContentHandler handler = new BodyContentHandler();
@@ -403,7 +399,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 metadata.set(Metadata.CONTENT_ENCODING, InternalValueFactory.DEFAULT_ENCODING);
 
                 parser.parse(new ByteArrayInputStream(((String) internalValue)
-                        .getBytes(InternalValueFactory.DEFAULT_ENCODING)), handler, metadata, new ParseContext());
+                        .getBytes(InternalValueFactory.DEFAULT_ENCODING)), handler, metadata,
+                        new ParseContext());
 
                 internalValue = handler.toString();
             } catch (Exception e) {
@@ -411,7 +408,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
             }
         }
 
-        super.addStringValue(doc, fieldName, internalValue, tokenized, includeInNodeIndex, boost, useInExcerpt);
+        super.addStringValue(doc, fieldName, internalValue, tokenized, includeInNodeIndex, boost,
+                useInExcerpt);
         if (tokenized) {
             String stringValue = (String) internalValue;
             if (stringValue.length() == 0) {
@@ -433,6 +431,75 @@ public class JahiaNodeIndexer extends NodeIndexer {
                     doc.add(createFulltextField(fulltextName, stringValue, false));
                 }
             }
+        }
+        if (definition != null && definition.isFacetable()) {
+            addFacetValue(doc, fieldName, internalValue);
+        }
+    }
+
+    private String getPropertyNameFromFieldname(String fieldName) {
+        String propertyName = fieldName;
+        if (fieldName.contains(":")) {
+            try {
+                String prefix = namespaceRegistry.getPrefix(mappings.getURI(fieldName.substring(0,
+                        fieldName.indexOf(':'))));
+                if (StringUtils.isEmpty(prefix)) {
+                    propertyName = fieldName.substring(fieldName.indexOf(':') + 1);
+                } else {
+                    propertyName = fieldName.replaceFirst("(\\d+)", prefix);
+                }
+            } catch (RepositoryException e) {
+                logger.debug(
+                        "Cannot convert Lucene fieldName '" + fieldName + "' to property name", e);
+            }
+        }
+        return propertyName;
+    }
+
+    /**
+     * Adds the value to the document both as faceted field which will be indexed with a keyword analyzer which does not modify the term.
+     * 
+     * @param doc
+     *            The document to which to add the field
+     * @param fieldName
+     *            The name of the field to add
+     * @param internalValue
+     *            The value for the field to add to the document.
+     */
+    protected void addFacetValue(Document doc, String fieldName, Object internalValue) {
+        // simple String
+        String stringValue = (String) internalValue;
+        if (stringValue.length() == 0) {
+            return;
+        }
+        // create facet index on property
+        int idx = fieldName.indexOf(':');
+        fieldName = fieldName.substring(0, idx + 1) + FACET_PREFIX + fieldName.substring(idx + 1);
+        Field f = new Field(fieldName, stringValue, Field.Store.NO, Field.Index.ANALYZED,
+                Field.TermVector.NO);
+        doc.add(f);
+
+    }
+
+    /**
+     * Adds the calendar value to the document as the named field. The calendar value is converted to an indexable string value using the
+     * {@link DateField} class.
+     * 
+     * Also if the field is facetable we create an own field in the index.
+     * 
+     * @param doc
+     *            The document to which to add the field
+     * @param fieldName
+     *            The name of the field to add
+     * @param internalValue
+     *            The value for the field to add to the document.
+     */
+    protected void addCalendarValue(Document doc, String fieldName, Object internalValue) {
+        super.addCalendarValue(doc, fieldName, internalValue);
+        Calendar value = (Calendar) internalValue;
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
+        if (definition != null && definition.isFacetable()) {
+            addFacetValue(doc, fieldName, dateType.toInternal(new Date(value.getTimeInMillis())));
         }
     }
 
@@ -458,7 +525,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
             }
             return new Field(fieldName, value, stored, Field.Index.ANALYZED, Field.TermVector.NO);
         } else {
-            return new Field(fieldName, value, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO);
+            return new Field(fieldName, value, Field.Store.NO, Field.Index.ANALYZED,
+                    Field.TermVector.NO);
         }
     }
 

@@ -67,6 +67,7 @@
             <param name="supportHighlighting" value="true"/>
             <param name="excerptProviderClass" value="org.jahia.services.search.jcr.HTMLExcerpt"/>
             <param name="indexingConfiguration" value="${rep.home}/indexing_configuration.xml"/>
+            <param name="indexingConfigurationClass" value="org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl"/>            
             <param name="spellCheckerClass" value="org.jahia.services.search.spell.CompositeSpellChecker"/>            
         </SearchIndex>
 

@@ -278,14 +278,18 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             int counter = 0;
             for (Column column : columns.values()) {
                 if (isFacetFunction(column.getColumnName())) {
-                    parameters.add(FacetParams.FACET_FIELD, column.getSelectorName()
-                            + SimpleJahiaJcrFacets.SELECTOR_PROPNAME_SEPARATOR
-                            + column.getPropertyName()
-                            + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter);
                     String facetOptions = StringUtils.substring(column.getColumnName(), StringUtils
                             .indexOf(column.getColumnName(), facetFunctionPrefix)
                             + facetFunctionPrefix.length(), StringUtils.lastIndexOf(column
                             .getColumnName(), ")"));
+                    
+                    parameters.add((facetOptions.indexOf("&date.") >= 0 || facetOptions
+                            .indexOf("facet.date.") >= 0) ? FacetParams.FACET_DATE
+                            : FacetParams.FACET_FIELD, column.getSelectorName()
+                            + SimpleJahiaJcrFacets.SELECTOR_PROPNAME_SEPARATOR
+                            + column.getPropertyName()
+                            + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter);
+
                     String propertyName = column.getPropertyName() + counter;                    
                     for (String option : StringUtils.split(facetOptions, "&")) {
                         String key = StringUtils.substringBefore(option, "=");

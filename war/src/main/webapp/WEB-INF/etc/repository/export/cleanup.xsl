@@ -8,6 +8,7 @@
         <xsl:choose>
             <xsl:when test="name()='jcr:uuid'"/>
             <xsl:when test="name()='j:fullpath'"/>
+            <xsl:when test="name()='j:movedFrom'"/>
             <xsl:otherwise>
                 <xsl:copy/>
             </xsl:otherwise>

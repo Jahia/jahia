@@ -773,9 +773,9 @@ public class ContentManagerHelper {
                             destinationNode = session.getNode(StringUtils.substringBeforeLast(entry.getValue(),"/"));
                             originalNode.copy(destinationNode, StringUtils.substringAfterLast(entry.getValue(),"/"), true);
                         }
-                        session.save();
                     }
                     ReferencesHelper.resolveCrossReferences(session, references);
+                    session.save();
                     for (JCRNodeWrapper pageTemplate : pageTemplates) {
                         List<JCRNodeWrapper> pages = new ArrayList<JCRNodeWrapper>();
                         PropertyIterator pi = pageTemplate.getWeakReferences("j:sourceTemplate");
@@ -789,6 +789,7 @@ public class ContentManagerHelper {
                             references = new HashMap<String, List<String>>();
                             synchro(pageTemplate, page, session, true, references, null);
                             ReferencesHelper.resolveCrossReferences(session, references);
+                            session.save();
                         }
                     }
                     return null;

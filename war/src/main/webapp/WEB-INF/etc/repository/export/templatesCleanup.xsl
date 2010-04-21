@@ -12,8 +12,10 @@
             <xsl:when test="name()='jcr:lastModifiedBy'"/>
             <xsl:when test="name()='j:lastPublished'"/>
             <xsl:when test="name()='j:lastPublishedBy'"/>
+            <xsl:when test="name()='j:templateDeployed'"/>
             <xsl:when test="name()='jcr:uuid'"/>
             <xsl:when test="name()='j:fullpath'"/>
+            <xsl:when test="name()='j:movedFrom'"/>
             <xsl:otherwise>
                 <xsl:copy/>
             </xsl:otherwise>

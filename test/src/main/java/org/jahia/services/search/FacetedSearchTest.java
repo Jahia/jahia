@@ -188,7 +188,7 @@ public class FacetedSearchTest extends TestCase {
         QueryResultWrapper res;
 
         // check facets
-        res = doQuery(session, "eventsType", "rep:facet()", "startDate","rep:facet()");
+        res = doQuery(session, "eventsType", "rep:facet(key=1)", "startDate","rep:facet(key=2)");
         checkResultSize(res, 27);
         field = res.getFacetField("eventsType");
         assertNotNull("Facet field is null",field);

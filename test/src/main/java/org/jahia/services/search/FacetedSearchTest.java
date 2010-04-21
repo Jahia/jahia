@@ -132,25 +132,25 @@ public class FacetedSearchTest extends TestCase {
         QueryResultWrapper res;
 
         // test date facets
-        res = doQuery(session, "startDate", "rep:facet()");
-        field = res.getFacetField("startDate");
-        assertNotNull("Facet field is null",field);
-        assertNotNull("Facet values are null",field.getValues());
+        res = doQuery(session, "startDate", "rep:facet(date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1MONTH)");
+        field = res.getFacetDate("startDate");
 
-        assertEquals("Query did not return correct number of facets", 9, field.getValues().size());
+        assertEquals("Query did not return correct number of facets", 24, field.getValues().size());
         Iterator<FacetField.Count> counts = field.getValues().iterator();
 
-        res = doQuery(session, "startDate", "rep:facet(date.gap=+1MONTH)");
-        field = res.getFacetField("startDate");
+        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 14);
+        checkFacet(counts.next(), "2000-02-01T00:00:00Z", 13);
+        checkFacet(counts.next(), "2000-03-01T00:00:00Z", 0);
 
-        assertEquals("Query did not return correct number of facets", 3, field.getValues().size());
+        res = doQuery(session, "startDate", "rep:facet(date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1YEAR)");
+        field = res.getFacetDate("startDate");
+
+        assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
         counts = field.getValues().iterator();
 
-        res = doQuery(session, "startDate", "rep:facet(date.gap=+1YEAR)");
-        field = res.getFacetField("startDate");
+        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 27);
+        checkFacet(counts.next(), "2001-01-01T00:00:00Z", 0);
 
-        assertEquals("Query did not return correct number of facets", 1, field.getValues().size());
-        counts = field.getValues().iterator();
     }
 
     public void testI18NFacets() throws Exception {
@@ -212,7 +212,7 @@ public class FacetedSearchTest extends TestCase {
     private void initContent(JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper node = session.getNode("/sites/jcrFacetTest/contents");
         i = 0;
-        Calendar calendar = new GregorianCalendar(2000, 1, 1);
+        Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
         createEvent(node, MEETING, PARIS, calendar);
         createEvent(node, MEETING, GENEVA, calendar);
         calendar.add(Calendar.DAY_OF_MONTH, 5);

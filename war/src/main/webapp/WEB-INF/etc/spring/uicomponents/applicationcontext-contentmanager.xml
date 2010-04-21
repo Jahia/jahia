@@ -420,6 +420,25 @@
             </list>
         </property>
 
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list>
+                <ref bean="column.providerKey"/>
+                <ref bean="column.ext"/>
+                <ref bean="column.name"/>
+                <ref bean="column.locked"/>
+                <ref bean="column.path"/>
+                <ref bean="column.size"/>
+                <ref bean="column.publicationInfo"/>
+                <ref bean="column.created"/>
+                <ref bean="column.createdBy"/>
+                <ref bean="column.lastModified"/>
+                <ref bean="column.lastModifiedBy"/>
+                <ref bean="column.lastPublished"/>
+                <ref bean="column.lastPublishedBy"/>
+            </list>
+        </property>
+        
        <!-- tabs -->
         <property name="tabs">
             <list>
@@ -689,11 +708,11 @@
     </bean>
 
     <bean id="column.lastModifiedBy" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="lastModified"/>
+        <property name="key" value="lastModifiedBy"/>
     </bean>
 
     <bean id="column.publicationInfo" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="lastModified"/>
+        <property name="key" value="publicationInfo"/>
     </bean>
 
     <bean id="column.count" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
@@ -703,4 +722,21 @@
     <bean id="column.picker" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
         <property name="key" value="picker"/>
     </bean>
+
+    <bean id="column.created" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+        <property name="key" value="created"/>
+    </bean>
+
+    <bean id="column.createdBy" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+        <property name="key" value="createdBy"/>
+    </bean>
+
+    <bean id="column.lastPublished" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+        <property name="key" value="lastPublished"/>
+    </bean>
+
+    <bean id="column.lastPublishedBy" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+        <property name="key" value="lastPublishedBy"/>
+    </bean>
+
 </beans>

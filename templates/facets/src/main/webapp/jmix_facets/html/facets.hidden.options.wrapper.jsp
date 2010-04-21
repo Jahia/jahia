@@ -9,15 +9,24 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:set var="renderOptions" value="before" scope="request"/>
+<div class="filterList">
+    <h3>Active Facets</h3>    
+    <ul>
+        <c:forEach items="${activeFacetsMap}" var="facet">
+                <li><a href="${url.mainResource}?delPropName=${facet.key}">${facet.value}</a></li>
+        </c:forEach>
+    </ul>
+</div>
 <div class="archives">
     <h3>Facets</h3>
-<c:forEach items="${result.facetFields}" var="currentFacet">
-            <h4>${currentFacet.name}</h4>
-            <ul>
+    <c:forEach items="${result.facetFields}" var="currentFacet">
+        <h4>${currentFacet.name}</h4>
+        <ul>
             <c:forEach items="${currentFacet.values}" var="facetValue">
-                <li><a href="${url.mainResource}?${currentFacet.name}=${facetValue.name}">${facetValue.name}</a> (${facetValue.count})<br/></li>
+                <c:if test="${${facetValue.count > 0 }">
+                    <li><a href="${url.mainResource}?propName=${currentFacet.name}&propValue=${facetValue.name}">${facetValue.name}</a> (${facetValue.count})<br/></li>
+                </c:if>
             </c:forEach>
-            </ul>
-</c:forEach>
+        </ul>
+    </c:forEach>
 </div>

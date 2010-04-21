@@ -96,10 +96,10 @@ public abstract class BaseActionItem implements ActionItem {
                 }
             }
             if (layout == Constants.LAYOUT_BUTTON_LABEL) {
-//                ((Button) textToolitem).setIconStyle(getGwtToolbarItem().getMinIconStyle());
+                ((Button) textToolitem).setIconStyle(getGwtToolbarItem().getMinIconStyle());
             }
             if (layout == Constants.LAYOUT_BUTTON) {
-//                ((Button) textToolitem).setIconStyle(getGwtToolbarItem().getMinIconStyle());
+                ((Button) textToolitem).setIconStyle(getGwtToolbarItem().getMinIconStyle());
                 // toolbarItem.setHeight("30px");
             }
 

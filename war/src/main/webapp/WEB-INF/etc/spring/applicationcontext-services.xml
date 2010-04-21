@@ -246,20 +246,26 @@
                     <list>
                         <bean class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
                             <property name="priority" value="0" />
-                            <property name="applyOnMainResource" value="true"/>
+                            <property name="applyOnConfigurations" value="page"/>
+                            <!--<property name="applyOnMainResource" value="true"/>-->
                         </bean>
                         <bean class="org.jahia.services.render.filter.ContributionFilter" >
                             <property name="priority" value="3" />
+                            <property name="applyOnModes" value="contribution" />
+                            <property name="applyOnNodeTypes" value="jnt:contentList"/>
+                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
                             <property name="priority" value="5" />
                         </bean>
                         <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" >
                             <property name="priority" value="10" />
+                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
                             <property name="priority" value="15" />
                             <property name="loggingService" ref="loggingService"/>
+                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
                         <ref bean="cacheFilter"/>
                         <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
@@ -268,7 +274,8 @@
                         <bean class="org.jahia.services.render.filter.URLFilter" >
                         	<constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
                             <property name="priority" value="35" />
-                            <property name="applyOnMainResource" value="true"/>                            
+                            <property name="applyOnConfigurations" value="page,gwt"/>
+                            <!--<property name="applyOnMainResource" value="true"/>                            -->
                             <property name="handlers">
                             	<list>
                             		<bean class="org.jahia.services.render.filter.ContextPlaceholdersReplacer"/>
@@ -280,12 +287,15 @@
                         </bean>
                         <bean class="org.jahia.services.render.filter.WrapperFilter" >
                             <property name="priority" value="40" />
+                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.OptionsFilter" >
                             <property name="priority" value="50" />
+                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter">
                             <property name="applyOnNodeTypes" value="jmix:googleanalytics"/>
+                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
                             <property name="priority" value="98" />
                         </bean>
                         <bean class="org.jahia.services.render.filter.TemplateScriptFilter" >

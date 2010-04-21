@@ -52,7 +52,8 @@ public class OptionsFilter extends AbstractFilter {
             for (Resource.Option option : options) {
                 String wrapper = option.getWrapper();
                 try {
-                    Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper);
+                    Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper,
+                            Resource.CONFIGURATION_OPTION);
                     wrappedResource.setResourceNodeType(option.getNodeType());
                     script = service.resolveScript(wrappedResource, renderContext);
                     request.setAttribute("optionsAutoRendering", true);

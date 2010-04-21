@@ -61,11 +61,10 @@ public class RenderContext {
 
     private Stack<Resource> resourcesStack = new Stack<Resource>();
 
-    private boolean includeSubModules = true;
+    private boolean isContributionMode = false;
     private boolean isEditMode = false;
     private String editModeConfigName;
     private String servletPath;
-    private boolean isContributionMode = false;
 
     private Set<String> displayedModules = new HashSet<String>();
     @SuppressWarnings("unchecked")
@@ -119,14 +118,6 @@ public class RenderContext {
 
     public Set<String> getDisplayedModules() {
         return displayedModules;
-    }
-
-    public boolean isIncludeSubModules() {
-        return includeSubModules;
-    }
-
-    public void setIncludeSubModules(boolean includeSubModules) {
-        this.includeSubModules = includeSubModules;
     }
 
     public boolean isEditMode() {

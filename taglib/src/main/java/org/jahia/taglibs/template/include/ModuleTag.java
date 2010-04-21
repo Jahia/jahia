@@ -261,7 +261,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     templateType = currentResource.getTemplateType();
                 }
 
-                Resource resource = new Resource(node, templateType, template, forcedTemplate);
+                Resource resource = new Resource(node, templateType, template, forcedTemplate,
+                        parameters.get("isInclude") == null ? Resource.CONFIGURATION_MODULE : Resource.CONFIGURATION_INCLUDE);
                 if (templateWrapper != null && templateWrapper.length() > 0) {
                     resource.pushWrapper(templateWrapper);
                 }
@@ -415,12 +416,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             if (nodeTypes != null) {
                 pageContext.setAttribute("areaNodeTypesRestriction" + level, nodeTypes, PageContext.REQUEST_SCOPE);
             }
-            if (renderContext.isIncludeSubModules()) {
-                buffer.append(RenderService.getInstance().render(resource, renderContext));
-                if (var == null) {
-                    pageContext.getOut().print(buffer);
-                    buffer.delete(0, buffer.length());
-                }
+            buffer.append(RenderService.getInstance().render(resource, renderContext));
+            if (var == null) {
+                pageContext.getOut().print(buffer);
+                buffer.delete(0, buffer.length());
             }
             if (nodeTypes != null) {
                 pageContext.removeAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE);

@@ -50,15 +50,22 @@ import java.util.*;
  * @author toto
  */
 public class Resource {
+    public static final String CONFIGURATION_PAGE = "page";
+    public static final String CONFIGURATION_GWT = "gwt";
+    public static final String CONFIGURATION_MODULE = "module";
+    public static final String CONFIGURATION_INCLUDE = "include";
+    public static final String CONFIGURATION_WRAPPER = "wrapper";
+    public static final String CONFIGURATION_OPTION = "option";
+
     private static Logger logger = Logger.getLogger(Resource.class);
     private JCRNodeWrapper node;
     private String templateType;
     private String template;
     private String forcedTemplate;
+    private String contextConfiguration;
     private Stack<String> wrappers;
 
     private Set<JCRNodeWrapper> dependencies;
-    private List<Resource> includedResources;
     private List<String> missingResources;
 
     private List<Option> options;
@@ -71,19 +78,22 @@ public class Resource {
      * @param templateType template type
      * @param template the template name, null if default
      * @param forcedTemplate the template name, null if default
+     * @param contextConfiguration
      */
-    public Resource(JCRNodeWrapper node, String templateType, String template, String forcedTemplate) {
+    public Resource(JCRNodeWrapper node, String templateType, String template, String forcedTemplate,
+                    String contextConfiguration) {
         this.node = node;
         this.templateType = templateType;
         this.template = template;
         this.forcedTemplate = forcedTemplate;
+        this.contextConfiguration = contextConfiguration;
         dependencies = new LinkedHashSet<JCRNodeWrapper>();
         dependencies.add(node);
 
-        includedResources = new ArrayList<Resource>();
         missingResources = new ArrayList<String>();
         wrappers = new Stack<String>();
         options = new ArrayList<Option>();
+
     }
 
     public JCRNodeWrapper getNode() {
@@ -116,20 +126,12 @@ public class Resource {
         return null;
     }
 
-    public String getTemplate() {
-        return template;
-    }
-
     public void setTemplate(String template) {
         this.template = template;
     }
 
-    public String getForcedTemplate() {
-        return forcedTemplate;
-    }
-
-    public void setForcedTemplate(String forcedTemplate) {
-        this.forcedTemplate = forcedTemplate;
+    public String getContextConfiguration() {
+        return contextConfiguration;
     }
 
     public List<String> getTemplates() {
@@ -163,10 +165,6 @@ public class Resource {
 
     public List<String> getMissingResources() {
         return missingResources;
-    }
-
-    public List<Resource> getIncludedResources() {
-        return includedResources;
     }
 
     public Map<String, Object> getModuleParams() {

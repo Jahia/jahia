@@ -25,12 +25,9 @@ public class ContributionFilter extends AbstractFilter {
 
         try {
             // ugly tests to check whether or not to switch to contribution mode
-            if (context.isContributionMode()
-                    && node.isNodeType("jnt:contentList")
-                    && node.hasProperty("j:editableInContribution")
+            if (node.hasProperty("j:editableInContribution")
                     && node.getProperty("j:editableInContribution").getBoolean()
                     && !resource.getTemplateType().equals("edit")
-                    && resource.getModuleParams().get("isInclude") == null
                     && context.getRequest().getParameter("ajaxcall") == null) {
                 resource.setTemplateType("edit");
                 resource.setTemplate("listedit");

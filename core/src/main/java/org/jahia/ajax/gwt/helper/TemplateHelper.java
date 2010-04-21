@@ -50,7 +50,7 @@ public class TemplateHelper {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
-            Resource r = new Resource(node, "html", null, template);
+            Resource r = new Resource(node, "html", null, template, Resource.CONFIGURATION_GWT);
             request.setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
@@ -142,7 +142,7 @@ public class TemplateHelper {
         try {
             final JCRSessionWrapper session = currentUserSession;
             final JCRNodeWrapper node = session.getNode(path);
-            final Resource resource = new Resource(node, "html", null, null);
+            final Resource resource = new Resource(node, "html", null, null, Resource.CONFIGURATION_PAGE);
             request.setAttribute("mode", "edit");
             final RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
 

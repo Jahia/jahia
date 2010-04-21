@@ -130,7 +130,7 @@ public class CacheFilterTest extends TestCase {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
-        Resource resource = new Resource(node.getNode("testType2"), "html", null, null);
+        Resource resource = new Resource(node.getNode("testType2"), "html", null, null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         context.getRequest().setAttribute("script",
                 RenderService.getInstance().resolveScript(resource, context));
@@ -168,7 +168,7 @@ public class CacheFilterTest extends TestCase {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
-        Resource resource = new Resource(node, "html", null, null);
+        Resource resource = new Resource(node, "html", null, null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         context.getRequest().setAttribute("script",
                 RenderService.getInstance().resolveScript(resource, context));
@@ -208,7 +208,7 @@ public class CacheFilterTest extends TestCase {
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
         final JCRNodeWrapper user = node.getNode("testType2");
-        Resource resource = new Resource(user, "html", null, null);
+        Resource resource = new Resource(user, "html", null, null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
         context.getRequest().setAttribute("script",
                 RenderService.getInstance().resolveScript(resource, context));

@@ -155,7 +155,7 @@ public class SimpleSearchTest {
                     .getCurrentUserSession();
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
-            Resource resource = new Resource(homeNode, "html", null, null);
+            Resource resource = new Resource(homeNode, "html", null, null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
 
             SearchCriteria criteria = new SearchCriteria();
@@ -194,7 +194,7 @@ public class SimpleSearchTest {
                     .getCurrentUserSession();
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
-            Resource resource = new Resource(homeNode, "html", null, null);
+            Resource resource = new Resource(homeNode, "html", null, null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
 
             SearchCriteria criteria = new SearchCriteria();
@@ -234,7 +234,7 @@ public class SimpleSearchTest {
                     .getCurrentUserSession();
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
-            Resource resource = new Resource(homeNode, "html", null, null);
+            Resource resource = new Resource(homeNode, "html", null, null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
 
             SearchCriteria criteria = new SearchCriteria();
@@ -283,7 +283,7 @@ public class SimpleSearchTest {
                     .getCurrentUserSession();
             JCRNodeWrapper homeNode = session
                     .getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
-            Resource resource = new Resource(homeNode, "html", null, null);
+            Resource resource = new Resource(homeNode, "html", null, null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
 
             SearchCriteria criteria = new SearchCriteria();
@@ -353,7 +353,7 @@ public class SimpleSearchTest {
                     .getCurrentUserSession();
             JCRNodeWrapper homeNode = session
                     .getNode(SECOND_SITECONTENT_ROOT_NODE + "/home");
-            Resource resource = new Resource(homeNode, "html", null, null);
+            Resource resource = new Resource(homeNode, "html", null, null, Resource.CONFIGURATION_PAGE);
             context.setMainResource(resource);
 
             SearchCriteria criteria = new SearchCriteria();

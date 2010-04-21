@@ -25,7 +25,8 @@ public class WrapperFilter extends AbstractFilter {
         while (resource.hasWrapper()) {
             String wrapper = resource.popWrapper();
             try {
-                Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper);
+                Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper,
+                        Resource.CONFIGURATION_WRAPPER);
                 if (service.hasTemplate(node.getPrimaryNodeType(), wrapper)) {
                     Script script = service.resolveScript(wrappedResource, renderContext);
                     Object wrappedContent = renderContext.getRequest().getAttribute("wrappedContent");

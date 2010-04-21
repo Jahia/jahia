@@ -36,7 +36,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
@@ -56,7 +55,6 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -207,7 +205,7 @@ public class Render extends HttpServlet implements Controller,
             final EndTag tag = element.getEndTag();
             final String staticsAsset = RenderService.getInstance().render(new Resource(resource.getNode(), "html",
                                                                                         "html.statics.assets",
-                                                                                        "html.statics.assets"),
+                                                                                        "html.statics.assets", Resource.CONFIGURATION_MODULE),
                                                                            renderContext);
             outputDocument.replace(tag.getBegin(),tag.getBegin()+1,"\n"+ AggregateCacheFilter.removeEsiTags(staticsAsset)+"\n<");
         }

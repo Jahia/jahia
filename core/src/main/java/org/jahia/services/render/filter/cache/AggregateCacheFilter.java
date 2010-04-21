@@ -263,7 +263,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                     "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get(
                     "language")),renderContext.getFallbackLocale()).getNode(keyAttrbs.get("path"));
             String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get(
-                    "templateType"), keyAttrbs.get("template"), keyAttrbs.get("forcedTemplate")), renderContext);
+                    "templateType"), keyAttrbs.get("template"), keyAttrbs.get("forcedTemplate"), Resource.CONFIGURATION_MODULE), renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);

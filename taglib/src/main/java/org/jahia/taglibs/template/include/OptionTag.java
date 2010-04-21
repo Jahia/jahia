@@ -41,7 +41,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.filter.*;
 import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.RepositoryException;
@@ -88,7 +87,8 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                 if (pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE) == null) {
                     currentResource.removeOption(mixinNodeType);
                 }
-                Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), null, template);
+                Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), null, template,
+                        Resource.CONFIGURATION_OPTION);
                 wrappedResource.setResourceNodeType(mixinNodeType);
                 for (Map.Entry<String, String> param : parameters.entrySet()) {
                     wrappedResource.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(

@@ -108,6 +108,18 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    public static class ConfigurationCondition implements ExecutionCondition {
+        private String conf;
+
+        public ConfigurationCondition(String conf) {
+            this.conf = conf;
+        }
+
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return (resource.getContextConfiguration().equals(conf));
+        }
+    }
+
     /**
      * Evaluates to <code>true</code> if the current mode equals to the
      * specified one
@@ -427,6 +439,44 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     /**
+     * Comma-separated list of modes this filter will be executed for
+     * (all others are skipped).
+     *
+     * @param modes comma-separated list of modes this filter will
+     *            be executed for (all others are skipped)
+     */
+    public void setApplyOnModes(String modes) {
+        if (modes.contains(",")) {
+            AnyOfCondition condition = new AnyOfCondition();
+            for (String mode : modes.split(",")) {
+                condition.add(new ModeCondition(mode.trim()));
+            }
+            addCondition(condition);
+        } else {
+            addCondition(new ModeCondition(modes));
+        }
+    }
+
+    /**
+     * Comma-separated list of resource configuration this filter will be executed for
+     * (all others are skipped).
+     *
+     * @param configurations comma-separated list of configurations this filter will
+     *            be executed for (all others are skipped)
+     */
+    public void setApplyOnConfigurations(String configurations) {
+        if (configurations.contains(",")) {
+            AnyOfCondition condition = new AnyOfCondition();
+            for (String conf : configurations.split(",")) {
+                condition.add(new ConfigurationCondition(conf.trim()));
+            }
+            addCondition(condition);
+        } else {
+            addCondition(new ConfigurationCondition(configurations));
+        }
+    }
+
+    /**
      * Comma-separated list of template names this filter will be executed for
      * (all others are skipped).
      * 
@@ -511,9 +561,51 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     /**
-     * Comma-separated list of node type names this filter won't be executed
+     * Comma-separated list of mode names this filter won't be executed
      * for.
      * 
+     * @param modes comma-separated list of node type names this filter
+     *            won't be executed for
+     */
+    public void setSkipOnModes(String modes) {
+        ExecutionCondition condition = null;
+        if (modes.contains(",")) {
+            AnyOfCondition anyOf = new AnyOfCondition();
+            for (String mode : modes.split(",")) {
+                anyOf.add(new ModeCondition(mode.trim()));
+            }
+            condition = anyOf;
+        } else {
+            condition = new ModeCondition(modes);
+        }
+        addCondition(new NotCondition(condition));
+    }
+
+    /**
+     * Comma-separated list of configuration names this filter won't be executed
+     * for.
+     *
+     * @param configurations comma-separated list of node type names this filter
+     *            won't be executed for
+     */
+    public void setSkipOnConfiguration(String configurations) {
+        ExecutionCondition condition = null;
+        if (configurations.contains(",")) {
+            AnyOfCondition anyOf = new AnyOfCondition();
+            for (String configuration : configurations.split(",")) {
+                anyOf.add(new ConfigurationCondition(configuration.trim()));
+            }
+            condition = anyOf;
+        } else {
+            condition = new ConfigurationCondition(configurations);
+        }
+        addCondition(new NotCondition(condition));
+    }
+
+    /**
+     * Comma-separated list of node type names this filter won't be executed
+     * for.
+     *
      * @param nodeTypes comma-separated list of node type names this filter
      *            won't be executed for
      */

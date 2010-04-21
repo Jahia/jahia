@@ -107,13 +107,8 @@ when we flush this entry we will flush the whole cache-->
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
     	<property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnNodeTypes" value="jnt:navMenu"/>
-        <property name="conditions">
-            <set>
-                <bean class="org.jahia.services.render.filter.AbstractFilter$ModeCondition">
-                    <constructor-arg value="live"/>
-                </bean>
-            </set>
-        </property>
+        <property name="skipOnConfiguration" value="include,wrapper,option"/>
+        <property name="applyOnModes" value="live"/>
     </bean>
     <bean id="mainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter" parent="cacheFilter">
         <property name="applyOnMainResource" value="true"/>

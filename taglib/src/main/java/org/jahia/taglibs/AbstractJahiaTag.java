@@ -712,7 +712,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
         }
         RenderContext ctx = getRenderContext();
         if (ctx != null) {
-            Resource resource = new Resource(node, "html", null, null);
+            Resource resource = new Resource(node, "html", null, null, Resource.CONFIGURATION_PAGE);
             URLGenerator url = new URLGenerator(ctx, resource, JCRStoreService.getInstance());
             return url.getLanguages().get(langCode);
         } else {

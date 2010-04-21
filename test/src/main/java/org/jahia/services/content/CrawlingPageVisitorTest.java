@@ -220,7 +220,7 @@ public class CrawlingPageVisitorTest extends TestCase {
             if (defaultSite != null) {
                 JCRNodeWrapper homeNode = session.getNode("/sites/"
                         + defaultSite.getSiteKey() + "/home");
-                Resource resource = new Resource(homeNode, "html", null, null);
+                Resource resource = new Resource(homeNode, "html", null, null, Resource.CONFIGURATION_PAGE);
                 renderCtx.setMainResource(resource);
                 URLGenerator urlgenerator = new URLGenerator(renderCtx,
                         resource, ServicesRegistry.getInstance()
@@ -231,7 +231,7 @@ public class CrawlingPageVisitorTest extends TestCase {
             if (testSite != null) {
                 JCRNodeWrapper homeNode = session.getNode("/sites/"
                         + testSite.getSiteKey() + "/home");
-                Resource resource = new Resource(homeNode, "html", null, null);
+                Resource resource = new Resource(homeNode, "html", null, null, Resource.CONFIGURATION_PAGE);
                 renderCtx.setMainResource(resource);
                 URLGenerator urlgenerator = new URLGenerator(renderCtx,
                         resource, ServicesRegistry.getInstance()

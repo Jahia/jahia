@@ -371,7 +371,7 @@
     </bean>
 
     <bean id="editenginestab.options" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="options"/>
+        <property name="key" value="option"/>
     </bean>
 
     <bean id="editenginestab.rights" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">

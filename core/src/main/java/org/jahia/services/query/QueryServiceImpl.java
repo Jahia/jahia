@@ -110,7 +110,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
  * The default implementation of Jahia's QueryService.
  * 
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
- * complex queries specified in JSR-283 (Content Repository for Javaï¿½ Technology API 2.0)
+ * complex queries specified in JSR-283 (Content Repository for Java™ Technology API 2.0)
  * 
  * Queries can be created with the API by using the QueryObjectModel.
  * Jahia will also provide a query builder user interface.
@@ -243,7 +243,12 @@ public class QueryServiceImpl extends QueryService {
                 for (Ordering ordering : orderings) {
                     ((OrderingImpl) ordering).accept(visitor, null);
                 }
-            } 
+            }
+            if (columns != null) {
+                for (Column column : columns) {
+                    ((ColumnImpl) column).accept(visitor, null);
+                }
+            }  
         } catch (Exception e) {
             throw new RepositoryException(e);
         }
@@ -257,6 +262,11 @@ public class QueryServiceImpl extends QueryService {
             if (orderings != null)  {
                 for (Ordering ordering : orderings) {
                     ((OrderingImpl) ordering).accept(visitor, null);
+                }
+            }
+            if (columns != null) {
+                for (Column column : columns) {
+                    ((ColumnImpl) column).accept(visitor, null);
                 }
             }
         } catch (Exception e) {
@@ -293,8 +303,17 @@ public class QueryServiceImpl extends QueryService {
                 newOrdering = (Ordering) ((OrderingImpl) ordering).accept(visitor, null);
                 newOrderings[i++] = newOrdering;
             }
+            
+            Column[] newColumns = new Column[columns.length];            
+            i = 0;
+            for (Column column : columns) {
+                Column newColumn = column;
+
+                newColumn = (Column) ((ColumnImpl) column).accept(visitor, null);
+                newColumns[i++] = newColumn;
+            }            
             info.setNewQueryObjectModel(info.getQueryObjectModelFactory().createQuery(newSource,
-                    newConstraint, newOrderings, columns));
+                    newConstraint, newOrderings, newColumns));
         } catch (Exception e) {
             throw new RepositoryException(e);
         }
@@ -399,7 +418,7 @@ public class QueryServiceImpl extends QueryService {
         @Override        
         public Object visit(PropertyValueImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
-            return (getModificationInfo().getMode() == MODIFY_MODE ? node : returnedData);
+            return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
 
         /**
@@ -411,7 +430,7 @@ public class QueryServiceImpl extends QueryService {
         @Override        
         public Object visit(ColumnImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
-            return (getModificationInfo().getMode() == MODIFY_MODE ? node : returnedData);
+            return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
 
         /**
@@ -423,7 +442,7 @@ public class QueryServiceImpl extends QueryService {
         @Override        
         public Object visit(FullTextSearchImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
-            return (getModificationInfo().getMode() == MODIFY_MODE ? node : returnedData);
+            return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
 
         /**
@@ -435,7 +454,7 @@ public class QueryServiceImpl extends QueryService {
         @Override        
         public Object visit(PropertyExistenceImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
-            return (getModificationInfo().getMode() == MODIFY_MODE ? node : returnedData);
+            return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
 
         /**
@@ -795,7 +814,7 @@ public class QueryServiceImpl extends QueryService {
         @Override
         public Object visit(EquiJoinConditionImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
-            return (getModificationInfo().getMode() == MODIFY_MODE ? node : returnedData);            
+            return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);            
         }
 
         /**
@@ -910,35 +929,48 @@ public class QueryServiceImpl extends QueryService {
                             String translationSelectorName = translationSelector.getSelectorName();
                             if (propDef != null && propDef.isInternationalized()) {
                                 propertyName = propertyName + "_" + languageCodes.get(0);
+                                if (node instanceof Column) {
+                                    node = (AbstractQOMNode) qomFactory.column(
+                                            translationSelectorName, propertyName, ((Column) node)
+                                                    .getColumnName());
+                                }
                             }
+
                             if (node instanceof PropertyValue) {
-                                node = (AbstractQOMNode) qomFactory.propertyValue(translationSelectorName,
-                                        propertyName);
+                                node = (AbstractQOMNode) qomFactory.propertyValue(
+                                        translationSelectorName, propertyName);
                             } else if (node instanceof FullTextSearch) {
-                                node = (AbstractQOMNode) qomFactory.fullTextSearch(translationSelectorName,
-                                        propertyName, ((FullTextSearch) node).getFullTextSearchExpression());
+                                node = (AbstractQOMNode) qomFactory.fullTextSearch(
+                                        translationSelectorName, propertyName,
+                                        ((FullTextSearch) node).getFullTextSearchExpression());
                             } else if (node instanceof PropertyExistence) {
-                                node = (AbstractQOMNode) qomFactory.propertyExistence(translationSelectorName,
-                                        propertyName);
-                            } else if (node instanceof Column) {
-                                node = (AbstractQOMNode) qomFactory.column(translationSelectorName, propertyName,
-                                        ((Column) node).getColumnName());
+                                node = (AbstractQOMNode) qomFactory.propertyExistence(
+                                        translationSelectorName, propertyName);
                             } else if (node instanceof EquiJoinCondition) {
                                 node = (AbstractQOMNode) qomFactory
                                         .equiJoinCondition(
                                                 selector.getSelectorName().equals(
-                                                        ((EquiJoinCondition) node).getSelector1Name()) ? translationSelectorName
-                                                        : ((EquiJoinCondition) node).getSelector1Name(),
+                                                        ((EquiJoinCondition) node)
+                                                                .getSelector1Name()) ? translationSelectorName
+                                                        : ((EquiJoinCondition) node)
+                                                                .getSelector1Name(),
                                                 selector.getSelectorName().equals(
-                                                        ((EquiJoinCondition) node).getSelector1Name()) ? propertyName
-                                                        : ((EquiJoinCondition) node).getProperty1Name(),
+                                                        ((EquiJoinCondition) node)
+                                                                .getSelector1Name()) ? propertyName
+                                                        : ((EquiJoinCondition) node)
+                                                                .getProperty1Name(),
                                                 selector.getSelectorName().equals(
-                                                        ((EquiJoinCondition) node).getSelector2Name()) ? translationSelectorName
-                                                        : ((EquiJoinCondition) node).getSelector2Name(),
+                                                        ((EquiJoinCondition) node)
+                                                                .getSelector2Name()) ? translationSelectorName
+                                                        : ((EquiJoinCondition) node)
+                                                                .getSelector2Name(),
                                                 selector.getSelectorName().equals(
-                                                        ((EquiJoinCondition) node).getSelector2Name()) ? propertyName
-                                                        : ((EquiJoinCondition) node).getProperty2Name());                                
+                                                        ((EquiJoinCondition) node)
+                                                                .getSelector2Name()) ? propertyName
+                                                        : ((EquiJoinCondition) node)
+                                                                .getProperty2Name());
                             }
+
                         }
                     }
 

@@ -23,7 +23,7 @@
 	float:none;
 }
 
-#bodywrapper .treeview li { 
+#bodywrapper .treeview li {
 	margin: 0;
 	padding: 3px 0pt 3px 16px;
 }
@@ -42,23 +42,23 @@
 #bodywrapper .treeview .expandable-hitarea { background-position: -80px -3px; }
 
 #bodywrapper .treeview li.last { background-position: 0 -1766px }
-#bodywrapper .treeview li.lastCollapsable, #bodywrapper .treeview li.lastExpandable { background-image: url(images/treeview-default.gif); }  
+#bodywrapper .treeview li.lastCollapsable, #bodywrapper .treeview li.lastExpandable { background-image: url(images/treeview-default.gif); }
 #bodywrapper .treeview li.lastCollapsable { background-position: 0 -111px }
 #bodywrapper .treeview li.lastExpandable { background-position: -32px -67px }
 
 #bodywrapper .treeview div.lastCollapsable-hitarea, #bodywrapper .treeview div.lastExpandable-hitarea { background-position: 0; }
 
 #bodywrapper .treeview-red li { background-image: url(images/treeview-red-line.gif); }
-#bodywrapper .treeview-red .hitarea, #bodywrapper .treeview-red li.lastCollapsable, #bodywrapper .treeview-red li.lastExpandable { background-image: url(images/treeview-red.gif); } 
+#bodywrapper .treeview-red .hitarea, #bodywrapper .treeview-red li.lastCollapsable, #bodywrapper .treeview-red li.lastExpandable { background-image: url(images/treeview-red.gif); }
 
 #bodywrapper .treeview-black li { background-image: url(images/treeview-black-line.gif); }
-#bodywrapper .treeview-black .hitarea, #bodywrapper .treeview-black li.lastCollapsable, #bodywrapper .treeview-black li.lastExpandable { background-image: url(images/treeview-black.gif); }  
+#bodywrapper .treeview-black .hitarea, #bodywrapper .treeview-black li.lastCollapsable, #bodywrapper .treeview-black li.lastExpandable { background-image: url(images/treeview-black.gif); }
 
 #bodywrapper .treeview-gray li { background-image: url(images/treeview-gray-line.gif); }
-#bodywrapper .treeview-gray .hitarea, #bodywrapper .treeview-gray li.lastCollapsable, #bodywrapper .treeview-gray li.lastExpandable { background-image: url(images/treeview-gray.gif); } 
+#bodywrapper .treeview-gray .hitarea, #bodywrapper .treeview-gray li.lastCollapsable, #bodywrapper .treeview-gray li.lastExpandable { background-image: url(images/treeview-gray.gif); }
 
 #bodywrapper .treeview-famfamfam li { background-image: url(images/treeview-famfamfam-line.gif); }
-#bodywrapper .treeview-famfamfam .hitarea, #bodywrapper .treeview-famfamfam li.lastCollapsable, #bodywrapper .treeview-famfamfam li.lastExpandable { background-image: url(images/treeview-famfamfam.gif); } 
+#bodywrapper .treeview-famfamfam .hitarea, #bodywrapper .treeview-famfamfam li.lastCollapsable, #bodywrapper .treeview-famfamfam li.lastExpandable { background-image: url(images/treeview-famfamfam.gif); }
 
 
 .filetree li { padding: 3px 0 2px 16px; }
@@ -66,3 +66,61 @@
 .filetree span.folder { background: url(images/folder.gif) 0 0 no-repeat; }
 .filetree li.expandable span.folder { background: url(images/folder-closed.gif) 0 0 no-repeat; }
 .filetree span.file { background: url(images/file.gif) 0 0 no-repeat; }
+
+
+#fancybox-inner .treeview, #fancybox-inner .treeview ul { 
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+#fancybox-inner .treeview ul {
+	background-color: white;
+	margin-top: 4px;
+}
+
+#fancybox-inner .treeview .hitarea {
+	background: url(images/treeview-default.gif) -64px -25px no-repeat;
+	height: 16px;
+	width: 16px;
+	margin-left: -16px;
+	float: left;
+	cursor: pointer;
+}
+
+#fancybox-inner .treeview li {
+	margin: 0;
+	padding: 3px 0pt 3px 16px;
+}
+
+#fancybox-inner .treeview a.selected {
+	background-color: #eee;
+}
+
+#fancybox-inner .treeview .hover { color: red; cursor: pointer; }
+
+#fancybox-inner .treeview li { background: url(images/treeview-default-line.gif) 0 0 no-repeat; }
+#fancybox-inner .treeview li.collapsable, #fancybox-inner .treeview li.expandable { background-position: 0 -176px; }
+
+#fancybox-inner .treeview .expandable-hitarea { background-position: -80px -3px; }
+
+#fancybox-inner .treeview li.last { background-position: 0 -1766px }
+#fancybox-inner .treeview li.lastCollapsable, #fancybox-inner .treeview li.lastExpandable { background-image: url(images/treeview-default.gif); }
+#fancybox-inner .treeview li.lastCollapsable { background-position: 0 -111px }
+#fancybox-inner .treeview li.lastExpandable { background-position: -32px -67px }
+
+#fancybox-inner .treeview div.lastCollapsable-hitarea, #fancybox-inner .treeview div.lastExpandable-hitarea { background-position: 0; }
+
+#fancybox-inner .treeview-red li { background-image: url(images/treeview-red-line.gif); }
+#fancybox-inner .treeview-red .hitarea, #fancybox-inner .treeview-red li.lastCollapsable, #fancybox-inner .treeview-red li.lastExpandable { background-image: url(images/treeview-red.gif); }
+
+#fancybox-inner .treeview-black li { background-image: url(images/treeview-black-line.gif); }
+#fancybox-inner .treeview-black .hitarea, #fancybox-inner .treeview-black li.lastCollapsable, #fancybox-inner .treeview-black li.lastExpandable { background-image: url(images/treeview-black.gif); }
+
+#fancybox-inner .treeview-gray li { background-image: url(images/treeview-gray-line.gif); }
+#fancybox-inner .treeview-gray .hitarea, #fancybox-inner .treeview-gray li.lastCollapsable, #fancybox-inner .treeview-gray li.lastExpandable { background-image: url(images/treeview-gray.gif); }
+
+#fancybox-inner .treeview-famfamfam li { background-image: url(images/treeview-famfamfam-line.gif); }
+#fancybox-inner .treeview-famfamfam .hitarea, #fancybox-inner .treeview-famfamfam li.lastCollapsable, #fancybox-inner .treeview-famfamfam li.lastExpandable { background-image: url(images/treeview-famfamfam.gif); }
+
+

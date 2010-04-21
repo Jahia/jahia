@@ -78,17 +78,23 @@
 	<template:addResources type="inlineJavaScript">
 	function jahiaCreateTreeItemSelector(fieldId, displayFieldId, baseUrl, root, nodeTypes, selectableNodeTypes, valueType, onSelect, treeviewOptions, fancyboxOptions) {
 		$("#" + fieldId + "-treeItemSelectorTrigger").fancybox($.extend({
-			frameHeight: 600,
-			frameWidth: 350,
+		    autoDimensions: false,
+            opacity: true,
+            height: 600,
+			width: 350,
 			hideOnOverlayClick: false,
 			hideOnContentClick: false,
-			callbackOnShow: function () {
+            onClosed : function(){
+                $("#" + fieldId + "-treeItemSelectorTree").empty();
+            }
+			onComplete: function () {
 				var queryString = (nodeTypes.length > 0 ? "nodeTypes=" + encodeURIComponent(nodeTypes) : "") + (selectableNodeTypes.length > 0 ? "&selectableNodeTypes=" + encodeURIComponent(selectableNodeTypes) : "");
-				queryString = queryString.length > 0 ? "?" + queryString : ""; 
-				$("#fancy_div #" + fieldId + "-treeItemSelectorTree").treeview($.extend({
+				queryString = queryString.length > 0 ? "?" + queryString : "";
+				$("#" + fieldId + "-treeItemSelectorTree").treeview($.extend({
 					urlBase: baseUrl,
 					urlExtension: ".tree.json" + queryString,
 					urlStartWith: baseUrl + root + ".treeRootItem.json" + queryString,
+                    url: baseUrl + root + ".treeRootItem.json" + queryString,
 					callback: function (uuid, path, title) {
 						var setValue = true;
 						if (onSelect && (typeof onSelect == 'function')) {
@@ -100,8 +106,8 @@
 					        	document.getElementById(displayFieldId).value = title;
 					        }
 					    }
-						$("#" + fieldId + "-treeItemSelectorTrigger").fancybox.close(); 
-					}		
+						$.fancybox.close();
+					}
 				}, treeviewOptions));
 			}
 		}, fancyboxOptions));
@@ -125,4 +131,4 @@
 <template:addResources type="inlineJavaScript">
 $(document).ready(function() { jahiaCreateTreeItemSelector("${fieldId}", "${displayFieldId}", "${url.base}", "${root}", "${nodeTypes}", "${selectableNodeTypes}", "${valueType}", ${not empty onSelect ? onSelect : 'null'}, ${not empty treeviewOptions ? treeviewOptions :  'null'}, ${not empty fancyboxOptions ? fancyboxOptions : 'null'}); });
 </template:addResources>
-<div id="${fieldId}-treeItemSelector" style="display:none"><ul id="${fieldId}-treeItemSelectorTree"></ul></div>
+<div style="display:none"><div id="${fieldId}-treeItemSelector"><ul id="${fieldId}-treeItemSelectorTree"></ul></div></div>

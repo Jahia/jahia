@@ -358,8 +358,6 @@ public class ContentSearchForm extends ContentPanel {
 
 
                 });
-            } else {
-                Window.alert(Messages.getNotEmptyResource("fm_failSaveSearch", "The entered name is invalid."));
             }
         }
 

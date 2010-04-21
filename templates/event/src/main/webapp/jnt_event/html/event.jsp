@@ -37,7 +37,7 @@
                         <jcr:nodeProperty node="${currentNode}" name="j:defaultCategory" var="cat"/>
                         <c:if test="${cat != null}">
                                     <c:forEach items="${cat}" var="category">
-                                        <span class="categorytitle">${category.category.title}</span>
+                                        <span class="categorytitle">${category.node.properties['jcr:title'].string}</span>
                                     </c:forEach>
 
                         </c:if>

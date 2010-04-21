@@ -5,6 +5,8 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
+<template:addResources type="css" resources="poll.css"/>
+
 <script type="text/javascript">
 function doVote(answers) {
 
@@ -78,36 +80,36 @@ function doVote(answers) {
 
 </script>
 
-<h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
+<div class=poll>
+
+    <h3>
+        ${currentNode.propertiesAsString['question']}
+    </h3>
 
 
-<div class="intro">
-    ${currentNode.propertiesAsString['question']}
-</div>
+    <c:if test="${not renderContext.editMode}">
+        <div id="formContainer_${currentNode.name}">
+        <form id="form_${currentNode.name}" name="form_${currentNode.name}" method="post" >
+    </c:if>
+            <c:if test="${renderContext.editMode}">
+                <div class="addanswers">
+                <span>Add the answers here</span>
+            </c:if>
 
+            <template:area path="${currentNode.path}/answers" nodeTypes="jnt:answer" editable="true"/>
 
-<c:if test="${not renderContext.editMode}">
-    <div id="formContainer_${currentNode.name}">
-    <form id="form_${currentNode.name}" name="form_${currentNode.name}" method="post" >
-</c:if>
-        <c:if test="${renderContext.editMode}">
-            <div class="addanswers">
-            <span>Add the answers here</span>
-        </c:if>
+            <c:if test="${renderContext.editMode}">
+                </div>
+            </c:if>
 
-        <template:area path="${currentNode.path}/answers" nodeTypes="jnt:answer" editable="true"/>
+    <c:if test="${not renderContext.editMode}">
+        <div class="validation"></div>
+        <input type="button" value="Vote" onclick="doVote($('${currentNode.name}_voteAnswer').value);" />
+        </form>
+        </div>
+    </c:if>
 
-        <c:if test="${renderContext.editMode}">
-            </div>
-        </c:if>
+    <div id="stats_${currentNode.name}">
 
-<c:if test="${not renderContext.editMode}">
-    <div class="validation"></div>
-    <input type="button" value="Vote" onclick="doVote($('${currentNode.name}_voteAnswer').value);" />
-    </form>
     </div>
-</c:if>
-
-<div id="stats_${currentNode.name}">
-
 </div>

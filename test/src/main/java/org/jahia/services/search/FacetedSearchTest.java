@@ -79,7 +79,8 @@ public class FacetedSearchTest extends TestCase {
         res = doQuery(session, "eventsType", "rep:facet()");
         checkResultSize(res, 27);
         field = res.getFacetField("eventsType");
-
+        assertNotNull("Facet field is null",field);
+        assertNotNull("Facet values are null",field.getValues());
         assertEquals("Query did not return correct number of facets", 6, field.getValues().size());
         Iterator<FacetField.Count> counts = field.getValues().iterator();
 
@@ -98,7 +99,9 @@ public class FacetedSearchTest extends TestCase {
         // test facet options : prefix
         res = doQuery(session, "eventsType", "rep:facet(prefix=c)");
         field = res.getFacetField("eventsType");
-        assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
+        assertNotNull("Facet field is null",field);
+        assertNotNull("Facet values are null",field.getValues());
+        assertEquals("Query did not return correct number of facet values", 2, field.getValues().size());
         counts = field.getValues().iterator();
 
         checkFacet(counts.next(), CONFERENCE, 5);
@@ -107,8 +110,9 @@ public class FacetedSearchTest extends TestCase {
         // test facet options : sort=false  - lexicographic order
         res = doQuery(session, "eventsType", "rep:facet(sort=false)");
         field = res.getFacetField("eventsType");
-
-        assertEquals("Query did not return correct number of facets", 6, field.getValues().size());
+        assertNotNull("Facet field is null",field);
+        assertNotNull("Facet values are null",field.getValues());
+        assertEquals("Query did not return correct number of facet value", 6, field.getValues().size());
         counts = field.getValues().iterator();
 
         checkFacet(counts.next(), CONFERENCE, 5);
@@ -130,6 +134,8 @@ public class FacetedSearchTest extends TestCase {
         // test date facets
         res = doQuery(session, "startDate", "rep:facet()");
         field = res.getFacetField("startDate");
+        assertNotNull("Facet field is null",field);
+        assertNotNull("Facet values are null",field.getValues());
 
         assertEquals("Query did not return correct number of facets", 9, field.getValues().size());
         Iterator<FacetField.Count> counts = field.getValues().iterator();
@@ -158,7 +164,8 @@ public class FacetedSearchTest extends TestCase {
         // test i18n facets
         res = doQuery(session, "location", "rep:facet()");
         field = res.getFacetField("location");
-
+        assertNotNull("Facet field is null",field);
+        assertNotNull("Facet values are null",field.getValues());
         assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
         Iterator<FacetField.Count> counts = field.getValues().iterator();
 
@@ -169,6 +176,37 @@ public class FacetedSearchTest extends TestCase {
             QueryResultWrapper resCheck = doFilteredQuery(session, "location", count.getName());
             checkResultSize(resCheck, (int) count.getCount());
         }
+    }
+
+
+    public void testMultipleFacets() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        FacetField field;
+        QueryResultWrapper res;
+
+        // check facets
+        res = doQuery(session, "eventsType", "rep:facet()", "startDate","rep:facet");
+        checkResultSize(res, 27);
+        field = res.getFacetField("eventsType");
+        assertNotNull("Facet field is null",field);
+        assertNotNull("Facet values are null",field.getValues());
+        assertEquals("Query did not return correct number of facet value", 6 ,field.getValues().size());
+        Iterator<FacetField.Count> counts = field.getValues().iterator();
+
+        checkFacet(counts.next(), SHOW, 7);
+        checkFacet(counts.next(), PRESS_CONFERENCE, 6);
+        checkFacet(counts.next(), CONFERENCE, 5);
+        checkFacet(counts.next(), ROAD_SHOW, 4);
+        checkFacet(counts.next(), CONSUMER_SHOW, 3);
+        checkFacet(counts.next(), MEETING, 2);
+
+        field = res.getFacetField("startDate");
+        assertNotNull("Facet field is null",field);
+        assertNotNull("Facet values are null",field.getValues());
+        assertEquals("Query did not return correct number of facet value", 9 ,field.getValues().size());
     }
 
     private void initContent(JCRSessionWrapper session) throws RepositoryException {
@@ -219,7 +257,7 @@ public class FacetedSearchTest extends TestCase {
         QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
 
         qomBuilder.setSource(factory.selector("jnt:event", "event"));
-
+        qomBuilder.andConstraint(factory.descendantNode("event", "/sites/jcrFacetTest"));
         for (int j = 0; j < facet.length; j++) {
             String prop = facet[j++];
             String col = facet[j];
@@ -237,6 +275,7 @@ public class FacetedSearchTest extends TestCase {
         QOMBuilder qomBuilder = new QOMBuilder(factory, session.getValueFactory());
 
         qomBuilder.setSource(factory.selector("jnt:event", "event"));
+        qomBuilder.andConstraint(factory.descendantNode("event", "/sites/jcrFacetTest"));
 
         for (int j = 0; j < constraints.length; j++) {
             String prop = constraints[j++];

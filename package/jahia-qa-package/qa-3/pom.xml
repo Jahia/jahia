@@ -135,6 +135,7 @@
                             <databaseType>oracle</databaseType>
                             <databaseUrl>jdbc:oracle:thin:@10.8.37.8:1521:TEST</databaseUrl>
                             <databaseUsername>QA_243</databaseUsername>
+                            <!--databaseUsername>jahia</databaseUsername-->
                             <databasePassword>jahia</databasePassword>
                             <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>

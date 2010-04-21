@@ -512,14 +512,14 @@
 // Portlets
 //---------------------------------------------------------
 
-[jnt:portletDefinition] > nt:base, mix:referenceable, jmix:accessControlled
+[jnt:portletDefinition] > nt:base, mix:referenceable, jmix:accessControlled, jmix:basemetadata
  - j:name (string) nofulltext
  - j:description (string)
  - j:isVisible (boolean) = true
  - j:type (string) nofulltext
  - j:context (string) nofulltext
 
-[jnt:portletDefinitions] > nt:hierarchyNode, jmix:collection
+[jnt:portletDefinitions] > nt:hierarchyNode, jmix:collection, jmix:basemetadata
 + * (jnt:portletDefinition)
 
 [jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:publication

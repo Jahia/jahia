@@ -179,8 +179,12 @@ public class DateField {
   }
 
   public String indexedToReadable(String indexedForm) {
-    return indexedForm + Z;
+    return indexedToReadable(indexedForm, false);
   }
+  
+  public String indexedToReadable(String indexedForm, boolean withMillis) {
+      return indexedForm + (withMillis ? ".000" : "") + Z;
+    }
 
   public String toExternal(Fieldable f) {
     return indexedToReadable(f.stringValue());
@@ -310,6 +314,10 @@ public class DateField {
       c.millisFormat = new DecimalFormat(".###", 
         new DecimalFormatSymbols(CANONICAL_LOCALE));
       return c;
+    }
+
+    public NumberFormat getMillisFormat() {
+        return millisFormat;
     }
   }
   

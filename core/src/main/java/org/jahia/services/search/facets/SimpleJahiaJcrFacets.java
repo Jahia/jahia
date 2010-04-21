@@ -19,6 +19,7 @@ package org.jahia.services.search.facets;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.lucene.FieldNames;
+import org.apache.jackrabbit.core.query.lucene.JackrabbitQueryParser;
 import org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer;
 import org.apache.jackrabbit.core.query.lucene.NamePathResolverImpl;
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
@@ -27,6 +28,7 @@ import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
 import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.index.IndexReader;
@@ -66,6 +68,7 @@ import java.util.TreeSet;
 import javax.jcr.NamespaceException;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.Source;
@@ -93,11 +96,13 @@ public class SimpleJahiaJcrFacets {
     /** Searcher to use for all calculations */
     protected IndexSearcher searcher;
     protected QueryObjectModelTree req;
+    
+    protected Analyzer defaultAnalyzer;    
     /**
      * Name and Path resolver.
      */
     protected final NamePathResolver resolver;
-
+    
     public SimpleJahiaJcrFacets(QueryObjectModelTree req, IndexSearcher searcher, OpenBitSet docs,
             SolrParams params, SearchIndex index) {
         this.req = req;
@@ -105,6 +110,7 @@ public class SimpleJahiaJcrFacets {
         this.docs = docs;
         this.params = params;
         this.resolver = NamePathResolverImpl.create(index.getNamespaceMappings());
+        this.defaultAnalyzer = index.getTextAnalyzer();
     }
 
     /**
@@ -153,10 +159,12 @@ public class SimpleJahiaJcrFacets {
 
         String[] facetQs = params.getParams(FacetParams.FACET_QUERY);
         if (null != facetQs && 0 != facetQs.length) {
-            // for (String q : facetQs) {
-            // Query qobj = QParser.getParser(q, null, req).getQuery();
-            // res.add(q, searcher.numDocs(qobj, docs));
-            // }
+            for (String q : facetQs) {
+                Query qobj = new JackrabbitQueryParser(FieldNames.FULLTEXT, defaultAnalyzer, null)
+                        .parse(q);
+                res.add(q, OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj)),
+                        docs));
+            }
         }
 
         return res;
@@ -561,7 +569,7 @@ public class SimpleJahiaJcrFacets {
                 while (low.before(end)) {
                     dmp.setNow(low);
                     final String lowI = dateType.toInternal(low);
-                    final String label = lowI;
+                    final String label = dateType.indexedToReadable(lowI, true);
                     Date high = dmp.parseMath(gap);
                     if (end.before(high)) {
                         if (params.getFieldBool(fieldWithIndex, FacetParams.FACET_DATE_HARD_END, false)) {

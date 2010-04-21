@@ -219,10 +219,12 @@ public class PropertiesHelper {
                         for (ExtendedItemDefinition item : items) {
                             if (item.isNode()) {
                                 if (objectNode.hasNode(item.getName())) {
+                                    objectNode.checkout();
                                     objectNode.getNode(item.getName()).remove();
                                 }
                             } else {
                                 if (objectNode.hasProperty(item.getName())) {
+                                    objectNode.checkout();
                                     objectNode.getProperty(item.getName()).remove();
                                 }
                             }

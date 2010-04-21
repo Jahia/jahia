@@ -1,69 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0">
   <templatesSet>
-    <templates-web xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap" j:published="true" j:bodywrapper="web.bodywrapper" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" j:checkinDate="2010-04-16T11:00:00.064+02:00" priority="0.5">
-      <contents jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" j:templateDeployed="true">
-        <site_components jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" j:templateDeployed="true">
-          <top-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:navMenu" j:templateDeployed="true" j:templateLocked="true">
-            <home j:node="/templatesSet/templates-web/home" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:navMenuNodeLink" j:templateDeployed="true" j:templateLocked="true">
-              <j:translation jcr:title_en="Home" jcr:language="en" jcr:primaryType="jnt:translation" />
+    <templates-web xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:published="true" j:bodywrapper="web.bodywrapper" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5" j:checkinDate="2010-04-21T10:59:52.531+02:00">
+      <contents jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder">
+        <site_components jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder">
+          <top-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:navMenu" j:templateLocked="true">
+            <home j:node="/templatesSet/templates-web/home" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:navMenuNodeLink" j:templateLocked="true">
+              <j:translation jcr:title_en="Home" jcr:language="en" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />
             </home>
-            <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="1" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:templateDeployed="true" j:startLevel="1" j:allowedTypes="jnt:page" j:templateLocked="true" />
+            <navMenuMultilevel j:maxDepth="1" jcr:mixinTypes="jmix:templateInformation" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1" j:allowedTypes="jnt:page" j:templateLocked="true" />
           </top-menu>
-          <simple-search jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" j:templateDeployed="true" j:templateLocked="true">
-            <j:translation jcr:title_en="Simple search" jcr:language="en" jcr:primaryType="jnt:translation" />
+          <simple-search result="/templatesSet/templates-web/search-results" jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" j:templateLocked="true">
+            <j:translation result="/templatesSet/templates-web/search-results" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" jcr:title_en="Simple search" jcr:language="en" />
           </simple-search>
-          <side-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable" j:template="sideMenu" jcr:primaryType="jnt:navMenu" j:templateDeployed="true" j:templateLocked="true">
-            <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="2" j:allowedTypes="jnt:page" j:templateLocked="true" />
+          <side-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable" j:template="sideMenu" jcr:primaryType="jnt:navMenu" j:templateLocked="true">
+            <navMenuMultilevel j:maxDepth="2" jcr:mixinTypes="jmix:templateInformation" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="2" j:allowedTypes="jnt:page" j:templateLocked="true" />
           </side-menu>
         </site_components>
       </contents>
-      <files jcr:primaryType="jnt:folder" />
-      <mashups jcr:primaryType="jnt:folder" />
-      <themes jcr:primaryType="jnt:folder" />
-      <home jcr:mixinTypes="jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
-        <j:translation jcr:title_en="Home" jcr:language="en" jcr:primaryType="jnt:translation" />
+      <files jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" />
+      <mashups jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" />
+      <themes jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" />
+      <home j:template="default" jcr:mixinTypes="jmix:templateInformation jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+        <j:translation jcr:language="en" jcr:title_en="Home" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />
         <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
           <row1 column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
-            <col1 jcr:primaryType="jnt:contentList" />
-            <col2 jcr:primaryType="jnt:contentList">
+            <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+            <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
               <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
             </col2>
           </row1>
         </pagecontent>
-        <header jcr:primaryType="jnt:contentList">
-          <shortcuts j:templateShared="false" jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable" j:template="inline" jcr:primaryType="jnt:shortcuts" j:templateLocked="true" />
+        <header jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+          <shortcuts j:templateShared="false" j:template="inline" jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:shortcuts" j:templateLocked="true" />
         </header>
-        <logo jcr:primaryType="jnt:contentList" />
+        <logo jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
         <topMenu jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
           <top-menu j:share="/templatesSet/templates-web/contents/site_components/top-menu" />
         </topMenu>
-        <logoFooter jcr:primaryType="jnt:contentList" />
-        <footer jcr:primaryType="jnt:contentList" />
+        <logoFooter jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+        <footer jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
       </home>
-      <templates j:published="true" jcr:primaryType="jnt:templatesFolder" j:checkinDate="2010-04-16T11:00:00.064+02:00">
-        <simple jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" j:templateDeployed="true" changefreq="monthly" priority="0.5">
-          <j:translation jcr:title_en="Simple" jcr:language="en" jcr:primaryType="jnt:translation" />
-          <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateDeployed="true" j:templateLocked="true">
-            <row1 column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateDeployed="true" j:templateLocked="true">
-              <col1 jcr:mixinTypes="jmix:templateInformation" j:templateDeployed="true" jcr:primaryType="jnt:contentList" />
-              <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateDeployed="true">
+      <templates jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:templatesFolder" j:checkinDate="2010-04-21T10:59:52.531+02:00">
+        <simple jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+          <j:translation jcr:title_en="Simple" jcr:language="en" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />
+          <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
+            <row1 column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
+              <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+              <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
                 <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
                 <side-menu j:share="/templatesSet/templates-web/contents/site_components/side-menu" />
               </col2>
             </row1>
           </pagecontent>
-          <header jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateDeployed="true">
+          <header jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
             <shortcuts j:share="/templatesSet/templates-web/home/header/shortcuts" />
-          </header>
-          <logo jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateDeployed="true" />
-          <topMenu jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateDeployed="true" j:templateLocked="true">
+          </header> 
+          <logo jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+          <topMenu jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
             <top-menu j:share="/templatesSet/templates-web/contents/site_components/top-menu" />
           </topMenu>
-          <logoFooter jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateDeployed="true" />
-          <footer jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateDeployed="true" />
+          <logoFooter jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+          <footer jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
         </simple>
       </templates>
+      <search-results j:template="default" jcr:mixinTypes="jmix:templateInformation jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly" j:sourceTemplate="/templatesSet/templates-web/templates/simple" priority="0.5">
+        <j:translation j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly" j:sourceTemplate="/templatesSet/templates-web/templates/simple" jcr:title_en="Search results" jcr:language="en" priority="0.5" />
+        <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
+          <row1 column="1col16" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
+            <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateDeployed="true">
+              <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
+              <results autoSuggest="true" pageSize="10" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
+                <j:translation autoSuggest="true" pageSize="10" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" autoSuggestHitCount="2" jcr:language="en" jcr:title_en="Results" autoSuggestMinimumHitCount="2" />
+              </results>
+            </col1>
+            <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+          </row1>
+        </pagecontent>
+        <header jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateDeployed="true">
+          <shortcuts j:share="/templatesSet/templates-web/home/header/shortcuts" />
+        </header>
+        <logo jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+        <topMenu jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
+          <top-menu j:share="/templatesSet/templates-web/contents/site_components/top-menu" />
+        </topMenu>
+        <logoFooter jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+        <footer jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+      </search-results>
     </templates-web>
   </templatesSet>
 </content>

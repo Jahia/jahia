@@ -40,6 +40,15 @@
                 <%--</c:forTokens>--%>
             <%--</query:definition>--%>
         <%--</c:if>--%>
+        <c:set var="renderOptions" value="before" />
+        <c:if test="${jcr:isNodeType(currentNode, 'jmix:facets')}">
+            <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
+                <jcr:nodeProperty node="${currentNode}" name="facets" var="facets"/>
+                <c:forEach items="${facets}" var="facet">
+                    <query:column columnName="rep:facet(key=${fn:substringAfter(facet.string, ';')})" propertyName="${fn:substringAfter(facet.string, ';')}"/>
+                </c:forEach>
+            </query:definition>
+        </c:if>
         <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
 
         <%-- pager specific --%>

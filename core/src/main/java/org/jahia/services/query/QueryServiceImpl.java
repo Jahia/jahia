@@ -110,7 +110,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
  * The default implementation of Jahia's QueryService.
  * 
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
- * complex queries specified in JSR-283 (Content Repository for Java™ Technology API 2.0)
+ * complex queries specified in JSR-283 (Content Repository for Javaï¿½ Technology API 2.0)
  * 
  * Queries can be created with the API by using the QueryObjectModel.
  * Jahia will also provide a query builder user interface.
@@ -239,10 +239,11 @@ public class QueryServiceImpl extends QueryService {
             if (constraint != null) {
                 ((ConstraintImpl) constraint).accept(visitor, null);
             }
-
-            for (Ordering ordering : orderings) {
-                ((OrderingImpl) ordering).accept(visitor, null);
-            }
+            if (orderings != null) {
+                for (Ordering ordering : orderings) {
+                    ((OrderingImpl) ordering).accept(visitor, null);
+                }
+            } 
         } catch (Exception e) {
             throw new RepositoryException(e);
         }
@@ -253,9 +254,10 @@ public class QueryServiceImpl extends QueryService {
             if (constraint != null) {
                 ((ConstraintImpl) constraint).accept(visitor, null);
             }
-
-            for (Ordering ordering : orderings) {
-                ((OrderingImpl) ordering).accept(visitor, null);
+            if (orderings != null)  {
+                for (Ordering ordering : orderings) {
+                    ((OrderingImpl) ordering).accept(visitor, null);
+                }
             }
         } catch (Exception e) {
             throw new RepositoryException(e);

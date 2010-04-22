@@ -47,6 +47,7 @@ import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.schema.DateField;
 import org.apache.solr.util.DateMathParser;
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -68,7 +69,6 @@ import java.util.TreeSet;
 import javax.jcr.NamespaceException;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.Source;
@@ -86,7 +86,7 @@ public class SimpleJahiaJcrFacets {
 
     public static final String SELECTOR_PROPNAME_SEPARATOR = "@";
     public static final String PROPNAME_INDEX_SEPARATOR = "#";
-    
+
     private static final DateField dateType = new DateField();
 
     /** The main set of documents all facet counts should be relative to */
@@ -96,13 +96,13 @@ public class SimpleJahiaJcrFacets {
     /** Searcher to use for all calculations */
     protected IndexSearcher searcher;
     protected QueryObjectModelTree req;
-    
-    protected Analyzer defaultAnalyzer;    
+
+    protected Analyzer defaultAnalyzer;
     /**
      * Name and Path resolver.
      */
     protected final NamePathResolver resolver;
-    
+
     public SimpleJahiaJcrFacets(QueryObjectModelTree req, IndexSearcher searcher, OpenBitSet docs,
             SolrParams params, SearchIndex index) {
         this.req = req;
@@ -170,8 +170,8 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
-    public NamedList<Object> getTermCounts(String selectorName, String field, String fieldName) throws IOException,
-            RepositoryException {
+    public NamedList<Object> getTermCounts(String selectorName, String field, String fieldName)
+            throws IOException, RepositoryException {
         int offset = params.getFieldInt(field, FacetParams.FACET_OFFSET, 0);
         int limit = params.getFieldInt(field, FacetParams.FACET_LIMIT, 100);
         if (limit == 0)
@@ -194,13 +194,15 @@ public class SimpleJahiaJcrFacets {
         if (epd.isMultiple() || epd.getIndex() == ExtendedPropertyDefinition.INDEXED_TOKENIZED
                 || epd.getRequiredType() == PropertyType.BOOLEAN) {
             // Always use filters for booleans... we know the number of values is very small.
-            counts = getFacetTermEnumCounts(searcher, docs, field, getFieldNameInIndex(fieldName, epd), offset, limit, mincount,
+            counts = getFacetTermEnumCounts(searcher, docs, field, getFieldNameInIndex(fieldName,
+                    epd, params.getFieldParam(field, "facet.locale")), offset, limit, mincount,
                     missing, sort, prefix);
         } else {
             // TODO: future logic could use filters instead of the fieldcache if
             // the number of terms in the field is small enough.
-            counts = getFieldCacheCounts(searcher, docs, getFieldNameInIndex(fieldName, epd), offset, limit, mincount, missing,
-                    sort, prefix);
+            counts = getFieldCacheCounts(searcher, docs, getFieldNameInIndex(fieldName, epd, params
+                    .getFieldParam(field, "facet.locale")), offset, limit, mincount, missing, sort,
+                    prefix);
         }
 
         return counts;
@@ -221,9 +223,9 @@ public class SimpleJahiaJcrFacets {
             for (String f : facetFs) {
                 String selectorName = StringUtils.substringBefore(f, SELECTOR_PROPNAME_SEPARATOR);
                 f = StringUtils.substringAfter(f, SELECTOR_PROPNAME_SEPARATOR);
-                String index = StringUtils.substringAfterLast(f, PROPNAME_INDEX_SEPARATOR);                
-                f = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);                
-               
+                String index = StringUtils.substringAfterLast(f, PROPNAME_INDEX_SEPARATOR);
+                f = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
+
                 try {
                     res.add(f, getTermCounts(selectorName, f + index, f));
                 } catch (RepositoryException e) {
@@ -277,7 +279,7 @@ public class SimpleJahiaJcrFacets {
         // TODO: this function is too big and could use some refactoring, but
         // we also need a facet cache, and refactoring of SimpleFacets instead of
         // trying to pass all the various params around.
-        
+
         NamedList<Object> res = new NamedList<Object>();
 
         FieldCache.StringIndex si = FieldCache.DEFAULT.getStringIndex(searcher.getIndexReader(),
@@ -388,8 +390,8 @@ public class SimpleJahiaJcrFacets {
      * @see FacetParams#FACET_MISSING
      */
     public NamedList<Object> getFacetTermEnumCounts(IndexSearcher searcher, OpenBitSet docs,
-            String field, String fieldName, int offset, int limit, int mincount, boolean missing, boolean sort,
-            String prefix) throws IOException {
+            String field, String fieldName, int offset, int limit, int mincount, boolean missing,
+            boolean sort, String prefix) throws IOException {
 
         /*
          * :TODO: potential optimization... cache the Terms with the highest docFreq and try them first don't enum if we get our max from
@@ -486,7 +488,7 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
-    private String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd) {
+    private String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd, String langCode) {
         String fieldName = field;
         try {
             fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(epd.getPrefix(),
@@ -494,7 +496,10 @@ public class SimpleJahiaJcrFacets {
             int idx = fieldName.indexOf(':');
             fieldName = fieldName.substring(0, idx + 1)
                     + (epd != null && epd.isFacetable() ? JahiaNodeIndexer.FACET_PREFIX
-                            : FieldNames.FULLTEXT_PREFIX) + fieldName.substring(idx + 1);
+                            : FieldNames.FULLTEXT_PREFIX)
+                    + fieldName.substring(idx + 1)
+                    + (epd.isInternationalized() && !StringUtils.isEmpty(langCode) ? "_" + langCode
+                            : "");
         } catch (NamespaceException e) {
             // will never happen
         }
@@ -522,18 +527,20 @@ public class SimpleJahiaJcrFacets {
             String selectorName = StringUtils.substringBefore(f, SELECTOR_PROPNAME_SEPARATOR);
             f = StringUtils.substringAfter(f, SELECTOR_PROPNAME_SEPARATOR);
             String index = StringUtils.substringAfterLast(f, PROPNAME_INDEX_SEPARATOR);
-            f = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);                
+            f = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
             String fieldWithIndex = f + index;
             final NamedList<Object> resInner = new SimpleOrderedMap<Object>();
             resOuter.add(f, resInner);
             ExtendedPropertyDefinition epd = getExtendedPropertyDefinition(selectorName, f);
-            String fieldName = getFieldNameInIndex(f, epd);
+            String fieldName = getFieldNameInIndex(f, epd, params.getFieldParam(fieldWithIndex,
+                    "facet.locale"));
             if (!(epd.getRequiredType() == PropertyType.DATE)) {
                 throw new JahiaException("Can not date facet on a field which is not a DateField: "
                         + f, "Can not date facet on a field which is not a DateField: " + f,
                         JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
             }
-            final String startS = required.getFieldParam(fieldWithIndex, FacetParams.FACET_DATE_START);
+            final String startS = required.getFieldParam(fieldWithIndex,
+                    FacetParams.FACET_DATE_START);
             final Date start;
             try {
                 start = dateType.parseMath(NOW, startS);
@@ -572,7 +579,8 @@ public class SimpleJahiaJcrFacets {
                     final String label = dateType.indexedToReadable(lowI, true);
                     Date high = dmp.parseMath(gap);
                     if (end.before(high)) {
-                        if (params.getFieldBool(fieldWithIndex, FacetParams.FACET_DATE_HARD_END, false)) {
+                        if (params.getFieldBool(fieldWithIndex, FacetParams.FACET_DATE_HARD_END,
+                                false)) {
                             high = end;
                         } else {
                             end = high;
@@ -598,7 +606,8 @@ public class SimpleJahiaJcrFacets {
             resInner.add("gap", gap);
             resInner.add("end", end);
 
-            final String[] othersP = params.getFieldParams(fieldWithIndex, FacetParams.FACET_DATE_OTHER);
+            final String[] othersP = params.getFieldParams(fieldWithIndex,
+                    FacetParams.FACET_DATE_OTHER);
             if (null != othersP && 0 < othersP.length) {
                 Set<FacetDateOther> others = EnumSet.noneOf(FacetDateOther.class);
 
@@ -615,16 +624,16 @@ public class SimpleJahiaJcrFacets {
                     boolean all = others.contains(FacetDateOther.ALL);
 
                     if (all || others.contains(FacetDateOther.BEFORE)) {
-                        resInner.add(FacetDateOther.BEFORE.toString(), rangeCount(fieldName, null, startI,
-                                false, false));
+                        resInner.add(FacetDateOther.BEFORE.toString(), rangeCount(fieldName, null,
+                                startI, false, false));
                     }
                     if (all || others.contains(FacetDateOther.AFTER)) {
-                        resInner.add(FacetDateOther.AFTER.toString(), rangeCount(fieldName, endI, null,
-                                false, false));
+                        resInner.add(FacetDateOther.AFTER.toString(), rangeCount(fieldName, endI,
+                                null, false, false));
                     }
                     if (all || others.contains(FacetDateOther.BETWEEN)) {
-                        resInner.add(FacetDateOther.BETWEEN.toString(), rangeCount(fieldName, startI, endI,
-                                true, true));
+                        resInner.add(FacetDateOther.BETWEEN.toString(), rangeCount(fieldName,
+                                startI, endI, true, true));
                     }
                 }
             }
@@ -694,7 +703,6 @@ public class SimpleJahiaJcrFacets {
         Selector selector = getSelector(req.getSource(), selectorName);
         if (selector != null) {
             try {
-
                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(
                         selector.getNodeTypeName());
                 propDef = propertyName != null ? nodeType.getPropertyDefinitionsAsMap().get(

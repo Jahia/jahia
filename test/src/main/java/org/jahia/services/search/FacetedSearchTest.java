@@ -138,9 +138,9 @@ public class FacetedSearchTest extends TestCase {
         assertEquals("Query did not return correct number of facets", 24, field.getValues().size());
         Iterator<FacetField.Count> counts = field.getValues().iterator();
 
-        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 14);
-        checkFacet(counts.next(), "2000-02-01T00:00:00Z", 13);
-        checkFacet(counts.next(), "2000-03-01T00:00:00Z", 0);
+        checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 14);
+        checkFacet(counts.next(), "2000-02-01T00:00:00.000Z", 13);
+        checkFacet(counts.next(), "2000-03-01T00:00:00.000Z", 0);
 
         res = doQuery(session, "startDate", "rep:facet(date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1YEAR)");
         field = res.getFacetDate("startDate");
@@ -148,8 +148,8 @@ public class FacetedSearchTest extends TestCase {
         assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
         counts = field.getValues().iterator();
 
-        checkFacet(counts.next(), "2000-01-01T00:00:00Z", 27);
-        checkFacet(counts.next(), "2001-01-01T00:00:00Z", 0);
+        checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 27);
+        checkFacet(counts.next(), "2001-01-01T00:00:00.000Z", 0);
 
     }
 
@@ -169,8 +169,8 @@ public class FacetedSearchTest extends TestCase {
         assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
         Iterator<FacetField.Count> counts = field.getValues().iterator();
 
-        checkFacet(counts.next(), GENEVA, 15);
-        checkFacet(counts.next(), PARIS, 12);
+        checkFacet(counts.next(), PARIS, 15);
+        checkFacet(counts.next(), GENEVA, 12);
 
         for (FacetField.Count count : field.getValues()) {
             QueryResultWrapper resCheck = doFilteredQuery(session, "location", count.getName());

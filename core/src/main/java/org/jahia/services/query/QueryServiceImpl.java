@@ -930,9 +930,22 @@ public class QueryServiceImpl extends QueryService {
                             if (propDef != null && propDef.isInternationalized()) {
                                 propertyName = propertyName + "_" + languageCodes.get(0);
                                 if (node instanceof Column) {
-                                    node = (AbstractQOMNode) qomFactory.column(
-                                            translationSelectorName, propertyName, ((Column) node)
-                                                    .getColumnName());
+                                    String columnName = ((Column) node).getColumnName();
+                                    if (StringUtils.startsWith(columnName, "rep:facet(")
+                                            && !StringUtils.contains(columnName, "locale=")) {
+                                        String facetOptions = columnName.substring("rep:facet("
+                                                .length());
+                                        columnName = "rep:facet(locale=" + languageCodes.get(0)
+                                                + (facetOptions.trim().length() > 1 ? "&" : "")
+                                                + facetOptions;
+                                        node = (AbstractQOMNode) qomFactory.column(selector
+                                                .getSelectorName(), StringUtils.substringBefore(
+                                                propertyName, "_" + languageCodes.get(0)),
+                                                columnName);
+                                    } else {
+                                        node = (AbstractQOMNode) qomFactory.column(
+                                                translationSelectorName, propertyName, columnName);
+                                    }
                                 }
                             }
 

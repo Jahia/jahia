@@ -21,6 +21,7 @@
         <portalComponents jcr:primaryType="jnt:folder"/> 
         <templates jcr:primaryType="jnt:folder"/>
         <contents jcr:primaryType="jnt:folder"/>
+        <conversions jcr:primaryType="jnt:folder"/>
     </shared>
 
     <users jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:usersFolder" j:usersFolderSkeleton="user.xml">

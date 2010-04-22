@@ -23,7 +23,7 @@
         <h4>${currentFacet.name}</h4>
         <ul>
             <c:forEach items="${currentFacet.values}" var="facetValue">
-                <c:if test="${${facetValue.count > 0 }">
+                <c:if test="${facetValue.count > 0 }">
                     <li><a href="${url.mainResource}?propName=${currentFacet.name}&propValue=${facetValue.name}">${facetValue.name}</a> (${facetValue.count})<br/></li>
                 </c:if>
             </c:forEach>

@@ -10,6 +10,22 @@ background:transparent url(img/docspace-subdocspace.png) no-repeat scroll 0 0;
 #bodywrapper .filetree li.last span.folder {
 background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 }
+#bodywrapper .treeview li {
+	margin: 0;
+	padding: 3px 0pt 3px 16px;
+	line-height:normal
+}
+#bodywrapper .treeview,#bodywrapper .treeview ul {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+#bodywrapper .filetree span.folder,#bodywrapper .filetree span.file {
+	display:block;
+	padding:1px 0 1px 20px;
+}
 
 #bodywrapper a.docspaceBack,
 #bodywrapper a.docspaceBack:link,

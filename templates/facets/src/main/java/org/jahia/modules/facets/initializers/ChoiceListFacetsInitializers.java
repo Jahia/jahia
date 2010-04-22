@@ -50,12 +50,14 @@ public class ChoiceListFacetsInitializers implements ModuleChoiceListInitializer
                     final PropertyDefinition[] pr = nt.getPropertyDefinitions();
                     for (PropertyDefinition p : pr) {
                         ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) p;
-                        String displayName = p.getDeclaringNodeType().getName()+ "." + p.getName();
-                        String value = p.getDeclaringNodeType().getName() + ";" + p.getName();
-                        listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
-                                value, PropertyType.STRING, false)));
+                        if (ep.isFacetable()) {
+                            String displayName = ep.getLabel(locale);
+                            String value = p.getDeclaringNodeType().getName() + ";" + p.getName();
+                            listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
+                                    value, PropertyType.STRING, false)));
+                        }
                     }
-                }
+                    }
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

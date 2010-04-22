@@ -1,6 +1,7 @@
 package org.jahia.modules.facets.initializers;
 
 import org.apache.log4j.Logger;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -8,6 +9,9 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
 
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeIterator;
@@ -34,24 +38,28 @@ public class ChoiceListFacetsInitializers implements ModuleChoiceListInitializer
     }
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
-        final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
+        final Set<ChoiceListValue> listValues = new HashSet<ChoiceListValue>();
         try {
-            final NodeTypeIterator ntr = NodeTypeRegistry.getInstance().getAllNodeTypes();
-            while (ntr.hasNext()) {
-                NodeType nt = ntr.nextNodeType();
-                final PropertyDefinition[] pi = nt.getPropertyDefinitions();
-                for (PropertyDefinition prop : pi) {
-                    if (((ExtendedPropertyDefinition) prop).isFacetable()) {
-                    String displayName = nt.getName() + ";" + prop.getName();
-                    listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
-                            displayName, PropertyType.STRING, false)));
+            JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
+                NodeIterator children = node.getNodes();
+            while (children.hasNext()) {
+                    JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
+                    final List<String> nodeTypesList = child.getNodeTypes();
+                    for (String s : nodeTypesList) {
+                        NodeType nt =  NodeTypeRegistry.getInstance().getNodeType(s);
+                    final PropertyDefinition[] pr = nt.getPropertyDefinitions();
+                    for (PropertyDefinition p : pr) {
+                        ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) p;
+                        String displayName = p.getDeclaringNodeType().getName()+ "." + p.getName();
+                        String value = p.getDeclaringNodeType().getName() + ";" + p.getName();
+                        listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
+                                value, PropertyType.STRING, false)));
                     }
                 }
-
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return listValues;
+        return new ArrayList<ChoiceListValue>(listValues);
     }
 }

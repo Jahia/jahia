@@ -32,6 +32,7 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -94,5 +95,37 @@ public class ChoiceListValue implements Comparable<ChoiceListValue> {
 
     public int compareTo(ChoiceListValue o) {
         return getDisplayName().compareToIgnoreCase(o.getDisplayName());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChoiceListValue that = (ChoiceListValue) o;
+
+        if (!displayName.equals(that.displayName)) return false;
+        if (properties != null ? !properties.equals(that.properties) : that.properties != null) return false;
+        try {
+            if (!value.getString().equals(that.value.getString()) ) return false;
+            if (value.getType() != that.value.getType()) return false;
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = displayName.hashCode();
+        try {
+            result = 31 * result + value.getString().hashCode();
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        result = 31 * result + value.getType();
+        result = 31 * result + (properties != null ? properties.hashCode() : 0);
+        return result;
     }
 }

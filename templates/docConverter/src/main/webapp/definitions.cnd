@@ -3,11 +3,12 @@
 [jnt:convertedFile] > jnt:content
  - originDocName (string)
  - originDocFormat (string)
+ - convertedDocName (string)
  - convertedDocFormat (string)
  - convertedDocFile (weakreference) < jnt:file
  - conversionDate (string)
- - conversionStatus (string)
- - conversionStatusMessage (string)
+ - conversionSucceeded (boolean)
+ - conversionFailedMessage (string)
 
 [jnt:documentConversion] > jnt:content, jmix:structuredContent
  + convertedFiles (jnt:contentList)

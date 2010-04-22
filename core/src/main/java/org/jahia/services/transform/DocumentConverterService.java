@@ -72,6 +72,13 @@ public class DocumentConverterService {
 
     private OfficeManager officeManager;
 
+    public void getReferenceTable() {
+
+        
+
+
+    }
+
     /**
      * Converts the provided input file into output, considering provided
      * document formats.
@@ -127,16 +134,56 @@ public class DocumentConverterService {
         }
     }
 
+     /**
+     * Converts the provided file, considering provided mime-types.
+     *
+     * @param inputFile the source File
+     * @param inputFileExtension the source Name
+     * @param outputMimeType the output MIME type
+      *
+      * @return A File, which is inputFile converted into a mimeType defined by outputMimeType
+     */
+    public File convert(File inputFile, String inputFileExtension, String outputMimeType) throws IOException {
+
+        File outputFile = null;
+
+        try {
+
+            // The outputFile required by the service
+            outputFile = createTempFile();
+
+            // convert inputFile to outputFile
+            convert(inputFile,
+                    formatRegistry.getFormatByExtension(inputFileExtension),
+                    outputFile, getFormatByMimeType(outputMimeType));
+
+        } catch (IOException ioe) {
+            logger.warn("A problem occurred during the transformation", ioe);
+            throw new IOException("A problem occurred during the transformation");
+        }
+
+        return outputFile;
+    }
+
     protected File createTempFile() throws IOException {
+        // todo: use fileCleaningTracker
         return File.createTempFile(String.valueOf(System.currentTimeMillis()), null);
     }
 
     public String getMimeType(String extension) {
-        return formatRegistry.getFormatByExtension(extension).getMediaType();
+        DocumentFormat df = formatRegistry.getFormatByExtension(extension);
+        if (df == null) {
+            return null;
+        }
+        return df.getMediaType();
     }
 
     public String getExtension(String mimeType) {
-        return formatRegistry.getFormatByMediaType(mimeType).getExtension();
+        DocumentFormat df = formatRegistry.getFormatByMediaType(mimeType);
+        if (df == null) {
+            return null;
+        }
+        return df.getExtension();
     }
 
     /**

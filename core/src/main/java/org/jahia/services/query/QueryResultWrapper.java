@@ -266,7 +266,7 @@ public class QueryResultWrapper implements QueryResult {
                 : null;
     }
 
-    public Map<String, Integer> getFacetQuery() {
+    public Map<String, Long> getFacetQuery() {
         return result instanceof JahiaMultiColumnQueryResult ? ((JahiaMultiColumnQueryResult) result)
                 .getFacetQuery()
                 : null;

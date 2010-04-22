@@ -15,6 +15,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.RowIterator;
 import javax.jcr.query.qom.Column;
+import javax.jcr.query.qom.Selector;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.ItemManager;
@@ -24,6 +25,8 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.ColumnImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.OrderingImpl;
+import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
+import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.util.DocIdBitSet;
@@ -61,7 +64,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
 
     // Facet stuff
     boolean facetsResolved = false;
-    private Map<String, Integer> _facetQuery = null;
+    private Map<String, Long> _facetQuery = null;
     private List<FacetField> _facetFields = null;
     private List<FacetField> _limitingFacets = null;
     private List<FacetField> _facetDates = null;
@@ -282,15 +285,19 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                             .indexOf(column.getColumnName(), facetFunctionPrefix)
                             + facetFunctionPrefix.length(), StringUtils.lastIndexOf(column
                             .getColumnName(), ")"));
+                   
+                    String propertyName = null;
+                    if (!(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_FIELD + "=")).isEmpty()) {
+                        propertyName = StringUtils.substring(propertyName, StringUtils.indexOfAny(propertyName, "&)")); 
+                    } else if (!(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_DATE + "=")).isEmpty()) {
+                        propertyName = StringUtils.substring(propertyName, StringUtils.indexOfAny(propertyName, "&)"));                        
+                    } else if (!StringUtils.contains(facetOptions, FacetParams.FACET_QUERY)) {
+                        propertyName = column.getPropertyName() + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
+                        parameters.add((facetOptions.indexOf("&date.") >= 0 || facetOptions
+                                .indexOf("facet.date.") >= 0) ? FacetParams.FACET_DATE
+                                : FacetParams.FACET_FIELD, propertyName);
+                    }
                     
-                    parameters.add((facetOptions.indexOf("&date.") >= 0 || facetOptions
-                            .indexOf("facet.date.") >= 0) ? FacetParams.FACET_DATE
-                            : FacetParams.FACET_FIELD, column.getSelectorName()
-                            + SimpleJahiaJcrFacets.SELECTOR_PROPNAME_SEPARATOR
-                            + column.getPropertyName()
-                            + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter);
-
-                    String propertyName = column.getPropertyName() + counter;                    
                     for (String option : StringUtils.split(facetOptions, "&")) {
                         String key = StringUtils.substringBefore(option, "=");
                         String value = StringUtils.substringAfter(option, "=");
@@ -303,10 +310,23 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                         if (indexOfFacetPrefix == index) {
                             index = FacetParams.FACET.length() + 1;
                         }
-
-                        parameters.add(FIELD_SPECIFIC_PREFIX + propertyName + "."
-                                + FacetParams.FACET + "." + StringUtils.substring(key, index),
-                                value);
+                        String facetOption = FacetParams.FACET + "." + StringUtils.substring(key, index);
+                        if (facetOption.equals(FacetParams.FACET_QUERY)) {           
+                            parameters.add(facetOption, value);                            
+                        } else if (facetOption.equals(FacetParams.FACET_FIELD) || facetOption.equals(FacetParams.FACET_DATE)) {
+                            parameters.add(facetOption, propertyName);                            
+                        } else {
+                            parameters.add(FIELD_SPECIFIC_PREFIX + propertyName + "."
+                                    + facetOption, value);
+                        }                       
+                    }
+                    if (!StringUtils.contains(facetOptions, FacetParams.FACET_QUERY)) {
+                        String nodeTypeParam = FIELD_SPECIFIC_PREFIX + propertyName + "."
+                                + FacetParams.FACET + ".nodetype";
+                        if (parameters.get(nodeTypeParam) == null) {
+                            parameters.add(nodeTypeParam, getNodeTypeFromSelector(column
+                                    .getSelectorName(), column.getPropertyName()));
+                        }
                     }
                     counter++;
                 }
@@ -328,7 +348,19 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         }
         return res != null ? res : new SimpleOrderedMap<Object>();
     }
-
+    
+    private String getNodeTypeFromSelector(String selectorName,
+            String propertyName) throws RepositoryException {
+        Selector foundSelector = null;
+        for (SelectorImpl selector : ((SourceImpl) ((JahiaQueryObjectModelImpl) queryImpl).getQomTree().getSource()).getSelectors()) {
+            if (StringUtils.isEmpty(selectorName) || selectorName.equals(selector.getSelectorName())) {
+                foundSelector = selector;
+                break;
+            }
+        }        
+        return foundSelector.getNodeTypeName();
+    }
+    
     private OpenBitSet transformToDocIdSet(List<ScoreNode[]> scoreNodeArrays, IndexReader reader) {
         OpenBitSet docIds = null;
         try {
@@ -598,9 +630,9 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
 
     private void extractFacetInfo(NamedList<Object> info) {
         // Parse the queries
-        _facetQuery = new HashMap<String, Integer>();
-        NamedList<Integer> fq = (NamedList<Integer>) info.get("facet_queries");
-        for (Map.Entry<String, Integer> entry : fq) {
+        _facetQuery = new HashMap<String, Long>();
+        NamedList<Long> fq = (NamedList<Long>) info.get("facet_queries");
+        for (Map.Entry<String, Long> entry : fq) {
             _facetQuery.put(entry.getKey(), entry.getValue());
         }
 
@@ -651,7 +683,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         }
     }
 
-    public Map<String, Integer> getFacetQuery() {
+    public Map<String, Long> getFacetQuery() {
         return _facetQuery;
     }
 

@@ -26,14 +26,13 @@ import org.apache.jackrabbit.core.query.lucene.SearchIndex;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
-import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
-import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
@@ -47,9 +46,7 @@ import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.schema.DateField;
 import org.apache.solr.util.DateMathParser;
-import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
@@ -69,9 +66,6 @@ import java.util.TreeSet;
 import javax.jcr.NamespaceException;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.query.qom.Selector;
-import javax.jcr.query.qom.Source;
 
 /**
  * A class that generates simple Facet information for a request.
@@ -84,7 +78,6 @@ public class SimpleJahiaJcrFacets {
      */
     private static final Logger logger = LoggerFactory.getLogger(SimpleJahiaJcrFacets.class);
 
-    public static final String SELECTOR_PROPNAME_SEPARATOR = "@";
     public static final String PROPNAME_INDEX_SEPARATOR = "#";
 
     private static final DateField dateType = new DateField();
@@ -160,8 +153,9 @@ public class SimpleJahiaJcrFacets {
         String[] facetQs = params.getParams(FacetParams.FACET_QUERY);
         if (null != facetQs && 0 != facetQs.length) {
             for (String q : facetQs) {
-                Query qobj = new JackrabbitQueryParser(FieldNames.FULLTEXT, defaultAnalyzer, null)
-                        .parse(q);
+                QueryParser qp = new QueryParser(FieldNames.FULLTEXT, new org.apache.lucene.analysis.KeywordAnalyzer());
+                qp.setLowercaseExpandedTerms(false);
+                Query qobj = qp.parse(q);
                 res.add(q, OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj)),
                         docs));
             }
@@ -170,8 +164,9 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
-    public NamedList<Object> getTermCounts(String selectorName, String field, String fieldName)
+    public NamedList<Object> getTermCounts(String field)
             throws IOException, RepositoryException {
+        String fieldName = StringUtils.substringBeforeLast(field, PROPNAME_INDEX_SEPARATOR);
         int offset = params.getFieldInt(field, FacetParams.FACET_OFFSET, 0);
         int limit = params.getFieldInt(field, FacetParams.FACET_LIMIT, 100);
         if (limit == 0)
@@ -189,12 +184,8 @@ public class SimpleJahiaJcrFacets {
         String prefix = params.getFieldParam(field, FacetParams.FACET_PREFIX);
 
         NamedList<Object> counts;
-        ExtendedPropertyDefinition epd;
-        if (params.get("f."+field+".facet.nodetype") != null) {
-            epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+field+".facet.nodetype")).getPropertyDefinition(fieldName);
-        } else {
-            epd = getExtendedPropertyDefinition(selectorName, fieldName);
-        }
+        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(
+                params.get("f." + field + ".facet.nodetype")).getPropertyDefinition(fieldName);
 
         if (epd.isMultiple() || epd.getIndex() == ExtendedPropertyDefinition.INDEXED_TOKENIZED
                 || epd.getRequiredType() == PropertyType.BOOLEAN) {
@@ -226,13 +217,8 @@ public class SimpleJahiaJcrFacets {
         String[] facetFs = params.getParams(FacetParams.FACET_FIELD);
         if (null != facetFs) {
             for (String f : facetFs) {
-                String selectorName = StringUtils.substringBefore(f, SELECTOR_PROPNAME_SEPARATOR);
-                f = StringUtils.substringAfter(f, SELECTOR_PROPNAME_SEPARATOR);
-                String index = StringUtils.substringAfterLast(f, PROPNAME_INDEX_SEPARATOR);
-                f = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
-
                 try {
-                    res.add(f, getTermCounts(selectorName, f + index, f));
+                    res.add(StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR), getTermCounts(f));
                 } catch (RepositoryException e) {
                     logger.error("Cant display facets for: " + f, e);
                 }
@@ -529,29 +515,19 @@ public class SimpleJahiaJcrFacets {
             return resOuter;
 
         for (String f : fields) {
-            String selectorName = StringUtils.substringBefore(f, SELECTOR_PROPNAME_SEPARATOR);
-            f = StringUtils.substringAfter(f, SELECTOR_PROPNAME_SEPARATOR);
-            String index = StringUtils.substringAfterLast(f, PROPNAME_INDEX_SEPARATOR);
-            f = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
-            String fieldWithIndex = f + index;
             final NamedList<Object> resInner = new SimpleOrderedMap<Object>();
-            resOuter.add(f, resInner);
+            String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);            
+            resOuter.add(fieldName, resInner);
+            ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+f+".facet.nodetype")).getPropertyDefinition(fieldName);
 
-            ExtendedPropertyDefinition epd;
-            if (params.get("f."+f+".facet.nodetype") != null) {
-                epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+f+".facet.nodetype")).getPropertyDefinition(f);
-            } else {
-                epd = getExtendedPropertyDefinition(selectorName, f);
-            }
-
-            String fieldName = getFieldNameInIndex(f, epd, params.getFieldParam(fieldWithIndex,
+            String fieldNameInIndex = getFieldNameInIndex(fieldName, epd, params.getFieldParam(f,
                     "facet.locale"));
             if (!(epd.getRequiredType() == PropertyType.DATE)) {
                 throw new JahiaException("Can not date facet on a field which is not a DateField: "
                         + f, "Can not date facet on a field which is not a DateField: " + f,
                         JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
             }
-            final String startS = required.getFieldParam(fieldWithIndex,
+            final String startS = required.getFieldParam(f,
                     FacetParams.FACET_DATE_START);
             final Date start;
             try {
@@ -562,7 +538,7 @@ public class SimpleJahiaJcrFacets {
                         "date facet 'start' is not a valid Date string: " + startS,
                         JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY, e);
             }
-            final String endS = required.getFieldParam(fieldWithIndex, FacetParams.FACET_DATE_END);
+            final String endS = required.getFieldParam(f, FacetParams.FACET_DATE_END);
             Date end; // not final, hardend may change this
             try {
                 end = dateType.parseMath(NOW, endS);
@@ -579,7 +555,7 @@ public class SimpleJahiaJcrFacets {
                         JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
             }
 
-            final String gap = required.getFieldParam(fieldWithIndex, FacetParams.FACET_DATE_GAP);
+            final String gap = required.getFieldParam(f, FacetParams.FACET_DATE_GAP);
             final DateMathParser dmp = new DateMathParser(DateField.UTC, Locale.US);
             dmp.setNow(NOW);
             try {
@@ -591,7 +567,7 @@ public class SimpleJahiaJcrFacets {
                     final String label = dateType.indexedToReadable(lowI, true);
                     Date high = dmp.parseMath(gap);
                     if (end.before(high)) {
-                        if (params.getFieldBool(fieldWithIndex, FacetParams.FACET_DATE_HARD_END,
+                        if (params.getFieldBool(f, FacetParams.FACET_DATE_HARD_END,
                                 false)) {
                             high = end;
                         } else {
@@ -604,7 +580,7 @@ public class SimpleJahiaJcrFacets {
                                 JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
                     }
                     final String highI = dateType.toInternal(high);
-                    resInner.add(label, rangeCount(fieldName, lowI, highI, true, true));
+                    resInner.add(label, rangeCount(fieldNameInIndex, lowI, highI, true, true));
                     low = high;
                 }
             } catch (java.text.ParseException e) {
@@ -618,7 +594,7 @@ public class SimpleJahiaJcrFacets {
             resInner.add("gap", gap);
             resInner.add("end", end);
 
-            final String[] othersP = params.getFieldParams(fieldWithIndex,
+            final String[] othersP = params.getFieldParams(f,
                     FacetParams.FACET_DATE_OTHER);
             if (null != othersP && 0 < othersP.length) {
                 Set<FacetDateOther> others = EnumSet.noneOf(FacetDateOther.class);
@@ -636,15 +612,15 @@ public class SimpleJahiaJcrFacets {
                     boolean all = others.contains(FacetDateOther.ALL);
 
                     if (all || others.contains(FacetDateOther.BEFORE)) {
-                        resInner.add(FacetDateOther.BEFORE.toString(), rangeCount(fieldName, null,
+                        resInner.add(FacetDateOther.BEFORE.toString(), rangeCount(fieldNameInIndex, null,
                                 startI, false, false));
                     }
                     if (all || others.contains(FacetDateOther.AFTER)) {
-                        resInner.add(FacetDateOther.AFTER.toString(), rangeCount(fieldName, endI,
+                        resInner.add(FacetDateOther.AFTER.toString(), rangeCount(fieldNameInIndex, endI,
                                 null, false, false));
                     }
                     if (all || others.contains(FacetDateOther.BETWEEN)) {
-                        resInner.add(FacetDateOther.BETWEEN.toString(), rangeCount(fieldName,
+                        resInner.add(FacetDateOther.BETWEEN.toString(), rangeCount(fieldNameInIndex,
                                 startI, endI, true, true));
                     }
                 }
@@ -707,34 +683,5 @@ public class SimpleJahiaJcrFacets {
             logger.debug("Can't retrive bitset from hits", e);
         }
         return docIds;
-    }
-
-    private ExtendedPropertyDefinition getExtendedPropertyDefinition(String selectorName,
-            String propertyName) throws RepositoryException {
-        ExtendedPropertyDefinition propDef = null;
-        Selector selector = getSelector(req.getSource(), selectorName);
-        if (selector != null) {
-            try {
-                ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(
-                        selector.getNodeTypeName());
-                propDef = propertyName != null ? nodeType.getPropertyDefinitionsAsMap().get(
-                        propertyName) : null;
-
-            } catch (NoSuchNodeTypeException e) {
-                logger.debug("Type " + selector.getNodeTypeName() + " not found in registry", e);
-            }
-        }
-        return propDef;
-    }
-
-    private Selector getSelector(Source source, String name) {
-        Selector foundSelector = null;
-        for (SelectorImpl selector : ((SourceImpl) source).getSelectors()) {
-            if (StringUtils.isEmpty(name) || name.equals(selector.getSelectorName())) {
-                foundSelector = selector;
-                break;
-            }
-        }
-        return foundSelector;
     }
 }

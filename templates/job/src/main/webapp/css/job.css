@@ -86,7 +86,6 @@ font-weight:bold;
 #bodywrapper div.jobsApplyForm{
 	clear:both;
 	margin:1em auto;
-	background:#fff url(img/jobform.png) repeat-x bottom left;
 	border:1px solid #ccc;
 	padding:0.5em 0;
 }
@@ -96,26 +95,9 @@ font-weight:bold;
 #bodywrapper .jobsApplyForm fieldset{
 	border:none;
 }
-#bodywrapper .jobsApplyForm label{
-	float:left; 
-	width:200px;
-	margin:0 1em 0 1em;
-	padding:2px;
-	text-align:right;
-}
-
-
-#bodywrapper .jobsApplyForm .divButton{
-	text-align:center;
-	margin:0.5em 0;
+#bodywrapper input, #bodywrapper textarea {
+width:45%
 }
 #bodywrapper .jobsApplyForm input.button {
-	margin-left:0.5em;
-}
-
-#bodywrapper .jobsApplyForm {
-	margin-bottom:1em;
-	clear:both;
-	width:100%;
-	position:relative
+width:auto
 }

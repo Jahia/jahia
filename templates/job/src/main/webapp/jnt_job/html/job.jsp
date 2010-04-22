@@ -5,6 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="job.css"/>
+<template:addResources type="javascript" resources="job-collapse.js"/>
 <c:set var="values" value="${currentNode.propertiesAsString}"/>
 <div class="spacer">
     <h2>${fn:escapeXml(values['jcr:title'])}</h2>
@@ -54,35 +55,36 @@
         </div>
 
         <div class="collapsible" id="collapseBox${currentNode.identifier}">
-            <div class="jobsApplyForm">
+            <div class="Form jobsApplyForm">
                 <form action="${url.base}${currentNode.path}/*" method="post">
                     <input type="hidden" name="nodeType" value="jnt:jobApplication"/>
                     <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
                     <input type="hidden" name="newNodeOutputFormat" value="html"/>
                     <fieldset>
                         <p class="field">
-                            <label for="job-application-firstname"><fmt:message key="jnt_jobApplication.firstname"/>:</label>
+                            <label class="left" for="job-application-firstname"><fmt:message key="jnt_jobApplication.firstname"/>:</label>
                             <input type="text" name="firstname" id="job-application-firstname"/>
                         </p>
 
                         <p class="field">
-                            <label for="job-application-lastname"><fmt:message key="jnt_jobApplication.lastname"/>:</label>
+                            <label class="left" for="job-application-lastname"><fmt:message key="jnt_jobApplication.lastname"/>:</label>
                             <input type="text" name="lastname" id="job-application-lastname"/>
                         </p>
 
                         <p class="field">
-                            <label for="job-application-email"><fmt:message key="jnt_jobApplication.email"/>:</label>
+                            <label class="left" for="job-application-email"><fmt:message key="jnt_jobApplication.email"/>:</label>
                             <input type="text" name="email" id="job-application-email"/>
                         </p>
 
                         <p class="field">
-                            <label for="job-application-text"><fmt:message key="jnt_jobApplication.text"/>:</label>
+                            <label class="left" for="job-application-text"><fmt:message key="jnt_jobApplication.text"/>:</label>
                             <textarea name="text" id="job-application-text"></textarea>
                         </p>
-                    </fieldset>
-                    <div class="divButton">
+                    <div class="formMarginLeft">
                     	<input type="submit" class="button" value="Apply"/>
                     </div>
+                    </fieldset>
+
                 </form>
             </div>
         </div>

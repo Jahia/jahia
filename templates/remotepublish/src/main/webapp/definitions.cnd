@@ -1,0 +1,21 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jmix:remotelyPublished] mixin
+ - uuid (string)
+ - lastReplay (date)
+
+[jnt:remotePublicationSchedule] > nt:base
+ - hour (long)
+ - minute (long)
+ - seconds (long)
+ - month (long)
+ - dayOfMonth (long)
+ - dayOfWeek (long)
+
+[jnt:remotePublication] > nt:base
+ - remoteUrl (string)
+ - node (weakreference)
+ - remotePath (string)
+ - remoteUser (string)
+ - remotePassword (string)
+ + schedule (jnt:remotePublicationSchedule) multiple

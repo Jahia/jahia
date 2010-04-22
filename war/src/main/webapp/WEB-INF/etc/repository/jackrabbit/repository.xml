@@ -74,7 +74,6 @@
     </Workspace>
 
 
-<!--
     <Cluster id="clusterNode1">
    		<Journal class="@JOURNAL_CLASS@">
                <param name="driver" value="javax.naming.InitialContext" />
@@ -84,7 +83,6 @@
                <param name="janitorEnabled" value="true"/>
     	</Journal>
  	</Cluster>
--->
 
     <!--
         Configures the versioning

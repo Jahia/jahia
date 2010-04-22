@@ -19,7 +19,6 @@ package org.jahia.services.search.facets;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.lucene.FieldNames;
-import org.apache.jackrabbit.core.query.lucene.JackrabbitQueryParser;
 import org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer;
 import org.apache.jackrabbit.core.query.lucene.NamePathResolverImpl;
 import org.apache.jackrabbit.core.query.lucene.SearchIndex;
@@ -66,6 +65,7 @@ import java.util.TreeSet;
 import javax.jcr.NamespaceException;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 /**
  * A class that generates simple Facet information for a request.
@@ -95,15 +95,21 @@ public class SimpleJahiaJcrFacets {
      * Name and Path resolver.
      */
     protected final NamePathResolver resolver;
+    
+    /**
+     * Name and Path resolver.
+     */
+    protected final Session session;    
 
     public SimpleJahiaJcrFacets(QueryObjectModelTree req, IndexSearcher searcher, OpenBitSet docs,
-            SolrParams params, SearchIndex index) {
+            SolrParams params, SearchIndex index, Session session) {
         this.req = req;
         this.searcher = searcher;
         this.docs = docs;
         this.params = params;
         this.resolver = NamePathResolverImpl.create(index.getNamespaceMappings());
         this.defaultAnalyzer = index.getTextAnalyzer();
+        this.session = session;
     }
 
     /**
@@ -482,8 +488,8 @@ public class SimpleJahiaJcrFacets {
     private String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd, String langCode) {
         String fieldName = field;
         try {
-            fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(epd.getPrefix(),
-                    epd.getName()));
+            fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(session.getNamespacePrefix(epd.getPrefix()),
+                    epd.getLocalName()));
             int idx = fieldName.indexOf(':');
             fieldName = fieldName.substring(0, idx + 1)
                     + (epd != null && epd.isFacetable() ? JahiaNodeIndexer.FACET_PREFIX
@@ -491,7 +497,7 @@ public class SimpleJahiaJcrFacets {
                     + fieldName.substring(idx + 1)
                     + (epd.isInternationalized() && !StringUtils.isEmpty(langCode) ? "_" + langCode
                             : "");
-        } catch (NamespaceException e) {
+        } catch (RepositoryException e) {
             // will never happen
         }
         return fieldName;

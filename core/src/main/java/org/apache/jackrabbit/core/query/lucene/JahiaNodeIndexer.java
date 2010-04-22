@@ -32,6 +32,7 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
@@ -482,28 +483,6 @@ public class JahiaNodeIndexer extends NodeIndexer {
     }
 
     /**
-     * Adds the calendar value to the document as the named field. The calendar value is converted to an indexable string value using the
-     * {@link DateField} class.
-     * 
-     * Also if the field is facetable we create an own field in the index.
-     * 
-     * @param doc
-     *            The document to which to add the field
-     * @param fieldName
-     *            The name of the field to add
-     * @param internalValue
-     *            The value for the field to add to the document.
-     */
-    protected void addCalendarValue(Document doc, String fieldName, Object internalValue) {
-        super.addCalendarValue(doc, fieldName, internalValue);
-        Calendar value = (Calendar) internalValue;
-        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
-        if (definition != null && definition.isFacetable()) {
-            addFacetValue(doc, fieldName, dateType.toInternal(new Date(value.getTimeInMillis())));
-        }
-    }
-
-    /**
      * Creates a fulltext field for the string <code>value</code>.
      * 
      * @param value
@@ -536,5 +515,61 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     public void setSupportSpellchecking(boolean supportSpellchecking) {
         this.supportSpellchecking = supportSpellchecking;
+    }
+
+    @Override
+    protected void addCalendarValue(Document doc, String fieldName, Object internalValue) {
+        super.addCalendarValue(doc, fieldName, internalValue);
+        Calendar value = (Calendar) internalValue;
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
+        if (definition != null && definition.isFacetable()) {
+            addFacetValue(doc, fieldName, dateType.toInternal(new Date(value.getTimeInMillis())));
+        }
+    }    
+    
+    @Override
+    protected void addBooleanValue(Document doc, String fieldName, Object internalValue) {
+        super.addBooleanValue(doc, fieldName, internalValue);
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
+        if (definition != null && definition.isFacetable()) {
+            addFacetValue(doc, fieldName, internalValue.toString());
+        }        
+    }
+
+    @Override
+    protected void addDoubleValue(Document doc, String fieldName, Object internalValue) {
+        super.addDoubleValue(doc, fieldName, internalValue);
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
+        if (definition != null && definition.isFacetable()) {
+            addFacetValue(doc, fieldName, internalValue.toString());
+        }                        
+    }
+
+    @Override
+    protected void addLongValue(Document doc, String fieldName, Object internalValue) {
+        super.addLongValue(doc, fieldName, internalValue);
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
+        if (definition != null && definition.isFacetable()) {
+            addFacetValue(doc, fieldName, internalValue.toString());
+        }                                
+    }
+
+    @Override
+    protected void addReferenceValue(Document doc, String fieldName, Object internalValue,
+            boolean weak) {
+        super.addReferenceValue(doc, fieldName, internalValue, weak);
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
+        if (definition != null && definition.isFacetable()) {
+            addFacetValue(doc, fieldName, internalValue.toString());
+        }                                
+    }
+
+    @Override
+    protected void addNameValue(Document doc, String fieldName, Object internalValue) {
+        super.addNameValue(doc, fieldName, internalValue);
+        ExtendedPropertyDefinition definition = getExtendedPropertyDefinition(getPropertyNameFromFieldname(fieldName));
+        if (definition != null && definition.isFacetable()) {
+            addFacetValue(doc, fieldName, ((Name)internalValue).getNamespaceURI());
+        }                                        
     }
 }

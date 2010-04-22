@@ -287,10 +287,16 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                             .getColumnName(), ")"));
                    
                     String propertyName = null;
-                    if (!(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_FIELD + "=")).isEmpty()) {
-                        propertyName = StringUtils.substring(propertyName, StringUtils.indexOfAny(propertyName, "&)")); 
-                    } else if (!(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_DATE + "=")).isEmpty()) {
-                        propertyName = StringUtils.substring(propertyName, StringUtils.indexOfAny(propertyName, "&)"));                        
+                    if (!(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_FIELD + "=")).isEmpty() ||
+                            !(propertyName = StringUtils.substringAfter(facetOptions, "field=")).isEmpty()) {
+                        propertyName = StringUtils.substring(propertyName, 0, StringUtils.indexOfAny(
+                                propertyName, "&)") >= 0 ? StringUtils.indexOfAny(propertyName,
+                                "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter; 
+                    } else if (!(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_DATE + "=")).isEmpty() ||
+                            !(propertyName = StringUtils.substringAfter(facetOptions, "date=")).isEmpty()) {
+                        propertyName = StringUtils.substring(propertyName, 0, StringUtils.indexOfAny(
+                                propertyName, "&)") >= 0 ? StringUtils.indexOfAny(propertyName,
+                                "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;                        
                     } else if (!StringUtils.contains(facetOptions, FacetParams.FACET_QUERY)) {
                         propertyName = column.getPropertyName() + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
                         parameters.add((facetOptions.indexOf("&date.") >= 0 || facetOptions
@@ -335,7 +341,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(
                     ((JahiaQueryObjectModelImpl) queryImpl).getQomTree(), searcher,
                     transformToDocIdSet(allResultNodes, reader), SolrParams
-                            .toSolrParams(parameters), index);
+                            .toSolrParams(parameters), index, session);
             res = facets.getFacetCounts();
         } catch (Exception ex) {
             log.warn("Problem creating facets: ", ex);

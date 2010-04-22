@@ -6,10 +6,10 @@
        
     <bean id="DocumentConverterService" class="org.jahia.services.transform.DocumentConverterService" init-method="start" destroy-method="stop" lazy-init="false">
     	<property name="enabled" value="false"/>
-        <property name="tmpDirectory" value="C:/projects/tmp_transform" />
+        <property name="tmpDirectory" value="/home/fcantegrel/tmp_transform" />
         <property name="officeManager">
             <bean class="org.jahia.services.transform.LocalOfficeManagerFactory">
-            	<property name="officeHome" value="c:\\Program Files (x86)\\OpenOffice.org 3"/>
+            	<property name="officeHome" value="/usr/lib/openoffice"/>
             </bean>
         </property>
     </bean>

@@ -1,0 +1,52 @@
+
+/* ------- Icon 48px 48px ------- */
+#bodywrapper span.icon6464 {
+	display:block;
+	width:64px;
+	height:64px;
+	margin:5px
+}
+#bodywrapper span.file6464 {
+    background: url(../img/files/file6464.png ) no-repeat top left;
+}
+#bodywrapper span.video6464 {
+    background: url(../img/files/video6464.png ) no-repeat top left;
+}
+#bodywrapper span.ppt6464, #bodywrapper span.pptx6464 {
+    background: url(../img/files/ppt6464.png ) no-repeat top left;
+}
+#bodywrapper span.exe6464 {
+    background: url(../img/files/exe6464.png ) no-repeat top left;
+}
+#bodywrapper span.msword6464, #bodywrapper span.doc6464, #bodywrapper span.docx6464 {
+    background: url(../img/files/doc6464.png ) no-repeat top left;
+}
+#bodywrapper span.html6464, #bodywrapper span.htm6464 {
+    background: url(../img/files/html6464.png ) no-repeat top left;
+}
+#bodywrapper span.img6464,  #bodywrapper span.gif6464, #bodywrapper span.jpeg6464, #bodywrapper span.jpg6464, #bodywrapper span.png6464 {
+    background: url(../img/files/img6464.png ) no-repeat top left;
+}
+#bodywrapper span.pdf6464 {
+    background: url(../img/files/pdf6464.png ) no-repeat top left;
+}
+#bodywrapper span.sound6464, #bodywrapper a.wav6464 {
+    background: url(../img/files/sound6464.png ) no-repeat top left;
+}
+#bodywrapper span.txt6464 {
+    background: url(../img/files/txt6464.png ) no-repeat top left;
+}
+#bodywrapper span.xls6464, #bodywrapper span.xlsx6464, #bodywrapper span.csv6464 {
+    background: url(../img/files/xls6464.png ) no-repeat top left;
+}
+#bodywrapper span.txt {
+    background: url(../img/files/txt6464.png ) no-repeat top left;
+}
+#bodywrapper span.zip6464, #bodywrapper a.sit6464, #bodywrapper span.rar6464,  #bodywrapper span.tar6464, #bodywrapper span.gz6464  {
+    background: url(../img/files/archive6464.png ) no-repeat top left;
+}
+
+
+
+
+/* ------- File types (end) ------- */

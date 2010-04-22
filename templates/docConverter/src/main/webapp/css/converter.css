@@ -1,0 +1,127 @@
+/******************************************************************************
+*  Template converter
+******************************************************************************/
+/*Form formLoginConverter*/
+#bodywrapper .formLoginConverter {
+	margin:0
+}
+#bodywrapper .formLoginConverter fieldset {
+	border:none	
+}
+#bodywrapper .formLoginConverter legend {
+	display:none	
+}
+#bodywrapper .formLoginConverter p {
+	padding:0;
+	margin:0 0 0.2em 0;
+}
+#bodywrapper .formLoginConverter input.field, #bodywrapper .formLoginConverter textarea {
+	width:50%;
+}
+/*Other form*/
+#bodywrapper div.formconvertertransform,
+#bodywrapper div.formconverterupload {
+	margin:0 ;	
+}
+/******************************************************************************
+*  boxconverter
+******************************************************************************/
+#bodywrapper div.boxconverter {
+	position:relative;
+	clear:both;
+}
+
+#bodywrapper div.boxconverter h3.boxconvertertitleh3 {
+	margin-top:0;
+	padding-top:0;
+	display:inline
+}
+#bodywrapper div.boxconverter-inner {
+	background-color:#fff;
+	border:1px solid #cecece;
+	height:1%;
+
+}
+
+#bodywrapper .boxconverter-inner .boxconverter-inner-border {
+	border:1px solid #fff;
+	height:1%;
+	background-color:#fff;
+}
+/*boxconvertershadow*/
+#bodywrapper div.boxconvertershadow {
+	border:1px solid #cecece;
+}
+
+#bodywrapper div.boxconvertershadow div.boxconverter-inner {
+	background-color:#fff;
+	border:1px solid #cecece;
+	margin:-2px 0 0 -2px;
+}
+/*boxconverter color*/
+#bodywrapper .boxconvertergrey .boxconverter-inner .boxconverter-inner-border {
+	background-color:#e1e1e1
+}
+#bodywrapper .boxconverteryellow .boxconverter-inner .boxconverter-inner-border {
+	background-color:#FCF0BA
+}
+#bodywrapper .boxconverterwhite .boxconverter-inner {
+	background-color:#fff
+}
+#bodywrapper .boxconverterred .boxconverter-inner .boxconverter-inner-border {
+	background-color:#ffcccc
+}
+#bodywrapper .boxconvertergreen .boxconverter-inner .boxconverter-inner-border {
+	background-color:#ccffcc
+}
+#bodywrapper .boxconverterwhite .boxconverter-inner .boxconverter-inner-border {
+	background-color:#fff
+}
+
+/*boxconverter padding*/
+#bodywrapper .boxconverterpadding16 .boxconverter-inner .boxconverter-inner-border {
+	padding:16px;
+}
+#bodywrapper .boxconverterpadding10 .boxconverter-inner .boxconverter-inner-border {
+	padding:10px;
+}
+
+/*boxconverter margin*/
+#bodywrapper .boxconvertermarginbottom16{
+	margin-bottom:16px;
+}
+/*boxconverter title*/
+#bodywrapper h4.boxconverter-title {
+	background:#666666 url(../img/boxconverter-h4title.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
+/*boxconverter title*/
+#bodywrapper h4.boxconverter-title2 {
+	background:#000000 url(../img/boxconverter-h4title2.png) repeat-x top right;
+	border:1px solid #000000;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
+
+/*itemImageLeft*/
+#bodywrapper .imagefloatleft{
+	margin-bottom:0px;
+}
+#bodywrapper .itemImageConverterArrow {
+	margin:2px;
+	margin-top:26px;
+}

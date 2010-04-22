@@ -85,7 +85,7 @@
 			hideOnContentClick: false,
             onClosed : function(){
                 $("#" + fieldId + "-treeItemSelectorTree").empty();
-            }
+            },
 			onComplete: function () {
 				var queryString = (nodeTypes.length > 0 ? "nodeTypes=" + encodeURIComponent(nodeTypes) : "") + (selectableNodeTypes.length > 0 ? "&selectableNodeTypes=" + encodeURIComponent(selectableNodeTypes) : "");
 				queryString = queryString.length > 0 ? "?" + queryString : "";

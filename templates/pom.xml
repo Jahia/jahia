@@ -96,6 +96,7 @@
         <module>wiki</module>
         <module>latestPages</module>
         <module>docspace</module>
+        <module>facets</module>
     </modules>
 
 

@@ -189,7 +189,12 @@ public class SimpleJahiaJcrFacets {
         String prefix = params.getFieldParam(field, FacetParams.FACET_PREFIX);
 
         NamedList<Object> counts;
-        ExtendedPropertyDefinition epd = getExtendedPropertyDefinition(selectorName, fieldName);
+        ExtendedPropertyDefinition epd;
+        if (params.get("f."+field+".facet.nodetype") != null) {
+            epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+field+".facet.nodetype")).getPropertyDefinition(fieldName);
+        } else {
+            epd = getExtendedPropertyDefinition(selectorName, fieldName);
+        }
 
         if (epd.isMultiple() || epd.getIndex() == ExtendedPropertyDefinition.INDEXED_TOKENIZED
                 || epd.getRequiredType() == PropertyType.BOOLEAN) {
@@ -531,7 +536,14 @@ public class SimpleJahiaJcrFacets {
             String fieldWithIndex = f + index;
             final NamedList<Object> resInner = new SimpleOrderedMap<Object>();
             resOuter.add(f, resInner);
-            ExtendedPropertyDefinition epd = getExtendedPropertyDefinition(selectorName, f);
+
+            ExtendedPropertyDefinition epd;
+            if (params.get("f."+f+".facet.nodetype") != null) {
+                epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+f+".facet.nodetype")).getPropertyDefinition(f);
+            } else {
+                epd = getExtendedPropertyDefinition(selectorName, f);
+            }
+
             String fieldName = getFieldNameInIndex(f, epd, params.getFieldParam(fieldWithIndex,
                     "facet.locale"));
             if (!(epd.getRequiredType() == PropertyType.DATE)) {

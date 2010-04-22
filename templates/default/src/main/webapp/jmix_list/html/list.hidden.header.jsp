@@ -45,7 +45,7 @@
             <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
                 <jcr:nodeProperty node="${currentNode}" name="facets" var="facets"/>
                 <c:forEach items="${facets}" var="facet">
-                    <query:column columnName="rep:facet(key=${fn:substringAfter(facet.string, ';')})" propertyName="${fn:substringAfter(facet.string, ';')}"/>
+                    <query:column columnName="rep:facet(nodetype=${fn:substringBefore(facet.string, ';')}&column=${fn:substringAfter(facet.string, ';')})" propertyName="${fn:substringAfter(facet.string, ';')}"/>
                 </c:forEach>
             </query:definition>
             <c:set var="renderOptions" value="before" scope="request"/>

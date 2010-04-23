@@ -105,11 +105,11 @@
                     </div>
                     <div class="imagefloatleft">
 					  <div class="itemImage itemImageLeft"><span class="icon6464 doc6464"></span></div>
-					  <div class="itemImageConverterArrow itemImageLeft"><a href="#"><img alt="" src="../mod-converter/img/convert.png"/></a></div>
+					  <div class="itemImageConverterArrow itemImageLeft"><a href="#"><img alt="" src="${url.currentModule}/img/convert.png"/></a></div>
 					  <div class="itemImage itemImageLeft"><span class="icon6464 pdf6464"></span></div>
 					</div>
                     <h3 >Document original : Le nom de mon document.Doc</h3>
-                    <h3 >Document transforme : <a href="#"><img alt="" src="../mod-converter/img/download.png"/> Le nom de mon document.PDF</a></h3>
+                    <h3 >Document transforme : <a href="#"><img alt="" src="${url.currentModule}/img/download.png"/> Le nom de mon document.PDF</a></h3>
                     <span class="clearMaringPadding converterdate">Date de Transformation : 10/02/2010</span>
 	  <span class="clearMaringPadding converterauthor"><a href="#">Par Regis Mora</a></span>
                     <!--stop boxconverter -->
@@ -208,141 +208,141 @@
     <thead>
         <tr>
             <th class="center" id="Statut" scope="col">Statut</th>
-            <th id="TitleOriginal" scope="col">Nom Document Original<a title="sort down" href="#"> <img src="../mod-converter/img/sort-arrow-down.png" alt="down"/></a></th>
+            <th id="TitleOriginal" scope="col">Nom Document Original<a title="sort down" href="#"> <img src="${url.currentModule}/img/sort-arrow-down.png" alt="down"/></a></th>
             <th class="center" id="OriginalDoc" scope="col">Format Original</th>
             <th class="center" id="TranformDoc" scope="col">Format Transforme</th>
-            <th class="center" id="Date" scope="col">Date de convertion <a title="sort down" href="#"> <img src="../mod-converter/img/sort-arrow-up.png" alt="up"/></a></th>
-            <th class="center" id="User" scope="col">Utilisateur<a title="sort down" href="#"> <img src="../mod-converter/img/sort-arrow-up.png" alt="up"/></a></th>
+            <th class="center" id="Date" scope="col">Date de convertion <a title="sort down" href="#"> <img src="${url.currentModule}/img/sort-arrow-up.png" alt="up"/></a></th>
+            <th class="center" id="User" scope="col">Utilisateur<a title="sort down" href="#"> <img src="${url.currentModule}/img/sort-arrow-up.png" alt="up"/></a></th>
             <th class="center" id="Download" scope="col">Download</th>
         </tr>
     </thead>
 
     <tbody>
         <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/valide.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/error.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/valide.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/error.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/valide.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/error.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/valide.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/error.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/valide.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/error.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/valide.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/error.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/valide.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
         <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="../mod-converter/img/error.png" /></td>
+            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
             <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
             <td class="center" headers="OriginalDoc">.Word</td>
             <td class="center" headers="TranformDoc">.PDF</td>
             <td class="center" headers="Date">20 Nov 2009</td>
             <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="../mod-converter/img/download.png"/></a></td>
+            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
         </tr>
     </tbody>
 </table>

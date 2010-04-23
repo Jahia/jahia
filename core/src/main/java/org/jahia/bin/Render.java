@@ -358,9 +358,7 @@ public class Render extends HttpServlet implements Controller,
             if (result != null) {
                 if (result.getResultCode() < 300) {
                     resp.setStatus(result.getResultCode());
-                    final String requestWith = req.getHeader("x-requested-with");
-                    if (req.getHeader("accept").contains("application/json") && requestWith != null && requestWith.equals(
-                            "XMLHttpRequest") && result.getJson() != null) {
+                    if (req.getHeader("accept").contains("application/json") && result.getJson() != null) {
                         try {
                             result.getJson().write(resp.getWriter());
                         } catch (JSONException e) {

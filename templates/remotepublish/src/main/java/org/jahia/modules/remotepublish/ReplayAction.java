@@ -1,6 +1,7 @@
 package org.jahia.modules.remotepublish;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Jahia;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -30,6 +32,7 @@ import java.util.zip.GZIPInputStream;
  * To change this template use File | Settings | File Templates.
  */
 public class ReplayAction implements Action {
+    private static Logger logger = Logger.getLogger(RemotePublishAction.class);
     private RemotePublicationService service;
     private String name;
 
@@ -57,13 +60,13 @@ public class ReplayAction implements Action {
                 final InputStream in = file.getInputStream();
                 service.replayLog(target, in);
             } catch (Exception e) {
-                e.printStackTrace();
-                return new ActionResult(500, null, null);
+                logger.error("Error when replaying log",e);
+                return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, null);
             }
             fileUpload.markFilesAsConsumed();
         }
 
-        return new ActionResult(200, null, new JSONObject(new HashMap()));
+        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(new HashMap()));
     }
 
 }

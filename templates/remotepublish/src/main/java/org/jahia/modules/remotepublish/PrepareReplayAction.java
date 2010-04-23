@@ -1,5 +1,6 @@
 package org.jahia.modules.remotepublish;
 
+import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -9,6 +10,7 @@ import org.jahia.services.render.URLResolver;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -19,6 +21,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class PrepareReplayAction implements Action {
+    private static Logger logger = Logger.getLogger(RemotePublishAction.class);
     private String name;
 
     public String getName() {
@@ -44,11 +47,12 @@ public class PrepareReplayAction implements Action {
                 }
             }
         } else {
+            node.checkout();
             node.addMixin("jmix:remotelyPublished");
             node.setProperty("uuid", parameters.get("sourceUuid").get(0));
             node.getSession().save();
             map.put("ready", Boolean.TRUE);
         }
-        return new ActionResult(200, null, new JSONObject(map));
+        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(map));
     }
 }

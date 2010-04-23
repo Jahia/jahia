@@ -41,48 +41,23 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONObject;
 
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventJournal;
 import java.net.URL;
 
 /**
- * Unit test for publish / unpublish using JCR
- * - tests publish / unpublish of pages, container lists, containers
- * - with different language settings (all, none, one, two languages)
- * - with using user not having rights
- * - publication with automatically publishing parent
- *
- * @author Benjamin Papez
- *
- *
- * TestA - standard nodes :
- *
- * 1/ create new node "nodeA" - publish it - check in live if nodeA is here
- * 2/ modify nodeA - publish it - check in live if nodeA is modified
- * 3/ unpublish nodeA - check in live if nodeA has disappeared
- * 4/ publish nodeA - check in live if nodeA is here
- * 5/ rename nodeA, in the same location - publish it - check that nodeA was properly renamed.
- * 6/ move nodeA in same list, before a node - publish it - check if nodeA is correctly moved (and removed from original place)
- * 7/ move nodeA in another list, before a node - publish it - check if nodeA is correctly moved (and removed from original place)
- * 8/ move and modify nodeA in another list, before a node - publish it - check if nodeA is correctly modified and moved (and removed from original place)
- * 9/ move nodeA in another list, before a node twice - publish it - check if nodeA is correctly moved (and removed from original place)
- * 10/ delete nodeA - publish parent - check in live the node is deleted
- *
- * TestB - shareable nodes - same scenarios
- * TestC - pages node with sub pages - same scenarios. sub pages should not be published.
- * TestD - modify content in live AND edit and merge with edit workspace.
- * TestE - test with shareable nodes published in different locations in different languages.
- * TestF - concurrent modifications (especially moves) in both workspaces.
+ * Unit test for remote publishing
  *
  */
-public class RemotePublicationTest extends TestCase {
-    private static Logger logger = Logger.getLogger(RemotePublicationTest.class);
+public class ActionTest extends TestCase {
+    private static Logger logger = Logger.getLogger(ActionTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrRPTest";
 
@@ -110,14 +85,15 @@ public class RemotePublicationTest extends TestCase {
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
-        final JCRNodeWrapper source = node.addNode("source", "jnt:page");
-        final JCRNodeWrapper target = node.addNode("target", "jnt:page");
+        JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+        JCRNodeWrapper source = node.addNode("source", "jnt:page");
+        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        JCRNodeWrapper target = node.addNode("target", "jnt:page");
 
-        final JCRNodeWrapper rp = node.addNode("rp", "jnt:remotePublication");
-        final String baseurl = "http://localhost:8080" + Jahia.getContextPath() + "/cms/render/default/en";
+        JCRNodeWrapper rp = node.addNode("rp", "jnt:remotePublication");
+        String baseurl = "http://localhost:8080" + Jahia.getContextPath() + "/cms/render";
 
-        rp.setProperty("remoteUrl", baseurl);
+        rp.setProperty("remoteUrl", baseurl + "/live/en");
         rp.setProperty("node", source);
         rp.setProperty("remotePath", target.getPath());
         rp.setProperty("remoteUser", "root");
@@ -125,10 +101,12 @@ public class RemotePublicationTest extends TestCase {
 
         session.save();
 
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);
 
-        final URL url = new URL(baseurl + rp.getPath() + ".remotepublish.do");
+        final URL url = new URL(baseurl + "/default/en" + rp.getPath() + ".remotepublish.do");
 
         Credentials defaultcreds = new UsernamePasswordCredentials("root", "root1234");
         client.getState().setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
@@ -144,37 +122,13 @@ public class RemotePublicationTest extends TestCase {
         JSONObject response = new JSONObject(remotePublish.getResponseBodyAsString());
         remotePublish.releaseConnection();
 
-    }
-
-
-    public void testLogGeneration() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-
-        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
-        final JCRNodeWrapper page1 = node.addNode("page1", "jnt:page");
-        final JCRNodeWrapper page2 = node.addNode("page2", "jnt:page");
-        final JCRNodeWrapper page3 = node.addNode("page3", "jnt:page");
-        session.save();
-
-        long now = System.currentTimeMillis();
-
-        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
-
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.LIVE_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-
-        EventJournal journal = liveSession.getProviderSession(node.getProvider()).getWorkspace().getObservationManager().getEventJournal();
-        journal.skipTo(now);
-        while (journal.hasNext()) {
-            Event event = journal.nextEvent();
-            System.out.println("------"+event.getPath());
-            System.out.println(event.getType());
-            System.out.println(event.getUserData());
-        }
+        target = liveSession.getNodeByUUID(target.getIdentifier());
+        assertTrue("Node not added", target.hasNode("page1"));
 
     }
+
 
 }

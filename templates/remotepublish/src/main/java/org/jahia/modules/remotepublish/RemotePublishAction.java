@@ -10,6 +10,8 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -33,6 +35,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class RemotePublishAction implements Action {
+    private static Logger logger = Logger.getLogger(RemotePublishAction.class);
     private RemotePublicationService service;
     private String name;
 
@@ -76,7 +79,10 @@ public class RemotePublishAction implements Action {
         prepare.addRequestHeader(new Header("accept", "application/json"));
         prepare.addParameter("sourceUuid", source.getIdentifier());
         client.executeMethod(prepare);
-
+        if (prepare.getStatusCode() != HttpServletResponse.SC_OK) {
+            logger.error("Error received on prepare : "+prepare.getStatusCode());
+            return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject(new HashMap()));
+        }
         JSONObject response = new JSONObject(prepare.getResponseBodyAsString());
 
         Boolean ready = response.getBoolean("ready");
@@ -90,6 +96,8 @@ public class RemotePublishAction implements Action {
         if (ready) {
             final File file = new File("/tmp/remote.log");
 
+            // Get source node from live session ?
+
             service.generateLog(source, lastDate, new FileOutputStream(file));
 
             PostMethod replay = new PostMethod(remoteUrl + remotePath + ".replay.do");
@@ -101,11 +109,17 @@ public class RemotePublishAction implements Action {
 
             replay.setRequestEntity(new MultipartRequestEntity(parts, replay.getParams()));
             client.executeMethod(replay);
+
+            if (replay.getStatusCode() != HttpServletResponse.SC_OK) {
+                logger.error("Error received on replay : "+prepare.getStatusCode());
+                return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject(new HashMap()));
+            }
+
             replay.releaseConnection();
 
-            return new ActionResult(200, null, new JSONObject(new HashMap()));
+            return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(new HashMap()));
         } else {
-            return new ActionResult(500, null, new JSONObject(new HashMap()));
+            return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject(new HashMap()));
         }
     }
 

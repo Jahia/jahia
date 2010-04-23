@@ -286,10 +286,10 @@
     <module>taglib</module>
     <module>jackrabbit-ext</module>
     <module>core</module>
-    <module>test</module>
     <module>gwt</module>
     <module>templates</module>
     <module>prepackagedSites</module>
+    <module>test</module>
     <module>war</module>
     <!--<module>ear</module>-->
   </modules>

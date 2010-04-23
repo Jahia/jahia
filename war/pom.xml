@@ -506,6 +506,13 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.templates</groupId>
+            <artifactId>remotepublish</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.templates</groupId>
             <artifactId>rss</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>

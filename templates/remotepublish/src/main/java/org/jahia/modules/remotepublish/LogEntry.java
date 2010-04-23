@@ -20,10 +20,9 @@ public class LogEntry implements Serializable {
     public LogEntry() {
     }
 
-    public LogEntry(String path, int eventType, Object data) {
+    public LogEntry(String path, int eventType) {
         this.path = path;
         this.eventType = eventType;
-        this.data = data;
     }
 
     public String getPath() {

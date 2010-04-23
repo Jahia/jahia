@@ -17,9 +17,7 @@ public class LogBundle implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String sourceUuid;
-    private Calendar date;
-
-    private List<LogEntry> entries;
+    private String sourcePath;
 
     public LogBundle() {
     }
@@ -32,19 +30,12 @@ public class LogBundle implements Serializable {
         this.sourceUuid = sourceUuid;
     }
 
-    public Calendar getDate() {
-        return date;
+    public String getSourcePath() {
+        return sourcePath;
     }
 
-    public void setDate(Calendar date) {
-        this.date = date;
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
     }
 
-    public List<LogEntry> getEntries() {
-        return entries;
-    }
-
-    public void setEntries(List<LogEntry> entries) {
-        this.entries = entries;
-    }
 }

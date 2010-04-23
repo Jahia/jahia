@@ -81,6 +81,7 @@
         <module>press</module>
         <module>publication</module>
         <module>rating</module>
+        <module>remotepublish</module>
         <module>roles</module>
         <module>rss</module>
         <module>scriptlanguages</module>

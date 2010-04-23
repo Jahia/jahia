@@ -308,6 +308,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
             if (attrName.equals(Constants.JCR_PRIMARYTYPE)) {
                 // nodeType = attrValue; // ?
+            } else if (attrName.equals("j:share")) {
             } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
             } else if (attrName.equals(Constants.JCR_UUID)) {
                 uuidMapping.put(attrValue, child.getIdentifier());

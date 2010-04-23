@@ -211,7 +211,7 @@ public class DocumentViewExporter {
         if (v.getType() == PropertyType.REFERENCE || v.getType() == PropertyType.WEAKREFERENCE) {
             try {
                 return ISO9075.encodePath(session.getNodeByUUID(v.getString()).getPath()); 
-            } catch (PathNotFoundException e) {
+            } catch (ItemNotFoundException e) {
                 return "";
             }
         }

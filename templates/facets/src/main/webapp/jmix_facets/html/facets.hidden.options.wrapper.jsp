@@ -13,16 +13,16 @@
     <h3>Active Facets</h3>    
     <ul>
         <c:forEach items="${activeFacetsMap}" var="facet">
-                <li><a href="${url.mainResource}?delPropName=${facet.key}">
-                    <c:choose>
-                        <c:when test="${facet.key == 'j:defaultCategory'}">
-                            <jcr:node var="category" uuid="${facet.value}"/>${category.name}
-                        </c:when>
-                        <c:otherwise>
-                            ${facet.value}
-                        </c:otherwise>
-                    </c:choose>
-                </a></li>
+            <li><a href="${url.mainResource}?delPropName=${facet.key}">
+                <c:choose>
+                    <c:when test="${facet.key == 'j:defaultCategory'}">
+                        <jcr:node var="category" uuid="${facet.value}"/>${category.name}
+                    </c:when>
+                    <c:otherwise>
+                        ${facet.value}
+                    </c:otherwise>
+                </c:choose>
+            </a></li>
         </c:forEach>
     </ul>
 </div>
@@ -32,18 +32,16 @@
         <h4>${currentFacet.name}</h4>
         <ul>
             <c:forEach items="${currentFacet.values}" var="facetValue">
-                <c:if test="${facetValue.count > 0 }">
-                    <li><a href="${url.mainResource}?propName=${currentFacet.name}&propValue=${facetValue.name}">
-                        <c:choose>
-                            <c:when test="${currentFacet.name == 'j:defaultCategory'}">
-                                <jcr:node var="category" uuid="${facetValue.name}"/>${category.name} 
-                            </c:when>
-                            <c:otherwise>
-                                ${facetValue.name}
-                            </c:otherwise>
-                        </c:choose>
-                    </a> (${facetValue.count})<br/></li>
-                </c:if>
+                <li><a href="${url.mainResource}?propName=${currentFacet.name}&propValue=${facetValue.name}">
+                    <c:choose>
+                        <c:when test="${currentFacet.name == 'j:defaultCategory'}">
+                            <jcr:node var="category" uuid="${facetValue.name}"/>${category.name}
+                        </c:when>
+                        <c:otherwise>
+                            ${facetValue.name}
+                        </c:otherwise>
+                    </c:choose>
+                </a> (${facetValue.count})<br/></li>
             </c:forEach>
         </ul>
     </c:forEach>

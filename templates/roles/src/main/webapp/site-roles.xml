@@ -51,6 +51,11 @@
    		    <link-integrity jcr:primaryType="jnt:permission"/> 	    
    		    <wai-compliance jcr:primaryType="jnt:permission"/>
    	    </integrity>   	    
+        <wysiwyg-editor-toolbar jcr:primaryType="jnt:permissionGroup">
+            <full jcr:primaryType="jnt:permission"/>      
+            <basic jcr:primaryType="jnt:permission"/>
+            <light jcr:primaryType="jnt:permission"/>
+        </wysiwyg-editor-toolbar>        
     </permissions>
 
     <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">

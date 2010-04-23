@@ -24,7 +24,7 @@ rule "Image type"
         A new node is created
              - the mimetype matches image/.*
     then
-        Log "Image type"
+        Log "Assign image type (jmix:image) for node " + node.getPath()
         Add the type jmix:image
 end
 
@@ -37,7 +37,7 @@ rule "Image update"
         Create an image "thumbnail2" of size 350
         Set the property j:width of the node with the width of the image
         Set the property j:height of the node with the height of the image
-        Log "Image updated " + node.getName() + contentnode.getName()
+        Log "Image updated " + node.getPath() + " " + contentnode.getName()
 end        
 
 // Extract all possible data from a file when it's uploaded
@@ -46,7 +46,7 @@ rule "Properties extraction"
     when
         A file content has been modified
     then
-        Log "Properties extraction fired"
+        Log "Properties extraction fired for node " + contentnode.getPath() 
         Extract properties from the file
 end
 
@@ -90,7 +90,7 @@ rule "Assign other word properties"
         A variable appname has been extracted
         A variable codepage has been extracted
     then
-        Log "Assign word properties fired"
+        Log "Assign word properties fired for node " + node.getPath()
         Add the type jmix:document
         Set the property j:subject of the node with the value of subject
         Set the property j:pageCount of the node with the value of pagecount
@@ -105,7 +105,7 @@ rule "Assign photo properties"
         A new node is created
         A variable Exif_Model has been extracted
     then
-        Log "Assign photo properties fired"
+        Log "Assign photo properties fired for node " + node.getPath()
         Add the type jmix:photo
         Set the property j:model of the node with the value of Exif_Model
 end
@@ -115,7 +115,7 @@ rule "Assign pdf properties"
         A new node is created
         A variable Producer has been extracted
     then
-        Log "Assign pdf properties fired"
+        Log "Assign PDF properties fired for node " + node.getPath()
         Add the type jmix:document
         Set the property j:appName of the node with the value of Producer
 end
@@ -147,7 +147,7 @@ rule "Assign acl to my service"
         A new node is created
         The current user has a property named service
     then
-        Log "Assign acl to my service" +userProperty.getValue()
+        Log "Assign acl to my service " +userProperty.getValue()
         Assign permissions "rw" on the node to a group matching that property
 end
 */
@@ -184,7 +184,7 @@ rule "Import file"
              - it has the extension type jnt:importDropBox
     then
         Import the node
-        Log "Import file"
+        Log "Import file fired for node " + node.getPath()
 end
 
 rule "Profile Image update"

@@ -163,6 +163,7 @@
 	                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                         <package-name>${project.name}</package-name>
                         <depends>Jahia Static Assets</depends>
+                        <definitions>definitions.cnd, definitions-nav-menu.cnd</definitions>
                         <root-folder>${artifactId}</root-folder>
                     </manifestEntries>
                 </archive>

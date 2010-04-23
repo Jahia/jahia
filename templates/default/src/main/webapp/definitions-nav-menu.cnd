@@ -1,0 +1,38 @@
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+//---------------------------------------------------------
+// Navigation menu
+//---------------------------------------------------------
+[jmix:hideInNavMenu] > jmix:option, jmix:contentMixin mixin
+- j:hideInNavMenu (boolean) = true
+
+[jmix:navMenuItem] mixin
+
+[jnt:navMenu] > jnt:content, mix:title, jmix:navMenuItem, jmix:interactiveContent
+ orderable
+ + * (jmix:navMenuItem)
+
+[jnt:navMenuText] > jnt:text, jmix:navMenuItem
+
+[jnt:navMenuExternalLink] > jnt:externalLink, jmix:navMenuItem
+
+[jnt:navMenuNodeLink] > jnt:nodeLink, jmix:navMenuItem
+
+[jnt:navMenuQuery] > jnt:query, jmix:navMenuItem
+
+[jnt:navMenuMultilevel] > jnt:content, jmix:navMenuItem
+ - j:startLevel (long) = 1
+ - j:maxDepth (long) = 3
+ - j:useVisitedNodeAsBaseline (boolean)
+ - j:baselineNode (weakreference)
+ - j:allowedTypes (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList;jnt:formElementValidation']) = 'jnt:page' multiple
+ 
+[jnt:navMenuChildNodes] > jnt:content, jmix:navMenuItem
+ - j:baselineNode (weakreference)
+ - j:allowedTypes (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList;jnt:formElementValidation']) = 'jnt:page' multiple
+//---------------------------------------------------------

@@ -488,7 +488,7 @@ public class SimpleJahiaJcrFacets {
     private String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd, String langCode) {
         String fieldName = field;
         try {
-            fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(session.getNamespacePrefix(epd.getPrefix()),
+            fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(session.getNamespaceURI(epd.getPrefix()),
                     epd.getLocalName()));
             int idx = fieldName.indexOf(':');
             fieldName = fieldName.substring(0, idx + 1)

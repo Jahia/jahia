@@ -62,7 +62,6 @@ import java.util.Set;
 import java.util.EnumSet;
 import java.util.TreeSet;
 
-import javax.jcr.NamespaceException;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;

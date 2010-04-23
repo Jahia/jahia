@@ -202,7 +202,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
     }
 
     public boolean isContentItem() {
-        return declaringNodeType.isNodeType("jmix:droppableContent") || declaringNodeType.isNodeType("jnt:container")
+        return declaringNodeType.isNodeType("jmix:orderedList") ||  declaringNodeType.isNodeType("jmix:droppableContent") || declaringNodeType.isNodeType("jnt:container")
                  || declaringNodeType.isNodeType("jnt:content") || declaringNodeType.isNodeType("jmix:contentItem") || name.toString().equals("jcr:title") || name.toString().equals("jcr:language") || name.toString().equals("jcr:statement");
     }
 

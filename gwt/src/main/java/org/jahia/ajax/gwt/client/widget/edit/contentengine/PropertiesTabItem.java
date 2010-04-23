@@ -27,6 +27,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
     protected String dataType;
     protected List<String> excludedTypes;
     protected boolean multiLang = false;
+    
 
 
     protected PropertiesTabItem(String title, AbstractContentEngine engine, String dataType) {
@@ -105,7 +106,7 @@ public abstract class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
 
-                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getMixin(), engine.getProperties(), false, true, dataType, null, excludedTypes, !engine.isExistingNode() || engine.getNode().isWriteable(), true);
+                propertiesEditor = new PropertiesEditor(engine.getNode(),engine.getNodeTypes(), engine.getMixin(), engine.getProperties(), false, true, dataType, null, excludedTypes, !engine.isExistingNode() || engine.getNode().isWriteable(), true);
 
                 setPropertiesEditorByLang(locale);
 

@@ -51,7 +51,6 @@ import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -205,9 +204,9 @@ public class EditContentEngine extends AbstractContentEngine {
         }
 
         public void componentSelected(ButtonEvent event) {
+
             // node
-            final List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-            nodes.add(node);
+            List<GWTJahiaNode> orderedChildrenNodes = null;
 
             // general properties
             final List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
@@ -242,11 +241,14 @@ public class EditContentEngine extends AbstractContentEngine {
                         }
                     }
 
-                    // get node name
+                    // case od contentTabItem
                     if (item instanceof ContentTabItem) {
                         if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                             nodeName = ((ContentTabItem) item).getName().getValue();
                         }
+
+                        // if the manual ranking was activated update new ranking
+                        orderedChildrenNodes = pe.getNewManualOrderedChildrenList();
                     }
 
 
@@ -267,7 +269,7 @@ public class EditContentEngine extends AbstractContentEngine {
             }
 
             // Ajax call to update values
-            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, newNodeACL, langCodeProperties, properties, new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().saveNode(node,orderedChildrenNodes, newNodeACL, langCodeProperties, properties, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") + throwable.getLocalizedMessage());
                     Log.error("failed", throwable);

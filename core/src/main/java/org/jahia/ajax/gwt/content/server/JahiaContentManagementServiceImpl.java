@@ -187,12 +187,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Get ManageConfiguratin
+     *
      * @param name
      * @return
      * @throws GWTJahiaServiceException
      */
     public GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException {
-        return uiConfig.getGWTManagerConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(),name);
+        return uiConfig.getGWTManagerConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(), name);
     }
 
 
@@ -203,7 +204,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTEditConfiguration getEditConfiguration(String name) throws GWTJahiaServiceException {
-        return uiConfig.getGWTEditConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(),name);
+        return uiConfig.getGWTEditConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(), name);
     }
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
@@ -484,6 +485,37 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             for (GWTJahiaNode node : nodes) {
                 setACL(node.getPath(), acl);
             }
+        }
+    }
+
+    /**
+     * Save node with properties, acl and new ordered children
+     *
+     * @param node
+     * @param orderedChildrenNode
+     * @param acl
+     * @param langCodeProperties
+     * @param sharedProperties
+     * @throws GWTJahiaServiceException
+     */
+    public void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChildrenNode, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException {
+        Iterator<String> langCode = langCodeProperties.keySet().iterator();
+        // save properties per lang
+        while (langCode.hasNext()) {
+            String currentLangCode = langCode.next();
+            List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
+            saveProperties(Arrays.asList(node), props, currentLangCode);
+        }
+
+        // save children orders
+        // ToDo
+
+        // save shared properties
+        saveProperties(Arrays.asList(node), sharedProperties);
+
+        // save acl
+        if (acl != null) {
+            setACL(node.getPath(), acl);
         }
     }
 

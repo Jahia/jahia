@@ -1,11 +1,27 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.GridDragSource;
+import com.extjs.gxt.ui.client.dnd.GridDropTarget;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +33,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 public class ContentTabItem extends PropertiesTabItem {
     private boolean isNodeNameFieldDisplayed = false;
     private TextField<String> name = new TextField<String>();
-    private VerticalPanel wrapperPanel;
+    private LayoutContainer wrapperPanel;
 
     public TextField<String> getName() {
         return name;
@@ -36,26 +52,30 @@ public class ContentTabItem extends PropertiesTabItem {
 
     @Override
     public void attachPropertiesEditor() {
+        // handle jcr:title property
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
             if (wrapperPanel == null) {
-                wrapperPanel = new VerticalPanel();
-                FormPanel nameFormPanel = getNamePanel();
-                wrapperPanel.add(nameFormPanel);
-                isNodeNameFieldDisplayed = true;
+                wrapperPanel = new LayoutContainer(new RowLayout());
                 add(wrapperPanel);
             }
+            wrapperPanel.add(createNamePanel());
+            isNodeNameFieldDisplayed = true;
             wrapperPanel.add(propertiesEditor);
-            return;
         }
-        super.attachPropertiesEditor();
+
+        // attach properties node
+        if (wrapperPanel == null) {
+            super.attachPropertiesEditor();
+        }
     }
+
 
     /**
      * Get Form panel that contains the name of the nodes
      *
      * @return
      */
-    private FormPanel getNamePanel() {
+    private FormPanel createNamePanel() {
         FormPanel formPanel = new FormPanel();
         formPanel.setFieldWidth(550);
         formPanel.setLabelWidth(180);
@@ -75,6 +95,11 @@ public class ContentTabItem extends PropertiesTabItem {
         return formPanel;
     }
 
+    /**
+     * Return true if nodeNameField is displayed
+     *
+     * @return
+     */
     public boolean isNodeNameFieldDisplayed() {
         return isNodeNameFieldDisplayed;
     }

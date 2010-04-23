@@ -39,8 +39,10 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.ManualListOrderingEditor;
 
 import java.util.*;
 
@@ -49,7 +51,7 @@ import java.util.*;
  * This is a property editor that allows to edit properties of a JCR node.
  */
 public class PropertiesEditor extends FormPanel {
-
+    private GWTJahiaNode node;
     private List<GWTJahiaNodeType> nodeTypes = null;
     private List<GWTJahiaNodeType> mixin = null;
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
@@ -69,6 +71,7 @@ public class PropertiesEditor extends FormPanel {
     private Set<String> templateTypes = new HashSet<String>();
     private FieldSet fieldSet = null;
     private FormPanel form = this;
+    private ManualListOrderingEditor manualListOrderingEditor = null;
 
     public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes) {
         this(types, properties, isMultipleEdit, viewInheritedItems, datatype, excludedItems, excludedTypes, true, false);
@@ -79,8 +82,13 @@ public class PropertiesEditor extends FormPanel {
     }
 
     public PropertiesEditor(List<GWTJahiaNodeType> types, List<GWTJahiaNodeType> mixin, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes, boolean isWriteable, boolean fieldSetGrouping) {
+        this(null, types, mixin, properties, isMultipleEdit, viewInheritedItems, datatype, excludedItems, excludedTypes, isWriteable, fieldSetGrouping);
+    }
+
+    public PropertiesEditor(GWTJahiaNode node, List<GWTJahiaNodeType> types, List<GWTJahiaNodeType> mixin, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes, boolean isWriteable, boolean fieldSetGrouping) {
         super();
-        nodeTypes = types;
+        this.node = node;
+        this.nodeTypes = types;
         this.mixin = mixin;
         this.isMultipleEdit = isMultipleEdit;
         this.dataType = datatype;
@@ -149,7 +157,16 @@ public class PropertiesEditor extends FormPanel {
                 if (viewInheritedItems) {
                     addItems(form, mix, mix.getInheritedItems(), true, fieldSetGrouping);
                 }
-                addItems(form, mix, mix.getItems(), true, fieldSetGrouping);
+
+                // ordered list : if the dataType is "content", then add a manual ordering ui
+                if (dataType != null && dataType.equals(GWTJahiaItemDefinition.CONTENT)) {
+                    if ("jmix:orderedList".equalsIgnoreCase(mix.getName()) || mix.getSuperTypes().contains("jmix:orderedList")) {
+                        addItems(form, mix, mix.getItems(), false, fieldSetGrouping);
+
+                        // add manual ordering editor
+                        manualListOrderingEditor = addManualListOrderingEditor(mix);
+                    }
+                }
             }
         }
         if (templateField != null && templateField.getValue() != null) {
@@ -159,6 +176,72 @@ public class PropertiesEditor extends FormPanel {
 
     }
 
+    /**
+     * Add ordered items
+     *
+     * @param mix
+     */
+    private ManualListOrderingEditor addManualListOrderingEditor(GWTJahiaNodeType mix) {
+
+        final ManualListOrderingEditor grid = new ManualListOrderingEditor(node);
+
+        // create a field set for the manual ranking
+        final FieldSet fieldSet = new FieldSet();
+        fieldSet.setCollapsible(true);
+        fieldSet.setHeading(Messages.get("label_manualRanking", "Manual ranking"));
+        final CheckBox useManualRanking = new CheckBox();
+        useManualRanking.setBoxLabel(Messages.get("label_useManualRanking", "Use manual ranking"));
+
+        useManualRanking.addListener(Events.Change, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent componentEvent) {
+                Log.error("Check changed: " + useManualRanking.getValue());
+                if (useManualRanking.getValue()) {
+                    removedTypes.add("jmix:orderedList");
+                    addedTypes.remove("jmix:orderedList");
+                } else {
+                    addedTypes.add("jmix:orderedList");
+                    removedTypes.remove("jmix:orderedList");
+                }
+
+                // update form components
+                for (Component component : form.getItems()) {
+                    if (useManualRanking.getValue()) {
+                        component.setData("addedField", null);
+                        component.setEnabled(false);
+                    } else {
+                        component.setData("addedField", "true");
+                        component.setEnabled(true);
+                    }
+                }
+                grid.setEnabled(useManualRanking.getValue());
+            }
+        });
+
+
+        // update form components
+        boolean isManual = !nodeTypes.contains(mix);
+        for (Component component : form.getItems()) {
+            component.setEnabled(!isManual);
+        }
+        useManualRanking.setValue(isManual);
+        grid.setEnabled(isManual);
+
+        fieldSet.add(useManualRanking);
+        fieldSet.add(grid);
+        add(fieldSet);
+
+        return grid;
+    }
+
+    /**
+     * Add item
+     *
+     * @param form
+     * @param nodeType
+     * @param items
+     * @param optional
+     * @param fieldSetGrouping
+     */
     private void addItems(FormPanel form, GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items, boolean optional, boolean fieldSetGrouping) {
 
         for (final GWTJahiaItemDefinition definition : items) {
@@ -185,7 +268,7 @@ public class PropertiesEditor extends FormPanel {
 
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
             final Field field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty);
-            propertyDefinitions.put(gwtJahiaNodeProperty.getName(),definition);
+            propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (definition.getName().equals("j:template")) {
                 templateField = (ComboBox<GWTJahiaValueDisplayBean>) field;
                 templateField.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
@@ -462,10 +545,22 @@ public class PropertiesEditor extends FormPanel {
 
     /**
      * retrieve  GWTJahiaItemDefinition
+     *
      * @param prop
      * @return
      */
-    public GWTJahiaItemDefinition getGWTJahiaItemDefinition(GWTJahiaNodeProperty prop){
+    public GWTJahiaItemDefinition getGWTJahiaItemDefinition(GWTJahiaNodeProperty prop) {
         return propertyDefinitions.get(prop.getName());
+    }
+
+    /**
+     * Get new manual ordering
+     * @return
+     */
+    public List<GWTJahiaNode> getNewManualOrderedChildrenList() {
+        if(manualListOrderingEditor == null || !manualListOrderingEditor.isEnabled()){
+            return null;
+        }
+        return manualListOrderingEditor.getOrderedNodes();
     }
 }

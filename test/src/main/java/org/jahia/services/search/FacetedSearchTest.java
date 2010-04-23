@@ -15,6 +15,7 @@ import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.query.qom.QueryObjectModelFactory;
@@ -45,26 +46,18 @@ public class FacetedSearchTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        try {
-            site = TestHelper.createSite(TESTSITE_NAME);
-            assertNotNull(site);
+        site = TestHelper.createSite(TESTSITE_NAME);
+        assertNotNull(site);
 
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                    LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-            initContent(session);
-        } catch (Exception ex) {
-            logger.warn("Exception during test setUp", ex);
-        }
+        initContent(session);
     }
 
     @Override
     protected void tearDown() throws Exception {
-        try {
-            TestHelper.deleteSite(TESTSITE_NAME);
-        } catch (Exception ex) {
-            logger.warn("Exception during test tearDown", ex);
-        }
+        TestHelper.deleteSite(TESTSITE_NAME);
     }
 
     public void testSimpleFacets() throws Exception {
@@ -178,6 +171,32 @@ public class FacetedSearchTest extends TestCase {
         }
     }
 
+    public void testCategoryFacets() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        FacetField field;
+        QueryResultWrapper res;
+
+        // test i18n facets
+        res = doQuery(session, "j:defaultCategory", "rep:facet(nodetype=jmix:categorized)");
+        field = res.getFacetField("j:defaultCategory");
+        assertNotNull("Facet field is null",field);
+        assertNotNull("Facet values are null",field.getValues());
+        assertEquals("Query did not return correct number of facets", 3, field.getValues().size());
+        Iterator<FacetField.Count> counts = field.getValues().iterator();
+
+        checkFacet(counts.next(), session.getNode("/categories/cat3").getIdentifier(), 16);
+        checkFacet(counts.next(), session.getNode("/categories/cat2").getIdentifier(), 6);
+        checkFacet(counts.next(), session.getNode("/categories/cat1").getIdentifier(), 5);
+
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doFilteredQuery(session, "j:defaultCategory", count.getName());
+            checkResultSize(resCheck, (int) count.getCount());
+        }
+    }
+
 
     public void testMultipleFacets() throws Exception {
 
@@ -209,45 +228,73 @@ public class FacetedSearchTest extends TestCase {
         assertEquals("Query did not return correct number of facet value", 9 ,field.getValues().size());
     }
 
+    public void testQueryFacets() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        FacetField field;
+        QueryResultWrapper res;
+
+        // test i18n facets
+        res = doQuery(session, "eventsType", "rep:facet(facet.query=1\\:FACET\\:eventsType\\:[a TO p]&facet.query=1\\:FACET\\:eventsType\\:[p TO z])");
+        Map<String,Long> queryFacet = res.getFacetQuery();
+        assertNotNull("Query facet result is null",queryFacet);
+        assertEquals("Query did not return correct number of facets", 2, queryFacet.size());
+
+        assertEquals("Facet count is incorrect", 10, queryFacet.get("1\\:FACET\\:eventsType\\:[a TO p]").longValue());
+        assertEquals("Facet count is incorrect", 17, queryFacet.get("1\\:FACET\\:eventsType\\:[p TO z]").longValue());
+    }
+
     private void initContent(JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper node = session.getNode("/sites/jcrFacetTest/contents");
         i = 0;
         Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
-        createEvent(node, MEETING, PARIS, calendar);
-        createEvent(node, MEETING, GENEVA, calendar);
+
+        JCRNodeWrapper cats = session.getNode("/categories");
+        cats.checkout();
+        if (!cats.hasNode("cat1")) cats.addNode("cat1", "jnt:category");
+        if (!cats.hasNode("cat2")) cats.addNode("cat2", "jnt:category");
+        if (!cats.hasNode("cat3")) cats.addNode("cat3", "jnt:category");
+        JCRNodeWrapper cat1 = cats.getNode("cat1");
+        JCRNodeWrapper cat2 = cats.getNode("cat2");
+        JCRNodeWrapper cat3 = cats.getNode("cat3");
+
+        JCRNodeWrapper node = session.getNode("/sites/jcrFacetTest/contents");
+        createEvent(node, MEETING, PARIS, calendar, cat1);
+        createEvent(node, MEETING, GENEVA, calendar, cat1);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, CONSUMER_SHOW, PARIS, calendar);
-        createEvent(node, CONSUMER_SHOW, PARIS, calendar);
+        createEvent(node, CONSUMER_SHOW, PARIS, calendar, cat1);
+        createEvent(node, CONSUMER_SHOW, PARIS, calendar, cat1);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, CONSUMER_SHOW, GENEVA, calendar);
-        createEvent(node, ROAD_SHOW, PARIS, calendar);
+        createEvent(node, CONSUMER_SHOW, GENEVA, calendar, cat1);
+        createEvent(node, ROAD_SHOW, PARIS, calendar, cat2);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, ROAD_SHOW, PARIS, calendar);
-        createEvent(node, ROAD_SHOW, GENEVA, calendar);
+        createEvent(node, ROAD_SHOW, PARIS, calendar, cat2);
+        createEvent(node, ROAD_SHOW, GENEVA, calendar, cat2);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, ROAD_SHOW, GENEVA, calendar);
-        createEvent(node, CONFERENCE, PARIS, calendar);
+        createEvent(node, ROAD_SHOW, GENEVA, calendar, cat2);
+        createEvent(node, CONFERENCE, PARIS, calendar, cat2);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, CONFERENCE, PARIS, calendar);
-        createEvent(node, CONFERENCE, PARIS, calendar);
+        createEvent(node, CONFERENCE, PARIS, calendar, cat2);
+        createEvent(node, CONFERENCE, PARIS, calendar, cat3);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, CONFERENCE, GENEVA, calendar);
-        createEvent(node, CONFERENCE, GENEVA, calendar);
+        createEvent(node, CONFERENCE, GENEVA, calendar, cat3);
+        createEvent(node, CONFERENCE, GENEVA, calendar, cat3);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, SHOW, PARIS, calendar);
-        createEvent(node, SHOW, PARIS, calendar);
+        createEvent(node, SHOW, PARIS, calendar, cat3);
+        createEvent(node, SHOW, PARIS, calendar, cat3);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, SHOW, PARIS, calendar);
-        createEvent(node, SHOW, GENEVA, calendar);
-        createEvent(node, SHOW, GENEVA, calendar);
-        createEvent(node, SHOW, GENEVA, calendar);
-        createEvent(node, SHOW, GENEVA, calendar);
-        createEvent(node, PRESS_CONFERENCE, PARIS, calendar);
-        createEvent(node, PRESS_CONFERENCE, PARIS, calendar);
-        createEvent(node, PRESS_CONFERENCE, PARIS, calendar);
-        createEvent(node, PRESS_CONFERENCE, PARIS, calendar);
-        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar);
-        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar);
+        createEvent(node, SHOW, PARIS, calendar, cat3);
+        createEvent(node, SHOW, GENEVA, calendar, cat3);
+        createEvent(node, SHOW, GENEVA, calendar, cat3);
+        createEvent(node, SHOW, GENEVA, calendar, cat3);
+        createEvent(node, SHOW, GENEVA, calendar, cat3);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3);
+        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar, cat3);
+        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar, cat3);
 
         session.save();
     }
@@ -307,7 +354,8 @@ public class FacetedSearchTest extends TestCase {
         assertEquals("Facet count is incorrect", count, c.getCount());
     }
 
-    private void createEvent(JCRNodeWrapper node, final String eventType, String location, Calendar calendar)
+    private void createEvent(JCRNodeWrapper node, final String eventType, String location, Calendar calendar,
+                             JCRNodeWrapper category)
             throws RepositoryException {
         final String name = eventType + (i++);
         final JCRNodeWrapper event = node.addNode(name, "jnt:event");
@@ -315,6 +363,8 @@ public class FacetedSearchTest extends TestCase {
         event.setProperty("eventsType", eventType);
         event.setProperty("location", location);
         event.setProperty("startDate", calendar);
+        event.addMixin("jmix:categorized");
+        event.setProperty("j:defaultCategory", new Value[] {event.getSession().getValueFactory().createValue(category)} );
     }
 
 

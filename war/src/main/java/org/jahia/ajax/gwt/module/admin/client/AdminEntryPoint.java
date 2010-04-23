@@ -36,7 +36,6 @@ import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
-import org.jahia.ajax.gwt.client.util.acleditor.AclNameEditor;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -56,7 +55,6 @@ public class AdminEntryPoint extends CommonEntryPoint {
     public void onModuleLoad() {
         super.onModuleLoad();
         JahiaGWT.init();
-        AclNameEditor.initACLNameEditors();
         RoleEditor.init();
         exposeFunctions();
     }

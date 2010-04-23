@@ -287,13 +287,13 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                             .getColumnName(), ")"));
                    
                     String propertyName = null;
-                    if (!(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_FIELD + "=")).isEmpty() ||
-                            !(propertyName = StringUtils.substringAfter(facetOptions, "field=")).isEmpty()) {
+                    if (!StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_FIELD + "=")) ||
+                            !StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, "field="))) {
                         propertyName = StringUtils.substring(propertyName, 0, StringUtils.indexOfAny(
                                 propertyName, "&)") >= 0 ? StringUtils.indexOfAny(propertyName,
                                 "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter; 
-                    } else if (!(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_DATE + "=")).isEmpty() ||
-                            !(propertyName = StringUtils.substringAfter(facetOptions, "date=")).isEmpty()) {
+                    } else if (!StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_DATE + "=")) ||
+                            !StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, "date="))) {
                         propertyName = StringUtils.substring(propertyName, 0, StringUtils.indexOfAny(
                                 propertyName, "&)") >= 0 ? StringUtils.indexOfAny(propertyName,
                                 "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;                        

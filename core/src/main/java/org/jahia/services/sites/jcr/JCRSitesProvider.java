@@ -250,6 +250,12 @@ public class JCRSitesProvider {
                         session.checkout(sites);
                     }
                     JCRNodeWrapper site = sites.getNode(siteKey);
+                    if (sites.hasProperty("j:defaultSite")) {
+                        final JCRPropertyWrapper defaultSite = sites.getProperty("j:defaultSite");
+                        if (defaultSite.getValue().getString().equals(site.getUUID())) {
+                            defaultSite.remove();
+                        }
+                    }
                     site.remove();
                     session.save();
                     return null;

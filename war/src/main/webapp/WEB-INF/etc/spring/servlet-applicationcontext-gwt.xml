@@ -7,7 +7,6 @@
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="mappings">
             <value>
-                /**/acl.gwt=aclServiceController
                 /**/base.gwt=baseServiceController
                 /**/contentLegacy.gwt=contentLegacyServiceController
                 /**/contentDefinition.gwt=contentDefinitionServiceController
@@ -21,13 +20,6 @@
         </property>
     </bean>
     
-    <bean name="aclServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
-        <property name="remoteServiceName" value="gwtACLService"/>
-    </bean>
-    <bean name="gwtACLService" class="org.jahia.ajax.gwt.aclmanagement.server.ACLServiceImpl" scope="prototype">
-        <property name="acl" ref="ACLHelper"/>
-    </bean>
-
     <bean name="baseServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaService"/>
     </bean>

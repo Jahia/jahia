@@ -31,22 +31,14 @@
  */
 package org.jahia.bin.errors;
 
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import org.apache.log4j.Logger;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-import org.apache.log4j.Logger;
-import org.jahia.data.events.JahiaErrorEvent;
-import org.jahia.services.events.JahiaEventGeneratorBaseService;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 /**
  * Error event filter that fires <code>errorOccurred</code> Jahia event.
@@ -106,9 +98,6 @@ public class ErrorEventFilter implements Filter {
                 logger.debug("firing errorOccurred event with error code '"
                         + code + "'", ex);
             }
-
-            JahiaEventGeneratorBaseService.getInstance().fireErrorOccurred(
-                    new JahiaErrorEvent(this, ex, code, request, response));
 
         } else {
             if (logger.isDebugEnabled()) {

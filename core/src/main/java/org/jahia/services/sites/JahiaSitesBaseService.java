@@ -312,7 +312,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
             addToCache(site);
 
-            ServicesRegistry.getInstance().getJahiaEventService().fireSiteAdded(new JahiaEvent(this, Jahia.getThreadParamBean() , site));
         } else {
             throw new IOException("site already exists");
         }
@@ -480,7 +479,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         siteCacheByName.remove(site.getServerName());
         siteCacheByKey.remove(site.getSiteKey());
 
-        ServicesRegistry.getInstance().getJahiaEventService().fireSiteDeleted(new JahiaEvent(this,null,site));
         cacheService.createCacheInstance(JahiaPageBaseService.CONTENT_PAGE_CACHE).flush();
     }
 

@@ -40,7 +40,6 @@ import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
-import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.engines.EngineMessages;
 import org.jahia.exceptions.JahiaException;
@@ -49,7 +48,6 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.License;
-import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPageBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
@@ -699,11 +697,6 @@ public class ManageUsers extends AbstractAdministrationModule {
             isError = false;
         }
 
-        // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - Begin
-        JahiaEvent je = new JahiaEvent(this, jParams, usr);
-        JahiaEventGeneratorBaseService.getInstance().fireUpdateUser(je);
-        // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - End
-        
         return true;
     }
 

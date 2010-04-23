@@ -102,20 +102,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="JahiaEventService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.events.JahiaEventGeneratorBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="aggregatedEventWeigth">
-                    <map>
-                        <entry key="contentObjectCreated">
-                            <value>2</value><!-- As default is 1, contentObjectCreated event will always be fired before all event of weight 1. -->
-                        </entry>
-                    </map>
-                </property>
-                <property name="listenersRegistry" ref="listenersRegistry" />
-            </bean>
-        </property>
-    </bean>
     <bean id="JahiaSitesService" class="org.jahia.services.sites.JahiaSitesBaseService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true">
         <property name="groupService" ref="JahiaGroupManagerService"/>

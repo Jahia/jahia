@@ -56,14 +56,12 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
-import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageBaseService;
@@ -584,11 +582,6 @@ public class ManageGroups extends AbstractAdministrationModule {
             jParams.getLocale());
         isError = false;
 
-        // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - Begin
-        JahiaEvent je = new JahiaEvent(this, jParams, grp);
-        JahiaEventGeneratorBaseService.getInstance().fireUpdateGroup(je);
-        // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - End
-
         return true;
     }
 
@@ -834,15 +827,6 @@ public class ManageGroups extends AbstractAdministrationModule {
               groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.removed.label",
                   jParams.getLocale());
               isError = false;
-
-              // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - Begin
-              try {
-                  JahiaEvent je = new JahiaEvent(this, jParams, theGroup);
-                  JahiaEventGeneratorBaseService.getInstance().fireDeleteGroup(je);
-              } catch (JahiaException e1) {
-                  logger.error(e1.getMessage(), e1);
-              }
-              // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - End
 
             }
         }

@@ -31,24 +31,11 @@
  */
  package org.jahia.services.usermanager;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.jahia.bin.Jahia;
-import org.jahia.data.events.JahiaEvent;
+import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.events.JahiaEventGeneratorBaseService;
 
-import org.apache.log4j.Logger;
+import java.util.*;
 
 /**
  * <p>Title: Manages routing of user management processes to the corresponding
@@ -125,14 +112,6 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
             }
         }, null, properties);
 
-        try {
-            if (user != null) {
-                JahiaEvent je = new JahiaEvent(this, Jahia.getThreadParamBean(), user);
-                JahiaEventGeneratorBaseService.getInstance().fireAddUser(je);
-            }
-        } catch (JahiaException e) {
-            logger.error("Cant send event",e);
-        }
         return user;
     }
 

@@ -58,45 +58,6 @@ public abstract class JahiaEventGeneratorService extends JahiaService {
 
     public abstract void fireAggregatedEventsFlush(JahiaEvent theEvent);
 
-    public abstract void fireSiteAdded (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireSiteDeleted (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireBeforeFieldActivation (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireAddField (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireUpdateField (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireDeleteField (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireBeforeContainerActivation (JahiaEvent theEvent)
-            throws JahiaException;
-
-    public abstract void fireContainerValidation (JahiaEvent theEvent)
-            throws JahiaException;    
-    
-    public abstract void fireAddContainerEngineBeforeSave (JahiaEvent theEvent)
-            throws JahiaException;
-
-    public abstract void fireAddContainerEngineAfterSave (JahiaEvent theEvent)
-            throws JahiaException;
-
-    public abstract void fireAddContainerEngineAfterInit (JahiaEvent theEvent)
-            throws JahiaException;
-
-    public abstract void fireAddContainer (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireUpdateContainerEngineBeforeSave (JahiaEvent theEvent)
-            throws JahiaException;
-
-    public abstract void fireUpdateContainerEngineAfterInit (JahiaEvent theEvent)
-            throws JahiaException;
-
-    public abstract void fireUpdateContainer (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireDeleteContainer (JahiaEvent theEvent) throws JahiaException;
-
     public abstract void fireSetPageProperties (JahiaEvent theEvent) throws JahiaException;
 
     public abstract void fireSetContainerListProperties (JahiaEvent theEvent)
@@ -107,15 +68,7 @@ public abstract class JahiaEventGeneratorService extends JahiaService {
     */
     public abstract void fireUserPropertiesSet (JahiaEvent theEvent) throws JahiaException;
 
-    public abstract void fireAddPage (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireLoadPage (JahiaEvent theEvent) throws JahiaException;
-
     public abstract void fireSetRights (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireLogin (JahiaEvent theEvent) throws JahiaException;
-
-    public abstract void fireLogout (JahiaEvent theEvent) throws JahiaException;
 
     public abstract void fireUpdateTemplate (JahiaEvent theEvent) throws JahiaException;
 

@@ -69,7 +69,7 @@ public class FacetedSearchTest extends TestCase {
         QueryResultWrapper res;
 
         // check facets
-        res = doQuery(session, "eventsType", "rep:facet()");
+        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1)");
         checkResultSize(res, 27);
         field = res.getFacetField("eventsType");
         assertNotNull("Facet field is null",field);
@@ -90,7 +90,7 @@ public class FacetedSearchTest extends TestCase {
         }
 
         // test facet options : prefix
-        res = doQuery(session, "eventsType", "rep:facet(prefix=c)");
+        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&prefix=c)");
         field = res.getFacetField("eventsType");
         assertNotNull("Facet field is null",field);
         assertNotNull("Facet values are null",field.getValues());
@@ -101,7 +101,7 @@ public class FacetedSearchTest extends TestCase {
         checkFacet(counts.next(), CONSUMER_SHOW, 3);
 
         // test facet options : sort=false  - lexicographic order
-        res = doQuery(session, "eventsType", "rep:facet(sort=false)");
+        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&sort=false)");
         field = res.getFacetField("eventsType");
         assertNotNull("Facet field is null",field);
         assertNotNull("Facet values are null",field.getValues());
@@ -125,7 +125,7 @@ public class FacetedSearchTest extends TestCase {
         QueryResultWrapper res;
 
         // test date facets
-        res = doQuery(session, "startDate", "rep:facet(date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1MONTH)");
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1MONTH)");
         field = res.getFacetDate("startDate");
 
         assertEquals("Query did not return correct number of facets", 24, field.getValues().size());
@@ -135,7 +135,7 @@ public class FacetedSearchTest extends TestCase {
         checkFacet(counts.next(), "2000-02-01T00:00:00.000Z", 13);
         checkFacet(counts.next(), "2000-03-01T00:00:00.000Z", 0);
 
-        res = doQuery(session, "startDate", "rep:facet(date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1YEAR)");
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1YEAR)");
         field = res.getFacetDate("startDate");
 
         assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
@@ -155,7 +155,7 @@ public class FacetedSearchTest extends TestCase {
         QueryResultWrapper res;
 
         // test i18n facets
-        res = doQuery(session, "location", "rep:facet()");
+        res = doQuery(session, "location", "rep:facet(facet.mincount=1)");
         field = res.getFacetField("location");
         assertNotNull("Facet field is null",field);
         assertNotNull("Facet values are null",field.getValues());
@@ -180,7 +180,7 @@ public class FacetedSearchTest extends TestCase {
         QueryResultWrapper res;
 
         // test i18n facets
-        res = doQuery(session, "j:defaultCategory", "rep:facet(nodetype=jmix:categorized)");
+        res = doQuery(session, "j:defaultCategory", "rep:facet(facet.mincount=1&nodetype=jmix:categorized)");
         field = res.getFacetField("j:defaultCategory");
         assertNotNull("Facet field is null",field);
         assertNotNull("Facet values are null",field.getValues());
@@ -207,7 +207,7 @@ public class FacetedSearchTest extends TestCase {
         QueryResultWrapper res;
 
         // check facets
-        res = doQuery(session, "eventsType", "rep:facet(key=1)", "startDate","rep:facet(key=2)");
+        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&key=1)", "startDate","rep:facet(facet.mincount=1&key=2)");
         checkResultSize(res, 27);
         field = res.getFacetField("eventsType");
         assertNotNull("Facet field is null",field);

@@ -59,6 +59,7 @@ public class JCRNodeTag extends AbstractJCRTag {
     private String var;
     private String path;
     private int scope = PageContext.PAGE_SCOPE;
+    private String uuid;
 
     public void setVar(String var) {
         this.var = var;
@@ -72,14 +73,22 @@ public class JCRNodeTag extends AbstractJCRTag {
         this.scope = Util.getScope(scope);
     }
 
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public int doStartTag() throws JspException {
         Resource currentResource = getCurrentResource();
         try {
             JCRNodeWrapper node;
-            if (path.startsWith("/")) {
-                node = getJCRSession().getNode(path);
+            if (uuid != null) {
+                node = getJCRSession().getNodeByUUID(uuid);
             } else {
-                node = currentResource.getNode().getNode(path);
+                if (path.startsWith("/")) {
+                    node = getJCRSession().getNode(path);
+                } else {
+                    node = currentResource.getNode().getNode(path);
+                }
             }
             pageContext.setAttribute(var, node, scope);
         } catch (PathNotFoundException e) {

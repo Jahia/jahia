@@ -44,7 +44,13 @@
         <attribute>
             <description>the path to the JCR node</description>
             <name>path</name>
-            <required>true</required>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the path to the JCR node</description>
+            <name>uuid</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>

@@ -1459,10 +1459,6 @@ public abstract class ContentObject extends JahiaObject {
                                             ActivationTestResults result)
     throws JahiaException {
 
-        ContentActivationEvent event = new ContentActivationEvent(this, this.getObjectKey(), jParams.getUser(),
-                languageCodes, versioningActive, saveVersion, jParams, stateModifContext, result);
-
-        ServicesRegistry.getInstance().getJahiaEventService().fireContentActivation(event);
 
     }
 

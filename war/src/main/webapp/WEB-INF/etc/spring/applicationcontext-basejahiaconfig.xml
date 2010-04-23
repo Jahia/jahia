@@ -69,15 +69,6 @@
         <property name="host" value="${mail_server}" />
     </bean>
 
-    <bean id="groovyScriptEngine" class="org.jahia.services.events.JahiaGroovyEngine">
-        <constructor-arg>
-            <list>
-                <value>WEB-INF/var/scripts/groovy/</value>
-                <value>templates/</value>
-            </list>
-        </constructor-arg>
-    </bean>
-
     <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
         <constructor-arg index="0">
             <map>

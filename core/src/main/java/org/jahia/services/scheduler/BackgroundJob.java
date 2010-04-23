@@ -158,7 +158,6 @@ public abstract class BackgroundJob implements StatefulJob {
             data.put("message", e.toString());
             throw new JobExecutionException(e);
         } finally {
-            ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
 
             try {
                 releaseAllLocks(context, jobDetail);

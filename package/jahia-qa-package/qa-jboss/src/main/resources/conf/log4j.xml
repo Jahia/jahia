@@ -152,10 +152,6 @@ think twice before changing it! -->
         <priority value="fatal"/>
     </category>
     
-    <category name="org.jahia.services.events">
-        <priority value="info"/>
-    </category>
-
     <category name="org.jahia.utils.i18n">
         <priority value="error"/>
     </category>

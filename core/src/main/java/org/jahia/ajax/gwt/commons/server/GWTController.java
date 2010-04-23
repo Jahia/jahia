@@ -106,12 +106,6 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             logger.error("An error occurred calling the GWT service " + remoteServiceName + ". Cause: " + e.getMessage(), e);
             return RPC.encodeResponseForFailure(null, e);
         } finally {
-            try {
-                ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
-            } catch (Exception e) {
-                logger.warn("Unable to fire aggregated events. Cause: "
-                        + e.getMessage(), e);
-            }
             if (remoteService != null) {
                 setServiceData(remoteService, true);
             }

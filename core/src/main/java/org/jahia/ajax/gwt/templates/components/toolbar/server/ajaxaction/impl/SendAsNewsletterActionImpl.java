@@ -31,8 +31,6 @@
  */
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
@@ -41,10 +39,10 @@ import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.events.JahiaEventGeneratorService;
-import org.jahia.services.notification.NotificationEvent;
 import org.jahia.services.notification.NotificationService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+
+import java.util.Map;
 
 /**
  * Ajax action handler for sending the current page as a newsletter.
@@ -100,15 +98,6 @@ public class SendAsNewsletterActionImpl extends AjaxAction {
     }
 
     private String fireEvent(ProcessingContext ctx) {
-        NotificationEvent evt = new NotificationEvent(ctx.getPage()
-                .getContentPage().getObjectKey().getKey(), "newsletter");
-        evt.setSiteId(ctx.getSiteID());
-        evt.setPageId(ctx.getPageID());
-        evt.setPageTitle(ctx.getPage().getTitle());
-        evt.setObjectPath(getJCRPath(ctx));
-        JahiaEventGeneratorService evtService = ServicesRegistry.getInstance().getJahiaEventService();
-        evtService.fireNotification(evt);
-        evtService.fireAggregatedEvents();
         return bundle.get("toolbar.subscriptions.button.newsletter.result.ok",
                 "The process of newsletter sending started successfully.");
     }

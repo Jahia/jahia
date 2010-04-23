@@ -41,7 +41,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
-import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
@@ -88,7 +87,6 @@ public abstract class ContentField extends ContentObject
     private ContentObject parent;
 
     private static transient JahiaVersionService jahiaVersionService;
-    private static transient JahiaEventGeneratorService jahiaEventService;
     private static transient JahiaFieldService jahiaFieldService;
 
     protected ObjectKey metadataOwnerObjectKey;
@@ -404,7 +402,6 @@ public abstract class ContentField extends ContentObject
                 }
             } else {
                 JahiaEvent theEvent = new JahiaEvent(this, null, this);
-                getJahiaEventService ().fireBeforeStagingContentIsDeleted(theEvent);
 
                 Set<String> tempLanguageCodes = new HashSet<String> ();
                 tempLanguageCodes.add (saveRequest.getLanguageCode ());
@@ -1252,13 +1249,6 @@ public abstract class ContentField extends ContentObject
             jahiaVersionService = ServicesRegistry.getInstance().getJahiaVersionService();
         }
         return jahiaVersionService;
-    }
-
-    public static JahiaEventGeneratorService getJahiaEventService() {
-        if (jahiaEventService == null) {
-            jahiaEventService = ServicesRegistry.getInstance().getJahiaEventService();
-        }
-        return jahiaEventService;
     }
 
     public static JahiaFieldService getJahiaFieldService() {

@@ -44,7 +44,6 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
-import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.fetchers.JahiaFetcherService;
 import org.jahia.services.fields.JahiaFieldService;
 import org.jahia.services.htmleditors.HtmlEditorsService;
@@ -140,9 +139,6 @@ public class ServicesRegistry {
 
     // Jahia FileWatcher Service
     private static final String JAHIA_FILE_WATCHER_SERVICE = "JahiaFileWatcherService";
-
-    // Jahia Event Service
-    private static final String JAHIA_EVENT_SERVICE = "JahiaEventService";
 
     // Jahia Multi Sites Manager Service
     private static final String JAHIA_SITES_SERVICE = "JahiaSitesService";
@@ -315,13 +311,6 @@ public class ServicesRegistry {
      */
     public JahiaFileWatcherService getJahiaFileWatcherService() {
         return (JahiaFileWatcherService) getService(JAHIA_FILE_WATCHER_SERVICE);
-    }
-
-    /**
-     * EV 12.01.2001
-     */
-    public JahiaEventGeneratorService getJahiaEventService() {
-        return (JahiaEventGeneratorService) getService(JAHIA_EVENT_SERVICE);
     }
 
     /**

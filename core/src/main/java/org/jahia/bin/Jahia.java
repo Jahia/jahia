@@ -82,7 +82,6 @@ import org.jahia.params.valves.SsoValve;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.EnginesRegistry;
-import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.registries.locks.JahiaLocksRegistry;
 import org.jahia.resourcebundle.ResourceMessage;
@@ -416,7 +415,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             if (initServicesRegistry()) {
                 try {
                     EnginesRegistry.getInstance().init();
-                    JahiaListenersRegistry.getInstance().init(config);
                     FileListSync.getInstance().start();
                 } catch (NullPointerException ex) {
                     logger.fatal(

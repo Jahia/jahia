@@ -98,9 +98,16 @@ final class JahiaTemplatesPackageHandler {
                 String depends = (String) manifest.getMainAttributes().get(new Attributes.Name("depends"));
                 if (depends != null) {
                     String[] dependencies = depends.split(",");
-                    for (int i = 0; i < dependencies.length; i++) {
-                        String dependency = dependencies[i].trim();
-                        templatePackage.setDepends(dependency);
+                    for (String dependency : dependencies) {
+                        templatePackage.setDepends(dependency.trim());
+                    }
+                }
+
+                String definitions = (String) manifest.getMainAttributes().get(new Attributes.Name("definitions"));
+                if (definitions != null) {
+                    String[] defs = definitions.split(",");
+                    for (String defFile : defs) {
+                        templatePackage.getDefinitionsFiles().add(defFile.trim());
                     }
                 }
 

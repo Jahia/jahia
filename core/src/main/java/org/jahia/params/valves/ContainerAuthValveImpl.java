@@ -29,19 +29,17 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.params.valves;
+package org.jahia.params.valves;
 
+import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
+import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
-import org.jahia.pipelines.PipelineException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.params.ParamBean;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.security.Principal;
 
 /**
@@ -54,27 +52,27 @@ import java.security.Principal;
 public class ContainerAuthValveImpl implements Valve {
 
     private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (ContainerAuthValveImpl.class);
+            org.apache.log4j.Logger.getLogger(ContainerAuthValveImpl.class);
 
     public ContainerAuthValveImpl() {
     }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         ProcessingContext processingContext = (ProcessingContext) context;
-        HttpServletRequest request = ((ParamBean)processingContext).getRequest();
+        HttpServletRequest request = ((ParamBean) processingContext).getRequest();
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Found user "+principal.getName()+ "  already in HttpServletRequest, using it to try to login...(Principal.toString=" + principal);
+                logger.debug("Found user " + principal.getName() +
+                        "  already in HttpServletRequest, using it to try to login...(Principal.toString=" + principal);
             }
             try {
-                JahiaSite site = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
-                JahiaUser jahiaUser = null;
-                    jahiaUser = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(site.getID(), principal.getName());
-                    if (jahiaUser != null) {
-                        processingContext.setTheUser(jahiaUser);
-                        return;
-                    }
+                JahiaUser jahiaUser =
+                        ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(principal.getName());
+                if (jahiaUser != null) {
+                    processingContext.setTheUser(jahiaUser);
+                    return;
+                }
             } catch (Exception e) {
             }
         }

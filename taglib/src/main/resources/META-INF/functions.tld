@@ -72,17 +72,6 @@
     </function>
     
     <function>
-        <description>Returns the page ID of the page referenced by a URL key, or -1 if not found
-        </description>
-        <name>getPidFromUrlKey</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.lang.Integer getPidFromUrlKey(java.lang.String, java.lang.String)</function-signature>
-        <example>
-            &lt;c:out value="${functions:getPidFromUrlKey('myHomeKey', 'mySiteKey')}"&gt;
-        </example>
-    </function>
-
-    <function>
         <description>Returns the given value cleaned of its HTML tags</description>
         <name>removeHtmlTags</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>

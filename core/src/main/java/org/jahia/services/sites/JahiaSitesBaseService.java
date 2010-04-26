@@ -37,8 +37,6 @@
 package org.jahia.services.sites;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
-import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
@@ -53,7 +51,6 @@ import org.jahia.services.importexport.ExtendedImportResult;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
-import org.jahia.services.pages.JahiaPageBaseService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.jcr.JCRSitesProvider;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -479,7 +476,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         siteCacheByName.remove(site.getServerName());
         siteCacheByKey.remove(site.getSiteKey());
 
-        cacheService.createCacheInstance(JahiaPageBaseService.CONTENT_PAGE_CACHE).flush();
     }
 
 

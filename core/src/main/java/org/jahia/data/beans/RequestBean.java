@@ -144,14 +144,6 @@ public class RequestBean {
         return processingContext.getUser().isRoot();
     }
 
-    public boolean hasWriteAccess() {
-        return guiBean.checkWriteAccess();
-    }
-
-    public boolean isHasWriteAccess() {
-        return guiBean.checkWriteAccess();
-    }
-
     public boolean hasAdminAccess() {
         return processingContext.getPage().checkAdminAccess(processingContext.getUser());
     }

@@ -238,24 +238,6 @@ public class PageBean extends ContentBean {
         }
     }
 
-    public List<PageBean> getPathWithLevels(final int levels) {
-        try {
-            final Iterator<ContentPage> pathEnum = jahiaPage.getContentPagePath(levels, processingContext.
-                    getOperationMode(), processingContext.getUser());
-            final List<PageBean> pathList = new ArrayList<PageBean>();
-            while (pathEnum.hasNext()) {
-                final ContentPage curJahiaPage = (ContentPage) pathEnum.next();
-                final PageBean curPageBean = new PageBean(curJahiaPage.getPage(processingContext), processingContext);
-                pathList.add(curPageBean);
-            }
-            return pathList;
-        } catch (JahiaException je) {
-            logger.error("Error while retrieving page path for page " + getID() +
-                    ":", je);
-            return null;
-        }
-    }
-
     public int getLinkID() {
         return jahiaPage.getPageLinkID();
     }

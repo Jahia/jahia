@@ -32,16 +32,13 @@
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
-import org.jahia.content.ObjectKey;
 import org.jahia.data.JahiaData;
 import org.jahia.engines.EngineMessage;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.registries.ServicesRegistry;
 
@@ -68,56 +65,22 @@ public class FlushAjaxActionImpl extends AjaxAction {
         if (action != null) {
 
             if (action.equalsIgnoreCase("flushAllCaches")) {
-                result.setValue(flushAllCaches(jahiaData, gwtPropertiesMap));
-            }
-            
-            else if (action.equalsIgnoreCase("flushSite")) {
-                result.setValue(flushSite(jahiaData, gwtPropertiesMap));
-            }
-            else if (action.equalsIgnoreCase("flushPage")) {
-                result.setValue(flushPage(jahiaData, gwtPropertiesMap));
+                result.setValue(flushAllCaches());
             }
         } else {
             result.addError("Error: Action [" + action + "] not found.");
         }
         return result;
     }
-
-    public String flushPage(JahiaData jahiaData, Map gwtPropertiesMap) {
-       logger.debug("Flush Page "+jahiaData.getProcessingContext().getPageID());
-       return "Page Not Flushed ";
-    }
-
-    public String flushSite(JahiaData jahiaData, Map gwtPropertiesMap) {
-        final int id = jahiaData.getProcessingContext().getSiteID();
-        logger.debug("Flush Site "+ id);
-        return "Site Flushed ";
-    }
-
     /**
      * Flush All Caches
      *
-     * @param jahiaData
-     * @param gwtPropertiesMap
      * @return
      */
-    public String flushAllCaches(JahiaData jahiaData, Map gwtPropertiesMap) {
+    public String flushAllCaches() {
         logger.debug("Flushing all caches");
         ServicesRegistry.getInstance().getCacheService().flushAllCaches();
         JahiaBatchingClusterCacheHibernateProvider.flushAllCaches();
         return "flushAllCaches";
-    }
-
-    /**
-     * Get Message that depends on the currentLocale
-     *
-     * @param jahiaData
-     * @param allowedDaysMsg
-     * @return
-     */
-    public String getMessage(JahiaData jahiaData, EngineMessage allowedDaysMsg) {
-        final Locale currentLocale = jahiaData.getProcessingContext().getLocale();
-        final MessageFormat msgFormat = new MessageFormat(allowedDaysMsg.getKey(), currentLocale);
-        return msgFormat.format(allowedDaysMsg.getValues());
     }
 }

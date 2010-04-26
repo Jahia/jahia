@@ -43,13 +43,10 @@ import org.jahia.data.JahiaData;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.engines.EngineMessages;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.License;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.pages.JahiaPageBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.*;
@@ -335,23 +332,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         // Is here any default home page?
         String homePageParam = request.getParameter("homePageID");
         String homePageTitle = null;
-        int homePageId = -1;
-        if (homePageParam != null && homePageParam.length() > 0) {
-            homePageId = Integer.parseInt(homePageParam);
-        }
-        if (homePageId != -1) {
-            try {
-                ContentPage contentPage = JahiaPageBaseService
-                        .getInstance().lookupContentPage(homePageId, false);
-                homePageParam = String.valueOf(homePageId);
-                homePageTitle = contentPage.getTitle(jParams
-                        .getEntryLoadRequest());
-            } catch (JahiaPageNotFoundException e) {
-                logger.warn(
-                        "Unable to find default home page for new user using page ID '"
-                                + homePageId + "'", e);
-            }
-        }
+
         request.setAttribute("homePageID", homePageParam);
         request.setAttribute("homePageLabel", homePageTitle);
 
@@ -566,25 +547,6 @@ public class ManageUsers extends AbstractAdministrationModule {
         // Get the home page
         String homePageParam = request.getParameter("homePageID");
         String homePageTitle = null;
-        int homePageId;
-        if (homePageParam != null && homePageParam.length() > 0) {
-            homePageId = Integer.parseInt(homePageParam);
-        } else {
-            homePageId = theUser.getHomepageID();
-        }
-        if (homePageId != -1) {
-            try {
-                ContentPage contentPage = JahiaPageBaseService
-                        .getInstance().lookupContentPage(homePageId, false);
-                homePageParam = String.valueOf(homePageId);
-                homePageTitle = contentPage.getTitle(jParams
-                        .getEntryLoadRequest());
-            } catch (JahiaPageNotFoundException e) {
-                logger.warn(
-                        "Unable to find default home page for new user using page ID '"
-                                + homePageId + "'", e);
-            }
-        }
         request.setAttribute("homePageID", homePageParam);
         request.setAttribute("homePageLabel", homePageTitle);
 

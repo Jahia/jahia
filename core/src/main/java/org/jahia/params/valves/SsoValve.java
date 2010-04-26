@@ -29,36 +29,40 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.params.valves;
+package org.jahia.params.valves;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.security.license.LicenseActionChecker;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * <p>Title: Generic SSO auth valve</p>
  * <p>Description: authenticate users with a SSO server.</p>
  * <p>Copyright: Copyright (c) 2005 - Pascal Aubry</p>
  * <p>Company: University of Rennes 1</p>
+ *
  * @author Pascal Aubry
  * @version 1.0
  */
 
 public abstract class SsoValve implements Valve {
 
-    /** Logger instance */
-    protected static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger (SsoValve.class);
+    /**
+     * Logger instance
+     */
+    protected static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(SsoValve.class);
 
     /**
      * Retrieve the credentials from the request.
+     *
      * @param processingContext parameters
      * @return an object.
      * @throws Exception any exception
@@ -67,6 +71,7 @@ public abstract class SsoValve implements Valve {
 
     /**
      * Validate the credentials.
+     *
      * @param credentials the crendentials.
      * @param paramBean
      * @return the id of user that was authenticated, or null if none.
@@ -77,8 +82,7 @@ public abstract class SsoValve implements Valve {
     /**
      * @see org.jahia.pipelines.valves.Valve#invoke(java.lang.Object, org.jahia.pipelines.valves.ValveContext)
      */
-    public void invoke (Object context, ValveContext valveContext)
-        throws PipelineException {
+    public void invoke(Object context, ValveContext valveContext) throws PipelineException {
 
         if (!LicenseActionChecker.isAuthorizedByLicense("org.jahia.params.valves.SsoValve", 0)) {
             valveContext.invokeNext(context);
@@ -122,10 +126,7 @@ public abstract class SsoValve implements Valve {
         logger.debug("uid = " + uid);
 
         logger.debug("checking user existence in Jahia database...");
-        JahiaUser user = null;
-        user = ServicesRegistry.getInstance ()
-                .getJahiaSiteUserManagerService ()
-                .getMember (processingContext.getSiteID (), uid);
+        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(uid);
         if (user == null) {
             throw new PipelineException("user '" + uid + "' was authenticated but not found in database!");
         }
@@ -146,6 +147,7 @@ public abstract class SsoValve implements Valve {
 
     /**
      * Return the URL to redirect to for authentication.
+     *
      * @return a URL.
      * @throws JahiaInitializationException
      */

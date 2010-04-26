@@ -33,9 +33,14 @@
 
 import java.util.Iterator;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.resourcebundle.ResourceMessage;
+
+import javax.jcr.RepositoryException;
 
 /**
  * <p>Title: </p>
@@ -71,9 +76,7 @@ public class PageCountValidator extends AbstractValidator {
             while( enumeration.hasNext() ){
                 aSite = (JahiaSite)enumeration.next();
 
-                nbItems = ServicesRegistry.getInstance().
-                                           getJahiaPageService().
-                                           getRealActiveNbPages (aSite.getID());
+                nbItems = 0;
 
                 if (nbItems > maxPages) {
                     errorMessage = new ResourceMessage("org.jahia.security.license.PageCountValidator.invalidPageCount.label", new Integer(nbItems), new Integer(maxPages), new Integer(aSite.getID()));
@@ -107,9 +110,7 @@ public class PageCountValidator extends AbstractValidator {
             while( enumeration.hasNext() ){
                 aSite = (JahiaSite)enumeration.next();
 
-                nbItems = ServicesRegistry.getInstance().
-                                           getJahiaPageService().
-                                           getRealActiveNbPages (aSite.getID());
+                nbItems = 0;
 
                 if ((nbItems > maxPages) || (nbItems < minPages)) {
                     errorMessage = new ResourceMessage("org.jahia.security.license.PageCountValidator.pageCountNotInRange.label", new Integer(nbItems), new Integer(minPages), new Integer(maxPages), new Integer(aSite.getID()));

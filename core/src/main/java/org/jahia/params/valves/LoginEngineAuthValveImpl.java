@@ -52,7 +52,6 @@ import org.jahia.utils.JahiaString;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
 import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
@@ -72,12 +71,12 @@ public class LoginEngineAuthValveImpl implements Valve {
     public static final String LOGIN_TAG_PARAMETER = "loginFromTag";
     public static final String LOGIN_CHOICE_PARAMETER = "loginChoice";
     public static final String DO_REDIRECT = "loginDoRedirect";
-    
+
     public static final String STAY_AT_CURRENT_PAGE = "1";
-    public static final String GO_TO_HOMEPAGE = "2";    
+    public static final String GO_TO_HOMEPAGE = "2";
 
     private CookieAuthConfig cookieAuthConfig;
-    
+
     public void initialize() {
     }
 
@@ -100,8 +99,7 @@ public class LoginEngineAuthValveImpl implements Valve {
                         JahiaUserManagerService theService = theRegistry.getJahiaUserManagerService();
                         if (theService != null) {
                             // Check if the user has site access ( even though it is not a user of this site )
-                            theUser = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().
-                                    getMember(jParams.getSiteID(), username);
+                            theUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
                             if (theUser != null) {
                                 if (theUser.verifyPassword(password)) {
                                     ok = true;
@@ -135,14 +133,14 @@ public class LoginEngineAuthValveImpl implements Valve {
                     if (jParams.getSite() != null) {
                         List<Locale> siteLocales = jParams.getSite().getLanguagesAsLocales();
                         if (siteLocales.contains(preferredUserLocale)) {
-                            jParams.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE,
-                                                                   preferredUserLocale);
+                            jParams.getSessionState()
+                                    .setAttribute(ProcessingContext.SESSION_LOCALE, preferredUserLocale);
                             jParams.setCurrentLocale(preferredUserLocale);
                             jParams.setLocaleList(null);
                         }
                     }
                 }
-                
+
                 String useCookie = jParams.getParameter(USE_COOKIE);
                 if ((useCookie != null) && ("on".equals(useCookie))) {
                     // the user has indicated he wants to use cookie authentication
@@ -153,7 +151,8 @@ public class LoginEngineAuthValveImpl implements Valve {
                         cookieUserKey = JahiaString.generateRandomString(cookieAuthConfig.getIdLength());
                         Properties searchCriterias = new Properties();
                         searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-                        Set<Principal> foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias);
+                        Set<Principal> foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService()
+                                .searchUsers(searchCriterias);
                         if (foundUsers.size() > 0) {
                             cookieUserKey = null;
                         }
@@ -162,7 +161,8 @@ public class LoginEngineAuthValveImpl implements Valve {
                     theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
                     // now let's save the same identifier in the cookie.
                     Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey);
-                    authCookie.setPath(StringUtils.isNotEmpty(jParams.getContextPath()) ? jParams.getContextPath() : "/");
+                    authCookie
+                            .setPath(StringUtils.isNotEmpty(jParams.getContextPath()) ? jParams.getContextPath() : "/");
                     authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
                     if (paramBean != null) {
                         HttpServletResponse realResponse = paramBean.getRealResponse();
@@ -171,7 +171,8 @@ public class LoginEngineAuthValveImpl implements Valve {
                 }
 
                 enforcePasswordPolicy(theUser, paramBean);
-                theUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE, String.valueOf(System.currentTimeMillis()));
+                theUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE,
+                        String.valueOf(System.currentTimeMillis()));
                 checkRedirect(paramBean);
             } else {
                 valveContext.invokeNext(context);
@@ -220,8 +221,8 @@ public class LoginEngineAuthValveImpl implements Valve {
         }
     }
 
-	public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
-    	this.cookieAuthConfig = cookieAuthConfig;
+    public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
+        this.cookieAuthConfig = cookieAuthConfig;
     }
-    
+
 }

@@ -49,21 +49,6 @@
 
 package org.jahia.bin;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
@@ -81,9 +66,7 @@ import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.valves.SsoValve;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.registries.locks.JahiaLocksRegistry;
 import org.jahia.resourcebundle.ResourceMessage;
 import org.jahia.security.license.License;
 import org.jahia.security.license.LicenseConstants;
@@ -101,6 +84,20 @@ import org.jahia.utils.Version;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.modifier.TomcatUsersModifier;
 import org.xml.sax.SAXException;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * This is the main servlet of Jahia.
@@ -414,7 +411,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         try {
             if (initServicesRegistry()) {
                 try {
-                    EnginesRegistry.getInstance().init();
                     FileListSync.getInstance().start();
                 } catch (NullPointerException ex) {
                     logger.fatal(
@@ -576,13 +572,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             logger.debug("New session id=[" + session.getId() + "]");
         }
 
-        if (Jahia.isInitiated() && !checkLockAccess(session)) {
-            logger.debug("Jahia is locked by the super admin!");
-            config.getServletContext().getRequestDispatcher(
-                    "/errors/locked.jsp").forward(request, response);
-            return;
-        }
-
         // WEB APP ISSUE
         // This session attribute is used to track that targeted application
         // has been already processed or not.
@@ -702,7 +691,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                     jParams);
             final JahiaData jData = new JahiaData(jParams, false);
             jParams.getRequest().setAttribute("org.jahia.data.JahiaData", jData);
-            EnginesRegistry.getInstance().getEngine(jParams.getEngineName()).handleActions(jParams, jData);
 
             // display time to fetch object plus other info
             if (jParams.getUser() != null && logger.isInfoEnabled()) {
@@ -1075,167 +1063,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     }
 
     
-    //-------------------------------------------------------------------------
-    /**
-     * Get the Jahia Lock.
-     * Use this to force Jahia to ignore all requests except for those of the current session.
-     *
-     *
-     * @param user      the user must be a root admin
-     * @param session   the session
-     * @return byte[] lock, the lock or null if the lock is not available.
-     */
-    public static synchronized byte[] getLock (final JahiaUser user,
-                                               final HttpSession session)
-        throws JahiaException {
-
-        if (!isInitiated()) {
-            return null;
-        }
-
-        byte[] lock = null;
-
-        final Map<String, Object> lockParams = JahiaLocksRegistry.getInstance().getLock(
-            JAHIA_LOCK_NAME);
-
-        if (!user.isAdminMember(0)) { // a super admin user
-            throw new JahiaException(CLASS_NAME + ".getLock",
-                                     "No rigth to get the lock on Jahia",
-                                     JahiaException.LOCK_ERROR,
-                                     JahiaException.ERROR_SEVERITY);
-        }
-
-        if (lockParams == null) {
-
-            lock = MakeLock(user, session);
-
-        } else {
-
-            if (JahiaLocksRegistry.getInstance().isLockValid(JAHIA_LOCK_NAME)) {
-
-                // Check if the session is the one that locked Jahia.
-                final String sessionID = (String) lockParams.get(
-                    JAHIA_LOCK_SESSION_ID);
-                if (sessionID.equals(session.getId())) {
-
-                    // reset the timeout time
-                    JahiaLocksRegistry.getInstance().resetLockTimeout(
-                        JAHIA_LOCK_NAME);
-                    lock = (byte[]) lockParams.get(JAHIA_LOCK);
-
-                }
-
-            } else {
-                // the lock has been timed out and is available.
-                lock = MakeLock(user, session);
-            }
-        }
-
-        session.setAttribute(JAHIA_LOCK_NAME, lock);
-
-        return lock;
-
-    }
-
-    //-------------------------------------------------------------------------
-    private static byte[] MakeLock (final JahiaUser user, final HttpSession session) {
-        final Map<String, Object> lockParams = new HashMap<String, Object>();
-        final byte[] lock = new byte[1];
-        lockParams.put(JAHIA_LOCK_USER, user);
-        lockParams.put(JAHIA_LOCK_SESSION_ID, session.getId());
-        lockParams.put(JAHIA_LOCK, lock);
-
-        // create the lock in the registry.
-        final int timeout = session.getMaxInactiveInterval();
-        JahiaLocksRegistry.getInstance().setLock(JAHIA_LOCK_NAME, lockParams,
-                                                 timeout);
-        return lock;
-
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-         * To free the lock, you must give back the lock object stored in your session.
-     * The JAHIA_LOCK attribute in session is set to null
-     *
-     * @param lock  the original lock
-     */
-    public static synchronized boolean releaseLock (final byte[] lock) {
-
-        if (!isInitiated()) {
-            return false;
-        }
-
-        if (lock == null) {
-            return false;
-        }
-
-        final Map<String, Object> lockParams = JahiaLocksRegistry.getInstance().getLock(
-            JAHIA_LOCK_NAME);
-
-        final byte[] storedLock = (byte[]) lockParams.get(JAHIA_LOCK);
-
-        if (lock == storedLock) {
-
-            JahiaLocksRegistry.getInstance().removeLock(JAHIA_LOCK_NAME);
-
-            return true;
-        }
-
-        return false;
-
-    }
-
-    //-------------------------------------------------------------------------
-    /**
-     * Check if Jahia is authorized to process request from current session
-     *
-     * @return boolean false if no access allowed
-     */
-    public static synchronized boolean checkLockAccess (final HttpSession session) {
-
-        if (!isInitiated()) {
-            //logger.debug("Jahia is not initialized");
-            return false;
-        }
-
-        //logger.debug("Jahia is initialized");
-
-        final Map<String, Object> lockParams = JahiaLocksRegistry.getInstance().getLock(
-            JAHIA_LOCK_NAME);
-
-        if (lockParams == null) {
-
-            //logger.debug("lock params in session is null");
-            return true; // Jahia is not locked
-
-        } else {
-
-            if (JahiaLocksRegistry.getInstance().isLockValid(JAHIA_LOCK_NAME)) {
-
-                //logger.debug(JAHIA_LOCK_NAME + " lock is valid");
-
-                // Check if the session is the one that locked Jahia.
-                final String sessionID = (String) lockParams.get(
-                    JAHIA_LOCK_SESSION_ID);
-                if (sessionID.equals(session.getId())) {
-                    // reset the timeout time
-                    JahiaLocksRegistry.getInstance().resetLockTimeout(
-                        JAHIA_LOCK_NAME);
-                    return true;
-                }
-
-            } else {
-
-                //logger.debug(JAHIA_LOCK_NAME + " lock no more valid");
-
-                return true; // no more lock
-            }
-        }
-
-        return false;
-    }
-
     /**
      * Check if the current JDK we are running Jahia on is supported. The
      * supported JDK string is a specially encoded String that checks only

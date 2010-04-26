@@ -1,3 +1,17 @@
+<%@ page import="org.jahia.services.sites.JahiaSitesBaseService" %>
+<%@ page import="org.jahia.services.sites.JahiaSite" %>
+<%@ page import="org.jahia.bin.JahiaAdministration" %>
+<%@ page import="org.jahia.params.ProcessingContextFactory" %>
+<%@ page import="org.jahia.hibernate.manager.SpringContextSingleton" %>
+<%@ page import="org.jahia.params.ParamBean" %>
+<%@ page import="org.jahia.api.Constants" %>
+<%@ page import="org.jahia.bin.Render" %>
+<%@ page import="javax.jcr.PathNotFoundException" %>
+<%@ page import="org.jahia.bin.Edit" %>
+<%@ page import="javax.jcr.RepositoryException" %>
+<%@ page import="javax.jcr.AccessDeniedException" %>
+<%@ page import="org.jahia.services.content.*" %>
+<%@ page import="org.jahia.bin.WelcomeServlet" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -32,6 +46,4 @@
 
 --%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
-<% request.getSession(true);
-response.sendRedirect(request.getContextPath() + org.jahia.bin.Jahia.getServletPath());
-%>
+<% WelcomeServlet.defaultRedirect(request, response, pageContext.getServletContext()); %>

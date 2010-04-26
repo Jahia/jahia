@@ -851,44 +851,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
             throws JahiaException {
         return getContentPage().getContentPagePathAsList(mEntryLoadRequest, operationMode, user);
     }
-    
-    // -------------------------------------------------------------------------
-    /**
-     * Return the page path. The page path consist of all the parent pages of
-     * the specified page until the site's root page.
-     *
-     * @param levels an integer specifying the offset of levels to retrieve.
-     *               So if the page is a depth level 5 and we specify that we want to retrieve
-     *               only 2 levels, only levels 4 and 5 will be returned by this method.
-     *
-     * @return Return a Iterator of ContentPage objects. The returned
-     *         Iterator is always non-null, but might have no pages if the
-     *         specified page has not childs, or if no childs matching the
-     *         loading flag were found.
-     */
-    public Iterator<ContentPage> getContentPagePath(int levels, String operationMode,
-            JahiaUser user) throws JahiaException {
-        return getContentPage().getContentPagePath(levels, mEntryLoadRequest,
-                operationMode, user, JahiaPageService.PAGEPATH_SHOW_ALL);
-    } // end getPath    
 
-    //-------------------------------------------------------------------------
-    /**
-     * Return the page path. The page path consist of all the parent pages of
-     * the specified page until the site's root page.
-     *
-     * @return Return a Iterator of JahiaPage objects. The returned
-     *         Iterator is always non-null, but might have no pages if the
-     *         specified page has not childs, or if no childs matching the
-     *         loading flag were found.
-     *
-     * @deprecated used getContentPagePath
-     */
-    public Iterator<JahiaPage> getPagePath(String operationMode, JahiaUser user)
-            throws JahiaException {
-        return getContentPage().getPagePath(mEntryLoadRequest, operationMode, user);        
-    } // end getPath    
-    
     // -------------------------------------------------------------------------
     /**
      * Return the page path. The page path consist of all the parent pages of

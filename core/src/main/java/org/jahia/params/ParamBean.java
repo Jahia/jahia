@@ -336,24 +336,6 @@ public class ParamBean extends ProcessingContext {
 
             setEngineNameIfAvailable();
 
-            // retrieve site info
-            if (!findSiteFromWhatWeHave() && REGISTRY.getJahiaSitesService().getNbSites() > 0) {
-                throw new JahiaSiteNotFoundException(
-                        "400 Bad Request : No site specified or site not found",
-                        JahiaException.CRITICAL_SEVERITY);
-            }
-
-            if (!LicenseActionChecker.isAuthorizedByLicense(
-                    "org.jahia.actions.server.admin.sites.ManageSites", 0)) {
-                // we don't have the right to add sites, so we can only use the default site, so
-                // we force the site resolution to the default site.
-                setSite(getDefaultSite());
-            }
-
-            if (getSite() != null) {
-                setSiteInfoFromSiteFound();
-            }
-
             if (!isContentPageLoadedWhileTryingToFindSiteByPageID()) {
                 if (getSite() != null) {
                     setContentPage(getSite().getHomeContentPage());
@@ -652,7 +634,7 @@ public class ParamBean extends ProcessingContext {
                     characterEncoding);
             String str = request.getContextPath() + request.getServletPath();
             pathInfo = pathInfo.substring(str.length());
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             pathInfo = request.getPathInfo();
         }
 

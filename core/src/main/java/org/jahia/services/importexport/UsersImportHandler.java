@@ -29,21 +29,22 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.services.importexport;
+package org.jahia.services.importexport;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.*;
-import org.jahia.services.pages.ContentPage;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,7 +53,7 @@ import java.util.*;
  * Time: 17:57:36
  * To change this template use File | Settings | File Templates.
  */
-public class UsersImportHandler  extends DefaultHandler {
+public class UsersImportHandler extends DefaultHandler {
     private static Logger logger = Logger.getLogger(UsersImportHandler.class);
     private JahiaUserManagerService u;
     private JahiaGroupManagerService g;
@@ -68,83 +69,69 @@ public class UsersImportHandler  extends DefaultHandler {
         g = ServicesRegistry.getInstance().getJahiaGroupManagerService();
     }
 
-    public UsersImportHandler() {        
+    public UsersImportHandler() {
         u = ServicesRegistry.getInstance().getJahiaUserManagerService();
         g = ServicesRegistry.getInstance().getJahiaGroupManagerService();
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        try {
-            if (currentGroup == null) {
-                if (localName.equals("user")) {
-                    String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
-                    String pass = null;
-                    Properties p = new Properties();
-
-                    for (int i = 0; i < attributes.getLength(); i++) {
-                        String k = attributes.getLocalName(i);
-                        String v = attributes.getValue(i);
-                        if (k.equals("name")) {
-                            //
-                        } else if (k.equals("password")) {
-                            pass = v;
-                        } else if (k.equals("user_homepage")) {
-                            List<ContentPage> l = findPage(v);
-                            if (!CollectionUtils.isEmpty(l)) {
-                                p.put(k, ""+((ContentPage) l.iterator().next()).getID());
-                            } else {
-                                uuidProps.add(new String[] {name,k,v});
-                            }
-                        } else {
-                            p.put(k,v);
-                        }
-                    }
-                    if (name != null && pass != null) {
-                        if (u.lookupUser(name) == null) {
-                            u.createUser(name, pass, p);
-                        }
-                    }
-                } else if (localName.equals("group")) {
-                    String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
-                    Properties p = new Properties();
-                    for (int i = 0; i < attributes.getLength(); i++) {
-                        String k = attributes.getLocalName(i);
-                        String v = attributes.getValue(i);
-                        if (k.equals("name")) {
-                            //
-                        } else if (k.equals("group_homepage")) {
-                            List<ContentPage> l = findPage(v);
-                            if (!l.isEmpty()) {
-                                p.put(k, ""+((ContentPage) l.iterator().next()).getID());
-                            } else {
-                                uuidProps.add(new String[] {name,k,v});
-                            }
-                        } else {
-                            p.put(k,v);
-                        }
-                    }
-                    if (name != null) {
-                        currentGroup = g.lookupGroup(site.getID(), name);
-                        if (currentGroup == null) {
-                            currentGroup = g.createGroup(site.getID(), name, p, false);
-                        }
-                    }
-                }
-            } else {
-                member = true;
-                Principal p = null;
+        if (currentGroup == null) {
+            if (localName.equals("user")) {
                 String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
-                if (localName.equals("user")) {
-                    p = u.lookupUser(name);
-                } else if (localName.equals("group")) {
-                    p = g.lookupGroup(site.getID(), name);
+                String pass = null;
+                Properties p = new Properties();
+
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    String k = attributes.getLocalName(i);
+                    String v = attributes.getValue(i);
+                    if (k.equals("name")) {
+                        //
+                    } else if (k.equals("password")) {
+                        pass = v;
+                    } else if (k.equals("user_homepage")) {
+                        uuidProps.add(new String[]{name, k, v});
+                    } else {
+                        p.put(k, v);
+                    }
                 }
-                if (p != null && !currentGroup.getMembers().contains(p)) {
-                    currentGroup.addMember(p);
+                if (name != null && pass != null) {
+                    if (u.lookupUser(name) == null) {
+                        u.createUser(name, pass, p);
+                    }
+                }
+            } else if (localName.equals("group")) {
+                String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
+                Properties p = new Properties();
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    String k = attributes.getLocalName(i);
+                    String v = attributes.getValue(i);
+                    if (k.equals("name")) {
+                        //
+                    } else if (k.equals("group_homepage")) {
+                        uuidProps.add(new String[]{name, k, v});
+                    } else {
+                        p.put(k, v);
+                    }
+                }
+                if (name != null) {
+                    currentGroup = g.lookupGroup(site.getID(), name);
+                    if (currentGroup == null) {
+                        currentGroup = g.createGroup(site.getID(), name, p, false);
+                    }
                 }
             }
-        } catch (JahiaException e) {
-            logger.error("Cannot import", e);
+        } else {
+            member = true;
+            Principal p = null;
+            String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
+            if (localName.equals("user")) {
+                p = u.lookupUser(name);
+            } else if (localName.equals("group")) {
+                p = g.lookupGroup(site.getID(), name);
+            }
+            if (p != null && !currentGroup.getMembers().contains(p)) {
+                currentGroup.addMember(p);
+            }
         }
     }
 
@@ -165,36 +152,6 @@ public class UsersImportHandler  extends DefaultHandler {
         if (p == null) {
             return;
         }
-
-        for (Iterator<String[]> iterator = p.iterator(); iterator.hasNext();) {
-            try {
-                String[] s = (String[]) iterator.next();
-                List<ContentPage> l = findPage(s[2]);
-                if (!CollectionUtils.isEmpty(l)) {
-                    int id = ((ContentPage) l.iterator().next()).getID();
-                    if (s[1].equals("user_homepage")) {
-                        JahiaUser user = u.lookupUser(s[0]);
-                        user.setHomepageID(id);
-                    } else if (s[1].equals("group_homepage")) {
-                        JahiaGroup group = g.lookupGroup(site.getID(), s[0]);
-                        group.setHomepageID(id);
-                    }
-                }
-            } catch (JahiaException e) {
-                logger.error("Cannot set property for category ",e);
-            }
-        }
-    }
-
-    private List<ContentPage> findPage(String v) throws JahiaException {
-        List<ContentPage> l;
-//        if (v.indexOf('/')>0) {
-//            l = ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')));
-//            l.addAll(ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')+1)));
-//        } else {
-            l = ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v);
-//        }
-        return l;
     }
 
 }

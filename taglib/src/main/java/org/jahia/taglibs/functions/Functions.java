@@ -38,23 +38,16 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.notification.SubscriptionService;
-import org.jahia.services.pages.JahiaPageService;
-import org.jahia.services.pages.PageProperty;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.RoleIdentity;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.JahiaTools;
-
-import java.util.*;
 
 import javax.jcr.RangeIterator;
 import javax.servlet.jsp.JspTagException;
+import java.util.*;
 
 /**
  * Custom functions, which are exposed into the template scope.
@@ -65,9 +58,6 @@ public class Functions {
 
     private static final Logger logger =
             Logger.getLogger(Functions.class);
-
-    private static final ServicesRegistry registry = ServicesRegistry.getInstance();
-    private static final JahiaPageService service = registry.getJahiaPageService();
 
     public static String attributes(Map<String, Object> attributes) {
         StringBuilder out = new StringBuilder();
@@ -84,35 +74,6 @@ public class Functions {
     public static Object defaultValue(Object value, Object defaultValue) {
         return (value != null && (!(value instanceof String) || (((String) value)
                 .length() > 0))) ? value : defaultValue;
-    }
-
-    public static Integer getPidFromUrlKey(final String urlKey, final String siteKey) {
-        try {
-            final List<PageProperty> pageProperties;
-            if (siteKey != null && siteKey.length() > 0) {
-                final JahiaSite siteByKey = registry.getJahiaSitesService().getSiteByKey(siteKey);
-                final int siteID;
-                if (siteByKey != null) {
-                    siteID = siteByKey.getID();
-                } else {
-                    siteID = -1;
-                }
-                pageProperties = service.getPagePropertiesByValueAndSiteID(urlKey, siteID);
-            } else {
-                pageProperties = service.getPagePropertiesByValue(urlKey);
-            }
-
-            if (pageProperties.size() == 1) {
-                final PageProperty pageProperty = pageProperties.get(0);
-                if (pageProperty.getName().equals(PageProperty.PAGE_URL_KEY_PROPNAME)) {
-                    return pageProperty.getPageID();
-                }
-            }
-
-        } catch (final JahiaException je) {
-            logger.error("JahiaException in doStartTag", je);
-        }
-        return -1;
     }
 
     public static String removeHtmlTags(String value) {

@@ -808,10 +808,6 @@
          reference each other
     -->
     <servlet-mapping>
-        <servlet-name>Jahia</servlet-name>
-        <url-pattern>/Jahia/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>JahiaAdministration</servlet-name>
         <url-pattern>/administration/*</url-pattern>
     </servlet-mapping>

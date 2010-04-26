@@ -47,7 +47,6 @@ import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.engines.EngineToolBox;
 import org.jahia.engines.JahiaEngine;
-import org.jahia.engines.core.Core_Engine;
 import org.jahia.engines.validation.EngineValidationHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
@@ -168,7 +167,6 @@ public class MySettingsEngine implements JahiaEngine {
             engineMap.put (ENGINE_NAME_PARAM, ENGINE_NAME);
 
         } else {
-            engineMap.put (ENGINE_NAME_PARAM, Core_Engine.ENGINE_NAME);
             engineMap.put (ENGINE_URL_PARAM, jParams.composePageUrl (jParams.getPageID ()));
             engineMap.put ("jspSource", "close");
         }

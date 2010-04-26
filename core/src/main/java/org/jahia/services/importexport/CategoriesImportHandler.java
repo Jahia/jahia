@@ -112,12 +112,7 @@ public class CategoriesImportHandler extends DefaultHandler {
                     Category c = cats.peek();
                     if (key != null && value != null) {
                         if (key.startsWith("homepage")) {
-                            List<ContentPage> l = findPage(value);
-                            if (!l.isEmpty()) {
-                                value = "" + ((ContentPage) l.iterator().next()).getID();
-                            } else {
-                                uuidProps.add(new String[] {c.getKey(),key,value});
-                            }
+                            uuidProps.add(new String[] {c.getKey(),key,value});
                         }
                         c.setProperty(key, value);
                     }
@@ -146,26 +141,10 @@ public class CategoriesImportHandler extends DefaultHandler {
             try {
                 String[] s = (String[]) iterator.next();
                 Category c = Category.getCategory(s[0]);
-                List<ContentPage> l = findPage(s[2]);
-                if (!l.isEmpty()) {
-                    String value = "" + ((ContentPage) l.iterator().next()).getID();
-                    c.setProperty(s[1], value);
-                }
             } catch (JahiaException e) {
                 logger.error("Cannot set property for category ",e);
             }
         }
-    }
-
-    private List<ContentPage> findPage(String v) throws JahiaException {
-        List<ContentPage> l;
-//        if (v.indexOf('/')>0) {
-//            l = ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')));
-//            l.addAll(ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')+1)));
-//        } else {
-            l = ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v);
-//        }
-        return l;
     }
 
     @Override

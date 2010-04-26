@@ -73,9 +73,7 @@ public class HttpBasicAuthValveImpl implements Valve {
                 String user = cred.substring(0,colonInd);
                 String pass = cred.substring(colonInd+1);
 
-                JahiaSite site = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
-                JahiaUser jahiaUser = null;
-                jahiaUser = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(site.getID(), user);
+                JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
                 if (jahiaUser != null) {
                     if (jahiaUser.verifyPassword(pass)) {
                         if (logger.isDebugEnabled()) {

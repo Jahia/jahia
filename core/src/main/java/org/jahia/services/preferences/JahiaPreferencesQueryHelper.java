@@ -54,20 +54,6 @@ public class JahiaPreferencesQueryHelper {
         return convertToSQL(properties);
     }
 
-    public static String getToolbarSQL(String name, String type) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("j:toolbarName", name);
-        properties.put("j:type", type);
-        return convertToSQL(properties);
-    }
-
-    public static String getPageSQL(int pid, String prefName) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("j:page", getPageUUID(pid));
-        properties.put("j:prefName", prefName);
-        return convertToSQL(properties);
-    }
-
 
     public static String getPortletSQL(String portletName, String prefName) {
         Map<String, Object> properties = new HashMap<String, Object>();
@@ -80,22 +66,6 @@ public class JahiaPreferencesQueryHelper {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("j:portletName", portletName);
         return convertToSQL(properties);
-    }
-
-    public static String getBookmarkSQL(int pid) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("j:page", getPageUUID(pid));
-        return convertToSQL(properties);
-    }
-
-    private static String getPageUUID(int pid) {
-        try {
-            ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pid, false);
-            return page.getUUID();
-        } catch (JahiaException e) {
-            logger.error(e, e);
-            return null;
-        }
     }
 
     /**

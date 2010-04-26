@@ -35,14 +35,11 @@ import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
-import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.data.fields.LoadFlags;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
-import org.jahia.hibernate.manager.*;
-import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
@@ -50,15 +47,10 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.fields.ContentFieldTools;
-import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.pages.JahiaPageService;
-import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
-
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -1863,62 +1855,6 @@ public abstract class ContentObject extends JahiaObject {
         return false;
     }
 
-    /**
-     * Returns the page path of the current content object.
-     * The page path is of the form : /pid8/pid10/pid111 where pid8 is the site's home page and the pid111 is
-     *  the current page or the current content object's parent page
-     *
-     * Default implementation for Content implementing PageReferenceableInterface.
-     * Other ContentObject must override this method if they do not implement PageReferenceableInterface
-     *
-     * @param context
-     * @return
-     */
-    public String getPagePathString(ProcessingContext context) {
-        return getPagePathString(context,false);
-    }
-
-    /**
-     * Returns the page path of the current content object.
-     * The page path is of the form : /pid8/pid10/pid111 where pid8 is the site's home page and the pid111 is
-     *  the current page or the current content object's parent page
-     *
-     * Default implementation for Content implementing PageReferenceableInterface.
-     * Other ContentObject must override this method if they do not implement PageReferenceableInterface
-     *
-     * @param context
-     * @param ignoreMetadata if true , the path is resolved dynamically,
-     *          not the one stored in metadata
-     * @return
-     */
-    public String getPagePathString(ProcessingContext context, boolean ignoreMetadata) {
-        String pagePath = "";
-        ContentPage contentPage = null;
-        try {
-            if ( this instanceof PageReferenceableInterface ){
-                contentPage = ((PageReferenceableInterface)this).getPage();
-            } else if ( this instanceof ContentPage ){
-                contentPage = (ContentPage)this;
-            }
-            if ( contentPage != null ){
-                //pagePath = contentPage.getPagePathString(context,ignoreMetadata);
-                Iterator<ContentPage> pageEnum = contentPage.getContentPagePath(context
-                        .getEntryLoadRequest(),context.getOperationMode(), JahiaAdminUser.getAdminUser(this.getSiteID()), 
-                        JahiaPageService.PAGEPATH_BREAK_ON_RESTRICTED);
-                ContentPage page = null;
-                StringBuffer buff = new StringBuffer(512);
-                while ( pageEnum.hasNext() ){
-                    page = (ContentPage)pageEnum.next();
-                    buff.append(ContentObject.PAGEPATH_PAGEID_PREFIX).append(page.getID());
-                }
-                pagePath = buff.toString();
-            }
-        } catch ( Exception t ){
-            logger.debug("Exception occured getting pagePath for contentObject " + this.getObjectKey(),t);
-        }
-        return pagePath;
-    }
-
     /*
     * Update all childs content's metadata PAGE_PATH bellow this node
     *
@@ -1936,10 +1872,6 @@ public abstract class ContentObject extends JahiaObject {
     public abstract void setProperty(Object name, Object val) throws JahiaException;
 
     public abstract void removeProperty(String name) throws JahiaException;
-
-    public void setUnversionedChanged() throws JahiaException {
-        setProperty("unversionedChange", Long.toString(System.currentTimeMillis()/1000));    
-    }
 
     public abstract int getPageID();
 
@@ -1987,10 +1919,6 @@ public abstract class ContentObject extends JahiaObject {
         }
     }
 
-    public void updateAclForChildren(int aclid) {
-        updateAclForChildren(aclid, true);
-    }
-
     /**
      * Return jcr path "/siteKey/pageKey"
      *
@@ -2007,57 +1935,6 @@ public abstract class ContentObject extends JahiaObject {
             return JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID("jahia",getUUID());
         } catch (RepositoryException e) {
             throw new JahiaException("","",0,0,e);
-        }
-    }
-
-    public void updateAclForChildren(int aclid, boolean head) {
-        int old = getAclID();
-        if (old == -1) {
-            return;
-        }
-        setAclID(aclid);
-        try {
-            Set<ContentObject> picks = getPickerObjects();
-            for (ContentObject picker : picks) {
-                if (head && picker.isAclSameAsParent()) {
-                    JahiaBaseACL newacl = new JahiaBaseACL();
-                    newacl.create(picker.getAclID(),aclid);
-                    picker.updateAclForChildren(newacl.getID());
-                }
-                JahiaAcl pickerAcl = picker.getACL().getACL();
-                if (pickerAcl.getPickedAclId().intValue()  == old) {
-                    pickerAcl.setPickedAclId(new Integer(aclid));
-//                    ServicesRegistry.getInstance().getJahiaACLManagerService().updateCache(pickerAcl);
-                }
-            }            
-            List<? extends ContentObject> l = getChilds(null,null);
-            for (ContentObject contentObject : l) {
-                if (contentObject instanceof ContentPageField) {
-                    List<? extends ContentObject> c = contentObject.getChilds(null,null);
-                    if (!c.isEmpty()) {
-                        contentObject = c.iterator().next();
-                    } else {
-                        continue;
-                    }
-                }
-                if (contentObject instanceof ContentField) {
-                    continue;
-                }
-
-                if (contentObject.getAclID() == old) {
-                    contentObject.updateAclForChildren(aclid, false);
-                } else {
-                    contentObject.getACL().setParentID(aclid);
-                }
-            }
-//            if (!(this instanceof ContentField)) {
-//                List<ContentField> mds = getMetadatas();
-//                for (ContentField md : mds) {
-//                    md.setAclID(aclid);
-//                }
-//            }
-        } catch (JahiaException e) {
-            logger.warn("Problem when updating ACLs", e);  
         }
     }
 

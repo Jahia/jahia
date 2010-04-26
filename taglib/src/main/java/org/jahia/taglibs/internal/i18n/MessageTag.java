@@ -33,7 +33,6 @@ package org.jahia.taglibs.internal.i18n;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.text.MessageFormat;
 
@@ -43,10 +42,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.jahia.engines.EngineLanguageHelper;
 import org.jahia.engines.EngineMessage;
-import org.jahia.engines.JahiaEngine;
-import org.jahia.engines.core.Core_Engine;
 import org.jahia.params.ProcessingContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -155,13 +151,6 @@ public class MessageTag extends TagSupport {
         final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
         Locale currentLocale = null;
         if (jParams != null) {
-            final Map<String, ?> engineMap = !Core_Engine.ENGINE_NAME.equals(jParams.getEngineName()) ? (Map<String, ?>) jParams.getSessionState().getAttribute("jahia_session_engineMap") : null;
-            if (engineMap != null) {
-                final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
-                if (elh != null) {
-                    currentLocale = elh.getCurrentLocale();
-                }
-            }
             if (currentLocale == null) {
                 currentLocale = jParams.getLocale();
             }

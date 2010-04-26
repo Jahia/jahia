@@ -114,7 +114,6 @@ package org.jahia.params;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaInterface;
-import org.jahia.engines.importexport.ExportEngine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
@@ -1098,8 +1097,6 @@ public class ProcessingContext {
                         String[] paramValues = new String[1];
                         paramValues[0] = st.nextToken();
                         getCustomParameters().put(token, paramValues);
-                    } else if (!ExportEngine.ENGINE_NAME.equals(getParameter(ProcessingContext.ENGINE_NAME_PARAMETER)) || st.hasMoreTokens()) {
-                        getPageURLKeys().add(token);
                     }
                 }
             } catch (NoSuchElementException nee) {

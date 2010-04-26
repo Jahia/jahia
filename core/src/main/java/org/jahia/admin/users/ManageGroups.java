@@ -64,7 +64,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.pages.JahiaPageBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -291,21 +290,6 @@ public class ManageGroups extends AbstractAdministrationModule {
         logger.debug("Started");
         request.setAttribute("groupName", JahiaTools.nnString(request.getParameter("groupName")));
 
-        int homePageID = jahiaSite.getGroupDefaultHomepageDef();
-        if (homePageID != -1) {
-            JahiaPage jahiaPage = null;
-            try {
-                jahiaPage = ServicesRegistry.getInstance()
-                        .getJahiaPageService().lookupPage(homePageID, jParams);
-            } catch (JahiaPageNotFoundException e) {
-                logger.warn(
-                        "Unable to find default home page for new user group using page ID '"
-                                + homePageID + "'", e);
-            }
-            if (jahiaPage != null) {
-                request.setAttribute("defaultHomePage", jahiaPage.getTitle());
-            }
-        }
         request.setAttribute("jspSource", JSP_PATH + "group_management/group_create.jsp");
         request.setAttribute("directMenu", JSP_PATH + "direct_menu.jsp");
         session.setAttribute("groupMessage", groupMessage);
@@ -458,30 +442,6 @@ public class ManageGroups extends AbstractAdministrationModule {
         // Get the home page
         int homePageID = theGroup.getHomepageID();
 
-        if (homePageID != -1) {
-            try {
-                List<Locale> locales = jahiaSite.getLanguagesAsLocales();
-                EntryLoadRequest loadRequest = jParams.getEntryLoadRequest();
-                if (!locales.contains(jParams.getLocale())) {
-                    loadRequest = new EntryLoadRequest(EntryLoadRequest.STAGED);
-                    locales.add(0, EntryLoadRequest.SHARED_LANG_LOCALE);
-                    loadRequest.setLocales(locales);
-                }
-                ContentPage contentPage = JahiaPageBaseService.getInstance()
-                        .lookupContentPage(homePageID, false);
-                request.setAttribute("homePageLabel", contentPage
-                        .getTitle(loadRequest));
-                request.setAttribute("homePageID", new Integer(homePageID));
-            } catch (JahiaPageNotFoundException e) {
-                logger.warn(
-                        "Unable to find home page for the user group using page ID '"
-                                + homePageID + "'", e);
-                groupMessage = JahiaResourceBundle.getJahiaInternalResource(
-                        "org.jahia.admin.groupMessage.pageProblem.label",
-                        jParams.getLocale());
-            }
-        }
-        
         request.setAttribute("jspSource", JSP_PATH + "group_management/group_edit.jsp");
         request.setAttribute("directMenu", JSP_PATH + "direct_menu.jsp");
         session.setAttribute("jahiaDisplayMessage", Jahia.COPYRIGHT);

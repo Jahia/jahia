@@ -146,7 +146,7 @@ public class LicenseInfo extends AbstractAdministrationModule {
                 int nbMaxUsers         = Jahia.getUserLimit();
                 int nbCurrentTemplates = sReg.getJahiaPageTemplateService().getNbPageTemplates();
                 int nbMaxTemplates     = Jahia.getTemplateLimit();
-                int nbCurrentPages     = sReg.getJahiaPageService().getRealActiveNbPages();
+                int nbCurrentPages     = 0;
                 int nbMaxPages         = Jahia.getPageLimit();
 
                 String maxSites     = (nbMaxSites == -1)     ? unlimited : Integer.toString(nbMaxSites);

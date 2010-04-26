@@ -146,7 +146,7 @@ class TemplatePackageRegistry {
         /**
          * @param staticAssetMapping the staticAssetMapping to set
          */
-        public void setStaticAssetMapping(Map<String, String> staticAssetMapping) {
+        public void setStaticAssetMapping(Map staticAssetMapping) {
             this.staticAssetMapping = staticAssetMapping;
         }
     }

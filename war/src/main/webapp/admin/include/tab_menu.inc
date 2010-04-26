@@ -54,7 +54,7 @@
         theSite = siteService.getDefaultSite();
     }
     siteID = theSite != null ? theSite.getID() : null;
-    
+
     //Boolean configJahia = (Boolean) request.getAttribute("configJahia");
     Integer daysLeft = (Integer) request.getAttribute("daysLeft");
 %>
@@ -90,7 +90,7 @@
         <li class="dex-TabBarItem tabExit">
             <div>
                 <div>
-                    <span class="tab-icon ico-quit"><a href='<%=Jahia.getContextPath() + Jahia.getServletPath() + "/" + ParamBean.SITE_KEY_PARAMETER + "/" + theSite.getSiteKey()%>'
+                    <span class="tab-icon ico-quit"><a href='<%=Jahia.getContextPath() + "/cms/edit/default/" + Jahia.getThreadParamBean().getLocale() + "/sites/" + theSite.getSiteKey() + "/home.html" %>'
                        title="<fmt:message key='org.jahia.admin.exit.label'/>" ><fmt:message key="org.jahia.admin.exit.label"/></a></span>
                 </div>
             </div>

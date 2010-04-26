@@ -170,34 +170,4 @@ public class PermissionsImportHandler extends DefaultHandler {
         // do nothing
     }
 
-
-    public List getUuidProps() {
-        return uuidProps;
-    }
-
-    public void setUuidProps(List p) {
-        if (p == null) {
-            return;
-        }
-
-        for (Iterator iterator = p.iterator(); iterator.hasNext();) {
-            try {
-                String[] s = (String[]) iterator.next();
-                List l = ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", s[2]);
-                if (!l.isEmpty()) {
-                    int id = ((ContentPage) l.iterator().next()).getID();
-                    if (s[1].equals("user_homepage")) {
-                        JahiaUser user = u.lookupUser(s[0]);
-                        user.setHomepageID(id);
-                    } else if (s[1].equals("group_homepage")) {
-                        JahiaGroup group = g.lookupGroup(siteId, s[0]);
-                        group.setHomepageID(id);
-                    }
-                }
-            } catch (JahiaException e) {
-                logger.error("Cannot set property for category ",e);
-            }
-        }
-    }
-
 }

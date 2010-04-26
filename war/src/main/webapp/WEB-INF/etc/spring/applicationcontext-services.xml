@@ -119,13 +119,6 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 
-    <bean id="JahiaVersionService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.version.JahiaVersionDBService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="cacheService" ref="JahiaCacheService" />
-            </bean>
-        </property>
-    </bean>
     <bean id="JahiaHtmlEditorsService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.htmleditors.HtmlEditorsBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">

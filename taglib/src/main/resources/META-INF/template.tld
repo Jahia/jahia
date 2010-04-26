@@ -469,41 +469,6 @@
     </tag>
     
     <tag>
-        <description>Prints out the URL of the page.</description>
-        <name>composePageURL</name>
-        <tag-class>org.jahia.taglibs.template.url.ComposeUrlTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>URL Page ID</description>
-            <name>pageID</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <description>Page type.
-                Valid values are 'administration', 'login', 'logout', 'mySettings', 'siteMap', 'search'
-            </description>
-            <name>page</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                The name of the page scope variable to expose the result URL.
-            </description>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>fullURL</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-    </tag>
-    <tag>
         <description>Helper tag that will only display if the specified user is the current user or if the property
         evaluates to a public (non-private)</description>
         <name>isPublic</name>

@@ -206,13 +206,6 @@ public class JahiaAdministration extends HttpServlet {
             servletPath = request.getServletPath();
         }
 
-        if (Jahia.isInitiated() && !Jahia.checkLockAccess(session)) {
-            session.setAttribute(CLASS_NAME + "jahiaDisplayMessage",
-                    "Sorry, Jahia is locked by a super admin. No more access allowed.");
-            displayLogin(request, response, session);
-            return;
-        }
-
         if (Jahia.getJahiaHttpPort() == -1) {
             Jahia.setJahiaHttpPort(request.getServerPort());
         }
@@ -1039,25 +1032,6 @@ public class JahiaAdministration extends HttpServlet {
         }
         ContentPage contentPage = null;
 
-        Integer I = (Integer) session.getAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID);
-        if (I != null) {
-            try {
-                contentPage = ServicesRegistry.getInstance().getJahiaPageService()
-                        .lookupContentPage(I, false);
-                if (contentPage.getJahiaID() != site.getID()) {
-                    contentPage = site.getHomeContentPage(); // site has changed , we cannot use the old page
-                    session.setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, Integer.valueOf(contentPage.getID()));
-                }
-            } catch (Exception t) {
-                logger.debug(t.getMessage(), t);
-            }
-        } else {
-            contentPage = site.getHomeContentPage();
-            if (contentPage != null) {
-                session.setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, Integer.valueOf(contentPage.getID()));
-            }
-        }
-
         // start the chrono...
         long startTime = System.currentTimeMillis();
 
@@ -1081,14 +1055,7 @@ public class JahiaAdministration extends HttpServlet {
                 user,
                 contentPage);
         jParams.setUrlGenerator(new ServletURLGeneratorImpl(request, response));
-        if (contentPage != null) {
-            try {
-                contentPage = ServicesRegistry.getInstance()
-                        .getJahiaPageService().lookupContentPage(contentPage.getID(), jParams.getEntryLoadRequest(), true);
-            } catch (Exception t) {
-                logger.error(t.getMessage(), t);
-            }
-        }
+
         JahiaData jData = new JahiaData(jParams, false);
         jData.getProcessingContext().changePage(contentPage);
 

@@ -88,6 +88,9 @@ public class GWTInitializer {
             uilocale = Locale.ENGLISH;
         }
         Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
+        if (locale == null) {
+            locale = Locale.ENGLISH;
+        }
 
         String context = request.getContextPath();
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");

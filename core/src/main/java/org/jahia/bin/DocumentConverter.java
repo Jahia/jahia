@@ -32,17 +32,23 @@
 
 package org.jahia.bin;
 
+import java.io.File;
+import java.io.InputStream;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletOutputStream;
 
 import org.jahia.services.transform.DocumentConverterService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 /**
  * Performs conversion of the submitted document into specified format.
@@ -52,8 +58,12 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class DocumentConverter extends HttpServlet implements Controller {
 
+    private static Logger logger = Logger.getLogger(DocumentConverter.class);
+    
     private DocumentConverterService converterService;
     
+    private SettingsBean settingsBean;
+
     /*
      * (non-Javadoc)
      * 
@@ -62,28 +72,58 @@ public class DocumentConverter extends HttpServlet implements Controller {
      * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (!converterService.isEnabled()) {
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Conversion service is not enabled.");
+        }
 
-        FileUpload fu = new FileUpload(request, converterService.getTmpDirectory(), Integer.MAX_VALUE);
-        DiskFileItem inputFile = fu.getFileItems().get("fileField");
+        File tmp = new File(settingsBean.getTmpContentDiskPath());
+        if (!tmp.exists()) {
+            tmp.mkdirs();
+        }
+        FileUpload fu = new FileUpload(request, settingsBean.getTmpContentDiskPath(), Integer.MAX_VALUE);
+        if (fu.getFileItems().size() == 0) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No file was submitted");
+            return null;
+        }
+        
+        // take the first one
+        DiskFileItem inputFile = fu.getFileItems().values().iterator().next();
+        InputStream stream = null;
         String returnedMimeType = fu.getParameterValues("mimeType") != null ? fu.getParameterValues("mimeType")[0] : null;
-
-        ServletOutputStream outputStream = response.getOutputStream();
-
-        converterService.convert(inputFile.getInputStream(),
-                                inputFile.getContentType(),
-                                outputStream,
-                                returnedMimeType);
-
-        // return a file
-        response.setContentType(returnedMimeType);
-        response.setHeader("Content-Disposition",
-                "attachement; filename=\"" + FilenameUtils.getBaseName(inputFile.getName())
-                        + "." + converterService.getExtension(returnedMimeType) + "\"");
-
+        if (returnedMimeType == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameter mimeType");
+        }
+        
+        
         try {
-            outputStream.flush();
+            ServletOutputStream outputStream = response.getOutputStream();
+    
+            stream = inputFile.getInputStream();
+            // return a file
+            response.setContentType(returnedMimeType);
+            response.setHeader("Content-Disposition",
+                    "attachment; filename=\"" + FilenameUtils.getBaseName(inputFile.getName())
+                            + "." + converterService.getExtension(returnedMimeType) + "\"");
+    
+            converterService.convert(stream,
+                                    inputFile.getContentType(),
+                                    outputStream,
+                                    returnedMimeType);
+    
+            try {
+                outputStream.flush();
+            } finally {
+                outputStream.close();
+            }
+        } catch (Exception e) {
+            logger.error("Error converting uploaded file " + inputFile.getFieldName() + ". Cause: "
+                    + e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception occurred: " + e.getMessage());
         } finally {
-            outputStream.close();
+            IOUtils.closeQuietly(stream);
+            for (DiskFileItem file : fu.getFileItems().values()) {
+                file.delete();
+            }
         }
 
         return null;
@@ -94,6 +134,13 @@ public class DocumentConverter extends HttpServlet implements Controller {
      */
     public void setConverterService(DocumentConverterService converterService) {
         this.converterService = converterService;
+    }
+
+    /**
+     * @param settingsBean the settingsBean to set
+     */
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
     }
 
 }

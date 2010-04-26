@@ -4,14 +4,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
        
-    <bean id="DocumentConverterService" class="org.jahia.services.transform.DocumentConverterService" init-method="start" destroy-method="stop" lazy-init="false">
-    	<property name="enabled" value="false"/>
-        <property name="tmpDirectory" value="/home/fcantegrel/tmp_transform" />
-        <property name="officeManager">
-            <bean class="org.jahia.services.transform.LocalOfficeManagerFactory">
-            	<property name="officeHome" value="/usr/lib/openoffice"/>
-            </bean>
-        </property>
+    <bean id="DocumentConverterService" class="org.jahia.services.transform.DocumentConverterService" init-method="start" destroy-method="stop">
+    	<!-- set this to true to enable the service -->
+        <property name="enabled" value="false"/>
+        <!-- contains the name of the bean that provides configured OfficeManager instance (not the reference to the bean itself) -->
+        <property name="officeManagerBeanName" value="officeManagerFactory"/>
+    </bean>
+
+    <bean name="officeManagerFactory" class="org.jahia.services.transform.LocalOfficeManagerFactory" lazy-init="true">
+        <property name="officeHome" value="/usr/lib/openoffice"/>
     </bean>
 
     <bean name="converterMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -20,6 +21,7 @@
                 <entry key="/convert">
                     <bean class="org.jahia.bin.DocumentConverter">
                         <property name="converterService" ref="DocumentConverterService"/>
+                        <property name="settingsBean" ref="settingsBean" />
                     </bean>
                 </entry>
             </map>

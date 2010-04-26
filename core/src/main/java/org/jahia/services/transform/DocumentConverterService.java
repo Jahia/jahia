@@ -36,7 +36,9 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.artofsolving.jodconverter.StandardConversionTask;
 import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
@@ -45,6 +47,9 @@ import org.artofsolving.jodconverter.document.DocumentFormatRegistry;
 import org.artofsolving.jodconverter.office.OfficeException;
 import org.artofsolving.jodconverter.office.OfficeManager;
 import org.artofsolving.jodconverter.office.OfficeTask;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * Document transformation service that uses OpenOffice for file conversion.
@@ -52,7 +57,7 @@ import org.artofsolving.jodconverter.office.OfficeTask;
  * @author Fabrice Cantegrel
  * @author Sergiy Shyrkov
  */
-public class DocumentConverterService {
+public class DocumentConverterService implements ApplicationContextAware {
 
     protected static final Map<String, Object> DEF_PROPS = new HashMap<String, Object>(2);
 
@@ -66,17 +71,15 @@ public class DocumentConverterService {
 
     private Map<String, ?> defaultLoadProperties = DEF_PROPS;
     private boolean enabled;
-    private String tmpDirectory;
-
     private DocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
 
     private OfficeManager officeManager;
+    
+    private String officeManagerBeanName;
+
+    private ApplicationContext applicationContext;
 
     public void getReferenceTable() {
-
-        
-
-
     }
 
     /**
@@ -88,9 +91,21 @@ public class DocumentConverterService {
      * @param outputFile the output file descriptor to store converted content
      *            into
      * @param outputFormat description of the output file
+     * @throws OfficeException in case of a conversion error
      */
-    public void convert(File inputFile, DocumentFormat inputFormat, File outputFile, DocumentFormat outputFormat) {
-        officeManager.execute(getConversionTask(inputFile, inputFormat, outputFile, outputFormat));
+    public void convert(File inputFile, DocumentFormat inputFormat, File outputFile, DocumentFormat outputFormat) throws OfficeException {
+        if (!isEnabled()) {
+            return;
+        }
+        long startTime = System.currentTimeMillis();
+
+        try {
+            officeManager.execute(getConversionTask(inputFile, inputFormat, outputFile, outputFormat));
+        } finally {
+            if (logger.isInfoEnabled()) {
+                logger.info("Conversion took " + (System.currentTimeMillis() - startTime) + " ms");
+            }
+        }
     }
 
     /**
@@ -100,8 +115,9 @@ public class DocumentConverterService {
      * @param inputFile the source file
      * @param outputFile the output file descriptor to store converted content
      *            into
+     * @throws OfficeException in case of a conversion error
      */
-    public void convert(File inputFile, File outputFile) {
+    public void convert(File inputFile, File outputFile) throws OfficeException {
         convert(inputFile, null, outputFile, null);
     }
 
@@ -113,16 +129,22 @@ public class DocumentConverterService {
      * @param inputFileExtension the source Name
      * @param outputStream the destination stream
      * @param outputMimeType the output MIME type
+     * @throws OfficeException in case of a conversion error
      */
-    public void convert(InputStream inputStream, String inputFileExtension, OutputStream outputStream, String outputMimeType) {
+    public void convert(InputStream inputStream, String inputFileExtension, OutputStream outputStream, String outputMimeType) throws OfficeException {
 
+        if (!isEnabled()) {
+            return;
+        }
+        File inputFile = null;
         try {
             
+            inputFile = getFile(inputStream);
             // The outputFile required by the service
             File outputFile = createTempFile();
 
             // convert inputFile to outputFile
-            convert(getFile(inputStream),
+            convert(inputFile,
                     formatRegistry.getFormatByExtension(inputFileExtension),
                     outputFile, getFormatByMimeType(outputMimeType));
 
@@ -130,7 +152,9 @@ public class DocumentConverterService {
             writeToOutputStream(outputStream, outputFile);
 
         } catch (IOException ioe) {
-            logger.warn("A problem occured during the transformation", ioe);
+            logger.warn("A problem occurred during the transformation", ioe);
+        } finally {
+            FileUtils.deleteQuietly(inputFile);
         }
     }
 
@@ -140,11 +164,16 @@ public class DocumentConverterService {
      * @param inputFile the source File
      * @param inputFileExtension the source Name
      * @param outputMimeType the output MIME type
-      *
-      * @return A File, which is inputFile converted into a mimeType defined by outputMimeType
+     *
+     * @return A File, which is inputFile converted into a mimeType defined by outputMimeType
+     * @throws OfficeException in case of a conversion error
      */
-    public File convert(File inputFile, String inputFileExtension, String outputMimeType) throws IOException {
+    public File convert(File inputFile, String inputFileExtension, String outputMimeType) throws IOException, OfficeException {
 
+        if (!isEnabled()) {
+            return null;
+        }
+        
         File outputFile = null;
 
         try {
@@ -167,7 +196,7 @@ public class DocumentConverterService {
 
     protected File createTempFile() throws IOException {
         // todo: use fileCleaningTracker
-        return File.createTempFile(String.valueOf(System.currentTimeMillis()), null);
+        return File.createTempFile("doc-converter", "tmp");
     }
 
     public String getMimeType(String extension) {
@@ -193,19 +222,16 @@ public class DocumentConverterService {
      */
     protected void writeToOutputStream(OutputStream os, File file) {
 
+        InputStream is = null;
         try {
-            InputStream is = new FileInputStream(file);
-            byte buf[]=new byte[4096];
-            int len;
-            while((len=is.read(buf))>0) {
-                os.write(buf,0,len);
-            }
-
-            is.close();
+            is = new FileInputStream(file);
+            IOUtils.copy(is, os);
         } catch (IOException ioe) {
             logger.warn("File " + file.getName() + " can't be written into outputStream", ioe);
+        } finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
         }
-
     }
 
     /**
@@ -219,21 +245,17 @@ public class DocumentConverterService {
         }
 
         File file = null;
-        OutputStream os;
+        OutputStream os = null;
 
         try {
-
             file = createTempFile();
             os = new FileOutputStream(file);
-            byte buf[]=new byte[4096];
-            int len;
-            while((len=is.read(buf))>0) {
-                os.write(buf,0,len);
-            }
-            os.close();
-            is.close();
+            IOUtils.copy(is, os);
         } catch (IOException ioe) {
             logger.warn("inputStream from file " + (file != null?file.getName():null) + " can't be converted into file", ioe);
+        } finally {
+            IOUtils.closeQuietly(os);
+            IOUtils.closeQuietly(is);
         }
         return file;
     }
@@ -299,13 +321,6 @@ public class DocumentConverterService {
     }
 
     /**
-     * @return the tmpDirectory
-     */
-    public String getTmpDirectory() {
-        return tmpDirectory;
-    }
-
-    /**
      * @param defaultLoadProperties the defaultLoadProperties to set
      */
     public void setDefaultLoadProperties(Map<String, ?> defaultLoadProperties) {
@@ -320,34 +335,12 @@ public class DocumentConverterService {
     }
 
     /**
-     * @param tmpDirectory the tmpDirectory to set
-     */
-    public void setTmpDirectory(String tmpDirectory) {
-        this.tmpDirectory = tmpDirectory;
-
-        final File tmpdir = new File(tmpDirectory);
-
-        if (!tmpdir.exists()) {
-            tmpdir.mkdirs();
-        }
-    }
-
-    /**
      * Initializes an instance of the document format registry.
      * 
      * @param formatRegistry an instance of the document format registry
      */
     public void setFormatRegistry(DocumentFormatRegistry formatRegistry) {
         this.formatRegistry = formatRegistry;
-    }
-
-    /**
-     * Injects an instance of the office Manager
-     * 
-     * @param officeManager the officeManager to set
-     */
-    public void setOfficeManager(OfficeManager officeManager) {
-        this.officeManager = officeManager;
     }
 
     /**
@@ -359,8 +352,15 @@ public class DocumentConverterService {
         if (!isEnabled()) {
             return;
         }
+        
+        try {
+            officeManager = (OfficeManager) applicationContext.getBean(officeManagerBeanName);
+        } catch (Exception e) {
+            logger.fatal("OfficeManager factory exception. Cause: " + e.getMessage(), e);
+        }
+        
         if (officeManager == null) {
-            logger.warn("OfficeManager instance is not initialized initialized correctly. Disabling service.");
+            logger.warn("OfficeManager instance is not initialized correctly. Disabling service.");
             setEnabled(false);
             return;
         }
@@ -391,5 +391,16 @@ public class DocumentConverterService {
                 logger.warn("Error stopping OfficeManager. Cause: " + e.getMessage(), e);
             }
         }
+    }
+
+    /**
+     * @param officeManagerBeanName the officeManagerBeanName to set
+     */
+    public void setOfficeManagerBeanName(String officeManagerBeanName) {
+        this.officeManagerBeanName = officeManagerBeanName;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

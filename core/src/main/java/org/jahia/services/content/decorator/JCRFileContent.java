@@ -37,6 +37,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -44,16 +45,16 @@ import java.io.InputStream;
 import java.util.Calendar;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represents the content node.
  * User: toto
  * Date: 7 févr. 2008
  * Time: 11:53:30
- * To change this template use File | Settings | File Templates.
  */
 public class JCRFileContent {
     protected static final Logger logger = Logger.getLogger(JCRFileContent.class);
     protected JCRNodeWrapper node;
     protected Node objectNode;
+    protected Node contentNode;
 
     public JCRFileContent(JCRNodeWrapper node, Node objectNode) {
         this.node = node;
@@ -62,8 +63,8 @@ public class JCRFileContent {
 
     public InputStream downloadFile () {
         try {
-            Property p = objectNode.getNode(Constants.JCR_CONTENT).getProperty(Constants.JCR_DATA);
-            return p.getStream();
+            Property p = getContentNode().getProperty(Constants.JCR_DATA);
+            return p.getBinary().getStream();
         } catch (RepositoryException e) {
             logger.error("Repository error",e);
         }
@@ -91,6 +92,7 @@ public class JCRFileContent {
             }
             content.setProperty(Constants.JCR_MIMETYPE, contentType);
             content.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
+            contentNode = content;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -99,8 +101,7 @@ public class JCRFileContent {
 
     public String getContentType() {
         try {
-            Node content = objectNode.getNode(Constants.JCR_CONTENT);
-            return content.getProperty(Constants.JCR_MIMETYPE).getString();
+            return getContentNode().getProperty(Constants.JCR_MIMETYPE).getString();
         } catch (RepositoryException e) {
         }
         return null;
@@ -112,7 +113,7 @@ public class JCRFileContent {
      */
     public String getEncoding() {
         try {
-            Node content = objectNode.getNode(Constants.JCR_CONTENT);
+            Node content = getContentNode();
             if (content.hasProperty(Constants.JCR_ENCODING)) {
                 return content.getProperty(Constants.JCR_ENCODING).getString();
             }
@@ -123,16 +124,23 @@ public class JCRFileContent {
 
     public long getContentLength() {
         try {
-            Node content = objectNode.getNode(Constants.JCR_CONTENT);
+            Node content = getContentNode();
             return content.getProperty(Constants.JCR_DATA).getLength();
         } catch (RepositoryException e) {
         }
         return 0L;
     }
     
+    protected Node getContentNode() throws PathNotFoundException, RepositoryException {
+        if (contentNode == null) {
+            contentNode = objectNode.getNode(Constants.JCR_CONTENT);
+        }
+        return contentNode;
+    }
+
     public String getExtractedText() {
         try {
-            Node content = objectNode.getNode(Constants.JCR_CONTENT);
+            Node content = getContentNode();
             Property extractedTextProp = content.getProperty(Constants.EXTRACTED_TEXT);
             return extractedTextProp != null ? extractedTextProp.getString() : null;
         } catch (RepositoryException e) {

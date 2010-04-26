@@ -1,5 +1,5 @@
 /******************************************************************************
-* Fonts
+* Fonts import
 ******************************************************************************/
 @font-face {
 	font-family: MetaPro-Black;
@@ -14,15 +14,15 @@
 	font-family: MetaPro-MediumItalic;
 	src: url('fonts/MetaPro-MediumItalic.otf');
 }
+/******************************************************************************
+* Reset 
+******************************************************************************/
 html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}
-
 img,body,html{border:0;}
-
 /******************************************************************************
 * Body and GWT .x-border-layout-ct BG
 ******************************************************************************/
-.x-border-layout-ct,
-body {
+.x-border-layout-ct {
 	background-color:#7b7b7b;
 }
 body {
@@ -36,8 +36,7 @@ body {
 	line-height:160%
 }
 #bodywrapper {
-
-	}
+}
 /******************************************************************************
 * Utils
 ******************************************************************************/
@@ -59,7 +58,6 @@ body {
 #bodywrapper .hide, #bodywrapper .hidden {
 	display:none;
 }
-
 #bodywrapper .floatright {
 	float:right;
 	margin: 5px;
@@ -68,7 +66,6 @@ body {
 	float:left;
 	margin: 5px;
 }
-
 #bodywrapper .leftside{
 	float:left
 }
@@ -79,7 +76,6 @@ body {
 	padding:0;
 	margin:0;
 }
-
 /******************************************************************************
 *  topheader
 ******************************************************************************/
@@ -117,7 +113,6 @@ body {
 	color:#666666;
 	text-decoration:underline;
 }
-
 #bodywrapper #breadcrumbs{
 	padding-bottom:10px;
 	color:#666666;
@@ -125,7 +120,6 @@ body {
 	height:100%;
 	text-transform:uppercase;
 }
-
 /******************************************************************************
 *  content
 ******************************************************************************/
@@ -173,680 +167,6 @@ body {
 #bodywrapper #bottomfooter a:active {
 	color:#333;
 	text-decoration:underline;
-}
-/******************************************************************************
-*  general
-******************************************************************************/
-#bodywrapper img 			{ border: 0px;}
-
-#bodywrapper a,
-#bodywrapper a:link,
-#bodywrapper a:visited {
-	color:#3366cc;
-	text-decoration:none;
-}
-#bodywrapper a:hover,
-#bodywrapper a:active {
-	color:#3366cc;
-	text-decoration:underline;
-}
-#bodywrapper p {
-	padding:1em 0 1em 0;
-}
-#bodywrapper ul {
-	list-style-type:square;
-	list-style-position:outside;
-	margin-bottom:6px;
-	margin-left:20px;
-	margin-top:6px;
-}
-#bodywrapper ol  {
-	margin:1em 0 1em 2em;
-	padding:0;
-	list-style-position:outside;
-}
-#bodywrapper ol li {
-	margin:0;
-	padding:0;
-	background: none;
-	list-style: decimal
-}
-#bodywrapper ul li {
-	margin-bottom:2px;
-	padding-left:8px;
-}
-#bodywrapper div.intro{
-	font-size:1.4em;
-	font-style:italic;
-	line-height:1.2em;
-	font-family: MetaPro-MediumItalic, Arial, Helvetica, sans-serif;
-}
-#bodywrapper div.intro p{
-	padding:10px 0;
-}
-#bodywrapper p.intro {
-	font-size:1.3em;
-	line-height:1.4em;
-}
-
-#bodywrapper h1 {
-	color:#666666;
-	font-weight:normal;
-	font-size:2.8em;
-	line-height:normal;
-	padding:0 0 0.5em 0;
-}
-#bodywrapper h2.pagetitle {
-	margin:0;
-	padding:0;
-	color:#666;
-	font-weight:normal;
-	font-size:2.2em;
-	line-height:normal;
-	padding:0 0 0.5em 0;
-	background:none;
-	text-shadow: 0 1px 1px #b4a79c;
-	font-family: MetaPro-Black, Arial, Helvetica, sans-serif;
-	text-transform:uppercase
-}
-#bodywrapper h2 {
-	font-weight:normal;
-	font-size:2em;
-	padding-bottom:20px;
-	margin-bottom:10px;
-	margin-top:15px;
-	background:transparent url(img/hr-bg.png) repeat-x bottom left;
-	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
-}
-
-#bodywrapper h3 {
-	font-weight:normal;
-	font-size:1.6em;
-	margin-bottom:10px;
-	margin-top:10px;
-	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
-}
-
-#bodywrapper h4 {
-	font-size:1.2em;
-	margin-bottom:10px;
-	margin-top:10px;
-	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
-}
-#bodywrapper h5 {
-	font-weight:bold;
-	font-size:1em;
-}
-
-#bodywrapper fieldset {
-	padding:0.5em;
-	border:1px solid #ccc;
-	margin:0.5em 0;
-}
-#bodywrapper legend {
-	font-size:1em;
-	color:#333;
-	padding:0 0.5em;
-	background:#3297cb url(img/contactformlegend.png) repeat-x bottom left;
-	border:1px solid #ccc;
-	display:inline;
-	color:#fff;
-	font-weight:bold;
-	text-transform:uppercase
-}
-
-#bodywrapper hr {
-	height:2px;
-	background:transparent url(img/hr-bg.png) repeat-x bottom left;
-	border: none;
-	margin : 18px 0;
-}
-#bodywrapper blockquote {
-	background:#E0E0E0 url(img/blockquote.png) no-repeat top left;
-	border:1px solid #A5A5A5;
-	font-style:italic;
-	margin-bottom:15px;
-	margin-top:15px;
-	padding:20px;
-}
-
-#bodywrapper textarea {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size:100%
-}
-#bodywrapper p.field{
-	margin-bottom:0.2em
-}
-#bodywrapper input,
-#bodywrapper select,
-#bodywrapper textarea {
-	background-color:transparent;
-	background:#f6f6f6 url(img/input_bg.png) repeat-x top left;
-	border:1px solid #ccc;
-	color:#666;
-	padding:4px 5px;
-	background-color:#f6f6f6;
-}
-#bodywrapper label{
-	font-weight:bold;
-}
-
-#bodywrapper input.gobutton{
-	background:none;
-	border:none;
-	margin:0;
-	padding:0;
-	vertical-align: bottom;
-}
-/******************************************************************************
-*  Images
-******************************************************************************/
-#bodywrapper .imagefloatright {
-	float:right;
-	margin-bottom:20px;
-	padding-left:20px;
-}
-#bodywrapper .imagefloatleft {
-	float:left;
-	margin-bottom:20px;
-	padding-right:20px;
-}
-#bodywrapper .imagefloatright {
-	float:right;
-	margin-bottom:20px;
-	padding-left:20px;
-}
-
-#bodywrapper .itemImage {
-	background-color:#F4F4F4;
-	border:1px solid #CCC;
-	position:relative;
-	padding:1px;
-	margin-bottom:10px;
-}
-#bodywrapper .imagefloatleft .itemImage  {
-	margin-bottom:0px;
-}
-#bodywrapper .imagefloatright .itemImage  {
-	margin-bottom:0px;
-}
-#bodywrapper div.itemImageRight {
-	float:right;
-}
-#bodywrapper div.itemImageLeft {
-	float:left;
-}
-
-
-#bodywrapper .itemImage img {
-	background-color:#e1e1e1;
-	padding:9px;
-}
-#bodywrapper .itemImagewhite img{
-	background-color:#fff;
-}
-
-
-
-/*box5 list*/
-#bodywrapper div.box5list div.box5-inner{
-	border-bottom: none;
-}
-#bodywrapper .box5list div.box5-inner div.box5-inner-border{
-	border-bottom:none;
-}
-#bodywrapper div.box5listfirstitem div.box5-inner{
-	border-top: none;
-}
-#bodywrapper .box5listfirstitem div.box5-inner div.box5-inner-border{
-	border-top:none;
-}
-
-/******************************************************************************
-* Title h3
-******************************************************************************/
-#bodywrapper h3.titleIcon {
-	color:#333;
-	font-size:1.8em;
-	padding:0 50px 15px 2px;
-	position:relative;
-}
-#bodywrapper h3.titleIcon img {
-	position:absolute;
-	right:0;
-	top:-5px;
-}
-/******************************************************************************
-* liste1 Big
-******************************************************************************/
-.list1 {
-
-}
-#bodywrapper .list1 .item{
-	display:block;
-	padding:40px;
-}
-#bodywrapper .list1 .item .imagefloatright{
-background-color:#FFFFFF
-}
-#bodywrapper .list1 .item .imagefloatleft{
-background-color:#FFFFFF
-}
-
-
-#bodywrapper .iteminfo {
-	border-bottom:1px solid #CCC;
-	border-top:1px solid #CCC;
-	display:block;
-	padding:1em 40px;
-	position:relative;
-	margin-bottom:5px;
-	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
-}
-#bodywrapper .author {
-	line-height:20px;
-	height:1%;
-}
-#bodywrapper .author h4 {
-	color:#656565;
-	float:left;
-	line-height:22px;
-	padding-top:0;
-	text-transform:none;
-	font-weight:normal
-}
-#bodywrapper .author img {
-	float:left;
-	margin-right:5px;
-}
-
-#bodywrapper .info {
-	line-height:28px;
-	position:absolute;
-	right:40px;
-	top:10px;
-}
-#bodywrapper .list1 div.pagination {
-	border:none;
-	border-right:none;
-	padding:1em 40px;
-	background:none
-}
-/******************************************************************************
-* liste2 Small
-******************************************************************************/
-
-#bodywrapper ul.list2  {
-	position:relative;
-	margin:0;
-	margin-bottom:20px;
-	list-style:none;
-	border:1px solid #ccc;
-}
-#bodywrapper .list2 li {
-	background-color:#e1e1e1;
-	border-color:#fff #fff #ccc ;
-	border-style:solid;
-	border-width:1px;
-	padding:10px 20px;
-	margin:0
-}
-#bodywrapper .list2 li p {
-	padding:0;
-}
-#bodywrapper .list2 li.last {
-	border-bottom-color:#fff;
-}
-
-#bodywrapper .list2 li a span {
-	display:block;
-	font-size:0.85em;
-}
-#bodywrapper .list2 li a span.fileinfo {
-	display:inline;
-	font-size:0.85em
-}
-/******************************************************************************
-* liste3 Very Small
-******************************************************************************/
-
-#bodywrapper ul.list3  {
-	margin:0;
-	position:relative;
-	margin-bottom:20px;
-	list-style:none;
-}
-#bodywrapper .list3 li {
-	padding:10px;
-	clear:left
-}
-
-#bodywrapper .list3 li a{
-
-}
-#bodywrapper .list3 li span.fileinfo {
-	display:block;
-	font-size:0.85em;
-	float:left;
-	width:50px
-}
-#bodywrapper .list3 li img {
-	margin-top:3px;
-}
-#bodywrapper .list3 span.fileinfo2 {
-	display:block;
-	font-size:0.85em;
-	float:right;
-	padding-right:0.5em
-}
-
-
-/******************************************************************************
-* liste4 Arrow
-******************************************************************************/
-#bodywrapper ul.list4  {
-	margin:5px 0;
-	position:relative;
-	list-style:none;
-}
-#bodywrapper .list4 li {
-	background: url(img/arrow.png) no-repeat 0 5px;
-	padding:0 0 0 12px;
-	clear:left
-}
-
-/******************************************************************************
-*  Pagination
-******************************************************************************/
-#bodywrapper div.pagination {
-	height:1%;
-	overflow:hidden;
-	text-transform:uppercase;
-	border: 1px solid #ccc;
-	padding:0.5em 0.5em;
-	margin:0.5em 0;
-	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
-}
-#bodywrapper .paginationPosition {
-	float:left;
-	font-size:0.85em;
-	color:#36393d;
-}
-#bodywrapper .paginationNavigation {
-	float:right;
-	font-size:0.85em;
-
-}
-#bodywrapper .paginationNavigation a:link,
-#bodywrapper .paginationNavigation a:visited,
-#bodywrapper .paginationNavigation a:hover,
-#bodywrapper .paginationNavigation a:active {
-	text-decoration:none;
-	padding:0.2em 0.5em;
-}
-
-#bodywrapper .paginationNavigation a:hover {
-	background:#3366cc;
-	color:#fff;
-}
-#bodywrapper .paginationNavigation .currentPage{
-	background:#3366cc;
-	color:#fff;
-	padding:0.2em 0.5em;
-}
-
-
-#bodywrapper .paginationNavigation span {
-	text-decoration:none;
-	color:#666;
-	padding:0;
-}
-/******************************************************************************
-*  AlphabeticalMenu
-******************************************************************************/
-#bodywrapper div.alphabeticalMenu {
-	height:1%;
-	overflow:hidden;
-	text-transform:uppercase;
-	border: 1px solid #ccc;
-	padding:0.5em 0.5em;
-	margin:0.5em 0;
-	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
-}
-#bodywrapper .alphabeticalLabel {
-	float:left;
-	font-size:0.9em;
-	font-weight:bold;
-	color:#333;
-}
-#bodywrapper .alphabeticalNavigation {
-	float:right;
-
-}
-#bodywrapper .alphabeticalNavigation a:link,
-#bodywrapper .alphabeticalNavigation a:visited,
-#bodywrapper .alphabeticalNavigation a:hover,
-#bodywrapper .alphabeticalNavigation a:active {
-		height:28px;
-		line-height:28px;
-		border:1px solid #ccc;
-		background:#eaeaea;
-		padding:6px 10px;
-		text-decoration:none;
-}
-
-#bodywrapper .alphabeticalNavigation a:hover {
-		background:#333;
-		color:#fff;
-}
-#bodywrapper .alphabeticalNavigation a.current{
-		height:28px;
-		line-height:28px;
-		border:1px solid #ccc;
-		background:#333;
-		color:#fff;
-		padding:6px 10px;
-		text-decoration:none;
-}
-
-
-#bodywrapper .alphabeticalNavigation span {
-		text-decoration:none;
-		color:#666;
-		padding:0;
-}
-/******************************************************************************
-*  Button
-******************************************************************************/
-#bodywrapper .divButton{
-	text-align:center;
-	margin:0 0 10px 0;
-}
-#bodywrapper .divButtonRight{
-	text-align:right;
-}
-#bodywrapper input.button, #bodywrapper button {
-	margin-right:0.5em;
-}
-
-#bodywrapper input.button, #bodywrapper button {
-	background:#043b9d url(img/bg-button.png) repeat-x top left;
-	border:1px solid #003399;
-	color:#fff;
-	text-align:center;
-	padding:3px 15px;
-	-moz-border-radius:	3px;
-	-webkit-border-radius: 3px;
-
-}
-#bodywrapper .button:hover, #bodywrapper button:hover {
-	cursor: pointer;
-	background:#043b9d url(img/bg-button-on.png) repeat-x bottom left;
-	color:#fff;
-}
-
-/******************************************************************************
-*  <A> Button
-******************************************************************************/
-
-#bodywrapper  a.aButton,
-#bodywrapper  a.aButton:link,
-#bodywrapper  a.aButton:visited {
-	background: transparent url(img/button-right.png) no-repeat scroll top right;
-	display: block;
-	float: left;
-	height: 24px; /* CHANGE THIS VALUE ACCORDING TO IMAGE HEIGHT */
-	margin-right: 6px;
-	padding-right: 20px; /* CHENGE THIS VALUE ACCORDING TO RIGHT IMAGE WIDTH */
-	/* FONT PROPERTIES */
-	text-decoration: none;
-	color:#fff;
-	margin-top: 5px;
-}
-#bodywrapper  a.aButton span {
-	/* Background left image */
-	background: transparent url(img/button-left.png) no-repeat;
-	display: block;
-	line-height: 12px; /* CHANGE THIS VALUE ACCORDING TO BUTTONG HEIGHT */
-	padding: 6px 0 6px 18px;
-}
-#bodywrapper  a.aButton:hover span{
-	text-decoration:underline;
-}
-#bodywrapper  a.aButtonRight,
-#bodywrapper  a.aButtonRight:link,
-#bodywrapper  a.aButtonRight:visited{
-	float: right;
-}
-/******************************************************************************
-*  Anchor
-******************************************************************************/
-#bodywrapper div.bottomanchor {
-	padding:0.2em;
-	margin: 1em 0;
-	font-size:0.85em;
-}
-#bodywrapper .bottomanchor a,
-#bodywrapper .bottomanchor a:link,
-#bodywrapper .bottomanchor a:visited  {
-	float:right;
-	margin:0 ;
-	background: url(img/bottomanchor.png) no-repeat top right;
-	padding-right:20px;
-	text-transform:uppercase
-}
-#bodywrapper .bottomanchor a:hover ,
-#bodywrapper .bottomanchor a:active  {
-	cursor: pointer;
-	text-decoration:UNDERLINE;
-}
-/******************************************************************************
-*  Sort
-******************************************************************************/
-#bodywrapper .sort{
-	text-align:right
-}
-/******************************************************************************
-*  Thumbnails
-******************************************************************************/
-#bodywrapper div.thumbnail {
-	float:left;
-	margin-right:20px;
-}
-#bodywrapper div.thumbnailRight {
-	float:right;
-	margin-left:20px;
-}
-#bodywrapper div.thumbnail img {
-	position:relative
-}
-/******************************************************************************
-* Thumbnails  List
-******************************************************************************/
-#bodywrapper div.thumbnailList{
-	margin-top:10px;
-	margin-bottom:10px;
-}
-#bodywrapper div.thumbnailList a{
-	float:left;
-	margin-right:10px;
-	margin-bottom:10px;
-	border:1px solid #fff
-}
-#bodywrapper div.thumbnailList a:hover{
-	border:1px solid #000
-}
-/******************************************************************************
-* tags
-******************************************************************************/
-#bodywrapper div.box5-inner p.tags {
-	margin:0;
-	padding:0;
-	color:#666;
-	font-size:0.85em;
-}
-/******************************************************************************
-* Menu simple
-******************************************************************************/
-#bodywrapper ul#menusimple  {
-	list-style:none;
-	margin:0;
-	padding:0;
-	text-align:left;
-	margin-bottom:10px;
-	background:#efefef;
-	border-bottom:1px solid #CCCCCC;
-}
-#bodywrapper ul#menusimple  li{
-	list-style:none;
-	margin:0;
-	padding:0;
-	height:1%
-}
-
-/*Links*/
-#bodywrapper ul#menusimple a,
-#bodywrapper ul#menusimple a:visited {
-	text-decoration:none;
-	padding:5px;
-	display:block;
-	color:#3366CC;
-	background:none;
-	height:1%
-}
-
-#bodywrapper ul#menusimple ul.submenu a:hover{
-	background-color:#BBDDEE; color:#333;
-}
-
-
-#bodywrapper ul#menusimple .menutop{
-	border:1px solid #CECECE;
-	border-width:0 1px;
-	overflow:hidden;
-	background:#dddddd;
-}
-
-/*Header Links*/
-#bodywrapper ul#menusimple .menutop a{
-	margin:0 0 1px 0;
-	border-top:1px solid white;
-}
-#bodywrapper ul#menusimple ul.submenu a{
-	border-top:none;
-}
-#bodywrapper ul#menusimple ul.submenu {
-	border-top:1px solid #CCCCCC;
-	border-bottom:1px solid #CCCCCC;
-	width:100%;
-	margin:0;
-	padding:0;
-	background-color:#efefef
-}
-
-/*Header Link Hover*/
-#bodywrapper ul#menusimple .menutop a:hover{
-	color:#333;
 }
 /******************************************************************************
 * navigationN2
@@ -1036,59 +356,417 @@ background-color:#FFFFFF
 	font-weight:bold
 }
 /******************************************************************************
-sendMailForm
+*  general
 ******************************************************************************/
-#bodywrapper .sendMailForm fieldset{
-	border:none;
-	padding:0px;
+#bodywrapper img {
+	border: 0px;
+}
+#bodywrapper a,
+#bodywrapper a:link,
+#bodywrapper a:visited {
+	color:#3366cc;
+	text-decoration:none;
+}
+#bodywrapper a:hover,
+#bodywrapper a:active {
+	color:#3366cc;
+	text-decoration:underline;
+}
+#bodywrapper p {
+	padding:1em 0 1em 0;
+}
+#bodywrapper ul {
+	list-style-type:square;
+	list-style-position:outside;
+	margin-bottom:6px;
+	margin-left:20px;
+	margin-top:6px;
+}
+#bodywrapper ol  {
+	margin:1em 0 1em 2em;
+	padding:0;
+	list-style-position:outside;
+}
+#bodywrapper ol li {
 	margin:0;
+	padding:0;
+	background: none;
+	list-style: decimal
 }
-#bodywrapper .sendMailForm legend{
-	display:none
+#bodywrapper ul li {
+	margin-bottom:2px;
+	padding-left:8px;
 }
+#bodywrapper div.intro{
+	font-size:1.4em;
+	font-style:italic;
+	line-height:1.2em;
+	font-family: MetaPro-MediumItalic, Arial, Helvetica, sans-serif;
 
-#bodywrapper .sendMailForm label {
-	display:block
 }
-
-#bodywrapper .sendMailForm textarea{
-	width:90%
+#bodywrapper div.intro p{
+	padding:10px 0;
 }
-#bodywrapper .sendMailForm input{
-	width:90%
+#bodywrapper p.intro {
+	font-size:1.3em;
+	line-height:1.4em;
+}
+#bodywrapper h1 {
+	color:#666666;
+	font-weight:normal;
+	font-size:2.8em;
+	line-height:normal;
+	padding:0 0 0.5em 0;
+}
+#bodywrapper h2.pagetitle {
+	margin:0;
+	padding:0;
+	color:#666;
+	font-weight:normal;
+	font-size:2.2em;
+	line-height:normal;
+	padding:0 0 0.5em 0;
+	background:none;
+	text-shadow: 0 1px 1px #b4a79c;
+	font-family: MetaPro-Black, Arial, Helvetica, sans-serif;
+	text-transform:uppercase
+}
+#bodywrapper h2 {
+	font-weight:normal;
+	font-size:2em;
+	padding-bottom:20px;
+	margin-bottom:10px;
+	margin-top:15px;
+	background:transparent url(img/hr-bg.png) repeat-x bottom left;
+	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
+}
+#bodywrapper h3 {
+	font-weight:normal;
+	font-size:1.6em;
+	margin-bottom:10px;
+	margin-top:10px;
+	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
+}
+#bodywrapper h4 {
+	font-size:1.2em;
+	margin-bottom:10px;
+	margin-top:10px;
+	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
+}
+#bodywrapper h5 {
+	font-weight:bold;
+	font-size:1em;
+}
+#bodywrapper fieldset {
+	padding:0.5em;
+	border:1px solid #ccc;
+	margin:0.5em 0;
+}
+#bodywrapper legend {
+	font-size:1em;
+	color:#333;
+	padding:0 0.5em;
+	background:#3297cb url(img/contactformlegend.png) repeat-x bottom left;
+	border:1px solid #ccc;
+	display:inline;
+	color:#fff;
+	font-weight:bold;
+	text-transform:uppercase
+}
+#bodywrapper hr {
+	height:2px;
+	background:transparent url(img/hr-bg.png) repeat-x bottom left;
+	border: none;
+	margin : 18px 0;
+}
+#bodywrapper blockquote {
+	background:#E0E0E0 url(img/blockquote.png) no-repeat top left;
+	border:1px solid #A5A5A5;
+	font-style:italic;
+	margin-bottom:15px;
+	margin-top:15px;
+	padding:20px;
+}
+#bodywrapper textarea {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:100%
+}
+#bodywrapper p.field{
+	margin-bottom:0.2em
+}
+#bodywrapper input,
+#bodywrapper select,
+#bodywrapper textarea {
+	background-color:transparent;
+	background:#f6f6f6 url(img/input_bg.png) repeat-x top left;
+	border:1px solid #ccc;
+	color:#666;
+	padding:4px 5px;
+	background-color:#f6f6f6;
+}
+#bodywrapper label{
+	font-weight:bold;
+}
+#bodywrapper input.gobutton{
+	background:none;
+	border:none;
+	margin:0;
+	padding:0;
+	vertical-align: bottom;
 }
 /******************************************************************************
-AddItemForm
+*  Images
 ******************************************************************************/
-#bodywrapper .AddItemForm {
-	border:none;
-	padding:10px 0px;
-	margin: 0px;
-	clear:both
+#bodywrapper .imagefloatright {
+	float:right;
+	margin-bottom:20px;
+	padding-left:20px;
 }
-#bodywrapper .AddItemForm fieldset{
-	border:none;
-	padding:0px;
-	margin:0;
+#bodywrapper .imagefloatleft {
+	float:left;
+	margin-bottom:20px;
+	padding-right:20px;
 }
-#bodywrapper .AddItemForm legend{
-	display:none
+#bodywrapper .imagefloatright {
+	float:right;
+	margin-bottom:20px;
+	padding-left:20px;
 }
+#bodywrapper .itemImage {
+	background-color:#F4F4F4;
+	border:1px solid #CCC;
+	position:relative;
+	padding:1px;
+	margin-bottom:10px;
+}
+#bodywrapper .imagefloatleft .itemImage  {
+	margin-bottom:0px;
+}
+#bodywrapper .imagefloatright .itemImage  {
+	margin-bottom:0px;
+}
+#bodywrapper div.itemImageRight {
+	float:right;
+}
+#bodywrapper div.itemImageLeft {
+	float:left;
+}
+#bodywrapper .itemImage img {
+	background-color:#e1e1e1;
+	padding:9px;
+}
+#bodywrapper .itemImagewhite img{
+	background-color:#fff;
+}
+/******************************************************************************
+*  Pagination
+******************************************************************************/
+#bodywrapper div.pagination {
+	height:1%;
+	overflow:hidden;
+	text-transform:uppercase;
+	border: 1px solid #ccc;
+	padding:0.5em 0.5em;
+	margin:0.5em 0;
+	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
+}
+#bodywrapper .paginationPosition {
+	float:left;
+	font-size:0.85em;
+	color:#36393d;
+}
+#bodywrapper .paginationNavigation {
+	float:right;
+	font-size:0.85em;
 
-#bodywrapper .AddItemForm label {
-	display:none
 }
-
-#bodywrapper .AddItemForm input{
-	width:40%;
-	display:inline
+#bodywrapper .paginationNavigation a:link,
+#bodywrapper .paginationNavigation a:visited,
+#bodywrapper .paginationNavigation a:hover,
+#bodywrapper .paginationNavigation a:active {
+	text-decoration:none;
+	padding:0.2em 0.5em;
 }
-#bodywrapper .AddItemForm input.gobutton{
-	width:auto;
-	vertical-align:bottom;
+#bodywrapper .paginationNavigation a:hover {
+	background:#3366cc;
+	color:#fff;
 }
-
-
+#bodywrapper .paginationNavigation .currentPage{
+	background:#3366cc;
+	color:#fff;
+	padding:0.2em 0.5em;
+}
+#bodywrapper .paginationNavigation span {
+	text-decoration:none;
+	color:#666;
+	padding:0;
+}
+/******************************************************************************
+*  AlphabeticalMenu
+******************************************************************************/
+#bodywrapper div.alphabeticalMenu {
+	height:1%;
+	overflow:hidden;
+	text-transform:uppercase;
+	border: 1px solid #ccc;
+	padding:0.5em 0.5em;
+	margin:0.5em 0;
+	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
+}
+#bodywrapper .alphabeticalLabel {
+	float:left;
+	font-size:0.9em;
+	font-weight:bold;
+	color:#333;
+}
+#bodywrapper .alphabeticalNavigation {
+	float:right;
+}
+#bodywrapper .alphabeticalNavigation a:link,
+#bodywrapper .alphabeticalNavigation a:visited,
+#bodywrapper .alphabeticalNavigation a:hover,
+#bodywrapper .alphabeticalNavigation a:active {
+		height:28px;
+		line-height:28px;
+		border:1px solid #ccc;
+		background:#eaeaea;
+		padding:6px 10px;
+		text-decoration:none;
+}
+#bodywrapper .alphabeticalNavigation a:hover {
+		background:#333;
+		color:#fff;
+}
+#bodywrapper .alphabeticalNavigation a.current{
+		height:28px;
+		line-height:28px;
+		border:1px solid #ccc;
+		background:#333;
+		color:#fff;
+		padding:6px 10px;
+		text-decoration:none;
+}
+#bodywrapper .alphabeticalNavigation span {
+		text-decoration:none;
+		color:#666;
+		padding:0;
+}
+/******************************************************************************
+*  Button
+******************************************************************************/
+#bodywrapper .divButton{
+	text-align:center;
+	margin:0 0 10px 0;
+}
+#bodywrapper .divButtonRight{
+	text-align:right;
+}
+#bodywrapper input.button, #bodywrapper button {
+	margin-right:0.5em;
+}
+#bodywrapper input.button, #bodywrapper button {
+	background:#043b9d url(img/bg-button.png) repeat-x top left;
+	border:1px solid #003399;
+	color:#fff;
+	text-align:center;
+	padding:3px 15px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px; 
+}
+#bodywrapper .button:hover, #bodywrapper button:hover {
+	cursor: pointer;
+	background:#043b9d url(img/bg-button-on.png) repeat-x bottom left;
+	color:#fff;
+}
+/******************************************************************************
+*  <A> Button
+******************************************************************************/
+#bodywrapper  a.aButton,
+#bodywrapper  a.aButton:link,
+#bodywrapper  a.aButton:visited {
+	background: transparent url(img/button-right.png) no-repeat scroll top right;
+	display: block;
+	float: left;
+	height: 24px;
+	margin-right: 6px;
+	padding-right: 20px; 
+	text-decoration: none;
+	color:#fff;
+	margin-top: 5px;
+}
+#bodywrapper  a.aButton span {
+	background: transparent url(img/button-left.png) no-repeat;
+	display: block;
+	line-height: 12px;
+	padding: 6px 0 6px 18px;
+}
+#bodywrapper  a.aButton:hover span{
+	text-decoration:underline;
+}
+#bodywrapper  a.aButtonRight,
+#bodywrapper  a.aButtonRight:link,
+#bodywrapper  a.aButtonRight:visited{
+	float: right;
+}
+/******************************************************************************
+*  Anchor
+******************************************************************************/
+#bodywrapper div.bottomanchor {
+	padding:0.2em;
+	margin: 1em 0;
+	font-size:0.85em;
+}
+#bodywrapper .bottomanchor a,
+#bodywrapper .bottomanchor a:link,
+#bodywrapper .bottomanchor a:visited  {
+	float:right;
+	margin:0 ;
+	background: url(img/bottomanchor.png) no-repeat top right;
+	padding-right:20px;
+	text-transform:uppercase
+}
+#bodywrapper .bottomanchor a:hover ,
+#bodywrapper .bottomanchor a:active  {
+	cursor: pointer;
+	text-decoration: underline;
+}
+/******************************************************************************
+*  Sort
+******************************************************************************/
+#bodywrapper .sort{
+	text-align:right
+}
+/******************************************************************************
+*  Thumbnails
+******************************************************************************/
+#bodywrapper div.thumbnail {
+	float:left;
+	margin-right:20px;
+}
+#bodywrapper div.thumbnailRight {
+	float:right;
+	margin-left:20px;
+}
+#bodywrapper div.thumbnail img {
+	position:relative
+}
+/******************************************************************************
+* Thumbnails  List
+******************************************************************************/
+#bodywrapper div.thumbnailList{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+#bodywrapper div.thumbnailList a{
+	float:left;
+	margin-right:10px;
+	margin-bottom:10px;
+	border:1px solid #fff
+}
+#bodywrapper div.thumbnailList a:hover{
+	border:1px solid #000
+}
 /******************************************************************************
 *  Tables
 ******************************************************************************/
@@ -1102,7 +780,6 @@ AddItemForm
 	line-height:1.9em;
 
 }
-
 #bodywrapper .table
 {
     border-collapse:collapse;
@@ -1110,9 +787,8 @@ AddItemForm
 	font-size:0.85em;
 	border:none;
 }
-#bodywrapper .table, #bodywrapper .table th, #bodywrapper .table td
-{
-border: 1px solid #fff;
+#bodywrapper .table, #bodywrapper .table th, #bodywrapper .table td {
+	border: 1px solid #fff;
 }
 #bodywrapper .table caption
 {
@@ -1121,7 +797,6 @@ border: 1px solid #fff;
 	margin:0 ;
 	padding:0;
 }
-
 #bodywrapper .table th {
     color: #333;
 	white-space:nowrap;
@@ -1142,38 +817,10 @@ border: 1px solid #fff;
 #bodywrapper .col2{}
 #bodywrapper .col3{}
 #bodywrapper .col4{}
-
 #bodywrapper .table td.center,
 #bodywrapper .table th.center
 {
 	text-align:center;
-}
-/******************************************************************************
-*  Visibility
-******************************************************************************/
-#bodywrapper .visibility
-{
-	display:block
-}
-#bodywrapper span.visibility
-{
-	font-weight:bold;
-	font-size:0.85em
-}
-/******************************************************************************
-*  Preferences Form
-******************************************************************************/
-#bodywrapper .preferencesForm
-{
-margin:10px 0;
-}
-#bodywrapper .preferencesForm fieldset
-{
-border:none
-}
-#bodywrapper .preferencesForm legend
-{
-display:none
 }
 /******************************************************************************
 *  idTabs
@@ -1199,7 +846,6 @@ display:none
 #bodywrapper .idTabs li.spacing{
 	padding-left:20px;
 }
-
 #bodywrapper .idTabs li a {
 	background:transparent url(img/tab-left.png) no-repeat scroll 0 0;
 	color:#fff;
@@ -1218,8 +864,6 @@ display:none
 	color:#fff;
 	text-decoration:none;
 }
-
-
 #bodywrapper .idTabs li a span {
 	background:transparent url(img/tab-right.png) no-repeat scroll 100% 0;
 	color:#cccccc;
@@ -1238,13 +882,6 @@ display:none
 	background-position:100% -29px;
 	color:#fff;
 	text-decoration:none;
-}
-/******************************************************************************
-*  menu-tabs-home
-******************************************************************************/
-#bodywrapper div.idTabs-home{
-	margin-top:1em;
-	margin-bottom:1em
 }
 /******************************************************************************
 *  Summary
@@ -1276,16 +913,6 @@ display:none
 	padding:0;
 	margin-bottom:10px
 }
-
-
-/******************************************************************************
-News  Most read
-******************************************************************************/
-#bodywrapper .newsMostRead span.author,
-#bodywrapper .newsMostRead span.date {
-font-size:0.85em;
-color:#666;
-}
 /******************************************************************************
 * Form
 ******************************************************************************/
@@ -1313,9 +940,8 @@ color:#666;
 	text-align:center;
 	margin:0.5em 0;
 }
-
 /******************************************************************************
-*  error
+*  Error
 ******************************************************************************/
 #bodywrapper .error{
 	padding:10px;
@@ -1324,20 +950,20 @@ color:#666;
 	border:1px solid #cc3300;
 }
 /******************************************************************************
-* more info
+* Links
 ******************************************************************************/
 #bodywrapper div.more {
     float: right;
     font-size: 11px;
     font-weight: bold;
-    background: transparent url( img/arrow.png ) no-repeat 0 50%;
+    background: transparent url( img/more.png ) no-repeat 0 50%;
     padding: 0 0 0 15px;
     margin-bottom: 0;
     display: block;
 }
-
 #bodywrapper .more span {
 }
+
 #bodywrapper a.returnLink {
     float: left;
     background: transparent url( img/returnlink.png ) no-repeat 0% 50%;

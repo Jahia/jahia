@@ -7,6 +7,10 @@
     <driver-class>@DRIVER@</driver-class>
     <user-name>@USERNAME@</user-name>
     <password>@PASSWORD@</password>
+    <min-pool-size>5</min-pool-size>
+    <max-pool-size>100</max-pool-size>
+    <idle-timeout-minutes>10</idle-timeout-minutes>
+    <blocking-timeout-millis>10000</blocking-timeout-millis>
     <metadata>
        <type-mapping>@TYPE_MAPPING@</type-mapping>
     </metadata>

@@ -401,30 +401,34 @@ public class ContentDetails extends BottomRightComponent {
                     }
                     String name = selectedNode.getName();
                     if (name != null) {
-                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_name") + " :</b> " + name));
+                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_name") + ":</b> " + name));
                     }
                     String path = selectedNode.getPath();
                     if (path != null) {
-                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_path") + " :</b> " + path));
+                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_path") + ":</b> " + path));
+                    }
+                    String id = selectedNode.getUUID();
+                    if (id != null) {
+                        flowPanel.add(new HTML("<b>" + Messages.get("fm_info_uuid", "ID") + ":</b> " + id));
                     }
                     if (config.isDisplaySize() && selectedNode.isFile()) {
                         Long s = selectedNode.getSize();
                         if (s != null) {
-                            flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_size") + " :</b> " + Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
+                            flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_size") + ":</b> " + Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
                         }
                     }
                     if (config.isDisplayDate()) {
                         Date date = selectedNode.getLastModified();
                         if (date != null) {
-                            flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lastModif") + " :</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
+                            flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lastModif") + ":</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
                         }
                     }
                     if (config.isDisplayLock() && selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
-                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lock") + " :</b> " + selectedNode.getLockOwner()));
+                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lock") + ":</b> " + selectedNode.getLockOwner()));
                     }
 
-                    flowPanel.add(new HTML("<b>Types :</b>"+ selectedNode.getNodeTypes()));
-                    flowPanel.add(new HTML("<b>Tags :</b>"+ selectedNode.getTags()));
+                    flowPanel.add(new HTML("<b>Types:</b> "+ selectedNode.getNodeTypes()));
+                    flowPanel.add(new HTML("<b>Tags:</b> "+ selectedNode.getTags()));
                 }
             } else {
                 int numberFiles = 0;

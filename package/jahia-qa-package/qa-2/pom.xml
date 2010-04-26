@@ -126,14 +126,14 @@
                             </siteImportLocation>
                             <cluster_activated>false</cluster_activated>
                             <processingServer>false</processingServer>
-                            <!--databaseUrl>jdbc:mysql://10.8.37.246/qa_241?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl-->
-                            <databaseType>mssql</databaseType>
-                            <databaseUrl>jdbc:sqlserver://10.8.37.8;databaseName=qa_242</databaseUrl>
+                            <databaseUrl>jdbc:mysql://10.8.37.246/qa_241?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
+                            <!--databaseType>mssql</databaseType>
+                            <databaseUrl>jdbc:sqlserver://10.8.37.8;databaseName=qa_242</databaseUrl-->
                             <databaseUsername>jahia</databaseUsername>
                             <databasePassword>jahia</databasePassword>
                             <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>
-                             <localIp>10.8.37.242</localIp> <localIp>10.8.37.243</localIp>
+                            <localIp>10.8.37.242</localIp>
                             <!--cluster_node_serverId>qa-j2</cluster_node_serverId>
                             <localIp>10.8.37.242</localIp>
                             <clusterNodes>

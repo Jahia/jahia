@@ -20,6 +20,7 @@
 	padding:5px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 #bodywrapper .FormMainContent legend {
 	background:#fff url(img/toolbar-input.png) repeat-x left bottom;
@@ -31,6 +32,7 @@
 	text-transform:uppercase;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 #bodywrapper .FormMainContent input,
 #bodywrapper .FormMainContent textarea {
@@ -74,6 +76,7 @@
     color: #fff;
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999;
 	padding:5px 10px;
 	vertical-align: middle;
 	display:inline;
@@ -86,6 +89,7 @@
 	margin-top:2px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
+	border-radius: 10px;
 
 }
 #bodywrapper .FormMainContent input.button:hover, #bodywrapper .FormMainContent button:hover{

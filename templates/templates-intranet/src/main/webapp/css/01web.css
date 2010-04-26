@@ -356,7 +356,7 @@ body {
 	font-weight:bold
 }
 /******************************************************************************
-*  general
+*  General
 ******************************************************************************/
 #bodywrapper img {
 	border: 0px;
@@ -402,7 +402,6 @@ body {
 	font-style:italic;
 	line-height:1.2em;
 	font-family: MetaPro-MediumItalic, Arial, Helvetica, sans-serif;
-
 }
 #bodywrapper div.intro p{
 	padding:10px 0;
@@ -730,12 +729,6 @@ body {
 #bodywrapper .bottomanchor a:active  {
 	cursor: pointer;
 	text-decoration: underline;
-}
-/******************************************************************************
-*  Sort
-******************************************************************************/
-#bodywrapper .sort{
-	text-align:right
 }
 /******************************************************************************
 *  Thumbnails

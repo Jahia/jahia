@@ -593,14 +593,6 @@ public class NavigationHelper {
         NodeIterator ni = qr.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
-            // TODO try to do it with index aggregates in Jackrabbit's indexing configuration
-            if (Constants.JCR_CONTENT.equals(n.getName())) {
-                try {
-                    n = n.getParent();
-                } catch (ItemNotFoundException e) {
-                    // keep same node
-                }
-            }
             if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
                 // use for pickers
                 boolean isFile = n.isFile();

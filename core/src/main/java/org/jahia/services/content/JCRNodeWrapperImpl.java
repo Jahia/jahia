@@ -72,6 +72,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     protected static final Logger logger = Logger.getLogger(JCRNodeWrapper.class);
 
     protected Node objectNode = null;
+    protected JCRFileContent fileContent = null;
     protected Map<Locale, Node> i18NobjectNodes = null;
 
     protected String[] defaultPerms = {Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS, Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE};
@@ -2098,7 +2099,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRFileContent getFileContent() {
-        return new JCRFileContent(this, objectNode);
+        if (fileContent == null) {
+            fileContent = new JCRFileContent(this, objectNode);
+        }
+        return fileContent;
     }
 
 

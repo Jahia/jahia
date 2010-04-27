@@ -57,6 +57,7 @@ public final class JCRClientUtils {
     public final static String MY_EXTERNAL_REPOSITORY = "myExternalRepository";
     public final static String SHARED_REPOSITORY = "sharedRepository";
     public final static String WEBSITE_REPOSITORY = "websiteRepository";
+    public final static String REMOTEPUBLICATIONS_REPOSITORY = "remotePublicationsRepository";
 
     public final static String ALL_FILES = "files";
 

@@ -174,6 +174,47 @@
 
     </bean>
 
+        <!-- remote publication manager -->
+    <bean id="remotepublicationmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="jnt:remotePublication"/>
+        <property name="folderTypes" value="jnt:remotePublications"/>
+        <property name="toolbarSet" ref="remotepublication-manager"/>
+        <property name="hideLeftPanel" value="true"/>
+        <property name="enableTextMenu" value="true"/>
+        <property name="displayExt" value="false"/>
+        <property name="displaySize" value="false"/>
+        <property name="displayDate" value="false"/>
+        <property name="displaySearch" value="false"/>
+        <property name="expandRoot" value="true"/>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="false"/>
+        <property name="defaultView" value="1"/>
+
+        <!-- accordion panels-->
+        <property name="accordionPanels">
+            <list>
+                <ref bean="repository.remotePublication"/>
+            </list>
+        </property>
+        <!-- tabs -->
+        <property name="tabs">
+            <list>
+                <ref bean="tab.authorizations"/>
+                <ref bean="tab.usage"/>
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list>
+                <ref bean="column.name"/>
+            </list>
+        </property>
+
+    </bean>
+
+
     <!-- portlet definition manager -->
     <bean id="portletdefinitionmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
 
@@ -617,6 +658,11 @@
     <bean id="repository.tag" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
         <property name="key" value="tagRepository"/>
     </bean>
+
+    <bean id="repository.remotePublication" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+            <property name="key" value="remotePublicationsRepository"/>
+   </bean>
+
 
     <bean id="repository.role" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
         <property name="key" value="roleRepository"/>

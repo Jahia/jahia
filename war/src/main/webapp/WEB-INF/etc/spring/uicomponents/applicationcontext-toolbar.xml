@@ -107,6 +107,16 @@
         </property>
     </bean>
 
+    <bean id="remotepublication-manager" class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <ref bean="org.jahia.toolbar.manager.remotePublication.menu"/>
+                <ref bean="org.jahia.toolbar.manager.remotepublication.shortcuts"/>
+            </list>
+        </property>
+    </bean>
+
+
     <bean id="role-manager" class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
         <property name="toolbars">
             <list>
@@ -476,6 +486,37 @@
         </property>
     </bean>
     <!-- end of the Tags Manager -->
+    <!--Remote publication manager-->
+    <bean id="org.jahia.toolbar.manager.remotePublication.menu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.itemsgroup.RemotePublicationManager.menu.file"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="toolbar/remotepublication-menu"/>
+            </bean>
+        </property>
+        <property name="contextMenu" value="true"/>
+    </bean>
+    <bean id="org.jahia.toolbar.manager.remotepublication.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+         <property name="items">
+             <list>
+                 <ref bean="org.jahia.toolbar.itemsgroup.RemotePublicationManager.shortcuts.file.new"/>
+                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                 <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+             </list>
+         </property>
+         <property name="visibility">
+             <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                 <property name="siteActionPermission" value="toolbar/remotepublication-shortcuts"/>
+             </bean>
+         </property>
+     </bean>
+     <!--Remote publication manager-->
 
     <!-- roles -->
     <bean id="org.jahia.toolbar.manager.roles.menu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -598,6 +639,7 @@
                 <ref bean="org.jahia.toolbar.item.ContentManager"/>
                 <ref bean="org.jahia.toolbar.item.CategoryManager"/>
                 <ref bean="org.jahia.toolbar.item.TagManager"/>
+                <ref bean="org.jahia.toolbar.item.RemotePublication"/>
                 <ref bean="org.jahia.toolbar.item.SiteManager"/>
                 <ref bean="org.jahia.toolbar.item.Pdisplay"/>
             </list>
@@ -955,6 +997,22 @@
         </property>
     </bean>
 
+    <bean id="org.jahia.toolbar.itemsgroup.RemotePublicationManager.menu.file"
+          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+        <property name="layout" value="menu"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.newRemotePublication"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
+            </list>
+        </property>
+    </bean>
+
+
+
     <bean id="org.jahia.toolbar.itemsgroup.RoleManager.menu.file"
           class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
         <property name="layout" value="menu"/>
@@ -1092,6 +1150,18 @@
         <property name="items">
             <list>
                 <ref bean="org.jahia.toolbar.item.newTag"/>
+                <ref bean="org.jahia.toolbar.item.Separator"/>
+                <ref bean="org.jahia.toolbar.item.export"/>
+                <ref bean="org.jahia.toolbar.item.import"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="org.jahia.toolbar.itemsgroup.RemotePublicationManager.shortcuts.file.new"
+          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+        <property name="layout" value="button"/>
+        <property name="items">
+            <list>
+                <ref bean="org.jahia.toolbar.item.newRemotePublication"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.export"/>
                 <ref bean="org.jahia.toolbar.item.import"/>
@@ -1500,6 +1570,37 @@
             </list>
         </property>
     </bean>
+    <!-- Tag Manager -->
+    <bean id="org.jahia.toolbar.item.RemotePublication" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
+        </property>
+        <property name="titleKey" value="label.remotepublicationmanager"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-remotepublicationmanager-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-remotepublicationmanager-normal"/>
+        <property name="descriptionKey" value="label.remotepublicationmanager"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="managers/categorymanager"/>
+            </bean>
+        </property>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="url"/>
+                    <property name="value" value="$context/engines/remotepublicationmanager/remotepublication.jsp"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
     <!-- Stie Manager -->
     <bean id="org.jahia.toolbar.item.SiteManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
@@ -1832,9 +1933,18 @@
 
     <bean id="org.jahia.toolbar.item.newTag" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTagActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRemotePublicationActionItem"/>
         </property>
-        <property name="titleKey" value="label.createTag"/>
+        <property name="titleKey" value="label.createRemotePublication"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.newRemotePublication" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRemotePublicationActionItem"/>
+        </property>
+        <property name="titleKey" value="label.createRemotePublication"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
     </bean>

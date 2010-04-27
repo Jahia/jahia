@@ -418,6 +418,12 @@ public class NavigationHelper {
                         List<GWTJahiaNode> list = ls(root, "jnt:templatesSetFolder", null,null,false,false, currentUserSession);
                         userNodes.addAll(list);
                     }
+                } else if (key.equals(JCRClientUtils.REMOTEPUBLICATIONS_REPOSITORY)) {
+                    GWTJahiaNode root = getNode("/remotePublications",currentUserSession);
+                    if (root != null) {
+                        root.setDisplayName("remotePublications");
+                        userNodes.add(root);
+                    }
                 } else if (key.equals(JCRClientUtils.GLOBAL_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/", currentUserSession);
                     if (root != null) {

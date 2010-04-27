@@ -46,7 +46,10 @@
    		    <tags-shortcuts jcr:primaryType="jnt:permission"/>   		       		       		       		       		       		    
    		    <roles-menu jcr:primaryType="jnt:permission"/> 	    
    		    <roles-shortcuts jcr:primaryType="jnt:permission"/>   		    
-   	    </toolbar>   	             	               	            	    
+            <remotepublication-menu jcr:primaryType="jnt:permission" />
+            <remotepublication-shortcuts jcr:primaryType="jnt:permission" />
+
+   	    </toolbar>
    	    <integrity jcr:primaryType="jnt:permissionGroup">
    		    <link-integrity jcr:primaryType="jnt:permission"/> 	    
    		    <wai-compliance jcr:primaryType="jnt:permission"/>

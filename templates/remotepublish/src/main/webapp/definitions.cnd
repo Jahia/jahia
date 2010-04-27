@@ -19,3 +19,6 @@
  - remoteUser (string)
  - remotePassword (string)
  + schedule (jnt:remotePublicationSchedule) multiple
+
+[jnt:remotePublications] > nt:base
+ + * (jnt:remotePublication)

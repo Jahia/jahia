@@ -114,8 +114,10 @@ public class RemotePublicationService {
                     final JCRNodeWrapper node = liveSession.getNode(nodePath);
                     try {
                         final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path, "/"));
+                        if(!property.getDefinition().isProtected()) {
                         oos.writeObject(logEntry);
                         serializePropertyValue(oos, property);
+                        }
                     } catch (PathNotFoundException e) {
                         logger.debug(e.getMessage(), e);
                     }
@@ -127,8 +129,10 @@ public class RemotePublicationService {
                     try {
                         final JCRNodeWrapper node = liveSession.getNode(nodePath);
                         final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path, "/"));
+                        if(!property.getDefinition().isProtected()) {
                         oos.writeObject(logEntry);
                         serializePropertyValue(oos, property);
+                        }
                     } catch (PathNotFoundException e) {
                         logger.debug(e.getMessage(), e);
                     }

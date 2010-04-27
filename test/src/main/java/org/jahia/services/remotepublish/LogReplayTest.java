@@ -299,6 +299,7 @@ public class LogReplayTest extends TestCase {
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
         JCRNodeWrapper page2 = page1.addNode("page2", "jnt:page");
         JCRNodeWrapper page3 = page2.addNode("page3", "jnt:page");
+        page3.setProperty("jcr:title","testLogMoveOfNode");
         session.save();
 
         Calendar now = new GregorianCalendar();
@@ -330,8 +331,12 @@ public class LogReplayTest extends TestCase {
             fail("We should have found path : /sites/jcrRPTest/home/target/page1/page2/page3");
         }
 
-        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
-                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        try {
+            JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                        Constants.LIVE_WORKSPACE, null, false, true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
 
         now = new GregorianCalendar();
         page1.checkout();
@@ -364,7 +369,9 @@ public class LogReplayTest extends TestCase {
         }
 
         try {
-            session.getNode("/sites/jcrRPTest/home/target/page1/page3_moved");
+            JCRNodeWrapper movedNode = session.getNode("/sites/jcrRPTest/home/target/page1/page3_moved");
+            assertTrue("The moved page should have a title",movedNode.hasProperty("jcr:title"));
+            assertEquals("The title page should be testLogMoveOfNode","testLogMoveOfNode",movedNode.getProperty("jcr:title").getString());
         } catch (PathNotFoundException e) {
             fail("We should have found path : /sites/jcrRPTest/home/target/page1/page3_moved");
         }

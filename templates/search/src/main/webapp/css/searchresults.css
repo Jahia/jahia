@@ -2,9 +2,6 @@
 *  Template search results
 ******************************************************************************/
 #bodywrapper  .searchHighlightedText {
-	-moz-background-clip:border;
-	-moz-background-inline-policy:continuous;
-	-moz-background-origin:padding;
 	background:#FFFF00 none repeat scroll 0 0;
 	font-size:larger;
 	font-weight:bold;

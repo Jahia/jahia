@@ -360,6 +360,22 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
         return CONTENT_ICONS.plusRound();
     }
 
+    public AbstractImagePrototype getMoveFirst() {
+        return CONTENT_ICONS.moveFirst();
+    }
+
+    public AbstractImagePrototype getMoveUp() {
+        return CONTENT_ICONS.moveUp();
+    }
+
+    public AbstractImagePrototype getMoveDown() {
+        return CONTENT_ICONS.moveDown();
+    }
+
+    public AbstractImagePrototype getMoveLast() {
+        return CONTENT_ICONS.moveLast();
+    }
+
     public AbstractImagePrototype getFolderCloseIcon() {
         return CONTENT_ICONS.folderClose();
     }

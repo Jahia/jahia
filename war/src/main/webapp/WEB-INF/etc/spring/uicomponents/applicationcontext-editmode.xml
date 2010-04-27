@@ -358,6 +358,10 @@
         <property name="key" value="content"/>
     </bean>
 
+    <bean id="editenginestab.listOrderingContent" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="key" value="listOrderingContent"/>
+    </bean>
+
     <bean id="editenginestab.createpage" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="key" value="createPage"/>
     </bean>

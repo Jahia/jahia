@@ -1,24 +1,13 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.GridDragSource;
-import com.extjs.gxt.ui.client.dnd.GridDropTarget;
-import com.extjs.gxt.ui.client.store.ListStore;
+
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +22,7 @@ import java.util.List;
 public class ContentTabItem extends PropertiesTabItem {
     private boolean isNodeNameFieldDisplayed = false;
     private TextField<String> name = new TextField<String>();
-    private LayoutContainer wrapperPanel;
+    protected LayoutContainer wrapperPanel;
 
     public TextField<String> getName() {
         return name;

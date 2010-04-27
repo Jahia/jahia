@@ -508,7 +508,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         // save children orders
-        // ToDo
+        contentManager.updateChildren(node,orderedChildrenNode,retrieveCurrentSession());
+
+
 
         // save shared properties
         saveProperties(Arrays.asList(node), sharedProperties);
@@ -679,6 +681,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
+            logger.error("******** Source Path: "+sourcePath);
+            logger.error("******** Target Path: "+targetPath);           
             contentManager.move(sourcePath, targetPath, retrieveCurrentSession());
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());

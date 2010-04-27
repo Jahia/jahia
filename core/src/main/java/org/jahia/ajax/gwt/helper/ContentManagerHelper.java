@@ -188,7 +188,7 @@ public class ContentManagerHelper {
                 if (property.getName().equals("jcr:title") && propertyValues != null && propertyValues.size() > 0 && propertyValues.get(0).getString() != null) {
                     nodeName = JCRContentUtils.generateNodeName(propertyValues.get(0).getString(), 32);
                 }
-            }else{
+            } else {
                 logger.error("found a null property");
             }
         }
@@ -289,6 +289,53 @@ public class ContentManagerHelper {
         JCRSessionWrapper session = currentUserSession;
         session.move(sourcePath, targetPath);
         session.save();
+    }
+
+    /**
+     * Remove deleted children and reorder
+     *
+     * @param newChildrenList
+     */
+    public void updateChildren(final GWTJahiaNode parentNode, final List<GWTJahiaNode> newChildrenList, final JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+        try {
+            if(newChildrenList == null){
+                logger.error("Children list nodes don't change");
+                return;
+            }
+
+            final JCRNodeWrapper targetNode = currentUserSession.getNode(parentNode.getPath());
+
+            if (!targetNode.isCheckedOut()) {
+                currentUserSession.checkout(targetNode);
+            }
+
+
+            // remove deleted children
+            NodeIterator oldChildrenNodes = targetNode.getNodes();
+            while (oldChildrenNodes.hasNext()) {
+                JCRNodeWrapper currentChildNode = (JCRNodeWrapper) oldChildrenNodes.nextNode();
+
+                GWTJahiaNode comparingGWTJahiaNode = new GWTJahiaNode();
+                comparingGWTJahiaNode.setPath(currentChildNode.getPath());
+
+                // node has been deleted
+                if (!newChildrenList.contains(comparingGWTJahiaNode)) {
+                    currentChildNode.remove();
+                }
+
+            }
+
+            // reorder existing ones
+            if (newChildrenList != null) {
+                for (GWTJahiaNode childNode : newChildrenList) {
+                    targetNode.orderBefore(childNode.getName(), null);
+                }
+            }
+            currentUserSession.save();
+        } catch (RepositoryException e) {
+            logger.error(e, e);
+        }
+
     }
 
     public void moveAtEnd(String sourcePath, String targetPath, JCRSessionWrapper currentUserSession) throws RepositoryException, InvalidItemStateException, ItemExistsException, GWTJahiaServiceException {
@@ -759,7 +806,7 @@ public class ContentManagerHelper {
 
     public void synchro(final Map<String, String> pathsToSyncronize, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(currentUserSession.getUser().getUsername(),new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(currentUserSession.getUser().getUsername(), new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     HashMap<String, List<String>> references = new HashMap<String, List<String>>();
                     List<JCRNodeWrapper> pageTemplates = new ArrayList<JCRNodeWrapper>();
@@ -770,8 +817,8 @@ public class ContentManagerHelper {
                             destinationNode = session.getNode(entry.getValue());
                             synchro(originalNode, destinationNode, session, false, references, pageTemplates);
                         } catch (PathNotFoundException e) {
-                            destinationNode = session.getNode(StringUtils.substringBeforeLast(entry.getValue(),"/"));
-                            originalNode.copy(destinationNode, StringUtils.substringAfterLast(entry.getValue(),"/"), true);
+                            destinationNode = session.getNode(StringUtils.substringBeforeLast(entry.getValue(), "/"));
+                            originalNode.copy(destinationNode, StringUtils.substringAfterLast(entry.getValue(), "/"), true);
                         }
                     }
                     ReferencesHelper.resolveCrossReferences(session, references);
@@ -796,8 +843,8 @@ public class ContentManagerHelper {
                 }
             });
             currentUserSession.save();
-        } catch (RepositoryException e){
-            logger.error(e.getMessage(),e);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }

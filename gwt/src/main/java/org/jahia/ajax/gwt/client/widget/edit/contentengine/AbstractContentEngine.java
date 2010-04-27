@@ -168,6 +168,8 @@ public abstract class AbstractContentEngine extends Window {
         for (String tab : config.getTabs()) {
             if (tab.equals("content")) {
                 tabs.add(new ContentTabItem(this));
+            } else if (tab.equals("listOrderingContent")) {
+                tabs.add(new ListOrderingContentTabItem(this));
             } else if (tab.equals("createPage")) {
                 tabs.add(new CreatePageTabItem(this));
             } else if (tab.equals("template")) {

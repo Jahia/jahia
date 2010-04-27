@@ -85,10 +85,10 @@ public class PropertiesEditor extends FormPanel {
         this(null, types, mixin, properties, isMultipleEdit, viewInheritedItems, datatype, excludedItems, excludedTypes, isWriteable, fieldSetGrouping);
     }
 
-    public PropertiesEditor(GWTJahiaNode node, List<GWTJahiaNodeType> types, List<GWTJahiaNodeType> mixin, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes, boolean isWriteable, boolean fieldSetGrouping) {
+    public PropertiesEditor(GWTJahiaNode node, List<GWTJahiaNodeType> nodeTypes, List<GWTJahiaNodeType> mixin, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes, boolean isWriteable, boolean fieldSetGrouping) {
         super();
         this.node = node;
-        this.nodeTypes = types;
+        this.nodeTypes = nodeTypes;
         this.mixin = mixin;
         this.isMultipleEdit = isMultipleEdit;
         this.dataType = datatype;
@@ -194,7 +194,6 @@ public class PropertiesEditor extends FormPanel {
 
         useManualRanking.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent componentEvent) {
-                Log.error("Check changed: " + useManualRanking.getValue());
                 if (useManualRanking.getValue()) {
                     removedTypes.add("jmix:orderedList");
                     addedTypes.remove("jmix:orderedList");
@@ -451,6 +450,10 @@ public class PropertiesEditor extends FormPanel {
         return templateTypes;
     }
 
+    public List<GWTJahiaNodeType> getNodeTypes() {
+        return nodeTypes;
+    }
+
     /**
      * Reset form
      */
@@ -555,12 +558,15 @@ public class PropertiesEditor extends FormPanel {
 
     /**
      * Get new manual ordering
+     *
      * @return
      */
     public List<GWTJahiaNode> getNewManualOrderedChildrenList() {
-        if(manualListOrderingEditor == null || !manualListOrderingEditor.isEnabled()){
+        if (manualListOrderingEditor == null || !manualListOrderingEditor.isEnabled()) {
             return null;
         }
         return manualListOrderingEditor.getOrderedNodes();
     }
+
+
 }

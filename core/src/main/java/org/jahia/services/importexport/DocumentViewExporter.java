@@ -1,6 +1,7 @@
 package org.jahia.services.importexport;
 
 import org.apache.jackrabbit.util.ISO9075;
+import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -153,7 +154,7 @@ public class DocumentViewExporter {
             PropertyIterator propsIterator = node.getProperties();
             while (propsIterator.hasNext()) {
                 JCRPropertyWrapper property = (JCRPropertyWrapper) propsIterator.nextProperty();
-                if (property.getType() != PropertyType.BINARY && !excluded.contains(property.getName())) {
+                if ((property.getType() != PropertyType.BINARY || !skipBinary) && !excluded.contains(property.getName())) {
                     String key = property.getName();
                     String prefix = null;
                     String localname = key;
@@ -214,7 +215,10 @@ public class DocumentViewExporter {
             } catch (ItemNotFoundException e) {
                 return "";
             }
+        } else if (v.getType() == PropertyType.BINARY) {
+            return ValueHelper.serialize(v, false);
         }
+
         return v.getString();
     }
 

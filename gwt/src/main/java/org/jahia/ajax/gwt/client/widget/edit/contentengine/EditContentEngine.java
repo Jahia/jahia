@@ -247,8 +247,14 @@ public class EditContentEngine extends AbstractContentEngine {
                             nodeName = ((ContentTabItem) item).getName().getValue();
                         }
 
+               
+                    }
+
+                    // case od contentTabItem
+                    if (item instanceof ListOrderingContentTabItem) {
+
                         // if the manual ranking was activated update new ranking
-                        orderedChildrenNodes = pe.getNewManualOrderedChildrenList();
+                        orderedChildrenNodes =((ListOrderingContentTabItem)item).getNewManualOrderedChildrenList();
                     }
 
 

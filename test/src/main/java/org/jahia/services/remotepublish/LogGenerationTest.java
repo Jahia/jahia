@@ -275,7 +275,7 @@ public class LogGenerationTest extends TestCase {
             switch (entry.getEventType()) {
                 case Event.NODE_ADDED: {
                     System.out.println("node added " + path);
-                    byte[] data = (byte[]) ois.readObject();
+                    String data = (String) ois.readObject();
                     addedNodes.add(path);
                     break;
                 }
@@ -286,16 +286,16 @@ public class LogGenerationTest extends TestCase {
                 }
 
                 case Event.PROPERTY_ADDED: {
-                    String propertyValue = (String) ois.readObject();
+                    Object propertyValue =  ois.readObject();
                     System.out.println("property added " +path+ " with value "+propertyValue);
-                    addedProperties.put(path,propertyValue);
+                    addedProperties.put(path,propertyValue.toString());
                     break;
                 }
 
                 case Event.PROPERTY_CHANGED: {
-                    String propertyValue = (String) ois.readObject();
+                    Object propertyValue =  ois.readObject();
                     System.out.println("property changed " +path+ " with value "+propertyValue);
-                    updatedProperties.put(path,propertyValue);
+                    updatedProperties.put(path,propertyValue.toString());
                     break;
                 }
 

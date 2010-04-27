@@ -94,13 +94,9 @@ public class RemotePublicationService {
             switch (event.getType()) {
                 case Event.NODE_ADDED: {
                     try {
-                        if (!addedPath.contains(path)) {
-                            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            liveSession.exportDocumentView(event.getPath(), baos, false, true);
-                            oos.writeObject(logEntry);
-                            oos.writeObject(baos.toByteArray());
-                            addedPath.add(path);
-                        }
+                        JCRNodeWrapper node = liveSession.getNode(path);
+                        oos.writeObject(logEntry);
+                        oos.writeObject(node.getPrimaryNodeTypeName());
                     } catch (PathNotFoundException e) {
                         // not present anymore
                     }
@@ -109,22 +105,19 @@ public class RemotePublicationService {
 
                 case Event.NODE_REMOVED: {
                     oos.writeObject(logEntry);
-                    addedPath.remove(path);
+                    addedPath.add(path);
                     break;
                 }
 
                 case Event.PROPERTY_ADDED: {
-                    if (!addedPath.contains(path)) {
-                        String nodePath = StringUtils.substringBeforeLast(path, "/");
-                        final JCRNodeWrapper node = liveSession.getNode(nodePath);
-                        try {
-                            final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path,
-                                                                                                                "/"));
-                            oos.writeObject(logEntry);
-                            serializePropertyValue(oos, property);
-                        } catch (PathNotFoundException e) {
-                            logger.debug(e.getMessage(), e);
-                        }
+                    String nodePath = StringUtils.substringBeforeLast(path, "/");
+                    final JCRNodeWrapper node = liveSession.getNode(nodePath);
+                    try {
+                        final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path, "/"));
+                        oos.writeObject(logEntry);
+                        serializePropertyValue(oos, property);
+                    } catch (PathNotFoundException e) {
+                        logger.debug(e.getMessage(), e);
                     }
                     break;
                 }
@@ -187,7 +180,7 @@ public class RemotePublicationService {
         LogBundle log = (LogBundle) ois.readObject();
 
         session.getPathMapping().put(log.getSourcePath(), target.getPath());
-
+        Set<String> addedPath = new HashSet<String>();
         Object o;
         while ((o = ois.readObject()) instanceof LogEntry) {
             LogEntry entry = (LogEntry) o;
@@ -195,23 +188,28 @@ public class RemotePublicationService {
 
             switch (entry.getEventType()) {
                 case Event.NODE_ADDED: {
-                    byte[] b = (byte[]) ois.readObject();
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Adding Node " + path + " with xml: " + new String(b, "UTF-8"));
+                    if (!addedPath.contains(path)) {
+                        String nodeType = (String) ois.readObject();
+                        if (logger.isInfoEnabled()) {
+                            logger.info("Adding Node " + path + " with nodetype: " + nodeType);
+                        }
+                        String parentPath = StringUtils.substringBeforeLast(path, "/");
+                        JCRNodeWrapper parent = session.getNode(parentPath);
+                        parent.checkout();
+                        parent.addNode(StringUtils.substringAfterLast(path, "/"),nodeType);
+                        addedPath.add(path);
                     }
-                    path = StringUtils.substringBeforeLast(path, "/");
-                    session.getNode(path).checkout();
-                    session.importXML(path, new ByteArrayInputStream(b), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                     break;
                 }
                 case Event.NODE_REMOVED: {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Removing Node " + path);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("Removing Node " + path);
                     }
                     final JCRNodeWrapper node = session.getNode(path);
                     node.getParent().checkout();
                     node.checkout();
                     node.remove();
+                    addedPath.remove(path);
                     break;
                 }
                 case Event.PROPERTY_ADDED:

@@ -17,7 +17,7 @@
 [jmix:pager] > jmix:layout, jmix:listMixin mixin
  - pageSize (long) = 10 autocreated
 
-[jmix:orderedList] > jmix:layout, jmix:listMixin mixin
+[jmix:orderedList] > jmix:contentItem, jmix:listMixin mixin
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
  - firstDirection (string, choicelist[resourceBundle]) = 'asc' indexed=no < 'asc','desc'
  - secondField (string, choicelist[sortableFieldnames]) indexed=no

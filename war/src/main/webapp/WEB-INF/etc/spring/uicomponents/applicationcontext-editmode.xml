@@ -12,6 +12,7 @@
         <!-- edit engine -->
         <property name="editEngines">
             <list>
+
                 <ref bean="studio.engine.edit.editcontent"/>
             </list>
         </property>
@@ -47,6 +48,7 @@
         <!-- edit engine -->
         <property name="editEngines">
             <list>
+                <ref bean="engine.edit.contentList"/>
                 <ref bean="engine.edit.editcontent"/>
             </list>
         </property>
@@ -108,6 +110,25 @@
             </list>
         </property>
     </bean>
+
+    <bean id="engine.edit.contentList" class="org.jahia.services.uicomponents.bean.editmode.Engine">
+        <property name="nodeType" value="jmix:list"/>
+        <property name="tabs">
+            <list>
+                <ref bean="editenginestab.listOrderingContent"/>
+                <ref bean="editenginestab.layout"/>
+                <ref bean="editenginestab.metadata"/>
+                <ref bean="editenginestab.classification"/>
+                <ref bean="editenginestab.options"/>
+                <ref bean="editenginestab.rights"/>
+                <ref bean="editenginestab.usages"/>
+                <ref bean="editenginestab.publication"/>
+                <ref bean="editenginestab.seo"/>
+                <ref bean="editenginestab.analytics"/>
+            </list>
+        </property>
+    </bean>
+
 
     <bean id="studio.engine.edit.createpage" class="org.jahia.services.uicomponents.bean.editmode.Engine">
         <property name="nodeType" value="jnt:page"/>

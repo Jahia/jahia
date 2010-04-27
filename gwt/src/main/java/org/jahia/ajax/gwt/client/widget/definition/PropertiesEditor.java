@@ -39,10 +39,8 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.ManualListOrderingEditor;
 
 import java.util.*;
 
@@ -57,6 +55,7 @@ public class PropertiesEditor extends FormPanel {
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
     private Map<String, Field<?>> fields;
+    private List<FieldSet> orderingListFieldSet = new ArrayList<FieldSet>();
     private Map<String, GWTJahiaItemDefinition> propertyDefinitions = new HashMap<String, GWTJahiaItemDefinition>();
     private boolean isMultipleEdit = false;
     private boolean viewInheritedItems = false;
@@ -71,7 +70,6 @@ public class PropertiesEditor extends FormPanel {
     private Set<String> templateTypes = new HashSet<String>();
     private FieldSet fieldSet = null;
     private FormPanel form = this;
-    private ManualListOrderingEditor manualListOrderingEditor = null;
 
     public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes) {
         this(types, properties, isMultipleEdit, viewInheritedItems, datatype, excludedItems, excludedTypes, true, false);
@@ -158,15 +156,8 @@ public class PropertiesEditor extends FormPanel {
                     addItems(form, mix, mix.getInheritedItems(), true, fieldSetGrouping);
                 }
 
-                // ordered list : if the dataType is "content", then add a manual ordering ui
-                if (dataType != null && dataType.equals(GWTJahiaItemDefinition.CONTENT)) {
-                    if ("jmix:orderedList".equalsIgnoreCase(mix.getName()) || mix.getSuperTypes().contains("jmix:orderedList")) {
-                        addItems(form, mix, mix.getItems(), false, fieldSetGrouping);
+                addItems(form, mix, mix.getItems(), true, fieldSetGrouping);
 
-                        // add manual ordering editor
-                        manualListOrderingEditor = addManualListOrderingEditor(mix);
-                    }
-                }
             }
         }
         if (templateField != null && templateField.getValue() != null) {
@@ -176,61 +167,6 @@ public class PropertiesEditor extends FormPanel {
 
     }
 
-    /**
-     * Add ordered items
-     *
-     * @param mix
-     */
-    private ManualListOrderingEditor addManualListOrderingEditor(GWTJahiaNodeType mix) {
-
-        final ManualListOrderingEditor grid = new ManualListOrderingEditor(node);
-
-        // create a field set for the manual ranking
-        final FieldSet fieldSet = new FieldSet();
-        fieldSet.setCollapsible(true);
-        fieldSet.setHeading(Messages.get("label_manualRanking", "Manual ranking"));
-        final CheckBox useManualRanking = new CheckBox();
-        useManualRanking.setBoxLabel(Messages.get("label_useManualRanking", "Use manual ranking"));
-
-        useManualRanking.addListener(Events.Change, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent componentEvent) {
-                if (useManualRanking.getValue()) {
-                    removedTypes.add("jmix:orderedList");
-                    addedTypes.remove("jmix:orderedList");
-                } else {
-                    addedTypes.add("jmix:orderedList");
-                    removedTypes.remove("jmix:orderedList");
-                }
-
-                // update form components
-                for (Component component : form.getItems()) {
-                    if (useManualRanking.getValue()) {
-                        component.setData("addedField", null);
-                        component.setEnabled(false);
-                    } else {
-                        component.setData("addedField", "true");
-                        component.setEnabled(true);
-                    }
-                }
-                grid.setEnabled(useManualRanking.getValue());
-            }
-        });
-
-
-        // update form components
-        boolean isManual = !nodeTypes.contains(mix);
-        for (Component component : form.getItems()) {
-            component.setEnabled(!isManual);
-        }
-        useManualRanking.setValue(isManual);
-        grid.setEnabled(isManual);
-
-        fieldSet.add(useManualRanking);
-        fieldSet.add(grid);
-        add(fieldSet);
-
-        return grid;
-    }
 
     /**
      * Add item
@@ -242,6 +178,8 @@ public class PropertiesEditor extends FormPanel {
      * @param fieldSetGrouping
      */
     private void addItems(FormPanel form, GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items, boolean optional, boolean fieldSetGrouping) {
+        boolean isOrderingList = "jmix:orderedList".contains(nodeType.getName()) || nodeType.getSuperTypes().contains("jmix:orderedList");
+
 
         for (final GWTJahiaItemDefinition definition : items) {
             if ((excludedTypes != null && excludedTypes.contains(definition.getDeclaringNodeType())) ||
@@ -284,11 +222,12 @@ public class PropertiesEditor extends FormPanel {
             if (field != null) {
                 if (fieldSetGrouping && (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
                     setPadding(0);
+
                     fieldSet = new FieldSet();
                     fieldSet.setId(definition.getDeclaringNodeTypeLabel());
                     fieldSet.add(field);
                     fieldSet.setCollapsible(true);
-                    if (optional) {
+                    if (optional || isOrderingList) {
                         fieldSet.setCheckboxToggle(true);
                         if (nodeTypes.contains(nodeType)) {
                             fieldSet.setExpanded(true);
@@ -327,6 +266,11 @@ public class PropertiesEditor extends FormPanel {
                     setBodyBorder(false);
                     fieldSet.add(form);
                     add(fieldSet);
+
+                    if (isOrderingList) {
+                        orderingListFieldSet.add(fieldSet);
+                    }
+
                     this.form = form;
                 }
                 if (isMultipleEdit && !definition.isProtected()) {
@@ -556,17 +500,7 @@ public class PropertiesEditor extends FormPanel {
         return propertyDefinitions.get(prop.getName());
     }
 
-    /**
-     * Get new manual ordering
-     *
-     * @return
-     */
-    public List<GWTJahiaNode> getNewManualOrderedChildrenList() {
-        if (manualListOrderingEditor == null || !manualListOrderingEditor.isEnabled()) {
-            return null;
-        }
-        return manualListOrderingEditor.getOrderedNodes();
+    public List<FieldSet> getOrderingListFieldSet() {
+        return orderingListFieldSet;
     }
-
-
 }

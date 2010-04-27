@@ -8,8 +8,11 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +40,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
             add(wrapperPanel);
         }
         wrapperPanel.add(propertiesEditor);
+
         attachManualListOrderingEditor(propertiesEditor);
     }
 
@@ -83,7 +87,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
 
         // update form components
         boolean isManual = true; //!propertiesEditor.getNodeTypes().contains(mix);
-        for (Component component : propertiesEditor.getItems()) {
+        for (Component component : propertiesEditor.getOrderingListFieldSet()) {
             component.setEnabled(!isManual);
         }
         useManualRanking.setValue(isManual);
@@ -92,5 +96,16 @@ public class ListOrderingContentTabItem extends ContentTabItem {
         fieldSet.add(useManualRanking);
         fieldSet.add(manualListOrderingEditor);
         wrapperPanel.add(fieldSet);
+    }
+
+    /**
+     * Get manual ordered children list
+     * @return
+     */
+    public List<GWTJahiaNode> getNewManualOrderedChildrenList() {
+        if (manualListOrderingEditor == null || !manualListOrderingEditor.isEnabled()) {
+            return null;
+        }
+        return manualListOrderingEditor.getOrderedNodes();
     }
 }

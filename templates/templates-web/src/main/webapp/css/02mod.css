@@ -5,6 +5,7 @@
 #bodywrapper #columns .widget {
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999;
 }
 #columns .widget .widget-head h3 {
 	color:#fff
@@ -50,6 +51,7 @@ shortcuts
 	padding:5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	border-radius: 5px;
 	display:block;
 	font-size:1.2em;
 	bottom:0;
@@ -92,6 +94,7 @@ shortcuts
 	z-index:9999;
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999;
 }
 #bodywrapper #shortcuts li {
 	font-size:1.1em;

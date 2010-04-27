@@ -682,14 +682,14 @@ td.x-date-mp-sep{border-right:1px solid #b7cbd8;}
 	background-image:none;
 }
 .x-form-field:hover {
-border:1px solid #3680ba;
+
 }
 .x-panel-fbar {
 	padding-top:10px;
 	padding-bottom:5px;
 }
 .x-fieldset {
-margin:5px 10px;
+	margin:5px 10px;
 }
 fieldset.x-panel-collapsed {
 background-color:#E1E9EE;

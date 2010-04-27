@@ -32,17 +32,8 @@
 package org.jahia.services.remotepublish;
 
 import junit.framework.TestCase;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.modules.remotepublish.LogBundle;
-import org.jahia.modules.remotepublish.LogEntry;
 import org.jahia.modules.remotepublish.RemotePublicationService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
@@ -51,20 +42,18 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.json.JSONObject;
 
-import javax.jcr.observation.Event;
-import java.io.*;
-import java.net.URL;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Unit test for remote publishing
- *
  */
 public class LogReplayTest extends TestCase {
     private static Logger logger = Logger.getLogger(LogReplayTest.class);
@@ -91,9 +80,9 @@ public class LogReplayTest extends TestCase {
     }
 
     public void testLogImport() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          LanguageCodeConverters.languageCodeToLocale(
+                                                                                                  site.getDefaultLanguage()));
 
         final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         final JCRNodeWrapper target = node.addNode("target", "jnt:page");
@@ -108,6 +97,277 @@ public class LogReplayTest extends TestCase {
 
     }
 
+    public void testLogAddAndRemoveNode() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          LanguageCodeConverters.languageCodeToLocale(
+                                                                                                  site.getDefaultLanguage()));
+
+        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+        JCRNodeWrapper source = node.addNode("source", "jnt:page");
+        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
+        JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
+        session.save();
+
+        Calendar now = new GregorianCalendar();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                              LanguageCodeConverters.languageCodeToLocale(
+                                                                                                      site.getDefaultLanguage()));
+
+        JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remoteAddNode", ".log.gz");
+        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+        node.checkout();
+        JCRNodeWrapper target = node.addNode("target", "jnt:page");
+        session.save();
+
+        try {
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+
+        assertTrue("Node not added", target.hasNode("page1"));
+        assertTrue("Node not added", target.hasNode("page2"));
+        assertTrue("Node not added", target.hasNode("page3"));
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        now = new GregorianCalendar();
+        source.checkout();
+        page1.checkout();
+        page1.remove();
+        session.save();
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
+        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+        target = node.getNode("target");
+        try {
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+        assertFalse("Node has not been removed", target.hasNode("page1"));
+
+    }
+
+    public void testLogAddAndUpdateOfProperty() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          LanguageCodeConverters.languageCodeToLocale(
+                                                                                                  site.getDefaultLanguage()));
+
+        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+        JCRNodeWrapper source = node.addNode("source", "jnt:user");
+        session.save();
 
 
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+
+        Calendar now = new GregorianCalendar();
+        source.checkout();
+        source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty");
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                              LanguageCodeConverters.languageCodeToLocale(
+                                                                                                      site.getDefaultLanguage()));
+
+        JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remoteAddNode", ".log.gz");
+        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+        node.checkout();
+        JCRNodeWrapper target = node.addNode("target", "jnt:user");
+        session.save();
+
+        try {
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+
+        assertEquals("Property j:firstName does not match testLogAddAndUpdateOfProperty",
+                     "testLogAddAndUpdateOfProperty", target.getProperty("j:firstName").getString());
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        now = new GregorianCalendar();
+        source.checkout();
+        source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty_updated");
+        session.save();
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
+        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+        target = node.getNode("target");
+        try {
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+        assertEquals("Property j:firstName does not match testLogAddAndUpdateOfProperty_updated",
+                     "testLogAddAndUpdateOfProperty_updated", target.getProperty("j:firstName").getString());
+
+    }
+
+    public void testLogAddAndRemoveOfProperty() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          LanguageCodeConverters.languageCodeToLocale(
+                                                                                                  site.getDefaultLanguage()));
+
+        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+        JCRNodeWrapper source = node.addNode("source", "jnt:user");
+        session.save();
+
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+
+        Calendar now = new GregorianCalendar();
+        source.checkout();
+        source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty");
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                              LanguageCodeConverters.languageCodeToLocale(
+                                                                                                      site.getDefaultLanguage()));
+
+        JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remoteAddNode", ".log.gz");
+        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+        node.checkout();
+        JCRNodeWrapper target = node.addNode("target", "jnt:user");
+        session.save();
+
+        try {
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+
+        assertEquals("Property j:firstName does not match testLogAddAndUpdateOfProperty",
+                     "testLogAddAndUpdateOfProperty", target.getProperty("j:firstName").getString());
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        now = new GregorianCalendar();
+        source.checkout();
+        source.getProperty("j:firstName").remove();
+        session.save();
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
+        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+        target = node.getNode("target");
+        try {
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+        try {
+            target.getProperty("j:firstName");
+            fail("Property j:firstName should not exist");
+        } catch (PathNotFoundException e) {
+        }
+
+    }
+
+    public void testLogMoveOfNode() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          LanguageCodeConverters.languageCodeToLocale(
+                                                                                                  site.getDefaultLanguage()));
+
+        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+        JCRNodeWrapper source = node.addNode("source", "jnt:page");
+        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        JCRNodeWrapper page2 = page1.addNode("page2", "jnt:page");
+        JCRNodeWrapper page3 = page2.addNode("page3", "jnt:page");
+        session.save();
+
+        Calendar now = new GregorianCalendar();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                              LanguageCodeConverters.languageCodeToLocale(
+                                                                                                      site.getDefaultLanguage()));
+
+        JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remoteAddNode", ".log.gz");
+        JCRNodeWrapper target;
+        try {
+            RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+            node.checkout();
+            target = node.addNode("target", "jnt:page");
+            session.save();
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+
+        try {
+            session.getNode("/sites/jcrRPTest/home/target/page1/page2/page3");
+        } catch (PathNotFoundException e) {
+            fail("We should have found path : /sites/jcrRPTest/home/target/page1/page2/page3");
+        }
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+
+        now = new GregorianCalendar();
+        page1.checkout();
+        page3.checkout();
+        page2.checkout();
+        try {
+            session.move(page3.getPath(), page1.getPath() + "/page3_moved");
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+
+        tmp = File.createTempFile("remoteMoveNode", ".log.gz");
+        try {
+            RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+            target = node.getNode("target");
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+        try {
+            session.getNode("/sites/jcrRPTest/home/target/page1/page2/page3");
+            fail("We should not have found path : /sites/jcrRPTest/home/target/page1/page2/page3");
+        } catch (PathNotFoundException e) {
+        }
+
+        try {
+            session.getNode("/sites/jcrRPTest/home/target/page1/page3_moved");
+        } catch (PathNotFoundException e) {
+            fail("We should have found path : /sites/jcrRPTest/home/target/page1/page3_moved");
+        }
+
+    }
 }

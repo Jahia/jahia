@@ -1,16 +1,20 @@
 package org.jahia.modules.remotepublish;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventJournal;
 import java.io.*;
@@ -65,9 +69,9 @@ public class RemotePublicationService {
         final String workspace = source.getSession().getWorkspace().getName();
         JCRSessionWrapper liveSession = sessionFactory.getCurrentUserSession(workspace, null);
 
-        EventJournal journal =
-                liveSession.getProviderSession(source.getProvider()).getWorkspace().getObservationManager()
-                        .getEventJournal(-1, source.getPath(), true, null, null);
+        EventJournal journal = liveSession.getProviderSession(
+                source.getProvider()).getWorkspace().getObservationManager().getEventJournal(-1, source.getPath(), true,
+                                                                                             null, null);
         if (calendar != null) {
             journal.skipTo(calendar.getTimeInMillis());
         } else {
@@ -102,12 +106,43 @@ public class RemotePublicationService {
                     }
                     break;
                 }
+
                 case Event.NODE_REMOVED: {
                     oos.writeObject(logEntry);
                     addedPath.remove(path);
                     break;
                 }
+
                 case Event.PROPERTY_ADDED: {
+                    if (!addedPath.contains(path)) {
+                        String nodePath = StringUtils.substringBeforeLast(path, "/");
+                        final JCRNodeWrapper node = liveSession.getNode(nodePath);
+                        try {
+                            final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path,
+                                                                                                                "/"));
+                            oos.writeObject(logEntry);
+                            serializePropertyValue(oos, property);
+                        } catch (PathNotFoundException e) {
+                            logger.debug(e.getMessage(), e);
+                        }
+                    }
+                    break;
+                }
+
+                case Event.PROPERTY_CHANGED: {
+                    String nodePath = StringUtils.substringBeforeLast(path, "/");
+                    try {
+                        final JCRNodeWrapper node = liveSession.getNode(nodePath);
+                        final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path, "/"));
+                        oos.writeObject(logEntry);
+                        serializePropertyValue(oos, property);
+                    } catch (PathNotFoundException e) {
+                        logger.debug(e.getMessage(), e);
+                    }
+                    break;
+                }
+
+                case Event.PROPERTY_REMOVED: {
                     if (!addedPath.contains(path)) {
                         oos.writeObject(logEntry);
                     }
@@ -123,6 +158,21 @@ public class RemotePublicationService {
 
 
         oos.close();
+    }
+
+    private void serializePropertyValue(ObjectOutputStream oos, JCRPropertyWrapper property)
+            throws RepositoryException, IOException {
+        if (property.isMultiple()) {
+            final Value[] obj = property.getValues();
+            String[] builder = new String[obj.length];
+            for (int i = 0; i < obj.length; i++) {
+                Value value = obj[i];
+                builder[i] = value.getString();
+            }
+            oos.writeObject(builder);
+        } else {
+            oos.writeObject(property.getValue().getString());
+        }
     }
 
     public void replayLog(JCRNodeWrapper target, InputStream in)
@@ -146,17 +196,72 @@ public class RemotePublicationService {
             switch (entry.getEventType()) {
                 case Event.NODE_ADDED: {
                     byte[] b = (byte[]) ois.readObject();
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Adding Node " + path + " with xml: " + new String(b, "UTF-8"));
+                    }
                     path = StringUtils.substringBeforeLast(path, "/");
                     session.getNode(path).checkout();
-                    session.importXML(path, new ByteArrayInputStream(b),
-                            ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                    session.importXML(path, new ByteArrayInputStream(b), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                     break;
                 }
                 case Event.NODE_REMOVED: {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Removing Node " + path);
+                    }
                     final JCRNodeWrapper node = session.getNode(path);
                     node.getParent().checkout();
                     node.checkout();
                     node.remove();
+                    break;
+                }
+                case Event.PROPERTY_ADDED:
+                case Event.PROPERTY_CHANGED: {
+                    try {
+                        Object o1 = ois.readObject();
+
+                        final JCRNodeWrapper node = session.getNode(StringUtils.substringBeforeLast(path, "/"));
+                        node.checkout();
+                        String propertyName = StringUtils.substringAfterLast(path, "/");
+                        if (o1 instanceof String) {
+                            String propertyValue = (String) o1;
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Adding Property " + path + " with xml: " + propertyValue);
+                            }
+                            node.setProperty(propertyName, propertyValue);
+                        } else {
+                            String[] values = (String[]) o1;
+                            if (logger.isDebugEnabled()) {
+                                logger.debug(
+                                        "Adding Property " + path + " with xml: " + ToStringBuilder.reflectionToString(
+                                                values, ToStringStyle.MULTI_LINE_STYLE));
+                            }
+                            node.setProperty(propertyName, values);
+                        }
+                    } catch (ConstraintViolationException e) {
+                        logger.debug("Issue during add/update of property " + path + " (error: " + e.getMessage() + ")",
+                                     e);
+                    } catch (RepositoryException e) {
+                        logger.error("Error during add/update of property " + path + " (error: " + e.getMessage() + ")",
+                                     e);
+                        throw e;
+                    }
+                    break;
+                }
+                case Event.PROPERTY_REMOVED: {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Removing Property " + path);
+                    }
+                    final JCRNodeWrapper node = session.getNode(StringUtils.substringBeforeLast(path, "/"));
+                    node.checkout();
+                    try {
+                        node.getProperty(StringUtils.substringAfterLast(path, "/")).remove();
+                    } catch (PathNotFoundException e) {
+                        logger.debug("Issue during removal of property " + path + " (error: " + e.getMessage() + ")",
+                                     e);
+                    } catch (ConstraintViolationException e) {
+                        logger.debug("Issue during removal of property " + path + " (error: " + e.getMessage() + ")",
+                                     e);
+                    }
                     break;
                 }
             }

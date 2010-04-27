@@ -32,15 +32,8 @@
 package org.jahia.services.remotepublish;
 
 import junit.framework.TestCase;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.modules.remotepublish.LogBundle;
 import org.jahia.modules.remotepublish.LogBundleEnd;
 import org.jahia.modules.remotepublish.LogEntry;
@@ -52,15 +45,10 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.json.JSONObject;
 
 import javax.jcr.observation.Event;
 import java.io.*;
-import java.net.URL;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -92,7 +80,8 @@ public class LogGenerationTest extends TestCase {
     }
 
 
-    public void testLogGeneration() throws Exception {
+
+    public void testAddNodeAndSubnodeLogGeneration() throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -112,13 +101,17 @@ public class LogGenerationTest extends TestCase {
                 .getCurrentUserSession(Constants.LIVE_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-        source = liveSession.getNodeByUUID(source.getUUID());
+        source = liveSession.getNodeByUUID(source.getIdentifier());
 
         File tmp = File.createTempFile("remote",".log.gz");
         RemotePublicationService.getInstance().generateLog(source, now, new FileOutputStream(tmp));
 
         Set<String> added = new HashSet<String>();
-        LogBundleEnd log = parseResults(tmp, source, added);
+        Set<String> removed = new HashSet<String>();
+        Map<String,String> addedProperties = new HashMap<String, String>();
+        Map<String,String> updatedProperties = new HashMap<String, String>();
+        Set<String> removedProperties = new HashSet<String>();
+        LogBundleEnd log = parseResults(tmp, source, added,removed,addedProperties,updatedProperties, removedProperties);
 
         assertTrue("New page not in log",added.contains("/sites/jcrRPTest/home/source/page1"));
         assertTrue("New page not in log",added.contains("/sites/jcrRPTest/home/source/page2"));
@@ -135,12 +128,142 @@ public class LogGenerationTest extends TestCase {
         RemotePublicationService.getInstance().generateLog(source, now, new FileOutputStream(tmp));
 
         added.clear();
-        parseResults(tmp, source, added);
+        parseResults(tmp, source, added, removed, addedProperties,updatedProperties, removedProperties);
         assertEquals("Bas number of add node events", 1,added.size());
         assertTrue(added.contains("/sites/jcrRPTest/home/source/page3/j:translation"));
     }
 
-    private LogBundleEnd parseResults(File tmp, JCRNodeWrapper source, Set<String> added) throws Exception {
+    public void testRemoveNodeLogGeneration() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+        JCRNodeWrapper source = node.addNode("source", "jnt:page");
+        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        session.save();
+
+
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        Calendar now = new GregorianCalendar();
+        source.checkout();
+        page1.checkout();
+        page1.remove();
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        source = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remote",".log.gz");
+        RemotePublicationService.getInstance().generateLog(source, now, new FileOutputStream(tmp));
+
+        Set<String> added = new HashSet<String>();
+        Set<String> removed = new HashSet<String>();
+        Map<String,String> addedProperties = new HashMap<String, String>();
+        Map<String,String> updatedProperties = new HashMap<String, String>();
+        Set<String> removedProperties = new HashSet<String>();
+        LogBundleEnd log = parseResults(tmp, source, added,removed,addedProperties,updatedProperties, removedProperties);
+
+        assertTrue("Removed page not in log",removed.contains("/sites/jcrRPTest/home/source/page1"));
+    }
+
+
+    public void testAddNewPropertyAndUpdatePropertyLogGeneration() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+        JCRNodeWrapper source = node.addNode("source", "jnt:user");
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        Calendar now = new GregorianCalendar();
+        source.checkout();
+        source.setProperty("j:firstName","testAddNewPropertyAndUpdatePropertyLogGeneration"); 
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remote",".log.gz");
+        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+
+        Set<String> addedNodes = new HashSet<String>();
+        Set<String> removedNodes = new HashSet<String>();
+        Map<String,String> addedProperties = new HashMap<String, String>();
+        Map<String,String> updatedProperties = new HashMap<String, String>();
+        Set<String> removedProperties = new HashSet<String>();
+        LogBundleEnd log = parseResults(tmp, liveSource, addedNodes,removedNodes,addedProperties,updatedProperties,
+                                        removedProperties);
+
+        assertTrue("New property j:firstname not in log",addedProperties.containsKey("/sites/jcrRPTest/home/source/j:firstName"));
+        assertEquals("New property j:firstname value must be testAddNewPropertyAndUpdatePropertyLogGeneration","testAddNewPropertyAndUpdatePropertyLogGeneration",addedProperties.get("/sites/jcrRPTest/home/source/j:firstName"));
+        assertTrue("Existing property should have been updated",updatedProperties.containsKey("/sites/jcrRPTest/home/source/j:lastPublished"));
+    }
+
+
+    public void testRemovePropertyLogGeneration() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+        JCRNodeWrapper source = node.addNode("source", "jnt:user");
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+
+        source.checkout();
+        source.setProperty("j:firstName","testAddNewPropertyAndUpdatePropertyLogGeneration");
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        Calendar now = new GregorianCalendar();
+
+        source.checkout();
+        source.getProperty("j:firstName").remove();
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remote",".log.gz");
+        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+
+        Set<String> addedNodes = new HashSet<String>();
+        Set<String> removedNodes = new HashSet<String>();
+        Map<String,String> addedProperties = new HashMap<String, String>();
+        Map<String,String> updatedProperties = new HashMap<String, String>();
+        Set<String> removedProperties = new HashSet<String>();
+        LogBundleEnd log = parseResults(tmp, liveSource, addedNodes, removedNodes,addedProperties,updatedProperties,removedProperties);
+
+        assertTrue("Removed property j:firstname not in log",removedProperties.contains("/sites/jcrRPTest/home/source/j:firstName"));
+    }
+
+    private LogBundleEnd parseResults(File tmp, JCRNodeWrapper source, Set<String> addedNodes, Set<String> removedNodes,
+                                      Map<String, String> addedProperties, Map<String, String> updatedProperties,
+                                      Set<String> removedProperties) throws Exception {
         ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(new FileInputStream(tmp)));
         LogBundle log = (LogBundle) ois.readObject();
         assertEquals("Source path not the same",source.getPath(), log.getSourcePath());
@@ -153,18 +276,37 @@ public class LogGenerationTest extends TestCase {
                 case Event.NODE_ADDED: {
                     System.out.println("node added " + path);
                     byte[] data = (byte[]) ois.readObject();
-                    added.add(path);
+                    addedNodes.add(path);
                     break;
                 }
                 case Event.NODE_REMOVED: {
                     System.out.println("node removed " +path);
+                    removedNodes.add(path);
+                    break;
+                }
+
+                case Event.PROPERTY_ADDED: {
+                    String propertyValue = (String) ois.readObject();
+                    System.out.println("property added " +path+ " with value "+propertyValue);
+                    addedProperties.put(path,propertyValue);
+                    break;
+                }
+
+                case Event.PROPERTY_CHANGED: {
+                    String propertyValue = (String) ois.readObject();
+                    System.out.println("property changed " +path+ " with value "+propertyValue);
+                    updatedProperties.put(path,propertyValue);
+                    break;
+                }
+
+                case Event.PROPERTY_REMOVED: {
+                    removedProperties.add(path);
                     break;
                 }
             }
         }
-        LogBundleEnd end = (LogBundleEnd) o;
 
-        return end;
+        return (LogBundleEnd) o;
     }
 
 

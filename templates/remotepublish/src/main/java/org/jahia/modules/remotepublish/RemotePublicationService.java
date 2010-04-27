@@ -18,10 +18,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventJournal;
 import java.io.*;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -185,6 +182,7 @@ public class RemotePublicationService {
 
         session.getPathMapping().put(log.getSourcePath(), target.getPath());
         Set<String> addedPath = new HashSet<String>();
+        Map<String,Object> missedProperties = new HashMap<String, Object>();
         Object o;
         while ((o = ois.readObject()) instanceof LogEntry) {
             LogEntry entry = (LogEntry) o;
@@ -218,30 +216,22 @@ public class RemotePublicationService {
                 }
                 case Event.PROPERTY_ADDED:
                 case Event.PROPERTY_CHANGED: {
+                    Object o1 = ois.readObject();
                     try {
-                        Object o1 = ois.readObject();
-
-                        final JCRNodeWrapper node = session.getNode(StringUtils.substringBeforeLast(path, "/"));
-                        node.checkout();
-                        String propertyName = StringUtils.substringAfterLast(path, "/");
-                        if (o1 instanceof String) {
-                            String propertyValue = (String) o1;
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Adding Property " + path + " with xml: " + propertyValue);
+                        updateProperty(session, path, o1);
+                        if(path.contains("jcr:language")) {
+                            for (Map.Entry<String, Object> missedProperty : missedProperties.entrySet()) {
+                                updateProperty(session,missedProperty.getKey(),missedProperty.getValue());
                             }
-                            node.setProperty(propertyName, propertyValue);
-                        } else {
-                            String[] values = (String[]) o1;
-                            if (logger.isDebugEnabled()) {
-                                logger.debug(
-                                        "Adding Property " + path + " with xml: " + ToStringBuilder.reflectionToString(
-                                                values, ToStringStyle.MULTI_LINE_STYLE));
-                            }
-                            node.setProperty(propertyName, values);
+                            missedProperties.clear();
                         }
                     } catch (ConstraintViolationException e) {
                         logger.debug("Issue during add/update of property " + path + " (error: " + e.getMessage() + ")",
                                      e);
+                    } catch (PathNotFoundException e) {
+                        logger.debug("Error during add/update of property " + path + " (error: " + e.getMessage() + ")",
+                                     e);
+                        missedProperties.put(path,o1);
                     } catch (RepositoryException e) {
                         logger.error("Error during add/update of property " + path + " (error: " + e.getMessage() + ")",
                                      e);
@@ -275,6 +265,27 @@ public class RemotePublicationService {
         target.setProperty("uuid", log.getSourceUuid());
         target.setProperty("lastReplay", end.getDate());
         session.save();
+    }
+
+    private void updateProperty(JCRSessionWrapper session, String path, Object o1) throws RepositoryException {
+        final JCRNodeWrapper node = session.getNode(StringUtils.substringBeforeLast(path, "/"));
+        node.checkout();
+        String propertyName = StringUtils.substringAfterLast(path, "/");
+        if (o1 instanceof String) {
+            String propertyValue = (String) o1;
+            if (logger.isDebugEnabled()) {
+                logger.debug("Adding Property " + path + " with xml: " + propertyValue);
+            }
+            node.setProperty(propertyName, propertyValue);
+        } else {
+            String[] values = (String[]) o1;
+            if (logger.isDebugEnabled()) {
+                logger.debug(
+                        "Adding Property " + path + " with xml: " + ToStringBuilder.reflectionToString(
+                                values, ToStringStyle.MULTI_LINE_STYLE));
+            }
+            node.setProperty(propertyName, values);
+        }
     }
 
 }

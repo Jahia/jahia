@@ -65,6 +65,8 @@ public class RemotePublishAction implements Action {
         String remoteUser = node.getProperty("remoteUser").getString();
         String remotePassword = node.getProperty("remotePassword").getString();
 
+        logger.info("Execute remote publication on "+remoteUrl  + remotePath);
+
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);
 

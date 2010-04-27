@@ -108,8 +108,8 @@ public class LogGenerationTest extends TestCase {
 
         Set<String> added = new HashSet<String>();
         Set<String> removed = new HashSet<String>();
-        Map<String,String> addedProperties = new HashMap<String, String>();
-        Map<String,String> updatedProperties = new HashMap<String, String>();
+        Map<String,Object> addedProperties = new HashMap<String, Object>();
+        Map<String,Object> updatedProperties = new HashMap<String, Object>();
         Set<String> removedProperties = new HashSet<String>();
         LogBundleEnd log = parseResults(tmp, source, added,removed,addedProperties,updatedProperties, removedProperties);
 
@@ -166,8 +166,8 @@ public class LogGenerationTest extends TestCase {
 
         Set<String> added = new HashSet<String>();
         Set<String> removed = new HashSet<String>();
-        Map<String,String> addedProperties = new HashMap<String, String>();
-        Map<String,String> updatedProperties = new HashMap<String, String>();
+        Map<String,Object> addedProperties = new HashMap<String, Object>();
+        Map<String,Object> updatedProperties = new HashMap<String, Object>();
         Set<String> removedProperties = new HashSet<String>();
         LogBundleEnd log = parseResults(tmp, source, added,removed,addedProperties,updatedProperties, removedProperties);
 
@@ -204,8 +204,8 @@ public class LogGenerationTest extends TestCase {
 
         Set<String> addedNodes = new HashSet<String>();
         Set<String> removedNodes = new HashSet<String>();
-        Map<String,String> addedProperties = new HashMap<String, String>();
-        Map<String,String> updatedProperties = new HashMap<String, String>();
+        Map<String,Object> addedProperties = new HashMap<String, Object>();
+        Map<String,Object> updatedProperties = new HashMap<String, Object>();
         Set<String> removedProperties = new HashSet<String>();
         LogBundleEnd log = parseResults(tmp, liveSource, addedNodes,removedNodes,addedProperties,updatedProperties,
                                         removedProperties);
@@ -253,16 +253,60 @@ public class LogGenerationTest extends TestCase {
 
         Set<String> addedNodes = new HashSet<String>();
         Set<String> removedNodes = new HashSet<String>();
-        Map<String,String> addedProperties = new HashMap<String, String>();
-        Map<String,String> updatedProperties = new HashMap<String, String>();
+        Map<String,Object> addedProperties = new HashMap<String, Object>();
+        Map<String,Object> updatedProperties = new HashMap<String, Object>();
         Set<String> removedProperties = new HashSet<String>();
         LogBundleEnd log = parseResults(tmp, liveSource, addedNodes, removedNodes,addedProperties,updatedProperties,removedProperties);
 
         assertTrue("Removed property j:firstname not in log",removedProperties.contains("/sites/jcrRPTest/home/source/j:firstName"));
     }
 
+    public void testBinaryNode() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        JCRNodeWrapper source = session.getNode("/sites/jcrRPTest/files");
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        Calendar now = new GregorianCalendar();
+
+        String value = "This is a test";
+        String mimeType = "text/plain";
+
+        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+        String name = "test.txt";
+        JCRNodeWrapper testFile = source.uploadFile(name, is, mimeType);
+
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files/test.txt", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        source = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remote",".log.gz");
+        RemotePublicationService.getInstance().generateLog(source, now, new FileOutputStream(tmp));
+
+        Set<String> added = new HashSet<String>();
+        Set<String> removed = new HashSet<String>();
+        Map<String,Object> addedProperties = new HashMap<String, Object>();
+        Map<String,Object> updatedProperties = new HashMap<String, Object>();
+        Set<String> removedProperties = new HashSet<String>();
+        LogBundleEnd log = parseResults(tmp, source, added,removed,addedProperties,updatedProperties, removedProperties);
+        assertTrue("Invalid type for binary property", addedProperties.get("/sites/jcrRPTest/files/test.txt/jcr:content/jcr:data") instanceof byte[]);
+        byte[] bytes = (byte[]) addedProperties.get("/sites/jcrRPTest/files/test.txt/jcr:content/jcr:data");
+        assertEquals("Binary content invalid", value,new String(bytes,"UTF-8"));
+    }
+    
     private LogBundleEnd parseResults(File tmp, JCRNodeWrapper source, Set<String> addedNodes, Set<String> removedNodes,
-                                      Map<String, String> addedProperties, Map<String, String> updatedProperties,
+                                      Map<String, Object> addedProperties, Map<String, Object> updatedProperties,
                                       Set<String> removedProperties) throws Exception {
         ObjectInputStream ois = new ObjectInputStream(new GZIPInputStream(new FileInputStream(tmp)));
         LogBundle log = (LogBundle) ois.readObject();
@@ -288,14 +332,14 @@ public class LogGenerationTest extends TestCase {
                 case Event.PROPERTY_ADDED: {
                     Object propertyValue =  ois.readObject();
                     System.out.println("property added " +path+ " with value "+propertyValue);
-                    addedProperties.put(path,propertyValue.toString());
+                    addedProperties.put(path,propertyValue);
                     break;
                 }
 
                 case Event.PROPERTY_CHANGED: {
                     Object propertyValue =  ois.readObject();
                     System.out.println("property changed " +path+ " with value "+propertyValue);
-                    updatedProperties.put(path,propertyValue.toString());
+                    updatedProperties.put(path,propertyValue);
                     break;
                 }
 
@@ -308,7 +352,6 @@ public class LogGenerationTest extends TestCase {
 
         return (LogBundleEnd) o;
     }
-
 
 
 

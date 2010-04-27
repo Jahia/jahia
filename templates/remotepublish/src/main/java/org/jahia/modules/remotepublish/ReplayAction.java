@@ -58,6 +58,9 @@ public class ReplayAction implements Action {
             try {
                 final JCRNodeWrapper target = resource.getNode();
                 final InputStream in = file.getInputStream();
+
+                logger.info("Received log from "+req.getRemoteHost());
+
                 service.replayLog(target, in);
             } catch (Exception e) {
                 logger.error("Error when replaying log",e);

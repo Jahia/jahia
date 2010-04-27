@@ -32,25 +32,21 @@
 package org.jahia.services.remotepublish;
 
 import junit.framework.TestCase;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.modules.remotepublish.LogBundleEnd;
 import org.jahia.modules.remotepublish.RemotePublicationService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import javax.jcr.Value;
+import java.io.*;
+import java.util.*;
 
 /**
  * Unit test for remote publishing
@@ -377,4 +373,59 @@ public class LogReplayTest extends TestCase {
         }
 
     }
+
+    public void testLogBinaryNode() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/files");
+        JCRNodeWrapper source = node.addNode("source","jnt:folder");
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        Calendar now = new GregorianCalendar();
+
+        String value = "This is a test";
+        String mimeType = "text/plain";
+
+        InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+        String name = "test.txt";
+        JCRNodeWrapper testFile = source.uploadFile(name, is, mimeType);
+
+        session.save();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files/source", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files/source/test.txt", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
+                .getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+        source = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remote",".log.gz");
+        RemotePublicationService.getInstance().generateLog(source, now, new FileOutputStream(tmp));
+
+        node.checkout();
+        JCRNodeWrapper target = node.addNode("target", "jnt:folder");
+        session.save();
+        RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+
+        assertTrue("File node not found", target.hasNode("test.txt"));
+        JCRNodeWrapper targetFile = target.getNode("test.txt");
+        assertTrue("Content node not found", targetFile.hasNode("jcr:content"));
+        JCRNodeWrapper targetContent = targetFile.getNode("jcr:content");
+        assertTrue("data property not found", targetContent.hasProperty("jcr:data"));
+
+        Value v = targetContent.getProperty("jcr:data").getValue();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        IOUtils.copy(v.getBinary().getStream(), baos);
+        assertEquals("Binary content invalid", value,new String(baos.toByteArray(),"UTF-8"));
+
+    }
+
+
 }

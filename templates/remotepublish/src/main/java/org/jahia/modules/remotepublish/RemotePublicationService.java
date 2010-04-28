@@ -89,6 +89,13 @@ public class RemotePublicationService {
                         JCRNodeWrapper node = liveSession.getNode(path);
                         oos.writeObject(logEntry);
                         oos.writeObject(node.getPrimaryNodeTypeName());
+                        NodeIterator ni = node.getSharedSet();
+                        List<String> sharedSet = new ArrayList<String>();
+                        while (ni.hasNext()) {
+                            JCRNodeWrapper sub = (JCRNodeWrapper) ni.next();
+                            sharedSet.add(sub.getPath());
+                        }
+                        oos.writeObject(sharedSet);
                     } catch (PathNotFoundException e) {
                         // not present anymore
                     }
@@ -230,13 +237,32 @@ public class RemotePublicationService {
                                     case Event.NODE_ADDED: {
                                         if (!addedPath.contains(path)) {
                                             String nodeType = (String) ois.readObject();
+                                            List<String> sharedSet = (List<String>) ois.readObject();
                                             if (logger.isInfoEnabled()) {
                                                 logger.info("Adding Node " + path + " with nodetype: " + nodeType);
                                             }
                                             String parentPath = StringUtils.substringBeforeLast(path, "/");
                                             JCRNodeWrapper parent = session.getNode(parentPath);
                                             parent.checkout();
-                                            parent.addNode(StringUtils.substringAfterLast(path, "/"), nodeType);
+
+                                            boolean sharedNode = false;
+                                            for (String sharedPath : sharedSet) {
+                                                if (!sharedPath.equals(entry.getPath()) && sharedPath.startsWith(log.getSourcePath())) {
+                                                    String s = target.getPath() + StringUtils.substringAfter(sharedPath, log.getSourcePath());
+                                                    try {
+                                                        JCRNodeWrapper node = session.getNode(s);
+                                                        logger.info("Found an existing share at : "+s);
+                                                        parent.clone(node,StringUtils.substringAfterLast(path, "/"));
+                                                        sharedNode = true;
+                                                        break;
+                                                    } catch (PathNotFoundException e) {
+                                                        // Share not found : ignore
+                                                    }
+                                                }
+                                            }
+                                            if (!sharedNode) {
+                                                parent.addNode(StringUtils.substringAfterLast(path, "/"), nodeType);
+                                            }
                                             addedPath.add(path);
                                         }
                                         break;

@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -66,12 +67,12 @@ public class ListOrderingContentTabItem extends ContentTabItem {
                     propertiesEditor.getRemovedTypes().add("jmix:orderedList");
                     propertiesEditor.getAddedTypes().remove("jmix:orderedList");
                 } else {
-                    propertiesEditor.getRemovedTypes().add("jmix:orderedList");
-                    propertiesEditor.getAddedTypes().remove("jmix:orderedList");
+                    propertiesEditor.getRemovedTypes().remove("jmix:orderedList");
+                    propertiesEditor.getAddedTypes().add("jmix:orderedList");
                 }
 
                 // update form components
-                for (Component component : propertiesEditor.getItems()) {
+                for (Component component : propertiesEditor.getOrderingListFieldSet()) {
                     if (useManualRanking.getValue()) {
                         component.setData("addedField", null);
                         component.setEnabled(false);
@@ -86,7 +87,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
 
 
         // update form components
-        boolean isManual = true; //!propertiesEditor.getNodeTypes().contains(mix);
+        boolean isManual = !propertiesEditor.getNodeTypes().contains(new GWTJahiaNodeType("jmix:orderedList"));
         for (Component component : propertiesEditor.getOrderingListFieldSet()) {
             component.setEnabled(!isManual);
         }

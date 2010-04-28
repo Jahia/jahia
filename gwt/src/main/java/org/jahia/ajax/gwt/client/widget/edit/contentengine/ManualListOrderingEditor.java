@@ -98,7 +98,7 @@ public class ManualListOrderingEditor extends ContentPanel {
 
         childrenGrid = new Grid<GWTJahiaNode>(store, new ColumnModel(columnConfigList));
         childrenGrid.setBorders(true);
-        childrenGrid.setHeight(200);
+        childrenGrid.setHeight(150);
         new GridDragSource(childrenGrid);
 
         GridDropTarget target = new GridDropTarget(childrenGrid);

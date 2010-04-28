@@ -178,7 +178,6 @@ public class PropertiesEditor extends FormPanel {
      * @param fieldSetGrouping
      */
     private void addItems(FormPanel form, GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items, boolean optional, boolean fieldSetGrouping) {
-        boolean isOrderingList = "jmix:orderedList".contains(nodeType.getName()) || nodeType.getSuperTypes().contains("jmix:orderedList");
 
 
         for (final GWTJahiaItemDefinition definition : items) {
@@ -223,11 +222,12 @@ public class PropertiesEditor extends FormPanel {
                 if (fieldSetGrouping && (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
                     setPadding(0);
 
+                    boolean isOrderingList = "jmix:orderedList".equalsIgnoreCase(definition.getDeclaringNodeType());
                     fieldSet = new FieldSet();
                     fieldSet.setId(definition.getDeclaringNodeTypeLabel());
                     fieldSet.add(field);
                     fieldSet.setCollapsible(true);
-                    if (optional || isOrderingList) {
+                    if (optional && !isOrderingList) {
                         fieldSet.setCheckboxToggle(true);
                         if (nodeTypes.contains(nodeType)) {
                             fieldSet.setExpanded(true);
@@ -256,7 +256,7 @@ public class PropertiesEditor extends FormPanel {
                         });
                     }
                     fieldSet.setHeading(definition.getDeclaringNodeTypeLabel());
-                    fieldSet.setStyleAttribute("padding", "0");
+                    //fieldSet.setStyleAttribute("padding", "0");
                     form = new FormPanel();
                     form.setFieldWidth(500);
                     form.setLabelWidth(80);

@@ -53,6 +53,11 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
         super();
     }
 
+    public GWTJahiaNodeType(String name) {
+        super();
+        setName(name);
+    }
+
     public GWTJahiaNodeType(String name, String label) {
         this();
         setName(name);

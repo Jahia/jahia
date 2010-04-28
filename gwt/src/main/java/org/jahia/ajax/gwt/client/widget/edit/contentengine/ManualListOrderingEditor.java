@@ -24,6 +24,8 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -103,7 +105,7 @@ public class ManualListOrderingEditor extends ContentPanel {
         Button moveUp = new Button(Messages.get("label_moveUp", "move up"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                for (GWTJahiaNode node : childrenGrid.getSelectionModel().getSelectedItems()) {
+                for (GWTJahiaNode node : getOrderedSelectedList()) {
                     execute(node);
                 }
                 childrenGrid.getView().refresh(false);
@@ -111,29 +113,15 @@ public class ManualListOrderingEditor extends ContentPanel {
 
             public void execute(GWTJahiaNode selectedNode) {
                 // find a better way to get index
-                int index = getIndex(selectedNode);
+                int index = childrenGrid.getStore().indexOf(selectedNode);
                 if (index > 0) {
                     childrenGrid.getStore().remove(selectedNode);
                     childrenGrid.getStore().insert(selectedNode, index - 1);
-                    childrenGrid.getSelectionModel().select(index - 1, false);
+                    childrenGrid.getSelectionModel().select(index - 1, true);
                 }
             }
 
-            /**
-             * Get index of a node
-             * @param selectedNode
-             * @return
-             */
-            private int getIndex(GWTJahiaNode selectedNode) {
-                int index = 0;
-                for (GWTJahiaNode currentNode : childrenGrid.getStore().getModels()) {
-                    if (currentNode == selectedNode) {
-                        break;
-                    }
-                    index++;
-                }
-                return index;
-            }
+
         });
         moveUp.setIcon(ContentModelIconProvider.getInstance().getMoveUp());
         toolBar.add(moveUp);
@@ -141,15 +129,17 @@ public class ManualListOrderingEditor extends ContentPanel {
         Button moveFirst = new Button(Messages.get("label_moveFirst", "move first"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                for (GWTJahiaNode node : childrenGrid.getSelectionModel().getSelectedItems()) {
-                    execute(node);
+                int iteration = 0;
+                for (GWTJahiaNode node : getOrderedSelectedList()) {
+                    execute(node, iteration);
+                    iteration++;
                 }
             }
 
-            public void execute(GWTJahiaNode node) {
+            public void execute(GWTJahiaNode node, int index) {
                 childrenGrid.getStore().remove(node);
-                childrenGrid.getStore().insert(node, 0);
-                childrenGrid.getSelectionModel().select(0, false);
+                childrenGrid.getStore().insert(node, index);
+                childrenGrid.getSelectionModel().select(index, true);
                 childrenGrid.getView().refresh(false);
             }
         });
@@ -159,36 +149,22 @@ public class ManualListOrderingEditor extends ContentPanel {
         Button moveDown = new Button(Messages.get("label_moveDown", "move down"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                for (GWTJahiaNode node : childrenGrid.getSelectionModel().getSelectedItems()) {
+                List<GWTJahiaNode> ordered = getOrderedSelectedList();
+                Collections.reverse(ordered);
+                for (GWTJahiaNode node : ordered) {
                     execute(node);
                 }
             }
 
             public void execute(GWTJahiaNode selectedNode) {
                 // find a better way to get index
-                int index = getIndex(selectedNode);
+                int index = childrenGrid.getStore().indexOf(selectedNode);
                 if (index < childrenGrid.getStore().getCount() - 1) {
                     childrenGrid.getStore().remove(selectedNode);
                     childrenGrid.getStore().insert(selectedNode, index + 1);
-                    childrenGrid.getSelectionModel().select(index + 1, false);
+                    childrenGrid.getSelectionModel().select(index + 1, true);
                     childrenGrid.getView().refresh(false);
                 }
-            }
-
-            /**
-             * Get index of a node
-             * @param selectedNode
-             * @return
-             */
-            private int getIndex(GWTJahiaNode selectedNode) {
-                int index = 0;
-                for (GWTJahiaNode currentNode : childrenGrid.getStore().getModels()) {
-                    if (currentNode == selectedNode) {
-                        break;
-                    }
-                    index++;
-                }
-                return index;
             }
         });
         moveDown.setIcon(ContentModelIconProvider.getInstance().getMoveDown());
@@ -197,17 +173,22 @@ public class ManualListOrderingEditor extends ContentPanel {
         Button moveLast = new Button(Messages.get("label_moveLast", "move last"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                for (GWTJahiaNode node : childrenGrid.getSelectionModel().getSelectedItems()) {
-                    execute(node);
+                List<GWTJahiaNode> ordered = getOrderedSelectedList();
+                Collections.reverse(ordered);
+                int index = childrenGrid.getStore().getCount() - 1;
+                for (GWTJahiaNode node : ordered) {
+                    execute(node, index);
+                    index--;
                 }
+                childrenGrid.getSelectionModel().setSelection(childrenGrid.getSelectionModel().getSelection());
                 childrenGrid.getView().refresh(false);
             }
 
-            public void execute(GWTJahiaNode node) {
-                int lastIndex = childrenGrid.getStore().getCount() - 1;
+
+            public void execute(GWTJahiaNode node, int index) {
                 childrenGrid.getStore().remove(node);
-                childrenGrid.getStore().insert(node, lastIndex);
-                childrenGrid.getSelectionModel().select(lastIndex, false);
+                childrenGrid.getStore().insert(node, index);
+                childrenGrid.getSelectionModel().select(index, true);
 
             }
         });
@@ -233,6 +214,32 @@ public class ManualListOrderingEditor extends ContentPanel {
         childrenGrid.setBorders(true);
         childrenGrid.addPlugin(sm);
         add(childrenGrid);
+    }
+
+    /**
+     * Get ordered selected list
+     *
+     * @return
+     */
+    private List<GWTJahiaNode> getOrderedSelectedList() {
+        List<GWTJahiaNode> selectedNodes = childrenGrid.getSelectionModel().getSelection();
+        Comparator<GWTJahiaNode> c = new Comparator<GWTJahiaNode>() {
+            public int compare(GWTJahiaNode gwtJahiaNode, GWTJahiaNode gwtJahiaNode1) {
+                int index = childrenGrid.getStore().indexOf(gwtJahiaNode);
+                int index2 = childrenGrid.getStore().indexOf(gwtJahiaNode1);
+                if (index == index2) {
+                    return 0;
+                }
+
+                if (index > index2) {
+                    return 1;
+                }
+
+                return -1;
+            }
+        };
+        Collections.sort(selectedNodes, c);
+        return selectedNodes;
     }
 
 }

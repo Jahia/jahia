@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class ListOrderingContentTabItem extends ContentTabItem {
     private ManualListOrderingEditor manualListOrderingEditor = null;
+    private static final String JMIX_ORDERED_LIST = "jmix:orderedList";
 
 
     public ListOrderingContentTabItem(AbstractContentEngine engine) {
@@ -63,11 +64,11 @@ public class ListOrderingContentTabItem extends ContentTabItem {
         useManualRanking.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent componentEvent) {
                 if (useManualRanking.getValue()) {
-                    propertiesEditor.getRemovedTypes().add("jmix:orderedList");
-                    propertiesEditor.getAddedTypes().remove("jmix:orderedList");
+                    propertiesEditor.getRemovedTypes().add(JMIX_ORDERED_LIST);
+                    propertiesEditor.getAddedTypes().remove(JMIX_ORDERED_LIST);
                 } else {
-                    propertiesEditor.getRemovedTypes().remove("jmix:orderedList");
-                    propertiesEditor.getAddedTypes().add("jmix:orderedList");
+                    propertiesEditor.getRemovedTypes().remove(JMIX_ORDERED_LIST);
+                    propertiesEditor.getAddedTypes().add(JMIX_ORDERED_LIST);
                 }
 
                 // update form components
@@ -93,7 +94,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
 
 
         // update form components
-        boolean isManual = !propertiesEditor.getNodeTypes().contains(new GWTJahiaNodeType("jmix:orderedList"));
+        boolean isManual = !propertiesEditor.getNodeTypes().contains(new GWTJahiaNodeType(JMIX_ORDERED_LIST));
         for (FieldSet component : propertiesEditor.getOrderingListFieldSet()) {
             component.setEnabled(!isManual);
             if (isManual) {

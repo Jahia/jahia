@@ -1161,6 +1161,7 @@
         <property name="layout" value="button"/>
         <property name="items">
             <list>
+                <ref bean="org.jahia.toolbar.item.exectuteRemotePublication"/>
                 <ref bean="org.jahia.toolbar.item.newRemotePublication"/>
                 <ref bean="org.jahia.toolbar.item.Separator"/>
                 <ref bean="org.jahia.toolbar.item.export"/>
@@ -1948,6 +1949,16 @@
         <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
     </bean>
+
+    <bean id="org.jahia.toolbar.item.exectuteRemotePublication" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteRemotePublicationItem"/>
+        </property>
+        <property name="titleKey" value="label.executeRemotePublication"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
+    </bean>
+
 
     <bean id="org.jahia.toolbar.item.newRole" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">

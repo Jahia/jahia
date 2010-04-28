@@ -4,13 +4,8 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.ListModule;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
-import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickRemotePublication;
 
 import java.util.List;

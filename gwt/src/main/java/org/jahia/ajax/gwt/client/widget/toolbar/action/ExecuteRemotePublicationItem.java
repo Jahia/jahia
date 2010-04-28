@@ -16,7 +16,7 @@ public class ExecuteRemotePublicationItem extends BaseActionItem {
     public void onComponentSelection() {
         String baseURL =  "http://localhost:8080" + JahiaGWTParameters.getContextPath() + "/cms/render";
         String localURL = baseURL + "/default/en"  + linker.getSelectedNode().getPath();
-        RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + ".do");
+        RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + ".remotepublish.do");
         try {
           Request response = builder.sendRequest(null, new RequestCallback() {
             public void onError(Request request, Throwable exception) {

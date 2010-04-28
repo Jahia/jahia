@@ -1933,9 +1933,9 @@
 
     <bean id="org.jahia.toolbar.item.newTag" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRemotePublicationActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTagActionItem"/>
         </property>
-        <property name="titleKey" value="label.createRemotePublication"/>
+        <property name="titleKey" value="label.createTag"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
     </bean>

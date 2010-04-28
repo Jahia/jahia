@@ -448,71 +448,6 @@ public class ContentActions {
     }
 
     /**
-     * Showw rss from
-     *
-     * @param linker
-     */
-    public static void showRSSForm(final Linker linker) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
-        if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                parent = selectedItems.get(0);
-            }
-        }
-        if (parent != null && !parent.isFile()) {
-            com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.getNotEmptyResource("rss_new", "New RSS"));
-            w.setModal(true);
-            w.setResizable(false);
-            w.setBodyBorder(false);
-            w.setLayout(new FillLayout());
-            w.setWidth(350);
-            w.add(new FormQuickRSS(parent.getPath()) {
-                public void onMashupCreated() {
-                    linker.refresh(EditLinker.REFRESH_ALL);
-                }
-            });
-            w.setScrollMode(Style.Scroll.AUTO);
-            w.layout();
-            w.show();
-        }
-    }
-
-    /**
-     * Display google gadget form
-     *
-     * @param linker
-     */
-    public static void showGoogleGadgetForm(final Linker linker) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
-        if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                parent = selectedItems.get(0);
-            }
-        }
-        if (parent != null && !parent.isFile()) {
-            com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.getNotEmptyResource("googlegadget_new", "New Google Gadget"));
-            w.setModal(true);
-            w.setResizable(false);
-            w.setBodyBorder(false);
-            w.setLayout(new FillLayout());
-            w.setWidth(350);
-            w.add(new FormQuickGoogleGadget(parent.getPath()) {
-                @Override
-                public void onMashupCreated() {
-                    linker.refresh(EditLinker.REFRESH_ALL);
-                }
-            });
-            w.setScrollMode(Style.Scroll.AUTO);
-            w.layout();
-            w.show();
-        }
-    }
-
-    /**
      * Show deploy portlet form
      * @param linker
      */
@@ -546,15 +481,6 @@ public class ContentActions {
             w.layout();
             w.show();
         }
-    }
-
-    /**
-     * Show the content wizard
-     *
-     * @param linker
-     */
-    public static void showContentWizard(final Linker linker) {
-        showContentWizard(linker, null);
     }
 
     /**

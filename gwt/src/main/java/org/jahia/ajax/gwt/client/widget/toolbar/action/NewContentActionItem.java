@@ -2,7 +2,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
@@ -34,7 +33,7 @@ public class NewContentActionItem extends BaseActionItem  {
         if (nodeTypes.length() > 0) {
             ContentActions.showContentWizard(linker, nodeTypes);
         } else {
-            ContentActions.showContentWizard(linker);
+            ContentActions.showContentWizard(linker, null);
         }
     }
 

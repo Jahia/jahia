@@ -26,6 +26,12 @@
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-core</artifactId>
             <version>${jackrabbit.version}-${jackrabbit.patch.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.apache.tika</groupId>
+                    <artifactId>tika-parsers</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
@@ -51,6 +57,12 @@
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-jcr-server</artifactId>
             <version>${jackrabbit.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.apache.tika</groupId>
+                    <artifactId>tika-core</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>

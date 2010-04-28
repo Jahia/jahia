@@ -6,7 +6,10 @@
 [condition][]A property has been removed from a node=property : DeletedPropertyWrapper ( propertyName : name, node : node )
 [condition][]A property {property} has been set on a node=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
-[condition][]A variable {name} has been extracted=ExtractedVariable ( node == node, name == "{name}", {name} : value )
+[condition][]The metadata field "{name}" has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {name} : value )
+[condition][]The metadata field "{name}" identified by {field} has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {field} : value )
+[condition][]A metadata field has been extracted=metadata : ExtractedVariable ( node == node.path, metadataName : name, metadataValue : value, knownType : correspondingNodeTypeName, knownProperty : correspondingPropertyName )
+[condition][]A well known metadata field has been extracted=metadata : ExtractedVariable ( node == node.path, correspondingPropertyName != null, metadataName : name, metadataValue : value, knownType : correspondingNodeTypeName, knownProperty : correspondingPropertyName )
 [condition][]The current user belongs to a group=g : Group (groupName : name) from user.groups
 [condition][]The current user has a property named {userproperty}=userProperty : UserProperty( name == "{userproperty}", propertyValue : value ) from user.properties
 [condition][]The node has a parent=parent : NodeWrapper () from node.parent
@@ -49,6 +52,7 @@
 [consequence][]Import the node=service.importNode(node,drools);
 [consequence][]Import file {xmlFile} into {node}=service.importXML(node, {xmlFile}, drools);
 [consequence][]Log {message}= logger.info({message});
+[consequence][]LogDebug {message}= logger.debug({message});
 [consequence][]Remove this property=insert (new DeletedPropertyWrapper(property, drools));
 [consequence][]Restore ACL inheritance on the {node}=service.setAclInheritanceBreak({node},false);
 [consequence][]Revoke all permissions on the {node}=service.revokeAllPermissions({node});
@@ -65,6 +69,7 @@
 [consequence][]Set the property {property} of the {node} with the value of that property=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", propertyValue, drools, false));
 [consequence][]Set the property {property} of the {node} with the value of {variable}=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", {variable}, drools, false));
 [consequence][]Set the property {property} of the {node} with the width of the image= imageService.setWidth({node}, "{property}", drools);
+[consequence][]Set corresponding property with the value of the extracted {metadata}=if (node != null) {node.addType(metadata.getCorrespondingNodeTypeName(), drools ); insert (new PropertyWrapper(node, metadata.getCorrespondingPropertyName(), metadata.getValue(), drools, false)); }
 [consequence][]Increment the property {property} of the {node}=service.incrementProperty(node,"{property}", drools);
 [consequence][]Add the property value to the property {property} of the {node}=service.addToProperty(node,"{property}",propertyValue, drools);
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);

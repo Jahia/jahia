@@ -159,8 +159,8 @@
 [jmix:extension] mixin
 
 [jnt:resource] > nt:resource
- - j:extractedText (string)
- - j:lastExtractionDate (date)
+ - j:extractedText (string) protected hidden
+ - j:lastExtractionDate (date) protected nofulltext hidden
 
 [jnt:extraResource] > nt:resource
  - j:name
@@ -186,9 +186,9 @@
  + * (jnt:textExtract)
 
 [jnt:textExtract] > nt:base
- - j:extractedText (string)
- - j:lastExtractionDate (date)
- - j:originalUuid (string) nofulltext
+ - j:extractedText (string) protected hidden
+ - j:lastExtractionDate (date) protected nofulltext hidden
+ - j:originalUuid (string) protected nofulltext hidden
 
 //---------------------------------------------------------
 // Categories

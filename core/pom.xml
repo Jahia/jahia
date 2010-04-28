@@ -540,17 +540,12 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
-            <version>1.7.3</version>
+            <version>1.8.0</version>
         </dependency>
         <dependency>
             <groupId>jsptags</groupId>
             <artifactId>pager-taglib</artifactId>
             <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>0.8.0-incubating</version>
         </dependency>
         <!-- todo: migrate to 1.5 or get rid of this and use java.regexp -->
         <dependency>
@@ -751,21 +746,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.5-FINAL</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>0.5</version>
+            <version>0.7</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>0.5</version>
+            <version>0.7</version>
         </dependency>
 
         <dependency>
@@ -862,22 +851,6 @@
             <groupId>opensymphony</groupId>
             <artifactId>oscache</artifactId>
             <version>2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock</artifactId>
-            <version>SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock-cglib</artifactId>
-            <version>1.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-full</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Dependencies for JAMon monitoring library -->

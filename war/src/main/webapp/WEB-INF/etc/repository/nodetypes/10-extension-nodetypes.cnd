@@ -15,8 +15,36 @@
  - j:appName (string) protected nofulltext
  - j:codePage (string) protected nofulltext
 
-[jmix:photo] > jmix:extension mixin
+[jmix:exif] > jmix:extension mixin
+ - j:colorSpace (string) nofulltext
+ - j:componentsConfiguration (string) nofulltext
+ - j:compression (string) nofulltext
+ - j:compressedBitsPerPixel (string) nofulltext
+ - j:dateTime (string) nofulltext
+ - j:dateTimeDigitized (string) nofulltext
+ - j:dateTimeOriginal (string) nofulltext
+ - j:exifVersion (string) nofulltext
+ - j:exposureBiasValue (string) nofulltext
+ - j:exposureProgram (string) nofulltext
+ - j:exposureTime (string) nofulltext
+ - j:fileSource (string) nofulltext
+ - j:flash (string) nofulltext
+ - j:flashPixVersion (string) nofulltext
+ - j:fNumber (string) nofulltext
+ - j:focalLength (string) nofulltext
+ - j:interoperabilityIndex (string) nofulltext
+ - j:interoperabilityVersion (string) nofulltext
+ - j:make (string) nofulltext
+ - j:maxApertureValue (string) nofulltext
+ - j:meteringMode (string) nofulltext
  - j:model (string) nofulltext
+ - j:orientation (string) nofulltext
+ - j:resolutionUnit (string) nofulltext
+ - j:sceneType (string) nofulltext
+ - j:software (string) nofulltext
+ - j:xresolution (string) nofulltext
+ - j:ycbcrPositioning (string) nofulltext
+ - j:yresolution (string) nofulltext
 
                           
 [jmix:test] > jmix:extension mixin

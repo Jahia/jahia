@@ -1,0 +1,35 @@
+package org.jahia.services.content.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.*
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global ImageService imageService
+global ExtractionService extractionService
+global Logger logger
+global JCRStoreProvider provider
+
+rule "Properties extraction"
+#Extract all possible data from a file when it's uploaded
+    when
+        A file content has been modified
+    then
+        Log "Properties extraction fired for node " + contentnode.getPath() 
+        Extract properties from the file
+end
+
+rule "Set corresponding property with the value of the extracted metadata"
+  when
+    A new node is created
+    A well known metadata field has been extracted
+  then
+    Log "Setting extracted metadata field '" + metadata.getName() + "' with value '" + metadata.getValue() + "' as the property [" + metadata.getCorrespondingNodeTypeName() + "].[" + metadata.getCorrespondingPropertyName() + "] for node " + node.getPath()   
+    Set corresponding property with the value of the extracted metadata
+end

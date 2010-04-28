@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+    <bean id="org.jahia.services.textextraction.TextExtractionService" class="org.jahia.services.textextraction.TextExtractionService">
+        <property name="enabled" value="true"/>
+        <property name="config" value="classpath:tika-config-jahia-text.xml"/>
+        <property name="configMetadata" value="classpath:tika-config-jahia-metadata.xml"/>
+        <property name="autoDetectType" value="true"/>
+        <!-- limits the number of characters extracted from the document -->
+        <property name="maxExtractedCharacters" value="100000"/>
+    </bean>
+
+    <bean name="textExtractorMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/text-extract">
+                    <bean class="org.jahia.bin.TextExtractor">
+                        <property name="settingsBean" ref="settingsBean"/>
+                        <property name="textExtractionService" ref="org.jahia.services.textextraction.TextExtractionService"/>
+                        <property name="view" value="/tools/textExtractor.jsp"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="org.jahia.services.content.rules.ExtractionService" class="org.jahia.services.content.rules.ExtractionService" factory-method="getInstance">
+        <property name="jcrTemplate" ref="jcrTemplate"/>
+        <property name="textExtractionService" ref="org.jahia.services.textextraction.TextExtractionService"/>
+        <property name="mapping" ref="org.jahia.services.textextraction.propertyMapping"/>
+    </bean>
+
+    <bean id="org.jahia.services.textextraction.propertyMapping" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <!-- common -->
+                <entry key="title" value="mix:title,jcr:title"/>
+                <entry key="description" value="mix:title,jcr:description"/>
+                
+                <!-- Microsoft Office -->
+                <entry key="Application-Name" value="jmix:document,j:appName"/>
+                <entry key="Character Count" value="jmix:document,j:charCount"/>
+                <entry key="Comments" value="mix:title,jcr:description"/>
+                <entry key="Keywords" value="jmix:keywords,j:keywords"/>
+                <entry key="Page-Count" value="jmix:document,j:pageCount"/>
+                <entry key="subject" value="jmix:document,j:subject"/>
+                <entry key="Word-Count" value="jmix:document,j:wordCount"/>
+                
+                <!-- PDF -->
+                <entry key="producer" value="jmix:document,j:appName"/>
+                
+                <!-- EXIF -->
+                <entry key="Color Space" value="jmix:exif,j:colorSpace"/>
+                <entry key="Components Configuration" value="jmix:exif,j:componentsConfiguration"/>
+                <entry key="Compression" value="jmix:exif,j:compression"/>
+                <entry key="Compressed Bits Per Pixel" value="jmix:exif,j:compressedBitsPerPixel"/>
+                <entry key="Date/Time" value="jmix:exif,j:dateTime"/>
+                <entry key="Date/Time Digitized" value="jmix:exif,j:dateTimeDigitized"/>
+                <entry key="Date/Time Original" value="jmix:exif,j:dateTimeOriginal"/>
+                <entry key="Exif Version" value="jmix:exif,j:exifVersion"/>
+                <entry key="Exposure Bias Value" value="jmix:exif,j:exposureBiasValue"/>
+                <entry key="Exposure Program" value="jmix:exif,j:exposureProgram"/>
+                <entry key="Exposure Time" value="jmix:exif,j:exposureTime"/>
+                <entry key="File Source" value="jmix:exif,j:fileSource"/>
+                <entry key="Flash" value="jmix:exif,j:flash"/>
+                <entry key="FlashPix Version" value="jmix:exif,j:flashPixVersion"/>
+                <entry key="F-Number" value="jmix:exif,j:fNumber"/>
+                <entry key="Focal Length" value="jmix:exif,j:focalLength"/>
+                <entry key="Interoperability Index" value="jmix:exif,j:interoperabilityIndex"/>
+                <entry key="Interoperability Version" value="jmix:exif,j:interoperabilityVersion"/>
+                <entry key="Make" value="jmix:exif,j:make"/>
+                <entry key="Max Aperture Value" value="jmix:exif,j:maxApertureValue"/>
+                <entry key="Metering Mode" value="jmix:exif,j:meteringMode"/>
+                <entry key="Model" value="jmix:exif,j:model"/>
+                <entry key="Orientation" value="jmix:exif,j:orientation"/>
+                <entry key="Resolution Unit" value="jmix:exif,j:resolutionUnit"/>
+                <entry key="Scene Type" value="jmix:exif,j:sceneType"/>
+                <entry key="Software" value="jmix:exif,j:software"/>
+                <entry key="X Resolution" value="jmix:exif,j:xresolution"/>
+                <entry key="YCbCr Positioning" value="jmix:exif,j:ycbcrPositioning"/>
+                <entry key="Y Resolution" value="jmix:exif,j:yresolution"/>
+            </map>
+        </property>
+    </bean>
+</beans>

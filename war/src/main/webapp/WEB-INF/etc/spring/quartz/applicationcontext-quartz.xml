@@ -21,6 +21,7 @@
                 <prop key="org.quartz.dataSource.jahiaDS.jndiURL">java:comp/env/jdbc/jahia</prop>
                 <prop key="org.quartz.plugin.shutdownhook.class">org.quartz.plugins.management.ShutdownHookPlugin</prop>
                 <prop key="org.quartz.plugin.shutdownhook.cleanShutdown">true</prop>
+                <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
             </props>
         </property>
     </bean>
@@ -35,6 +36,7 @@
                 <prop key="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</prop>
                 <prop key="org.quartz.plugin.shutdownhook.class">org.quartz.plugins.management.ShutdownHookPlugin</prop>
                 <prop key="org.quartz.plugin.shutdownhook.cleanShutdown">true</prop>
+                <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
             </props>
         </property>
     </bean>

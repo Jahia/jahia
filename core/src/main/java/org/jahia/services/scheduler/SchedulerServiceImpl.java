@@ -240,6 +240,18 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
                 public void schedulerShutdown() {
                 }
+
+                public void jobAdded(JobDetail jobDetail) {
+                }
+
+                public void jobDeleted(String jobName, String groupName) {
+                }
+
+                public void schedulerInStandbyMode() {
+                }
+
+                public void schedulerStarted() {
+                }
             };
             scheduler.addSchedulerListener(schedulerListener);
 

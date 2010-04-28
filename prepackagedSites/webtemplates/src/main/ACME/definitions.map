@@ -23,6 +23,9 @@
    true = details
    false = link
 
+## Extension types
+[jmix:photo] = jmix:exif
+ 
 ## Portlet containers
 
 [jnt:portletContainer] = jnt:portletReference

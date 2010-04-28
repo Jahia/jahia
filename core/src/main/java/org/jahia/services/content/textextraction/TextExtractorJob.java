@@ -31,11 +31,13 @@
  */
 package org.jahia.services.content.textextraction;
 
+import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 
 /**
@@ -46,19 +48,28 @@ import org.quartz.JobExecutionContext;
  */
 public class TextExtractorJob extends BackgroundJob {
     public static final String EXTRACTION_TYPE = "textextraction";
-    public static final String PATH = "path";
-    public static final String NAME = "name";
-    public static final String PROVIDER = "provider";
-    public static final String EXTRACTNODE_PATH = "extractnode-path";
+    static final String PATH = "path";
+    static final String PROVIDER = "provider";
+    static final String EXTRACTNODE_PATH = "extractnode-path";
 
+    private static Logger logger = Logger.getLogger(TextExtractorJob.class);
+    
     public void executeJahiaJob(JobExecutionContext jobExecutionContext, ProcessingContext processingContext) throws Exception {
-        String providerPath = (String) jobExecutionContext.getJobDetail().getJobDataMap().get(PROVIDER);
+        JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();
+        String path = (String) data.get(PATH);
+        String providerPath = (String) data.get(PROVIDER);
+        String extractNodePath = (String) data.get(EXTRACTNODE_PATH);        
+        JCRStoreProvider provider = JCRSessionFactory.getInstance().getProvider(providerPath);
 
-        String path = (String) jobExecutionContext.getJobDetail().getJobDataMap().get(PATH);
-        String extractNodePath = (String) jobExecutionContext.getJobDetail().getJobDataMap().get(EXTRACTNODE_PATH);        
-
-        JCRStoreProvider provider = (JCRStoreProvider) JCRSessionFactory.getInstance().getMountPoints().get(providerPath);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Start text extraction job for provider '" + provider.getKey() + "' path " + path
+                    + " and extractNodePath " + extractNodePath);
+        } else {
+            logger.info("Start text extraction job for node " + path);
+        }
 
         ExtractionService.getInstance().extractText(provider, path, extractNodePath, processingContext);
+
+        logger.info("... finished text extraction job for node " + path);
     }
 }

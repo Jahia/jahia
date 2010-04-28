@@ -23,10 +23,6 @@
 [jnt:bookmarkPreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:page (string) nofulltext
 
-//[jnt:layoutItemPreference] > nt:base, jmix:hierarchyNode, jmix:collection
-//- j:page (string)
-//+ j:layout (jnt:layout)
-
 [jnt:portletPreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:portletName (string) nofulltext
 - j:prefName (string) nofulltext

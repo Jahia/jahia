@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content.rules;
 
+import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
@@ -44,15 +45,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Node facade that is used in rules.
  * User: toto
  * Date: 20 déc. 2007
  * Time: 11:53:45
- * To change this template use File | Settings | File Templates.
  */
 public class NodeWrapper implements Updateable {
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(NodeWrapper.class);
+    private static Logger logger = Logger.getLogger(NodeWrapper.class);
 
     private NodeWrapper parentNode;
     private String parentNodePath;
@@ -60,7 +59,7 @@ public class NodeWrapper implements Updateable {
     private String type;
 
     private Node node;
-
+    
     public NodeWrapper(Node node) {
         this.node = node;
     }
@@ -81,6 +80,7 @@ public class NodeWrapper implements Updateable {
 
         if (node.isLocked()) {
             logger.debug("Node is locked, delay property update to later");
+            @SuppressWarnings("unchecked")
             List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
         } else {
@@ -228,4 +228,5 @@ public class NodeWrapper implements Updateable {
         }
         return "";
     }
+    
 }

@@ -66,10 +66,12 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.jahia.api.Constants;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.textextraction.TextExtractionService;
 import org.jahia.utils.TextHtml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +90,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * Prefix for all field names that are facet indexed by property name.
      */
     public static final String FACET_PREFIX = "FACET:";
-
+    
     /**
      * The persistent node type registry
      */
@@ -393,17 +395,13 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
         if (definition != null && SelectorType.RICHTEXT == definition.getSelector()) {
             try {
-                ContentHandler handler = new BodyContentHandler();
                 Metadata metadata = new Metadata();
                 metadata.set(Metadata.CONTENT_TYPE, "text/html");
-
                 metadata.set(Metadata.CONTENT_ENCODING, InternalValueFactory.DEFAULT_ENCODING);
 
-                parser.parse(new ByteArrayInputStream(((String) internalValue)
-                        .getBytes(InternalValueFactory.DEFAULT_ENCODING)), handler, metadata,
-                        new ParseContext());
-
-                internalValue = handler.toString();
+                TextExtractionService textExtractor = (TextExtractionService) SpringContextSingleton.getBean("org.jahia.services.textextraction.TextExtractionService");
+                internalValue = textExtractor.parse(new ByteArrayInputStream(((String) internalValue)
+                        .getBytes(InternalValueFactory.DEFAULT_ENCODING)), metadata);
             } catch (Exception e) {
                 internalValue = TextHtml.html2text((String) internalValue);
             }

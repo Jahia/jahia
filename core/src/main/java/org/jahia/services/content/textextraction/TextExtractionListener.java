@@ -31,109 +31,199 @@
  */
 package org.jahia.services.content.textextraction;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Locale;
+
+import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
+import org.jahia.services.content.DefaultEventListener;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
-import javax.jcr.*;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-import java.util.Calendar;
-import java.util.Locale;
-
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: 29 janv. 2008
- * Time: 13:43:06
- * To change this template use File | Settings | File Templates.
+ * JCR event listener to trigger text extracting for binary content.
+ * 
+ * @author Thomas Draier
+ * @author Sergiy Shyrkov
  */
 public class TextExtractionListener extends DefaultEventListener {
 
     private static final transient Logger logger = Logger.getLogger(TextExtractionListener.class);
 
-    public TextExtractionListener() {
+    private ExtractionService extractionService;
+
+    private SchedulerService schedulerService;
+
+    private SettingsBean settingsBean;
+
+    private JahiaUserManagerService userManagerService;
+
+    protected void doHandle(Node node, Event event, JCRSessionWrapper s) throws AccessDeniedException,
+            ItemNotFoundException, RepositoryException, JahiaException {
+        String mimeType = null;
+        try {
+            mimeType = node.getProperty(Constants.JCR_MIMETYPE).getString();
+        } catch (PathNotFoundException e) {
+            // ignore
+        }
+        // no mime type detected -> skip it
+        if (mimeType == null) {
+            return;
+        }
+
+        Calendar extractionDate = null;
+        if (node.hasProperty(Constants.EXTRACTION_DATE)) {
+            try {
+                extractionDate = node.getProperty(Constants.EXTRACTION_DATE).getDate();
+            } catch (PathNotFoundException e) {
+                // ignore
+            }
+        }
+
+        // extraction date property found?
+        if (extractionDate != null) {
+            // check if it is greater than last modified date
+            Calendar lastModified = node.getProperty(Constants.JCR_LASTMODIFIED).getDate();
+            if (!extractionDate.before(lastModified)) {
+                // no updates were done -> do not need to extract content
+                return;
+            }
+        }
+
+        boolean canHanlde = false;
+        try {
+            canHanlde = extractionService.canHandle((JCRNodeWrapper) node);
+        } catch (IOException e) {
+            logger.warn(e.getMessage(), e);
+        }
+        if (canHanlde) {
+            // we got so far to the background task
+            scheduleBackgroundExtraction((JCRNodeWrapper) node.getParent(), event.getUserID());
+        }
     }
 
     public int getEventTypes() {
-        return Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED;
+        // if the extraction service is not active, do not enable this listener
+        return extractionService.isEnabled() ? Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED
+                : 0;
+    }
+
+    public String[] getNodeTypes() {
+        return new String[] { Constants.JAHIANT_RESOURCE };
     }
 
     public String getPath() {
         return "/";
     }
 
-    public String[] getNodeTypes() {
-        return new String[]{Constants.JAHIANT_RESOURCE};
-    }
-
     public void onEvent(final EventIterator eventIterator) {
-
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                     try {
-//todo : jackrabbit 2.0 migration issue
-//                        while (eventIterator.hasNext()) {
-//                            Event event = eventIterator.nextEvent();
-//                            if (isExternal(event)) {
-//                                continue;
-//                            }
-//
-//                            Property p = (Property) s.getItem(event.getPath());
-//                            if (p.getType() != PropertyType.BINARY) {
-//                                continue;
-//                            }
-//                            Node n = p.getParent();
-//                            if (n.hasProperty(Constants.JCR_MIMETYPE) && ExtractionService.getInstance().getContentTypes().contains(n.getProperty(Constants.JCR_MIMETYPE).getString())) {
-//                                if (n.hasProperty(Constants.EXTRACTION_DATE)) {
-//                                    Calendar lastModified = n.getProperty(Constants.JCR_LASTMODIFIED).getDate();
-//                                    Calendar extractionDate = n.getProperty(Constants.EXTRACTION_DATE).getDate();
-//                                    if (extractionDate.after(lastModified) || extractionDate.equals(lastModified)) {
-//                                        continue;
-//                                    }
-//                                }
-//                                JahiaUser member = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(event.getUserID());
-//
-//                                ProcessingContext jParams = Jahia.getThreadParamBean();
-//                                if (jParams == null) {
-//                                    jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
-//                                    jParams.setCurrentLocale(Locale.getDefault());
-//                                }
-//
-//                                JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + p.getParent().getName(), TextExtractorJob.class, jParams);
-//                                JCRNodeWrapper file = (JCRNodeWrapper) p.getParent().getParent();
-//                                SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
-//                                JobDataMap jobDataMap;
-//                                jobDataMap = jobDetail.getJobDataMap();
-//                                jobDataMap.put(TextExtractorJob.PROVIDER, file.getProvider().getMountPoint());
-//                                jobDataMap.put(TextExtractorJob.PATH, file.getPath());
-//                                jobDataMap.put(TextExtractorJob.NAME, file.getName());
-//                                jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
-//                                schedulerServ.scheduleJobNow(jobDetail);
-//                            }
-//                        }
-//                    } catch (PathNotFoundException e) {
-//                        logger.debug(e.getMessage(), e);
+                        while (eventIterator.hasNext()) {
+                            Event event = eventIterator.nextEvent();
+                            if (isExternal(event)) {
+                                continue;
+                            }
+
+                            // skip /jcr:system path
+                            if (event.getPath().startsWith("/jcr:system")) {
+                                continue;
+                            }
+
+                            // is it a binary property?
+                            Property p = (Property) s.getItem(event.getPath());
+                            if (p.getType() != PropertyType.BINARY) {
+                                continue;
+                            }
+
+                            doHandle(p.getParent(), event, s);
+                        }
+                    } catch (PathNotFoundException e) {
+                        logger.debug(e.getMessage(), e);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return null;
                 }
-
-
             });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    protected void scheduleBackgroundExtraction(JCRNodeWrapper fileNode, String user) throws JahiaException {
+        ProcessingContext ctx = Jahia.getThreadParamBean();
+        if (ctx == null) {
+            JahiaUser member = userManagerService.lookupUser(user);
+            ctx = new ProcessingContext(settingsBean, System.currentTimeMillis(), null, member, null);
+            ctx.setCurrentLocale(Locale.getDefault());
+        }
+
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + fileNode.getName(),
+                TextExtractorJob.class, ctx);
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        jobDataMap.put(TextExtractorJob.PROVIDER, fileNode.getProvider().getMountPoint());
+        jobDataMap.put(TextExtractorJob.PATH, fileNode.getPath());
+        jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Scheduling text extraction background job for file " + fileNode.getPath());
+        }
+
+        schedulerService.scheduleJobNow(jobDetail);
+    }
+
+    /**
+     * @param extractionService the extractionService to set
+     */
+    public void setExtractionService(ExtractionService extractionService) {
+        this.extractionService = extractionService;
+    }
+
+    /**
+     * @param schedulerService the schedulerService to set
+     */
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
+    }
+
+    /**
+     * @param settingsBean the settingsBean to set
+     */
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
+    }
+
+    /**
+     * @param userManagerService the userManagerService to set
+     */
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 }

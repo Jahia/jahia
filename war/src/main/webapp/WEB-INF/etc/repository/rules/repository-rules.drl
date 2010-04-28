@@ -1,4 +1,3 @@
-#created on: 20 dec. 2007
 package org.jahia.services.content.rules
 
 #list any import classes here.
@@ -16,109 +15,6 @@ global ImageService imageService
 global ExtractionService extractionService
 global Logger logger
 global JCRStoreProvider provider
-
-rule "Image type"
-    salience 50
-    no-loop
-    when
-        A new node is created
-             - the mimetype matches image/.*
-    then
-        Log "Assign image type (jmix:image) for node " + node.getPath()
-        Add the type jmix:image
-end
-
-rule "Image update"
-    when
-        A file content has been modified
-             - the mimetype matches image/.*
-    then
-        Create an image "thumbnail" of size 150
-        Create an image "thumbnail2" of size 350
-        Set the property j:width of the node with the width of the image
-        Set the property j:height of the node with the height of the image
-        Log "Image updated " + node.getPath() + " " + contentnode.getName()
-end        
-
-// Extract all possible data from a file when it's uploaded
-
-rule "Properties extraction"
-    when
-        A file content has been modified
-    then
-        Log "Properties extraction fired for node " + contentnode.getPath() 
-        Extract properties from the file
-end
-
-// These rules check if some data have been extracted, and then assign type and properties
-
-rule "Assign word title properties"
-    when
-        A new node is created
-             - the mimetype is application/msword
-        A variable title has been extracted
-    then
-        Set the property jcr:title of the node with the value of title
-end
-
-rule "Assign word keywords properties"
-    when
-        A new node is created
-             - the mimetype is application/msword
-        A variable keywords has been extracted
-    then
-        Set the property j:keywords of the node with the value of keywords
-end
-
-rule "Assign word comments properties"
-    when
-        A new node is created
-             - the mimetype is application/msword
-        A variable comments has been extracted
-    then
-        Set the property jcr:description of the node with the value of comments
-end
-
-rule "Assign other word properties"
-    when
-        A new node is created
-             - the mimetype is application/msword
-        A variable subject has been extracted
-        A variable pagecount has been extracted
-        A variable wordcount has been extracted
-        A variable charcount has been extracted
-        A variable appname has been extracted
-        A variable codepage has been extracted
-    then
-        Log "Assign word properties fired for node " + node.getPath()
-        Add the type jmix:document
-        Set the property j:subject of the node with the value of subject
-        Set the property j:pageCount of the node with the value of pagecount
-        Set the property j:wordCount of the node with the value of wordcount
-        Set the property j:charCount of the node with the value of charcount
-        Set the property j:appName of the node with the value of appname
-        Set the property j:codePage of the node with the value of codepage
-end
-
-rule "Assign photo properties"
-    when
-        A new node is created
-        A variable Exif_Model has been extracted
-    then
-        Log "Assign photo properties fired for node " + node.getPath()
-        Add the type jmix:photo
-        Set the property j:model of the node with the value of Exif_Model
-end
-
-rule "Assign pdf properties"
-    when
-        A new node is created
-        A variable Producer has been extracted
-    then
-        Log "Assign PDF properties fired for node " + node.getPath()
-        Add the type jmix:document
-        Set the property j:appName of the node with the value of Producer
-end
 
 rule "Test type"
     when
@@ -186,6 +82,31 @@ rule "Import file"
         Import the node
         Log "Import file fired for node " + node.getPath()
 end
+
+rule "Image type"
+#Assign jmix:image type for an image node
+    salience 50
+    no-loop
+    when
+        A new node is created
+             - the mimetype matches image/.*
+    then
+        Log "Assign image type (jmix:image) for node " + node.getPath()
+        Add the type jmix:image
+end
+
+rule "Image update"
+#Rebuild thumbnail for an updated image and update height/width 
+    when
+        A file content has been modified
+             - the mimetype matches image/.*
+    then
+        Create an image "thumbnail" of size 150
+        Create an image "thumbnail2" of size 350
+        Set the property j:width of the node with the width of the image
+        Set the property j:height of the node with the height of the image
+        Log "Image updated " + node.getPath()
+end        
 
 rule "Profile Image update"
     when

@@ -175,7 +175,7 @@ think twice before changing it! -->
 
     <category name="org.jahia.spring.aop.interceptor">
         <!-- Set this to debug to activate JAMon monitoring -->
-        <priority value="info"/>
+        <priority value="debug"/>
     </category>
 
     <category name="accessLogger" additivity="false">
@@ -196,11 +196,10 @@ think twice before changing it! -->
         <priority value="info"/>
     </category>
 
-    <category name="org">
+    <category name="org.jahia.services.textextraction.TextExtractionService">
         <priority value="info"/>
-        <appender-ref ref="ROLL"/>
     </category>
-
+    
     <root>
         <level value="info"/>
         <appender-ref ref="ROLL"/>

@@ -31,33 +31,61 @@
  */
 package org.jahia.services.content.rules;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 /**
- * Created by IntelliJ IDEA.
+ * Facade object for extracted metadata property to be used in rules.
  * User: toto
  * Date: 8 janv. 2008
  * Time: 15:57:55
- * To change this template use File | Settings | File Templates.
  */
 public class ExtractedVariable {
-    private NodeWrapper node;
+    private String correspondingNodeTypeName;
+    private String correspondingPropertyName;
     private String name;
+    private String node;
     private Object value;
 
-    public ExtractedVariable(NodeWrapper node, String name, Object value) {
-        this.node = node;
+    public ExtractedVariable(String nodePath, String name, Object value) {
+        this.node = nodePath;
         this.name = name;
         this.value = value;
     }
+    
+    public ExtractedVariable(String nodePath, String name, Object value, String correspondingNodeTypeName, String correspondingPropertyName) {
+        this(nodePath, name, value);
+        this.correspondingNodeTypeName = correspondingNodeTypeName;
+        this.correspondingPropertyName = correspondingPropertyName;
+    }
+    
+    /**
+     * @return the correspondingNodeTypeName
+     */
+    public String getCorrespondingNodeTypeName() {
+        return correspondingNodeTypeName;
+    }
 
-    public NodeWrapper getNode() {
-        return node;
+    /**
+     * @return the correspondingPropertyName
+     */
+    public String getCorrespondingPropertyName() {
+        return correspondingPropertyName;
     }
 
     public String getName() {
         return name;
     }
 
+    public String getNode() {
+        return node;
+    }
+
     public Object getValue() {
         return value;
+    }
+    
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
     }
 }

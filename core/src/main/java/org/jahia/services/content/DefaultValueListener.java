@@ -76,15 +76,16 @@ public class DefaultValueListener extends DefaultEventListener {
         return null;
     }
 
-    public void onEvent(EventIterator eventIterator) {
+    public void onEvent(final EventIterator eventIterator) {
         try {
+            // todo : may need to move the dynamic default values generation to JahiaNodeTypeInstanceHandler
             final String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
             final List<Event> events = new ArrayList<Event>();
             JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
-                    Iterator<Event> it = events.iterator();
-                    while (it.hasNext()) {
-                        Event event = it.next();
+                    Iterator<Event> it = eventIterator;
+                    while (eventIterator.hasNext()) {
+                        Event event = eventIterator.nextEvent();
                         if (isExternal(event)) {
                             continue;
                         }

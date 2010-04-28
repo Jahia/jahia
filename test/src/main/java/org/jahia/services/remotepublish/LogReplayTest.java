@@ -35,13 +35,16 @@ import junit.framework.TestCase;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.modules.remotepublish.LogBundleEnd;
 import org.jahia.modules.remotepublish.RemotePublicationService;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -295,7 +298,7 @@ public class LogReplayTest extends TestCase {
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
         JCRNodeWrapper page2 = page1.addNode("page2", "jnt:page");
         JCRNodeWrapper page3 = page2.addNode("page3", "jnt:page");
-        page3.setProperty("jcr:title","testLogMoveOfNode");
+        page3.setProperty("jcr:title", "testLogMoveOfNode");
         session.save();
 
         Calendar now = new GregorianCalendar();
@@ -366,8 +369,9 @@ public class LogReplayTest extends TestCase {
 
         try {
             JCRNodeWrapper movedNode = session.getNode("/sites/jcrRPTest/home/target/page1/page3_moved");
-            assertTrue("The moved page should have a title",movedNode.hasProperty("jcr:title"));
-            assertEquals("The title page should be testLogMoveOfNode","testLogMoveOfNode",movedNode.getProperty("jcr:title").getString());
+            assertTrue("The moved page should have a title", movedNode.hasProperty("jcr:title"));
+            assertEquals("The title page should be testLogMoveOfNode", "testLogMoveOfNode", movedNode.getProperty(
+                    "jcr:title").getString());
         } catch (PathNotFoundException e) {
             fail("We should have found path : /sites/jcrRPTest/home/target/page1/page3_moved");
         }
@@ -376,14 +380,15 @@ public class LogReplayTest extends TestCase {
 
     public void testLogBinaryNode() throws Exception {
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          LanguageCodeConverters.languageCodeToLocale(
+                                                                                                  site.getDefaultLanguage()));
 
         JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/files");
-        JCRNodeWrapper source = node.addNode("source","jnt:folder");
+        JCRNodeWrapper source = node.addNode("source", "jnt:folder");
 
-        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
 
         Calendar now = new GregorianCalendar();
 
@@ -397,16 +402,18 @@ public class LogReplayTest extends TestCase {
 
         session.save();
 
-        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files/source", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
-        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files/source/test.txt", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files/source", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/files/source/test.txt", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
 
-        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(Constants.LIVE_WORKSPACE,
-                        LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                              LanguageCodeConverters.languageCodeToLocale(
+                                                                                                      site.getDefaultLanguage()));
 
         source = liveSession.getNodeByUUID(source.getIdentifier());
 
-        File tmp = File.createTempFile("remote",".log.gz");
+        File tmp = File.createTempFile("remote", ".log.gz");
         RemotePublicationService.getInstance().generateLog(source, now, new FileOutputStream(tmp));
 
         node.checkout();
@@ -423,9 +430,123 @@ public class LogReplayTest extends TestCase {
         Value v = targetContent.getProperty("jcr:data").getValue();
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         IOUtils.copy(v.getBinary().getStream(), baos);
-        assertEquals("Binary content invalid", value,new String(baos.toByteArray(),"UTF-8"));
+        assertEquals("Binary content invalid", value, new String(baos.toByteArray(), "UTF-8"));
 
     }
 
+    public void testLogOrderingOfNodes() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          LanguageCodeConverters.languageCodeToLocale(
+                                                                                                  site.getDefaultLanguage()));
 
+        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+        JCRNodeWrapper source = node.addNode("source", "jnt:page");
+        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
+        JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
+        JCRNodeWrapper page4 = source.addNode("page4", "jnt:page");
+        JCRNodeWrapper page5 = source.addNode("page5", "jnt:page");
+        JCRNodeWrapper page6 = source.addNode("page6", "jnt:page");
+        session.save();
+
+        Calendar now = new GregorianCalendar();
+
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                              LanguageCodeConverters.languageCodeToLocale(
+                                                                                                      site.getDefaultLanguage()));
+
+        JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
+
+        File tmp = File.createTempFile("remoteAddNode", ".log.gz");
+        JCRNodeWrapper target;
+        try {
+            RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+            node.checkout();
+            target = node.addNode("target", "jnt:page");
+            session.save();
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+        List<String> pageNames = Arrays.asList("page1", "page2", "page3", "page4", "page5", "page6");
+        List<String> pageFound = new ArrayList<String>();
+        NodeIterator nodeIterator = target.getNodes();
+        int i = 0;
+        while (nodeIterator.hasNext()) {
+            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
+            String s = pageNames.get(i);
+            logger.info("testLogOrderingOfNodes : ["+i+"] "+nodeWrapper.getName());
+            assertEquals("Node name should be : " + s, pageNames.get(i), nodeWrapper.getName());
+            pageFound.add(s);
+            i++;
+        }
+        assertTrue("Number of pages should be " + pageNames.size() + "but found " + pageFound.size(),
+                   pageNames.size() == pageFound.size());
+
+        try {
+            JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                        Constants.LIVE_WORKSPACE, null, false, true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        now = new GregorianCalendar();
+        source.checkout();
+        page1.checkout();
+        page2.checkout();
+        page3.checkout();
+        page4.checkout();
+        page5.checkout();
+        page6.checkout();
+        try {
+            source.orderBefore("page4", "page2");
+            source.orderBefore("page6", "page5");
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+        session.save();
+        pageNames = Arrays.asList("page1", "page4", "page2", "page3", "page6", "page5");
+        pageFound = new ArrayList<String>();
+        i = 0;
+        nodeIterator = source.getNodes();
+        while (nodeIterator.hasNext()) {
+            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
+            String s = pageNames.get(i);
+            logger.info("testLogOrderingOfNodes source : ["+i+"] "+nodeWrapper.getName());
+            assertEquals("Node name should be : " + s, pageNames.get(i), nodeWrapper.getName());
+            pageFound.add(s);
+            i++;
+        }
+        
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+
+        tmp = File.createTempFile("remoteMoveNode", ".log.gz");
+        try {
+            RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+            target = node.getNode("target");
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+        pageFound = new ArrayList<String>();
+        i = 0;
+        nodeIterator = target.getNodes();
+        while (nodeIterator.hasNext()) {
+            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
+            String s = pageNames.get(i);
+            logger.info("testLogOrderingOfNodes : ["+i+"] "+nodeWrapper.getName());
+            assertEquals("Node name should be : " + s, pageNames.get(i), nodeWrapper.getName());
+            pageFound.add(s);
+            i++;
+        }
+        assertTrue("Number of pages should be " + pageNames.size() + "but found " + pageFound.size(),
+                   pageNames.size() == pageFound.size());
+
+    }
 }

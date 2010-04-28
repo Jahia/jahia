@@ -101,6 +101,22 @@ public class RemotePublicationService {
                     break;
                 }
 
+                case Event.NODE_MOVED: {
+                    Map map = event.getInfo();
+                    if (map.containsKey("srcChildRelPath")) {
+                        oos.writeObject(logEntry);
+                        Map<String, String> newMap = new HashMap<String, String>();
+                        newMap.put("srcChildPath", map.get("srcChildRelPath").toString());
+                        Object o = map.get("destChildRelPath");
+                        if (o != null) {
+                            newMap.put("destChildPath", o.toString());
+                        }
+                        oos.writeObject(newMap);
+                        addedPath.add(path);
+                    }
+                    break;
+                }
+
                 case Event.PROPERTY_ADDED: {
                     String nodePath = StringUtils.substringBeforeLast(path, "/");
                     final JCRNodeWrapper node = liveSession.getNode(nodePath);
@@ -234,6 +250,20 @@ public class RemotePublicationService {
                                         node.checkout();
                                         node.remove();
                                         addedPath.remove(path);
+                                        break;
+                                    }
+                                    case Event.NODE_MOVED: {
+                                        Map<String, String> map = (Map<String, String>) ois.readObject();
+                                        String srcPath = map.get("srcChildPath");
+                                        String destPath = map.get("destChildPath");
+                                        if (logger.isInfoEnabled()) {
+                                            logger.info("Moving Node " + path + " srcChildPath = "+srcPath+" destChildPath = "+destPath);
+                                        }
+                                        final JCRNodeWrapper node = session.getNode(path);
+                                        JCRNodeWrapper parent = node.getParent();
+                                        parent.checkout();
+                                        node.checkout();
+                                        parent.orderBefore(srcPath, destPath);
                                         break;
                                     }
                                     case Event.PROPERTY_ADDED:

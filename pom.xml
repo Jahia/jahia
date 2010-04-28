@@ -20,6 +20,8 @@
     <jackrabbit.version>2.0.0</jackrabbit.version>
     <jackrabbit.patch.version>patch4</jackrabbit.patch.version>
     <lucene.version>2.4.1</lucene.version>
+    <jbpm.version>4.3</jbpm.version>
+    <hibernate.version>3.3.2.GA</hibernate.version>
     <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
 
     <driver.derby.version>10.4.2.0</driver.derby.version>

@@ -3,7 +3,6 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -16,11 +15,11 @@ import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Edit engine tab for performing actions on the list of items:
+ * manual and automatic ordering, deletion etc.
  * User: ktlili
  * Date: Apr 27, 2010
  * Time: 10:33:26 AM
- * To change this template use File | Settings | File Templates.
  */
 public class ListOrderingContentTabItem extends ContentTabItem {
     private ManualListOrderingEditor manualListOrderingEditor = null;
@@ -46,7 +45,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
     }
 
     /**
-     * Create manual list ordering edirtor
+     * Create manual list ordering editor
      *
      * @param propertiesEditor
      * @return
@@ -72,27 +71,40 @@ public class ListOrderingContentTabItem extends ContentTabItem {
                 }
 
                 // update form components
-                for (Component component : propertiesEditor.getOrderingListFieldSet()) {
+                for (FieldSet component : propertiesEditor.getOrderingListFieldSet()) {
                     if (useManualRanking.getValue()) {
                         component.setData("addedField", null);
                         component.setEnabled(false);
+                        component.collapse();
                     } else {
                         component.setData("addedField", "true");
                         component.setEnabled(true);
+                        component.expand();
                     }
                 }
                 manualListOrderingEditor.setEnabled(useManualRanking.getValue());
+                if (useManualRanking.getValue()) {
+                    manualListOrderingEditor.expand();
+                } else {
+                    manualListOrderingEditor.collapse();
+                }
             }
         });
 
 
         // update form components
         boolean isManual = !propertiesEditor.getNodeTypes().contains(new GWTJahiaNodeType("jmix:orderedList"));
-        for (Component component : propertiesEditor.getOrderingListFieldSet()) {
+        for (FieldSet component : propertiesEditor.getOrderingListFieldSet()) {
             component.setEnabled(!isManual);
+            if (isManual) {
+                component.collapse();
+            }
         }
         useManualRanking.setValue(isManual);
         manualListOrderingEditor.setEnabled(isManual);
+        if (!isManual) {
+            manualListOrderingEditor.collapse();
+        }
 
         fieldSet.add(useManualRanking);
         fieldSet.add(manualListOrderingEditor);

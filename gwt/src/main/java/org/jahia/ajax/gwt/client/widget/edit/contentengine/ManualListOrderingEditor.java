@@ -1,7 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoader;
@@ -13,9 +12,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -30,11 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * GWT control for performing manual list item ordering and deletion of a single or multiple items.
  * User: ktlili
  * Date: Apr 22, 2010
  * Time: 5:42:18 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ManualListOrderingEditor extends ContentPanel {
     private GWTJahiaNode node;
@@ -58,24 +54,15 @@ public class ManualListOrderingEditor extends ContentPanel {
     private void init() {
         setBodyBorder(true);
         List<String> columnNames = new ArrayList<String>();
-        //columnNames.add("providerKey");
         columnNames.add("ext");
         columnNames.add("name");
-        //columnNames.add("locked");
-        //columnNames.add("path");
-        //columnNames.add("size");
-        //columnNames.add("publicationInfo");
-        //columnNames.add("created");
-        //columnNames.add("createdBy");
+        columnNames.add("created");
+        columnNames.add("createdBy");
         columnNames.add("lastModified");
-        //columnNames.add("lastModifiedBy");
-        //columnNames.add("lastPublished");
-        //columnNames.add("lastPublishedBy");                CheckBoxSelectionModel
+        columnNames.add("lastModifiedBy");
 
         final List<ColumnConfig> columnConfigList = new NodeColumnConfigList(columnNames);
         final CheckBoxSelectionModel<GWTJahiaNode> sm = new CheckBoxSelectionModel<GWTJahiaNode>();
-        // selection model supports the SIMPLE selection mode
-        // sm.setSelectionMode(Style.SelectionMode.MULTI);
 
         columnConfigList.add(0, new RowNumberer());
         columnConfigList.add(1, sm.getColumn());
@@ -98,7 +85,7 @@ public class ManualListOrderingEditor extends ContentPanel {
 
         childrenGrid = new Grid<GWTJahiaNode>(store, new ColumnModel(columnConfigList));
         childrenGrid.setBorders(true);
-        childrenGrid.setHeight(150);
+        childrenGrid.setHeight(400);
         new GridDragSource(childrenGrid);
 
         GridDropTarget target = new GridDropTarget(childrenGrid);

@@ -279,16 +279,16 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("text_tree.png")
     public AbstractImagePrototype navMenu();
 
-    @Resource("minus.png")
+    @Resource("navigate_up2.png")
     public AbstractImagePrototype moveFirst();
 
-    @Resource("minus.png")
+    @Resource("navigate_up.png")
     public AbstractImagePrototype moveUp();
 
-    @Resource("minus.png")
+    @Resource("navigate_down2.png")
     public AbstractImagePrototype moveLast();
 
-    @Resource("minus.png")
+    @Resource("navigate_down.png")
     public AbstractImagePrototype moveDown();
 
 }

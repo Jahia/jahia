@@ -265,8 +265,8 @@
                         <dependencies>
                             <dependency>
                                 <groupId>org.hibernate</groupId>
-                                <artifactId>hibernate</artifactId>
-                                <version>3.2.6.ga</version>
+                                <artifactId>hibernate-core</artifactId>
+                                <version>${hibernate.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.jahia.server</groupId>
@@ -1039,8 +1039,8 @@
                     </dependency>
                     <dependency>
                         <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate</artifactId>
-                        <version>3.2.6.ga</version>
+                        <artifactId>hibernate-core</artifactId>
+                        <version>${hibernate.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.slf4j</groupId>
@@ -1120,6 +1120,75 @@
                                     </fileset>
                                 </schemaexport>
                                 <delete dir="${project.build.directory}/xdoclet"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-jbpm-ddl</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks if="jahia.generate.jbpm.ddl">
+                                <echo message="Generating DDL schemata for jBPM..."/>
+                                <taskdef name="schemaexport"
+                                         classname="org.hibernate.tool.hbm2ddl.SchemaExportTask">
+                                    <classpath>
+                                        <path refid="maven.dependency.classpath"/>
+                                        <pathelement path="${maven.build.dest}"/>
+                                        <pathelement path="${maven.test.dest}"/>
+                                    </classpath>
+                                </taskdef>
+                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jbpm-pvm-${jbpm.version}.jar"
+                                       dest="${project.build.directory}/jbpm">
+                                    <patternset>
+                                        <include name="*.hbm.xml"/>
+                                    </patternset>
+                                </unzip>
+                                <schemaexport properties="${basedir}/derby.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/jbpm-schema.sql">
+                                    <fileset dir="${project.build.directory}/jbpm">
+                                        <include name="*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/hypersonic.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/hypersonic/jbpm-schema.sql">
+                                    <fileset dir="${project.build.directory}/jbpm">
+                                        <include name="*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/mssql.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mssql/jbpm-schema.sql">
+                                    <fileset dir="${project.build.directory}/jbpm">
+                                        <include name="*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/mysql.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jbpm-schema.sql">
+                                    <fileset dir="${project.build.directory}/jbpm">
+                                        <include name="*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/oracle.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/oracle/jbpm-schema.sql">
+                                    <fileset dir="${project.build.directory}/jbpm">
+                                        <include name="*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/postgresql.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/jbpm-schema.sql">
+                                    <fileset dir="${project.build.directory}/jbpm">
+                                        <include name="*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <delete dir="${project.build.directory}/jbpm"/>
                             </tasks>
                         </configuration>
                     </execution>

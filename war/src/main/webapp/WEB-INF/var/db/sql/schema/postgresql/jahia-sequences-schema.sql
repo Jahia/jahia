@@ -1,12 +1,12 @@
 drop sequence seq_pwd_policies;
-create sequence seq_pwd_policies start with 1 increment by 20;
+create sequence seq_pwd_policies start 1 increment 20;
 drop sequence seq_pwd_policy_rules;
-create sequence seq_pwd_policy_rules start with 1 increment by 20;
+create sequence seq_pwd_policy_rules start 1 increment 20;
 drop sequence seq_pwd_policy_rule_params;
-create sequence seq_pwd_policy_rule_params start with 1 increment by 20;
+create sequence seq_pwd_policy_rule_params start 1 increment 20;
 drop sequence seq_version;
-create sequence seq_version start with 1 increment by 20;
+create sequence seq_version start 1 increment 20;
 drop sequence seq_installedpatch;
-create sequence seq_installedpatch start with 1 increment by 20;
+create sequence seq_installedpatch start 1 increment 20;
 drop sequence seq_subscriptions;
-create sequence seq_subscriptions start with 1 increment by 20;
+create sequence seq_subscriptions start 1 increment 20;

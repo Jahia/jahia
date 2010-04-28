@@ -54,7 +54,7 @@
     create table jahia_pwd_policy_rules (
         jahia_pwd_policy_rule_id integer not null,
         action char(1) not null,
-        rule_condition mediumtext not null,
+        rule_condition longtext not null,
         evaluator char(1) not null,
         name varchar(255) not null,
         jahia_pwd_policy_id integer not null,
@@ -79,7 +79,7 @@
         suspended bit not null,
         confirmation_key varchar(32),
         confirmation_request_timestamp bigint,
-        properties mediumtext,
+        properties longtext,
         primary key (id_jahia_subscriptions)
     );
 

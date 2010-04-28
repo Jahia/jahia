@@ -19,6 +19,11 @@
                 <value>org/jahia/hibernate/model/JahiaPwdPolicyRuleParam.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaVersion.hbm.xml</value>
                 <value>org/jahia/hibernate/model/JahiaInstalledPatch.hbm.xml</value>
+                <value>jbpm.repository.hbm.xml</value>
+                <value>jbpm.execution.hbm.xml</value>
+                <value>jbpm.history.hbm.xml</value>
+                <value>jbpm.task.hbm.xml</value>
+                <value>jbpm.identity.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

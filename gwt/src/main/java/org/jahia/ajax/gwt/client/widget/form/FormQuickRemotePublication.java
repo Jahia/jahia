@@ -53,7 +53,9 @@ import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -123,6 +125,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
         Button saveButton = new Button(Messages.getResource("fm_save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent componentEvent) {
+                final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
                 List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = new ArrayList<GWTJahiaNodeProperty>();
                 gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remoteUrl", new GWTJahiaNodePropertyValue( remoteUrlField.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
                 gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remotePath", new GWTJahiaNodePropertyValue(remotePath.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
@@ -131,7 +134,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
                 gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("node", new GWTJahiaNodePropertyValue(localPath.getValue().get(0).getUUID(), GWTJahiaNodePropertyType.STRING)));
 
                 JahiaContentManagementService.App.getInstance().createNode("/remotePublications",nameField.getValue().toString(),"jnt:remotePublication",
-                        null,null,gwtJahiaNodeProperties,  "",
+                        null,null,gwtJahiaNodeProperties,  langCodeProperties,
                         new AsyncCallback<GWTJahiaNode>() {
                             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                                 if (getParent() instanceof Window) {

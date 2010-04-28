@@ -203,7 +203,7 @@ public class RemotePublicationService {
 
                             session.getPathMapping().put(log.getSourcePath(), target.getPath());
                             Set<String> addedPath = new HashSet<String>();
-                            Map<String, Object> missedProperties = new HashMap<String, Object>();
+                            Map<String,Map<String, Object>> missedProperties = new HashMap<String, Map<String, Object>>();
                             Object o;
                             while ((o = ois.readObject()) instanceof LogEntry) {
                                 LogEntry entry = (LogEntry) o;
@@ -241,13 +241,14 @@ public class RemotePublicationService {
                                         Object o1 = ois.readObject();
                                         try {
                                             updateProperty(session, path, o1);
-                                            if (path.contains("jcr:language")) {
-                                                for (Map.Entry<String, Object> missedProperty : missedProperties
-                                                        .entrySet()) {
+                                            if (path.contains("jcr:language") && path.contains("j:translation")) {
+                                                String translationPath = StringUtils.substringBeforeLast(path, "/");
+                                                Map<String,Object> map = missedProperties.get(translationPath);
+                                                for (Map.Entry<String, Object> missedProperty : map.entrySet()) {
                                                     updateProperty(session, missedProperty.getKey(),
                                                             missedProperty.getValue());
                                                 }
-                                                missedProperties.clear();
+                                                missedProperties.remove(translationPath);
                                             }
                                         } catch (ConstraintViolationException e) {
                                             logger.debug("Issue during add/update of property " + path + " (error: " +
@@ -255,7 +256,15 @@ public class RemotePublicationService {
                                         } catch (PathNotFoundException e) {
                                             logger.debug("Error during add/update of property " + path + " (error: " +
                                                     e.getMessage() + ")", e);
-                                            missedProperties.put(path, o1);
+                                            if(path.contains("j:translation")) {
+                                                String translationPath = StringUtils.substringBeforeLast(path, "/");
+                                                Map<String,Object> map = missedProperties.get(translationPath);
+                                                if(map==null) {
+                                                    map = new HashMap<String, Object>();
+                                                }
+                                                map.put(path,o1);
+                                                missedProperties.put(translationPath, map);
+                                            }
                                         } catch (RepositoryException e) {
                                             logger.error("Error during add/update of property " + path + " (error: " +
                                                     e.getMessage() + ")", e);

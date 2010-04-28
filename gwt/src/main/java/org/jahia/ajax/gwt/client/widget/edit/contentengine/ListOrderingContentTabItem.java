@@ -22,6 +22,7 @@ import java.util.List;
  * Time: 10:33:26 AM
  */
 public class ListOrderingContentTabItem extends ContentTabItem {
+    private CheckBox useManualRanking;
     private ManualListOrderingEditor manualListOrderingEditor = null;
     private static final String JMIX_ORDERED_LIST = "jmix:orderedList";
 
@@ -53,12 +54,12 @@ public class ListOrderingContentTabItem extends ContentTabItem {
      */
     private void attachManualListOrderingEditor(final PropertiesEditor propertiesEditor) {
         manualListOrderingEditor = new ManualListOrderingEditor(engine.getNode());
+        useManualRanking = new CheckBox();
 
         // create a field set for the manual ranking
         final FieldSet fieldSet = new FieldSet();
         fieldSet.setCollapsible(true);
         fieldSet.setHeading(Messages.get("label_manualRanking", "Manual ranking"));
-        final CheckBox useManualRanking = new CheckBox();
         useManualRanking.setBoxLabel(Messages.get("label_useManualRanking", "Use manual ranking"));
 
         useManualRanking.addListener(Events.Change, new Listener<ComponentEvent>() {
@@ -117,7 +118,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
      * @return
      */
     public List<GWTJahiaNode> getNewManualOrderedChildrenList() {
-        if (manualListOrderingEditor == null || !manualListOrderingEditor.isEnabled()) {
+        if (manualListOrderingEditor == null || !useManualRanking.getValue()) {
             return null;
         }
         return manualListOrderingEditor.getOrderedNodes();

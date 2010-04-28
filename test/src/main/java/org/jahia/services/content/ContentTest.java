@@ -5,8 +5,11 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
+import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.TestHelper;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -17,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +28,11 @@ import java.util.Map;
  * This is a test case
  */
 public class ContentTest extends TestCase {
+    private static final transient Logger logger = Logger.getLogger(ContentTest.class);
+    private JahiaSite site;
+    private final static String TESTSITE_NAME = "contentTestSite";
+    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
@@ -55,6 +64,7 @@ public class ContentTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         ctx = Jahia.getThreadParamBean();
+        site = TestHelper.createSite(TESTSITE_NAME);
     }
 
     @Override
@@ -132,17 +142,17 @@ public class ContentTest extends TestCase {
             nodes.add(testFile.getUUID());
 
             assertEquals(providerRoot + " : Size is not the same", value.length(),
-                         testFile.getFileContent().getContentLength());
+                    testFile.getFileContent().getContentLength());
             assertEquals(providerRoot + " : Mime type is not the same", mimeType,
-                         testFile.getFileContent().getContentType());
+                    testFile.getFileContent().getContentType());
 
             long creationDate = testFile.getCreationDateAsDate().getTime();
             assertTrue(providerRoot + " : Creation date invalid",
-                       creationDate < (System.currentTimeMillis() + 600000) && creationDate > (System.currentTimeMillis() - 600000));
+                    creationDate < (System.currentTimeMillis() + 600000) && creationDate > (System.currentTimeMillis() - 600000));
 
             long lastModifiedDate = testFile.getLastModifiedAsDate().getTime();
             assertTrue(providerRoot + " : Modification date invalid",
-                       lastModifiedDate < (System.currentTimeMillis() + 600000) && lastModifiedDate > (System.currentTimeMillis() - 600000));
+                    lastModifiedDate < (System.currentTimeMillis() + 600000) && lastModifiedDate > (System.currentTimeMillis() - 600000));
 
             testFile = session.getNode(providerRoot + "/" + name);
 
@@ -192,9 +202,9 @@ public class ContentTest extends TestCase {
             }
 
             assertEquals("getPropertyAsString() : Property value is not the same", value,
-                         testCollection.getPropertyAsString("jcr:description"));
+                    testCollection.getPropertyAsString("jcr:description"));
             assertEquals("getPropertiesAsString() : Property value is not the same", value,
-                         testCollection.getPropertiesAsString().get("jcr:description"));
+                    testCollection.getPropertiesAsString().get("jcr:description"));
 
             boolean found = false;
             PropertyIterator pi = testCollection.getProperties();
@@ -281,7 +291,7 @@ public class ContentTest extends TestCase {
             session.save();
 
             try {
-                session.move(testFile.getPath(), providerRoot + "/" + collectionName+"/"+testFile.getName());
+                session.move(testFile.getPath(), providerRoot + "/" + collectionName + "/" + testFile.getName());
             } catch (RepositoryException e) {
                 fail("move throwed exception :" + e);
             }
@@ -369,7 +379,7 @@ public class ContentTest extends TestCase {
             // Do the query
             QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
             Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.[jcr:content], '456bcd')",
-                                         Query.JCR_SQL2);
+                    Query.JCR_SQL2);
             QueryResult queryResult = query.execute();
             RowIterator it = queryResult.getRows();
             assertTrue("Bad result number (" + it.getSize() + " instead of 1)", (it.getSize() == 1));
@@ -377,8 +387,69 @@ public class ContentTest extends TestCase {
                 Row row = it.nextRow();
                 String path = row.getValue(JcrConstants.JCR_PATH).getString();
                 assertEquals("Wrong file found ('" + path + "' instead of '" + testFile.getPath() + "')",
-                             testFile.getPath(), path);
+                        testFile.getPath(), path);
             }
+        } finally {
+            session.logout();
+        }
+    }
+
+    /**
+     * The following test:
+     * 1- creates a page with a list that contains several nodes
+     * 2- reorders list children
+     * 3- checks if the reordering feature is ok
+     * @throws Exception
+     */
+    public void testOrdering() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+
+        try {
+            logger.debug("Get site node");
+            JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
+            if(!siteNode.isCheckedOut()){
+                session.checkout(siteNode);
+            }
+
+            logger.debug("Create a new page");
+            JCRNodeWrapper page = siteNode.addNode("page" + System.currentTimeMillis(),"jnt:page");
+
+            // create a new collection with several children
+            logger.debug("Create a new list");
+            JCRNodeWrapper listNode = page.addNode("list" + System.currentTimeMillis(),"jnt:contentList");
+
+
+            logger.debug("Add children to list");
+            List<JCRNodeWrapper> children = new ArrayList<JCRNodeWrapper>();
+            for (int i = 0; i < 10; i++) {
+                children.add(listNode.addNode("test_child_" + System.currentTimeMillis() + "_" + i));
+            }
+            session.save();
+
+            // reorder existing ones
+            logger.debug("Reorder list children");
+            Collections.shuffle(children);
+            for (JCRNodeWrapper childNode : children) {
+                listNode.orderBefore(childNode.getName(), null);
+            }
+            session.save();
+
+            // check re-ordoring
+            logger.debug("Check new ordering");
+            JCRNodeWrapper targetNode = session.getNode(listNode.getPath());
+            if(!targetNode.isCheckedOut()){
+                session.checkout(targetNode);
+            }
+
+            NodeIterator targetNodeChildren = targetNode.getNodes();
+            int index = 0;
+            while (targetNodeChildren.hasNext()) {
+                JCRNodeWrapper currentTargetChildNode = (JCRNodeWrapper) targetNodeChildren.nextNode();
+                JCRNodeWrapper node = children.get(index);
+                index++;
+                assertEquals("Bad resulr: nodes["+index+"] are different: "+currentTargetChildNode.getPath()+" != "+node.getPath(),currentTargetChildNode.getPath(),node.getPath());
+            }
+
         } finally {
             session.logout();
         }

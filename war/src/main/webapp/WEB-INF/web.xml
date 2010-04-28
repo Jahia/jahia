@@ -397,6 +397,11 @@
         <load-on-startup>100</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>WelcomeServlet</servlet-name>
+        <servlet-class>org.jahia.bin.WelcomeServlet</servlet-class>
+    </servlet>
+
     <!-- ====================================================================== -->
     <!-- R E P O S I T O R Y   S E R V L E T                                    -->
     <!-- ====================================================================== -->
@@ -802,11 +807,11 @@
 
 
     <!-- Servlet mappings -->
+    <servlet-mapping>
+        <servlet-name>WelcomeServlet</servlet-name>
+        <url-pattern>/welcome</url-pattern>
+    </servlet-mapping>
 
-    <!-- if you change the servlet mappings below, make sure you also change
-         the initialization parameters above since Jahia's servlet cross
-         reference each other
-    -->
     <servlet-mapping>
         <servlet-name>JahiaAdministration</servlet-name>
         <url-pattern>/administration/*</url-pattern>
@@ -1701,7 +1706,7 @@
     </mime-mapping>
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>welcome</welcome-file>
     </welcome-file-list>
 
     <error-page>

@@ -3,7 +3,6 @@ package org.jahia.bin;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContextFactory;
@@ -27,11 +26,11 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Servlet for the first entry point in Jahia portal that performs a client-side redirect
+ * to the home page of the appropriate site.
  * User: toto
  * Date: Apr 26, 2010
  * Time: 5:49:14 PM
- * To change this template use File | Settings | File Templates.
  */
 public class WelcomeServlet extends HttpServlet {
 
@@ -40,8 +39,9 @@ public class WelcomeServlet extends HttpServlet {
         defaultRedirect(request, response, getServletContext());
     }
 
-    public static void defaultRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws IOException, ServletException {
+    protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws IOException, ServletException {
         try {
+        request.getSession(true);
         JahiaSite site = JahiaSitesBaseService.getInstance().getDefaultSite();
         if (site == null) {
                 response.sendRedirect(request.getContextPath() + "/administration");
@@ -68,7 +68,7 @@ public class WelcomeServlet extends HttpServlet {
                         base = jParams.getRequest().getContextPath() + Edit.getEditServletPath() + "/" +
                                 Constants.EDIT_WORKSPACE + "/" + jParams.getLocale();
                     } catch (PathNotFoundException e2) {
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 session.getNode(jcrPath);
                                 throw new AccessDeniedException();

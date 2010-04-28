@@ -341,7 +341,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>3.3.2.GA</version>
+            <version>${hibernate.version}</version>
         </dependency>
 
         <!-- Jackrabbit dependencies -->
@@ -537,11 +537,23 @@
             <artifactId>nekohtml</artifactId>
             <version>1.9.14</version>
         </dependency>
+        
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>1.8.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz-oracle</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz-weblogic</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+        
         <dependency>
             <groupId>jsptags</groupId>
             <artifactId>pager-taglib</artifactId>
@@ -1011,7 +1023,7 @@
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-api</artifactId>
-            <version>4.3</version>
+            <version>${jbpm.version}</version>
             <exclusions>
             	<exclusion>
             		<groupId>jboss</groupId>
@@ -1022,7 +1034,7 @@
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-pvm</artifactId>
-            <version>4.3</version>
+            <version>${jbpm.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.livetribe</groupId>
@@ -1057,12 +1069,12 @@
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-db</artifactId>
-            <version>4.3</version>
+            <version>${jbpm.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-jpdl</artifactId>
-            <version>4.3</version>
+            <version>${jbpm.version}</version>
         </dependency>        
         
         <dependency>
@@ -1225,23 +1237,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>hibernate3-maven-plugin</artifactId>
-                <configuration>
-                    <components>
-                        <component>
-                            <name>hbm2ddl</name>
-                        </component>
-                    </components>
-                    <componentProperties>
-                        <export>false</export>
-                        <propertyfile>derby.hibernate.properties</propertyfile>
-                        <outputfilename>generated-schema.sql</outputfilename>
-                    </componentProperties>
-                </configuration>
             </plugin>
 
         </plugins>

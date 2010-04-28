@@ -81,8 +81,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths, boolean forceCreate) throws GWTJahiaServiceException;
-
     /**
      * Get a node by its path if existing.
      *
@@ -91,8 +89,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      * @throws GWTJahiaServiceException if node does not exist
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException;
-
-      public GWTJahiaAnalyticsProfile getGAProfiles() throws GWTJahiaServiceException;
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException;
 
@@ -150,11 +146,11 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     void saveNode(GWTJahiaNode node,List<GWTJahiaNode> orderedChilden, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException;
 
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException;
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException;
 
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException;
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException;
 
-    public GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException;
+    public GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException;
 
     public void createFolder(String parentPath, String name) throws GWTJahiaServiceException;
 
@@ -175,8 +171,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException;
 
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException;
-
-    public GWTJahiaNodeACL getNewACL(String parentPath) throws GWTJahiaServiceException;
 
     public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException;
 

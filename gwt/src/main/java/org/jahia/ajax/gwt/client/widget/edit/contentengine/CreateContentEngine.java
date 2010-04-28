@@ -268,9 +268,9 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         };
         if (createInParentAndMoveBefore) {
-            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, null, callback);
+            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, null, callback);
+            JahiaContentManagementService.App.getInstance().createNode(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         }
     }
 

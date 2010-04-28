@@ -391,7 +391,7 @@ public class ClassificationEditor extends LayoutContainer {
                      * @param caught
                      */
                     public void onFailure(Throwable caught) {
-                        async.createNode(s, autoCompleteComboBox.getRawValue(), "jnt:tag", null, null, new ArrayList<GWTJahiaNodeProperty>(), null,
+                        async.createNode(s, autoCompleteComboBox.getRawValue(), "jnt:tag", null, null, new ArrayList<GWTJahiaNodeProperty>(), 
                                 new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(Throwable caught) {
                                         com.google.gwt.user.client.Window.alert(

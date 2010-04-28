@@ -195,36 +195,6 @@ public class ContentManagerHelper {
         return nodeName;
     }
 
-    public GWTJahiaNode unsecureCreateNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
-        try {
-            currentUserSession.getNode(parentPath + "/" + name);
-            throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
-        } catch (PathNotFoundException e) {
-            if (!e.getMessage().contains(name)) {
-                logger.error(e.toString(), e);
-                throw new GWTJahiaServiceException(new StringBuilder(parentPath).append("/").append(name).append(" could not be accessed :\n").append(e.toString()).toString());
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(new StringBuilder(parentPath).append("/").append(name).append(" could not be accessed :\n").append(e.toString()).toString());
-        }
-        JCRNodeWrapper parentNode;
-        try {
-            parentNode = currentUserSession.getNode(parentPath);
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
-        }
-        JCRNodeWrapper childNode = unsecureAddNode(parentNode, name, nodeType, props);
-        try {
-            parentNode.save();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Node creation failed");
-        }
-        return navigation.getGWTJahiaNode(childNode);
-    }
-
 // -------------------------- OTHER METHODS --------------------------
 
     /**

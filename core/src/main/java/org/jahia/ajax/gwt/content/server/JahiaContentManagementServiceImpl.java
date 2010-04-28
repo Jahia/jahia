@@ -226,16 +226,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 getSite(), retrieveCurrentSession());
     }
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths, boolean forceCreate) throws GWTJahiaServiceException {
-        if (openPaths == null || openPaths.size() == 0) {
-            openPaths = getOpenPathsForRepository(repositoryType);
-        }
-
-        logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
-
-        return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, selectedNodes, openPaths, getSite(), retrieveCurrentSession());
-    }
-
     /**
      * Get a node by its path if existing.
      *
@@ -275,10 +265,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         } catch (Exception e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
-    }
-
-    public GWTJahiaAnalyticsProfile getGAProfiles() {
-        return analytics.getProfile(getSite());
     }
 
     public List<GWTJahiaNode> getSavedSearch() throws GWTJahiaServiceException {
@@ -530,21 +516,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param mixin
      * @param acl
      * @param props
-     * @param captcha
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException {
-        ParamBean context = retrieveParamBean();
-        if (captcha != null && !contentManager.checkCaptcha(context, captcha)) {
-            throw new GWTJahiaServiceException("Invalid captcha");
-        }
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
         GWTJahiaNode res;
-        if (captcha != null) {
-            res = contentManager.unsecureCreateNode(parentPath, name, nodeType, mixin, props, retrieveCurrentSession());
-        } else {
-            res = contentManager.createNode(parentPath, name, nodeType, mixin, props, retrieveCurrentSession());
-        }
+
+        res = contentManager.createNode(parentPath, name, nodeType, mixin, props, retrieveCurrentSession());
+
         if (acl != null) {
             setACL(res.getPath(), acl);
         }
@@ -561,11 +540,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param acl
      * @param props
      * @param langCodeProperties
-     * @param captcha
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException {
         if (name == null) {
             String defaultLanguage = getLocale().toString();
             if (getSite() != null) {
@@ -580,7 +558,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
 
-        GWTJahiaNode node = createNode(parentPath, name, nodeType, mixin, acl, props, captcha);
+        GWTJahiaNode node = createNode(parentPath, name, nodeType, mixin, acl, props);
         // save shared properties
         if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
             List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
@@ -605,10 +583,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param mixin
      * @param acl
      * @param properties
-     * @param captcha
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha) throws GWTJahiaServiceException {
+    public GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException {
         if (name == null) {
             List<GWTJahiaNodeProperty> l = langCodeProperties.get(getSite().getDefaultLanguage());
             if (l == null && langCodeProperties.size() > 0) {
@@ -707,10 +684,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException {
         return contentManager.getACL(path, false, retrieveCurrentSession(), getLocale());
-    }
-
-    public GWTJahiaNodeACL getNewACL(String parentPath) throws GWTJahiaServiceException {
-        return contentManager.getACL(parentPath, true, retrieveCurrentSession(), getLocale());
     }
 
     public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException {

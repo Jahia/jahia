@@ -413,7 +413,7 @@ public class ContentActions {
             String nodeName = Window.prompt(windowHeaer, "untitled");
             if (nodeName != null && nodeName.length() > 0) {
                 linker.loading(Messages.getResource("fm_newfoldering"));
-                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, null, new AsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, new AsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
                         linker.loaded();
                         linker.refresh(EditLinker.REFRESH_ALL);

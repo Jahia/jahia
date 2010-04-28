@@ -73,8 +73,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths,boolean forceCreate, AsyncCallback<List<GWTJahiaNode>> async);
-
     /**
      * Get a node by its path if existing.
      *
@@ -92,9 +90,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, AsyncCallback<List<GWTJahiaNode>> async);
 
     void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
-
-    void getGAProfiles(AsyncCallback<GWTJahiaAnalyticsProfile> async);
-
 
     void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);
 
@@ -142,11 +137,11 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void saveNode(GWTJahiaNode node,List<GWTJahiaNode> orderedChilden, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties,AsyncCallback async);    
 
-    void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, String captcha, AsyncCallback<GWTJahiaNode> async);
+    void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props, AsyncCallback<GWTJahiaNode> async);
 
-    void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha, AsyncCallback<GWTJahiaNode> async);
+    void createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, AsyncCallback<GWTJahiaNode> async);
 
-    void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, String captcha, AsyncCallback<GWTJahiaNode> asyncCallback);
+    void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties,Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, AsyncCallback<GWTJahiaNode> asyncCallback);
 
     void createFolder(String parentPath, String name, AsyncCallback async);
 
@@ -167,8 +162,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 
     void getACL(String path, AsyncCallback<GWTJahiaNodeACL> async);
-
-    void getNewACL(String parentPath, AsyncCallback<GWTJahiaNodeACL> async) throws GWTJahiaServiceException;
 
     void setACL(String path, GWTJahiaNodeACL acl, AsyncCallback async);
 

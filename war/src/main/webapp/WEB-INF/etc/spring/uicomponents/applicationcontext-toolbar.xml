@@ -1952,7 +1952,9 @@
 
     <bean id="org.jahia.toolbar.item.exectuteRemotePublication" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteRemotePublicationItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteActionItem">
+                <property name="action" value="remotepublish"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.executeRemotePublication"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>

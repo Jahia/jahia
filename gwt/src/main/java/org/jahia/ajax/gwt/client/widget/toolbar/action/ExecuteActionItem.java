@@ -11,12 +11,13 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
  * Time: 2:26:32 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ExecuteRemotePublicationItem extends BaseActionItem {
+public class ExecuteActionItem extends BaseActionItem {
   public static final int STATUS_CODE_OK = 200;
+    private String action;
     public void onComponentSelection() {
         String baseURL =  "http://localhost:8080" + JahiaGWTParameters.getContextPath() + "/cms/render";
         String localURL = baseURL + "/default/en"  + linker.getSelectedNode().getPath();
-        RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + ".remotepublish.do");
+        RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + "." + action + ".do");
         try {
           Request response = builder.sendRequest(null, new RequestCallback() {
             public void onError(Request request, Throwable exception) {
@@ -37,6 +38,10 @@ public class ExecuteRemotePublicationItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
         setEnabled(lh.isTableSelection() || lh.isMainSelection());
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 }
 

@@ -1,6 +1,6 @@
 # Jahia MySQL Database configuration file
 
-jahia.database.name     =  MySQL
+jahia.database.name     =  MySQL 5.x
 jahia.database.driver   =  com.mysql.jdbc.Driver
 jahia.database.url      =  jdbc:mysql://localhost/jahia?useUnicode=true&characterEncoding=UTF-8&useServerPrepStmts=false
 jahia.database.user     =  jahia
@@ -18,7 +18,7 @@ jahia.jackrabbit.schema = mysql
 # comment this to use JTA transactions
 jahia.database.schemascriptdir = sql/schema/mysql
 jahia.database.transactions = false
-jahia.database.hibernate.dialect = org.hibernate.dialect.MySQLDialect
+jahia.database.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 jahia.nested_transaction_allowed = true
 
 jahia.jboss.datasource.typeMapping = mySQL

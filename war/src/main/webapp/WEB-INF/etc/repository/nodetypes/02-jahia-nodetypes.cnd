@@ -71,7 +71,7 @@
 [jnt:ace] > nt:base
  - j:aceType (string) mandatory nofulltext < 'GRANT', 'DENY'
  - j:principal (string) mandatory nofulltext
- - j:privileges (name) mandatory multiple 
+ - j:privileges (name) mandatory multiple
  - j:protected (boolean) mandatory
 
 [jnt:acl] > nt:base
@@ -88,18 +88,18 @@
 
 [jnt:role] > nt:base, mix:referenceable, mix:title, jmix:observable
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
-  
+
 [jnt:roles] > nt:base, mix:versionable
  + * (jnt:role)
- 
+
 [jnt:permission] > nt:base, mix:referenceable, mix:title, jmix:observable
- 
+
 [jnt:permissionGroup] > nt:base, jmix:observable
  + * (jnt:permission)
 
 [jnt:permissions] > nt:base, mix:versionable
  + * (jnt:permissionGroup)
- 
+
 [jmix:roleBasedAccessControlled] mixin
  - j:roles (weakreference) protected hidden multiple < jnt:role
 
@@ -155,7 +155,7 @@
 
 [jnt:query] > nt:query, mix:title, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list, jmix:queryContent
  - maxItems (long) = 10 indexed=no
- 
+
 //---------------------------------------------------------
 // Files
 //---------------------------------------------------------
@@ -175,9 +175,9 @@
 //---------------------------------------------------------
 // Text extracts
 //---------------------------------------------------------
-         // todo with sergiy
+
 [jnt:textExtracts] > nt:folder
- + * (nt:folder) 
+ + * (nt:folder)
  + * (jnt:textExtract)
 
 [jnt:textExtract] > nt:base
@@ -202,7 +202,7 @@
 
 [jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list
  + * (jnt:tag) = jnt:tag
- 
+
 //---------------------------------------------------------
 // Preferences
 //---------------------------------------------------------
@@ -217,14 +217,14 @@
 // Users and groups
 //---------------------------------------------------------
 
-[jnt:usersFolder] > nt:base, jmix:nodenameInfo, jmix:list
+[jnt:usersFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list
  - j:usersFolderConfig (string) nofulltext
  - j:usersFolderSkeleton (string) nofulltext
  + * (jnt:user)
 
 [jnt:address] > nt:base
  - j:street (string)
- - j:zipcode (string) 
+ - j:zipcode (string)
  - j:town (string)
  - j:country (string,choicelist[country])
  - j:private (boolean)=false
@@ -242,7 +242,7 @@
  - j:defaultPhone (weakreference) < jnt:phoneNumber
  + * (jnt:phoneNumber)
 
-[jnt:user] > jnt:systemNode
+[jnt:user] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
  - j:password (string) indexed=no
  - j:external (boolean)=false autocreated
  - j:externalSource (string) nofulltext
@@ -277,7 +277,7 @@
  + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
  + j:phones (jnt:phoneNumbers) = jnt:phoneNumbers mandatory autocreated
 
-[jnt:groupsFolder] > nt:base, jmix:nodenameInfo, jmix:list
+[jnt:groupsFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list
  - j:groupsFolderConfig (string) nofulltext
  - j:groupsFolderSkeleton (string) nofulltext
  + * (jnt:group) = jnt:group
@@ -288,7 +288,7 @@
 [jnt:members]  > nt:base
  + * (jnt:member)
 
-[jnt:group] > jnt:systemNode
+[jnt:group] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
  - j:hidden (boolean)
  - j:external (boolean)=false autocreated
  - j:externalSource (string) nofulltext
@@ -329,7 +329,7 @@
 // Virtual sites
 //---------------------------------------------------------
 
-[jnt:virtualsitesFolder] > jnt:systemNode, jmix:list
+[jnt:virtualsitesFolder] > jnt:systemNode, jmix:basemetadata, jmix:list
  - j:defaultSite (weakreference) < jnt:virtualsite
  - j:virtualsitesFolderConfig (string) nofulltext
  - j:virtualsitesFolderSkeleton (string) nofulltext
@@ -407,17 +407,17 @@
 
 [jmix:nodeReference] mixin
 
-[jnt:fileReference] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:nodeReference, jmix:editorialContent
+[jnt:fileReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
  - j:node (weakreference) < jnt:file
 
-[jnt:imageReference] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:nodeReference, jmix:editorialContent
+[jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
  - j:node (weakreference) < jmix:image
  - j:alternateText (string)
 
-[jnt:nodeLink] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:nodeReference, jmix:link
+[jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link
  - j:node (weakreference) < jmix:droppableContent, jnt:page
 
-[jnt:externalLink] > nt:base, jmix:nodenameInfo, jmix:basemetadata,  jmix:link
+[jnt:externalLink] > jnt:content, jmix:link
  - j:url (string)
 
 [jnt:referenceInField] > nt:base
@@ -452,7 +452,7 @@
 
 [jnt:templatesSets] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:virtualsite)
-  
+
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:page)
 
@@ -497,6 +497,7 @@
 
 [jnt:portletList] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:listContent, mix:title, jmix:list
  + * (jnt:portlet) = jnt:portlet
+ + * (jnt:portletList)
 
 [jnt:portletReference] > nt:base, jmix:nodenameInfo, jmix:basemetadata,  jmix:nodeReference, jmix:editorialContent
  - j:node (weakreference) < jnt:portlet
@@ -512,3 +513,31 @@
 
 [jnt:referencesKeeper] > nt:base, jmix:nodenameInfo
  + j:reference (jnt:reference) multiple
+
+
+//---------------------------------------------------------
+// Compatibility nodes
+//---------------------------------------------------------
+
+[jnt:container] > nt:base,  jmix:basemetadata, mix:title
+
+[jnt:containerList] > nt:base,  jmix:basemetadata
+ orderable
+ + * (jnt:container) version
+
+[jnt:internalPageLink] > jnt:nodeLink
+
+[jnt:externalPageLink] > jnt:externalLink
+
+[jnt:layoutItem]  > nt:base, jmix:basemetadata
+ - j:columnIndex (long)
+ - j:rowIndex (long)
+ - j:status (string) nofulltext
+ - j:portlet (reference) < jnt:portlet
+
+[jnt:layout]  > nt:base,  jmix:basemetadata
+ - j:page (weakreference)
+ - j:nbColumns (long)
+ - j:liveEditable (boolean)
+ - j:liveDraggable (boolean)
+ + j:item (jnt:layoutItem) multiple

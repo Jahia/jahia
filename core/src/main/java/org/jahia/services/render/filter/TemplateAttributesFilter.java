@@ -2,6 +2,7 @@ package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -10,12 +11,13 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Module filter for parameter resolution.
@@ -31,23 +33,23 @@ public class TemplateAttributesFilter extends AbstractFilter {
         final HttpServletRequest request = context.getRequest();
 
         // Resolve params
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<String, Object>();
         Map<String, Object> moduleParams = resource.getModuleParams();
         for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {
             String key = entry.getKey();
             if (key.startsWith("forced")) {
-                key = StringUtils.uncapitalize(StringUtils.substringAfter(key,"forced"));
+                key = StringUtils.uncapitalize(StringUtils.substringAfter(key, "forced"));
                 params.put(key, entry.getValue());
-            } else if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(key))) {
+            } else if (!moduleParams.containsKey("forced" + StringUtils.capitalize(key))) {
                 params.put(key, entry.getValue());
             }
         }
 
-//        ExtendedNodeType layout = NodeTypeRegistry.getInstance().getNodeType("jmix:layout");
-//        ExtendedNodeType[] mixins = layout.getMixinSubtypes();
-//        for (ExtendedNodeType mixin : mixins) {
-//            overrideProperties(node, params, moduleParams, mixin);
-//        }
+        Set<ExtendedItemDefinition> items = NodeTypeRegistry.getInstance().getTypedItems().get("layout");
+        for (ExtendedItemDefinition prop : items) {
+            overrideProperties(node, params, moduleParams, prop.getName());
+        }
+
         ExtendedNodeType cache = NodeTypeRegistry.getInstance().getNodeType("jmix:cache");
         overrideProperties(node, params, moduleParams, cache);
 
@@ -56,8 +58,9 @@ public class TemplateAttributesFilter extends AbstractFilter {
         }
 
         Script script = (Script) request.getAttribute("script");
-        chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request",
-                new LocalizationContext(new JahiaResourceBundle(resource.getLocale(), script.getTemplate().getModule().getName()), resource.getLocale()));
+        chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request", new LocalizationContext(
+                new JahiaResourceBundle(resource.getLocale(), script.getTemplate().getModule().getName()),
+                resource.getLocale()));
 
         String out;
         out = chain.doFilter(context, resource);
@@ -65,16 +68,22 @@ public class TemplateAttributesFilter extends AbstractFilter {
         return out;
     }
 
-    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams, ExtendedNodeType mixin) throws RepositoryException {
+    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams,
+                                    ExtendedNodeType mixin) throws RepositoryException {
         Map<String, ExtendedPropertyDefinition> props = mixin.getDeclaredPropertyDefinitionsAsMap();
         for (String key : props.keySet()) {
-            String pkey = StringUtils.substringAfter(key, ":");
-            if (!moduleParams.containsKey("forced"+ StringUtils.capitalize(pkey))) {
-                if (node.isNodeType(mixin.getName()) && node.hasProperty(key)) {
-                    params.put(pkey, node.getProperty(key).getString());
-                } else {
-                    params.put(pkey, null);
-                }
+            overrideProperties(node, params, moduleParams, key);
+        }
+    }
+
+    private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams,
+                                    String key) throws RepositoryException {
+        String pkey = StringUtils.substringAfter(key, ":");
+        if (!moduleParams.containsKey("forced" + StringUtils.capitalize(pkey))) {
+            if (node.hasProperty(key)) {
+                params.put(pkey, node.getProperty(key).getString());
+            } else {
+                params.put(pkey, null);
             }
         }
     }

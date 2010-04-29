@@ -215,21 +215,7 @@ public class ContentDefinitionHelper {
                 }
                 item.setSelector(def.getSelector());
                 item.setSelectorOptions(new HashMap<String, String>(def.getSelectorOptions()));
-                if (def.isContentItem()) {
-                    item.setDataType(GWTJahiaItemDefinition.CONTENT);
-                } else if (def.isLayoutItem()) {
-                    item.setDataType(GWTJahiaItemDefinition.LAYOUT);
-                } else if (def.isMetadataItem()) {
-                    item.setDataType(GWTJahiaItemDefinition.METADATA);
-                } else if (def.isOptionItem()) {
-                    item.setDataType(GWTJahiaItemDefinition.OPTIONS);
-                } else if (def.isTemplateItem()) {
-                    item.setDataType(GWTJahiaItemDefinition.TEMPLATE);
-                } else if (def.isCacheItem()) {
-                    item.setDataType(GWTJahiaItemDefinition.CACHE);
-                } else if (def.isSystemItem()) {
-                    item.setDataType(GWTJahiaItemDefinition.SYSTEM);
-                }
+                item.setDataType(def.getItemType());
                 if (def.getDeclaringNodeType().getName().equals(nodeType.getName())) {
                     items.add(item);
                 } else {
@@ -519,6 +505,23 @@ public class ContentDefinitionHelper {
     public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type, Map<String, Object> ctx, Locale uiLocale) {
         ArrayList<GWTJahiaNodeType> res = new ArrayList<GWTJahiaNodeType>();
         Set<String> foundTypes = new HashSet<String>();
+
+        Map<ExtendedNodeType,Set<ExtendedNodeType>> m = NodeTypeRegistry.getInstance().getMixinExtensions();
+
+        try {
+            ExtendedNodeType realType = NodeTypeRegistry.getInstance().getNodeType(type.getName());
+            for (ExtendedNodeType nodeType : m.keySet()) {
+                if (realType.isNodeType(nodeType.getName())) {
+                    for (ExtendedNodeType extension : m.get(nodeType)) {
+                        res.add(getGWTJahiaNodeType(extension, realType, ctx, uiLocale));
+                        foundTypes.add(extension.getName());
+                    }
+                }
+            }
+        } catch (NoSuchNodeTypeException e) {
+
+        }
+
 //        try {
 //            ExtendedNodeType realType = NodeTypeRegistry.getInstance().getNodeType(type.getName());
 //            if (type.getSuperTypes().contains("jmix:list")) {
@@ -556,15 +559,15 @@ public class ContentDefinitionHelper {
         return res;
     }
 
-    private void addGWTJahiaNodeType(Map<String, Object> ctx, ArrayList<GWTJahiaNodeType> res, Set<String> foundTypes, ExtendedNodeType realType, String nodeType, Locale uiLocale) throws NoSuchNodeTypeException {
-        ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType(nodeType);
-        ExtendedNodeType[] mixins = baseMixin.getMixinSubtypes();
-        for (ExtendedNodeType nt : mixins) {
-            if (!foundTypes.contains(nt.getName())) {
-                res.add(getGWTJahiaNodeType(nt, realType, ctx, uiLocale));
-                foundTypes.add(nt.getName());
-            }
-        }
-    }
+//    private void addGWTJahiaNodeType(Map<String, Object> ctx, ArrayList<GWTJahiaNodeType> res, Set<String> foundTypes, ExtendedNodeType realType, String nodeType, Locale uiLocale) throws NoSuchNodeTypeException {
+//        ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType(nodeType);
+//        ExtendedNodeType[] mixins = baseMixin.getMixinSubtypes();
+//        for (ExtendedNodeType nt : mixins) {
+//            if (!foundTypes.contains(nt.getName())) {
+//                res.add(getGWTJahiaNodeType(nt, realType, ctx, uiLocale));
+//                foundTypes.add(nt.getName());
+//            }
+//        }
+//    }
 
 }

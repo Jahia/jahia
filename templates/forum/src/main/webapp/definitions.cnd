@@ -20,5 +20,7 @@
  + * (jnt:topic)
 
 [jmix:comments] mixin
+ extends = jnt:content
+ itemtype = options
  - shortView (boolean) = false autocreated
  + comments (jnt:thread) = jnt:thread autocreated hidden

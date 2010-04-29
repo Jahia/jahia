@@ -59,6 +59,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     private Map<String,List<File>> files = new HashMap<String,List<File>>();
 
+    private Map<ExtendedNodeType,Set<ExtendedNodeType>> mixinExtensions = new HashMap<ExtendedNodeType,Set<ExtendedNodeType>>();
+    private Map<String,Set<ExtendedItemDefinition>> typedItems = new HashMap<String,Set<ExtendedItemDefinition>>();
+
     private static NodeTypeRegistry instance;
 
     public synchronized static NodeTypeRegistry getInstance() {
@@ -189,6 +192,29 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
         nodeTypesList.add(nodeType);
         nodetypes.put(name, nodeType);
+    }
+
+    public void addMixinExtension(ExtendedNodeType mixin, ExtendedNodeType baseType) {
+        if (!mixinExtensions.containsKey(baseType)) {
+            mixinExtensions.put(baseType, new HashSet<ExtendedNodeType>());
+        }
+        mixinExtensions.get(baseType).add(mixin);
+    }
+
+    public Map<ExtendedNodeType, Set<ExtendedNodeType>> getMixinExtensions() {
+        return mixinExtensions;
+    }
+
+    public void addTypedItem(ExtendedItemDefinition itemDef) {
+        final String type = itemDef.getItemType();
+        if (!typedItems.containsKey(type)) {
+            typedItems.put(type, new HashSet<ExtendedItemDefinition>());
+        }
+        typedItems.get(type).add(itemDef);
+    }
+
+    public Map<String, Set<ExtendedItemDefinition>> getTypedItems() {
+        return typedItems;
     }
 
     public void unregisterNodeType(Name name) {

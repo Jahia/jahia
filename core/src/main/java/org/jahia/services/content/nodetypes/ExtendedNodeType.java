@@ -34,10 +34,8 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 
@@ -81,6 +79,9 @@ public class ExtendedNodeType implements NodeType {
     private List<ExtendedNodeType> declaredSubtypes = new ArrayList<ExtendedNodeType>();
     private String validator;
     private boolean queryable = true;
+    private String itemsType;
+    private List<String> mixinExtendNames = new ArrayList<String>();
+    private List<ExtendedNodeType> mixinExtend = new ArrayList<ExtendedNodeType>();
 
     private Map<Locale, String> labels = new HashMap<Locale, String>(1);
     
@@ -211,11 +212,21 @@ public class ExtendedNodeType implements NodeType {
     }
 
 
-    void validateSupertypes() throws NoSuchNodeTypeException {
+    void validate() throws NoSuchNodeTypeException {
         this.declaredSupertypes = new ExtendedNodeType[declaredSupertypeNames.length];
         for (int i = 0; i < declaredSupertypes.length; i++) {
             this.declaredSupertypes[i] = registry.getNodeType(declaredSupertypeNames[i]);
             this.declaredSupertypes[i].addSubType(this);
+        }
+        for (String s : mixinExtendNames) {
+            final ExtendedNodeType type = registry.getNodeType(s);
+            registry.addMixinExtension(this, type);
+            mixinExtend.add(type);
+        }
+        for (ExtendedItemDefinition itemDefinition : items) {
+            if (itemDefinition.getItemType() != null) {
+                registry.addTypedItem(itemDefinition);
+            }
         }
     }
 
@@ -570,6 +581,22 @@ public class ExtendedNodeType implements NodeType {
 
     public void setValidator(String validator) {
         this.validator = validator;
+    }
+
+    public String getItemsType() {
+        return itemsType;
+    }
+
+    public void setItemsType(String itemsType) {
+        this.itemsType = itemsType;
+    }
+
+    public void addMixinExtend(String mixinExtension) {
+        this.mixinExtendNames.add(mixinExtension);
+    }
+
+    public List<ExtendedNodeType> getMixinExtends() {
+        return mixinExtend;
     }
 
     protected String getResourceBundleId() {

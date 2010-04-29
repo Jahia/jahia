@@ -6,6 +6,8 @@
  - j:limit (long)
 
 [jmix:topStory] mixin
+ extends = jnt:content
+ itemtype = options
  - j:level (string,choicelist[resourceBundle]) = 'first' < 'first','second','third'
  - j:endDate (date)
  

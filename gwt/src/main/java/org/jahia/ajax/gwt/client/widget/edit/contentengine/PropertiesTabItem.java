@@ -21,7 +21,7 @@ import java.util.Map;
  * Time: 6:34:40 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class PropertiesTabItem extends EditEngineTabItem {
+public class PropertiesTabItem extends EditEngineTabItem {
     protected PropertiesEditor propertiesEditor;
     protected Map<String, PropertiesEditor> langPropertiesEditorMap;
     protected String dataType;

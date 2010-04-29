@@ -2,6 +2,8 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jmix:rating] mixin
+ extends = jnt:content
+ itemtype = options
  - j:nbOfVotes (long) = 0  autocreated hidden onconflict=sum
  - j:sumOfVotes (long) = 0 autocreated hidden onconflict=sum
  - j:lastVote (long) hidden onconflict=latest

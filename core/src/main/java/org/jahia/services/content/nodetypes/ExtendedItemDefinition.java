@@ -55,6 +55,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
     private boolean autoCreated = false;
     private boolean mandatory = false;
     private boolean hidden;
+    private String itemType;
     private int onParentVersion = OnParentVersionAction.COPY;
     private int onConflict = OnConflictAction.USE_LATEST;
     protected int selector = 0;
@@ -173,48 +174,24 @@ public class ExtendedItemDefinition implements ItemDefinition {
         return label;
     }
 
-    public boolean isSystemItem() {
-//        return !isMetadataItem() && !isLayoutItem() && !name.toString().equals("jcr:title") && !name.toString().equals("jcr:language") &&
-//                (declaringNodeType.getName().startsWith("mix:") ||
-//                        declaringNodeType.getName().startsWith("nt:") ||
-//                        declaringNodeType.getName().equals("jmix:i18n"));
-        return false;
+    public String getItemType() {
+        if (itemType == null) {
+            itemType = getDeclaringNodeType().getItemsType();
+            if (itemType == null) {
+                itemType = "content";
+            }
+        }
+        return itemType;
     }
 
-    public boolean isMetadataItem() {
-//        return !name.toString().equals("jcr:title")  &&
-//                (declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:metadata") ||
-//                        declaringNodeType.getName().equals("jmix:hierarchyNode") ||
-//                        declaringNodeType.getName().equals("mix:created") ||
-//                        declaringNodeType.getName().equals("mix:lastModified") ||
-//                        declaringNodeType.getName().equals("mix:title"));
-        return false;
-    }
-
-    public boolean isLayoutItem() {
-//        return declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:layout");
-        return false;
-    }
-
-    public boolean isOptionItem() {
-//        return declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:option");
-        return false;
-    }
-
-    public boolean isTemplateItem() {
-        return false;
-        //declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:template");
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
     }
 
     public boolean isContentItem() {
-        return true;
+        return "content".equals(getItemType());
 //        declaringNodeType.isNodeType("jmix:droppableContent") || declaringNodeType.isNodeType("jnt:container")
 //                 || declaringNodeType.isNodeType("jnt:content") || declaringNodeType.isNodeType("jmix:contentItem") || name.toString().equals("jcr:title") || name.toString().equals("jcr:language") || name.toString().equals("jcr:statement");
-    }
-
-    public boolean isCacheItem() {
-        return false;
-//        return declaringNodeType.isMixin() && declaringNodeType.isNodeType("jmix:cache");
     }
 
 }

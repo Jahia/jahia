@@ -106,7 +106,7 @@
 [mix:title]
   mixin
   - jcr:title (STRING) i18n
-  - jcr:description (STRING) i18n
+  - jcr:description (STRING) i18n itemtype = metadata
 
 /**
  * This mixin node type can be used to add standardized creation information
@@ -122,6 +122,7 @@
  */
 [mix:created]
   mixin
+  itemtype = metadata
   - jcr:created (DATE) autocreated protected
   - jcr:createdBy (STRING) autocreated protected nofulltext
 
@@ -144,6 +145,7 @@
  */
 [mix:lastModified]
   mixin
+  itemtype = metadata
   - jcr:lastModified (DATE) autocreated onconflict=ignore
   - jcr:lastModifiedBy (STRING) autocreated nofulltext onconflict=ignore
 
@@ -316,21 +318,21 @@
  */
 [mix:simpleVersionable]
   mixin
-  - jcr:isCheckedOut (BOOLEAN) = 'true' mandatory autocreated protected IGNORE
+  - jcr:isCheckedOut (BOOLEAN) = 'true' mandatory autocreated protected IGNORE hidden
 
 /**
  * @since 1.0
  */
 [mix:versionable] > mix:simpleVersionable, mix:referenceable
   mixin
-  - jcr:versionHistory (REFERENCE) mandatory protected IGNORE < 'nt:versionHistory'
-  - jcr:baseVersion (REFERENCE) mandatory protected IGNORE < 'nt:version'
-  - jcr:predecessors (REFERENCE) mandatory protected multiple IGNORE < 'nt:version'
-  - jcr:mergeFailed (REFERENCE) protected multiple ABORT < 'nt:version'
+  - jcr:versionHistory (REFERENCE) mandatory protected IGNORE hidden < 'nt:versionHistory'
+  - jcr:baseVersion (REFERENCE) mandatory protected IGNORE hidden < 'nt:version'
+  - jcr:predecessors (REFERENCE) mandatory protected multiple IGNORE hidden < 'nt:version'
+  - jcr:mergeFailed (REFERENCE) protected multiple ABORT hidden < 'nt:version'
     /** @since 2.0 */
-  - jcr:activity (REFERENCE) protected < 'nt:activity'
+  - jcr:activity (REFERENCE) protected hidden < 'nt:activity'
     /** @since 2.0 */
-  - jcr:configuration (REFERENCE) protected IGNORE < 'nt:configuration'
+  - jcr:configuration (REFERENCE) protected IGNORE hidden < 'nt:configuration'
 
 /**
  * @since 1.0

@@ -3,5 +3,7 @@
 [jnt:topTenPages] > jnt:content, jmix:editorialContent
 
 [jmix:recommendations] mixin
+ extends = jnt:content
+ itemtype = options
  - j:nodeTypeFilter (string)
  - j:recommendationLimit (long)

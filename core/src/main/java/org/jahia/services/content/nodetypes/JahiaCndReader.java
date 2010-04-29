@@ -202,7 +202,7 @@ public class JahiaCndReader {
         }
         for (ExtendedNodeType type : nodeTypesList) {
             try {
-                type.validateSupertypes();
+                type.validate();
             } catch (NoSuchNodeTypeException e) {
                 throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,filename);
             }
@@ -318,6 +318,26 @@ public class JahiaCndReader {
                     nextToken();
                     ntd.setValidator(currentToken);
                     nextToken();
+                } else {
+                    lexer.fail("Invalid validator");
+                }
+            } else if (currentTokenEquals(Lexer.ITEMTYPE)) {
+                nextToken();
+                if (currentTokenEquals(Lexer.DEFAULT)) {
+                    nextToken();
+                    ntd.setItemsType(currentToken);
+                    nextToken();
+                } else {
+                    lexer.fail("Invalid validator");
+                }
+            } else if (currentTokenEquals(Lexer.MIXIN_EXTENDS)) {
+                nextToken();
+                if (currentTokenEquals(Lexer.DEFAULT)) {
+                    nextToken();
+                    do {
+                        ntd.addMixinExtend(currentToken);
+                        nextToken();
+                    } while (currentTokenEquals(Lexer.LIST_DELIMITER));
                 } else {
                     lexer.fail("Invalid validator");
                 }
@@ -671,6 +691,14 @@ public class JahiaCndReader {
                 pdi.setHidden(true);
             } else if (currentTokenEquals(Lexer.INTERNATIONALIZED)) {
                 pdi.setInternationalized(true);
+            } else if (currentTokenEquals(Lexer.ITEMTYPE)) {
+                nextToken();
+                if (currentTokenEquals(Lexer.DEFAULT)) {
+                    nextToken();
+                    pdi.setItemType(currentToken);
+                } else {
+                    lexer.fail("Invalid value for indexed " + currentToken);
+                }
             } else if (currentTokenEquals(Lexer.INDEXED)) {
                 nextToken();
                 if (currentTokenEquals(Lexer.DEFAULT)) {
@@ -970,6 +998,14 @@ public class JahiaCndReader {
                 ndi.setOnParentVersion(OnParentVersionAction.IGNORE);
             } else if (currentTokenEquals(Lexer.ABORT)) {
                 ndi.setOnParentVersion(OnParentVersionAction.ABORT);
+            } else if (currentTokenEquals(Lexer.ITEMTYPE)) {
+                nextToken();
+                if (currentTokenEquals(Lexer.DEFAULT)) {
+                    nextToken();
+                    ndi.setItemType(currentToken);
+                } else {
+                    lexer.fail("Invalid value for indexed " + currentToken);
+                }
             } else if (currentTokenEquals(Lexer.WORKFLOW)) {
                 nextToken();
                 if (currentTokenEquals(Lexer.DEFAULT)) {

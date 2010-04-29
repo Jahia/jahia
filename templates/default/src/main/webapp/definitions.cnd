@@ -8,6 +8,7 @@
 [jmix:sandboxContent] > jmix:droppableContent mixin
 
 [jmix:sendAsNewsletter] mixin
+ extends = jnt:page
 
 [jmix:userFilterable] mixin
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
@@ -15,9 +16,11 @@
  - thirdField (string, choicelist[sortableFieldnames]) indexed=no
 
 [jmix:pager] mixin
+ extends = jmix:list
  - pageSize (long) = 10 autocreated
 
 [jmix:orderedList] mixin
+ extends = jmix:list
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
  - firstDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
  - secondField (string, choicelist[sortableFieldnames]) indexed=no

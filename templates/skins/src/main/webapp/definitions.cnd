@@ -1,4 +1,6 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jmix:skinnable] mixin
+ extends = jmix:list
+ itemtype = layout
  - j:skin (string, choicelist[templates=skin,resourceBundle,moduleImage='png']) indexed=no

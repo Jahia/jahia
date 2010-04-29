@@ -61,6 +61,7 @@ public class Lexer {
     public static final String[] NOQUERY = new String[]{"noquery", "nq"};
     public static final String[] QUERY = new String[]{"query", "q"};
     public static final String[] PRIMARYITEM = new String[]{"primaryitem", "!"};
+    public static final String[] MIXIN_EXTENDS = new String[]{"extends"};
 
     public static final String[] VALIDATOR = new String[]{"validator", "val", "v"};
 
@@ -72,6 +73,7 @@ public class Lexer {
     public static final String[] SNS = new String[]{"sns", "*", "multiple"};
     public static final String[] INTERNATIONALIZED = new String[]{"internationalized", "i15d", "i18n", "i"};
 
+    public static final String[] ITEMTYPE = new String[]{"itemtype", "type"};
     public static final String[] INDEXED = new String[]{"indexed", "ind", "x"};
     public static final String[] SCOREBOOST = new String[]{"scoreboost", "boost", "b"};
     public static final String[] NO = new String[]{"no","n"};
@@ -144,6 +146,7 @@ public class Lexer {
         attr.addAll(Arrays.asList(IGNORE));
         attr.addAll(Arrays.asList(ABORT));
         attr.addAll(Arrays.asList(HIDDEN));
+        attr.addAll(Arrays.asList(ITEMTYPE));
         PROP_ATTRIBUTE = attr.toArray(new String[attr.size()]);
         attr = new ArrayList<String>();
         attr.addAll(Arrays.asList(PRIMARY));
@@ -160,6 +163,7 @@ public class Lexer {
         attr.addAll(Arrays.asList(ABORT));
         attr.addAll(Arrays.asList(WORKFLOW));
         attr.addAll(Arrays.asList(HIDDEN));
+        attr.addAll(Arrays.asList(ITEMTYPE));
         NODE_ATTRIBUTE = attr.toArray(new String[attr.size()]);
     }
 

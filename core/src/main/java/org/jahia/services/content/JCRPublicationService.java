@@ -190,16 +190,12 @@ public class JCRPublicationService extends JahiaService {
                 for (JCRNodeWrapper node : toUnlock) {
                     if (node.isLocked()) {
                         node.forceUnlock();
-                    } else {
-                        logger.warn("Node was not locked : "+node.getPath());
                     }
                 }
                 for (JCRNodeWrapper reference : references) {
                     JCRNodeWrapper ref = session.getNode(reference.getPath());
                     if (ref.isLocked()) {
                         ref.forceUnlock();
-                    } else {
-                        logger.warn("Node was not locked : "+ref.getPath());
                     }
                 }
                 return null;

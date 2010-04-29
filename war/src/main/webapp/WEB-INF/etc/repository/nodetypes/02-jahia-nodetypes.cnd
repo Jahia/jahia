@@ -37,6 +37,7 @@
  + * (jnt:resource)
 
 [jmix:lastPublished] mixin
+ itemtype = metadata
   - j:published (boolean) = false hidden
   - j:lastPublished (date) protected onconflict=ignore
   - j:lastPublishedBy (string) protected nofulltext onconflict=ignore
@@ -49,7 +50,7 @@
  - j:newTag (string) hidden indexed=no
 
 [jmix:versionInfo] mixin
-- j:checkinDate (date)
+- j:checkinDate (date) hidden
 
 [jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo mixin
 
@@ -311,6 +312,8 @@
 //---------------------------------------------------------
 
 [jmix:renderable] mixin
+ extends = jnt:content
+ itemtype = layout
  - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:bodywrapper] mixin
@@ -323,6 +326,8 @@
  - j:referenceTemplate (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:theme] mixin
+ extends = jnt:page
+ itemtype = layout
  - j:theme (weakreference,choicelist[nodes='/sites/$currentSite/themes;jnt:folder'])
 
 //---------------------------------------------------------

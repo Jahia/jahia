@@ -56,7 +56,6 @@ public class GWTJahiaItemDefinition implements Serializable {
 
     private int selector = 0;
     private Map<String,String> selectorOptions = new HashMap<String,String>();
-    public static final String SYSTEM = "system";
     public static final String METADATA = "metadata";
     public static final String CONTENT = "content";
     public static final String LAYOUT = "layout";

@@ -32,50 +32,38 @@
  */
 package org.jahia.services.workflow;
 
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
+import org.apache.log4j.Logger;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
- *        Created : 2 févr. 2010
+ *        Created : 29 avr. 2010
  */
-public interface WorkflowProvider {
-    String getKey();
+public class WorkflowTaskComment {
+    private transient static Logger logger = Logger.getLogger(WorkflowTaskComment.class);
+    private String comment;
+    private Date time;
+    private String user;
 
-    List<WorkflowDefinition> getAvailableWorkflows();
+    public WorkflowTaskComment(String comment,Date time,String user) {
+        this.comment = comment;
+        this.time = time;
+        this.user = user;
+    }
 
-    WorkflowDefinition getWorkflowDefinitionByKey(String key);
+    public String getComment() {
+        return comment;
+    }
 
-    List<Workflow> getActiveWorkflowsInformations(List<String> processIds);
+    public Date getTime() {
+        return time;
+    }
 
-    String startProcess(String processKey, Map<String,Object> args);
-
-    void signalProcess(String processId, String transitionName, Map<String, Object> args);
-
-    void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args);
-
-    Set<WorkflowAction> getAvailableActions(String processId);
-
-    List<WorkflowTask> getTasksForUser(JahiaUser user);
-
-    void assignTask(String taskId, JahiaUser user);
-
-    void completeTask(String taskId, String outcome, Map<String, Object> args);
-
-    void addParticipatingGroup(String taskId, JahiaGroup group, String role);
-
-    void deleteTask(String taskId, String reason);
-
-    List<String> getConfigurableRoles(String processKey);
-
-    void addComment(String taskId, String comment);
-
-    WorkflowTask getWorkflowTask(String taskId);
+    public String getUser() {
+        return user;
+    }
 }

@@ -41,6 +41,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
+import org.jbpm.api.history.HistoryComment;
 import org.jbpm.api.identity.Group;
 import org.jbpm.api.identity.User;
 import org.jbpm.api.task.Participation;
@@ -167,7 +168,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     continue;
                 }
             }
-            workflows.put(definition.getName(), new WorkflowDefinition(definition.getName(),definition.getKey(), key));
+            WorkflowDefinition wf = new WorkflowDefinition(definition.getName(), definition.getKey(), key);
+            wf.setFormResourceName(repositoryService.getStartFormResourceName(definition.getId(),repositoryService.getStartActivityNames(definition.getId()).get(0)));
+            workflows.put(definition.getName(), wf);
             versions.put(definition.getName(), definition.getVersion());
             if (logger.isDebugEnabled()) {
                 logger.debug("Process : " + definition);
@@ -178,7 +181,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
     public WorkflowDefinition getWorkflowDefinitionByKey(String key) {
         ProcessDefinition value = getProcessDefinitionByKey(key);
-        return new WorkflowDefinition(value.getName(),value.getKey(), this.key);
+        WorkflowDefinition wf = new WorkflowDefinition(value.getName(), value.getKey(), this.key);
+        wf.setFormResourceName(repositoryService.getStartFormResourceName(value.getId(),repositoryService.getStartActivityNames(value.getId()).get(0)));
+        return wf;
     }
 
     private ProcessDefinition getProcessDefinitionByKey(String key) {
@@ -290,6 +295,18 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             }
             action.setParticipations(participations);
         }
+        // Get form resource name
+        action.setFormResourceName(task.getFormResourceName());
+        // Get task comments
+        List<HistoryComment> taskComments = taskService.getTaskComments(task.getId());
+        List<WorkflowTaskComment> comments = new ArrayList<WorkflowTaskComment>(taskComments.size());
+        for (HistoryComment taskComment : taskComments) {
+            comments.add(new WorkflowTaskComment(taskComment.getMessage(),taskComment.getTime(), taskComment.getUserId()));
+        }
+        action.setTaskComments(comments);
+        // Get Tasks variables
+        Set<String> variableNames = taskService.getVariableNames(task.getId());
+        action.setVariables(taskService.getVariables(task.getId(),variableNames));
         return action;
     }
 
@@ -338,6 +355,14 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         }
 
         return results;
+    }
+
+    public void addComment(String taskId, String comment) {
+        taskService.addTaskComment(taskId, comment);
+    }
+
+    public WorkflowTask getWorkflowTask(String taskId) {
+        return convertToWorkflowTask(taskService.getTask(taskId));
     }
 
     public void registerListeners() {

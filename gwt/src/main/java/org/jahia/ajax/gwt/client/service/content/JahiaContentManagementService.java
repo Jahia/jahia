@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -210,9 +211,9 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> list) throws GWTJahiaServiceException;
 
-    public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition) throws GWTJahiaServiceException;
+    public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
-    public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome) throws GWTJahiaServiceException;
+    public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
     /**
      * Publish the specified path.
@@ -284,6 +285,10 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query)throws GWTJahiaServiceException;
 
     void synchro(Map<String, String> pathsToSyncronize) throws GWTJahiaServiceException;
+
+    void addCommentToTask(GWTJahiaWorkflowAction action, String comment);
+
+    List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowAction action);
 
 // -------------------------- INNER CLASSES --------------------------
 

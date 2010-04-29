@@ -48,6 +48,7 @@ public class WorkflowDefinition implements Serializable {
     private final String name;
     private final String key;
     private String provider;
+    private String formResourceName;
 
     public WorkflowDefinition(String name, String key, String provider) {
         this.name = name;
@@ -91,5 +92,13 @@ public class WorkflowDefinition implements Serializable {
         result = 31 * result + (key != null ? key.hashCode() : 0);
         result = 31 * result + (provider != null ? provider.hashCode() : 0);
         return result;
+    }
+
+    public String getFormResourceName() {
+        return formResourceName;
+    }
+
+    public void setFormResourceName(String formResourceName) {
+        this.formResourceName = formResourceName;
     }
 }

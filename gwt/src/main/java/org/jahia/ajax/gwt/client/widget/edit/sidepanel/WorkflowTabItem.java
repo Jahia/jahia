@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.SplitButton;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
@@ -17,16 +17,16 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
+import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,34 +68,20 @@ public class WorkflowTabItem extends SidePanelTabItem {
                 String actionName = null;
                 List<GWTJahiaWorkflowAction> actions = node.getWorkflowInfo().getAvailableActions();
                 for (final GWTJahiaWorkflowAction action : actions) {
-                    List<GWTJahiaWorkflowOutcome> outcomes = action.getOutcomes();
-                    for (final GWTJahiaWorkflowOutcome outcome : outcomes) {
-                        if (actionName == null) {
-                            actionName = action.getName();
-                        }
-                        MenuItem item = new MenuItem(action.getName() + " : " + outcome.getLabel());
-                        item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                            @Override
-                            public void componentSelected(MenuEvent ce) {
-                                editLinker.getMainModule().mask("Executing", "x-mask-loading");
-                                jahiaContentManagementServiceAsync
-                                        .assignAndCompleteTask(node.getPath(), action, outcome, new AsyncCallback() {
-                                            public void onSuccess(Object result) {
-                                                editLinker.getMainModule().unmask();
-                                                Info.display("Workflow executed", "Workflow executed");
-                                            }
-
-                                            public void onFailure(Throwable caught) {
-                                                editLinker.getMainModule().unmask();
-                                                Info.display("Workflow failed", "Workflow failed");
-                                            }
-                                        });
-                            }
-                        });
-                        menu.add(item);
+                    if (actionName == null) {
+                        actionName = action.getName();
                     }
+                    MenuItem item = new MenuItem(action.getName());
+                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                        @Override
+                        public void componentSelected(MenuEvent ce) {
+                            new WorkflowActionDialog(node,action).show();
+                        }
+                    });
+                    menu.add(item);
+
                 }
-                SplitButton splitButton = new SplitButton(actionName);
+                Button splitButton = new Button(actionName);
                 splitButton.setMenu(menu);
                 return splitButton;
             }

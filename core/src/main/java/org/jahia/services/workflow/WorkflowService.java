@@ -414,4 +414,11 @@ public class WorkflowService {
         this.rbacService = roleBasedAccessControlService;
     }
 
+    public void addCommentToTask(String taskId, String provider, String comment) {
+        providers.get(provider).addComment(taskId,comment);
+    }
+
+    public WorkflowTask getWorkflowTask(String taskId, String provider) {
+        return providers.get(provider).getWorkflowTask(taskId);
+    }
 }

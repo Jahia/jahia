@@ -32,50 +32,42 @@
  */
 package org.jahia.services.workflow;
 
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
+import org.apache.log4j.Logger;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
- *        Created : 2 févr. 2010
+ *        Created : 29 avr. 2010
  */
-public interface WorkflowProvider {
-    String getKey();
+public class WorkflowVariable implements Serializable{
+    private String value;
+    private int type;
 
-    List<WorkflowDefinition> getAvailableWorkflows();
+    public WorkflowVariable() {
+    }
 
-    WorkflowDefinition getWorkflowDefinitionByKey(String key);
+    public WorkflowVariable(String value, int type) {
+        this.type = type;
+        this.value = value;
+    }
 
-    List<Workflow> getActiveWorkflowsInformations(List<String> processIds);
+    public int getType() {
+        return type;
+    }
 
-    String startProcess(String processKey, Map<String,Object> args);
+    public void setType(int type) {
+        this.type = type;
+    }
 
-    void signalProcess(String processId, String transitionName, Map<String, Object> args);
+    public String getValue() {
+        return value;
+    }
 
-    void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args);
-
-    Set<WorkflowAction> getAvailableActions(String processId);
-
-    List<WorkflowTask> getTasksForUser(JahiaUser user);
-
-    void assignTask(String taskId, JahiaUser user);
-
-    void completeTask(String taskId, String outcome, Map<String, Object> args);
-
-    void addParticipatingGroup(String taskId, JahiaGroup group, String role);
-
-    void deleteTask(String taskId, String reason);
-
-    List<String> getConfigurableRoles(String processKey);
-
-    void addComment(String taskId, String comment);
-
-    WorkflowTask getWorkflowTask(String taskId);
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 
@@ -201,9 +202,9 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getNodesWithPublicationInfo(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, AsyncCallback async);
+    void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
-    void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, AsyncCallback async); 
+    void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
     /**
      * Publish the specified path.
@@ -287,4 +288,9 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void  getAnalyticsData(GWTJahiaAnalyticsQuery query,AsyncCallback<List<GWTJahiaAnalyticsData>> async) ;
 
     void synchro(Map<String, String> pathsToSyncronize, AsyncCallback asyncCallback);
+
+    void addCommentToTask(GWTJahiaWorkflowAction action, String comment,
+                          AsyncCallback asyncCallback);
+
+    void getTaskComments(GWTJahiaWorkflowAction action, AsyncCallback<List<GWTJahiaWorkflowTaskComment>> async);
 }

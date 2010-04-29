@@ -1,9 +1,11 @@
 package org.jahia.ajax.gwt.client.data.workflow;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,6 +16,8 @@ import java.util.List;
  */
 public class GWTJahiaWorkflowAction extends BaseModelData implements Serializable {
     private List<GWTJahiaWorkflowOutcome> outcomes;
+    private List<GWTJahiaWorkflowTaskComment> taskComments;
+    private Map<String, GWTJahiaNodeProperty> properties;
 
     public GWTJahiaWorkflowAction() {
     }
@@ -48,5 +52,29 @@ public class GWTJahiaWorkflowAction extends BaseModelData implements Serializabl
 
     public void setOutcomes(List<GWTJahiaWorkflowOutcome> outcomes) {
         this.outcomes = outcomes;
+    }
+
+    public void setTaskComments(List<GWTJahiaWorkflowTaskComment> taskComments) {
+        this.taskComments = taskComments;
+    }
+
+    public List<GWTJahiaWorkflowTaskComment> getTaskComments() {
+        return taskComments;
+    }
+
+    public void setFormResourceName(String formResourceName) {
+        set("formResourceName",formResourceName);
+    }
+
+    public String getFormResourceName() {
+        return get("formResourceName");
+    }
+
+    public void setVariables(Map<String, GWTJahiaNodeProperty> properties) {
+        this.properties = properties;
+    }
+
+    public Map<String, GWTJahiaNodeProperty> getVariables() {
+        return properties;
     }
 }

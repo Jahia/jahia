@@ -1,9 +1,8 @@
 package org.jahia.ajax.gwt.helper;
 
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -29,7 +28,8 @@ public class WorkflowHelper {
         this.service = service;
     }
 
-    public GWTJahiaWorkflowInfo getWorkflowInfo(String path, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public GWTJahiaWorkflowInfo getWorkflowInfo(String path, JCRSessionWrapper session)
+            throws GWTJahiaServiceException {
         try {
             GWTJahiaWorkflowInfo info = new GWTJahiaWorkflowInfo();
 
@@ -43,6 +43,7 @@ public class WorkflowHelper {
                 w.setProvider(workflow.getProvider());
                 w.setName(workflow.getName());
                 w.setId(workflow.getKey());
+                w.setFormResourceName(workflow.getFormResourceName());
                 gwtWorkflowDefinitions.add(w);
             }
 
@@ -64,8 +65,24 @@ public class WorkflowHelper {
                                 action.setOutcomes(gwtOutcomes);
                                 action.setName(workflowAction.getName());
                                 action.setId(workflowTask.getId());
-                                if ((participation.getJahiaPrincipal() instanceof JahiaGroup && ((JahiaGroup)participation.getJahiaPrincipal()).isMember(session.getUser())) ||
-                                        (participation.getJahiaPrincipal() instanceof JahiaUser && ((JahiaUser)participation.getJahiaPrincipal()).getUserKey().equals(session.getUser().getUserKey()))) {
+                                action.setFormResourceName(workflowTask.getFormResourceName());
+                                Map<String,Object> map = workflowTask.getVariables();
+                                Map<String,GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>(map.size());
+                                for (Map.Entry<String, Object> entry : map.entrySet()) {
+                                    if(entry.getValue() instanceof List) {
+                                    List<WorkflowVariable> variable = (List<WorkflowVariable>) entry.getValue();
+                                    GWTJahiaNodeProperty value = new GWTJahiaNodeProperty();
+                                    value.setName(entry.getKey());
+                                    for (WorkflowVariable workflowVariable : variable) {
+                                        value.setValue(new GWTJahiaNodePropertyValue(workflowVariable.getValue(),workflowVariable.getType()));
+                                    }
+                                    properties.put(entry.getKey(), value);
+                                    }
+                                }
+                                action.setVariables(properties);
+                                if ((participation.getJahiaPrincipal() instanceof JahiaGroup && ((JahiaGroup) participation.getJahiaPrincipal()).isMember(
+                                        session.getUser())) || (participation.getJahiaPrincipal() instanceof JahiaUser && ((JahiaUser) participation.getJahiaPrincipal()).getUserKey().equals(
+                                        session.getUser().getUserKey()))) {
                                     Set<String> outcomes = workflowTask.getOutcomes();
                                     for (String outcome : outcomes) {
                                         GWTJahiaWorkflowOutcome gwtOutcome = new GWTJahiaWorkflowOutcome();
@@ -88,25 +105,60 @@ public class WorkflowHelper {
         }
     }
 
-    public void startWorkflow(String path, GWTJahiaWorkflowDefinition def, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public void startWorkflow(String path, GWTJahiaWorkflowDefinition def, JCRSessionWrapper session,
+                              List<GWTJahiaNodeProperty> properties)
+            throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
-            service.startProcess(node, def.getId(), def.getProvider(), new HashMap<String, Object>());
+            HashMap<String, Object> map = getVariablesMap(properties);
+            service.startProcess(node, def.getId(), def.getProvider(), map);
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome,
+                                      JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
             service.assignTask(action.getId(), action.getProvider(), session.getUser());
-            service.completeTask(action.getId(), action.getProvider(), outcome.getName(), new HashMap<String, Object>());
+            HashMap<String, Object> map = getVariablesMap(properties);
+            service.completeTask(action.getId(), action.getProvider(), outcome.getName(), map);
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
+    private HashMap<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        for (GWTJahiaNodeProperty property : properties) {
+            List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
+            List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(propertyValues.size());
+            for (GWTJahiaNodePropertyValue value : propertyValues) {
+                values.add(new WorkflowVariable(value.getString(),value.getType()));
+            }
+            map.put(property.getName(), values);
+        }
+        return map;
+    }
+
+    public void addCommentToTask(GWTJahiaWorkflowAction action, String comment) {
+        service.addCommentToTask(action.getId(), action.getProvider(), comment);
+    }
+
+    public List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowAction action) {
+        WorkflowTask workflowTask = service.getWorkflowTask(action.getId(), action.getProvider());
+        List<GWTJahiaWorkflowTaskComment> taskComments = new ArrayList<GWTJahiaWorkflowTaskComment>();
+        List<WorkflowTaskComment> workflowTaskComments = workflowTask.getTaskComments();
+        for (WorkflowTaskComment comment : workflowTaskComments) {
+            GWTJahiaWorkflowTaskComment taskComment = new GWTJahiaWorkflowTaskComment();
+            taskComment.setComment(comment.getComment());
+            taskComment.setTime(comment.getTime());
+            taskComment.setUser(comment.getUser());
+            taskComments.add(taskComment);
+        }
+        return taskComments;
+    }
 }

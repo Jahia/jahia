@@ -56,7 +56,10 @@ public class WorkflowTask extends WorkflowAction {
     private String id;
     private Set<String> outcomes;
     private List<WorkflowParticipation> participations;
-    
+    private String formResourceName;
+    private List<WorkflowTaskComment> taskComments;
+    private Map<String, Object> variables;
+
     public WorkflowTask(String name, String provider) {
         super(name, provider);
     }
@@ -115,5 +118,29 @@ public class WorkflowTask extends WorkflowAction {
 
     public void setParticipations(List<WorkflowParticipation> participations) {
         this.participations = participations;
+    }
+
+    public void setFormResourceName(String formResourceName) {
+        this.formResourceName = formResourceName;
+    }
+
+    public void setTaskComments(List<WorkflowTaskComment> taskComments) {
+        this.taskComments = taskComments;
+    }
+
+    public String getFormResourceName() {
+        return formResourceName;
+    }
+
+    public List<WorkflowTaskComment> getTaskComments() {
+        return taskComments;
+    }
+
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
+    }
+
+    public Map<String, Object> getVariables() {
+        return variables;
     }
 }

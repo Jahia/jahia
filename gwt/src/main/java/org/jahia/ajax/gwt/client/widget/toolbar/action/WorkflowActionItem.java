@@ -8,13 +8,17 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,17 +66,22 @@ public class WorkflowActionItem extends BaseActionItem {
                         item.addSelectionListener(new SelectionListener<MenuEvent>() {
                             @Override
                             public void componentSelected(MenuEvent ce) {
-                                JahiaContentManagementService.App.getInstance().startWorkflow(node.getPath(), wf, new AsyncCallback() {
-                                    public void onSuccess(Object result) {
-                                        Info.display("Workflow started","Workflow started");
-                                        linker.refresh(Linker.REFRESH_ALL);
-                                    }
+                                String formResourceName = wf.getFormResourceName();
+                                if (formResourceName!=null && !"".equals(formResourceName)) {
+                                    new WorkflowActionDialog(node, wf).show();
+                                } else {
+                                    JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+                                    async.startWorkflow(node.getPath(), wf,new ArrayList<GWTJahiaNodeProperty>(), new AsyncCallback() {
+                                        public void onSuccess(Object result) {
+                                            Info.display("Workflow started", "Workflow started");
+                                            linker.refresh(Linker.REFRESH_ALL);
+                                        }
 
-                                    public void onFailure(Throwable caught) {
-                                        Info.display("Workflow not started","Workflow not started");
-                                    }
+                                        public void onFailure(Throwable caught) {
+                                            Info.display("Workflow not started", "Workflow not started");
+                                        }
+                                    });
                                 }
-                                );
                             }
                         });
                         menu.add(item);
@@ -81,7 +90,7 @@ public class WorkflowActionItem extends BaseActionItem {
                 if (bypassWorkflow) {
                     MenuItem item = new MenuItem("Bypass workflow");
                     isEnabled = true;
-                    item.addSelectionListener( new SelectionListener<MenuEvent>() {
+                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
                         @Override
                         public void componentSelected(MenuEvent ce) {
                             bypassActionItem.onComponentSelection();
@@ -106,7 +115,7 @@ public class WorkflowActionItem extends BaseActionItem {
             setEnabled(true);
         }
         if (bypassActionItem != null) {
-            Log.info("handle wf: "+bypassActionItem.getClass().getName());
+            Log.info("handle wf: " + bypassActionItem.getClass().getName());
             bypassActionItem.handleNewLinkerSelection();
         }
         if (!isEnabled) {

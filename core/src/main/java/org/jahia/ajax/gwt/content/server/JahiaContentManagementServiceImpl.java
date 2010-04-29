@@ -52,10 +52,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
+import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -886,14 +883,21 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-    public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition) throws GWTJahiaServiceException {
-        workflow.startWorkflow(path, workflowDefinition, retrieveCurrentSession());
+    public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
+        workflow.startWorkflow(path, workflowDefinition, retrieveCurrentSession(), properties);
     }
 
-    public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome) throws GWTJahiaServiceException {
-        workflow.assignAndCompleteTask(path, action, outcome, retrieveCurrentSession());
+    public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
+        workflow.assignAndCompleteTask(path, action, outcome, retrieveCurrentSession(), properties);
     }
 
+    public void addCommentToTask(GWTJahiaWorkflowAction action, String comment) {
+        workflow.addCommentToTask(action, comment);
+    }
+
+    public List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowAction action) {
+        return workflow.getTaskComments(action);
+    }
     /**
      * Publish the specified path.
      *

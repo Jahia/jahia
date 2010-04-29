@@ -30,52 +30,46 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.workflow;
+package org.jahia.ajax.gwt.client.data.workflow;
 
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
- *        Created : 2 févr. 2010
+ *        Created : 29 avr. 2010
  */
-public interface WorkflowProvider {
-    String getKey();
+public class GWTJahiaWorkflowTaskComment extends BaseModelData implements Serializable {
 
-    List<WorkflowDefinition> getAvailableWorkflows();
+    public GWTJahiaWorkflowTaskComment() {
+    }
 
-    WorkflowDefinition getWorkflowDefinitionByKey(String key);
+    public String getComment() {
+        return get("comment");
+    }
 
-    List<Workflow> getActiveWorkflowsInformations(List<String> processIds);
+    public void setComment(String comment) {
+        set("comment",comment);
+    }
 
-    String startProcess(String processKey, Map<String,Object> args);
+    public Date getTime() {
+        return get("time");
+    }
 
-    void signalProcess(String processId, String transitionName, Map<String, Object> args);
+    public void setTime(Date time) {
+        set("time",time);
+    }
 
-    void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args);
+    public String getUser() {
+        return get("user");
+    }
 
-    Set<WorkflowAction> getAvailableActions(String processId);
-
-    List<WorkflowTask> getTasksForUser(JahiaUser user);
-
-    void assignTask(String taskId, JahiaUser user);
-
-    void completeTask(String taskId, String outcome, Map<String, Object> args);
-
-    void addParticipatingGroup(String taskId, JahiaGroup group, String role);
-
-    void deleteTask(String taskId, String reason);
-
-    List<String> getConfigurableRoles(String processKey);
-
-    void addComment(String taskId, String comment);
-
-    WorkflowTask getWorkflowTask(String taskId);
+    public void setUser(String user) {
+        set("user",user);
+    }
 }

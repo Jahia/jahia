@@ -8,33 +8,47 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 //---------------------------------------------------------
+// System
+//---------------------------------------------------------
+
+[jmix:nodenameInfo] > mix:referenceable mixin
+ - j:nodename (string) protected hidden
+ - j:fullpath (string) protected hidden nofulltext
+
+[jnt:systemNode] > nt:unstructured, jmix:nodenameInfo
+
+//---------------------------------------------------------
+// Rules
+//---------------------------------------------------------
+
+[jmix:observable] mixin
+
+//---------------------------------------------------------
 // Default metadata
 //---------------------------------------------------------
 
-[jmix:metadata] mixin
-
-[jmix:categorized] > jmix:metadata, jmix:contentMixin mixin
+[jmix:categorized] mixin
  - j:defaultCategory (reference, category[autoSelectParent=false]) facetable multiple
 
-[jmix:keywords] > jmix:metadata, jmix:contentMixin mixin
+[jmix:keywords] mixin
  - j:keywords (string) multiple
 
-[jmix:thumbnail] > jmix:metadata, jmix:contentMixin mixin
- + thumbnail (jnt:extraResource)
+[jmix:thumbnail] mixin
+ + * (jnt:resource)
 
-[jmix:lastPublished] > jmix:metadata mixin
+[jmix:lastPublished] mixin
   - j:published (boolean) = false hidden
   - j:lastPublished (date) protected onconflict=ignore
   - j:lastPublishedBy (string) protected nofulltext onconflict=ignore
 
-[jmix:originWS] > jmix:metadata mixin
+[jmix:originWS] mixin
   - j:originWS (string) protected nofulltext hidden
 
-[jmix:tagged] > jmix:metadata, jmix:contentMixin mixin
+[jmix:tagged] mixin
  - j:tags (weakreference, category[autoSelectParent=false]) multiple
  - j:newTag (string) hidden indexed=no
 
-[jmix:versionInfo] > jmix:metadata mixin
+[jmix:versionInfo] mixin
 - j:checkinDate (date)
 
 [jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo mixin
@@ -43,7 +57,7 @@
 // Multi language
 //---------------------------------------------------------
 
-[jnt:translation] > nt:base, jmix:lockable, mix:language, mix:lastModified, jmix:lastPublished, mix:versionable, jmix:versionInfo
+[jnt:translation] > nt:base, jmix:lockable, mix:language, mix:lastModified, jmix:lastPublished, mix:versionable, jmix:versionInfo, jmix:observable
   - * (undefined) multiple
   - * (undefined)
 
@@ -75,7 +89,7 @@
 [jnt:role] > nt:base, mix:referenceable, mix:title, jmix:observable
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
   
-[jnt:roles] > nt:base, jmix:hierarchyNode, mix:versionable
+[jnt:roles] > nt:base, mix:versionable
  + * (jnt:role)
  
 [jnt:permission] > nt:base, mix:referenceable, mix:title, jmix:observable
@@ -83,7 +97,7 @@
 [jnt:permissionGroup] > nt:base, jmix:observable
  + * (jnt:permission)
 
-[jnt:permissions] > nt:base, jmix:hierarchyNode, mix:versionable
+[jnt:permissions] > nt:base, mix:versionable
  + * (jnt:permissionGroup)
  
 [jmix:roleBasedAccessControlled] mixin
@@ -136,51 +150,32 @@
  - j:availableWorkflows (string) multiple nofulltext
 
 //---------------------------------------------------------
-// Hierarchy nodes
-//---------------------------------------------------------
-
-[jmix:hierarchyNode] > mix:referenceable mixin
- - j:nodename (string) protected hidden
- - j:fullpath (string) protected hidden nofulltext
-
-[jmix:collection] mixin
-
-//---------------------------------------------------------
 // Query
 //---------------------------------------------------------
 
-[jnt:query] > nt:query, mix:title, jmix:hierarchyNode, jmix:basemetadata, jmix:publication, jmix:list, jmix:queryContent
+[jnt:query] > nt:query, mix:title, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list, jmix:queryContent
  - maxItems (long) = 10 indexed=no
  
 //---------------------------------------------------------
 // Files
 //---------------------------------------------------------
 
-[jmix:extension] mixin
-
 [jnt:resource] > nt:resource
  - j:extractedText (string) protected hidden
  - j:lastExtractionDate (date) protected nofulltext hidden
 
-[jnt:extraResource] > nt:resource
- - j:name
+[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
 
-[jnt:folder] > nt:folder, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication
- + * (jmix:hierarchyNode) = jmix:hierarchyNode version
+[jnt:file] > nt:file, jmix:lockable, jmix:nodenameInfo, jmix:basemetadata, jmix:thumbnail, jmix:publication
 
-[jnt:systemfolder] > jnt:folder
-
-[jnt:file] > nt:file, jmix:lockable, jmix:hierarchyNode, jmix:basemetadata, jmix:thumbnail, jmix:publication
-
-[jmix:image] > jmix:extension mixin
- + * (jnt:extraResource)
+[jmix:image] mixin
  - j:height (long) protected
  - j:width (long) protected
 
 //---------------------------------------------------------
 // Text extracts
 //---------------------------------------------------------
-
+         // todo with sergiy
 [jnt:textExtracts] > nt:folder
  + * (nt:folder) 
  + * (jnt:textExtract)
@@ -194,7 +189,7 @@
 // Categories
 //---------------------------------------------------------
 
-[jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:hierarchyNode, jmix:collection, jmix:publication
+[jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:nodenameInfo, jmix:publication
 + * (jnt:category) version
 - * (reference) multiple < jnt:category
 
@@ -202,48 +197,52 @@
 // Tags
 //---------------------------------------------------------
 
-[jnt:tag] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:publication, jmix:collection
-- tags (reference) multiple hidden < jnt:tag
+[jnt:tag] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+ - tags (reference) multiple hidden < jnt:tag
 
+[jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list
+ + * (jnt:tag) = jnt:tag
+ 
 //---------------------------------------------------------
 // Preferences
 //---------------------------------------------------------
 
-[jnt:preferences] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:preferences] > nt:base, jmix:nodenameInfo
 + * (jnt:preferenceProvider)
 
-[jnt:preferenceProvider] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:preferenceProvider] > nt:base, jmix:nodenameInfo
 + * (nt:base) multiple
 
 //---------------------------------------------------------
 // Users and groups
 //---------------------------------------------------------
 
-[jmix:usersFolder] mixin
+[jnt:usersFolder] > nt:base, jmix:nodenameInfo, jmix:list
  - j:usersFolderConfig (string) nofulltext
  - j:usersFolderSkeleton (string) nofulltext
+ + * (jnt:user)
 
-[jnt:address] > nt:base, jmix:hierarchyNode
+[jnt:address] > nt:base
  - j:street (string)
  - j:zipcode (string) 
  - j:town (string)
  - j:country (string,choicelist[country])
  - j:private (boolean)=false
 
-[jnt:addresses]  > nt:base, jmix:collection
+[jnt:addresses]  > nt:base
  - j:defaultAddress (weakreference) < jnt:address
  + * (jnt:address)
 
-[jnt:phoneNumber] > nt:base, jmix:hierarchyNode
+[jnt:phoneNumber] > nt:base
 - j:numberType (string)
 - j:number (string)
 - j:numberIsPublic (boolean)=true
 
-[jnt:phoneNumbers]  > nt:base, jmix:collection
+[jnt:phoneNumbers] > nt:base
  - j:defaultPhone (weakreference) < jnt:phoneNumber
  + * (jnt:phoneNumber)
 
-[jnt:user] > jnt:folder
+[jnt:user] > jnt:systemNode
  - j:password (string) indexed=no
  - j:external (boolean)=false autocreated
  - j:externalSource (string) nofulltext
@@ -278,37 +277,23 @@
  + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
  + j:phones (jnt:phoneNumbers) = jnt:phoneNumbers mandatory autocreated
 
-[jmix:groupsFolder] mixin
+[jnt:groupsFolder] > nt:base, jmix:nodenameInfo, jmix:list
  - j:groupsFolderConfig (string) nofulltext
  - j:groupsFolderSkeleton (string) nofulltext
+ + * (jnt:group) = jnt:group
 
-[jnt:member] > nt:base, jmix:hierarchyNode
+[jnt:member] > nt:base
  - j:member (weakreference) < jnt:user, jnt:group
 
-[jnt:members]  > nt:base, jmix:collection
+[jnt:members]  > nt:base
  + * (jnt:member)
 
-[jnt:group] > jnt:folder
+[jnt:group] > jnt:systemNode
  - j:hidden (boolean)
  - j:external (boolean)=false autocreated
  - j:externalSource (string) nofulltext
  - * (string)
  + j:members (jnt:members) = jnt:members mandatory autocreated
-
-//---------------------------------------------------------
-// AXIS views
-//---------------------------------------------------------
-
-[jnt:axisView] > jnt:systemfolder
- - j:nodetype (name) multiple
- - j:writeable (boolean) = false
- + j:property (jnt:axisProperty) multiple
-
-[jnt:axisProperty] > nt:base
- - j:name (name) mandatory
- - j:format (string) nofulltext
-
-[jnt:axisFolder] > jnt:systemfolder
 
 //---------------------------------------------------------
 // Google analytics
@@ -325,39 +310,31 @@
 // Rendering
 //---------------------------------------------------------
 
-[jmix:layout] mixin
-
-[jmix:renderable] > jmix:layout, jmix:contentMixin mixin
+[jmix:renderable] mixin
  - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:bodywrapper] mixin
  - j:bodywrapper (string, choicelist[templates=bodywrapper])
 
-[jmix:renderableList] > jmix:layout, jmix:listMixin mixin
+[jmix:renderableList] mixin
  - j:subNodesTemplate (string, choicelist[templates=subnodes,resourceBundle,image]) nofulltext
 
-[jmix:renderableReference] > jmix:layout mixin
+[jmix:renderableReference] mixin
  - j:referenceTemplate (string, choicelist[templates,resourceBundle,image]) nofulltext
 
-[jmix:positionable] > jmix:layout mixin
- - j:columnIndex (long)
- - j:rowIndex (long)
- - j:columnSpan (long)
- - j:rowSpan (long)
-
-[jmix:theme] > jmix:layout, jmix:pageMixin mixin
+[jmix:theme] mixin
  - j:theme (weakreference,choicelist[nodes='/sites/$currentSite/themes;jnt:folder'])
 
 //---------------------------------------------------------
 // Virtual sites
 //---------------------------------------------------------
 
-[jmix:virtualsitesFolder] mixin
+[jnt:virtualsitesFolder] > jnt:systemNode, jmix:list
  - j:defaultSite (weakreference) < jnt:virtualsite
  - j:virtualsitesFolderConfig (string) nofulltext
  - j:virtualsitesFolderSkeleton (string) nofulltext
 
-[jnt:virtualsite] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication, jmix:bodywrapper, jmix:googleAnalyticsAccount
+[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:bodywrapper, jmix:googleAnalyticsAccount
  - j:title (string) protected nofulltext
  - j:serverName (string) protected nofulltext
  - j:description (string) protected
@@ -369,7 +346,7 @@
  - j:mixLanguage (boolean) = false
  - j:sourceTemplate (weakreference)
  + users (nt:base) = nt:base
- + * (jmix:hierarchyNode)
+ + * (nt:base)
 
 
 //---------------------------------------------------------
@@ -382,7 +359,7 @@
 // Repository mounts
 //---------------------------------------------------------
 
-[jnt:mountPoint] > nt:hierarchyNode, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:publication
+[jnt:mountPoint] > nt:hierarchyNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
 
 [jnt:vfsMountPoint] > jnt:mountPoint
  - j:root (string) nofulltext
@@ -393,11 +370,11 @@
 
 [jmix:droppableContent] > mix:referenceable mixin
 
-[jmix:containerContent] > jmix:droppableContent mixin
+[jmix:listContent] > jmix:droppableContent mixin
 
-[jmix:structuredContent] > jmix:droppableContent mixin
+[jmix:editorialContent] > jmix:droppableContent mixin
 
-[jmix:interactiveContent] > jmix:droppableContent mixin
+[jmix:siteComponentContent] > jmix:droppableContent mixin
 
 [jmix:queryContent] > jmix:droppableContent mixin
 
@@ -407,23 +384,15 @@
 // Other mixins
 //---------------------------------------------------------
 
-[jmix:contentMixin] mixin
-
-[jmix:option] mixin
-
 [jmix:list] mixin
-
-[jmix:listMixin] mixin
-
-[jmix:pageMixin] mixin
 
 [jmix:templateMixin] mixin
 
-[jmix:observable] mixin
+//---------------------------------------------------------
+// Google analytics
+//---------------------------------------------------------
 
-[jmix:contentItem] mixin
-
-[jmix:googleanalytics] > jmix:option, jmix:contentMixin mixin
+[jmix:googleanalytics]  mixin
 - j:gaenabaled (boolean)
 
 //---------------------------------------------------------
@@ -433,22 +402,22 @@
 [jmix:shareable] > mix:shareable mixin
  - j:movedFrom (string) multiple nofulltext
 
-[jmix:link] > mix:title, jmix:contentItem mixin
+[jmix:link] > mix:title mixin
  - j:target (string, choicelist[resourceBundle]) nofulltext < '_blank','_parent','_self','_top'
 
 [jmix:nodeReference] mixin
 
-[jnt:fileReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:structuredContent
+[jnt:fileReference] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:nodeReference, jmix:editorialContent
  - j:node (weakreference) < jnt:file
 
-[jnt:imageReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:structuredContent
+[jnt:imageReference] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:nodeReference, jmix:editorialContent
  - j:node (weakreference) < jmix:image
  - j:alternateText (string)
 
-[jnt:nodeLink] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:link
+[jnt:nodeLink] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:nodeReference, jmix:link
  - j:node (weakreference) < jmix:droppableContent, jnt:page
 
-[jnt:externalLink] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:link
+[jnt:externalLink] > nt:base, jmix:nodenameInfo, jmix:basemetadata,  jmix:link
  - j:url (string)
 
 [jnt:referenceInField] > nt:base
@@ -470,41 +439,38 @@
 // Pages, content lists, reusable components
 //---------------------------------------------------------
 
-[jnt:page] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
+[jnt:page] > nt:base, jmix:nodenameInfo, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
  orderable
  - j:sourceTemplate (weakreference)
  + * (nt:base) = nt:base version
 
-[jnt:content] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
+[jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
 
-[jnt:contentList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, jmix:containerContent, mix:title, jmix:list
+[jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list
  orderable
- + * (nt:base) = nt:base version
+ + * (jnt:content) = jnt:content version
 
-[jnt:templatesFolder] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
+[jnt:templatesSets] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
+ + * (jnt:virtualsite)
+  
+[jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:page)
-
-[jnt:template] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title
- - j:picture (weakreference, file[mime='image/*'])
- + j:target (jnt:page)
 
 //---------------------------------------------------------
 // Template studio
 //---------------------------------------------------------
 
-[jmix:template]
-
-[jmix:templateInformation] > jmix:template, jmix:contentMixin mixin
+[jmix:templateInformation] mixin
  - j:templateLocked (boolean) hidden
  - j:templateShared (boolean) hidden
  - j:templateDeployed (boolean) hidden
 
-[jmix:contributeMode] > jmix:template, jmix:listMixin mixin
+[jmix:contributeMode] mixin
  - j:editableInContribution (boolean)
  - j:canOrderInContribution (boolean)
  - j:canDeleteInContribution (boolean)
 
-[jmix:listRestrictions] > jmix:template, jmix:listMixin mixin
+[jmix:listRestrictions] mixin
  - j:allowedTypes (string, choicelist[nodetypes]) multiple
 
 
@@ -519,57 +485,30 @@
  - j:type (string) nofulltext
  - j:context (string) nofulltext
 
-[jnt:portletDefinitions] > nt:hierarchyNode, jmix:collection, jmix:basemetadata
-+ * (jnt:portletDefinition)
+[jnt:portletDefinitions] > nt:hierarchyNode, jmix:basemetadata
+ + * (jnt:portletDefinition)
 
-[jnt:portlet] > nt:base, jmix:hierarchyNode, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:publication
+[jnt:portlet] > nt:base, jmix:nodenameInfo, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:publication
  - j:application (string,portletdefinition) hidden nofulltext
  - j:applicationRef (reference) hidden < jnt:portletDefinition
  - j:definition (string)
  - j:cacheScope (string, choicelist) nofulltext < 'private','public'
  - j:expirationTime (long)
 
-[jnt:portletReference] > nt:base, jmix:hierarchyNode, jmix:basemetadata, jmix:contentItem, jmix:nodeReference, jmix:structuredContent
+[jnt:portletList] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:listContent, mix:title, jmix:list
+ + * (jnt:portlet) = jnt:portlet
+
+[jnt:portletReference] > nt:base, jmix:nodenameInfo, jmix:basemetadata,  jmix:nodeReference, jmix:editorialContent
  - j:node (weakreference) < jnt:portlet
 
 //---------------------------------------------------------
 // Internal //
 //---------------------------------------------------------
 
-[jnt:systemRoot] > nt:folder, jmix:hierarchyNode, jmix:collection
- + * (jmix:hierarchyNode)
-
-[jnt:reference] > nt:base, jmix:hierarchyNode
+[jnt:reference] > nt:base, jmix:nodenameInfo
  - j:node (weakreference)
  - j:propertyName (string) nofulltext
  - j:originalUuid (string) nofulltext
 
-[jnt:referencesKeeper] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:referencesKeeper] > nt:base, jmix:nodenameInfo
  + j:reference (jnt:reference) multiple
-
-//---------------------------------------------------------
-// Compatibility nodes
-//---------------------------------------------------------
-
-[jnt:container] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata, mix:title
-
-[jnt:containerList] > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
- orderable
- + * (jnt:container) version
-
-[jnt:internalPageLink] > jnt:nodeLink
-
-[jnt:externalPageLink] > jnt:externalLink
-
-[jnt:layoutItem]  > nt:base, jmix:hierarchyNode, jmix:basemetadata
- - j:columnIndex (long)
- - j:rowIndex (long)
- - j:status (string) nofulltext
- - j:portlet (reference) < jnt:portlet
-
-[jnt:layout]  > nt:base, jmix:hierarchyNode, jmix:collection, jmix:basemetadata
- - j:page (weakreference)
- - j:nbColumns (long)
- - j:liveEditable (boolean)
- - j:liveDraggable (boolean)
- + j:item (jnt:layoutItem) multiple

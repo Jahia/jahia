@@ -27,7 +27,7 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         final SortedSet<ChoiceListValue> listValues = new TreeSet<ChoiceListValue>();
         if (StringUtils.isEmpty(param)) {
-            param = "jmix:structuredContent";
+            param = "jmix:editorialContent";
         }
         try {
             String includedTypes = StringUtils.substringBefore(param, ";");

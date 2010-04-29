@@ -43,11 +43,11 @@ public class TemplateAttributesFilter extends AbstractFilter {
             }
         }
 
-        ExtendedNodeType layout = NodeTypeRegistry.getInstance().getNodeType("jmix:layout");
-        ExtendedNodeType[] mixins = layout.getMixinSubtypes();
-        for (ExtendedNodeType mixin : mixins) {
-            overrideProperties(node, params, moduleParams, mixin);
-        }
+//        ExtendedNodeType layout = NodeTypeRegistry.getInstance().getNodeType("jmix:layout");
+//        ExtendedNodeType[] mixins = layout.getMixinSubtypes();
+//        for (ExtendedNodeType mixin : mixins) {
+//            overrideProperties(node, params, moduleParams, mixin);
+//        }
         ExtendedNodeType cache = NodeTypeRegistry.getInstance().getNodeType("jmix:cache");
         overrideProperties(node, params, moduleParams, cache);
 

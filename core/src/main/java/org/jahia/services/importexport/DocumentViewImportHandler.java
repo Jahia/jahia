@@ -255,8 +255,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
                         setAttributes(child, atts);
 
-                        if (child.isCollection()) {
-                        } else if (currentFilePath == null) {
+                        if (child.isFile() && currentFilePath == null) {
                             currentFilePath = child.getPath();
                         }
                     }

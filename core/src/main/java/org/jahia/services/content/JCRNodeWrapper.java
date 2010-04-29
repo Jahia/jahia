@@ -396,7 +396,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     String getWebdavUrl();
 
     /**
-     * Get the list of all available thumbnails. Each result is a subnode the node, of type jnt:extraResource
+     * Get the list of all available thumbnails. Each result is a subnode the node, of type jnt:resource
      * @return the list of all available thumbnails
      */
     List<String> getThumbnails();

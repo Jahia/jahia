@@ -39,6 +39,8 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 
+import javax.jcr.RepositoryException;
+
 /**
  * File and folder search result item, used as a view object in JSP templates.
  * 
@@ -117,6 +119,10 @@ public class FileHit extends JCRNodeHit {
      * @return <code>true</code> if this search hit represents a folder
      */
     public boolean isFolder() {
-        return isCollection();
+        try {
+            return resource.isNodeType("nt:folder");
+        } catch (RepositoryException e) {
+            return false;
+        }
     }
 }

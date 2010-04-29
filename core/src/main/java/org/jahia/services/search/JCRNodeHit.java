@@ -152,14 +152,4 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         return "";
     }
 
-    /**
-     * Returns <code>true</code> if this search hit represents a collection,
-     * i.e. it has either <code>jmix:collection</code> or <code>nt:folder</code>
-     * type.
-     * 
-     * @return <code>true</code> if this search hit represents a collection
-     */
-    public boolean isCollection() {
-        return resource.isCollection();
-    }
 }

@@ -395,8 +395,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeIterator ni = objectNode.getNodes();
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
-                if (node.isNodeType("jnt:extraResource")) {
-                    names.add(node.getName());
+                if (node.isNodeType("jnt:resource")) {
+                    if (!node.getName().equals("jcr:content")) {
+                        names.add(node.getName());
+                    }
                 }
             }
         } catch (RepositoryException e) {
@@ -713,11 +715,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean isCollection() {
-        try {
-            return objectNode.isNodeType("jmix:collection") || objectNode.isNodeType("nt:folder") || objectNode.getPath().equals("/");
-        } catch (RepositoryException e) {
-            return false;
-        }
+        return true;
+//        try {
+//            return objectNode.isNodeType("jmix:collection") || objectNode.isNodeType("nt:folder") || objectNode.getPath().equals("/");
+//        } catch (RepositoryException e) {
+//            return false;
+//        }
     }
 
     /**

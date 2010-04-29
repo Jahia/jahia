@@ -195,7 +195,7 @@
     <bean id="sortableFieldnamesInitializer" class="org.jahia.services.content.nodetypes.initializers.SortableFieldnamesChoiceListInitializerImpl">
     	<property name="excludedNodeTypes">
     		<set>
-    			<value type="java.lang.String">jmix:hierarchyNode</value>
+    			<value type="java.lang.String">jmix:nodenameInfo</value>
     			<value type="java.lang.String">mix:referenceable</value>
     			<value type="java.lang.String">mix:simpleVersionable</value>
     			<value type="java.lang.String">mix:versionable</value>

@@ -1,7 +1,7 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jmix:rating] > jmix:option, jmix:contentMixin mixin
+[jmix:rating] mixin
  - j:nbOfVotes (long) = 0  autocreated hidden onconflict=sum
  - j:sumOfVotes (long) = 0 autocreated hidden onconflict=sum
  - j:lastVote (long) hidden onconflict=latest

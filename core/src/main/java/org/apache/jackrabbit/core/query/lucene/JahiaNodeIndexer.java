@@ -32,14 +32,12 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import java.io.ByteArrayInputStream;
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.jcr.NamespaceRegistry;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
@@ -47,9 +45,6 @@ import org.apache.axis.utils.StringUtils;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;
-import org.apache.jackrabbit.core.query.lucene.FieldNames;
-import org.apache.jackrabbit.core.query.lucene.NamespaceMappings;
-import org.apache.jackrabbit.core.query.lucene.NodeIndexer;
 import org.apache.jackrabbit.core.state.ItemStateException;
 import org.apache.jackrabbit.core.state.ItemStateManager;
 import org.apache.jackrabbit.core.state.NoSuchItemStateException;
@@ -62,9 +57,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.solr.schema.DateField;
 import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
-import org.apache.tika.sax.BodyContentHandler;
 import org.jahia.api.Constants;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -75,7 +68,6 @@ import org.jahia.services.textextraction.TextExtractionService;
 import org.jahia.utils.TextHtml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.ContentHandler;
 
 /**
  * Creates a lucene <code>Document</code> object from a {@link javax.jcr.Node} and use Jahia sepecific definitions for index creation.
@@ -156,7 +148,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 if (nodeType != null) {
                     siteTypeName = NameFactoryImpl.getInstance().create(
                             nodeType.getNameObject().getUri(), nodeType.getLocalName());
-                    nodeType = nodeTypeRegistry.getNodeType(Constants.JAHIAMIX_VIRTUALSITES_FOLDER);
+                    nodeType = nodeTypeRegistry.getNodeType(Constants.JAHIANT_VIRTUALSITES_FOLDER);
                     siteFolderTypeName = NameFactoryImpl.getInstance().create(
                             nodeType.getNameObject().getUri(), nodeType.getLocalName());
                 }

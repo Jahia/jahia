@@ -44,9 +44,9 @@
                 <entry key="unknown" value="file"/>
                 <entry key="jmix:queryContent" value="query"/>
                 <entry key="jmix:searchFormContent" value="query"/>
-                <entry key="jmix:interactiveContent" value="interactive"/>
-                <entry key="jmix:structuredContent" value="structured"/>
-                <entry key="jmix:containerContent" value="contentlist"/>
+                <entry key="jmix:siteComponentContent" value="interactive"/>
+                <entry key="jmix:editorialContent" value="structured"/>
+                <entry key="jmix:listContent" value="contentlist"/>
                 <entry key="jnt:page" value="page"/>
                 <entry key="jnt:user" value="user"/>
                 <entry key="jnt:group" value="user-group"/>

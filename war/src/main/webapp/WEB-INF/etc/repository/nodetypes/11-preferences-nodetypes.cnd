@@ -5,25 +5,25 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:preferences] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:preferences] > nt:base, jmix:nodenameInfo
 + * (jnt:preferenceProvider)
 
-[jnt:preferenceProvider] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:preferenceProvider] > nt:base, jmix:nodenameInfo
 + * (nt:base) multiple
 
-[jnt:simplePreference] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:simplePreference] > nt:base, jmix:nodenameInfo
 - j:prefName (string) nofulltext
 - j:prefValue (string)
 
-[jnt:pagePreference] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:pagePreference] > nt:base, jmix:nodenameInfo
 - j:page (weakreference)
 - j:prefName (string) nofulltext
 - j:prefValue (string)
 
-[jnt:bookmarkPreference] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:bookmarkPreference] > nt:base, jmix:nodenameInfo
 - j:page (string) nofulltext
 
-[jnt:portletPreference] > nt:base, jmix:hierarchyNode, jmix:collection
+[jnt:portletPreference] > nt:base, jmix:nodenameInfo
 - j:portletName (string) nofulltext
 - j:prefName (string) nofulltext
 - j:readOnly (boolean)

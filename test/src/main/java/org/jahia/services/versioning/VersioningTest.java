@@ -186,7 +186,7 @@ public class VersioningTest extends TestCase {
         assertEquals("Versioned node should be viewed as a node type jnt:page", "jnt:page", versionNode.getPrimaryNodeTypeName());
         // let's check the mixin types
         assertTrue("Versioned node should be viewed as a mixin node type jmix:basemetadata", versionNode.isNodeType("jmix:basemetadata"));
-        assertTrue("Versioned node should be viewed as a mixin node type jmix:hierarchyNode", versionNode.isNodeType("jmix:hierarchyNode"));
+        assertTrue("Versioned node should be viewed as a mixin node type jmix:nodenameInfo", versionNode.isNodeType("jmix:nodenameInfo"));
         assertTrue("Versioned node should be viewed as a mixin node type jmix:renderable", versionNode.isNodeType("jmix:renderable"));
 
         // getNode check

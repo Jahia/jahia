@@ -156,14 +156,14 @@ public class NavigationHelper {
                 boolean matchVisibilityFilter = f.isVisible();
                 boolean matchNodeType = matchesNodeType(f, nodeTypesToApply);
                 // collection condition is available only if the parent node is not a nt:query. Else, the node has to mactch the node type condition
-                boolean matchCollectionFilter = !noCollection && f.isCollection()&& !node.isNodeType("nt:query");
+                boolean matchCollectionFilter = !noCollection && /*f.isCollection()*/ true && !node.isNodeType("nt:query");
                 if (matchVisibilityFilter && ((matchNodeType || matchCollectionFilter) )) {
 
                     // in case of a folder, it allows to know if the node is selectable
                     boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(f.getName(), filtersToApply) && matchesMimeTypeFilters(f.isFile(), f.getFileContent().getContentType(), mimeTypesToMatch);
 
                     //  boolean matchFilters = matchesMimeTypeFilters(isFile, isFile ? f.getFileContent().getContentType() : null, mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply);
-                    if (f.isCollection() || matchFilter) {
+                    if (/*f.isCollection()*/true || matchFilter) {
                         GWTJahiaNode theNode = getGWTJahiaNode(f);
                         theNode.setMatchFilters(matchNodeType && matchFilter);
                         try {
@@ -603,7 +603,7 @@ public class NavigationHelper {
                 // use for pickers
                 boolean isFile = n.isFile();
                 boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(isFile, isFile ? n.getFileContent().getContentType() : null, mimeTypesToMatch);
-                if (matchFilter || n.isCollection()) {
+                if (matchFilter/* || n.isCollection()*/) {
                     GWTJahiaNode node = getGWTJahiaNode(n);
                     node.setMatchFilters(matchFilter);
                     result.add(node);
@@ -700,7 +700,7 @@ public class NavigationHelper {
 
         }
         n.setFile(node.isFile());
-        n.setCollection(node.isCollection());
+        n.setCollection(/*node.isCollection()*/ true);
 
         n.setIsShared(false);
         try {
@@ -736,7 +736,7 @@ public class NavigationHelper {
                     JCRNodeWrapper w = (JCRNodeWrapper) nodesIterator.nextNode();
                     try {
                         hasChildren = true;
-                        if (w.isCollection() || w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
+                        if (/*w.isCollection()*/ true || w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
                             hasFolderChildren = true;
                             break;
                         }

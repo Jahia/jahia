@@ -2,8 +2,8 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0">
   <templatesSet>
     <templates-web xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:published="true" j:bodywrapper="web.bodywrapper" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5" j:checkinDate="2010-04-21T10:59:52.531+02:00">
-      <contents jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder">
-        <site_components jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder">
+      <contents jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+        <site_components jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
           <top-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:navMenu" j:templateLocked="true">
             <home j:node="/templatesSet/templates-web/home" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:navMenuNodeLink" j:templateLocked="true">
               <j:translation jcr:title_en="Home" jcr:language="en" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />
@@ -19,7 +19,7 @@
         </site_components>
       </contents>
       <files jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" />
-      <mashups jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" />
+      <mashups jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:portletList" />
       <themes jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" />
       <home j:template="default" jcr:mixinTypes="jmix:templateInformation jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
         <j:translation jcr:language="en" jcr:title_en="Home" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />

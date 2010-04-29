@@ -217,6 +217,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                         Node node = getNode(session);
                         Node members = node.getNode("j:members");
                         if (!members.hasNode(principal.getName())) {
+                            members.checkout();
                             Node member = members.addNode(principal.getName(), Constants.JAHIANT_MEMBER);
                             member.setProperty("j:member", jcrUser.getIdentifier());
                             session.save();

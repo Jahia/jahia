@@ -7,7 +7,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jmix:document] > jmix:extension mixin
+[jmix:document] mixin
  - j:subject (string)
  - j:pageCount (long) protected
  - j:wordCount (long) protected
@@ -15,7 +15,7 @@
  - j:appName (string) protected nofulltext
  - j:codePage (string) protected nofulltext
 
-[jmix:exif] > jmix:extension mixin
+[jmix:exif] mixin
  - j:colorSpace (string) nofulltext
  - j:componentsConfiguration (string) nofulltext
  - j:compression (string) nofulltext
@@ -47,7 +47,7 @@
  - j:yresolution (string) nofulltext
 
                           
-[jmix:test] > jmix:extension mixin
+[jmix:test] mixin
  - j:long (long)
  - j:text (string)
  - j:protectedText (string) protected
@@ -61,7 +61,7 @@
  - j:protectedDate (date) protected
  - j:boolean (boolean) = false
 
- [jmix:SysDocProto] > jmix:extension mixin
+ [jmix:SysDocProto] mixin
  - j:SysDocProto_DateCreation (date, datetimepicker)
  - j:SysDocProto_CodeProjet (string,category[root=Projets])
  - j:SysDocProto_CodeService (string,category[root=Services])
@@ -73,7 +73,7 @@
  - j:SysDocProto_CodeServiceCopieA (string,category[Services])
  - j:SysDocProto_CodeTypeProcessus (string)
  
-[jmix:doc] > jmix:extension mixin
+[jmix:doc] mixin
  - j:dateCreation (date, datetimepicker)
  - j:codeProjet (string,category[root=Projets]) nofulltext
  - j:codeStatutDocument (string,choicelist) nofulltext < 'Ouvert','Ferme'

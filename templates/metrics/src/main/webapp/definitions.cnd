@@ -1,7 +1,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:topTenPages] > jnt:content, jmix:structuredContent
+[jnt:topTenPages] > jnt:content, jmix:editorialContent
 
-[jmix:recommendations] > jmix:option, jmix:contentMixin mixin
+[jmix:recommendations] mixin
  - j:nodeTypeFilter (string)
  - j:recommendationLimit (long)

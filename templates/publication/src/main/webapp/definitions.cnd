@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:publication] > jnt:content, jmix:structuredContent, mix:title
+[jnt:publication] > jnt:content, jmix:editorialContent, mix:title
  - file (weakreference, file) i18n
  - preview (weakreference, file) i18n
  - author (string) i18n analyzer='simple'

@@ -1,10 +1,10 @@
-<content jcr:primaryType="jnt:systemRoot"
+<content jcr:primaryType="jnt:systemNode"
 
          xmlns:jcr="http://www.jcp.org/jcr/1.0"
          xmlns:j="http://www.jahia.org/jahia/1.0"
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <shared jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
+    <shared jcr:primaryType="jnt:systemNode" jcr:mixinTypes="jmix:accessControlled">
 
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_read_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
@@ -17,14 +17,13 @@
         </j:acl>
 
         <files jcr:primaryType="jnt:folder"/>
-        <mashups jcr:primaryType="jnt:folder"/>
-        <portalComponents jcr:primaryType="jnt:folder"/> 
-        <templates jcr:primaryType="jnt:folder"/>
-        <contents jcr:primaryType="jnt:folder"/>
+        <mashups jcr:primaryType="jnt:portletList"/>
+        <portalComponents jcr:primaryType="jnt:contentList"/>
+        <contents jcr:primaryType="jnt:contentList"/>
         <conversions jcr:primaryType="jnt:folder"/>
     </shared>
 
-    <users jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:usersFolder" j:usersFolderSkeleton="user.xml">
+    <users jcr:primaryType="jnt:usersFolder" j:usersFolderSkeleton="user.xml">
         <ROOT_NAME_PLACEHOLDER jcr:primaryType="jnt:user" j:password="@ROOT_PASSWORD@" j:external="false" jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b" root_user_properties="">
             <files jcr:primaryType="jnt:folder">
                 <private jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
@@ -45,9 +44,9 @@
                 </private>
             </files>
 
-            <mashups jcr:primaryType="jnt:folder"/>
+            <mashups jcr:primaryType="jnt:portletList"/>
 
-            <contents jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentList"/>
 
             <preferences jcr:primaryType="jnt:preferences" jcr:mixinTypes="jmix:accessControlled">
                 <j:acl jcr:primaryType="jnt:acl">
@@ -67,7 +66,7 @@
         <guest jcr:primaryType="jnt:user" j:password="" j:external="false"/>
     </users>
 
-    <groups jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:groupsFolder">
+    <groups jcr:primaryType="jnt:groupsFolder">
         <guest jcr:primaryType="jnt:group" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
         </guest>
@@ -83,22 +82,13 @@
     
     <workflowrules jcr:primaryType="jnt:workflowRules"/>
 
-    <sites jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:virtualsitesFolder"
+    <sites jcr:primaryType="jnt:virtualsitesFolder"
            j:virtualsitesFolderSkeleton="site.xml"/>
 
     <imports jcr:primaryType="jnt:importDropBox"/>
-
-    <!--<layoutmanager jcr:primaryType="jnt:layoutManager" >-->
-    <!--<j:acl jcr:primaryType="jnt:acl">-->
-    <!--<GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>-->
-    <!--<GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>-->
-    <!--<DENY_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"/>-->
-    <!--</j:acl>-->
-    <!--</layoutmanager>-->
-
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper"/>
 
-    <mounts jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:accessControlled">
+    <mounts jcr:primaryType="jnt:systemNode" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
                                     j:privileges="jcr:read" j:aceType="GRANT"/>
@@ -107,7 +97,7 @@
         </j:acl>
     </mounts>
     <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>
-    <categories jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:accessControlled">
+    <categories jcr:primaryType="jnt:category" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_write_g_administrators j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
                                     j:privileges="jcr:write" j:aceType="GRANT"/>
@@ -118,6 +108,6 @@
         </j:acl>
     </categories>
 
-    <templatesSet jcr:primaryType="jnt:folder"/>
+    <templatesSet jcr:primaryType="jnt:templatesSets"/>
 
 </content>

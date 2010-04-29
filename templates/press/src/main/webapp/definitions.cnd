@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:press] > jnt:content, mix:title, jmix:structuredContent
+[jnt:press] > jnt:content, mix:title, jmix:editorialContent
  - body (string, richtext) i18n
  - date (date)
  - pdfVersion (weakreference, file) i18n

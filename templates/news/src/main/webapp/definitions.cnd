@@ -1,6 +1,6 @@
 <nt = 'http://www.jcp.org/jcr/nt/1.0'>
 
-[jnt:news] > jnt:content, mix:title, jmix:structuredContent
+[jnt:news] > jnt:content, mix:title, jmix:editorialContent
  - desc (string, richtext) i18n
  - image (weakreference, file[mime='image/*'])
  - date (date) = now()

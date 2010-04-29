@@ -121,7 +121,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             parentNodeWrapper = session.getNode(
                                     "/sites/" + siteName + "/groups");
                         }
-                        session.getWorkspace().getVersionManager().checkout(parentNodeWrapper.getPath());
+                        parentNodeWrapper.checkout();
                         nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
                         nodeWrapper.setProperty(JCRGroup.J_HIDDEN, hidden);
                         if (properties != null) {
@@ -134,7 +134,6 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             }
                         }
                         session.save();
-                        session.getWorkspace().getVersionManager().checkin(parentNodeWrapper.getPath());
                         return new JCRGroup(nodeWrapper, jcrTemplate, siteID);
                     } catch (JahiaException e) {
                         logger.error("Error while creating group", e);

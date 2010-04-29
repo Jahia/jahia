@@ -140,9 +140,6 @@ public class RandomImageTag extends TagSupport {
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         JCRNodeWrapper node = jcr.getFileNode(webdavpath, jahiaUser);
 
-        if (!node.isCollection()) throw new NullPointerException("this path [" + webdavpath + "] is not a folder");
-        // our treeset to order by name
-
         List<JCRNodeWrapper> images = new ArrayList<JCRNodeWrapper>();
         for (JCRNodeWrapper thefile : node.getChildren()) {
             //we dont list binaries files not image and not valid (with access denied)

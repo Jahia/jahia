@@ -2,11 +2,11 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 <test_templates = 'http://www.jahia.org/jahia/test_templates/nt/1.0'>
 
-[test_templates:someFields] > jnt:container
+[test_templates:someFields] > jnt:content
  smallText smallText
  integer integer
 
-[test_templates:allFields] > jnt:container
+[test_templates:allFields] > jnt:content
  smallText smallText
  sharedSmallText sharedSmallText
  sharedSmallText sharedSmallTextSingle (choicelist) <'val1','val2','val3'
@@ -38,7 +38,7 @@
  portlet application2nd
  category category2nd multiple
    
-[test_templates:textFields] >jnt:container
+[test_templates:textFields] >jnt:content
  sharedSmallText smallText
  sharedSmallText smallTextWithDefault = 'default value'
  sharedSmallText smallTextWithDefaultAsResource = defaultValue internationalized
@@ -67,7 +67,7 @@
  boolean booleanWithDefault = 'true'
  boolean booleanWithDefaultAsExpression = eval(currentRequest.windows)
 
-[test_templates:pageFields] > jnt:container
+[test_templates:pageFields] > jnt:content
  page page (page)
  page pageLinkOnly (page[type="internal,external"])
  page pagePageOnly (page[type="direct"])
@@ -78,7 +78,7 @@
  page pageLinkExternal (page[type="external"])
  page pageNewPageInternalOrLinkExternal (page[type="external",templates="Simple"])
 
-[test_templates:numberFields] > jnt:container
+[test_templates:numberFields] > jnt:content
  integer long
  integer longWithDefault = 10
  integer longWithDefaultAsExpression = eval(currentPage.ID)
@@ -98,19 +98,19 @@
 [test_templates:dateMixin] mixin
  date mixinDate
 
-[test_templates:displayCL] > jnt:container
+[test_templates:displayCL] > jnt:content
  smallText Image
  smallText File
  page page
  smallText RandomPath
 
-[test_templates:formHandlerCL] > jnt:container
+[test_templates:formHandlerCL] > jnt:content
  smallText Name
  smallText Adress
  smallText Zip
  smallText City
 
-[test_templates:dateFields] > jnt:container
+[test_templates:dateFields] > jnt:content
  date date
  date dateWithDefault = '2008-01-01T12:12:12.000+00:00'
  date dateWithDefaultAsNow = now()
@@ -121,7 +121,7 @@
  date tommorrowSameTime (datetimepicker[format='yyyyy.MMMMM.dd GGG hh:mm aaa']) = eval(now+1000*60*60*24)
  date maximumDate (datetimepicker[format='dd.MM.yyyy / HH:mm']) = '9999-12-31T23:59:59.999+00:00'
  
-[test_templates:fieldsWithIndexOptions] > jnt:container, jmix:sandboxContent
+[test_templates:fieldsWithIndexOptions] > jnt:content, jmix:sandboxContent
  date untokenizedDate indexed='untokenized' scoreboost=1 analyzer='keyword'
  date scoreboostedDate indexed='untokenized' scoreboost=6 analyzer='keyword'
  integer untokenizedLong indexed='untokenized' analyzer='keyword'
@@ -131,19 +131,19 @@
  sharedSmallText scoreboostedSmallText scoreboost=5 sortable
  float sortableFloat sortable
  
-[test_templates:multiSearchLangFields] > jnt:container
+[test_templates:multiSearchLangFields] > jnt:content
  sharedSmallText Title
  smallText Text
  file file
 
-[test_templates:validationFieldsUsingDefinitions] > jnt:container
+[test_templates:validationFieldsUsingDefinitions] > jnt:content
  sharedSmallText mandatorySmallText mandatory
  integer mandatoryLong mandatory
  sharedSmallText alphanumericSmallText < '[a-zA-Z1-9]*'
  integer longBetween1and10 < '[1,10]'
  integer mandatoryLongBetween1and10 mandatory < '[1,10]'
 
-[test_templates:validationFieldsUsingValidator] > jnt:container validator='test-tesmplates-validationFieldsUsingValidator'
+[test_templates:validationFieldsUsingValidator] > jnt:content validator='test-tesmplates-validationFieldsUsingValidator'
  sharedSmallText mandatorySmallText
  integer mandatoryLong
  sharedSmallText alphanumericSmallText
@@ -152,13 +152,13 @@
 
 [test_templates:subscribableContent] > jnt:mainContent
 
-[test_templates:subscribableTechWatch] > jnt:container
+[test_templates:subscribableTechWatch] > jnt:content
  sharedSmallText title
  sharedSmallText teaser
  date date = now()
  page source (page[type="external"])
 
-[test_templates:subscribableArticle] > jnt:container
+[test_templates:subscribableArticle] > jnt:content
  smallText title
  smallText teaser
  sharedSmallText author
@@ -195,19 +195,19 @@
 
 /* Newsletter */
 
-[test_templates:newsletterIssueHeader] > jnt:container
+[test_templates:newsletterIssueHeader] > jnt:content
  file logo (file[mime='image/*'])
  bigText introduction
 
-[test_templates:newsletterIssueFooter] > jnt:container
+[test_templates:newsletterIssueFooter] > jnt:content
  bigText footer = "&copy; 2002-2009 Jahia Solutions Group SA. All rights reserved." i15d indexed=no
 
-[test_templates:newsletterIssue] > jnt:container
+[test_templates:newsletterIssue] > jnt:content
  page link (page[type="direct",templates="Newsletter issue"])
  file image (file[mime='image/*'])
  bigText description
  
-[test_templates:newsletterChannel] > jnt:container
+[test_templates:newsletterChannel] > jnt:content
  page link (page[type="direct",templates="Newsletter"])
  file image (file[mime='image/*'])
  bigText description

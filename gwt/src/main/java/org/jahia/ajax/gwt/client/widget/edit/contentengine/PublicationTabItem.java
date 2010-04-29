@@ -1,7 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
@@ -15,7 +13,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
  */
 public class PublicationTabItem extends PropertiesTabItem {
     public PublicationTabItem(AbstractContentEngine engine) {
-        super(Messages.get("ece_publication", "Publication"), engine, GWTJahiaItemDefinition.PUBLICATION);
+        super(Messages.get("ece_publication", "Publication"), engine, GWTJahiaItemDefinition.CACHE);
         setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabPublication());
     }
 }

@@ -290,8 +290,9 @@ public class RulesListener extends DefaultEventListener {
                                 try {
                                     if (!event.getPath().startsWith("/jcr:system/")) {
                                         if (event.getType() == Event.NODE_ADDED) {
+                                            System.out.println("-add-->"+event.getPath());
                                             Node n = (Node) s.getItem(event.getPath());
-                                            if (n.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE) || n.isNodeType("jmix:observable")) {
+                                            if (n.isNodeType("jmix:observable")) {
                                                 final String identifier = n.getIdentifier();
                                                 NodeWrapper rn = eventsMap.get(identifier);
                                                 if (rn == null) {
@@ -310,7 +311,7 @@ public class RulesListener extends DefaultEventListener {
 //                                    if (parent.isNodeType("jnt:translation")) {
 //                                        parent = parent.getParent();
 //                                    }
-                                                if (parent.isNodeType(Constants.JAHIAMIX_HIERARCHYNODE) || parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jmix:observable") || parent.isNodeType("jnt:translation")) {
+                                                if (parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jmix:observable")) {
                                                     NodeWrapper rn;
                                                     if (parent.isNodeType(Constants.MIX_REFERENCEABLE)) {
                                                         final String identifier = parent.getIdentifier();

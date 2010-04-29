@@ -78,7 +78,7 @@ public class ContentDefinitionHelper {
     private static final List<String> excludedItems = Arrays.asList("j:locktoken", "jcr:lockOwner", "jcr:lockIsDeep",
             "j:nodename", "j:fullpath", "j:applyAcl", "jcr:uuid", "j:fieldsinuse");
 
-    private static final List<String> excludedTypes = Arrays.asList("nt:base", "mix:versionable", "jnt:workflow", "jnt:extraResource");
+    private static final List<String> excludedTypes = Arrays.asList("nt:base", "mix:versionable", "jnt:workflow");
 
     public GWTJahiaNodeType getNodeType(String name, Map<String, Object> context, Locale uiLocale) {
         ExtendedNodeType nodeType = null;
@@ -225,8 +225,8 @@ public class ContentDefinitionHelper {
                     item.setDataType(GWTJahiaItemDefinition.OPTIONS);
                 } else if (def.isTemplateItem()) {
                     item.setDataType(GWTJahiaItemDefinition.TEMPLATE);
-                } else if (def.isPublicationItem() || def.isCacheItem()) {
-                    item.setDataType(GWTJahiaItemDefinition.PUBLICATION);
+                } else if (def.isCacheItem()) {
+                    item.setDataType(GWTJahiaItemDefinition.CACHE);
                 } else if (def.isSystemItem()) {
                     item.setDataType(GWTJahiaItemDefinition.SYSTEM);
                 }
@@ -519,40 +519,40 @@ public class ContentDefinitionHelper {
     public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type, Map<String, Object> ctx, Locale uiLocale) {
         ArrayList<GWTJahiaNodeType> res = new ArrayList<GWTJahiaNodeType>();
         Set<String> foundTypes = new HashSet<String>();
-        try {
-            ExtendedNodeType realType = NodeTypeRegistry.getInstance().getNodeType(type.getName());
-            if (type.getSuperTypes().contains("jmix:list")) {
-                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:listMixin");
-                NodeTypeIterator it = baseMixin.getSubtypes();
-                while (it.hasNext()) {
-                    ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
-                    if (nodeType.isMixin() && !foundTypes.contains(nodeType.getName())) {
-                        res.add(getGWTJahiaNodeType(nodeType, realType, ctx, uiLocale));
-                        foundTypes.add(nodeType.getName());
-                    }
-                }
-            } else if (type.getName().equals("jnt:page")) {
-                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:pageMixin");
-                NodeTypeIterator it = baseMixin.getSubtypes();
-                while (it.hasNext()) {
-                    ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
-                    if (nodeType.isMixin() && !foundTypes.contains(nodeType.getName())) {
-                        res.add(getGWTJahiaNodeType(nodeType, realType, ctx, uiLocale));
-                        foundTypes.add(nodeType.getName());
-                    }
-                }
-//            } else if (type.getName().equals("jnt:nodeReference")) {
-//                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:renderableReference");
-//                res.add(getGWTJahiaNodeType(baseMixin, realType, ctx, uiLocale));
-//                foundTypes.add("jmix:renderable");
-//                foundTypes.add("jmix:renderableReference");
-            }
-
-
-            addGWTJahiaNodeType(ctx, res, foundTypes, realType, "jmix:contentMixin", uiLocale);
-        } catch (NoSuchNodeTypeException e) {
-
-        }
+//        try {
+//            ExtendedNodeType realType = NodeTypeRegistry.getInstance().getNodeType(type.getName());
+//            if (type.getSuperTypes().contains("jmix:list")) {
+//                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:listMixin");
+//                NodeTypeIterator it = baseMixin.getSubtypes();
+//                while (it.hasNext()) {
+//                    ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
+//                    if (nodeType.isMixin() && !foundTypes.contains(nodeType.getName())) {
+//                        res.add(getGWTJahiaNodeType(nodeType, realType, ctx, uiLocale));
+//                        foundTypes.add(nodeType.getName());
+//                    }
+//                }
+//            } else if (type.getName().equals("jnt:page")) {
+//                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:pageMixin");
+//                NodeTypeIterator it = baseMixin.getSubtypes();
+//                while (it.hasNext()) {
+//                    ExtendedNodeType nodeType = (ExtendedNodeType) it.next();
+//                    if (nodeType.isMixin() && !foundTypes.contains(nodeType.getName())) {
+//                        res.add(getGWTJahiaNodeType(nodeType, realType, ctx, uiLocale));
+//                        foundTypes.add(nodeType.getName());
+//                    }
+//                }
+////            } else if (type.getName().equals("jnt:nodeReference")) {
+////                ExtendedNodeType baseMixin = NodeTypeRegistry.getInstance().getNodeType("jmix:renderableReference");
+////                res.add(getGWTJahiaNodeType(baseMixin, realType, ctx, uiLocale));
+////                foundTypes.add("jmix:renderable");
+////                foundTypes.add("jmix:renderableReference");
+//            }
+//
+//
+//            addGWTJahiaNodeType(ctx, res, foundTypes, realType, "jmix:contentMixin", uiLocale);
+//        } catch (NoSuchNodeTypeException e) {
+//
+//        }
         return res;
     }
 

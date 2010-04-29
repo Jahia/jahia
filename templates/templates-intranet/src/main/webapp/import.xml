@@ -2,8 +2,8 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0">
   <templatesSet>
     <templates-intranet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" j:installedModules="templates-intranet" j:bodywrapper="intranet.bodywrapper" jcr:primaryType="jnt:virtualsite">
-      <contents jcr:primaryType="jnt:folder">
-        <site_components jcr:primaryType="jnt:folder">
+      <contents jcr:primaryType="jnt:contentList">
+        <site_components jcr:primaryType="jnt:contentList">
           <simpleSearchForm jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" j:templateLocked="true" />
           <topBar jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:navMenu">
             <navMenuMultilevel j:maxDepth="2" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="1" />
@@ -15,7 +15,7 @@
         </site_components>
       </contents>
       <files jcr:primaryType="jnt:folder" />
-      <mashups jcr:primaryType="jnt:folder" />
+      <mashups jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder" />
       <home j:template="default" jcr:primaryType="jnt:page">
         <j:translation jcr:language="en" jcr:title_en="Home" jcr:primaryType="jnt:translation" />

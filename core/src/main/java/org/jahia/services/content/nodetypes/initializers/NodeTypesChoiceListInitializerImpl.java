@@ -23,7 +23,7 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
         if (StringUtils.isEmpty(param)) {
-            param = "jmix:structuredContent";
+            param = "jmix:editorialContent";
         }
         try {
             ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(param);

@@ -206,7 +206,7 @@ public class FormFieldCreator {
             }
         } else {
             GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;
-            if (nodeDefinition.getName().equals("jcr:content") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:extraResource")) {
+            if (nodeDefinition.getName().equals("jcr:content") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:resource")) {
                 field = new FileUploadField(definition.getName());
             }
 
@@ -325,7 +325,7 @@ public class FormFieldCreator {
             }
         } else {
             GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;
-            if (nodeDefinition.getName().equals("jcr:content") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:extraResource")) {
+            if (nodeDefinition.getName().equals("jcr:content") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:resource")) {
                 field.setValue(values.get(0).getString());
             } else if (nodeDefinition.getRequiredPrimaryTypes()[0].equals("jmix:link")) {
                 List<GWTJahiaNode> v = new ArrayList<GWTJahiaNode>();

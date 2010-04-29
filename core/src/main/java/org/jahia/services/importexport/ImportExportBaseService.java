@@ -675,7 +675,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             if (parentDir == null) {
                 return null;
             }
-            if (parentDir.isNodeType(Constants.JAHIAMIX_VIRTUALSITES_FOLDER)) {
+            if (parentDir.isNodeType(Constants.JAHIANT_VIRTUALSITES_FOLDER)) {
                 dir = parentDir.getNode(site.getSiteKey());
             } else {
                 try {

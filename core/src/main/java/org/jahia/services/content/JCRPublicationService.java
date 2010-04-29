@@ -500,7 +500,9 @@ public class JCRPublicationService extends JahiaService {
         JCRNodeWrapper destinationNode = doClone(sourceNode, pruneNodes, sourceSession, destinationSession);
 
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
-        destinationVersionManager.checkin(sourceNode.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName()));
+        if (sourceNode.getParent().isVersioned()) {
+            destinationVersionManager.checkin(sourceNode.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName()));
+        }
         recurseCheckin(destinationSession, destinationNode, null, destinationVersionManager, calendar);
     }
 
@@ -511,9 +513,7 @@ public class JCRPublicationService extends JahiaService {
         final String destinationWorkspaceName = destinationSession.getWorkspace().getName();
         final String destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
         final String sourceNodePath = sourceNode.getIndex() > 1 ? sourceNode.getPath() + "[" + sourceNode.getIndex() + "]": sourceNode.getPath();
-        logger.info("Cloning node : " + sourceNodePath + " source v=" + sourceNode.getBaseVersion().getName() +
-                " , source parent v=" + sourceNode.getParent().getBaseVersion().getName() +
-                " , dest parent v=" + destinationSession.getNode(destinationParentPath).getBaseVersion().getName());
+        logger.info("Cloning node : " + sourceNodePath);
 
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
@@ -617,10 +617,6 @@ public class JCRPublicationService extends JahiaService {
 //        } else {
 //            destinationNode.checkpoint();
         }
-        logger.info("Cloning node end : " + sourceNodePath + " source v=" + sourceNode.getBaseVersion().getName() +
-                " , dest node v=" + destinationNode.getBaseVersion().getName() +
-                " , source parent v=" + sourceNode.getBaseVersion().getName() +
-                " , dest parent v=" + destinationSession.getNode(destinationParentPath).getBaseVersion().getName());
         return destinationNode;
     }
 

@@ -18,9 +18,9 @@
         </private>
     </files>
 
-    <mashups jcr:primaryType="jnt:folder"/>
+    <mashups jcr:primaryType="jnt:portletList"/>
 
-    <contents jcr:primaryType="jnt:folder"/>
+    <contents jcr:primaryType="jnt:contentList"/>
 
     <preferences jcr:primaryType="jnt:preferences" jcr:mixinTypes="jmix:accessControlled" >
         <j:acl jcr:primaryType="jnt:acl">

@@ -81,7 +81,7 @@ default/nt_base
    Here is the definition :
 
 -------------------------------------
-[jnt:mainContent] > jnt:content, mix:title, jmix:structuredContent
+[jnt:mainContent] > jnt:content, mix:title, jmix:editorialContent
  - body (string, richtext) i18n
  - image (weakreference, file[mime='image/*']) i18n
  - align (string,choicelist[resourceBundle]) = left indexed=no < left,right,default

@@ -10,6 +10,6 @@
  - conversionSucceeded (boolean)
  - conversionFailedMessage (string)
 
-[jnt:documentConversion] > jnt:content, jmix:structuredContent
+[jnt:documentConversion] > jnt:content, jmix:editorialContent
  + convertedFiles (jnt:contentList)
  

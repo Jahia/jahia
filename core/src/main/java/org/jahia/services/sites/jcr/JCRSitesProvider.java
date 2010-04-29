@@ -179,7 +179,7 @@ public class JCRSitesProvider {
             jcrTemplate.doExecuteWithSystemSession(new JCRCallback() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:virtualsitesFolder]", Query.JCR_SQL2);
+                        Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:virtualsitesFolder]", Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         NodeIterator ni = qr.getNodes();
                         try {
@@ -194,7 +194,7 @@ public class JCRSitesProvider {
                                 try {
                                     f.getNode(siteKey);
                                 } catch (PathNotFoundException e) {
-                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
+//                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
 
                                     JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + templatePackage);
                                     defaultSite.copy(session.getNode("/sites"), siteKey, false);

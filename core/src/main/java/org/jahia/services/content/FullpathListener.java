@@ -103,7 +103,7 @@ public class FullpathListener extends DefaultEventListener {
                 }
             }
         }
-        if (node.isNodeType(JAHIAMIX_HIERARCHYNODE)) {
+        if (node.isNodeType(JAHIAMIX_NODENAMEINFO)) {
             if (!node.isCheckedOut()) {
                 node.checkout();
             }

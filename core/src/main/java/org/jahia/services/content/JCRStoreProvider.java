@@ -648,7 +648,7 @@ public class JCRStoreProvider {
         JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
         try {
             if (session.getWorkspace().getQueryManager() != null) {
-            Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jmix:usersFolder]", Query.JCR_SQL2);
+            Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:usersFolder]", Query.JCR_SQL2);
             QueryResult qr = q.execute();
             NodeIterator ni = qr.getNodes();
             try {

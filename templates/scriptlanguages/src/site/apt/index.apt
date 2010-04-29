@@ -23,7 +23,7 @@ Jahia Script Languages Examples
  In definitions.cnd :
 
 ----------------------------------------
-[jnt:javascriptNode] > jnt:content, mix:title, jmix:structuredContent
+[jnt:javascriptNode] > jnt:content, mix:title, jmix:editorialContent
 - javascriptText (string) i18n
 ----------------------------------------
 

@@ -138,24 +138,20 @@ public class Constants {
 
     public static final String JAHIAMIX_CATEGORIZED = "jmix:categorized";
     public static final String JAHIAMIX_LASTPUBLISHED = "jmix:lastPublished";
-    public static final String JAHIAMIX_HIERARCHYNODE = "jmix:hierarchyNode";
+    public static final String JAHIAMIX_NODENAMEINFO = "jmix:nodenameInfo";
     public static final String JAHIAMIX_SHAREABLE = "jmix:shareable";
 
     public final static String JAHIAMIX_IMAGE = "jmix:image" ;
 
-    public static final String JAHIAMIX_EXTENSION = "jmix:extension";
-
-    public static final String JAHIAMIX_HIERARCHY = "jmix:hierarchyNode";
-    
     public static final String JAHIAMIX_TAGGED = "jmix:tagged";
     
-    public static final String JAHIAMIX_VIRTUALSITES_FOLDER = "jmix:virtualsitesFolder";    
+    public static final String JAHIANT_VIRTUALSITES_FOLDER = "jnt:virtualsitesFolder";    
     
     public static final String JAHIANT_FOLDER = "jnt:folder";
     public static final String JAHIANT_FILE = "jnt:file";
     public static final String JAHIANT_RESOURCE = "jnt:resource";
     public static final String JAHIANT_SYMLINK = "jnt:symLink";
-    public static final String JAHIANT_SYSTEMFOLDER = "jnt:systemfolder";
+    public static final String JAHIANT_SYSTEMFOLDER = "jnt:systemNode";
     public static final String JAHIANT_VIRTUALSITE = "jnt:virtualsite";
     public static final String JAHIANT_GOOGLEANALYTICS = "jnt:googleanalytics";
     public static final String JAHIANT_SYSTEM = "jnt:system";
@@ -166,9 +162,7 @@ public class Constants {
 
     public static final String JAHIANT_JAHIACONTENT = "jnt:jahiacontent";
     public static final String JAHIANT_PAGE = "jnt:page";
-    public static final String JAHIANT_CONTAINER = "jnt:container";
     public static final String JAHIANT_CONTENTLIST = "jnt:contentList";
-    public static final String JAHIANT_CONTAINERLIST = "jnt:containerList";
     public static final String JAHIANT_PAGE_LINK = "jmix:link";
     public static final String JAHIANT_INTERNAL_PAGE_LINK = "jnt:nodeLink";
     public static final String JAHIANT_EXTERNAL_PAGE_LINK = "jnt:externalLink";

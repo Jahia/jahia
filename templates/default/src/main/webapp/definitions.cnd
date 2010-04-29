@@ -9,15 +9,15 @@
 
 [jmix:sendAsNewsletter] mixin
 
-[jmix:userFilterable] > jmix:option, jmix:listMixin mixin
+[jmix:userFilterable] mixin
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
  - secondField (string, choicelist[sortableFieldnames]) indexed=no
  - thirdField (string, choicelist[sortableFieldnames]) indexed=no
 
-[jmix:pager] > jmix:layout, jmix:listMixin mixin
+[jmix:pager] mixin
  - pageSize (long) = 10 autocreated
 
-[jmix:orderedList] > jmix:contentItem, jmix:listMixin mixin
+[jmix:orderedList] mixin
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
  - firstDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
  - secondField (string, choicelist[sortableFieldnames]) indexed=no
@@ -25,10 +25,10 @@
  - thirdField (string, choicelist[sortableFieldnames]) indexed=no
  - thirdDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
 
-[jnt:fileList] > jnt:content, jmix:structuredContent
+[jnt:fileList] > jnt:content, jmix:editorialContent
  - folder (weakreference, file[folder])
 
-[jnt:frame] > jnt:content, mix:title, jmix:structuredContent
+[jnt:frame] > jnt:content, mix:title, jmix:editorialContent
  - source (string) indexed=no
  - name (string) indexed=no
  - width (long) indexed=no
@@ -39,7 +39,7 @@
  - scrolling (string, choicelist[resourceBundle]) indexed=no < 'yes','no','auto'
  - alt (string) i18n indexed=no
 
-[jnt:video] > jnt:content, mix:title, jmix:structuredContent
+[jnt:video] > jnt:content, mix:title, jmix:editorialContent
  - name (string)
  - source (weakreference, file)
  - width (long) = '0'
@@ -55,7 +55,7 @@
  - displaysize (long) = '0' analyzer='keyword' nofulltext
  - loop (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true','false'
 
-[jnt:flash] > jnt:content, mix:title, jmix:structuredContent
+[jnt:flash] > jnt:content, mix:title, jmix:editorialContent
  - flashSource (weakreference, file)
  - width (string) analyzer='keyword' nofulltext
  - height (string) analyzer='keyword' nofulltext
@@ -75,34 +75,34 @@
  - base (string) indexed=no
  - flashvars (string) indexed=no
 
-[jnt:text] > jnt:content, jmix:structuredContent
+[jnt:text] > jnt:content, jmix:editorialContent
  - text (string) i18n
 
-[jnt:bigText] > jnt:content, jmix:structuredContent
+[jnt:bigText] > jnt:content, jmix:editorialContent
  - text (string, richtext) i18n
 
-[jnt:mainContent] > jnt:content, mix:title, jmix:structuredContent
+[jnt:mainContent] > jnt:content, mix:title, jmix:editorialContent
  - body (string, richtext) i18n
  - image (weakreference, file[mime='image/*']) i18n
  - align (string,choicelist[resourceBundle]) = left indexed=no < left,right,default
 
-[jnt:pageTagging] > jnt:content, mix:title, jmix:interactiveContent
+[jnt:pageTagging] > jnt:content, mix:title, jmix:siteComponentContent
 
-[jnt:tagCloud] > jnt:content, mix:title, jmix:interactiveContent
+[jnt:tagCloud] > jnt:content, mix:title, jmix:siteComponentContent
  - j:usageThreshold (long) = 1
 
-[jnt:loginForm] > jnt:content, mix:title, jmix:interactiveContent
+[jnt:loginForm] > jnt:content, mix:title, jmix:siteComponentContent
  - j:displayRememberMeButton (boolean)
  - j:displayLoginButton (boolean)
 
-[jnt:shortcuts] > jnt:content, jmix:interactiveContent
+[jnt:shortcuts] > jnt:content, jmix:siteComponentContent
 
-[jnt:teaser] > jnt:content, mix:title, jmix:structuredContent
+[jnt:teaser] > jnt:content, mix:title, jmix:editorialContent
  - abstract (string, text[multiline]) i18n
  - image (weakreference, file[mime='image/*'])
  page link (page[type="external,internal"])
 
-[jnt:banner] > jnt:content, mix:title, jmix:structuredContent
+[jnt:banner] > jnt:content, mix:title, jmix:editorialContent
  - background (weakreference, file[mime='image/*']) i18n
  - cast (string, richtext) i18n
  - positionTop (long) indexed=no

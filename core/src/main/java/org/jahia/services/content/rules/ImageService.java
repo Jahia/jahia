@@ -154,7 +154,7 @@ public class ImageService {
         } else {
             File f = getThumbFile(imageNode, size,square, drools);
 
-            NodeWrapper thumbNode = new NodeWrapper(imageNode, name, "jnt:extraResource", drools);
+            NodeWrapper thumbNode = new NodeWrapper(imageNode, name, "jnt:resource", drools);
             if (thumbNode.getNode() != null) {
                 drools.insert(thumbNode);
                 drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_DATA, f, drools, false));

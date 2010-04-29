@@ -121,7 +121,7 @@ public class ZipHelper {
     private void zipFileEntry(final JCRNodeWrapper file, final ZipOutputStream zout, final byte[] buffer, String rootDir) throws IOException {
         ZipEntry anEntry;
         String relativePath = file.getPath().replace(rootDir, "");
-        if (file.isCollection()) {
+        if (!file.isFile()) {
             anEntry = new org.jahia.utils.zip.ZipEntry(relativePath + "/");
             zout.putNextEntry(anEntry);
             List l = file.getChildren();

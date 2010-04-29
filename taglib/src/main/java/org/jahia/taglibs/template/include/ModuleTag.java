@@ -438,7 +438,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected String getModuleType() throws RepositoryException {
         String type = "existingNode";
-        if (node.isNodeType("jmix:containerContent")) {
+        if (node.isNodeType("jmix:listContent")) {
             type = "list";
         }
         return type;

@@ -1,4 +1,4 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jmix:facets] > jmix:option, jmix:listMixin mixin
+[jmix:facets] mixin
 - facets (string, choicelist[choicelistfacets]) multiple

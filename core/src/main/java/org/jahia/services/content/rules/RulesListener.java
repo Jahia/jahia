@@ -290,7 +290,6 @@ public class RulesListener extends DefaultEventListener {
                                 try {
                                     if (!event.getPath().startsWith("/jcr:system/")) {
                                         if (event.getType() == Event.NODE_ADDED) {
-                                            System.out.println("-add-->"+event.getPath());
                                             Node n = (Node) s.getItem(event.getPath());
                                             if (n.isNodeType("jmix:observable")) {
                                                 final String identifier = n.getIdentifier();

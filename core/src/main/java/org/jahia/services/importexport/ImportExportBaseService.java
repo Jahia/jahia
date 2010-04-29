@@ -280,8 +280,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         DataWriter dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
         exportSitePermissions(dw, processingContext.getSite());
         dw.flush();
-        Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>(jcrStoreService.getSiteFolders(processingContext.getSite().getSiteKey()));
-        exportNodes((JCRNodeWrapper) jcrStoreService.getSessionFactory().getCurrentUserSession().getRootNode(), jcrStoreService.getSessionFactory().getCurrentUserSession(), files, zout, new HashSet<String>(),
+        Set<JCRNodeWrapper> files = Collections.singleton(jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/sites/"+processingContext.getSite().getSiteKey()));
+        exportNodes(jcrStoreService.getSessionFactory().getCurrentUserSession().getRootNode(), jcrStoreService.getSessionFactory().getCurrentUserSession(), files, zout, new HashSet<String>(),
                     params);
         zout.finish();
     }
@@ -531,12 +531,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } else {
             // No repository descriptor - prepare to import files directly
             pathMapping = session.getPathMapping();
-            List<JCRNodeWrapper> sitesFolder = jcrStoreService.getSiteFolders(site.getSiteKey());
-            if (!sitesFolder.isEmpty()) {
-                pathMapping.put("/", sitesFolder.iterator().next().getPath() + "/");
-            } else {
-                pathMapping.put("/", "/");
-            }
+            pathMapping.put("/", "/sites/"+site.getSiteKey()+"/");
         }
 
         NodeTypeRegistry reg = null;
@@ -597,7 +592,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         for (Map.Entry<String, Long> entry : sizes.entrySet()) {
             if (entry.getKey().startsWith("export_")) {
                 // Old import
-                JCRNodeWrapper siteFolder = jcrStoreService.getSiteFolders(site.getSiteKey()).get(0);
+                JCRNodeWrapper siteFolder = jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/sites/" + site.getSiteKey());
 
                 zis = new NoCloseZipInputStream(new FileInputStream(file));
 

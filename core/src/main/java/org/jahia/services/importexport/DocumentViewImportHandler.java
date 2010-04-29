@@ -48,6 +48,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -149,20 +150,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
             if (Constants.JAHIANT_VIRTUALSITE.equals(pt) && siteKey != null) {
                 decodedQName = siteKey;
                 String newpath;
-                final List<JCRNodeWrapper> nodeWrappers = JCRStoreService.getInstance().getSiteFolders(siteKey);
-                if (nodeWrappers != null && !nodeWrappers.isEmpty()) {
-                    JCRNodeWrapper siteFolder = nodeWrappers.get(0);
-                    newpath = siteFolder.getPath();
-                    pathMapping.put(path + "/", newpath + "/");
-                    path = newpath;
-                } else {
-                    // Workaround for auto import at least test that the path exist
-                    try {
-                        session.getNode(path);
-                    } catch (RepositoryException e) {
-                        logger.error("Error during auto import the site " + path + " does not exist", e);
-                    }
-                }
+                pathMapping.put(path + "/", "/sites/"+ siteKey + "/");
+                path = "/sites/"+ siteKey;
             }
             if ("jnt:importDropBox".equals(pt)) {
                 ignorePath = path;
@@ -285,7 +274,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
         if (m != null) {
             StringTokenizer st = new StringTokenizer(m, " ,");
             while (st.hasMoreTokens()) {
-                child.addMixin(st.nextToken());
+                try {
+                    child.addMixin(st.nextToken());
+                } catch (NoSuchNodeTypeException e) {
+                    logger.warn("Cannot add node type "+e.getMessage());
+                }
             }
         }
     }

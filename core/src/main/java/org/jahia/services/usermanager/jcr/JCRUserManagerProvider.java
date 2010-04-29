@@ -117,7 +117,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 public JCRUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
                     JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode( "/users");
 
-                    jcrSessionWrapper.getWorkspace().getVersionManager().checkout(parentNodeWrapper.getPath());
+                    parentNodeWrapper.checkout();
                     Node userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
                         InputStream is = null;
@@ -154,7 +154,6 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                         userNode.setProperty(key, (String) entry.getValue());
                     }
                     jcrSessionWrapper.save();
-                    jcrSessionWrapper.getWorkspace().getVersionManager().checkin(parentNodeWrapper.getPath());
                     publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                             true, true);
                     return new JCRUser(userNode.getIdentifier(), jcrTemplate);

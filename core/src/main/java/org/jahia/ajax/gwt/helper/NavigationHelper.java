@@ -301,13 +301,11 @@ public class NavigationHelper {
                         userNodes.add(root);
                     }
                 } else if (key.equals(JCRClientUtils.MY_REPOSITORY)) {
-                    for (JCRNodeWrapper node : jcrService.getUserFolders(null, currentUserSession.getUser())) {
-                        GWTJahiaNode root = getNode(node.getPath() + "/files", currentUserSession);
-                        if (root != null) {
-                            root.setDisplayName(currentUserSession.getUser().getName());
-                            userNodes.add(root);
-                        }
-                        break; // one node should be enough
+                    JCRNodeWrapper node = jcrService.getUserFolder(currentUserSession.getUser());
+                    GWTJahiaNode root = getNode(node.getPath() + "/files", currentUserSession);
+                    if (root != null) {
+                        root.setDisplayName(currentUserSession.getUser().getName());
+                        userNodes.add(root);
                     }
                 } else if (key.equals(JCRClientUtils.USERS_REPOSITORY)) {
                     try {
@@ -344,13 +342,11 @@ public class NavigationHelper {
                         userNodes.add(root);
                     }
                 } else if (key.equals(JCRClientUtils.MY_MASHUP_REPOSITORY)) {
-                    for (JCRNodeWrapper node : jcrService.getUserFolders(null, currentUserSession.getUser())) {
-                        GWTJahiaNode root = getNode(node.getPath() + "/mashups", currentUserSession);
-                        if (root != null) {
-                            root.setDisplayName(currentUserSession.getUser().getName());
-                            userNodes.add(root);
-                        }
-                        break; // one node should be enough
+                    JCRNodeWrapper node = jcrService.getUserFolder(currentUserSession.getUser());
+                    GWTJahiaNode root = getNode(node.getPath() + "/mashups", currentUserSession);
+                    if (root != null) {
+                        root.setDisplayName(currentUserSession.getUser().getName());
+                        userNodes.add(root);
                     }
                 } else if (key.equals(JCRClientUtils.SHARED_MASHUP_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/shared/mashups", currentUserSession);
@@ -485,15 +481,13 @@ public class NavigationHelper {
             logger.error(e.getMessage(), e);
         }
 
-        for (JCRNodeWrapper node : jcrService.getUserFolders(null, currentUserSession.getUser())) {
-            try {
-                root = getGWTJahiaNode(node.getNode(folderName));
-                root.setDisplayName(currentUserSession.getUser().getName());
-                userNodes.add(root);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-            break; // one node should be enough
+        try {
+            JCRNodeWrapper node = jcrService.getUserFolder(currentUserSession.getUser());
+            root = getGWTJahiaNode(node.getNode(folderName));
+            root.setDisplayName(currentUserSession.getUser().getName());
+            userNodes.add(root);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 

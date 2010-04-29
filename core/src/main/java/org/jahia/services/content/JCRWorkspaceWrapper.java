@@ -185,7 +185,8 @@ public class JCRWorkspaceWrapper implements Workspace {
                         String sourceParentPath = StringUtils.substringBeforeLast(sourcePath,"/");
                         if (parentNode.getPath().equals(sourceParentPath)) {
                             // rename case
-                            JCRNodeWrapper userFolder = session.getNode(JCRStoreService.getInstance().getUserFolders(null, session.getUser()).iterator().next().getPath());
+                            JCRNodeWrapper userFolder = session.getNode(JCRStoreService.getInstance().getUserFolder(
+                                    session.getUser()).getPath());
                             if (!userFolder.hasNode("tmp")) {
                                 if (!userFolder.isCheckedOut()) {
                                     session.checkout(userFolder);

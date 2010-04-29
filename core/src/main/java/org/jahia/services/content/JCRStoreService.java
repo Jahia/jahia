@@ -37,9 +37,7 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.interceptor.PropertyInterceptor;
 import org.jahia.services.content.interceptor.InterceptorChain;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.xml.sax.ContentHandler;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -158,16 +156,8 @@ public class JCRStoreService extends JahiaService  {
         provider.deployExternalUser(username, providerName);
     }
 
-    public List<JCRNodeWrapper> getUserFolders(String site, JahiaUser user) {
-        List<JCRNodeWrapper> r = new ArrayList<JCRNodeWrapper>();
-        for (JCRStoreProvider storeProvider : sessionFactory.getMountPoints().values()) {
-            try {
-                r.addAll(storeProvider.getUserFolders(site, user));
-            } catch (RepositoryException e) {
-                logger.warn("Error when querying repository", e);
-            }
-        }
-        return r;
+    public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
+        return sessionFactory.getMountPoints().get("/").getUserFolder(user);
     }
 
     public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) {
@@ -175,18 +165,6 @@ public class JCRStoreService extends JahiaService  {
         for (JCRStoreProvider storeProvider : sessionFactory.getMountPoints().values()) {
             try {
                 r.addAll(storeProvider.getImportDropBoxes(site, user));
-            } catch (RepositoryException e) {
-                logger.warn("Error when querying repository", e);
-            }
-        }
-        return r;
-    }
-
-    public List<JCRNodeWrapper> getSiteFolders(String site) {
-        List<JCRNodeWrapper> r = new ArrayList<JCRNodeWrapper>();
-        for (JCRStoreProvider storeProvider : sessionFactory.getMountPoints().values()) {
-            try {
-                r.addAll(storeProvider.getSiteFolders(site));
             } catch (RepositoryException e) {
                 logger.warn("Error when querying repository", e);
             }

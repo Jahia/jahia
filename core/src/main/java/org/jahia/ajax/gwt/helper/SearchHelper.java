@@ -156,12 +156,14 @@ public class SearchHelper {
                 throw new GWTJahiaServiceException("Could not store query with null name");
             }
             Query q = createQuery(searchString, currentUserSession);
-            List<JCRNodeWrapper> users = jcrService.getUserFolders(site.getSiteKey(), currentUserSession.getUser());
-            if (users.isEmpty()) {
+            JCRNodeWrapper user;
+            try {
+                user = jcrService.getUserFolder(currentUserSession.getUser());
+            } catch (Exception e) {
                 logger.error("no user folder for site " + site.getSiteKey() + " and user " + currentUserSession.getUser().getUsername());
                 throw new GWTJahiaServiceException("No user folder to store query");
             }
-            JCRNodeWrapper user = users.iterator().next();
+
             JCRNodeWrapper queryStore;
             if (!user.hasNode("savedSearch")) {
                 currentUserSession.checkout(user);
@@ -237,10 +239,9 @@ public class SearchHelper {
 
             JCRNodeWrapper parent = null;
             if (path == null) {
-                List<JCRNodeWrapper> userFolders = jcrService.getUserFolders(null, session.getUser());
-                if (userFolders != null && !userFolders.isEmpty()) {
-                    parent = userFolders.get(0);
-                } else {
+                try {
+                    parent = jcrService.getUserFolder(session.getUser());
+                } catch (Exception e) {
                     logger.error("there is no defined user floder.");
                 }
             } else {

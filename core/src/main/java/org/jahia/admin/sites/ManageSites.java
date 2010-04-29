@@ -1718,18 +1718,6 @@ public class ManageSites extends AbstractAdministrationModule {
         //remove site definition
         sMgr.removeSite(site);
 
-        if (deleteFiles) {
-            List<JCRNodeWrapper> list = JCRStoreService.getInstance().getSiteFolders(site.getSiteKey());
-            for (JCRNodeWrapper jcrNodeWrapper : list) {
-                try {
-                    jcrNodeWrapper.remove();
-                    jcrNodeWrapper.saveSession();
-                } catch (RepositoryException e) {
-                    logger.error("Error removing site folders for site '" + site.getTitle() + " (" + site.getSiteKey() +
-                            ")'. Cause: " + e.getMessage(), e);
-                }
-            }
-        }
     }
 
 

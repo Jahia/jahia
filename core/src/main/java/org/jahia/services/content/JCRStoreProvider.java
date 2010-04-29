@@ -703,19 +703,15 @@ public class JCRStoreProvider {
         }
     }
 
-    public List<JCRNodeWrapper> getUserFolders(String site, JahiaUser user) throws RepositoryException {
+    public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(user.getUsername());
         String sql = "select * from [jnt:user] as user where user.[j:nodename]= '"+username+"'";
 
-        if (site != null) {
-            site = ISO9075.encode(site);
-            sql = "select user from [jnt:user] as user right outer join [jnt:virtualsite] as site on isdescendantnode(user,site) where user.[j:nodename]= '"+username+ "' and site:[j:nodename] = '"+site+"'";
-        }
         List<JCRNodeWrapper> results = queryFolders(sessionFactory.getCurrentUserSession(), sql);
-        if (site != null) {
-            results.addAll(getUserFolders(null, user));
+        if (results.isEmpty()) {
+            throw new ItemNotFoundException();
         }
-        return results;
+        return results.get(0);
     }
 
     public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) throws RepositoryException {
@@ -734,11 +730,15 @@ public class JCRStoreProvider {
         return results;
     }
 
-    public List<JCRNodeWrapper> getSiteFolders(String site) throws RepositoryException {
+    public JCRNodeWrapper getSiteFolder(String site) throws RepositoryException {
         site = ISO9075.encode(site);
         String xp = "select * from [jnt:virtualsite] as site where site.[j:nodename] = '"+site+"'";
 
-        return queryFolders(sessionFactory.getCurrentUserSession(), xp);
+        final List<JCRNodeWrapper> list = queryFolders(sessionFactory.getCurrentUserSession(), xp);
+        if (list.isEmpty()) {
+            throw new ItemNotFoundException();
+        }
+        return list.get(0);
     }
 
     private List<JCRNodeWrapper> queryFolders(JCRSessionWrapper session, String sql) throws RepositoryException {

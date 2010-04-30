@@ -595,6 +595,8 @@ public class AbstractJahiaTag extends BodyTagSupport {
         addGwtDictionaryMessage("ece_tags", getJahiaInternalResourceValue("org.jahia.jcr.edit.tags.tab"));
         addGwtDictionaryMessage("ece_publication", getJahiaInternalResourceValue("label.publication"));
         addGwtDictionaryMessage("label_workflowPerNodeType", getJahiaInternalResourceValue("label.workflowPerNodeType"));
+        addGwtDictionaryMessage("label_nodeType", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.nameCard.nodeType"));
+        addGwtDictionaryMessage("label_add", getJahiaInternalResourceValue("label.add"));
 
     }
 

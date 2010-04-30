@@ -64,12 +64,12 @@ public class WorkflowContentTypePanel extends ContentPanel {
         columnConfigList.add(column);
 
         // path
-        column = new ColumnConfig("path", "path", 150);
+        column = new ColumnConfig("path", Messages.get("fm_info_path", "Path"), 150);
         column.setEditor(new CellEditor(createTextField()));
         columnConfigList.add(column);
 
         // contentType
-        column = new ColumnConfig("nodeType", "nodeType", 150);
+        column = new ColumnConfig("nodeType", Messages.get("label_nodeType", "Node Type"), 150);
         column.setEditor(new CellEditor(createContentNodeTypeField()));
         columnConfigList.add(column);
 

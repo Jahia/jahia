@@ -306,7 +306,52 @@ public class WorkflowServiceTest {
     }
 
     @Test
-    public void testFullProcess1StepPublicationAccept() throws Exception {
+    public void test2StepPublicationAccept() throws Exception {
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
+        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
+        WorkflowDefinition workflow = null;
+        for (WorkflowDefinition workflowDefinition : workflowList) {
+            if ("2 Step Publication Process".equals(workflowDefinition.getName())) {
+                workflow = workflowDefinition;
+                break;
+            }
+        }
+        assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
+        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,
+                                                      new HashMap<String, Object>());
+        assertNotNull("The startup of a process should have return an id", processId);
+        List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
+        assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
+        Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
+        assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
+        WorkflowAction action = actionSet.iterator().next();
+        assertTrue(action instanceof WorkflowTask);
+        WorkflowTask task = (WorkflowTask) action;
+        service.assignTask(task.getId(), PROVIDER, johndoe);
+        List<WorkflowTask> forUser = service.getTasksForUser(johndoe);
+        assertTrue(forUser.size() > 0);
+        WorkflowTask workflowTask = forUser.get(0);
+        service.completeTask(workflowTask.getId(), PROVIDER, "accept", emptyMap);
+        assertTrue(service.getTasksForUser(johndoe).size() < forUser.size());
+        
+        activeWorkflows = service.getActiveWorkflows(stageNode);
+        actionSet = activeWorkflows.get(0).getAvailableActions();
+        assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
+        action = actionSet.iterator().next();
+        assertTrue(action instanceof WorkflowTask);
+        task = (WorkflowTask) action;
+        service.assignTask(task.getId(), PROVIDER, johndoe);
+        forUser = service.getTasksForUser(johndoe);
+        assertTrue(forUser.size() > 0);
+        workflowTask = forUser.get(0);
+        service.completeTask(workflowTask.getId(), PROVIDER, "publish", emptyMap);
+        assertTrue(service.getTasksForUser(johndoe).size() < forUser.size());
+
+        assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode).isEmpty());
+    }
+
+    @Test
+    public void test1StepPublicationAccept() throws Exception {
         final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
@@ -337,7 +382,7 @@ public class WorkflowServiceTest {
     }
 
     @Test
-    public void testFullProcess1StepPublicationReject() throws Exception {
+    public void test1StepPublicationReject() throws Exception {
         final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
@@ -369,10 +414,21 @@ public class WorkflowServiceTest {
 
     @Test
     public void testHistory() throws Exception {
-        testFullProcess1StepPublicationAccept();
-        testFullProcess1StepPublicationReject();
+        test1StepPublicationAccept();
+        test1StepPublicationReject();
         List<HistoryWorkflow> history = service.getHistoryWorkflows(stageNode);
         assertEquals("Node should have two history records", 2, history.size());
+    }
+
+    @Test
+    public void testHistoryTasks() throws Exception {
+        test2StepPublicationAccept();
+        List<HistoryWorkflow> history = service.getHistoryWorkflows(stageNode);
+        assertEquals("Node should have one history record", 1, history.size());
+        HistoryWorkflow historyItem = history.get(0);
+        List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getWorkflowId(), historyItem
+                .getProvider());
+        assertEquals("The workflow process should have two history task records", 2, tasks.size());
     }
 
 }

@@ -35,6 +35,7 @@ package org.jahia.services.workflow;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -147,7 +148,7 @@ public class WorkflowService {
                         String workflowDefinitionKey = StringUtils.substringAfter(value.getString(), ":");
                         String providerKey = StringUtils.substringBefore(value.getString(), ":");
 
-                        WorkflowDefinition definition = providers.get(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey);
+                        WorkflowDefinition definition = lookupProvider(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey);
                         if (user == null || user.isAdminMember(0)) {
                             workflowsByProvider.add(definition);
                         } else {
@@ -260,7 +261,7 @@ public class WorkflowService {
      * @return a set of actions per workflows per provider.
      */
     public Set<WorkflowAction> getAvailableActions(String processId, String provider) {
-        return providers.get(provider).getAvailableActions(processId);
+        return lookupProvider(provider).getAvailableActions(processId);
     }
 
     /**
@@ -272,7 +273,7 @@ public class WorkflowService {
      * @param args      List of args for the process
      */
     public void signalProcess(String processId, String transitionName, String provider, Map<String, Object> args) {
-        providers.get(provider).signalProcess(processId, transitionName, args);
+        lookupProvider(provider).signalProcess(processId, transitionName, args);
     }
 
     /**
@@ -284,7 +285,7 @@ public class WorkflowService {
      * @param args      List of args for the process
      */
     public void signalProcess(String processId, String transitionName, String signalName, String provider, Map<String, Object> args) {
-        providers.get(provider).signalProcess(processId, transitionName, signalName, args);
+        lookupProvider(provider).signalProcess(processId, transitionName, signalName, args);
     }
 
     /**
@@ -299,8 +300,8 @@ public class WorkflowService {
         args.put("nodeId", stageNode.getIdentifier());
         args.put("workspace", stageNode.getSession().getWorkspace().getName());
         args.put("locale", stageNode.getSession().getLocale());
-        args.put("workflow", providers.get(provider).getWorkflowDefinitionByKey(processKey));
-        final String processId = providers.get(provider).startProcess(processKey, args);
+        args.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey));
+        final String processId = lookupProvider(provider).startProcess(processKey, args);
         return processId;
     }
 
@@ -343,20 +344,22 @@ public class WorkflowService {
     }
 
     public void assignTask(String taskId, String provider, JahiaUser user) {
-        logger.debug("Assigning user " + user + " to task " + taskId);
-        providers.get(provider).assignTask(taskId, user);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Assigning user " + user + " to task " + taskId);
+        }
+        lookupProvider(provider).assignTask(taskId, user);
     }
 
     public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {
-        providers.get(provider).completeTask(taskId, outcome, args);
+        lookupProvider(provider).completeTask(taskId, outcome, args);
     }
 
     public void addParticipatingGroup(String taskId, String provider, JahiaGroup group, String role) {
-        providers.get(provider).addParticipatingGroup(taskId, group, role);
+        lookupProvider(provider).addParticipatingGroup(taskId, group, role);
     }
 
     public void deleteTask(String taskId, String provider, String reason) {
-        providers.get(provider).deleteTask(taskId, reason);
+        lookupProvider(provider).deleteTask(taskId, reason);
     }
 
     public void addWorkflowRule(final String key, final String path, final String nodeTypes, final Collection<WorkflowDefinition> workflows) throws RepositoryException{
@@ -384,7 +387,7 @@ public class WorkflowService {
                 for (WorkflowDefinition workflow : workflows) {
                     List<String> roles = new ArrayList<String>();
                     roles.add(START_ROLE);
-                    roles.addAll(providers.get(workflow.getProvider()).getConfigurableRoles(workflow.getKey()));
+                    roles.addAll(lookupProvider(workflow.getProvider()).getConfigurableRoles(workflow.getKey()));
                     for (String role : roles) {
                         String permissionKey = getPermissionKey(key, workflow, role);
                         // ensure the permission is there
@@ -428,11 +431,11 @@ public class WorkflowService {
     }
 
     public void addCommentToTask(String taskId, String provider, String comment) {
-        providers.get(provider).addComment(taskId,comment);
+        lookupProvider(provider).addComment(taskId,comment);
     }
 
     public WorkflowTask getWorkflowTask(String taskId, String provider) {
-        return providers.get(provider).getWorkflowTask(taskId);
+        return lookupProvider(provider).getWorkflowTask(taskId);
     }
 
     /**
@@ -473,4 +476,24 @@ public class WorkflowService {
         return history;
     }
 
+    /**
+     * Returns a list of history records for workflow tasks.
+     * This method also returns not completed tasks.
+     * 
+     * @param workflowProcessId the process instance ID
+     * @param providerKey the workflow provider key
+     * @return a list of history records for workflow tasks
+     */
+    public List<HistoryWorkflowTask> getHistoryWorkflowTasks(String workflowProcessId, String providerKey) {
+        return lookupProvider(providerKey).getHistoryWorkflowTasks(workflowProcessId);
+    }
+
+    protected WorkflowProvider lookupProvider(String key) {
+        WorkflowProvider provider = providers.get(key);
+        if (provider == null) {
+            throw new JahiaRuntimeException("Unknown workflow provider with the key '" + key + "'");
+        }
+        
+        return provider;
+    }
 }

@@ -90,4 +90,12 @@ public interface WorkflowProvider {
      */
     List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds);
 
+    /**
+     * Returns a list of history records for workflow tasks.
+     * This method also returns not completed tasks.
+     * 
+     * @param processId the process instance ID
+     * @return a list of history records for workflow tasks
+     */
+    List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId);
 }

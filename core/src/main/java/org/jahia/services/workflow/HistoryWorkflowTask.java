@@ -35,81 +35,96 @@ package org.jahia.services.workflow;
 import java.util.Date;
 
 /**
- * History record for a workflow process instance.
+ * Represents a single history record for the workflow process instance activity
+ * task.
  * 
  * @author Sergiy Shyrkov
  */
-public class HistoryWorkflow extends HistoryWorkflowBase {
+public class HistoryWorkflowTask extends HistoryWorkflowAction {
 
-    private String definitionId;
+    private String assignee;
 
-    private String endActivityName;
+    private boolean completed;
 
-    private boolean finished;
+    private String outcome;
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param id workflow instance ID
+     * @param workflowId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
      */
-    public HistoryWorkflow(String id, String name, String provider) {
-        super(id, name, provider);
+    public HistoryWorkflowTask(String workflowId, String name, String provider) {
+        super(workflowId, name, provider);
     }
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param id workflow instance ID
+     * @param workflowId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
      * @param startTime the start point of the process instance
      * @param endTime the end point of the process instance or <code>null</code>
      *            if it is not completed yet
-     * @param endActivityName the name of the last activity
+     * @param outcome the task outcome
+     * @param asignee the key of the user, which executed the task
      */
-    public HistoryWorkflow(String id, String name, String provider, Date startTime, Date endTime, String endActivityName) {
-        super(id, name, provider, startTime, endTime);
-        this.endActivityName = endActivityName;
+    public HistoryWorkflowTask(String workflowId, String name, String provider, Date startTime, Date endTime,
+            String outcome, String asignee) {
+        super(workflowId, name, provider, startTime, endTime);
+        this.outcome = outcome;
+        this.assignee = asignee;
     }
 
     /**
-     * @return the definitionId
+     * @return the assignee
      */
-    public String getDefinitionId() {
-        return definitionId;
+    public String getAssignee() {
+        return assignee;
     }
 
     /**
-     * Returns the name of the end state that was reached when the process was
-     * ended.
+     * @return the outcome
      */
-    public String getEndActivityName() {
-        return endActivityName;
+    public String getOutcome() {
+        return outcome;
     }
 
     /**
-     * Returns <code>true</code> if this process instance is already completed.
-     * 
-     * @return <code>true</code> if this process instance is already completed
+     * @return the completed
      */
-    public boolean isFinished() {
-        return finished;
+    public boolean isCompleted() {
+        return completed;
     }
 
     /**
-     * @param definitionId the definitionId to set
+     * @param assignee the assignee to set
      */
-    public void setDefinitionId(String definitionId) {
-        this.definitionId = definitionId;
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
     }
 
     /**
-     * @param endActivityName the endActivityName to set
+     * @param completed the completed to set
      */
-    public void setEndActivityName(String endActivityName) {
-        this.endActivityName = endActivityName;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
+    @Override
+    public void setEndTime(Date endTime) {
+        super.setEndTime(endTime);
+        if (endTime != null) {
+            completed = true;
+        }
+    }
+
+    /**
+     * @param outcome the outcome to set
+     */
+    public void setOutcome(String outcome) {
+        this.outcome = outcome;
+    }
 }

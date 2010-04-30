@@ -43,6 +43,7 @@ import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
 import org.jbpm.api.history.HistoryComment;
 import org.jbpm.api.history.HistoryProcessInstance;
+import org.jbpm.api.history.HistoryTask;
 import org.jbpm.api.task.Participation;
 import org.jbpm.api.task.Task;
 import org.jbpm.jpdl.internal.activity.TaskActivity;
@@ -424,6 +425,35 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(), jbpmHistoryItem.getKey(),
                     getKey(), jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(), jbpmHistoryItem
                             .getEndActivityName()));
+        }
+
+        return historyItems;
+    }
+
+    /**
+     * Returns a list of history records for workflow tasks. This method also
+     * returns not completed tasks.
+     * 
+     * @param processId the process instance ID
+     * @return a list of history records for workflow tasks
+     */
+    public List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId) {
+        List<HistoryWorkflowTask> historyItems = new LinkedList<HistoryWorkflowTask>();
+        List<HistoryTask> jbpmTasks = null;
+        try {
+            jbpmTasks = historyService.createHistoryTaskQuery().executionId(processId).list();
+        } catch (JbpmException e) {
+            logger.error("History task records for process instance with ID '" + processId
+                    + "' cannot be found. Cause: " + e.getMessage(), e);
+        }
+        if (jbpmTasks == null) {
+            return Collections.emptyList();
+        }
+
+        for (HistoryTask jbpmHistoryTask : jbpmTasks) {
+            historyItems.add(new HistoryWorkflowTask(jbpmHistoryTask.getExecutionId(), null, getKey(), jbpmHistoryTask
+                    .getCreateTime(), jbpmHistoryTask.getEndTime(), jbpmHistoryTask.getOutcome(), jbpmHistoryTask
+                    .getAssignee()));
         }
 
         return historyItems;

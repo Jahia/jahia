@@ -39,77 +39,102 @@ import java.util.Date;
  * 
  * @author Sergiy Shyrkov
  */
-public class HistoryWorkflow extends HistoryWorkflowBase {
+class HistoryWorkflowBase extends WorkflowBase {
 
-    private String definitionId;
+    private Long duration;
 
-    private String endActivityName;
+    private Date endTime;
 
-    private boolean finished;
+    private Date startTime;
+
+    private String workflowId;
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param id workflow instance ID
+     * @param workflowId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
      */
-    public HistoryWorkflow(String id, String name, String provider) {
-        super(id, name, provider);
+    public HistoryWorkflowBase(String workflowId, String name, String provider) {
+        super(name, provider);
+        this.workflowId = workflowId;
     }
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param id workflow instance ID
+     * @param workflowId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
      * @param startTime the start point of the process instance
      * @param endTime the end point of the process instance or <code>null</code>
      *            if it is not completed yet
-     * @param endActivityName the name of the last activity
      */
-    public HistoryWorkflow(String id, String name, String provider, Date startTime, Date endTime, String endActivityName) {
-        super(id, name, provider, startTime, endTime);
-        this.endActivityName = endActivityName;
+    public HistoryWorkflowBase(String workflowId, String name, String provider, Date startTime, Date endTime) {
+        super(name, provider);
+        this.workflowId = workflowId;
+        this.startTime = startTime;
+        setEndTime(endTime);
     }
 
     /**
-     * @return the definitionId
+     * duration of the process instance in milliseconds or null if the process
+     * instance has not yet ended
      */
-    public String getDefinitionId() {
-        return definitionId;
+    public Long getDuration() {
+        return duration;
     }
 
     /**
-     * Returns the name of the end state that was reached when the process was
-     * ended.
-     */
-    public String getEndActivityName() {
-        return endActivityName;
-    }
-
-    /**
-     * Returns <code>true</code> if this process instance is already completed.
+     * Returns the time when the process instance ended (only not null if the
+     * process instance already ended).
      * 
-     * @return <code>true</code> if this process instance is already completed
+     * @return the time when the process instance ended (only not null if the
+     *         process instance already ended)
      */
-    public boolean isFinished() {
-        return finished;
+    public Date getEndTime() {
+        return endTime;
     }
 
     /**
-     * @param definitionId the definitionId to set
+     * Returns the time when the process instance was started.
+     * 
+     * @return the time when the process instance was started
      */
-    public void setDefinitionId(String definitionId) {
-        this.definitionId = definitionId;
+    public Date getStartTime() {
+        return startTime;
     }
 
     /**
-     * @param endActivityName the endActivityName to set
+     * Returns an ID of the corresponding workflow process instance.
+     * 
+     * @return an ID of the corresponding workflow process instance
      */
-    public void setEndActivityName(String endActivityName) {
-        this.endActivityName = endActivityName;
+    public String getWorkflowId() {
+        return workflowId;
+    }
+
+    /**
+     * Sets the end time for the workflow process instance.
+     * 
+     * @param endTime the endTime to set
+     */
+    public void setEndTime(Date endTime) {
+        if (endTime == null) {
+            return;
+        }
+        this.endTime = endTime;
+        this.duration = endTime.getTime() - startTime.getTime();
+    }
+
+    /**
+     * Sets the start time for the workflow process instance.
+     * 
+     * @param startTime the startTime to set
+     */
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
 }

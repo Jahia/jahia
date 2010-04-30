@@ -129,4 +129,9 @@ public class GWTJahiaNodeType extends BaseModelData implements Serializable {
 
         return getName().equals(that.getName());
     }
+
+    @Override
+    public String toString() {
+        return getLabel();
+    }
 }

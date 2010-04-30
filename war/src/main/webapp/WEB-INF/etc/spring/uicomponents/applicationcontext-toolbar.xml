@@ -641,6 +641,7 @@
                 <ref bean="org.jahia.toolbar.item.TagManager"/>
                 <ref bean="org.jahia.toolbar.item.RemotePublication"/>
                 <ref bean="org.jahia.toolbar.item.SiteManager"/>
+                <ref bean="org.jahia.toolbar.item.WorflowManager"/>
                 <ref bean="org.jahia.toolbar.item.Pdisplay"/>
             </list>
         </property>
@@ -2257,6 +2258,16 @@
         <property name="titleKey" value="label.translate"/>
         <property name="minIconStyle" value="gwt-toolbar-icon-translate"/>
         <property name="mediumIconStyle" value="gwt-toolbar-icon-translate"/>
+
+    </bean>
+
+    <bean id="org.jahia.toolbar.item.WorflowManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowManagerActionItem"/>
+        </property>
+        <property name="titleKey" value="label.workflowmanager"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-workflowaction-min"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-workflowaction-normal"/>
 
     </bean>
 

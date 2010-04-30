@@ -277,12 +277,23 @@ public class ContentDefinitionHelper {
     }
 
     /**
+     * Get node type with workflow
+     * @return
+     */
+    public List<GWTJahiaNodeType> getNodeTypeyWithWorkflow() {
+        List<GWTJahiaNodeType> nodeTypesList = new ArrayList<GWTJahiaNodeType>();
+        NodeTypeRegistry registry = NodeTypeRegistry.getInstance();
+        NodeTypeIterator nodeTypes = registry.getAllNodeTypes();
+        return nodeTypesList;
+    }
+
+    /**
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type or that are allowed to be created in
      * the specified parent node (if the baseType parameter is null).
      *
-     * @param baseTypes  the node type name to find sub-types
-     * @param ctx        current processing context instance
+     * @param baseTypes the node type name to find sub-types
+     * @param ctx       current processing context instance
      * @param uiLocale
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type or that are allowed to be

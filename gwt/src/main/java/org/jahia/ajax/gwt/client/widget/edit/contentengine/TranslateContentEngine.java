@@ -75,16 +75,15 @@ public class TranslateContentEngine extends Window {
         panel.setCollapsible(false);
         panel.setHeaderVisible(false);
 
-        sourceLangPropertiesEditor = new LangPropertiesEditor(node, GWTJahiaItemDefinition.CONTENT,false);
-        sourceLangPropertiesEditor.setSize(650,750);
-        targetLangPropertiesEditor = new LangPropertiesEditor(node, GWTJahiaItemDefinition.CONTENT,true);
-        targetLangPropertiesEditor.setSize(650,750);
+        sourceLangPropertiesEditor = new LangPropertiesEditor(node, GWTJahiaItemDefinition.CONTENT, false);
+        sourceLangPropertiesEditor.setSize(650, 750);
+        targetLangPropertiesEditor = new LangPropertiesEditor(node, GWTJahiaItemDefinition.CONTENT, true);
+        targetLangPropertiesEditor.setSize(650, 750);
 
         panel.add(sourceLangPropertiesEditor, new RowData(1, 1, new Margins(4, 0, 4, 0)));
         panel.add(targetLangPropertiesEditor, new RowData(-1, 1, new Margins(4)));
 
         add(panel);
-
 
 
 /*
@@ -110,12 +109,12 @@ public class TranslateContentEngine extends Window {
         buttonsPanel.add(buttonBar);
 
         // copyrigths
-        Text copyright = new Text(Messages.getResource("fm_copyright"));
-        ButtonBar container = new ButtonBar();
-        container.setAlignment(Style.HorizontalAlignment.CENTER);
-        container.add(copyright);
-        buttonsPanel.add(container);
-        setBottomComponent(buttonsPanel);
+        //  Text copyright = new Text(Messages.getResource("fm_copyright"));
+        //   ButtonBar container = new ButtonBar();
+        //   container.setAlignment(Style.HorizontalAlignment.CENTER);
+        //   container.add(copyright);
+        //   buttonsPanel.add(container);
+           setBottomComponent(buttonsPanel);
 
         setFooter(true);
     }

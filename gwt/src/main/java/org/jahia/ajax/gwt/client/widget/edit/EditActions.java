@@ -24,6 +24,7 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.*;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowManagerEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,12 +127,22 @@ public class EditActions {
 
 
     /**
-     * Show transla engine
+     * Show translate engine
      * @param linker
      */
     public static void showTranslateEngine(Linker linker) {
         if (linker.getMainNode() != null) {
             new TranslateContentEngine(linker.getSelectedNode(), linker).show();
+        }
+    }
+
+    /**
+     *
+     * @param linker
+     */
+    public static void showWorkflowManager(Linker linker) {
+        if (linker.getMainNode() != null) {
+            new WorkflowManagerEngine(linker).show();
         }
     }
 

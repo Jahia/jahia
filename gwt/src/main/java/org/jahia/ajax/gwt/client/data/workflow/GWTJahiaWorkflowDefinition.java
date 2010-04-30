@@ -46,4 +46,14 @@ public class GWTJahiaWorkflowDefinition extends BaseModelData implements Seriali
     public void setFormResourceName(String formResourceName) {
         set("formResourceName", formResourceName);
     }
+    
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o!=null &&  (super.equals(o) || ((GWTJahiaWorkflowDefinition)o).getName().equals(getName()));  
+    }
 }

@@ -48,10 +48,7 @@ import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
+import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -95,7 +92,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException;
 
-    public PagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery search,int limit,int offset) throws GWTJahiaServiceException;
+    public PagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException;
 
@@ -107,7 +104,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public void saveSearch(String searchString, String path, String name) throws GWTJahiaServiceException;
 
-    public void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name)  throws GWTJahiaServiceException;
+    public void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name) throws GWTJahiaServiceException;
 
     public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException;
 
@@ -145,7 +142,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException;
 
-    void saveNode(GWTJahiaNode node,List<GWTJahiaNode> orderedChilden, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException;
+    void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChilden, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException;
 
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException;
 
@@ -195,7 +192,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException;
 
-    public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node,String workspace,int limit,int offset)  throws GWTJahiaServiceException ;    
+    public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, String workspace, int limit, int offset) throws GWTJahiaServiceException;
 
     public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException;
 
@@ -205,7 +202,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public String getNodeURL(String path, String locale, int mode) throws GWTJahiaServiceException;
 
-    public String getNodeURL(String path,String version,String workspace, String locale, int mode) throws GWTJahiaServiceException;
+    public String getNodeURL(String path, String version, String workspace, String locale, int mode) throws GWTJahiaServiceException;
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException;
 
@@ -245,6 +242,21 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public GWTJahiaPublicationInfo getPublicationInfo(String uuid, boolean includeReferences) throws GWTJahiaServiceException;
 
     /**
+     * Get all deployed workflow in the system
+     *
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public List<GWTJahiaWorkflowDefinition> getWorkflowDefinitions() throws GWTJahiaServiceException;
+
+
+    public void updateNodeTypeWorkflowRule(List<GWTJahiaWorflowNodeType> toAdd,List<GWTJahiaWorflowNodeType> toRemove) throws GWTJahiaServiceException;
+
+    public List<GWTJahiaWorflowNodeType> getNodeTypeWorkflowRule() throws GWTJahiaServiceException;
+
+    public GWTJahiaWorkflowNodeTypeConfig getWorkflowNodeTypeConfig() throws GWTJahiaServiceException;
+
+    /**
      * Get the publication status information for multiple pathes.
      *
      * @param uuids path to get publication info from
@@ -252,25 +264,27 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      */
     public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids) throws GWTJahiaServiceException;
 
-    public String getHighlighted(String original, String amendment)  throws GWTJahiaServiceException;
+    public String getHighlighted(String original, String amendment) throws GWTJahiaServiceException;
 
 
     public List<GWTJahiaLanguage> getSiteLanguages() throws GWTJahiaServiceException;
-    
+
     /**
      * Retrieves a list of URL mapping objects for current node and locale.
-     * @param node node to retrieve mapping for
+     *
+     * @param node   node to retrieve mapping for
      * @param locale current locale
      * @return a list of URL mapping objects for current node and locale
      * @throws GWTJahiaServiceException in case of an error
      */
     public List<GWTJahiaUrlMapping> getUrlMappings(GWTJahiaNode node, String locale) throws GWTJahiaServiceException;
-    
+
     /**
-     * Updates the URL mapping for the specified node. 
-     * @param node the node to be updated
+     * Updates the URL mapping for the specified node.
+     *
+     * @param node           the node to be updated
      * @param updatedLocales locales that were edited
-     * @param mappings URL mapping list to store
+     * @param mappings       URL mapping list to store
      * @throws GWTJahiaServiceException in case of an error
      */
     public void saveUrlMappings(GWTJahiaNode node, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings) throws GWTJahiaServiceException;
@@ -278,11 +292,12 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     /**
      * Get analytics data
+     *
      * @param query
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query)throws GWTJahiaServiceException;
+    public List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query) throws GWTJahiaServiceException;
 
     void synchro(Map<String, String> pathsToSyncronize) throws GWTJahiaServiceException;
 
@@ -314,7 +329,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
         }
 
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteUUID();
+            return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID();
         }
     }
 

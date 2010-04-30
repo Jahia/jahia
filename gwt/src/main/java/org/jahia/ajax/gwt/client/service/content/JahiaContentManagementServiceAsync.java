@@ -38,17 +38,13 @@ import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
-import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
+import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 
@@ -237,6 +233,28 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
     void getPublicationInfo(String uuid, boolean includeReferences, AsyncCallback<GWTJahiaPublicationInfo> async);
+
+    /**
+     * Get all deployed workflow in the system
+     * @param async
+     * @throws GWTJahiaServiceException
+     */
+    void getWorkflowDefinitions(AsyncCallback<List<GWTJahiaWorkflowDefinition>> async);
+
+
+    /**
+     * Update node type workflow rule
+     * @param async
+     */
+    void updateNodeTypeWorkflowRule(List<GWTJahiaWorflowNodeType> toAdd,List<GWTJahiaWorflowNodeType> toRemove, AsyncCallback async);
+
+    /**
+     * Get node type workflow
+     * @param async
+     */
+    void getNodeTypeWorkflowRule(AsyncCallback<List<GWTJahiaWorflowNodeType>> async);
+
+    void getWorkflowNodeTypeConfig(AsyncCallback<GWTJahiaWorkflowNodeTypeConfig> async);
 
     /**
      * Get the publication status information for a particular path.

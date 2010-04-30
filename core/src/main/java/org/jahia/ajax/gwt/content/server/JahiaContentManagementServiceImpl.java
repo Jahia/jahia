@@ -43,7 +43,6 @@ import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
-import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -491,8 +490,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         // save children orders
-        contentManager.updateChildren(node,orderedChildrenNode,retrieveCurrentSession());
-
+        contentManager.updateChildren(node, orderedChildrenNode, retrieveCurrentSession());
 
 
         // save shared properties
@@ -655,8 +653,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
-            logger.error("******** Source Path: "+sourcePath);
-            logger.error("******** Target Path: "+targetPath);           
+            logger.error("******** Source Path: " + sourcePath);
+            logger.error("******** Target Path: " + targetPath);
             contentManager.move(sourcePath, targetPath, retrieveCurrentSession());
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
@@ -898,6 +896,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowAction action) {
         return workflow.getTaskComments(action);
     }
+
     /**
      * Publish the specified path.
      *
@@ -930,7 +929,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         long l = System.currentTimeMillis();
         JCRSessionWrapper session = retrieveCurrentSession();
         publication.unpublish(path, Collections.singleton(session.getLocale().toString()), session.getUser());
-        System.out.println("-->" + (System.currentTimeMillis() - l));
+        logger.debug("-->" + (System.currentTimeMillis() - l));
     }
 
     /**
@@ -945,10 +944,65 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return publication.getPublicationInfo(uuid, Collections.singleton(session.getLocale().toString()), full, session);
     }
 
-
+    /**
+     * Get worflow info by path
+     *
+     * @param path
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     public GWTJahiaWorkflowInfo getWorkflowInfo(String path) throws GWTJahiaServiceException {
         return workflow.getWorkflowInfo(path, retrieveCurrentSession());
     }
+
+    /**
+     * Get all deployed workflow
+     *
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public List<GWTJahiaWorkflowDefinition> getWorkflowDefinitions() throws GWTJahiaServiceException {
+        return workflow.getWorkflowDefinitions();
+    }
+
+    /**
+     * Update node type workflow rule
+     */
+    public void updateNodeTypeWorkflowRule(List<GWTJahiaWorflowNodeType> toAdd, List<GWTJahiaWorflowNodeType> toRemove) throws GWTJahiaServiceException {
+        for (GWTJahiaWorflowNodeType g : toRemove) {
+            workflow.removeNodeTypeWorkflowRule(g);
+        }
+
+        for (GWTJahiaWorflowNodeType g : toAdd) {
+            workflow.updateNodeTypeWorkflowRule(g);
+        }
+    }
+
+    public List<GWTJahiaWorflowNodeType> getNodeTypeWorkflowRule() throws GWTJahiaServiceException {
+        return workflow.getNodeTypeWorkflowRule(retrieveCurrentSession(), getUILocale());
+    }
+
+    public GWTJahiaWorkflowNodeTypeConfig getWorkflowNodeTypeConfig() throws GWTJahiaServiceException {
+        final GWTJahiaWorkflowNodeTypeConfig config = new GWTJahiaWorkflowNodeTypeConfig();
+
+        // content type list
+        final List<GWTJahiaNodeType> contentTypeList = new ArrayList<GWTJahiaNodeType>();
+        Iterator<List<GWTJahiaNodeType>> it = contentDefinition.getNodeSubtypes(null, new HashMap<String, Object>(), getUILocale()).values().iterator();
+        while (it.hasNext()) {
+            contentTypeList.addAll(it.next());
+        }
+        config.setContentTypeList(contentTypeList);
+
+        // workflow definitons
+        config.setWorkflowDefinitions(getWorkflowDefinitions());
+
+        // content node type
+        config.setWorflowNodeTypes(getNodeTypeWorkflowRule());
+
+        return config;
+
+    }
+
 
     /**
      * Get the publication status information for multiple pathes.

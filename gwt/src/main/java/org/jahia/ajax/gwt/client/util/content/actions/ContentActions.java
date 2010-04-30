@@ -397,6 +397,7 @@ public class ContentActions {
 
     /**
      * Create a node
+     *
      * @param linker
      * @param windowHeaer
      * @param nodeType
@@ -880,13 +881,13 @@ public class ContentActions {
     public static void saveAsPortalComponent(final Linker linker) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
-            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()),"/shared/portalComponents",null,new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()), "/shared/portalComponents", null, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
-                    Info.display("Portal Components","Error while making your component available for users in their portal page.");
+                    Info.display("Portal Components", "Error while making your component available for users in their portal page.");
                 }
 
                 public void onSuccess(Object result) {
-                    Info.display("Portal Components","Your components is now available for users in their portal page.");
+                    Info.display("Portal Components", "Your components is now available for users in their portal page.");
                 }
             });
         }
@@ -905,16 +906,16 @@ public class ContentActions {
                 properties.add(new GWTJahiaNodeProperty("j:templateLocked", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
             }
 
-            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties,new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
-                    Log.error("Error",caught);
+                    Log.error("Error", caught);
                 }
 
                 public void onSuccess(Object result) {
                     if (locked) {
-                        Info.display("Component locked","Component locked.");
+                        Info.display("Component locked", "Component locked.");
                     } else {
-                        Info.display("Component unlocked","Component unlocked.");
+                        Info.display("Component unlocked", "Component unlocked.");
                     }
                     linker.refresh(Linker.REFRESH_MAIN);
                 }
@@ -936,16 +937,16 @@ public class ContentActions {
                 properties.add(new GWTJahiaNodeProperty("j:templateShared", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
             }
 
-            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties,new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
-                    Log.error("Error",caught);
+                    Log.error("Error", caught);
                 }
 
                 public void onSuccess(Object result) {
                     if (shared) {
-                        Info.display("Component shared","Component shared.");
+                        Info.display("Component shared", "Component shared.");
                     } else {
-                        Info.display("Component unshared","Component unshared.");
+                        Info.display("Component unshared", "Component unshared.");
                     }
                     linker.refresh(Linker.REFRESH_MAIN);
                 }
@@ -957,13 +958,13 @@ public class ContentActions {
     public static void makeShareableNode(final Linker linker) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
-            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()),"/sites/"+JahiaGWTParameters.getSiteUUID()+"/contents",null,new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()), "/sites/" + JahiaGWTParameters.getSiteUUID() + "/contents", null, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
-                    Info.display("Shared component","Error while sharing component");
+                    Info.display("Shared component", "Error while sharing component");
                 }
 
                 public void onSuccess(Object result) {
-                    Info.display("Shared component","Component shared.");
+                    Info.display("Shared component", "Component shared.");
                     linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });
@@ -976,7 +977,7 @@ public class ContentActions {
         final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
 
         if (linker instanceof EditLinker) {
-            new ContentExportTemplate(linker, ((EditLinker)linker).getSidePanel().getRootTemplate()).show();
+            new ContentExportTemplate(linker, ((EditLinker) linker).getSidePanel().getRootTemplate()).show();
         } else if (selectedItems != null && selectedItems.size() == 1) {
             GWTJahiaNode selectedNode = selectedItems.get(0);
             if (selectedNode != null) {

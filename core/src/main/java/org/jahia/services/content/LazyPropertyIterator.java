@@ -128,6 +128,9 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     }
 
     public boolean hasNext() {
+        if (tempNext != null) {
+            return true;
+        }
         try {
             if (getPropertiesIterator().hasNext()) {
                 Property property = getPropertiesIterator().nextProperty();

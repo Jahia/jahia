@@ -60,7 +60,7 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 2 févr. 2010
  */
-public class WorklowServiceTest {
+public class WorkflowServiceTest {
     private final static String TESTSITE_NAME = "jBPMWorkflowServiceTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME + "/home/pagecontent/row1/col1";
     private static JahiaSite site;
@@ -69,7 +69,7 @@ public class WorklowServiceTest {
     private static JahiaGroup group;
     private HashMap<String, Object> emptyMap;
     private static final String PROVIDER = "jBPM";
-    private static Logger logger = Logger.getLogger(WorklowServiceTest.class);
+    private static Logger logger = Logger.getLogger(WorkflowServiceTest.class);
     private JCRSessionWrapper session;
     private static int nodeCounter;
     private JCRNodeWrapper stageNode;

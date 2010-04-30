@@ -22,7 +22,7 @@
 <label for="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
 <input type="hidden" name="${propertyDefinition.name}"
        id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
-<textarea rows="50" cols="40" id="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"></textarea>
+<textarea rows="50" cols="40" id="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"><c:if test="${not empty workflowTaskFormTask}">${workflowTaskFormTask.variables[propertyDefinition.name][0].value}</c:if></textarea>
 <script>
     $(document).ready(function() {
         richTextEditors['${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}'] = CKEDITOR.replace("ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}", { toolbar : 'User'});

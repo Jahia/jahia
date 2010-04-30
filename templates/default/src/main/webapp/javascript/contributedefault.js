@@ -113,10 +113,10 @@ function startWorkflow(source, process, urlbase, callbackId, callbackUrl) {
     );
 }
 
-function executeTask(source, action, outcome, urlbase, callbackId, callbackUrl) {
+function executeTask(source, action, outcome, urlbase, callbackId, callbackUrl, callbackJS) {
     $.post(urlbase + source + ".executeTask.do", {"action":action, "outcome":outcome},
         function(result) {
-            replace(callbackId, callbackUrl, '');
+            replace(callbackId, callbackUrl, callbackJS);
         },
         'json'
     );

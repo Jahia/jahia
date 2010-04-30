@@ -218,6 +218,76 @@ preloadimage:function(){
 			preloadimages[preloadimages.length-1].src=arguments[i]
 		}
 	}
-}
+},
 
+reinit:function(){
+    var ac=this;
+    animatedcollapse.ontoggle=animatedcollapse.ontoggle || null
+		var urlparamopenids=animatedcollapse.urlparamselect() //Get div ids that should be expanded based on the url (['div1','div2',etc])
+		var persistopenids=ac.getCookie('acopendivids') //Get list of div ids that should be expanded due to persistence ('div1,div2,etc')
+		var groupswithpersist=ac.getCookie('acgroupswithpersist') //Get list of group names that have 1 or more divs with "persist" attribute defined
+		if (persistopenids!=null) //if cookie isn't null (is null if first time page loads, and cookie hasnt been set yet)
+			persistopenids=(persistopenids=='nada')? [] : persistopenids.split(',') //if no divs are persisted, set to empty array, else, array of div ids
+		groupswithpersist=(groupswithpersist==null || groupswithpersist=='nada')? [] : groupswithpersist.split(',') //Get list of groups with divs that are persisted
+		jQuery.each(ac.divholders, function(){ //loop through each collapsible DIV object
+			this.$divref=$('#'+this.id)
+			if ((this.getAttr('persist') || jQuery.inArray(this.getAttr('group'), groupswithpersist)!=-1) && persistopenids!=null){ //if this div carries a user "persist" setting, or belong to a group with at least one div that does
+				var cssdisplay=(jQuery.inArray(this.id, persistopenids)!=-1)? 'block' : 'none'
+			}
+			else{
+				var cssdisplay=this.getAttr('hide')? 'none' : null
+			}
+			if (urlparamopenids[0]=="all" || jQuery.inArray(this.id, urlparamopenids)!=-1){ //if url parameter string contains the single array element "all", or this div's ID
+				cssdisplay='block' //set div to "block", overriding any other setting
+			}
+			else if (urlparamopenids[0]=="none"){
+				cssdisplay='none' //set div to "none", overriding any other setting
+			}
+			this.$divref.css(ac.generatemap(['height', this.getAttr('height')], ['display', cssdisplay]))
+			this.$divref.attr(ac.generatemap(['groupname', this.getAttr('group')], ['fade', this.getAttr('fade')], ['speed', this.getAttr('speed')]))
+			if (this.getAttr('group')){ //if this DIV has the "group" attr defined
+				var targetgroup=ac.divgroups[this.getAttr('group')] || (ac.divgroups[this.getAttr('group')]={}) //Get settings for this group, or if it no settings exist yet, create blank object to store them in
+				targetgroup.count=(targetgroup.count||0)+1 //count # of DIVs within this group
+				if (jQuery.inArray(this.id, urlparamopenids)!=-1){ //if url parameter string contains this div's ID
+					targetgroup.lastactivedivid=this.id //remember this DIV as the last "active" DIV (this DIV will be expanded). Overrides other settings
+					targetgroup.overridepersist=1 //Indicate to override persisted div that would have been expanded
+				}
+				if (!targetgroup.lastactivedivid && this.$divref.css('display')!='none' || cssdisplay=="block" && typeof targetgroup.overridepersist=="undefined") //if this DIV was open by default or should be open due to persistence
+					targetgroup.lastactivedivid=this.id //remember this DIV as the last "active" DIV (this DIV will be expanded)
+				this.$divref.css({display:'none'}) //hide any DIV that's part of said group for now
+			}
+		}) //end divholders.each
+		jQuery.each(ac.divgroups, function(){ //loop through each group
+			if (this.lastactivedivid && urlparamopenids[0]!="none") //show last "active" DIV within each group (one that should be expanded), unless url param="none"
+				ac.divholders[this.lastactivedivid].$divref.show()
+		})
+		if (animatedcollapse.ontoggle){
+			jQuery.each(ac.divholders, function(){ //loop through each collapsible DIV object and fire ontoggle event
+				animatedcollapse.ontoggle(jQuery, this.$divref.get(0), this.$divref.css('display'))
+			})
+		}
+ 		//Parse page for links containing rel attribute
+		var $allcontrols=$('a[rel]').filter('[rel^="collapse["], [rel^="expand["], [rel^="toggle["]') //get all elements on page with rel="collapse[]", "expand[]" and "toggle[]"
+		$allcontrols.each(function(){ //loop though each control link
+			this._divids=this.getAttribute('rel').replace(/(^\w+)|(\s+)/g, "").replace(/[\[\]']/g, "") //cache value 'div1,div2,etc' within identifier[div1,div2,etc]
+			if (this.getElementsByTagName('img').length==1 && ac.divholders[this._divids]){ //if control is an image link that toggles a single DIV (must be one to one to update status image)
+				animatedcollapse.preloadimage(this.getAttribute('data-openimage'), this.getAttribute('data-closedimage')) //preload control images (if defined)
+				$togglerimage=$(this).find('img').eq(0).data('srcs', {open:this.getAttribute('data-openimage'), closed:this.getAttribute('data-closedimage')}) //remember open and closed images' paths
+				ac.divholders[this._divids].$togglerimage=$(this).find('img').eq(0) //save reference to toggler image (to be updated inside slideengine()
+				ac.divholders[this._divids].$togglerimage.attr('src', (ac.divholders[this._divids].$divref.css('display')=="none")? $togglerimage.data('srcs').closed : $togglerimage.data('srcs').open)
+			}
+			$(this).click(function(){ //assign click behavior to each control link
+				var relattr=this.getAttribute('rel')
+				var divids=(this._divids=="")? [] : this._divids.split(',') //convert 'div1,div2,etc' to array
+				if (divids.length>0){
+					animatedcollapse[/expand/i.test(relattr)? 'show' : /collapse/i.test(relattr)? 'hide' : 'toggle'](divids) //call corresponding public function
+					return false
+				}
+			}) //end control.click
+		})// end control.each
+
+		$(window).bind('unload', function(){
+			ac.uninit()
+		})
 }
+};

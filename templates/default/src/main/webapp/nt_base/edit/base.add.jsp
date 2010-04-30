@@ -26,12 +26,33 @@
 <c:set var="type" value="${currentResource.resourceNodeType}"/>
 <c:set var="scriptTypeName" value="${fn:replace(type.name,':','_')}"/>
 <div class="FormContribute">
-    <form action="${url.base}${currentNode.path}/*" method="post" id="${currentNode.name}${scriptTypeName}">
-        <%--<jcr:nodeType name="jnt:news" var="type"/>--%>
-        <input type="hidden" name="nodeType" value="${type.name}"/>
-        <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-        <%-- Define the output format for the newly created node by default html or by redirectTo--%>
-        <input type="hidden" name="newNodeOutputFormat" value="html"/>
+    <c:choose>
+        <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
+            <c:set var="formAction" value="${url.base}${currentNode.path}.startWorkflow.do"/>
+        </c:when>
+        <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
+            <c:set var="formAction" value="${url.base}${currentNode.path}.executeTask.do"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="formAction" value="${url.base}${currentNode.path}/*"/>
+        </c:otherwise>
+    </c:choose>
+    <form action="${formAction}" method="post" id="${currentNode.name}${scriptTypeName}">
+        <c:choose>
+            <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
+                <input type="hidden" name="process" value="${currentResource.moduleParams.workflowStartForm}"/>
+            </c:when>
+            <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
+                <input type="hidden" name="action" value="${currentResource.moduleParams.workflowTaskForm}"/>
+                <input type="hidden" name="outcome" id="outcome"/>
+            </c:when>
+            <c:otherwise>
+                <input type="hidden" name="nodeType" value="${type.name}"/>
+                <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
+                <%-- Define the output format for the newly created node by default html or by redirectTo--%>
+                <input type="hidden" name="newNodeOutputFormat" value="html"/>
+            </c:otherwise>
+        </c:choose>
         <fieldset>
             <legend>${jcr:label(type,renderContext.mainResourceLocale)}</legend>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
@@ -40,20 +61,20 @@
                         <c:choose>
                             <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
                                 <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
-                                    <%@include file="formelements/file.jsp"%>
+                                    <%@include file="formelements/file.jsp" %>
                                 </c:if>
                                 <c:if test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                                    <%@include file="formelements/select.jsp"%>
+                                    <%@include file="formelements/select.jsp" %>
                                 </c:if>
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
-                                <%@include file="formelements/datepicker.jsp"%>
+                                <%@include file="formelements/datepicker.jsp" %>
                             </c:when>
                             <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                                <%@include file="formelements/select.jsp"%>
+                                <%@include file="formelements/select.jsp" %>
                             </c:when>
                             <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
-                                <%@include file="formelements/richtext.jsp"%>
+                                <%@include file="formelements/richtext.jsp" %>
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.BOOLEAN}">
                                 <label class="left"
@@ -69,24 +90,52 @@
                                 <label class="left"
                                        for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
                                 <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
-                                       name="${propertyDefinition.name}"/>
+                                       name="${propertyDefinition.name}" <c:if test="${not empty workflowTaskFormTask}">value="${workflowTaskFormTask.variables[propertyDefinition.name][0].value}"</c:if>/>
                             </c:otherwise>
                         </c:choose>
                     </p>
                 </c:if>
             </c:forEach>
             <div class="divButton">
-                <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message
-                        key="label.add.new.content.submit"/></button>
+                <c:choose>
+                    <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
+                        <button type="submit"><span
+                                class="icon-contribute icon-accept"></span>Start:&nbsp;${currentResource.moduleParams.workflowStartFormWFName}
+                        </button>
+                    </c:when>
+                    <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
+                        <c:forEach items="${workflowTaskFormTask.outcomes}" var="outcome">
+                            <button type="button"
+                                    onclick="$('#outcome').val('${outcome}');$('#${currentNode.name}${scriptTypeName}').submit();"><span
+                                    class="icon-contribute icon-accept"></span>&nbsp;${outcome}
+                            </button>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message
+                                key="label.add.new.content.submit"/></button>
+                    </c:otherwise>
+                </c:choose>
+
                 <button type="reset"><span class="icon-contribute icon-cancel"></span><fmt:message
                         key="label.add.new.content.reset"/></button>
             </div>
         </fieldset>
     </form>
     <script type="text/javascript">
-        var options${currentNode.name}${scriptTypeName} = {
+        var options${fn:replace(currentNode.name,'-',"_")}${scriptTypeName} = {
             success: function() {
-                replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', '');
+            <c:choose>
+            <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
+                replace('${currentResource.moduleParams.workflowStartFormWFCallbackId}', '${currentResource.moduleParams.workflowStartFormWFCallbackURL}', "${currentResource.moduleParams.workflowStartFormWFCallbackJS};$('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});");
+            </c:when>
+            <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
+                replace('${currentResource.moduleParams.workflowTaskFormCallbackId}', '${currentResource.moduleParams.workflowTaskFormCallbackURL}', "${currentResource.moduleParams.workflowTaskFormCallbackJS};$('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});");
+            </c:when>
+            <c:otherwise>
+                replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', "$('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});");
+            </c:otherwise>
+            </c:choose>
                 $.each(richTextEditors, function(key, value) {
                     value.setData("");
                 });
@@ -96,7 +145,7 @@
         };// wait for the DOM to be loaded
         $(document).ready(function() {
             // bind 'myForm' and provide a simple callback function
-            $('#${currentNode.name}${scriptTypeName}').ajaxForm(options${currentNode.name}${scriptTypeName});
+            $('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});
         });
     </script>
 </div>

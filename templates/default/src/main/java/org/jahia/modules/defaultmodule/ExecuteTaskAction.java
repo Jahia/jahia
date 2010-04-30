@@ -8,10 +8,12 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowVariable;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +49,23 @@ public class ExecuteTaskAction implements Action {
         String outcome = parameters.get("outcome").get(0);
 
         workflowService.assignTask(actionId, providerKey, renderContext.getUser());
-        workflowService.completeTask(actionId, providerKey, outcome, new HashMap<String, Object>());
+        workflowService.completeTask(actionId, providerKey, outcome, getVariablesMap(parameters));
 
         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+    }
+
+    private HashMap<String, Object> getVariablesMap(Map<String, List<String>> properties) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        for (Map.Entry<String, List<String>> property : properties.entrySet()) {
+            if (!"action".equals(property.getKey()) && !"outcome".equals(property.getKey())) {
+                List<String> propertyValues = property.getValue();
+                List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(propertyValues.size());
+                for (String value : propertyValues) {
+                    values.add(new WorkflowVariable(value, 1));
+                }
+                map.put(property.getKey(), values);
+            }
+        }
+        return map;
     }
 }

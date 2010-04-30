@@ -44,9 +44,9 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
             }
         }
 
-        final ContentPanel mainPanel = (ContentPanel) modules.iterator().next().getContainer();
-        Point p = mainPanel.getBody().getXY();
-        Size s = mainPanel.getBody().getSize();
+        final LayoutContainer mainPanel = modules.iterator().next().getContainer();
+        Point p = mainPanel.el().getXY();
+        Size s = mainPanel.el().getSize();
         final int left = p.x;
         final int top = p.y;
         final int right = left + s.width;
@@ -86,7 +86,7 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
             public void widgetScrolled(ComponentEvent ce) {
                 for (LayoutContainer infoLayer : containers.keySet()) {
                     El el = containers.get(infoLayer);
-                    if (el != mainPanel.getHeader().el()) {
+                    if (el != mainPanel.el()) {
                         position(infoLayer, el, top, bottom, left, right);
                     }
                 }

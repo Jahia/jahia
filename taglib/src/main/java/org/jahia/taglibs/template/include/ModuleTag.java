@@ -217,7 +217,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     } else if ("jmix:droppableContent".equals(nodeTypes)) {
                         Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
                         for (String s : cons) {
-                            if (!s.equals("nt:base")) {
+                            if (!s.equals("nt:base") && !s.equals("jnt:content")) {
                                 nodeTypes = (nodeTypes.equals("jmix:droppableContent")) ? s : nodeTypes + " " + s;
                             }
                         }

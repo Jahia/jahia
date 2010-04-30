@@ -20,7 +20,7 @@
         <mashups jcr:primaryType="jnt:portletList"/>
         <portalComponents jcr:primaryType="jnt:contentList"/>
         <contents jcr:primaryType="jnt:contentList"/>
-        <conversions jcr:primaryType="jnt:folder"/>
+        <conversions jcr:primaryType="jnt:contentList"/>
     </shared>
 
     <users jcr:primaryType="jnt:usersFolder" j:usersFolderSkeleton="user.xml">

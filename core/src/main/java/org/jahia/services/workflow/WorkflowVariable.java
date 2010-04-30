@@ -32,12 +32,10 @@
  */
 package org.jahia.services.workflow;
 
-import org.apache.log4j.Logger;
-
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represents single workflow variable.
  *
  * @author : rincevent
  * @since : JAHIA 6.1

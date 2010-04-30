@@ -32,41 +32,25 @@
  */
 package org.jahia.services.workflow;
 
-import org.apache.log4j.Logger;
-
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represents workflow instance, i.e. single execution of the workflow process definition.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 2 févr. 2010
+ * @author rincevent
+ * @since JAHIA 6.1
  */
-public class Workflow {
-    private transient static Logger logger = Logger.getLogger(Workflow.class);
-    private final String name;
+public class Workflow extends WorkflowBase {
     private final String id;
-    private final String provider;
     private Set<WorkflowAction> availableActions;
 
     public Workflow(String name, String id, String provider) {
-        //To change body of created methods use File | Settings | File Templates.
-        this.name = name;
+        super(name, provider);
         this.id = id;
-        this.provider = provider;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getProvider() {
-        return provider;
     }
 
     public void setAvailableActions(Set<WorkflowAction> availableActions) {

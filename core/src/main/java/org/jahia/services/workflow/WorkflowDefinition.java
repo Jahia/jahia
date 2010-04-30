@@ -32,44 +32,24 @@
  */
 package org.jahia.services.workflow;
 
-import org.apache.log4j.Logger;
-
-import java.io.Serializable;
-
 /**
- * Created by IntelliJ IDEA.
+ * Workflow process definition.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 4 févr. 2010
  */
-public class WorkflowDefinition implements Serializable {
-    private transient static Logger logger = Logger.getLogger(WorkflowDefinition.class);
-    private final String name;
+public class WorkflowDefinition extends WorkflowBase {
     private final String key;
-    private String provider;
     private String formResourceName;
 
     public WorkflowDefinition(String name, String key, String provider) {
-        this.name = name;
+        super(name, provider);
         this.key = key;
-        this.provider = provider;
     }
 
     public String getKey() {
         return key;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getProvider() {
-        return provider;
-    }
-
-    void setProvider(String provider) {
-        this.provider = provider;
     }
 
     @Override
@@ -80,17 +60,17 @@ public class WorkflowDefinition implements Serializable {
         WorkflowDefinition that = (WorkflowDefinition) o;
 
         if (key != null ? !key.equals(that.key) : that.key != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (provider != null ? !provider.equals(that.provider) : that.provider != null) return false;
+        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
+        if (getProvider() != null ? !getProvider().equals(that.getProvider()) : that.getProvider() != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result = getName() != null ? getName().hashCode() : 0;
         result = 31 * result + (key != null ? key.hashCode() : 0);
-        result = 31 * result + (provider != null ? provider.hashCode() : 0);
+        result = 31 * result + (getProvider() != null ? getProvider().hashCode() : 0);
         return result;
     }
 

@@ -32,19 +32,16 @@
  */
 package org.jahia.services.workflow;
 
-import org.apache.log4j.Logger;
-
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
+ * Task comment item.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 29 avr. 2010
  */
 public class WorkflowTaskComment {
-    private transient static Logger logger = Logger.getLogger(WorkflowTaskComment.class);
     private String comment;
     private Date time;
     private String user;

@@ -32,7 +32,6 @@
  */
 package org.jahia.services.workflow;
 
-import org.apache.log4j.Logger;
 import org.jahia.services.usermanager.JahiaPrincipal;
 
 /**
@@ -43,7 +42,6 @@ import org.jahia.services.usermanager.JahiaPrincipal;
  *        Created : 4 févr. 2010
  */
 public class WorkflowParticipation {
-    private transient static Logger logger = Logger.getLogger(WorkflowParticipation.class);
     private final String role;
     private final JahiaPrincipal principal;
 

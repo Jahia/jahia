@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * BPM engine provider.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -78,4 +78,16 @@ public interface WorkflowProvider {
     void addComment(String taskId, String comment);
 
     WorkflowTask getWorkflowTask(String taskId);
+
+    /**
+     * Returns a list of process instance history records for the specified
+     * process IDs. This method also returns "active" (i.e. not completed)
+     * workflow process instance.
+     * 
+     * @param processIds list of process IDs to retrieve history records for
+     * @return a list of process instance history records for the specified
+     *         process IDs
+     */
+    List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds);
+
 }

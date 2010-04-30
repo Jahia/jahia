@@ -42,26 +42,21 @@ import org.jahia.services.workflow.*;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
 import org.jbpm.api.history.HistoryComment;
-import org.jbpm.api.identity.Group;
-import org.jbpm.api.identity.User;
+import org.jbpm.api.history.HistoryProcessInstance;
 import org.jbpm.api.task.Participation;
 import org.jbpm.api.task.Task;
-import org.jbpm.jpdl.internal.activity.EndActivity;
-import org.jbpm.jpdl.internal.activity.StartActivity;
 import org.jbpm.jpdl.internal.activity.TaskActivity;
 import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
 import org.jbpm.pvm.internal.model.Activity;
 import org.jbpm.pvm.internal.model.ActivityImpl;
-import org.jbpm.pvm.internal.task.AssignableDefinitionImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.security.Principal;
 import java.text.MessageFormat;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Implementation of the {@link WorkflowProvider} that uses JBoss jBPM engine.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -73,7 +68,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private WorkflowService workflowService;
     private RepositoryService repositoryService;
     private ExecutionService executionService;
-    private ProcessEngine processEngine;
+    private HistoryService historyService;
     private List<String> processes;
     private TaskService taskService;
     private static Map<String, String> participationRoles = new HashMap<String, String>();
@@ -112,10 +107,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     public void setProcessEngine(ProcessEngine processEngine) {
-        this.processEngine = processEngine;
         repositoryService = processEngine.getRepositoryService();
         executionService = processEngine.getExecutionService();
         taskService = processEngine.getTaskService();
+        historyService = processEngine.getHistoryService();
     }
 
     public static JBPMProvider getInstance() {
@@ -401,5 +396,36 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         return "";
     }
 
+    /**
+     * Returns a list of process instance history records for the specified
+     * process IDs. This method also returns "active" (i.e. not completed)
+     * workflow process instance. Instances are sorted by start time descending,
+     * i.e. newly started instances first.
+     * 
+     * @param processIds list of process IDs to retrieve history records for
+     * @return a list of process instance history records for the specified
+     *         process IDs
+     */
+    public List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds) {
+        List<HistoryWorkflow> historyItems = new LinkedList<HistoryWorkflow>();
+        for (String processId : processIds) {
+            HistoryProcessInstance jbpmHistoryItem = null;
+            try {
+                jbpmHistoryItem = historyService.createHistoryProcessInstanceQuery().processInstanceId(processId)
+                        .uniqueResult();
+            } catch (JbpmException e) {
+                logger.error(e.getMessage(), e);
+            }
+            if (jbpmHistoryItem == null) {
+                logger.warn("History record for process instance with ID '" + processId + "' cannot be found");
+                continue;
+            }
 
+            historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(), jbpmHistoryItem.getKey(),
+                    getKey(), jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(), jbpmHistoryItem
+                            .getEndActivityName()));
+        }
+
+        return historyItems;
+    }
 }

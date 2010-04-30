@@ -69,7 +69,7 @@ public class WorkflowService {
     public static final String START_ROLE = "start";
     private RoleService roleService;
     private RoleBasedAccessControlService rbacService;
-    private Map<String, List<String>> workflowTypes;
+    private Map<String,List<String>> workflowTypes;
 
     public static WorkflowService getInstance() {
         if (instance == null) {
@@ -98,7 +98,7 @@ public class WorkflowService {
         try {
             addWorkflowRule("default", "/", "nt:base", getWorkflows());
         } catch (RepositoryException e) {
-            logger.error("Cannot register default workflow rule", e);
+            logger.error("Cannot register default workflow rule",e);
         }
     }
 
@@ -153,8 +153,8 @@ public class WorkflowService {
                         } else {
                             List<JahiaPrincipal> users = getAssignedRole(node, definition, START_ROLE);
                             for (JahiaPrincipal jahiaPrincipal : users) {
-                                if ((jahiaPrincipal instanceof JahiaGroup && ((JahiaGroup) jahiaPrincipal).isMember(user)) ||
-                                        (jahiaPrincipal instanceof JahiaUser && ((JahiaUser) jahiaPrincipal).getUserKey().equals(user.getUserKey()))) {
+                                if ((jahiaPrincipal instanceof JahiaGroup && ((JahiaGroup)jahiaPrincipal).isMember(user)) ||
+                                        (jahiaPrincipal instanceof JahiaUser && ((JahiaUser)jahiaPrincipal).getUserKey().equals(user.getUserKey()))) {
                                     workflowsByProvider.add(definition);
                                     break;
                                 }
@@ -213,18 +213,18 @@ public class WorkflowService {
      * @param node
      * @return A list of active workflows per provider
      */
-    public Map<Locale, List<Workflow>> getActiveWorkflowsForAllLocales(JCRNodeWrapper node) {
-        Map<Locale, List<Workflow>> workflowsByLocale = new HashMap<Locale, List<Workflow>>();
+    public Map<Locale,List<Workflow>> getActiveWorkflowsForAllLocales(JCRNodeWrapper node) {
+        Map<Locale,List<Workflow>> workflowsByLocale = new HashMap<Locale,List<Workflow>>();
         try {
             if (node.isNodeType("jmix:workflow")) {
                 NodeIterator ni = node.getNodes("j:translation");
                 while (ni.hasNext()) {
                     Node n = ((JCRNodeWrapper) ni.next()).getRealNode();
                     final String lang = n.getProperty("jcr:language").getString();
-                    if (n.hasProperty(Constants.PROCESSID + "_" + lang)) {
+                    if (n.hasProperty(Constants.PROCESSID + "_"+lang)) {
                         List<Workflow> l = new ArrayList<Workflow>();
-                        workflowsByLocale.put(LanguageCodeConverters.getLocaleFromCode(lang), l);
-                        addActiveWorkflows(l, n.getProperty(Constants.PROCESSID + "_" + lang));
+                        workflowsByLocale.put(LanguageCodeConverters.getLocaleFromCode(lang),l);
+                        addActiveWorkflows(l, n.getProperty(Constants.PROCESSID + "_"+lang));
                     }
                 }
             }
@@ -246,7 +246,9 @@ public class WorkflowService {
                     processIds.add(processId);
                 }
             }
-            workflows.addAll(entry.getValue().getActiveWorkflowsInformations(processIds));
+            if (!processIds.isEmpty()) {
+                workflows.addAll(entry.getValue().getActiveWorkflowsInformations(processIds));
+            }
         }
     }
 
@@ -264,10 +266,10 @@ public class WorkflowService {
     /**
      * This method will call the underlying provider to signal the identified process.
      *
-     * @param processId      the process we want to advance
-     * @param provider       The provider executing the process
+     * @param processId the process we want to advance
+     * @param provider  The provider executing the process
      * @param transitionName
-     * @param args           List of args for the process
+     * @param args      List of args for the process
      */
     public void signalProcess(String processId, String transitionName, String provider, Map<String, Object> args) {
         providers.get(provider).signalProcess(processId, transitionName, args);
@@ -276,10 +278,10 @@ public class WorkflowService {
     /**
      * This method will call the underlying provider to signal the identified process.
      *
-     * @param processId      the process we want to advance
-     * @param provider       The provider executing the process
+     * @param processId the process we want to advance
+     * @param provider  The provider executing the process
      * @param transitionName
-     * @param args           List of args for the process
+     * @param args      List of args for the process
      */
     public void signalProcess(String processId, String transitionName, String signalName, String provider, Map<String, Object> args) {
         providers.get(provider).signalProcess(processId, transitionName, signalName, args);
@@ -321,7 +323,7 @@ public class WorkflowService {
     public synchronized void removeProcessId(JCRNodeWrapper stageNode, String provider, String processId) throws RepositoryException {
         stageNode.checkout();
         List<Value> values = new ArrayList<Value>(Arrays.asList(stageNode.getProperty(Constants.PROCESSID).getValues()));
-        Value[] newValues = new Value[values.size() - 1];
+        Value[] newValues = new Value[values.size()-1];
         int i = 0;
         for (Value value : values) {
             if (!value.getString().equals(provider + ":" + processId)) {
@@ -357,7 +359,7 @@ public class WorkflowService {
         providers.get(provider).deleteTask(taskId, reason);
     }
 
-    public void addWorkflowRule(final String key, final String path, final String nodeTypes, final Collection<WorkflowDefinition> workflows) throws RepositoryException {
+    public void addWorkflowRule(final String key, final String path, final String nodeTypes, final Collection<WorkflowDefinition> workflows) throws RepositoryException{
         // store the rule
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -401,11 +403,11 @@ public class WorkflowService {
 
     public void removeWorkflowRule(final String key) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
-            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {          
+            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 if (session.itemExists("/workflowrules/" + key)) {
-                    JCRNodeWrapper rule = session.getNode("/workflowrules/" + key);
-                    rule.remove();
-                    session.save();
+                JCRNodeWrapper rule = session.getNode("/workflowrules/"+key);
+                rule.remove();
+                session.save();
                 }
                 return null;
             }
@@ -426,10 +428,49 @@ public class WorkflowService {
     }
 
     public void addCommentToTask(String taskId, String provider, String comment) {
-        providers.get(provider).addComment(taskId, comment);
+        providers.get(provider).addComment(taskId,comment);
     }
 
     public WorkflowTask getWorkflowTask(String taskId, String provider) {
         return providers.get(provider).getWorkflowTask(taskId);
     }
+
+    /**
+     * Returns a list of process instance history records for the specified
+     * node. This method also returns "active" (i.e. not completed) workflow
+     * process instance.
+     * 
+     * @param node the JCR node to retrieve history records for
+     * @return a list of process instance history records for the specified node
+     */
+    public List<HistoryWorkflow> getHistoryWorkflows(JCRNodeWrapper node) {
+        List<HistoryWorkflow> history = new LinkedList<HistoryWorkflow>();
+        try {
+            Value[] values = null;
+            if (node.isNodeType("jmix:workflow") && node.hasProperty(Constants.PROCESSID)) {
+                values = node.getProperty(Constants.PROCESSID).getValues();
+            }
+            if (values != null) {
+                for (Map.Entry<String, WorkflowProvider> entry : providers.entrySet()) {
+                    final List<String> processIds = new LinkedList<String>();
+                    for (Value value : values) {
+                        String key = value.getString();
+                        String processId = StringUtils.substringAfter(key, ":");
+                        String providerKey = StringUtils.substringBefore(key, ":");
+                        if (providerKey.equals(entry.getKey())) {
+                            processIds.add(processId);
+                        }
+                    }
+                    if (!processIds.isEmpty()) {
+                        history.addAll(entry.getValue().getHistoryWorkflows(processIds));
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return history;
+    }
+
 }

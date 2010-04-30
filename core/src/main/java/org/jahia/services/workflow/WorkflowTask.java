@@ -32,7 +32,6 @@
  */
 package org.jahia.services.workflow;
 
-import org.apache.log4j.Logger;
 import org.jahia.services.usermanager.JahiaUser;
 
 import java.util.Date;
@@ -41,14 +40,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represents task action.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 3 févr. 2010
  */
 public class WorkflowTask extends WorkflowAction {
-    private transient static Logger logger = Logger.getLogger(WorkflowTask.class);
     private Date dueDate;
     private String description;
     private Date createTime;

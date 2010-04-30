@@ -33,23 +33,16 @@
 package org.jahia.services.workflow;
 
 /**
- * Created by IntelliJ IDEA.
+ * Workflow action item.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 2 févr. 2010
  */
-public class WorkflowAction {
-    private final String name;
-    private final String provider;
+public class WorkflowAction extends WorkflowBase {
 
     public WorkflowAction(String name, String provider) {
-        this.name = name;
-        this.provider = provider;
-    }
-
-    public String getName() {
-        return name;
+        super(name, provider);
     }
 
     @Override
@@ -63,16 +56,13 @@ public class WorkflowAction {
 
         WorkflowAction that = (WorkflowAction) o;
 
-        return name.equals(that.name) && provider.equals(that.provider);
+        return getName().equals(that.getName()) && getProvider().equals(that.getProvider());
 
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode() ;
+        return getName().hashCode() ;
     }
 
-    public String getProvider() {
-        return provider;
-    }
 }

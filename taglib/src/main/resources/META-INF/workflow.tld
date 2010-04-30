@@ -42,8 +42,14 @@
         <body-content>empty</body-content>
         <attribute>
             <name>node</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>user</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.usermanager.JahiaUser</type>
         </attribute>
         <attribute>
             <name>var</name>

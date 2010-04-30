@@ -29,7 +29,7 @@
     <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" name="unlock for correction" g="259,203,133,39">
         <transition to="finish correction"/>
     </custom>
-    <task name="finish correction" g="104,205,116,39">
+    <task name="finish correction" g="104,205,116,39" form="mix:title">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
         <transition name="finished" to="lock" g="-45,-11"/>
     </task>

@@ -26,26 +26,32 @@ public class AvailableTasksTag extends AbstractJahiaTag {
     private JCRNodeWrapper node;
     private String var;
     private int scope = PageContext.PAGE_SCOPE;
+    private JahiaUser user;
 
     @Override
     public int doEndTag() throws JspException {
         List<WorkflowTask> tasks = new ArrayList<WorkflowTask>();
-        List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node);
-        for (Workflow workflow : actives) {
-            for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
-                if (workflowAction instanceof WorkflowTask) {
-                    WorkflowTask workflowTask = (WorkflowTask) workflowAction;
-                    List<WorkflowParticipation> participations = workflowTask.getParticipations();
-                    if (participations != null) {
-                        for (WorkflowParticipation participation : participations) {
-                            if ((participation.getJahiaPrincipal() instanceof JahiaGroup && ((JahiaGroup)participation.getJahiaPrincipal()).isMember(getUser())) ||
-                                    (participation.getJahiaPrincipal() instanceof JahiaUser && ((JahiaUser)participation.getJahiaPrincipal()).getUserKey().equals(getUser().getUserKey()))) {
-                                tasks.add(workflowTask);
+        if (node != null) {
+            List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node);
+            for (Workflow workflow : actives) {
+                for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
+                    if (workflowAction instanceof WorkflowTask) {
+                        WorkflowTask workflowTask = (WorkflowTask) workflowAction;
+                        List<WorkflowParticipation> participations = workflowTask.getParticipations();
+                        if (participations != null) {
+                            for (WorkflowParticipation participation : participations) {
+                                if ((participation.getJahiaPrincipal() instanceof JahiaGroup && ((JahiaGroup) participation.getJahiaPrincipal()).isMember(
+                                        getUser())) || (participation.getJahiaPrincipal() instanceof JahiaUser && ((JahiaUser) participation.getJahiaPrincipal()).getUserKey().equals(
+                                        getUser().getUserKey()))) {
+                                    tasks.add(workflowTask);
+                                }
                             }
                         }
                     }
                 }
             }
+        } else if (user != null) {
+            tasks = WorkflowService.getInstance().getTasksForUser(user);
         }
 
         pageContext.setAttribute(var, tasks, scope);
@@ -65,5 +71,9 @@ public class AvailableTasksTag extends AbstractJahiaTag {
 
     public void setScope(String scope) {
         this.scope = Util.getScope(scope);
+    }
+
+    public void setUser(JahiaUser user) {
+        this.user = user;
     }
 }

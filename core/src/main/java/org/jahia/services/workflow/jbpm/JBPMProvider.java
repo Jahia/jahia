@@ -271,6 +271,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         action.setDueDate(task.getDuedate());
         action.setDescription(task.getDescription());
         action.setCreateTime(task.getCreateTime());
+        action.setProcessId(task.getExecutionId());
         if (task.getAssignee() != null) {
             action.setAssignee(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
                     task.getAssignee()));
@@ -308,10 +309,14 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
     public void assignTask(String taskId, JahiaUser user) {
         Task task = taskService.getTask(taskId);
-        if (user.getUserKey().equals(task.getAssignee())) {
-            return;
+        if(user==null) {
+            taskService.assignTask(task.getId(),null);
+        } else {
+            if (user.getUserKey().equals(task.getAssignee())) {
+                return;
+            }
+            taskService.takeTask(task.getId(), user.getUserKey());
         }
-        taskService.takeTask(task.getId(), user.getUserKey());
     }
 
     public void completeTask(String taskId, String outcome, Map<String, Object> args) {

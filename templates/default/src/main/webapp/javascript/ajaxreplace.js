@@ -7,10 +7,10 @@ function replace(id, url, callback) {
     }
     http.open("GET", url, true);
     http.onreadystatechange=function() {
-        if(http.readyState == 4) {
+        var result;
+        if (http.readyState == 4) {
             result = http.responseText;
-            result = result.replace('<div id="' + id + '">', '<div id="replaced' + id + '">');
-            document.getElementById(id).innerHTML = result;
+            $("#" + id).html(result);
             eval(callback);
         }
     }

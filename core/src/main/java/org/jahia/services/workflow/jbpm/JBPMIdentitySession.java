@@ -34,7 +34,7 @@ public class JBPMIdentitySession implements IdentitySession {
         JahiaUser user = service.lookupUserByKey(userId);
         if (user != null) {
             Properties properties = user.getProperties();
-            return new UserImpl(userId, properties.getProperty("firstname"), properties.getProperty("lastname"), properties.getProperty("email"));
+            return new UserImpl(userId, properties.getProperty("j:firstName"), properties.getProperty("j:lastName"), properties.getProperty("j:email"));
         }
         return null;
     }

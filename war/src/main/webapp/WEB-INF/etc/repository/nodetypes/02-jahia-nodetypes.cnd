@@ -471,6 +471,8 @@
  - j:templateDeployed (boolean) hidden
 
 [jmix:contributeMode] mixin
+ extends = jnt:contentList
+ itemtype = template
  - j:editableInContribution (boolean)
  - j:canOrderInContribution (boolean)
  - j:canDeleteInContribution (boolean)

@@ -13,6 +13,7 @@
         <param name="schema" value="@SCHEMA@" />
         <param name="url" value="java:comp/env/jdbc/jahia" />
         <param name="schemaObjectPrefix" value="jr_fsg_"/>
+        <param name="schemaCheckEnabled" value="false"/>
     </FileSystem>
 
     <!--
@@ -47,7 +48,8 @@
             <param name="driver" value="javax.naming.InitialContext" />
             <param name="schema" value="@SCHEMA@" />
             <param name="url" value="java:comp/env/jdbc/jahia" />
-            <param name="schemaObjectPrefix" value="jr_fs${wsp.name}_"/>
+            <param name="schemaObjectPrefix" value="jr_fs_${wsp.name}_"/>
+            <param name="schemaCheckEnabled" value="false"/>
         </FileSystem>
 
 <!--        <PersistenceManager class="org.apache.jackrabbit.core.persistence.xml.XMLPersistenceManager">
@@ -59,6 +61,7 @@
             <param name="url" value="java:comp/env/jdbc/jahia" />
             <param name="schemaObjectPrefix" value="jr_${wsp.name}_"/>
             <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
+            <param name="schemaCheckEnabled" value="false"/>
         </PersistenceManager>
 
         <SearchIndex class="org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex">
@@ -82,6 +85,8 @@
                <param name="url" value="java:comp/env/jdbc/jahia" />
                <param name="revision" value="${rep.home}/revisionNode"/>
                <param name="janitorEnabled" value="true"/>
+               <param name="schemaObjectPrefix" value="jr_j_"/>
+               <param name="schemaCheckEnabled" value="false"/>
     	</Journal>
  	</Cluster>
 
@@ -98,10 +103,11 @@
             <param name="schema" value="@SCHEMA@" />
             <param name="url" value="java:comp/env/jdbc/jahia" />
             <param name="schemaObjectPrefix" value="jr_fsv_"/>
+            <param name="schemaCheckEnabled" value="false"/>
         </FileSystem>
 
         <!--
-            Configures the perisistence manager to be used for persisting version state.
+            Configures the persistence manager to be used for persisting version state.
             Please note that the current versioning implementation is based on
             a 'normal' persistence manager, but this could change in future
             implementations.
@@ -112,6 +118,7 @@
  		  <param name="url" value="java:comp/env/jdbc/jahia" />
 		  <param name="schemaObjectPrefix" value="jr_v_"/>
 		  <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
+          <param name="schemaCheckEnabled" value="false"/>
 		</PersistenceManager>
 
 

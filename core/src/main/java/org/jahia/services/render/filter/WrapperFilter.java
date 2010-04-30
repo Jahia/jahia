@@ -21,18 +21,17 @@ public class WrapperFilter extends AbstractFilter {
         if (renderContext.getRequest().getParameter("ajaxcall") != null) {
             return output;
         }
-        JCRNodeWrapper node = resource.getNode();
         while (resource.hasWrapper()) {
-            String wrapper = resource.popWrapper();
+            Resource.Wrapper wrapper = resource.popWrapper();
             try {
-                Resource wrappedResource = new Resource(node, resource.getTemplateType(), null, wrapper,
+                JCRNodeWrapper wrapperNode = wrapper.node;
+                Resource wrappedResource = new Resource(wrapperNode, resource.getTemplateType(), null, wrapper.template,
                         Resource.CONFIGURATION_WRAPPER);
-                if (service.hasTemplate(node.getPrimaryNodeType(), wrapper)) {
-                    Script script = service.resolveScript(wrappedResource, renderContext);
+                if (service.hasTemplate(wrapperNode.getPrimaryNodeType(), wrapper.template)) {
                     Object wrappedContent = renderContext.getRequest().getAttribute("wrappedContent");
                     try {
                         renderContext.getRequest().setAttribute("wrappedContent", output);
-                        output = script.execute(resource, renderContext);
+                        output = RenderService.getInstance().render(wrappedResource, renderContext);
                     } finally {
                         renderContext.getRequest().setAttribute("wrappedContent", wrappedContent);
                     }

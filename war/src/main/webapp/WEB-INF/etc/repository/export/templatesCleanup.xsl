@@ -16,6 +16,7 @@
             <xsl:when test="name()='jcr:uuid'"/>
             <xsl:when test="name()='j:fullpath'"/>
             <xsl:when test="name()='j:movedFrom'"/>
+            <xsl:when test="name()='j:siteId'"/>
             <xsl:otherwise>
                 <xsl:copy/>
             </xsl:otherwise>

@@ -63,7 +63,7 @@ public class Resource {
     private String template;
     private String forcedTemplate;
     private String contextConfiguration;
-    private Stack<String> wrappers;
+    private Stack<Wrapper> wrappers;
 
     private Set<JCRNodeWrapper> dependencies;
     private List<String> missingResources;
@@ -91,7 +91,7 @@ public class Resource {
         dependencies.add(node);
 
         missingResources = new ArrayList<String>();
-        wrappers = new Stack<String>();
+        wrappers = new Stack<Wrapper>();
         options = new ArrayList<Option>();
 
     }
@@ -175,25 +175,25 @@ public class Resource {
         return !wrappers.isEmpty();
     }
 
-    public String popWrapper() {
+    public Wrapper popWrapper() {
         return wrappers.pop();
     }
 
-    public String pushWrapper(String wrapper) {
-        return wrappers.push(wrapper);
+    public Wrapper pushWrapper(String wrapper) {
+        return wrappers.push(new Wrapper(wrapper,node));
     }
 
-    public String pushBodyWrapper() {
+    public Wrapper pushBodyWrapper() {
         JCRNodeWrapper current = node;
         try {
             while (true) {
                 if (current.hasProperty("j:bodywrapper")) {
-                    return wrappers.push(current.getProperty("j:bodywrapper").getString());
+                    return wrappers.push(new Wrapper(current.getProperty("j:bodywrapper").getString(), current));
                 }
                 current = current.getParent();
             }
         } catch (ItemNotFoundException e) {
-            wrappers.push("bodywrapper");
+            wrappers.push(new Wrapper("bodywrapper", null));
         } catch (RepositoryException e) {
             logger.error("Cannot find wrapper",e);
         }
@@ -309,6 +309,16 @@ public class Resource {
         @Override
         public int hashCode() {
             return nodeType.getName().hashCode();
+        }
+    }
+
+    public class Wrapper {
+        public String template;
+        public JCRNodeWrapper node;
+
+        Wrapper(String template, JCRNodeWrapper node) {
+            this.template = template;
+            this.node = node;
         }
     }
 }

@@ -333,8 +333,8 @@ public class JahiaCndReader {
             } else if (currentTokenEquals(Lexer.MIXIN_EXTENDS)) {
                 nextToken();
                 if (currentTokenEquals(Lexer.DEFAULT)) {
-                    nextToken();
                     do {
+                        nextToken();
                         ntd.addMixinExtend(currentToken);
                         nextToken();
                     } while (currentTokenEquals(Lexer.LIST_DELIMITER));

@@ -29,7 +29,7 @@
             <a href="#">
                 <ul>
                     <c:forEach items="${newsCategories}" var="category">
-                        <li>${category.node.properties['jcr:title']}</li>
+                        <li>${category.node.properties['jcr:title'].string}</li>
                     </c:forEach>
                 </ul>
             </a>

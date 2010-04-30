@@ -28,9 +28,13 @@
 //---------------------------------------------------------
 
 [jmix:categorized] mixin
+ extends = jnt:content, jnt:page
+ itemtype = classification
  - j:defaultCategory (reference, category[autoSelectParent=false]) facetable multiple
 
 [jmix:keywords] mixin
+ extends = jnt:content, jnt:page
+ itemtype = metadata
  - j:keywords (string) multiple
 
 [jmix:thumbnail] mixin
@@ -46,6 +50,8 @@
   - j:originWS (string) protected nofulltext hidden
 
 [jmix:tagged] mixin
+ extends = jnt:content, jnt:page
+ itemtype = classification
  - j:tags (weakreference, category[autoSelectParent=false]) multiple
  - j:newTag (string) hidden indexed=no
 
@@ -132,7 +138,7 @@
 //---------------------------------------------------------
 
 [jmix:lockable] > mix:lockable mixin
- - j:locktoken (string) protected indexed=no
+ - j:locktoken (string) protected indexed=no hidden
 
 //---------------------------------------------------------
 // Workflow
@@ -312,11 +318,13 @@
 //---------------------------------------------------------
 
 [jmix:renderable] mixin
- extends = jnt:content
+ extends = jnt:content, jnt:page
  itemtype = layout
  - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:bodywrapper] mixin
+ extends = jnt:content, jnt:page
+ itemtype = layout
  - j:bodywrapper (string, choicelist[templates=bodywrapper])
 
 [jmix:renderableList] mixin
@@ -349,7 +357,7 @@
  - j:mandatoryLanguages (string) multiple nofulltext
  - j:defaultLanguage (string) nofulltext
  - j:mixLanguage (boolean) = false
- - j:sourceTemplate (weakreference)
+ - j:sourceTemplate (weakreference) hidden
  + users (nt:base) = nt:base
  + * (nt:base)
 
@@ -398,14 +406,16 @@
 //---------------------------------------------------------
 
 [jmix:googleanalytics]  mixin
-- j:gaenabaled (boolean)
+ extends = jnt:content, jnt:page
+ itemtype = option
+- j:gaenabled (boolean)
 
 //---------------------------------------------------------
 // References and links
 //---------------------------------------------------------
 
 [jmix:shareable] > mix:shareable mixin
- - j:movedFrom (string) multiple nofulltext
+ - j:movedFrom (string) multiple nofulltext hidden
 
 [jmix:link] > mix:title mixin
  - j:target (string, choicelist[resourceBundle]) nofulltext < '_blank','_parent','_self','_top'
@@ -446,7 +456,7 @@
 
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
  orderable
- - j:sourceTemplate (weakreference)
+ - j:sourceTemplate (weakreference) hidden
  + * (nt:base) = nt:base version
 
 [jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
@@ -478,6 +488,8 @@
  - j:canDeleteInContribution (boolean)
 
 [jmix:listRestrictions] mixin
+ extends = jnt:contentList
+ itemtype = template
  - j:allowedTypes (string, choicelist[nodetypes]) multiple
 
 

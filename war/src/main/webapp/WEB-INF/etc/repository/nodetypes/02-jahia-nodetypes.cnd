@@ -165,9 +165,9 @@
  - j:extractedText (string) protected hidden
  - j:lastExtractionDate (date) protected nofulltext hidden
 
-[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable
 
-[jnt:file] > nt:file, jmix:lockable, jmix:nodenameInfo, jmix:basemetadata, jmix:thumbnail, jmix:publication
+[jnt:file] > nt:file, jmix:lockable, jmix:nodenameInfo, jmix:basemetadata, jmix:thumbnail, jmix:publication, jmix:observable
 
 [jmix:image] mixin
  - j:height (long) protected

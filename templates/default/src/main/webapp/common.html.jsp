@@ -38,14 +38,14 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<c:set var="template" value="${functions:default(param.template, 'full')}"/>
+<c:set var="template" value="${functions:default(param.template, 'debug.full')}"/>
 <c:set var="level" value="${functions:default(requestScope['org.jahia.modules.level'], 1)}"/>
 <div class="render-item type-${fn:replace(currentNode.primaryNodeTypeName, ':', '-')} level-${level}">
 	<div class="name">${fn:escapeXml(currentNode.name)}</div>
 	<c:if test="${!param.skipType}">
 		<div class="type">${currentNode.primaryNodeTypeName}</div>
 	</c:if>
-	<c:if test="${!param.skipProperties && currentNode.properties.size > 0}">
+	<c:if test="${!param.skipProperties && functions:length(currentNode.properties) > 0}">
 	<utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
     <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType" scope="application"/>
 	<div class="properties">

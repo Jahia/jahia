@@ -49,6 +49,9 @@
 <strong>Path:&nbsp;</strong>${fn:escapeXml(currentNode.path)}<br/>
 <strong>ID:&nbsp;</strong>${fn:escapeXml(currentNode.identifier)}<br/>
 <strong>Types:&nbsp;</strong>${fn:escapeXml(currentNode.nodeTypes)}
+<c:if test="${jcr:isNodeType(currentNode, 'nt:file')}">
+<br/><strong>File:&nbsp;</strong><a href="<c:url value="${currentNode.url}" context='/'/>">download</a>
+</c:if>
 </p>
 <p><strong>Properties:&nbsp;</strong><a href="?showProperties=${not param.showProperties}&amp;showNodes=${param.showNodes}">${param.showProperties ? 'hide' : 'show'}</a></p>
 <c:if test="${param.showProperties}">

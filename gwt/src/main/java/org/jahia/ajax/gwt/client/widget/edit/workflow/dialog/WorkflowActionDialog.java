@@ -205,7 +205,7 @@ public class WorkflowActionDialog extends Window {
         setWidth(800);
         setHeight(300);
         setFrame(true);
-        setLayout(new RowLayout(Style.Orientation.VERTICAL));
+        setLayout(new FitLayout());
         final Window dialog = this;
         final ContentPanel panel = new ContentPanel(new VBoxLayout());
         panel.setHeading("Actions");
@@ -231,7 +231,7 @@ public class WorkflowActionDialog extends Window {
         }
 
 
-        add(panel,new RowData(1, -1, new Margins(4)));
+        add(panel);
     }
 
     private void generateActionButtons(final PropertiesEditor propertiesEditor, final GWTJahiaWorkflowAction action,

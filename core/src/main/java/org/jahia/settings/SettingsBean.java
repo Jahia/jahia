@@ -260,6 +260,14 @@ public class SettingsBean {
             jahiaEtcDiskPath = JahiaTools.convertContexted (getString("jahiaEtcDiskPath"), pathResolver);
             jahiaVarDiskPath = JahiaTools.convertContexted (getString("jahiaVarDiskPath"), pathResolver);
             tmpContentDiskPath = JahiaTools.convertContexted (getString("tmpContentDiskPath"), pathResolver);
+            try {
+                File tmpContentDisk = new File(tmpContentDiskPath);
+                if (tmpContentDisk.exists()) {
+                    tmpContentDisk.mkdirs();
+                }
+            } catch (Exception e) {
+                logger.error("Provided folder for tmpContentDiskPath is not valid. Cause: " + e.getMessage(), e);
+            }
             jahiaNewWebAppsDiskPath = JahiaTools.convertContexted (getString("jahiaNewWebAppsDiskPath"), pathResolver);
             jahiaImportsDiskPath = JahiaTools.convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);

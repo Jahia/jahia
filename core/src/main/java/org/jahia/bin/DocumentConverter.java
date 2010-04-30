@@ -76,10 +76,6 @@ public class DocumentConverter extends HttpServlet implements Controller {
             response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Conversion service is not enabled.");
         }
 
-        File tmp = new File(settingsBean.getTmpContentDiskPath());
-        if (!tmp.exists()) {
-            tmp.mkdirs();
-        }
         FileUpload fu = new FileUpload(request, settingsBean.getTmpContentDiskPath(), Integer.MAX_VALUE);
         if (fu.getFileItems().size() == 0) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No file was submitted");

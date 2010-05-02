@@ -30,41 +30,68 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.workflow;
+package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 /**
- * Represents a single history record for the workflow process instance
- * activity.
+ * Represents a dedicated tab for viewing workflow status and history
+ * information.
  * 
  * @author Sergiy Shyrkov
  */
-public class HistoryWorkflowAction extends HistoryWorkflowBase {
+public class WorkflowTabItem extends EditEngineTabItem {
+
+    private WorkflowHistoryPanel activePanel;
+
+    private Map<String, WorkflowHistoryPanel> panelsByLanguage;
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param processId the ID of the corresponding workflow process instance
-     * @param name the name of the item
-     * @param provider the provider key
+     * @param engine reference to the owner
      */
-    public HistoryWorkflowAction(String processId, String name, String provider) {
-        super(processId, name, provider);
+    public WorkflowTabItem(AbstractContentEngine engine) {
+        super(Messages.get("ece_workflow", "Workflow"), engine);
+        setIcon(ContentModelIconProvider.CONTENT_ICONS.workflow());
+        panelsByLanguage = new HashMap<String, WorkflowHistoryPanel>(1);
     }
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param processId the ID of the corresponding workflow process instance
-     * @param name the name of the item
-     * @param provider the provider key
-     * @param startTime the start point of the process instance
-     * @param endTime the end point of the process instance or <code>null</code>
-     *            if it is not completed yet
-     */
-    public HistoryWorkflowAction(String processId, String name, String provider, Date startTime, Date endTime) {
-        super(processId, name, provider, startTime, endTime);
+    @Override
+    public void create(GWTJahiaLanguage locale) {
+        if (engine.getNode() == null) {
+            return;
+        }
+
+        WorkflowHistoryPanel next = getPanel(locale.getLanguage());
+        if (activePanel != null) {
+            if (activePanel == next) {
+                // same as current --> do nothing
+                return;
+            }
+            activePanel.setVisible(false);
+        }
+        next.setVisible(true);
+        next.layout();
+        activePanel = next;
+
+        layout();
+    }
+
+    private WorkflowHistoryPanel getPanel(String locale) {
+        WorkflowHistoryPanel panel = panelsByLanguage.get(locale);
+        if (panel == null) {
+            panel = new WorkflowHistoryPanel(engine.getNode().getUUID(), locale);
+            panel.setVisible(true);
+            panelsByLanguage.put(locale, panel);
+            add(panel);
+        }
+        return panel;
     }
 
 }

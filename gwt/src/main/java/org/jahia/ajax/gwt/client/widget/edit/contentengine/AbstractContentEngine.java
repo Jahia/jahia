@@ -188,6 +188,8 @@ public abstract class AbstractContentEngine extends Window {
                 tabs.add(new UsagesTabItem(this));
             } else if (tab.equals("publication")) {
                 tabs.add(new PublicationTabItem(this));
+            } else if (tab.equals("workflow")) {
+                tabs.add(new WorkflowTabItem(this));
             } else if (tab.equals("seo")) {
                 tabs.add(new SeoTabItem(this));
             } else if (tab.equals("analytics")) {

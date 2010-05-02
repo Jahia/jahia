@@ -30,74 +30,41 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.workflow;
+package org.jahia.ajax.gwt.client.data.workflow.history;
 
 import java.util.Date;
 
 /**
- * History record for a workflow process instance.
+ * Represents a history record with a workflow process instance.
  * 
  * @author Sergiy Shyrkov
  */
-public class HistoryWorkflow extends HistoryWorkflowBase {
+public class GWTJahiaWorkflowHistoryProcess extends GWTJahiaWorkflowHistoryItem {
 
-    private String definitionKey;
-
-    private String endActivityName;
-
-    private boolean finished;
+    private static final long serialVersionUID = 7186140866566579234L;
 
     /**
      * Initializes an instance of this class.
-     * 
-     * @param id process instance ID
-     * @param name the name of the item
-     * @param provider the provider key
      */
-    public HistoryWorkflow(String id, String name, String provider) {
-        super(id, name, provider);
+    public GWTJahiaWorkflowHistoryProcess() {
+        super();
     }
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param id workflow process instance ID
-     * @param workflow process definition key
-     * @param name the name of the item
-     * @param provider the provider key
-     * @param startTime the start point of the process instance
-     * @param endTime the end point of the process instance or <code>null</code>
-     *            if it is not completed yet
-     * @param endActivityName the name of the last activity
+     * @param displayName the display name for this item
+     * @param processId the ID of the workflow process instance
+     * @param provider the workflow provider key
+     * @param finished is the workflow completed?
+     * @param startDate the start data of the process
+     * @param endDate the end date of the process; is <code>null</code> in case
+     *            the process is still running
+     * @param duration the process duration
      */
-    public HistoryWorkflow(String id, String definitionKey, String name, String provider, Date startTime, Date endTime, String endActivityName) {
-        super(id, name, provider, startTime, endTime);
-        this.definitionKey = definitionKey;
-        this.endActivityName = endActivityName;
-    }
-
-    /**
-     * @return the definitionId
-     */
-    public String getDefinitionKey() {
-        return definitionKey;
-    }
-
-    /**
-     * Returns the name of the end state that was reached when the process was
-     * ended.
-     */
-    public String getEndActivityName() {
-        return endActivityName;
-    }
-
-    /**
-     * Returns <code>true</code> if this process instance is already completed.
-     * 
-     * @return <code>true</code> if this process instance is already completed
-     */
-    public boolean isFinished() {
-        return finished;
+    public GWTJahiaWorkflowHistoryProcess(String displayName, String processId, String provider, boolean finished, Date startDate,
+            Date endDate, Long duration) {
+        super(displayName, processId, provider, finished, startDate, endDate, duration);
     }
 
 }

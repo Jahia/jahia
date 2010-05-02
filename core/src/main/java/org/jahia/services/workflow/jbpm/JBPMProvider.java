@@ -312,11 +312,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         if(user==null) {
             taskService.assignTask(task.getId(),null);
         } else {
-            if (user.getUserKey().equals(task.getAssignee())) {
-                return;
-            }
-            taskService.takeTask(task.getId(), user.getUserKey());
+        if (user.getUserKey().equals(task.getAssignee())) {
+            return;
         }
+        taskService.takeTask(task.getId(), user.getUserKey());
+    }
     }
 
     public void completeTask(String taskId, String outcome, Map<String, Object> args) {
@@ -414,6 +414,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
      */
     public List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds) {
         List<HistoryWorkflow> historyItems = new LinkedList<HistoryWorkflow>();
+        Map<String, String> processDefIdToKeyMapping = new HashMap<String, String>(1);
         for (String processId : processIds) {
             HistoryProcessInstance jbpmHistoryItem = null;
             try {
@@ -427,9 +428,20 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 continue;
             }
 
-            historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(), jbpmHistoryItem.getKey(),
-                    getKey(), jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(), jbpmHistoryItem
-                            .getEndActivityName()));
+            String processDefKey = processDefIdToKeyMapping.get(jbpmHistoryItem.getProcessDefinitionId());
+            if (processDefKey == null) {
+                ProcessDefinition def = repositoryService.createProcessDefinitionQuery().processDefinitionId(
+                        jbpmHistoryItem.getProcessDefinitionId()).uniqueResult();
+                if (def != null) {
+                    processDefKey = def.getKey();
+                    processDefIdToKeyMapping.put(jbpmHistoryItem.getProcessDefinitionId(),processDefKey);
+                } else {
+                    logger.warn("Cannot find process definition by ID " + jbpmHistoryItem.getProcessDefinitionId());
+                }
+            }
+            historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(), processDefKey,
+                    jbpmHistoryItem.getKey(), getKey(), jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(),
+                    jbpmHistoryItem.getEndActivityName()));
         }
 
         return historyItems;

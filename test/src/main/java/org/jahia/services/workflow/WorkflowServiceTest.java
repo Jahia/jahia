@@ -426,7 +426,7 @@ public class WorkflowServiceTest {
         List<HistoryWorkflow> history = service.getHistoryWorkflows(stageNode);
         assertEquals("Node should have one history record", 1, history.size());
         HistoryWorkflow historyItem = history.get(0);
-        List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getWorkflowId(), historyItem
+        List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getProcessId(), historyItem
                 .getProvider());
         assertEquals("The workflow process should have two history task records", 2, tasks.size());
     }

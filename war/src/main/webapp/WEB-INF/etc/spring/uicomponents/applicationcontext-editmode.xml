@@ -105,6 +105,7 @@
                 <ref bean="editenginestab.rights"/>
                 <ref bean="editenginestab.usages"/>
                 <ref bean="editenginestab.publication"/>
+                <ref bean="editenginestab.workflow"/>
                 <ref bean="editenginestab.seo"/>
                 <ref bean="editenginestab.analytics"/>
             </list>
@@ -123,6 +124,7 @@
                 <ref bean="editenginestab.rights"/>
                 <ref bean="editenginestab.usages"/>
                 <ref bean="editenginestab.publication"/>
+                <ref bean="editenginestab.workflow"/>
                 <ref bean="editenginestab.seo"/>
                 <ref bean="editenginestab.analytics"/>
             </list>
@@ -417,6 +419,10 @@
 
     <bean id="editenginestab.publication" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="key" value="publication"/>
+    </bean>
+
+    <bean id="editenginestab.workflow" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="key" value="workflow"/>
     </bean>
 
     <bean id="editenginestab.seo" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">

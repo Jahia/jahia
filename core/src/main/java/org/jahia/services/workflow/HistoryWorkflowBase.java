@@ -47,33 +47,33 @@ class HistoryWorkflowBase extends WorkflowBase {
 
     private Date startTime;
 
-    private String workflowId;
+    private String processId;
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param workflowId the ID of the corresponding workflow process instance
+     * @param processId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
      */
-    public HistoryWorkflowBase(String workflowId, String name, String provider) {
+    public HistoryWorkflowBase(String processId, String name, String provider) {
         super(name, provider);
-        this.workflowId = workflowId;
+        this.processId = processId;
     }
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param workflowId the ID of the corresponding workflow process instance
+     * @param processId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
      * @param startTime the start point of the process instance
      * @param endTime the end point of the process instance or <code>null</code>
      *            if it is not completed yet
      */
-    public HistoryWorkflowBase(String workflowId, String name, String provider, Date startTime, Date endTime) {
+    public HistoryWorkflowBase(String processId, String name, String provider, Date startTime, Date endTime) {
         super(name, provider);
-        this.workflowId = workflowId;
+        this.processId = processId;
         this.startTime = startTime;
         setEndTime(endTime);
     }
@@ -111,8 +111,8 @@ class HistoryWorkflowBase extends WorkflowBase {
      * 
      * @return an ID of the corresponding workflow process instance
      */
-    public String getWorkflowId() {
-        return workflowId;
+    public String getProcessId() {
+        return processId;
     }
 
     /**

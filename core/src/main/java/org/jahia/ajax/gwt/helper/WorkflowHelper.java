@@ -5,6 +5,9 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.workflow.*;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -20,11 +23,10 @@ import javax.jcr.Value;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Workflow operation helper for the GWT backend.
  * User: toto
  * Date: Feb 4, 2010
  * Time: 3:48:28 PM
- * To change this template use File | Settings | File Templates.
  */
 public class WorkflowHelper {
     private static final transient Logger logger = Logger.getLogger(WorkflowHelper.class);
@@ -252,5 +254,33 @@ public class WorkflowHelper {
             logger.error(e, e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId,
+            GWTJahiaWorkflowHistoryItem historyItem, JCRSessionWrapper session) throws GWTJahiaServiceException {
+        List<GWTJahiaWorkflowHistoryItem> history = new ArrayList<GWTJahiaWorkflowHistoryItem>();
+        try {
+            if (historyItem != null) {
+                // read tasks of the process
+                List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getProcessId(),
+                        historyItem.getProvider());
+                for (HistoryWorkflowTask wfTask : tasks) {
+                    history.add(new GWTJahiaWorkflowHistoryTask(wfTask.getOutcome(), wfTask.getProcessId(), wfTask
+                            .getProvider(), wfTask.isCompleted(), wfTask.getStartTime(), wfTask.getEndTime(), wfTask
+                            .getDuration(), wfTask.getOutcome(), wfTask.getAssignee()));
+                }
+            } else {
+                // read all processes
+                List<HistoryWorkflow> workflows = service.getHistoryWorkflows(session.getNodeByIdentifier(nodeId));
+                for (HistoryWorkflow wf : workflows) {
+                    history.add(new GWTJahiaWorkflowHistoryProcess(wf.getDefinitionKey(), wf.getProcessId(), wf
+                            .getProvider(), wf.isFinished(), wf.getStartTime(), wf.getEndTime(), wf.getDuration()));
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        return history;
     }
 }

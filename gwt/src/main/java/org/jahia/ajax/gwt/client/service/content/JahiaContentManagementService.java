@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.service.content;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -49,6 +50,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.*;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -305,6 +307,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowAction action);
 
+    List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId, GWTJahiaWorkflowHistoryItem historyItem, String locale) throws GWTJahiaServiceException;
+    
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

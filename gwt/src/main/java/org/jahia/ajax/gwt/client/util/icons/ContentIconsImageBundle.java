@@ -291,5 +291,10 @@ public interface ContentIconsImageBundle extends ImageBundle {
     @Resource("navigate_down.png")
     public AbstractImagePrototype moveDown();
 
-}
+    @Resource("workflow.png")
+    public AbstractImagePrototype workflow();
 
+    @Resource("workflow_task.png")
+    public AbstractImagePrototype workflowTask();
+
+}

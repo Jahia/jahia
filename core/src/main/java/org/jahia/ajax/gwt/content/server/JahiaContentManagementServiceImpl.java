@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.*;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -1237,6 +1238,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setAnalytics(AnalyticsHelper analyticsHelper) {
         this.analytics = analyticsHelper;
+    }
+
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId,
+            GWTJahiaWorkflowHistoryItem historyItem, String locale) throws GWTJahiaServiceException {
+        return workflow.getWorkflowHistoryItems(nodeId, historyItem, retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)));
     }
 
 }

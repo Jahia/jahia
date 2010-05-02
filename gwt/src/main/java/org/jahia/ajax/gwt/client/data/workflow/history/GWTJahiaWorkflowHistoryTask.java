@@ -30,90 +30,71 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.workflow;
+package org.jahia.ajax.gwt.client.data.workflow.history;
 
 import java.util.Date;
 
 /**
- * Represents a single history record for the workflow process instance activity
- * task.
+ * Represents a history record with a workflow process instance.
  * 
  * @author Sergiy Shyrkov
  */
-public class HistoryWorkflowTask extends HistoryWorkflowAction {
+public class GWTJahiaWorkflowHistoryTask extends GWTJahiaWorkflowHistoryItem {
 
-    private String assignee;
+    private static final long serialVersionUID = -5395327196726908181L;
 
-    private boolean completed;
-
-    private String outcome;
+    /**
+     * Initializes an instance of this class.
+     */
+    public GWTJahiaWorkflowHistoryTask() {
+        super();
+    }
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param processId the ID of the corresponding workflow process instance
-     * @param name the name of the item
-     * @param provider the provider key
-     * @param startTime the start point of the process instance
-     * @param endTime the end point of the process instance or <code>null</code>
-     *            if it is not completed yet
+     * @param displayName the display name for this item
+     * @param processId the ID of the workflow process instance
+     * @param provider the workflow provider key
+     * @param finished is the workflow completed?
+     * @param startDate the start data of the process
+     * @param endDate the end date of the process; is <code>null</code> in case
+     *            the process is still running
+     * @param duration the process duration
      * @param outcome the task outcome
      * @param asignee the key of the user, which executed the task
      */
-    public HistoryWorkflowTask(String processId, String name, String provider, Date startTime, Date endTime,
-            String outcome, String asignee) {
-        super(processId, name, provider, startTime, endTime);
-        this.outcome = outcome;
-        this.assignee = asignee;
+    public GWTJahiaWorkflowHistoryTask(String displayName, String processId, String provider, boolean finished, Date startDate, Date endDate, Long duration, String outcome, String assignee) {
+        super(displayName, processId, provider, finished, startDate, endDate, duration);
+        setOutcome(outcome);
+        setAssignee(assignee);
     }
 
     /**
      * @return the assignee
      */
     public String getAssignee() {
-        return assignee;
+        return get("assignee");
     }
 
     /**
      * @return the outcome
      */
     public String getOutcome() {
-        return outcome;
-    }
-
-    /**
-     * @return the completed
-     */
-    public boolean isCompleted() {
-        return completed;
+        return get("outcome");
     }
 
     /**
      * @param assignee the assignee to set
      */
     public void setAssignee(String assignee) {
-        this.assignee = assignee;
-    }
-
-    /**
-     * @param completed the completed to set
-     */
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    @Override
-    public void setEndTime(Date endTime) {
-        super.setEndTime(endTime);
-        if (endTime != null) {
-            completed = true;
-        }
+        set("assignee", assignee);
     }
 
     /**
      * @param outcome the outcome to set
      */
     public void setOutcome(String outcome) {
-        this.outcome = outcome;
+        set("outcome", outcome);
     }
 }

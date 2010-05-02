@@ -35,7 +35,6 @@ import java.util.Date;
 
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Item;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -48,9 +47,10 @@ import com.google.gwt.i18n.client.NumberFormat;
  */
 public class Formatter {
 
-    private final static float GB = 1073741824f;
-    private final static float MB = 1048576f;
-    private final static float KB = 1024f;
+    public static final float GB = 1073741824f;
+    public static final float MB = 1048576f;
+    public static final float KB = 1024f;
+    public static final DateTimeFormat DEFAULT_DATETIME_FORMAT = DateTimeFormat.getFormat("dd.MM.yyyy HH:mm");
 
     /**
      * Get a human readable size from a byte size.
@@ -73,7 +73,7 @@ public class Formatter {
         return dispSize.toString();
     }
 
-    /**                                                                aa
+    /**
      * Get a human readable date formatted according to a given pattern.
      *
      * @param date    the date to format
@@ -82,7 +82,18 @@ public class Formatter {
      * @see com.google.gwt.i18n.client.DateTimeFormat
      */
     public static String getFormattedDate(Date date, String pattern) {
-        return DateTimeFormat.getFormat(pattern).format(date);
+        return date != null ? (pattern != null ? DateTimeFormat.getFormat(pattern).format(date) : DEFAULT_DATETIME_FORMAT.format(date)) : "-";
+    }
+
+    /**
+     * Get a human readable date formatted according to a default pattern.
+     *
+     * @param date    the date to format
+     * @return the formatted date
+     * @see com.google.gwt.i18n.client.DateTimeFormat
+     */
+    public static String getFormattedDate(Date date) {
+        return getFormattedDate(date, null);
     }
 
     /**

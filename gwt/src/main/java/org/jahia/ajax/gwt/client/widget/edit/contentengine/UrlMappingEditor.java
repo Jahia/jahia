@@ -134,7 +134,7 @@ public class UrlMappingEditor extends LayoutContainer {
         JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale.getLanguage(),
                 new AsyncCallback<List<GWTJahiaUrlMapping>>() {
                     public void onFailure(Throwable throwable) {
-                        com.google.gwt.user.client.Window.alert(Messages.get("load_url_mappings_failed",
+                        com.google.gwt.user.client.Window.alert(Messages.get("ece_seo_load_url_mappings_failed",
                                 "Loading URL mapping failed\n\n")
                                 + throwable.getLocalizedMessage());
                         Log.error("failed", throwable);
@@ -158,7 +158,7 @@ public class UrlMappingEditor extends LayoutContainer {
 
         ColumnConfig column = new ColumnConfig();
         column.setId("url");
-        column.setHeader(Messages.get("label.url", "URL"));
+        column.setHeader(Messages.get("label_url", "URL"));
         TextField<String> text = new TextField<String>();
         text.setAllowBlank(false);
         CellEditor ce = new CellEditor(text);
@@ -171,11 +171,11 @@ public class UrlMappingEditor extends LayoutContainer {
         column.setEditor(ce);
         configs.add(column);
 
-        CheckColumnConfig defaultColumn = new SingleSelectionCheckColumnConfig("default", Messages.get("label.default", "Default"), 55);
+        CheckColumnConfig defaultColumn = new SingleSelectionCheckColumnConfig("default", Messages.get("ece_seo_default", "Default"), 55);
         defaultColumn.setEditor(new CellEditor(new CheckBox()));
         configs.add(defaultColumn);
 
-        CheckColumnConfig activeColumn = new CheckColumnConfig("active", Messages.get("label.active", "Active"), 55);
+        CheckColumnConfig activeColumn = new CheckColumnConfig("active", Messages.get("ece_seo_active", "Active"), 55);
         activeColumn.setEditor(new CellEditor(new CheckBox()));
         configs.add(activeColumn);
 
@@ -184,7 +184,7 @@ public class UrlMappingEditor extends LayoutContainer {
         column.setRenderer(new GridCellRenderer<GWTJahiaUrlMapping>() {
             public Object render(GWTJahiaUrlMapping modelData, String s, ColumnData columnData, final int rowIndex,
                     final int colIndex, ListStore<GWTJahiaUrlMapping> listStore, Grid<GWTJahiaUrlMapping> grid) {
-                Button button = new Button(Messages.get("label.remove", "Remove"),
+                Button button = new Button(Messages.get("label_remove", "Remove"),
                         new SelectionListener<ButtonEvent>() {
                             @Override
                             public void componentSelected(ButtonEvent buttonEvent) {
@@ -227,7 +227,7 @@ public class UrlMappingEditor extends LayoutContainer {
 
         FieldSet fs = new FieldSet();
         fs.setLayout(new FitLayout());
-        fs.setHeading(Messages.get("label.urlMapping", "URL mapping"));
+        fs.setHeading(Messages.get("ece_seo_urlMapping", "URL mapping"));
         fs.setCollapsible(true);
         fs.add(cp);
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<process name="1 Step Unpublication Process" xmlns="http://jbpm.org/4.3/jpdl">
+<process name="1 Step Unpublication Process" key="1-step-unpublication" xmlns="http://jbpm.org/4.3/jpdl">
     <start name="start" g="123,221,80,40">
         <transition to="first review"/>
     </start>

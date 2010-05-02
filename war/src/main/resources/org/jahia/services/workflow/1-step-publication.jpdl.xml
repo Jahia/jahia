@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<process name="1 Step Publication Process" xmlns="http://jbpm.org/4.3/jpdl">
+<process name="1 Step Publication Process" key="1-step-publication" xmlns="http://jbpm.org/4.3/jpdl">
     <start g="19,219,80,40" name="start">
         <transition to="lock"/>
     </start>

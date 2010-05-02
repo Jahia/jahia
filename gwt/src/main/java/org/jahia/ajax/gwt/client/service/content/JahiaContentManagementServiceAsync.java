@@ -45,6 +45,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.*;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 
@@ -311,4 +312,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
                           AsyncCallback asyncCallback);
 
     void getTaskComments(GWTJahiaWorkflowAction action, AsyncCallback<List<GWTJahiaWorkflowTaskComment>> async);
+
+    void getWorkflowHistoryItems(String nodeId, GWTJahiaWorkflowHistoryItem historyItem, String locale,
+            AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> callback);
 }

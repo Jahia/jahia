@@ -1476,10 +1476,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public Lock getLock() {
+    public javax.jcr.lock.Lock getLock() {
         try {
-            final Lock lock = objectNode.getLock();
-            return new Lock() {
+            final javax.jcr.lock.Lock lock = objectNode.getLock();
+            return new javax.jcr.lock.Lock() {
                 public String getLockOwner() {
                     return lock.getLockOwner();
                 }

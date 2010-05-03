@@ -236,19 +236,21 @@
             <tr class="even hidden" id="commentsrow${node.identifier}-${task.id}">
         </c:otherwise>
     </c:choose>
-    <td colspan="5">
+    <td colspan="5" class="tdTaskComments">
         <div style="display:none;" id="comments${node.identifier}-${task.id}" class="taskformdiv">
             <c:forEach items="${task.taskComments}" var="taskComment">
-                <p>
+                <p class="TasksComment">
                     <span>${taskComment.comment}</span>
-                    <span>&nbsp;at&nbsp;<fmt:formatDate dateStyle="medium" type="both" value="${taskComment.time}"/></span>
+                    <span class="TasksCommentDate">&nbsp;at&nbsp;<fmt:formatDate dateStyle="medium" type="both" value="${taskComment.time}"/></span>
                 </p>
             </c:forEach>
-            <form action="${url.base}${currentNode.path}.commentTask.do" method="post" id="commentsForm${task.id}">
+            <form class="Form-tasksComments" action="${url.base}${currentNode.path}.commentTask.do" method="post" id="commentsForm${task.id}">
                 <input type="hidden" name="task" value="${task.provider}:${task.id}"/>
-                <textarea rows="10" cols="80" name="comment"></textarea><br/>
-                <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message
-                                key="jnt_task.comments.add"/></button>
+                <textarea rows="10" cols="80" name="comment"></textarea>
+                <div class="divButton">
+                    <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message
+                                                key="jnt_task.comments.add"/></button>
+                </div>           
             </form>
             <script type="text/javascript">
                 var options${task.id} = {

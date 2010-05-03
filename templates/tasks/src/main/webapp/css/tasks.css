@@ -1,8 +1,48 @@
+#bodywrapper .hidden {
+	display:none;
+}
 #bodywrapper .taskFormConsult label.left {
 padding:0;
 }
 #bodywrapper .tableTasks caption{ 
-display:none
+	display:none
+}
+#bodywrapper div.listEditToolbar {
+	margin-bottom:0px !important;
+}
+/******************************************************************************
+*  Form comments
+******************************************************************************/
+#bodywrapper td.tdTaskComments{
+	background:#FFFFCC url(img/tdtaskcomments-bg.png) repeat scroll right top;
+	padding:24px !important;
+	padding-top:10px;
+	font-size:1.17em
+}
+
+#bodywrapper .Form-tasksComments p {
+	padding:0;
+	margin:0 0 0.2em 0;
+}
+#bodywrapper .Form-tasksComments input.field, #bodywrapper .Form-tasksComments textarea {
+	width:98%;
+	clear:both
+}
+/******************************************************************************
+*  Taskscomments
+******************************************************************************/
+#bodywrapper form.Form-tasksComments{
+	padding-top:10px;
+}
+#bodywrapper p.TasksComment{
+	font-weight:normal;
+	padding:0;
+	line-height:1.85em;
+}
+#bodywrapper .TasksCommentDate{
+	font-size:0.8em;
+	font-weight:normal;
+	color: #666666
 }
 /******************************************************************************
 *  boxtasks
@@ -24,7 +64,7 @@ display:none
 
 }
 #bodywrapper div.boxtasks-inner p {
-	padding:0px 0px 10px 0px;
+
 }
 #bodywrapper .boxtasks-inner .boxtasks-inner-border {
 	border:1px solid #fff;

@@ -17,15 +17,14 @@
 background-color:#eaeaea;
 }
 #panel .content .left, #panel .content .right {
-border-left:1px solid #666;
+border:none
 }
 #bodywrapper #toppanel ul.panellist {
-border:1px solid #666;
+border:none
 }
 #panel .content .right {
-border-right:1px solid #666;
+border:none
 }
-
 /******************************************************************************
 shortcuts
 ******************************************************************************/

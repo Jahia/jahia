@@ -10,33 +10,36 @@
        var baseUrl = '${url.base}';
 </template:addResources>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,inettuts.js"/>
-<script type="text/javascript">
-    var baseUrl = '${url.base}'
-    $(document).ready(function() {
 
-	// Expand Panel
-	$("#open").click(function(){
-        $(document).ready(function() {
+<script type="text/javascript">
+$(document).ready(function(){
+	$(".btn-slide").click(function(){
+		$(document).ready(function() {
             $.get('${url.base}${currentNode.path}.select.html',{ajaxcall:true},function(data) {
                 $("#selectWidgetsArea").html(data);
             });
         });
- 		$("div#panel").slideDown("slow");
-
+		$("#panel").slideToggle("slow");
+		$(this).toggleClass("active"); return false; 
+		
 	});
+});
+</script><!--refresh needed on class="btn-slide active" window.location='${url.base}${currentNode.path}.html';-->
 
-	// Collapse Panel
-	$("#close").click(function(){
-		$("div#panel").slideUp("slow");
-        window.location='${url.base}${currentNode.path}.html';
-	});
+<c:if test="${!renderContext.editMode}">
 
-	// Switch buttons from "Log In | Register" to "Close Panel" on click
-	$("#toggle a").click(function () {
-		$("#toggle a").toggle();
-	});
-    });
-</script>
+<div id="panel">
+	<div id="selectWidgetsArea"></div>
+</div>
+            
+
+<p class="slide"><a href="#" class="btn-slide">Add Widget</a></p>
+
+
+
+
+</c:if>
+
 <div id="columns">
 <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
     <ul id="column${column}" class="column">
@@ -44,29 +47,9 @@
     </ul>
 </c:forEach>
 </div>
-
-
-<c:if test="${!renderContext.editMode}">
-<div id="toppanel">
-    <div id="panel">
-        <div class="content clearfix">
-            <div id="selectWidgetsArea">
-            </div>
-        </div>
-    </div>
-    <div class="tab">
-        <ul class="login">
-            <li class="left">&nbsp;</li>
-            <li id="toggle">
-                <a id="open" class="open" href="#">Add Widget</a>
-                <a id="close" style="display: none;" class="close" href="#">Close Panel</a>			</li>
-            <li class="right">&nbsp;</li>
-        </ul>
-    </div> <!-- / top -->
-
-</div>
 <script type="text/javascript">
     iNettuts.addWidgetControls();
     iNettuts.makeSortable();
 </script>
-</c:if>
+
+

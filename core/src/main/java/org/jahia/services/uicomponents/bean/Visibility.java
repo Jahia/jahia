@@ -187,7 +187,7 @@ public class Visibility {
      * @return
      */
     private boolean isAllowedSitePermission(JahiaUser user,JCRSiteNode site) {
-        if (siteActionPermission != null) {
+        if (siteActionPermission != null && !user.isRoot()) {
 //            ProcessingContext processingContext = jahiaData.getProcessingContext();
 //            Object o = processingContext.getAttribute(siteActionPermission);
 //            logger.debug("Site action permission value: " + siteActionPermission);

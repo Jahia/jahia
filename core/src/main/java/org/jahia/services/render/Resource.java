@@ -37,7 +37,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.sites.JahiaSite;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
@@ -193,7 +192,7 @@ public class Resource {
                 current = current.getParent();
             }
         } catch (ItemNotFoundException e) {
-            wrappers.push(new Wrapper("bodywrapper", null));
+            wrappers.push(new Wrapper("bodywrapper", node));
         } catch (RepositoryException e) {
             logger.error("Cannot find wrapper",e);
         }

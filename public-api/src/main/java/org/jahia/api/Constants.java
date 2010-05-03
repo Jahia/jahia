@@ -31,6 +31,10 @@
  */
 package org.jahia.api;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -224,5 +228,7 @@ public class Constants {
     public static final String REVISION_NUMBER = "j:revisionNumber";
     public static final String CHECKIN_DATE = "j:checkinDate";
     
-    public static final String ALLOWED_TYPES = "j:allowedTypes";    
+    public static final String ALLOWED_TYPES = "j:allowedTypes";
+
+    public static final List<String> forbiddenPropertiesToCopy = Arrays.asList(PROCESSID);
 }

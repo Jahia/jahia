@@ -53,6 +53,8 @@ import org.jbpm.pvm.internal.model.ActivityImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.io.File;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -138,8 +140,24 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
      */
     public void afterPropertiesSet() throws Exception {
         if (processes != null && processes.size() > 0) {
+            List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
             for (String process : processes) {
-                repositoryService.createDeployment().addResourceFromClasspath(process).deploy();
+                URL resource = Thread.currentThread().getContextClassLoader().getResource(process);
+                File file = new File(resource.toURI());
+                boolean needUpdate = true;
+                for (Deployment deployment : deploymentList) {
+                    if(deployment.getName().equals(process) && deployment.getTimestamp()<=file.lastModified()) {
+                        needUpdate = false;
+                        break;
+                    }
+                }
+                if (needUpdate) {
+                    NewDeployment newDeployment = repositoryService.createDeployment();
+                    newDeployment.addResourceFromClasspath(process);
+                    newDeployment.setTimestamp(file.lastModified());
+                    newDeployment.setName(process);
+                    newDeployment.deploy();
+                }
             }
         }
     }

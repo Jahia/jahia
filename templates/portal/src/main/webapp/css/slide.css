@@ -2,7 +2,7 @@
 	outline: none;
 }
 #bodywrapper #panel {
-	background: #754c24;
+	background: #DAD0C7;
 	display: none;
 }
 #bodywrapper .slide {
@@ -59,7 +59,7 @@
 #panel {
 	width: 100%;
 	color: #333333;
-	background: #dbd1c8;
+	background: #DAD0C7;
 	overflow: hidden;
 	position: relative;
 	z-index: 3;

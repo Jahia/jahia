@@ -1,7 +1,7 @@
 /******************************************************************************
 * Portal
 ******************************************************************************/
-#bodywrapper .color-box {background:#1f3773;}
+#bodywrapper .color-box {background:#666 ;}
 #bodywrapper #columns .widget {
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
@@ -15,6 +15,9 @@
 ******************************************************************************/
 #bodywrapper  #panel {
 background-color:#eaeaea;
+}
+#bodywrapper .slide {
+	background: url(img/mod/btn-slide.gif) no-repeat center top;
 }
 #panel .content .left, #panel .content .right {
 border:none

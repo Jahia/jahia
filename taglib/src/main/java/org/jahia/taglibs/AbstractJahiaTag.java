@@ -597,7 +597,9 @@ public class AbstractJahiaTag extends BodyTagSupport {
         addGwtDictionaryMessage("label_workflowPerNodeType", getJahiaInternalResourceValue("label.workflowPerNodeType"));
         addGwtDictionaryMessage("label_nodeType", getJahiaInternalResourceValue("org.jahia.engines.contentmanager.addContentWizard.nameCard.nodeType"));
         addGwtDictionaryMessage("label_add", getJahiaInternalResourceValue("label.add"));
-
+        addGwtDictionaryMessage("label_workflow_taskStartTime", getJahiaInternalResourceValue("label.workflow.taskStartTime"));
+        addGwtDictionaryMessage("label_workflow_titleOfInstance", getJahiaInternalResourceValue("label.workflow.titleOfInstance"));
+        addGwtDictionaryMessage("label_workflow_dateOflastComment", getJahiaInternalResourceValue("label.workflow.dateOfLastComment"));
     }
 
     private String getJahiaInternalResource(String resourceName, Locale uiLocale, Locale currentLocale) {

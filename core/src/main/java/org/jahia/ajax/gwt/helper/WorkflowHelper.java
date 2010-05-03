@@ -70,6 +70,8 @@ public class WorkflowHelper {
                                 action.setName(workflowAction.getName());
                                 action.setId(workflowTask.getId());
                                 action.setFormResourceName(workflowTask.getFormResourceName());
+                                action.setCreateTime(workflowTask.getCreateTime());
+                                action.setProcessId(workflowTask.getProcessId());
                                 Map<String, Object> map = workflowTask.getVariables();
                                 Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>(map.size());
                                 for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -84,6 +86,8 @@ public class WorkflowHelper {
                                     }
                                 }
                                 action.setVariables(properties);
+                                action.setLocale(map.get("locale").toString());
+                                action.setWorkspace(map.get("workspace").toString());
                                 if ((participation.getJahiaPrincipal() instanceof JahiaGroup && ((JahiaGroup) participation.getJahiaPrincipal()).isMember(
                                         session.getUser())) || (participation.getJahiaPrincipal() instanceof JahiaUser && ((JahiaUser) participation.getJahiaPrincipal()).getUserKey().equals(
                                         session.getUser().getUserKey()))) {
@@ -282,5 +286,9 @@ public class WorkflowHelper {
             throw new GWTJahiaServiceException(e.getMessage());
         }
         return history;
+    }
+
+    public List<WorkflowTask> getAvailableTasksForUser(JahiaUser user) {
+        return service.getTasksForUser(user);
     }
 }

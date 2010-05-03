@@ -315,4 +315,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getWorkflowHistoryItems(String nodeId, GWTJahiaWorkflowHistoryItem historyItem, String locale,
             AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> callback);
+
+    void getTasksForUser(AsyncCallback<List<GWTJahiaNode>> async);
 }

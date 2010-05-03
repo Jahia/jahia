@@ -4,6 +4,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -76,5 +77,37 @@ public class GWTJahiaWorkflowAction extends BaseModelData implements Serializabl
 
     public Map<String, GWTJahiaNodeProperty> getVariables() {
         return properties;
+    }
+
+    public void setCreateTime(Date createTime) {
+        set("createTime",createTime);
+    }
+    
+    public Date getCreateTime() {
+        return get("createTime");
+    }
+
+    public void setLocale(String locale) {
+        set("locale",locale);
+    }
+
+    public String getLocale() {
+        return get("locale");
+    }
+
+    public void setWorkspace(String workspace) {
+        set("workspace",workspace);
+    }
+
+    public String getWorkspace() {
+        return get("workspace");
+    }
+
+    public void setProcessId(String processId) {
+        set("processId",processId);
+    }
+
+    public String getProcessId() {
+        return get("processId");
     }
 }

@@ -4,26 +4,18 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowNodeTypeConfig;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,6 +33,8 @@ public class WorkflowManagerEngine extends Window {
 
     private WorkflowContentTypePanel mainPanel;
 
+    private WorkflowInstancesPanel instancesPanel;
+
     public WorkflowManagerEngine(Linker linker) {
         super();
         this.linker = linker;
@@ -51,22 +45,43 @@ public class WorkflowManagerEngine extends Window {
      * init
      */
     private void init() {
-        setHeading(Messages.get("label_workflowPerNodeType","Workflow per content type set-up"));
+        setHeading(Messages.get("label_workflowPerNodeType", "Workflow per content type set-up"));
         setLayout(new FitLayout());
         setSize(800, 600);
-        JahiaContentManagementService.App.getInstance().getWorkflowNodeTypeConfig(new AsyncCallback<GWTJahiaWorkflowNodeTypeConfig>() {
-            public void onSuccess(final GWTJahiaWorkflowNodeTypeConfig config) {
-                mainPanel = new WorkflowContentTypePanel(linker, config.getWorkflowDefinitions(), config.getContentTypeList(),config.getWorflowNodeTypes());
-                add(mainPanel);
-                layout();
+        ToolBar toolBar = new ButtonBar();
+        Button button = new Button(Messages.get("label_workflowPerNodeType", "Workflow per content type set-up"));
+        button.setHeight(BUTTON_HEIGHT);
+        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                if(mainPanel==null || !mainPanel.isVisible()) {
+                JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+                async.getWorkflowNodeTypeConfig(new AsyncCallback<GWTJahiaWorkflowNodeTypeConfig>() {
+                    public void onSuccess(final GWTJahiaWorkflowNodeTypeConfig config) {
+                        instancesPanel.hide();;
+                        mainPanel = new WorkflowContentTypePanel(linker, config.getWorkflowDefinitions(),
+                                                                 config.getContentTypeList(),
+                                                                 config.getWorflowNodeTypes());
+                        add(mainPanel);
+                        layout();
 
-            }
+                    }
 
-            public void onFailure(Throwable throwable) {
-                Log.error(throwable.getMessage(), throwable);
+                    public void onFailure(Throwable throwable) {
+                        Log.error(throwable.getMessage(), throwable);
+                    }
+                });
+                } else {
+                    mainPanel.hide();
+                    instancesPanel.show();
+                }
             }
         });
-
+        toolBar.add(button);
+        //
+        instancesPanel = new WorkflowInstancesPanel(linker);
+        add(instancesPanel);
+        setTopComponent(toolBar);
         setFooter();
 
     }
@@ -103,17 +118,21 @@ public class WorkflowManagerEngine extends Window {
      */
     private class SaveSelectionListener extends SelectionListener<ButtonEvent> {
         public void componentSelected(ButtonEvent event) {
-            JahiaContentManagementService.App.getInstance().updateNodeTypeWorkflowRule(mainPanel.getWorflowNodeType(), mainPanel.getWorflowNodeTypeToRemove(), new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
-                    com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") + throwable.getLocalizedMessage());
-                    Log.error("failed", throwable);
-                }
+            if (mainPanel != null) {
+                JahiaContentManagementService.App.getInstance().updateNodeTypeWorkflowRule(
+                        mainPanel.getWorflowNodeType(), mainPanel.getWorflowNodeTypeToRemove(), new AsyncCallback() {
+                            public void onFailure(Throwable throwable) {
+                                com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed",
+                                                                                     "Properties save failed\n\n") + throwable.getLocalizedMessage());
+                                Log.error("failed", throwable);
+                            }
 
-                public void onSuccess(Object o) {
-                    WorkflowManagerEngine.this.hide();
-                    Log.debug("finish updating nodeType Workflow Rule");
-                }
-            });
+                            public void onSuccess(Object o) {
+                                WorkflowManagerEngine.this.hide();
+                                Log.debug("finish updating nodeType Workflow Rule");
+                            }
+                        });
+            }
         }
 
     }

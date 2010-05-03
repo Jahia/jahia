@@ -308,6 +308,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowAction action);
 
     List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId, GWTJahiaWorkflowHistoryItem historyItem, String locale) throws GWTJahiaServiceException;
+
+    List<GWTJahiaNode> getTasksForUser() throws GWTJahiaServiceException;
     
 // -------------------------- INNER CLASSES --------------------------
 

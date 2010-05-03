@@ -66,6 +66,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.WorkflowTask;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
@@ -907,6 +908,23 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return workflow.getTaskComments(action);
     }
 
+    public List<GWTJahiaNode> getTasksForUser() throws GWTJahiaServiceException {
+        JCRSessionWrapper session = retrieveCurrentSession();
+        List<WorkflowTask> tasks = workflow.getAvailableTasksForUser(session.getUser());
+        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(tasks.size());
+        for (WorkflowTask task : tasks) {
+            try {
+                JCRNodeWrapper node = session.getNodeByUUID((String) task.getVariables().get("nodeId"));
+                GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node);
+                gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getUUID(), false));
+                gwtJahiaNode.setWorkflowInfo(getWorkflowInfo(gwtJahiaNode.getPath()));
+                nodes.add(gwtJahiaNode);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return nodes;
+    }
     /**
      * Publish the specified path.
      *

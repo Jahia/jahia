@@ -33,7 +33,7 @@
                 <div class="eventsResume">
                     ${currentNode.properties.body.string}</div>
                     <div class="eventsMeta">
-        	    <span class="categoryLabel"><fmt:message key='category'/>:</span>
+        	    <span class="categoryLabel"><fmt:message key='label.categories'/>:</span>
                         <jcr:nodeProperty node="${currentNode}" name="j:defaultCategory" var="cat"/>
                         <c:if test="${cat != null}">
                                     <c:forEach items="${cat}" var="category">

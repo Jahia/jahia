@@ -36,9 +36,9 @@
         <p class="peopleEmail"><a href='mailto:${currentNode.properties.email.string}'>${currentNode.properties.email.string}</a></p>
 
         <div class="peopleAction">
-			<a class="peopleEnlarge" href="${picture.node.url}" rel="facebox"> <fmt:message key='web_templates_peopleContainer.peopleViewFullSize'/></a>
+			<a class="peopleEnlarge" href="${picture.node.url}" rel="facebox"> <fmt:message key='FullSizePicture'/></a>
             <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer('${currentNode.identifier}');"><fmt:message
-                    key='web_templates_peopleContainer.biography'/></a>
+                    key='jahia.people.biography'/></a>
         </div>
          <div id="collapseBox${currentNode.identifier}" class="collapsible" >
             <jcr:nodeProperty node="${currentNode}" name="biography"/>

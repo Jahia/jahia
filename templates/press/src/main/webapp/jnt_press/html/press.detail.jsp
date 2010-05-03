@@ -20,7 +20,7 @@
 </c:if>
 <c:if test="${!empty pressReleaseContainerCatKeys }">
             <span class="pressRealeseCategory">
-                <fmt:message key='label.category'/> : <ui:displayCategoryTitle
+                <strong><fmt:message key='label.categories'/></strong> : <ui:displayCategoryTitle
                     categoryKeys="${pressReleaseContainerCatKeys}"/>
             </span>
 </c:if>

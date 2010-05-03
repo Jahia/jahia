@@ -26,12 +26,11 @@ import java.util.List;
  */
 public class GWTJahiaNodeTreeFactory {
     private boolean init = true;
-
     protected String repository;
     protected String nodeTypes;
+    protected String folderTypes;
     protected String filters;
     protected String mimeTypes;
-    protected boolean noFolders;
     protected List<String> selectedPath = new ArrayList<String>();
     protected List<String> openPath = new ArrayList<String>();
     protected boolean saveOpenPath = false;
@@ -44,7 +43,6 @@ public class GWTJahiaNodeTreeFactory {
         nodeTypes = "";
         filters = "";
         mimeTypes = "";
-        noFolders = true;
     }
 
     public GWTJahiaNodeTreeLoader getLoader() {
@@ -53,6 +51,8 @@ public class GWTJahiaNodeTreeFactory {
         }
         return loader;
     }
+
+
 
     public TreeStore<GWTJahiaNode> getStore() {
         if (store == null) {
@@ -85,6 +85,10 @@ public class GWTJahiaNodeTreeFactory {
         this.nodeTypes = nodeTypes;
     }
 
+    public void setFolderTypes(String folderTypes) {
+        folderTypes = nodeTypes;
+    }
+
     public void setFilters(String filters) {
         this.filters = filters;
     }
@@ -93,9 +97,7 @@ public class GWTJahiaNodeTreeFactory {
         this.mimeTypes = mimeTypes;
     }
 
-    public void setNoFolders(boolean noFolders) {
-        this.noFolders = noFolders;
-    }
+
 
     public void setSelectedPath(String selectedPath) {
         this.selectedPath.add(selectedPath);
@@ -215,19 +217,17 @@ public class GWTJahiaNodeTreeFactory {
         @Override
         protected void load(Object currentPage, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
             if (currentPage == null) {
-                JahiaContentManagementService.App.getInstance().getRoot(repository, nodeTypes, mimeTypes, filters, selectedPath, openPath, listAsyncCallback);
+                JahiaContentManagementService.App.getInstance().getRoot(repository, nodeTypes+","+folderTypes, mimeTypes, filters, selectedPath, openPath, listAsyncCallback);
             } else {
-                GWTJahiaNode folder = (GWTJahiaNode) currentPage;
-                if (folder.isExpandOnLoad()) {
+                GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) currentPage;
+                if (gwtJahiaNode.isExpandOnLoad()) {
                     List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
-                    for (ModelData modelData : folder.getChildren()) {
+                    for (ModelData modelData : gwtJahiaNode.getChildren()) {
                         list.add((GWTJahiaNode) modelData);
                     }
                     listAsyncCallback.onSuccess(list);
                 } else {
-                    JahiaContentManagementService.App.getInstance().ls(folder,
-                            nodeTypes, mimeTypes, filters,
-                            noFolders, listAsyncCallback);
+                    JahiaContentManagementService.App.getInstance().ls(gwtJahiaNode,nodeTypes+","+folderTypes, mimeTypes, filters, listAsyncCallback);
                 }
             }
         }

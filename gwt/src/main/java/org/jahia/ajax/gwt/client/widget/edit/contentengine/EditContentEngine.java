@@ -87,6 +87,17 @@ public class EditContentEngine extends AbstractContentEngine {
 
         //setTopComponent(toolBar);
     }
+    
+    public EditContentEngine(GWTJahiaNode node,GWTEngine engineConfig, Linker linker) {
+        super(engineConfig,linker);
+        contentPath = node.getPath();
+        nodeName = node.getName();
+        heading = "Edit " + nodeName + " (" + node.getCurrentVersion() + ")";
+        loadNode(true);
+        init();
+
+        //setTopComponent(toolBar);
+    }
 
     public static GWTEngine getEditConfig(GWTJahiaNode node, GWTEditConfiguration config) {
         for (GWTEngine engine : config.getEditEngines()) {

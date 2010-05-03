@@ -13,7 +13,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -35,10 +34,8 @@ import java.util.Map;
 public abstract class AbstractContentEngine extends Window {
     public static final int BUTTON_HEIGHT = 24;
 
-    protected static JahiaContentManagementServiceAsync contentService =
-            JahiaContentManagementService.App.getInstance();
-    protected static JahiaContentDefinitionServiceAsync definitionService =
-            JahiaContentDefinitionService.App.getInstance();
+    protected static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
+    protected static JahiaContentDefinitionServiceAsync definitionService = JahiaContentDefinitionService.App.getInstance();
     protected GWTEngine config;
     protected Linker linker = null;
     protected List<GWTJahiaNodeType> nodeTypes;

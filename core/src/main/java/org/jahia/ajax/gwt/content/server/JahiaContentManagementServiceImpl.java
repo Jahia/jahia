@@ -204,12 +204,21 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return uiConfig.getGWTEditConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(), name);
     }
 
-    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
-        return navigation.ls(folder, nodeTypes, mimeTypes, filters, noFolders, true, retrieveCurrentSession());
+    /**
+     * Retrive all chidlren nodes
+     * @param parentNode
+     * @param nodeTypes
+     * @param mimeTypes
+     * @param filters
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public List<GWTJahiaNode> ls(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException {
+        return navigation.ls(parentNode, nodeTypes, mimeTypes, filters, retrieveCurrentSession());
     }
 
-    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders) throws GWTJahiaServiceException {
-        return new BaseListLoadResult<GWTJahiaNode>(navigation.ls(folder, nodeTypes, mimeTypes, filters, noFolders, true, retrieveCurrentSession()));
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException {
+        return new BaseListLoadResult<GWTJahiaNode>(ls(parentNode, nodeTypes, mimeTypes, filters));
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException {

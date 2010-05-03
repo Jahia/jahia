@@ -51,7 +51,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                 JahiaContentManagementService.App.getInstance()
-                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:portlet", null, null, true, listAsyncCallback);
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:portlet", null, null, listAsyncCallback);
             }
         };
 

@@ -88,9 +88,9 @@ public class RepositoryTab extends ContentPanel {
         // tree component
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repositoryType);
         factory.setNodeTypes(config.getFolderTypes());
+        factory.setFolderTypes(config.getFolderTypes());
         factory.setMimeTypes(config.getMimeTypes());
         factory.setFilters(config.getFilters());
-        factory.setNoFolders(!config.isAllowCollections());
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();
@@ -181,10 +181,10 @@ public class RepositoryTab extends ContentPanel {
     public void openAndSelectItem(Object item) {
         if (item != null && this.isExpanded()) {
             GWTJahiaNode gItem = store.findModel((GWTJahiaNode) item);
-            Log.debug("expand: "+gItem.getPath());
+            Log.debug("expand: " + gItem.getPath());
 //            m_tree.addToOpenPaths(gItem);
-            m_tree.setExpanded(gItem,true);
-            m_tree.getSelectionModel().select(gItem,false);
+            m_tree.setExpanded(gItem, true);
+            m_tree.getSelectionModel().select(gItem, false);
         }
     }
 

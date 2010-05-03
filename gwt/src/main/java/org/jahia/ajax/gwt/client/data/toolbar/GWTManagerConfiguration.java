@@ -237,14 +237,6 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         this.displayProvider = displayProvider;
     }
 
-    public boolean isAllowCollections() {
-        return allowCollections;
-    }
-
-    public void setAllowCollections(boolean allowConnections) {
-        this.allowCollections = allowConnections;
-    }
-
 
     public GWTJahiaToolbarSet getToolbarSet() {
         return toolbarSet;

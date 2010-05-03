@@ -6,7 +6,7 @@
 
     <!-- file manager -->
     <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint,jnt:portlet"/>
+        <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
         <property name="toolbarSet" ref="document-manager"/>
         <property name="enableTextMenu" value="true"/>
@@ -50,8 +50,8 @@
 
     <!-- mashup manager -->
     <bean id="mashupmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="nt:folder,jnt:mountPoint,jnt:portlet"/>
-        <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
+        <property name="nodeTypes" value="jnt:portlet"/>
+        <property name="folderTypes" value="jnt:portletList"/>
         <property name="toolbarSet" ref="mashup-manager"/>
         <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
@@ -92,8 +92,8 @@
 
     <!-- category manager -->
     <bean id="categorymanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="nt:folder,jnt:mountPoint,jnt:portlet"/>
-        <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
+        <property name="nodeTypes" value="jnt:category"/>
+        <property name="folderTypes" value="jnt:category"/>
         <property name="toolbarSet" ref="category-manager"/>
         <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
@@ -219,7 +219,7 @@
     <bean id="portletdefinitionmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
 
         <property name="nodeTypes" value="jnt:portletDefinitions"/>
-        <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
+        <property name="folderTypes" value="nt:folder"/>
         <property name="toolbarSet" ref="portlet-definition-manager"/>
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="false"/>
@@ -259,7 +259,7 @@
 
     <!-- filepicker -->
     <bean id="filepicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint,jnt:portlet"/>
+        <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
         <property name="enableTextMenu" value="false"/>
         <property name="toolbarSet" ref="file-picker"/>
@@ -326,9 +326,8 @@
 
     <!-- file manager -->
     <bean id="linkpicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-
         <property name="nodeTypes" value="jnt:page"/>
-        <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
+        <property name="folderTypes" value="nt:folder"/>
         <property name="toolbarSet" ref="file-picker"/>
         <property name="enableTextMenu" value="false"/>
         <property name="hideLeftPanel" value="true"/>
@@ -358,9 +357,8 @@
 
     <!-- file manager -->
     <bean id="mashuppicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-
-        <property name="nodeTypes" value="nt:folder,jnt:mountPoint,jnt:portlet"/>
-        <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
+        <property name="nodeTypes" value="jnt:portlet"/>
+        <property name="folderTypes" value="jnt:portletList"/>
         <property name="toolbarSet" ref="mashup-picker"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
@@ -496,6 +494,8 @@
 
     <!-- sitemanager manager -->
     <bean id="sitemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="jnt:page"/>
+        <property name="folderTypes" value="jnt:page"/> 
         <property name="enableTextMenu" value="true"/>
         <property name="displaySize" value="false"/>
         <property name="displayDate" value="false"/>

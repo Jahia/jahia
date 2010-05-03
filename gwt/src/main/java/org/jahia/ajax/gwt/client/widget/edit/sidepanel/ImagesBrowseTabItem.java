@@ -54,7 +54,7 @@ class ImagesBrowseTabItem extends BrowseTabItem {
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                 JahiaContentManagementService.App.getInstance()
-                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", "image/*", null, true, listAsyncCallback);
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", "image/*", null, listAsyncCallback);
             }
         };
 

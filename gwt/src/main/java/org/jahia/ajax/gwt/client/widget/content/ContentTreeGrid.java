@@ -151,9 +151,9 @@ public class ContentTreeGrid extends ContentPanel {
 
             GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repositoryType != null ? repositoryType : JCRClientUtils.GLOBAL_REPOSITORY);
             factory.setNodeTypes(configuration.getNodeTypes());
+            factory.setFolderTypes(configuration.getFolderTypes());
             factory.setMimeTypes(configuration.getMimeTypes());
             factory.setFilters(configuration.getFilters());
-            factory.setNoFolders(!configuration.isAllowCollections());
             List<String> selectedPath = new ArrayList<String>();
             for (GWTJahiaNode node : selectedNodes) {
                 selectedPath.add(node.getPath());

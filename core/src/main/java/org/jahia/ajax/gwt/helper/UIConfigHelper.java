@@ -540,7 +540,6 @@ public class UIConfigHelper {
                 gwtConfig.setDisplayProvider(config.isDisplayProvider());
                 gwtConfig.setUseCheckboxForSelection(config.isUseCheckboxForSelection());
                 gwtConfig.setExpandRoot(config.isExpandRoot());
-                gwtConfig.setAllowCollections(config.isAllowCollections());
                 gwtConfig.setDisplaySearch(config.isDisplaySearch());
                 gwtConfig.setDisplaySearchInPage(config.isDisplaySearchInPage());
                 gwtConfig.setDisplaySearchInTag(config.isDisplaySearchInTag());

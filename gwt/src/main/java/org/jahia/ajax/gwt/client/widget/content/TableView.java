@@ -131,8 +131,8 @@ public class TableView extends TopRightComponent {
         RpcProxy<ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getPath());
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), !configuration.isAllowCollections(), listAsyncCallback);
+                Log.debug("retrieving children with type "+ configuration.getNodeTypes()+" of " + ((GWTJahiaNode) gwtJahiaFolder).getPath());
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes()+","+configuration.getFolderTypes(), configuration.getMimeTypes(), configuration.getFilters(), listAsyncCallback);
             }
         };
 

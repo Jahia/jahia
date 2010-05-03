@@ -101,20 +101,18 @@ public class NavigationHelper {
     /**
      * like ls unix command on the folder
      *
-     * @param folder
+     * @param gwtParentNode
      * @param nodeTypes
      * @param mimeTypes
-     * @param filters
-     * @param noCollection
-     * @param viewTemplateAreas
+     * @param nameFilters
      * @param currentUserSession
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noCollection, boolean viewTemplateAreas, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, String nodeTypes, String mimeTypes, String nameFilters, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         JCRNodeWrapper node = null;
         try {
-            node = currentUserSession.getNode(folder != null ? folder.getPath() : "/");
+            node = currentUserSession.getNode(gwtParentNode != null ? gwtParentNode.getPath() : "/");
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
         }
@@ -128,10 +126,8 @@ public class NavigationHelper {
         if (!node.hasPermission(JCRNodeWrapper.READ)) {
             throw new GWTJahiaServiceException(new StringBuilder("User ").append(currentUserSession.getUser().getUsername()).append(" has no read access to ").append(node.getName()).toString());
         }
-        //List<JCRNodeWrapper> childrenNodes = getNodesAsList(node);
-        NodeIterator nodesIterator = null;
         try {
-            nodesIterator = node.getNodes();
+            final NodeIterator nodesIterator = node.getNodes();
 
             if (nodesIterator == null) {
                 throw new GWTJahiaServiceException("Children list is null");
@@ -141,84 +137,61 @@ public class NavigationHelper {
             }
             String[] nodeTypesToApply = getFiltersToApply(nodeTypes);
             String[] mimeTypesToMatch = getFiltersToApply(mimeTypes);
-            String[] filtersToApply = getFiltersToApply(filters);
-            List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
-            boolean displayTags = nodeTypes != null && nodeTypes.contains(JCRClientUtils.TAG_NODETYPES);
+            String[] namefiltersToApply = getFiltersToApply(nameFilters);
+
+            final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
+            final boolean displayTags = nodeTypes != null && nodeTypes.contains(JCRClientUtils.TAG_NODETYPES);
 
             while (nodesIterator.hasNext()) {
-                JCRNodeWrapper f = (JCRNodeWrapper) nodesIterator.nextNode();
-                // for (JCRNodeWrapper f : childrenNodes) {
+                JCRNodeWrapper childNode = (JCRNodeWrapper) nodesIterator.nextNode();
                 if (logger.isDebugEnabled()) {
-                    logger.debug(new StringBuilder("processing ").append(f.getPath()).toString());
+                    logger.debug(new StringBuilder("processing ").append(childNode.getPath()).toString());
                 }
 
                 // in case of a folder, it allows to know if the node is selectable
-                boolean matchVisibilityFilter = f.isVisible();
-                boolean matchNodeType = matchesNodeType(f, nodeTypesToApply);
-                // collection condition is available only if the parent node is not a nt:query. Else, the node has to mactch the node type condition
-                boolean matchCollectionFilter = !noCollection && /*f.isCollection()*/ true && !node.isNodeType("nt:query");
-                if (matchVisibilityFilter && ((matchNodeType || matchCollectionFilter) )) {
+                boolean matchVisibilityFilter = childNode.isVisible();
+                boolean matchNodeType = matchesNodeType(childNode, nodeTypesToApply);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("----------");
+                    for (String s : nodeTypesToApply) {
+                        logger.debug("Node " + childNode.getPath() + " match with " + s + "? " + childNode.isNodeType(s) + "[" + matchNodeType + "]");
+                    }
+                    logger.debug("----------");
+                }
+                boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypesToMatch);
+                boolean nameFilter = matchesFilters(childNode.getName(), namefiltersToApply);
 
-                    // in case of a folder, it allows to know if the node is selectable
-                    boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(f.getName(), filtersToApply) && matchesMimeTypeFilters(f.isFile(), f.getFileContent().getContentType(), mimeTypesToMatch);
+                // collection condition is available only if the parent node is not a nt:query. Else, the node has to matcch the node type condition
+                if (matchVisibilityFilter && matchNodeType && mimeTypeFilter && nameFilter) {
 
-                    //  boolean matchFilters = matchesMimeTypeFilters(isFile, isFile ? f.getFileContent().getContentType() : null, mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply);
-                    if (/*f.isCollection()*/true || matchFilter) {
-                        GWTJahiaNode theNode = getGWTJahiaNode(f);
-                        theNode.setMatchFilters(matchNodeType && matchFilter);
+
+                    GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode);
+                    gwtChildNode.setMatchFilters(matchNodeType && nameFilter);
+                    try {
+                        gwtChildNode.setPublicationInfo(publication.getPublicationInfo(childNode.getIdentifier(), Collections.singleton(currentUserSession.getLocale().toString()), false, currentUserSession));
+                    } catch (UnsupportedRepositoryOperationException e) {
+                        // do nothing
+                        logger.debug(e.getMessage());
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    } catch (GWTJahiaServiceException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+
+                    // case of display tag
+                    if (displayTags) {
                         try {
-                            theNode.setPublicationInfo(publication.getPublicationInfo(f.getIdentifier(), Collections.singleton(currentUserSession.getLocale().toString()), false, currentUserSession));
-                        } catch (UnsupportedRepositoryOperationException e) {
-                            // do nothing
+                            gwtChildNode.set("count", JCRContentUtils.size(childNode.getWeakReferences()));
                         } catch (RepositoryException e) {
-                            logger.error(e.getMessage(), e);
-                        } catch (GWTJahiaServiceException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                        if (displayTags) {
-                            try {
-                                theNode.set("count", JCRContentUtils.size(f.getWeakReferences()));
-                            } catch (RepositoryException e) {
-                                logger.warn("Unable to count node references for node: " + f.getPath(), e);
-                            }
-                        }
-
-                        result.add(theNode);
-                    } else {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(new StringBuilder(f.getPath()).append(" did not match the filters or is not a collection"));
+                            logger.warn("Unable to count node references for node: " + childNode.getPath(), e);
                         }
                     }
+
+                    gwtNodeChildren.add(gwtChildNode);
                 }
             }
 
-//        try {
-//            if (!displayAllVirtualSites && viewTemplateAreas && node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
-//                Resource r = new Resource(node, "html", null, null);
-//                RenderContext renderContext = new RenderContext(((ParamBean) context).getRequest(), ((ParamBean) context).getResponse(), user);
-//                renderContext.setSite(context.getSite());
-//                renderContext.setSiteNode(JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale).getNode("/sites/" + context.getSite().getSiteKey()));
-//                renderContext.setIncludeSubModules(false);
-//            renderContext.setMainResource(r);
-//                renderService.render(r, renderContext);
-//                List<String> l = r.getMissingResources();
-//                if (l != null) {
-//                    for (String s : l) {
-//                        if (!node.hasNode(s)) {
-//                            final GWTJahiaNode o = new GWTJahiaNode(null, s, "placeholder " + s, node.getProvider().decodeInternalName(node.getPath()) + "/" + s, null, null, null, null, null, null, node.isWriteable(), false, false, false, null, false);
-//                            o.setExt("icon-placeholder");
-//                            result.add(o);
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (RepositoryException e) {
-//            logger.error(e.getMessage(), e);
-//        } catch (RenderException e) {
-//            logger.error(e.getMessage(), e);
-//        }
-
-            return result;
+            return gwtNodeChildren;
         } catch (RepositoryException e) {
             logger.error(e, e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -253,22 +226,22 @@ public class NavigationHelper {
         return matches;
     }
 
-    public boolean matchesMimeTypeFilters(boolean isFile, String mimeType, String[] filters) {
+    public boolean matchesMimeTypeFilters(JCRNodeWrapper node, String[] filters) {
         // no filters
         if (filters == null || filters.length == 0) {
             return true;
         }
 
         // there are filters, but not a file
-        if (!isFile) {
+        if (!node.isFile()) {
             return false;
         }
 
         // do filter
-        return matchesFilters(mimeType, filters);
+        return matchesFilters(node.getFileContent().getContentType(), filters);
     }
 
-    public boolean matchesNodeType(Node node, String[] nodeTypes) {
+    public boolean matchesNodeType(JCRNodeWrapper node, String[] nodeTypes) {
         if (nodeTypes.length == 0) {
             return true;
         }
@@ -405,17 +378,17 @@ public class NavigationHelper {
                 } else if (key.equals(JCRClientUtils.SITE_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/sites", currentUserSession);
                     if (root != null) {
-                        List<GWTJahiaNode> list = ls(root, "jnt:virtualsite", null,null,false,false, currentUserSession);
+                        List<GWTJahiaNode> list = ls(root, "jnt:virtualsite", null, null, currentUserSession);
                         userNodes.addAll(list);
                     }
                 } else if (key.equals(JCRClientUtils.TEMPLATES_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/templatesSet", currentUserSession);
                     if (root != null) {
-                        List<GWTJahiaNode> list = ls(root, "jnt:templatesSetFolder", null,null,false,false, currentUserSession);
+                        List<GWTJahiaNode> list = ls(root, "jnt:templatesSetFolder", null, null, currentUserSession);
                         userNodes.addAll(list);
                     }
                 } else if (key.equals(JCRClientUtils.REMOTEPUBLICATIONS_REPOSITORY)) {
-                    GWTJahiaNode root = getNode("/remotePublications",currentUserSession);
+                    GWTJahiaNode root = getNode("/remotePublications", currentUserSession);
                     if (root != null) {
                         root.setDisplayName("remotePublications");
                         userNodes.add(root);
@@ -427,7 +400,7 @@ public class NavigationHelper {
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
             }
         }
         List<GWTJahiaNode> allNodes = new ArrayList<GWTJahiaNode>(userNodes);
@@ -445,7 +418,7 @@ public class NavigationHelper {
                         GWTJahiaNode node = allNodes.get(i);
                         if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad() && !node.isFile()) {
                             node.setExpandOnLoad(true);
-                            List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, true, false, currentUserSession);
+                            List<GWTJahiaNode> list = ls(node, nodeTypes, mimeTypes, filters, currentUserSession);
                             for (int j = 0; j < list.size(); j++) {
                                 node.insert(list.get(j), j);
                                 allNodes.add(list.get(j));
@@ -596,8 +569,8 @@ public class NavigationHelper {
             if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
                 // use for pickers
                 boolean isFile = n.isFile();
-                boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(isFile, isFile ? n.getFileContent().getContentType() : null, mimeTypesToMatch);
-                if (matchFilter/* || n.isCollection()*/) {
+                boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n, mimeTypesToMatch);
+                if (matchFilter) {
                     GWTJahiaNode node = getGWTJahiaNode(n);
                     node.setMatchFilters(matchFilter);
                     result.add(node);
@@ -755,7 +728,7 @@ public class NavigationHelper {
                     logger.error(e.getMessage(), e);
                 }
             }*/
-            }
+        }
         n.setHasChildren(hasChildren);
         n.setHasFolderChildren(hasFolderChildren);
 
@@ -888,7 +861,7 @@ public class NavigationHelper {
                 n.setUrl(node.getUrl() + "?v=" + v.getName());
                 GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getUUID(), v.getName(), v.getCreated().getTime(), null);
                 jahiaNodeVersion.setNode(n);
-                
+
                 versions.add(jahiaNodeVersion);
             }
         }

@@ -65,9 +65,9 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getEditConfiguration(String name, AsyncCallback<GWTEditConfiguration> async);
 
-    void ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);
+    void ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, boolean noFolders, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
+    void lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
 
     void getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths, AsyncCallback<List<GWTJahiaNode>> async);
 

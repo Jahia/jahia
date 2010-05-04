@@ -91,7 +91,7 @@ public class WorkflowActionDialog extends Window {
 
         createCommentsPanel(action, commentPanel, dialog);
 
-        final ContentPanel actionPanel = new ContentPanel(new RowLayout());
+        final ContentPanel actionPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
         actionPanel.setHeading("Actions");
         actionPanel.setCollapsible(true);
         actionPanel.setTitleCollapse(true);
@@ -135,12 +135,15 @@ public class WorkflowActionDialog extends Window {
         formPanel.setWidth("100%");
         formPanel.setBorders(false);
         formPanel.setBodyBorder(false);
+        formPanel.setLayout(new FormLayout(FormPanel.LabelAlign.LEFT));
         final TextArea textArea = new TextArea();
         textArea.setFieldLabel("Comment");
         textArea.setPreventScrollbars(false);
         textArea.setHeight(50);
         textArea.setWidth(750);
-        formPanel.add(textArea, new FormData("100%"));
+        textArea.setAllowBlank(false);
+        FormData data = new FormData("-20");
+        formPanel.add(textArea, data);
         Button button = new Button("Add comment");
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -159,11 +162,11 @@ public class WorkflowActionDialog extends Window {
             }
         });
         formPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
-        formPanel.add(button);
+        formPanel.add(button,data);
         FormButtonBinding buttonBinding = new FormButtonBinding(formPanel);
         buttonBinding.addButton(button);
         contentPanel.add(formPanel);
-        contentPanel.setScrollMode(Style.Scroll.NONE);
+        contentPanel.setScrollMode(Style.Scroll.AUTOY);
         contentPanel.setWidth("100%");
 
         add(contentPanel,new RowData(1, 0.75, new Margins(4)));
@@ -179,19 +182,20 @@ public class WorkflowActionDialog extends Window {
             public void onSuccess(List<GWTJahiaWorkflowTaskComment> result) {
                 int i = 0;
                 for (GWTJahiaWorkflowTaskComment comment : result) {
-                    Text text = new Text("&nbsp;"+comment.getComment());
+                    Text text = new Text(comment.getComment());
                     text.setWidth(450);
                     Text time = new Text("at " + DateTimeFormat.getMediumDateTimeFormat().format(comment.getTime()));
 //                    Text user = new Text("by " + comment.getUser());
                     HorizontalPanel commentPanel = new HorizontalPanel();
                     commentPanel.setBorders(false);
                     commentPanel.setWidth("100%");
-                    commentPanel.add(text);
+                    TableData data = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+                    data.setPadding(5);
+                    commentPanel.add(text, data);
                     commentPanel.setScrollMode(Style.Scroll.NONE);
                     commentPanel.setStyleAttribute("background-color", i % 2 == 0 ? "#e9eff3" : "white");
                     VerticalPanel verticalPanel = new VerticalPanel();
-                    verticalPanel.setHorizontalAlign(Style.HorizontalAlignment.LEFT);
-                    verticalPanel.add(time);
+                    verticalPanel.add(time,data);
 //                    verticalPanel.add(user);
                     verticalPanel.setWidth(250);
                     verticalPanel.setBorders(false);
@@ -244,7 +248,11 @@ public class WorkflowActionDialog extends Window {
     private void generateActionButtons(final PropertiesEditor propertiesEditor, final GWTJahiaWorkflowAction action,
                                        final GWTJahiaNode node, final Window dialog, ContentPanel panel) {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
-        horizontalPanel.setHeight(300);
+        horizontalPanel.setTableWidth("100%");
+        horizontalPanel.setWidth(790);
+        TableData data = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
+        data.setMargin(10);
+        LayoutContainer layoutContainer = new LayoutContainer(new ColumnLayout());
         List<GWTJahiaWorkflowOutcome> outcomes = action.getOutcomes();
         for (final GWTJahiaWorkflowOutcome outcome : outcomes) {
             Button button = new Button(outcome.getLabel());
@@ -268,9 +276,12 @@ public class WorkflowActionDialog extends Window {
                     });
                 }
             });
-            horizontalPanel.add(button);
+            ColumnData columnData = new ColumnData(Math.rint(700 / outcomes.size()));
+            layoutContainer.add(button, columnData);
         }
-        panel.add(horizontalPanel, new VBoxLayoutData(new Margins(5, 0, 0, 0)));
+        horizontalPanel.add(layoutContainer,data);
+        RowData rowData = new RowData(1, 1, new Margins(5, 0, 5, 0));
+        panel.add(horizontalPanel, rowData);
     }
 
     private void generateStartWorkflowButton(final PropertiesEditor propertiesEditor,

@@ -31,4 +31,5 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-${currentNode.name}
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<p>node : ${currentNode.name}</p>

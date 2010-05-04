@@ -134,20 +134,25 @@ public class JCRObservationManager implements ObservationManager {
     }
 
     public static void addEvent(Event event) {
-        Map<JCRSessionWrapper, List<Event>> map = events.get();
-        if (map == null) {
-            events.set(new HashMap<JCRSessionWrapper, List<Event>>());
-        }
-        map = events.get();
+        try {
+            if (!event.getPath().startsWith("/jcr:system")) {
+                Map<JCRSessionWrapper, List<Event>> map = events.get();
+                if (map == null) {
+                    events.set(new HashMap<JCRSessionWrapper, List<Event>>());
+                }
+                map = events.get();
+                JCRSessionWrapper session = currentSession.get();
+                if (session != null) {
+                    if (!map.containsKey(session)) {
+                        map.put(session, new ArrayList<Event>());
+                    }
+                    List<Event> list = map.get(session);
 
-        JCRSessionWrapper session = currentSession.get();
-        if (session != null) {
-            if (!map.containsKey(session)) {
-                map.put(session, new ArrayList<Event>());
+                    list.add(event);
+                }
             }
-            List<Event> list = map.get(session);
-
-            list.add(event);
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 

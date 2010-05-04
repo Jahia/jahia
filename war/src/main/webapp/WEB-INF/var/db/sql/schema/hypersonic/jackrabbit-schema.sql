@@ -65,10 +65,10 @@ create table JR_V_BINVAL (BINVAL_ID varchar not null, BINVAL_DATA varbinary not 
 create unique index JR_V_BINVAL_IDX on JR_V_BINVAL (BINVAL_ID);
 
 # Journal
-create table JR_V_JOURNAL (REVISION_ID BIGINT NOT NULL, JOURNAL_ID varchar(255), PRODUCER_ID varchar(255), REVISION_DATA varbinary);
-create unique index JR_V_JOURNAL_IDX on JR_V_JOURNAL (REVISION_ID);
-create table JR_V_GLOBAL_REVISION (REVISION_ID BIGINT NOT NULL);
-create unique index JR_V_GLOBAL_REVISION_IDX on JR_V_GLOBAL_REVISION (REVISION_ID);
-create table JR_V_LOCAL_REVISIONS (JOURNAL_ID varchar(255) NOT NULL, REVISION_ID BIGINT NOT NULL);
+create table JR_J_JOURNAL (REVISION_ID BIGINT NOT NULL, JOURNAL_ID varchar(255), PRODUCER_ID varchar(255), REVISION_DATA varbinary);
+create unique index JR_J_JOURNAL_IDX on JR_J_JOURNAL (REVISION_ID);
+create table JR_J_GLOBAL_REVISION (REVISION_ID BIGINT NOT NULL);
+create unique index JR_J_GLOBAL_REVISION_IDX on JR_J_GLOBAL_REVISION (REVISION_ID);
+create table JR_J_LOCAL_REVISIONS (JOURNAL_ID varchar(255) NOT NULL, REVISION_ID BIGINT NOT NULL);
 # Inserting the one and only revision counter record now helps avoiding race conditions
-insert into JR_V_GLOBAL_REVISION VALUES(0);
+insert into JR_J_GLOBAL_REVISION VALUES(0);

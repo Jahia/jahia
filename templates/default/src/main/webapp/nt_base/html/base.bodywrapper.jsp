@@ -40,6 +40,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <template:addResources type="css" resources="960-fluid-admin-jahia.css"/>
 <template:addResources type="css" resources="jahia-admin.css"/>
+<div id="bodywrapper">
 <div class="container container_16">
     <div id="topTitle">
         <div class="grid_16">
@@ -59,30 +60,10 @@
 	<div class='grid_16'><!--start grid_16-->
 <div id="content"><!--start content-->
 <div class="headtop">
-    <div class="object-title"><fmt:message key="base.bodywrapper.content.folder"/>
+    <div class="object-title"><fmt:message key="content.folder"/>
     </div>
 </div>
-    <table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">
-            <thead>
-            <tr>
-                <th width="5%" align="center">&nbsp;</th>
-                <th width="5%"><fmt:message key="label.type"/> </th>
-                <th width="35%"><fmt:message key="label.title"/> </th>
-                <th width="10%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_creationDate"/> </th>
-                <th width="10%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastModificationDate"/></th>
-                <th width="5%"><fmt:message key="jmix_contentmetadata.j_lastModificationDate"/></th>
-                <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastPublishingDate"/></th>
-                <th width="5%"><fmt:message key="label.lock"/></th>
-                <th width="10%" class="lastCol"><fmt:message key="label.action"/> </th>
-            </tr>
-            </thead>
-            <form name="main"></form>
-                <input type="hidden" value="sites" name="do"><input type="hidden" value="multipledelete" name="sub"><input type="hidden" value="site" name="exportformat">
-                <tbody>
-                <c:set value="system" var="subNodesTemplate" scope="request"/>
-                <template:module node="${currentNode}" template=""/>
-                </tbody>
-     </table>
+    ${wrappedContent}
        <div class="clear"></div></div>
 	<div class='clear'></div></div><!--stop grid_16-->
 <div class='clear'></div></div><!--start container_16-->

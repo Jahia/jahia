@@ -14,6 +14,14 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <template:include template="hidden.header"/>
+
+<c:if test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
+    <c:if test="${subNodesTemplate != 'info'}">
+        <template:addWrapper name="system"/>
+    </c:if>
+    <c:set var="subNodesTemplate" value="info"/>
+</c:if>
+
 <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
     <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}"/>
 </c:forEach>

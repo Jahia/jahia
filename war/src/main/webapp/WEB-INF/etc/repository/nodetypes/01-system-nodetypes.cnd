@@ -285,7 +285,7 @@
  */
 [mix:referenceable]
   mixin
-  - jcr:uuid (STRING) mandatory autocreated protected INITIALIZE nofulltext
+  - jcr:uuid (STRING) mandatory autocreated protected INITIALIZE hidden nofulltext
 
 //------------------------------------------------------------------------------
 // L O C K I N G
@@ -296,8 +296,8 @@
  */
 [mix:lockable]
   mixin
-  - jcr:lockOwner (STRING) protected IGNORE nofulltext
-  - jcr:lockIsDeep (BOOLEAN) protected IGNORE
+  - jcr:lockOwner (STRING) protected IGNORE hidden nofulltext
+  - jcr:lockIsDeep (BOOLEAN) protected IGNORE hidden
 
 //------------------------------------------------------------------------------
 // S H A R E A B L E   N O D E S

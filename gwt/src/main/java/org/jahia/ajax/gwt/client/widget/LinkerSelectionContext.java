@@ -96,7 +96,7 @@ public class LinkerSelectionContext {
             lockable = true;
             locked = true;
             for (GWTJahiaNode gwtJahiaNode : selectedNodes) {
-                writeable &= gwtJahiaNode.isWriteable() && !gwtJahiaNode.isLocked();
+                writeable &= gwtJahiaNode.isWriteable();
                 deleteable &= gwtJahiaNode.isDeleteable() && !gwtJahiaNode.isLocked();
                 lockable &= gwtJahiaNode.isLockable();
                 locked &= gwtJahiaNode.isLocked();

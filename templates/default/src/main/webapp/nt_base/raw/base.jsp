@@ -40,51 +40,52 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
 <fieldset>
-<legend><strong>${fn:escapeXml(currentNode.name)}</strong></legend>
-<c:if test="${not empty currentNode.parent}">
-<c:url var="urlValue" value="${currentNode.parent.path}.raw?${pageContext.request.queryString}" context="${url.base}"/>
-<a href="${urlValue}">[..]</a>
-</c:if>
-<p>
-<strong>Path:&nbsp;</strong>${fn:escapeXml(currentNode.path)}<br/>
-<strong>ID:&nbsp;</strong>${fn:escapeXml(currentNode.identifier)}<br/>
-<strong>Types:&nbsp;</strong>${fn:escapeXml(currentNode.nodeTypes)}
-<c:if test="${jcr:isNodeType(currentNode, 'nt:file')}">
-<br/><strong>File:&nbsp;</strong><a href="<c:url value="${currentNode.url}" context='/'/>">download</a>
-</c:if>
-</p>
-<p><strong>Properties:&nbsp;</strong><a href="?showProperties=${not param.showProperties}&amp;showNodes=${param.showNodes}">${param.showProperties ? 'hide' : 'show'}</a></p>
-<c:if test="${param.showProperties}">
-<ul>
-<c:if test="${functions:length(currentNode.properties) == 0}"><li>No properties present</li></c:if>
-<c:forEach items="${currentNode.properties}" var="property">
-<li><strong>${fn:escapeXml(property.name)}:&nbsp;</strong>
-    <c:if test="${property.multiple}" var="multiple">
+    <legend><strong>${fn:escapeXml(currentNode.name)}</strong></legend>
+    <c:if test="${not empty currentNode.parent}">
+        <c:url var="urlValue" value="${currentNode.parent.path}.raw?${pageContext.request.queryString}" context="${url.base}"/>
+        <a href="${urlValue}">[..]</a>
+    </c:if>
+    <p>
+        <strong>Path :&nbsp;</strong>${fn:escapeXml(currentNode.path)}<br/>
+        <strong>ID :&nbsp;</strong>${fn:escapeXml(currentNode.identifier)}<br/>
+        <strong>Types :&nbsp;</strong>${fn:escapeXml(currentNode.nodeTypes)}<br/>
+        <strong>Mixins :&nbsp;</strong><c:forEach items="${currentNode.mixinNodeTypes}" var="mixin">${fn:escapeXml(mixin.name)}</c:forEach>
+        <c:if test="${jcr:isNodeType(currentNode, 'nt:file')}">
+            <br/><strong>File:&nbsp;</strong><a href="<c:url value="${currentNode.url}" context='/'/>">download</a>
+        </c:if>
+    </p>
+    <p><strong>Properties:&nbsp;</strong><a href="?showProperties=${not param.showProperties}&amp;showNodes=${param.showNodes}">${param.showProperties ? 'hide' : 'show'}</a></p>
+    <c:if test="${param.showProperties}">
         <ul>
-            <c:if test="${empty property.values}">
-                <li>[]</li>
-            </c:if>
-        <c:forEach items="${property.values}" var="value">
-            <li><%@include file="value.jspf" %></li>
-        </c:forEach>
+            <c:if test="${functions:length(currentNode.properties) == 0}"><li>No properties present</li></c:if>
+            <c:forEach items="${currentNode.properties}" var="property">
+                <li><strong>${fn:escapeXml(property.name)}:&nbsp;</strong>
+                    <c:if test="${property.multiple}" var="multiple">
+                        <ul>
+                            <c:if test="${empty property.values}">
+                                <li>[]</li>
+                            </c:if>
+                            <c:forEach items="${property.values}" var="value">
+                                <li><%@include file="value.jspf" %></li>
+                            </c:forEach>
+                        </ul>
+                    </c:if>
+                    <c:if test="${!multiple}">
+                        <c:set var="value" value="${property.value}"/>
+                        <%@include file="value.jspf" %>
+                    </c:if>
+                </li>
+            </c:forEach>
         </ul>
     </c:if>
-    <c:if test="${!multiple}">
-        <c:set var="value" value="${property.value}"/>
-        <%@include file="value.jspf" %>
+    <p><strong>Child nodes:&nbsp;</strong><a href="?showProperties=${param.showProperties}&amp;showNodes=${not param.showNodes}">${param.showNodes ? 'hide' : 'show'}</a></p>
+    <c:if test="${param.showNodes}">
+        <ul>
+            <c:if test="${functions:length(currentNode.nodes) == 0}"><li>No child nodes present</li></c:if>
+            <c:forEach items="${currentNode.nodes}" var="child">
+                <c:url var="urlValue" value="${child.path}.raw?${pageContext.request.queryString}" context="${url.base}"/>
+                <li><a href="${urlValue}">${fn:escapeXml(child.name)}</a> - types : ${fn:escapeXml(child.nodeTypes)}</li>
+            </c:forEach>
+        </ul>
     </c:if>
-</li>
-</c:forEach>
-</ul>
-</c:if>
-<p><strong>Child nodes:&nbsp;</strong><a href="?showProperties=${param.showProperties}&amp;showNodes=${not param.showNodes}">${param.showNodes ? 'hide' : 'show'}</a></p>
-<c:if test="${param.showNodes}">
-<ul>
-<c:if test="${functions:length(currentNode.nodes) == 0}"><li>No child nodes present</li></c:if>
-<c:forEach items="${currentNode.nodes}" var="child">
-<c:url var="urlValue" value="${child.path}.raw?${pageContext.request.queryString}" context="${url.base}"/>
-<li><a href="${urlValue}">${fn:escapeXml(child.name)}</a></li>
-</c:forEach>
-</ul>
-</c:if>
 </fieldset>

@@ -85,12 +85,17 @@ public class WorkflowActionDialog extends Window {
         final ContentPanel commentPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
         commentPanel.setHeading("Comments");
         commentPanel.setBorders(false);
+        commentPanel.setCollapsible(true);
+        commentPanel.setTitleCollapse(true);
         final Window dialog = this;
 
         createCommentsPanel(action, commentPanel, dialog);
 
         final ContentPanel actionPanel = new ContentPanel(new RowLayout());
         actionPanel.setHeading("Actions");
+        actionPanel.setCollapsible(true);
+        actionPanel.setTitleCollapse(true);
+        actionPanel.setScrollMode(Style.Scroll.AUTOY);
         String formResourceName = action.getFormResourceName();
         if (formResourceName!=null && !"".equals(formResourceName)) {
             definitionsAsync.getNodeType(formResourceName, new AsyncCallback<GWTJahiaNodeType>() {
@@ -112,49 +117,16 @@ public class WorkflowActionDialog extends Window {
             generateActionButtons(null, action, node, dialog, actionPanel);
         }
 
-
-        add(actionPanel,new RowData(1, -1, new Margins(4)));
+        add(actionPanel,new RowData(1, -1, new Margins(5,0,0,0)));
     }
 
     private void createCommentsPanel(final GWTJahiaWorkflowAction action, ContentPanel contentPanel,
                                      final Window dialog) {
         final LayoutContainer commentsPanel = new LayoutContainer(new RowLayout(Style.Orientation.VERTICAL));
-        commentsPanel.setHeight(350);
+        commentsPanel.setHeight(260);
         commentsPanel.setScrollMode(Style.Scroll.AUTOY);
         commentsPanel.setBorders(false);
-        async.getTaskComments(action, new AsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
-            public void onFailure(Throwable caught) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public void onSuccess(List<GWTJahiaWorkflowTaskComment> result) {
-                int i = 0;
-                for (GWTJahiaWorkflowTaskComment comment : result) {
-                    Text text = new Text(comment.getComment());
-                    text.setWidth(450);
-                    Text time = new Text("at " + DateTimeFormat.getMediumDateTimeFormat().format(comment.getTime()));
-                    Text user = new Text("by " + comment.getUser());
-                    HorizontalPanel commentPanel = new HorizontalPanel();
-                    commentPanel.setBorders(false);
-                    commentPanel.setWidth("100%");
-                    commentPanel.setHeight(50);
-                    commentPanel.add(text);
-                    commentPanel.setScrollMode(Style.Scroll.NONE);
-                    commentPanel.setStyleAttribute("background-color", i % 2 == 0 ? "#e9eff3" : "white");
-                    VerticalPanel verticalPanel = new VerticalPanel();
-                    verticalPanel.setHorizontalAlign(Style.HorizontalAlignment.LEFT);
-                    verticalPanel.add(time);
-                    verticalPanel.add(user);
-                    verticalPanel.setWidth(250);
-                    verticalPanel.setHeight(50);
-                    verticalPanel.setBorders(false);
-                    commentPanel.add(verticalPanel);
-                    commentsPanel.add(commentPanel);
-                    dialog.layout();
-                    i++;
-                }
-            }
-        });
+        displayComments(action, dialog, commentsPanel);
 
         contentPanel.add(commentsPanel);
         // Display add a comment
@@ -175,12 +147,12 @@ public class WorkflowActionDialog extends Window {
             public void componentSelected(ButtonEvent buttonEvent) {
                 async.addCommentToTask(action, textArea.getValue(), new AsyncCallback() {
                     public void onSuccess(Object result) {
-                        dialog.hide();
+                        commentsPanel.removeAll();
+                        displayComments(action, dialog, commentsPanel);
                         Info.display("Comment Added", "Comment Added");
                     }
 
                     public void onFailure(Throwable caught) {
-                        dialog.hide();
                         Info.display("Adding comment failed", "Adding comment failed");
                     }
                 });
@@ -194,7 +166,42 @@ public class WorkflowActionDialog extends Window {
         contentPanel.setScrollMode(Style.Scroll.NONE);
         contentPanel.setWidth("100%");
 
-        add(contentPanel,new RowData(1, 1, new Margins(4)));
+        add(contentPanel,new RowData(1, 0.75, new Margins(4)));
+    }
+
+    private void displayComments(GWTJahiaWorkflowAction action, final Window dialog,
+                                 final LayoutContainer commentsPanel) {
+        async.getTaskComments(action, new AsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
+            public void onFailure(Throwable caught) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void onSuccess(List<GWTJahiaWorkflowTaskComment> result) {
+                int i = 0;
+                for (GWTJahiaWorkflowTaskComment comment : result) {
+                    Text text = new Text("&nbsp;"+comment.getComment());
+                    text.setWidth(450);
+                    Text time = new Text("at " + DateTimeFormat.getMediumDateTimeFormat().format(comment.getTime()));
+//                    Text user = new Text("by " + comment.getUser());
+                    HorizontalPanel commentPanel = new HorizontalPanel();
+                    commentPanel.setBorders(false);
+                    commentPanel.setWidth("100%");
+                    commentPanel.add(text);
+                    commentPanel.setScrollMode(Style.Scroll.NONE);
+                    commentPanel.setStyleAttribute("background-color", i % 2 == 0 ? "#e9eff3" : "white");
+                    VerticalPanel verticalPanel = new VerticalPanel();
+                    verticalPanel.setHorizontalAlign(Style.HorizontalAlignment.LEFT);
+                    verticalPanel.add(time);
+//                    verticalPanel.add(user);
+                    verticalPanel.setWidth(250);
+                    verticalPanel.setBorders(false);
+                    commentPanel.add(verticalPanel);
+                    commentsPanel.add(commentPanel);
+                    dialog.layout();
+                    i++;
+                }
+            }
+        });
     }
 
     public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowDefinition wf) {
@@ -237,6 +244,7 @@ public class WorkflowActionDialog extends Window {
     private void generateActionButtons(final PropertiesEditor propertiesEditor, final GWTJahiaWorkflowAction action,
                                        final GWTJahiaNode node, final Window dialog, ContentPanel panel) {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
+        horizontalPanel.setHeight(300);
         List<GWTJahiaWorkflowOutcome> outcomes = action.getOutcomes();
         for (final GWTJahiaWorkflowOutcome outcome : outcomes) {
             Button button = new Button(outcome.getLabel());

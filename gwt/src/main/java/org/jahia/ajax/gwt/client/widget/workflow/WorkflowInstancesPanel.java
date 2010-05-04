@@ -157,7 +157,9 @@ public class WorkflowInstancesPanel extends ContentPanel {
                     item.addSelectionListener(new SelectionListener<MenuEvent>() {
                         @Override
                         public void componentSelected(MenuEvent ce) {
-                            new WorkflowActionDialog(node, action).show();
+                            WorkflowActionDialog dialog = new WorkflowActionDialog(node, action);
+                            dialog.setWorkflowInstancesPanel(workflowInstancesPanel);
+                            dialog.show();
                         }
                     });
                     menu.add(item);
@@ -280,6 +282,12 @@ public class WorkflowInstancesPanel extends ContentPanel {
         });
         grid.addPlugin(expander);
         add(grid);
+        refreshData();
+    }
+
+    public void refreshData() {
+        contentStore.removeAll();
+        final WorkflowInstancesPanel workflowInstancesPanel = this;
         async.getTasksForUser(new AsyncCallback<List<GWTJahiaNode>>() {
             public void onFailure(Throwable caught) {
                 Info.display("Workflow not started", "Workflow not started");

@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowInstancesPanel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,6 +73,7 @@ import java.util.List;
 public class WorkflowActionDialog extends Window {
     private JahiaContentManagementServiceAsync async;
     private JahiaContentDefinitionServiceAsync definitionsAsync;
+    private WorkflowInstancesPanel workflowInstancesPanel;
 
     public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowAction action) {
         async = JahiaContentManagementService.App.getInstance();
@@ -312,5 +314,17 @@ public class WorkflowActionDialog extends Window {
         });
         horizontalPanel.add(button);
         panel.add(horizontalPanel, new VBoxLayoutData(new Margins(5, 0, 0, 0)));
+    }
+
+    public void setWorkflowInstancesPanel(WorkflowInstancesPanel workflowInstancesPanel) {
+        this.workflowInstancesPanel = workflowInstancesPanel;
+    }
+
+    @Override
+    protected void onHide() {
+        super.onHide();
+        if(workflowInstancesPanel!=null) {
+            workflowInstancesPanel.refreshData();
+        }
     }
 }

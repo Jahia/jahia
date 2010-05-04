@@ -10,11 +10,13 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -90,8 +92,8 @@ public class RemotePublishAction implements Action {
         Boolean ready = response.getBoolean("ready");
 
         Calendar lastDate = null;
-        if (response.has("lastDate")) {
-            lastDate = (Calendar) response.get("lastDate");
+        if (response.has("lastReplay")) {
+            lastDate = ISO8601.parse(response.getString("lastReplay"));
         }
 
         prepare.releaseConnection();
@@ -99,7 +101,7 @@ public class RemotePublishAction implements Action {
             final File file = new File("/tmp/remote.log");
 
             // Get source node from live session ?
-
+            source = JCRSessionFactory.getInstance().getCurrentUserSession("live").getNode(source.getCorrespondingNodePath("live"));
             service.generateLog(source, lastDate, new FileOutputStream(file));
 
             PostMethod replay = new PostMethod(remoteUrl + remotePath + ".replay.do");

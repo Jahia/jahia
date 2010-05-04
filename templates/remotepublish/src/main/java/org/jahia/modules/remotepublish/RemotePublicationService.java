@@ -67,7 +67,7 @@ public class RemotePublicationService {
         if (calendar != null) {
             journal.skipTo(calendar.getTimeInMillis());
         } else {
-            journal.skipTo(source.getProperty(Constants.JCR_CREATED).getLong());
+//            journal.skipTo(source.getProperty(Constants.JCR_CREATED).getLong());
         }
 
         Set<String> addedPath = new HashSet<String>();
@@ -80,87 +80,7 @@ public class RemotePublicationService {
         while (journal.hasNext()) {
             Event event = journal.nextEvent();
 
-            String path = event.getPath();
-
-            final LogEntry logEntry = new LogEntry(path, event.getType());
-            switch (event.getType()) {
-                case Event.NODE_ADDED: {
-                    try {
-                        JCRNodeWrapper node = liveSession.getNode(path);
-                        oos.writeObject(logEntry);
-                        oos.writeObject(node.getPrimaryNodeTypeName());
-                        NodeIterator ni = node.getSharedSet();
-                        List<String> sharedSet = new ArrayList<String>();
-                        while (ni.hasNext()) {
-                            JCRNodeWrapper sub = (JCRNodeWrapper) ni.next();
-                            sharedSet.add(sub.getPath());
-                        }
-                        oos.writeObject(sharedSet);
-                    } catch (PathNotFoundException e) {
-                        // not present anymore
-                    }
-                    break;
-                }
-
-                case Event.NODE_REMOVED: {
-                    oos.writeObject(logEntry);
-                    addedPath.add(path);
-                    break;
-                }
-
-                case Event.NODE_MOVED: {
-                    Map map = event.getInfo();
-                    if (map.containsKey("srcChildRelPath")) {
-                        oos.writeObject(logEntry);
-                        Map<String, String> newMap = new HashMap<String, String>();
-                        newMap.put("srcChildPath", map.get("srcChildRelPath").toString());
-                        Object o = map.get("destChildRelPath");
-                        if (o != null) {
-                            newMap.put("destChildPath", o.toString());
-                        }
-                        oos.writeObject(newMap);
-                        addedPath.add(path);
-                    }
-                    break;
-                }
-
-                case Event.PROPERTY_ADDED: {
-                    String nodePath = StringUtils.substringBeforeLast(path, "/");
-                    final JCRNodeWrapper node = liveSession.getNode(nodePath);
-                    try {
-                        final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path, "/"));
-                        if (!property.getDefinition().isProtected()) {
-                            oos.writeObject(logEntry);
-                            serializePropertyValue(oos, property);
-                        }
-                    } catch (PathNotFoundException e) {
-                        logger.debug(e.getMessage(), e);
-                    }
-                    break;
-                }
-
-                case Event.PROPERTY_CHANGED: {
-                    String nodePath = StringUtils.substringBeforeLast(path, "/");
-                    try {
-                        final JCRNodeWrapper node = liveSession.getNode(nodePath);
-                        final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path, "/"));
-                        if (!property.getDefinition().isProtected()) {
-                            oos.writeObject(logEntry);
-                            serializePropertyValue(oos, property);
-                        }
-                    } catch (PathNotFoundException e) {
-                        logger.debug(e.getMessage(), e);
-                    }
-                    break;
-                }
-
-                case Event.PROPERTY_REMOVED: {
-                    if (!addedPath.contains(path)) {
-                        oos.writeObject(logEntry);
-                    }
-                    break;
-                }
-            }
+            addEntry(event, oos, liveSession, addedPath);
             lastDate = event.getDate();
         }
 
@@ -170,6 +90,97 @@ public class RemotePublicationService {
 
 
         oos.close();
+    }
+
+    public void addEntry(Event event, ObjectOutputStream oos, JCRSessionWrapper session, Set<String> addedPath)
+            throws RepositoryException, IOException {
+        String path = event.getPath();
+
+        final LogEntry logEntry = new LogEntry(path, event.getType());
+        switch (event.getType()) {
+            case Event.NODE_ADDED: {
+                try {
+                    logger.info("Add node "+path);
+                    JCRNodeWrapper node = session.getNode(path);
+                    oos.writeObject(logEntry);
+                    oos.writeObject(node.getPrimaryNodeTypeName());
+                    NodeIterator ni = node.getSharedSet();
+                    List<String> sharedSet = new ArrayList<String>();
+                    while (ni.hasNext()) {
+                        JCRNodeWrapper sub = (JCRNodeWrapper) ni.next();
+                        sharedSet.add(sub.getPath());
+                    }
+                    oos.writeObject(sharedSet);
+                } catch (PathNotFoundException e) {
+                    // not present anymore
+                }
+                break;
+            }
+
+            case Event.NODE_REMOVED: {
+                logger.info("Remove node "+path);
+                oos.writeObject(logEntry);
+                addedPath.add(path);
+                break;
+            }
+
+            case Event.NODE_MOVED: {
+                logger.info("Move node "+path);
+                Map map = event.getInfo();
+                if (map.containsKey("srcChildRelPath")) {
+                    oos.writeObject(logEntry);
+                    Map<String, String> newMap = new HashMap<String, String>();
+                    newMap.put("srcChildPath", map.get("srcChildRelPath").toString());
+                    Object o = map.get("destChildRelPath");
+                    if (o != null) {
+                        newMap.put("destChildPath", o.toString());
+                    }
+                    oos.writeObject(newMap);
+                    addedPath.add(path);
+                }
+                break;
+            }
+
+            case Event.PROPERTY_ADDED: {
+                logger.info("Add property "+path);
+                String nodePath = StringUtils.substringBeforeLast(path, "/");
+                final JCRNodeWrapper node = session.getNode(nodePath);
+                try {
+                    final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path, "/"));
+                    if (!property.getDefinition().isProtected()) {
+                        oos.writeObject(logEntry);
+                        serializePropertyValue(oos, property);
+                    }
+                } catch (PathNotFoundException e) {
+                    logger.debug(e.getMessage(), e);
+                }
+                break;
+            }
+
+            case Event.PROPERTY_CHANGED: {
+                logger.info("Change property "+path);
+                String nodePath = StringUtils.substringBeforeLast(path, "/");
+                try {
+                    final JCRNodeWrapper node = session.getNode(nodePath);
+                    final JCRPropertyWrapper property = node.getProperty(StringUtils.substringAfterLast(path, "/"));
+                    if (!property.getDefinition().isProtected()) {
+                        oos.writeObject(logEntry);
+                        serializePropertyValue(oos, property);
+                    }
+                } catch (PathNotFoundException e) {
+                    logger.debug(e.getMessage(), e);
+                }
+                break;
+            }
+
+            case Event.PROPERTY_REMOVED: {
+                logger.info("Remove property "+path);
+                if (!addedPath.contains(path)) {
+                    oos.writeObject(logEntry);
+                }
+                break;
+            }
+        }
     }
 
     private void serializePropertyValue(ObjectOutputStream oos, JCRPropertyWrapper property)
@@ -233,6 +244,7 @@ public class RemotePublicationService {
                                 String path =
                                         target.getPath() + StringUtils.substringAfter(entry.getPath(), log.getSourcePath());
 
+                                String name = StringUtils.substringAfterLast(path, "/");
                                 switch (entry.getEventType()) {
                                     case Event.NODE_ADDED: {
                                         if (!addedPath.contains(path)) {
@@ -242,7 +254,19 @@ public class RemotePublicationService {
                                                 logger.info("Adding Node " + path + " with nodetype: " + nodeType);
                                             }
                                             String parentPath = StringUtils.substringBeforeLast(path, "/");
-                                            JCRNodeWrapper parent = session.getNode(parentPath);
+                                            JCRNodeWrapper parent = null;
+                                            try {
+                                                parent = session.getNode(parentPath);
+                                            } catch (RepositoryException e) {
+                                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                                break;
+                                            }
+                                            if (name.endsWith("]")) {
+                                                name = StringUtils.substringBeforeLast(name, "[");
+                                            }
+                                            if (parent.hasNode(name)) {
+                                                break;
+                                            }
                                             parent.checkout();
 
                                             boolean sharedNode = false;
@@ -252,7 +276,7 @@ public class RemotePublicationService {
                                                     try {
                                                         JCRNodeWrapper node = session.getNode(s);
                                                         logger.info("Found an existing share at : "+s);
-                                                        parent.clone(node,StringUtils.substringAfterLast(path, "/"));
+                                                        parent.clone(node, name);
                                                         sharedNode = true;
                                                         break;
                                                     } catch (PathNotFoundException e) {
@@ -261,7 +285,7 @@ public class RemotePublicationService {
                                                 }
                                             }
                                             if (!sharedNode) {
-                                                parent.addNode(StringUtils.substringAfterLast(path, "/"), nodeType);
+                                                parent.addNode(name, nodeType);
                                             }
                                             addedPath.add(path);
                                         }
@@ -271,11 +295,15 @@ public class RemotePublicationService {
                                         if (logger.isInfoEnabled()) {
                                             logger.info("Removing Node " + path);
                                         }
-                                        final JCRNodeWrapper node = session.getNode(path);
-                                        node.getParent().checkout();
-                                        node.checkout();
-                                        node.remove();
-                                        addedPath.remove(path);
+                                        try {
+                                            final JCRNodeWrapper node = session.getNode(path);
+                                            node.getParent().checkout();
+                                            node.checkout();
+                                            node.remove();
+                                            addedPath.remove(path);
+                                        } catch (PathNotFoundException e) {
+                                            e.printStackTrace();
+                                        }
                                         break;
                                     }
                                     case Event.NODE_MOVED: {
@@ -300,9 +328,11 @@ public class RemotePublicationService {
                                             if (path.contains("jcr:language") && path.contains("j:translation")) {
                                                 String translationPath = StringUtils.substringBeforeLast(path, "/");
                                                 Map<String,Object> map = missedProperties.get(translationPath);
-                                                for (Map.Entry<String, Object> missedProperty : map.entrySet()) {
-                                                    updateProperty(session, missedProperty.getKey(),
-                                                            missedProperty.getValue());
+                                                if (map != null) {
+                                                    for (Map.Entry<String, Object> missedProperty : map.entrySet()) {
+                                                        updateProperty(session, missedProperty.getKey(),
+                                                                missedProperty.getValue());
+                                                    }
                                                 }
                                                 missedProperties.remove(translationPath);
                                             }
@@ -336,7 +366,7 @@ public class RemotePublicationService {
                                                 session.getNode(StringUtils.substringBeforeLast(path, "/"));
                                         node.checkout();
                                         try {
-                                            node.getProperty(StringUtils.substringAfterLast(path, "/")).remove();
+                                            node.getProperty(name).remove();
                                         } catch (PathNotFoundException e) {
                                             logger.debug("Issue during removal of property " + path + " (error: " +
                                                     e.getMessage() + ")", e);
@@ -353,9 +383,10 @@ public class RemotePublicationService {
                             target.checkout();
                             target.addMixin("jmix:remotelyPublished");
                             target.setProperty("uuid", log.getSourceUuid());
-                            target.setProperty("lastReplay", end.getDate());
+//                            target.setProperty("lastReplay", end.getDate());
                             session.save();
                         } catch (Exception e) {
+                            e.printStackTrace();
                             throw new RepositoryException(e);
                         }
                         return null;

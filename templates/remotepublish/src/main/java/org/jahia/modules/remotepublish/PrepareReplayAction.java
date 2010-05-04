@@ -1,5 +1,7 @@
 package org.jahia.modules.remotepublish;
 
+import org.apache.jackrabbit.util.ISO8601;
+import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
@@ -43,7 +45,7 @@ public class PrepareReplayAction implements Action {
                 map.put("ready", Boolean.TRUE);
                 if (node.hasProperty("lastReplay")) {
                     Calendar last = node.getProperty("lastReplay").getDate();
-                    map.put("lastDate", last);
+                    map.put("lastReplay", ISO8601.format(last));
                 }
             }
         } else {

@@ -444,8 +444,8 @@
 
     <!-- file manager -->
     <bean id="complete" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value=""/>
-        <property name="folderTypes" value=""/>
+        <property name="nodeTypes" value="nt:base"/>
+        <property name="folderTypes" value="nt:base"/>
         <property name="enableTextMenu" value="true"/>
         <property name="toolbarSet" ref="content-manager"/>
         <property name="displaySearchInPage" value="false"/>

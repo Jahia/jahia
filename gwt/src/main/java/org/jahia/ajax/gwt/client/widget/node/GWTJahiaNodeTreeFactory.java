@@ -86,7 +86,7 @@ public class GWTJahiaNodeTreeFactory {
     }
 
     public void setFolderTypes(String folderTypes) {
-        folderTypes = nodeTypes;
+        this.folderTypes = folderTypes;
     }
 
     public void setFilters(String filters) {

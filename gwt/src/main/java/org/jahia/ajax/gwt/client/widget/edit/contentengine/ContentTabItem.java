@@ -30,7 +30,7 @@ public class ContentTabItem extends PropertiesTabItem {
 
     public ContentTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
+        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
         setMultiLang(true);
     }
 

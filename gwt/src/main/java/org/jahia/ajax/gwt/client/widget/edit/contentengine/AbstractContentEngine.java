@@ -58,7 +58,7 @@ public abstract class AbstractContentEngine extends Window {
     protected void init() {
         setLayout(new FillLayout());
         setBodyBorder(false);
-        setSize(950, 750);
+        setSize(750, 480);
         setClosable(true);
         setResizable(true);
         setModal(true);
@@ -68,7 +68,6 @@ public abstract class AbstractContentEngine extends Window {
 
         // init language switcher
         initLanguageSwitcher();
-
         // init tabs
         tabs = new TabPanel();
 

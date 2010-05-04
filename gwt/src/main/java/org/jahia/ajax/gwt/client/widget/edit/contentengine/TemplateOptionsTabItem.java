@@ -14,7 +14,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 public class TemplateOptionsTabItem extends PropertiesTabItem {
     public TemplateOptionsTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_templates", "Template"), engine, GWTJahiaItemDefinition.TEMPLATE);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabOption());
+        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabOption());
     }
 
 }

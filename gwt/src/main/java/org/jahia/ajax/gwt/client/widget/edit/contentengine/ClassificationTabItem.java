@@ -24,7 +24,7 @@ public class ClassificationTabItem extends EditEngineTabItem {
 
     public ClassificationTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_classification", "Classification"), engine);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabClassification());
+        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabClassification());
     }
 
     @Override

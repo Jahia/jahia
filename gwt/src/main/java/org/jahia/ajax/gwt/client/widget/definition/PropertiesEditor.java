@@ -69,7 +69,10 @@ public class PropertiesEditor extends FormPanel {
     private ComboBox<GWTJahiaValueDisplayBean> templateField;
     private Set<String> templateTypes = new HashSet<String>();
     private FieldSet fieldSet = null;
+    private FieldSet commonFieldSet = null;
+    private FormPanel commonForm = null;
     private FormPanel form = this;
+    private static final int FIELD_SIZE = 620;
 
     public PropertiesEditor(List<GWTJahiaNodeType> types, Map<String, GWTJahiaNodeProperty> properties, boolean isMultipleEdit, boolean viewInheritedItems, String datatype, List<String> excludedItems, List<String> excludedTypes) {
         this(types, properties, isMultipleEdit, viewInheritedItems, datatype, excludedItems, excludedTypes, true, false);
@@ -115,9 +118,11 @@ public class PropertiesEditor extends FormPanel {
 
     public void renderNewFormPanel() {
         if (!fieldSetGrouping) {
-            setFieldWidth(550);
+            // setFieldWidth(550);
             setLabelWidth(180);
         }
+        setFieldWidth(FIELD_SIZE);
+        setLabelAlign(LabelAlign.TOP);
         setPadding(5);
         setCollapsible(false);
         setFrame(false);
@@ -127,6 +132,7 @@ public class PropertiesEditor extends FormPanel {
         setHeaderVisible(false);
         setScrollMode(Style.Scroll.AUTO);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
+
 
         renderForm();
     }
@@ -219,7 +225,7 @@ public class PropertiesEditor extends FormPanel {
             }
 
             if (field != null) {
-                if (fieldSetGrouping && (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
+                if (optional && fieldSetGrouping && (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
                     setPadding(0);
 
                     boolean isOrderingList = "jmix:orderedList".equalsIgnoreCase(definition.getDeclaringNodeType());
@@ -258,7 +264,8 @@ public class PropertiesEditor extends FormPanel {
                     fieldSet.setHeading(definition.getDeclaringNodeTypeLabel());
                     //fieldSet.setStyleAttribute("padding", "0");
                     form = new FormPanel();
-                    form.setFieldWidth(500);
+                    form.setLabelAlign(LabelAlign.TOP);
+                    form.setFieldWidth(FIELD_SIZE);
                     form.setLabelWidth(80);
                     form.setHeaderVisible(false);
                     form.setFrame(false);
@@ -292,12 +299,49 @@ public class PropertiesEditor extends FormPanel {
                     add(checkbox);
                 }
                 field.setEnabled(isWriteable);
-                form.add(field);
+                if(!isWriteable){
+                   field.addStyleName("readonly"); 
+                }
+
+                if (optional) {
+                    form.add(field);
+                } else {
+                    addCommonFieldSet(field);
+                }
                 fields.put(field.getName(), field);
             }
         }
     }
 
+    /**
+     * Add to common field set
+     *
+     * @param field
+     */
+    private void addCommonFieldSet(Field field) {
+        // field set
+        if (commonFieldSet == null) {
+            commonFieldSet = new FieldSet();
+            commonForm = new FormPanel();
+            commonForm.setHeaderVisible(false);
+            commonForm.setFrame(false);
+            commonForm.setBorders(false);
+            commonForm.setBodyBorder(false);
+            commonForm.setLabelAlign(LabelAlign.TOP);
+            commonForm.setFieldWidth(FIELD_SIZE);
+            commonForm.setLabelWidth(80);
+            commonFieldSet.add(commonForm);
+            add(commonFieldSet);
+        }
+        commonForm.add(field);
+
+    }
+
+    /**
+     * Set template
+     *
+     * @param form
+     */
     private void setTemplate(FormPanel form) {
         String addMixin = templateField.getValue().get("addMixin");
         templateTypes.clear();

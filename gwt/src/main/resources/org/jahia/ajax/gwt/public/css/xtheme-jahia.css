@@ -671,6 +671,7 @@ td.x-date-mp-sep{border-right:1px solid #b7cbd8;}
 }
 .x-fieldset {
     background-color:#ffffff;
+    margin: 3px 5px;
 }
 .x-fieldset legend {
     font-size:12px;
@@ -681,6 +682,11 @@ td.x-date-mp-sep{border-right:1px solid #b7cbd8;}
 .x-form-text, textarea.x-form-field {
 	background-image:none;
 }
+
+.x-form-item-label{
+    font-weight: bold;
+}
+
 .x-form-field:hover {
 
 }

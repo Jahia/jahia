@@ -123,9 +123,9 @@ public class SidePanelTabItem extends TabItem {
         public GWTConfiguration getConfig() {
             return editLinker.getConfig();
         }
-
-
     }
+
+
 
 
 }

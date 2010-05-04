@@ -21,7 +21,7 @@ public class UsagesTabItem extends EditEngineTabItem {
 
     public UsagesTabItem(AbstractContentEngine engine) {
         super(Messages.get("fm_usages", "Usages"), engine);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
+        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
     }
 
     @Override

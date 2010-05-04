@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class OptionsTabItem extends PropertiesTabItem {
     public OptionsTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_options", "Options"), engine, GWTJahiaItemDefinition.OPTIONS);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabOption());
+        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabOption());
     }
 
 }

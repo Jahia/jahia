@@ -14,6 +14,6 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 public class PublicationTabItem extends PropertiesTabItem {
     public PublicationTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_publication", "Publication"), engine, GWTJahiaItemDefinition.CACHE);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabPublication());
+        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabPublication());
     }
 }

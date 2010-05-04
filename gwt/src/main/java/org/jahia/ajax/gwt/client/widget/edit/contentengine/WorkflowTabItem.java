@@ -58,7 +58,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
      */
     public WorkflowTabItem(AbstractContentEngine engine) {
         super(Messages.get("ece_workflow", "Workflow"), engine);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.workflow());
+        //setIcon(ContentModelIconProvider.CONTENT_ICONS.workflow());
         panelsByLanguage = new HashMap<String, WorkflowHistoryPanel>(1);
     }
 

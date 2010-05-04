@@ -140,7 +140,7 @@ public class NavigationHelper {
             String[] namefiltersToApply = getFiltersToApply(nameFilters);
 
             final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
-            final boolean displayTags = nodeTypes != null && nodeTypes.contains(JCRClientUtils.TAG_NODETYPES);
+            final boolean displayCounts = nodeTypes != null && (nodeTypes.contains(JCRClientUtils.TAG_NODETYPES) || nodeTypes.contains(JCRClientUtils.CATEGORY_NODETYPES));
 
             while (nodesIterator.hasNext()) {
                 JCRNodeWrapper childNode = (JCRNodeWrapper) nodesIterator.nextNode();
@@ -179,7 +179,7 @@ public class NavigationHelper {
                     }
 
                     // case of display tag
-                    if (displayTags) {
+                    if (displayCounts) {
                         try {
                             gwtChildNode.set("count", JCRContentUtils.size(childNode.getWeakReferences()));
                         } catch (RepositoryException e) {

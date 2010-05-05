@@ -205,7 +205,7 @@ public class Render extends HttpServlet implements Controller,
             final EndTag tag = element.getEndTag();
             final String staticsAsset = RenderService.getInstance().render(new Resource(resource.getNode(), "html",
                                                                                         "html.statics.assets",
-                                                                                        "html.statics.assets", Resource.CONFIGURATION_MODULE),
+                                                                                        "html.statics.assets", Resource.CONFIGURATION_INCLUDE),
                                                                            renderContext);
             outputDocument.replace(tag.getBegin(),tag.getBegin()+1,"\n"+ AggregateCacheFilter.removeEsiTags(staticsAsset)+"\n<");
         }

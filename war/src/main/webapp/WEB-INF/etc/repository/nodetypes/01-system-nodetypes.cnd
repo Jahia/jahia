@@ -32,8 +32,8 @@
  */
 [nt:base]
   abstract
-  - jcr:primaryType (NAME) mandatory autocreated protected COMPUTE
-  - jcr:mixinTypes (NAME) protected multiple COMPUTE
+  - jcr:primaryType (NAME) mandatory autocreated protected hidden COMPUTE
+  - jcr:mixinTypes (NAME) protected multiple hidden COMPUTE
 
 //------------------------------------------------------------------------------
 // S T A N D A R D   A P P L I C A T I O N   N O D E   T Y P E S

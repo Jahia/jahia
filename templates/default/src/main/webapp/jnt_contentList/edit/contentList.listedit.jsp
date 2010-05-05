@@ -30,130 +30,101 @@
 <template:include templateType="html" template="hidden.header"/>
 <c:set var="animatedTasks" value=""/>
 <c:set var="animatedWFs" value=""/>
-<c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
-
-    <%-- buttons --%>
-    <div class="listEditToolbar">
-        <c:if test="${child.locked ne 'true'}">
-            <button
-                    onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit?ajaxcall=true', 'initEditFields(\'${child.identifier}\')')">
-                <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/></button>
-        </c:if>
-        <c:if test="${child.locked eq 'true'}">
-            <button>
-                <span class="icon-contribute icon-locked"></span>Locked
-            </button>
-        </c:if>
-        <button
-                onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.html?ajaxcall=true', '')">
-            <span class="icon-contribute icon-preview"></span><fmt:message key="label.preview"/></button>
-
-        <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean}">
-            <c:if test="${not status.first}">
-                <button id="moveUp-${currentNode.identifier}-${status.index}"
-                        onclick="invert('${child.path}','${previousChild.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
-                    <span class="icon-contribute icon-moveup"></span><fmt:message key="label.move.up"/></button>
-            </c:if>
-            <c:if test="${not status.last}">
-                <button
-                        onclick="document.getElementById('moveUp-${currentNode.identifier}-${status.index+1}').onclick()">
-                    <span class="icon-contribute icon-movedown"></span><fmt:message key="label.move.down"/></button>
-            </c:if>
-        </c:if>
-        <c:if test="${child.locked ne 'true'}">
-            <c:if test="${currentNode.properties['j:canDeleteInContribution'].boolean}">
-                <button onclick="deleteNode('${child.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
-                    <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
-            </c:if>
-
-            <workflow:workflowsForNode workflowAction="publish" var="workflows" node="${child}"/>
-            <br/>
-            <c:forEach items="${workflows}" var="wf">
-                <c:choose>
-                    <c:when test="${not empty wf.formResourceName}">
-                        <script language="JavaScript">
-                            animatedcollapse.addDiv('workflow${child.identifier}-${wf.key}', 'fade=1,speed=700,group=workflow');
-                            <c:set var="animatedWFs" value="${animatedWFs}animatedcollapse.addDiv('workflow${child.identifier}-${wf.key}', 'fade=1,speed=700,group=workflow');"/>
-                        </script>
-                        <input class="workflow" type="button" value="${wf.name}"
-                               onclick="animatedcollapse.toggle('workflow${child.identifier}-${wf.key}');"/>
-                    </c:when>
-                    <c:otherwise>
-                        <input class="workflow" type="button" value="${wf.name}"
-                               onclick="startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true','${animatedWFs}${animatedTasks}animatedcollapse.reinit();')"/></c:otherwise>
-                </c:choose>
-            </c:forEach>
-        </c:if>
-
-        <workflow:tasksForNode var="tasks" node="${child}"/>
-        <br/>
-        <c:forEach items="${tasks}" var="task">
-            <c:choose>
-                <c:when test="${not empty task.formResourceName}">
-                    <script language="JavaScript">
-                        animatedcollapse.addDiv('task${child.identifier}-${task.id}', 'fade=1,speed=700,group=tasks');
-                        <c:set var="animatedTasks" value="${animatedTasks}animatedcollapse.addDiv('task${child.identifier}-${task.id}', 'fade=1,speed=700,group=tasks');"/>
-                    </script>
-                    <input class="workflowaction" type="button" value="${task.name}"
-                               onclick="animatedcollapse.toggle('task${child.identifier}-${task.id}');"/>
-                </c:when>
-                <c:otherwise>
-                    <c:forEach items="${task.outcomes}" var="outcome">
-                        <input class="workflowaction" type="button" value="${outcome}"
-                               onclick="executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true','${animatedWFs}${animatedTasks}animatedcollapse.reinit();')"/>
-                    </c:forEach>
-                </c:otherwise>
-            </c:choose>
+<c:choose>
+    <c:when test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
+<table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">
+    <thead>
+    <tr>
+        <th width="5%" align="center">&nbsp;</th>
+        <th width="5%"><fmt:message key="label.type"/> </th>
+        <th width="35%"><fmt:message key="label.title"/> </th>
+        <th width="10%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_creationDate"/> </th>
+        <th width="10%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastModificationDate"/></th>
+        <th width="5%"><fmt:message key="jmix_contentmetadata.j_lastPublishingDate"/></th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="label.workflow"/></th>
+        <th width="5%"><fmt:message key="label.lock"/></th>
+        <th width="10%" class="lastCol"><fmt:message key="label.action"/> </th>
+    </tr>
+    </thead>
+    <tbody>
+    <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
+    <tr>
+        <td colspan="9">
+            <a href="${url.base}${currentNode.parent.path}.system.html"><fmt:message key="parent"/></a>
+        </td>
+    </tr>
+    </c:if>
+        <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
+            <tr class="evenLine">
+                <td align="center">
+                    <input type="checkbox" value="ACME" name="sitebox">
+                </td>
+                <td>
+                        ${fn:escapeXml(child.primaryNodeType.name)}
+                </td>
+                <td>
+                    <c:if test="${jcr:isNodeType(child,'jnt:contentList' )}"><a
+                        href="${url.base}${child.path}.html"></c:if> <c:if
+                        test="${!empty child.properties['jcr:title'].string}">
+                    ${fn:escapeXml(child.properties['jcr:title'].string)}
+                </c:if>
+                    <c:if test="${empty child.properties['jcr:title'].string}">
+                        ${fn:escapeXml(child.name)}
+                    </c:if><c:if test="${jcr:isNodeType(child,'jnt:contentList' )}"></a></c:if>
+                </td>
+                <td>
+                    <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
+                </td>
+                <td>
+                    <fmt:formatDate value="${child.properties['jcr:lastModified'].date.time}"
+                                    pattern="yyyy-MM-dd HH:mm"/>
+                </td align="center">
+                <td>
+                    <fmt:formatDate value="${child.properties['j:lastPublished'].date.time}"
+                                    pattern="yyyy-MM-dd HH:mm"/>
+                </td>
+                <td>
+                    <%@include file="workflow.jspf" %>
+                </td>
+                <td>
+                    <c:if test="${child.locked}">
+                        <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Locked"
+                             src="${url.currentModule}/images/icons/locked.gif">
+                    </c:if>
+                </td>
+                <td class="lastCol">
+                        <%--
+                                <a title="Editer" href="#"><img height="16" width="16" border="0" style="cursor: pointer;" title="Editer" alt="Editer" src="${url.currentModule}/images/icons/edit.png"></a>&nbsp;
+                        --%>
+                    <%@include file="edit.jspf" %>
+                </td>
+            </tr>
         </c:forEach>
+    </tbody>
+</table>
+        <template:include templateType="html" template="hidden.footer"/>
+        <table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">
+        <tr><td colspan="9">
+    </c:when>
+    <c:otherwise>
+        <c:set var="inSite" value="true"/>
+        <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
+            <%@include file="edit.jspf" %>
+            <br/>
+            <%@include file="workflow.jspf" %>
+            <div id="edit-${child.identifier}">
+                <template:module templateType="html" node="${child}"/>
+            </div>
+            <hr/>
+        </c:forEach>
+        <div class="clear"></div>
+        <c:if test="${editable and renderContext.editMode}">
+            <template:module path="*"/>
+        </c:if>
+        <template:include templateType="html" template="hidden.footer"/>
+    </c:otherwise>
+</c:choose>
 
-        <c:set var="previousChild" value="${child}"/>
-    </div>
-
-    <c:forEach items="${workflows}" var="wf">
-        <c:choose>
-            <c:when test="${not empty wf.formResourceName}">
-                <div style="display:none;" id="workflow${child.identifier}-${wf.key}" class="workflowformdiv">
-                    <template:module node="${child}" templateType="edit" template="add">
-                        <template:param name="resourceNodeType" value="${wf.formResourceName}"/>
-                        <template:param name="workflowStartForm" value="${wf.provider}:${wf.key}"/>
-                        <template:param name="workflowStartFormWFName" value="${wf.name}"/>
-                        <template:param name="workflowStartFormWFCallbackId" value="${currentNode.UUID}"/>
-                        <template:param name="workflowStartFormWFCallbackURL" value="${url.current}?ajaxcall=true"/>
-                        <template:param name="workflowStartFormWFCallbackJS" value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});$('.workflowformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=workflow');});animatedcollapse.reinit();"/>
-                    </template:module>
-                </div>
-            </c:when>
-        </c:choose>
-    </c:forEach>
-    <c:forEach items="${tasks}" var="task">
-        <c:choose>
-            <c:when test="${not empty task.formResourceName}">
-                <div style="display:none;" id="task${child.identifier}-${task.id}" class="taskformdiv">
-                    <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                    <template:module node="${child}" templateType="edit" template="add">
-                        <template:param name="resourceNodeType" value="${task.formResourceName}"/>
-                        <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
-                        <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
-                        <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
-                        <template:param name="workflowTaskFormCallbackURL" value="${url.current}?ajaxcall=true"/>
-                        <template:param name="workflowTaskFormCallbackJS" value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});$('.workflowformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=workflow');});animatedcollapse.reinit();"/>
-                    </template:module>
-                </div>
-            </c:when>
-        </c:choose>
-    </c:forEach>
-    <br/>
-
-    <div id="edit-${child.identifier}">
-        <template:module templateType="html" node="${child}"/>
-    </div>
-    <hr/>
-</c:forEach>
-<div class="clear"></div>
-<c:if test="${editable and renderContext.editMode}">
-    <template:module path="*"/>
-</c:if>
-<template:include templateType="html" template="hidden.footer"/>
 
 <c:if test="${empty param.ajaxcall}">
     <%-- include add nodes forms --%>
@@ -163,7 +134,7 @@
     </h3>
     <script language="JavaScript">
         <c:forEach items="${types}" var="type" varStatus="status">
-            animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
+        animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
         </c:forEach>
         animatedcollapse.init();
     </script>
@@ -186,4 +157,11 @@
             </div>
         </c:forEach>
     </c:if>
+</c:if>
+
+<c:if test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
+    </td> </tr>
+    </tbody>
+</table>
+    
 </c:if>

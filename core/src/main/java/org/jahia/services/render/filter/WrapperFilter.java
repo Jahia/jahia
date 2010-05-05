@@ -25,7 +25,7 @@ public class WrapperFilter extends AbstractFilter {
             Resource.Wrapper wrapper = resource.popWrapper();
             try {
                 JCRNodeWrapper wrapperNode = wrapper.node;
-                Resource wrappedResource = new Resource(wrapperNode, resource.getTemplateType(), null, wrapper.template,
+                Resource wrappedResource = new Resource(wrapperNode, resource.getTemplateType().equals("edit")?"html":resource.getTemplateType(), null, wrapper.template,
                         Resource.CONFIGURATION_WRAPPER);
                 if (service.hasTemplate(wrapperNode.getPrimaryNodeType(), wrapper.template)) {
                     Object wrappedContent = renderContext.getRequest().getAttribute("wrappedContent");

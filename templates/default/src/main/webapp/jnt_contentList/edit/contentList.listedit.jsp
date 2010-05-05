@@ -50,7 +50,7 @@
     <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
     <tr>
         <td colspan="9">
-            <a href="${url.base}${currentNode.parent.path}.system.html"><fmt:message key="parent"/></a>
+            <a href="${url.base}${currentNode.parent.path}.html"><fmt:message key="parent"/></a>
         </td>
     </tr>
     </c:if>

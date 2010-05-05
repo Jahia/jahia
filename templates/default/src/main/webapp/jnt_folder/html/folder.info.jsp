@@ -14,7 +14,7 @@
     <td >
         ${fn:escapeXml(currentNode.primaryNodeType.name)}
     </td>
-    <td><a href="${url.base}${currentNode.path}.system.html"><c:if test="${!empty currentNode.properties['jcr:title'].string}">
+    <td><a href="${url.base}${currentNode.path}.html"><c:if test="${!empty currentNode.properties['jcr:title'].string}">
         ${fn:escapeXml(currentNode.properties['jcr:title'].string)}
     </c:if>
         <c:if test="${empty currentNode.properties['jcr:title'].string}">
@@ -38,20 +38,9 @@
             </c:if>
         </c:forEach>
     </td>
-    <td>
+    <td class="lastCol">
     <c:if test="${currentNode.locked}">
         <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer" src="${url.currentModule}/images/icons/locked.gif">
     </c:if>
-    </td>
-    <td class="lastCol">
-<%--
-        <a title="Editer" href="#"><img height="16" width="16" border="0" style="cursor: pointer;" title="Editer" alt="Editer" src="${url.currentModule}/images/icons/edit.png"></a>&nbsp;
---%>
-        <form action="${url.base}${currentNode.path}" method="post">
-            <input type="hidden" name="methodToCall" value="delete"/>
-            <input type="hidden" name="newNodeOutputFormat" value="html"/>
-            <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
-            <input type="image" height="16" width="16" border="0" style="cursor: pointer;" title="Supprimer" alt="Supprimer" src="${url.currentModule}/images/icons/delete.png">
-        </form>
     </td>
 </tr>

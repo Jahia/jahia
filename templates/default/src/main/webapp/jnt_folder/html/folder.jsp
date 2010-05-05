@@ -13,9 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:if test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
-    <c:if test="${subNodesTemplate != 'info'}">
-        <template:addWrapper name="system"/>
-    </c:if>
+    <template:addWrapper name="system"/>
     <c:set var="subNodesTemplate" value="info"/>
 </c:if>
 

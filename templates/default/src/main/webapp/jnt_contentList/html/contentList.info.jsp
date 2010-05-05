@@ -14,7 +14,7 @@
     <td >
         ${fn:escapeXml(currentNode.primaryNodeType.name)}
     </td>
-    <td><a href="${url.base}${currentNode.path}.system.html"><c:if test="${!empty currentNode.properties['jcr:title'].string}">
+    <td><a href="${url.base}${currentNode.path}.html"><c:if test="${!empty currentNode.properties['jcr:title'].string}">
         ${fn:escapeXml(currentNode.properties['jcr:title'].string)}
     </c:if>
         <c:if test="${empty currentNode.properties['jcr:title'].string}">

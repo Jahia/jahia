@@ -231,7 +231,7 @@
                         <bean class="org.jahia.services.render.filter.ContributionFilter" >
                             <property name="priority" value="3" />
                             <property name="applyOnModes" value="contribution" />
-                            <property name="applyOnNodeTypes" value="jnt:contentList"/>
+                            <property name="applyOnNodeTypes" value="jmix:contributeMode"/>
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >

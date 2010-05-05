@@ -7,6 +7,8 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.icons.ContentIconsImageBundle;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,17 +42,18 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         model.set("nameLabel", Messages.get("fm_column_name", "Name"));
         model.set("authorLabel", Messages.get("versioning_author", "Auhor"));
         model.set("tagsLabel", Messages.get("ece_tags", "tags"));
-        model.set("widthLabel", Messages.get("ece_width", "Width"));
-        model.set("heightLabel", Messages.get("ece_height", "Height"));
         int width = model.getWidth();
-        Log.debug("width" + width);
-        if (width > 0 && width < 80) {
-            model.set("pathPreview", model.getUrl());
+        if (width > 0) {
+            if (width < 80) {
+                model.set("nodeImg", "<img src=\"" + model.getUrl() + "\" title=\"{name}\">");
+            } else {
+                model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"{name}\">");
+            }
+            model.set("widthHTML", "<div><b>" + Messages.get("ece_width", "Width") + " </b>" + model.getWidth() + " px</div>");
+            model.set("heightHTML", "<div><b>" + Messages.get("ece_height", "Height") + " </b>" + model.getHeight() + " px</div>");
         } else {
-            model.set("pathPreview", model.getPreview());
+            model.set("nodeImg", ContentModelIconProvider.getInstance().getIcon(model, true).getHTML());
         }
-        model.set("widthPreview", model.getWidth());
-        model.set("heightPreview", model.getHeight());
 
         // ugly due to the fact that if condition doesn't work in tpl.
         if (model.getTags() != null && model.getTags().length() > 0) {
@@ -66,7 +69,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
     public native String getSimpleTemplate() /*-{
         return ['<tpl for=".">',
                 '<div class="thumb-wrap" id="{name}">',
-                '<div class="thumb"><img src="{preview}" title="{name}"></div>',
+                '<div class="thumb">{nodeImg}</div>',
                 '<div class="x-editable">{shortName}</span></div>',
                 '</tpl>',
                 '<div class="x-clear"></div>'].join("");
@@ -75,12 +78,12 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
     public native String getDetailedTemplate() /*-{
     return ['<tpl for=".">',
         '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
-        '<div><div style="width: 140px; float: left; text-align: center;" class="thumb"><img src="{pathPreview}" title="{name}"></div>',
+        '<div><div style="width: 140px; float: left; text-align: center;" class="thumb">{nodeImg}</div>',
         '<div style="margin-left: 160px; " class="thumbDetails">',
         '<div><b>{nameLabel}: </b>{name}</div>',
         '<div><b>{authorLabel}: </b>{createdBy}</div>',
-        '<div><b>{widthLabel}: </b>{widthPreview} px</div>',
-        '<div><b>{heightLabel}: </b>{heightPreview} px</div>',
+        '{widthHTML}',
+        '{heightHTML}',
         '{tagsHTML}',
         '</div>',
         '</div>',

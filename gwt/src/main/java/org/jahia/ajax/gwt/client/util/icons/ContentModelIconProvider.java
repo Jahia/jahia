@@ -31,11 +31,13 @@
  */
 package org.jahia.ajax.gwt.client.util.icons;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.util.iconsLarge.ContentIconsLargeImageBundle;
 
 /**
  * Icon provider for for different types of content objects.
@@ -46,6 +48,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode> {
 
     public static final ContentIconsImageBundle CONTENT_ICONS = GWT.create(ContentIconsImageBundle.class);
+    public static final ContentIconsImageBundle CONTENT_ICONS_LARGE = GWT.create(ContentIconsLargeImageBundle.class);
 
     public static final String CONTENT = "icon-content";
 
@@ -96,7 +99,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     public static final String LOCK = "lock";
 
     public static final String QUERY = "icon-query";
-    
+
     private static final String SEARCH = "icon-searchformcontent";
 
     private static final String SANDBOX = "icon-sandbox";
@@ -157,7 +160,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
     private static ContentModelIconProvider iconProvider = new ContentModelIconProvider();
 
     private ContentModelIconProvider() {
-    	super();
+        super();
     }
 
 
@@ -184,168 +187,201 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
             }
             boolean isFolder = type != null && type.equalsIgnoreCase(JNT_FOLDER);
             boolean isOpened = gwtJahiaNode.isExpandOnLoad();
-            return getIcon(type, ext,isFolder,isOpened);
+            return getIcon(type, ext, isFolder, isOpened, false);
         }
-        return CONTENT_ICONS.file();
+        return getContentIconsBundle(false).file();
+    }
+
+    public AbstractImagePrototype getIcon(GWTJahiaNode gwtJahiaNode, boolean large) {
+        if (gwtJahiaNode != null) {
+            String ext = gwtJahiaNode.getExt();
+            String type = null;
+            if (gwtJahiaNode.getNodeTypes() != null && !gwtJahiaNode.getNodeTypes().isEmpty()) {
+                type = gwtJahiaNode.getNodeTypes().get(0);
+            }
+            boolean isFolder = type != null && type.equalsIgnoreCase(JNT_FOLDER);
+            boolean isOpened = gwtJahiaNode.isExpandOnLoad();
+            return getIcon(type, ext, isFolder, isOpened, large);
+        }
+        return getContentIconsBundle(large).file();
     }
 
     public AbstractImagePrototype getIcon(GWTJahiaNodeType gwtJahiaNodeType) {
         if (gwtJahiaNodeType != null) {
             String ext = gwtJahiaNodeType.getIcon();
             String typeName = gwtJahiaNodeType.getName();
-            return getIcon(typeName, ext,false,false);
+            return getIcon(typeName, ext, false, false, false);
         }
-        return CONTENT_ICONS.defaultNode();
+        return getContentIconsBundle(false).defaultNode();
     }
 
-    private AbstractImagePrototype getIcon(String type, String ext,boolean isFolder,boolean isOpened) {        
-        if(isFolder) {
-            if(isOpened){
-               return CONTENT_ICONS.folderOpen();
+    public AbstractImagePrototype getIcon(GWTJahiaNodeType gwtJahiaNodeType, boolean large) {
+        if (gwtJahiaNodeType != null) {
+            String ext = gwtJahiaNodeType.getIcon();
+            String typeName = gwtJahiaNodeType.getName();
+            return getIcon(typeName, ext, false, false, large);
+        }
+        return getContentIconsBundle(large).defaultNode();
+    }
+
+    private AbstractImagePrototype getIcon(String type, String ext, boolean isFolder, boolean isOpened, boolean large) {
+
+        ContentIconsImageBundle ci = getContentIconsBundle(large);
+        if (isFolder) {
+            if (isOpened) {
+                return ci.folderOpen();
             }
-             return CONTENT_ICONS.folderClose();
+            return ci.folderClose();
         }
         if (type != null) {
             if (ext.equalsIgnoreCase(DEFAULT_NODE)) {
-                return CONTENT_ICONS.defaultNode();
+                return ci.defaultNode();
             } else if (type.equalsIgnoreCase(FOLDER_CLOSE)) {
-                return CONTENT_ICONS.folderClose();
+                return ci.folderClose();
             } else if (type.equalsIgnoreCase(FOLDER_OPEN)) {
-                return CONTENT_ICONS.folderOpen();
+                return ci.folderOpen();
             } else if (type.equalsIgnoreCase(JNT_ADDRESS)) {
-                return CONTENT_ICONS.jntAddress();
+                return ci.jntAddress();
             }
             // node type that begins with jahiaForum:
             else if (type.indexOf(JAHIA_FORUM) == 0) {
-                return CONTENT_ICONS.jntForum();
+                return ci.jntForum();
             } else if (type.equalsIgnoreCase(JNT_RICHTEXT)) {
-                return CONTENT_ICONS.jntRichText();
+                return ci.jntRichText();
             } else if (type.equalsIgnoreCase(JNT_VIDEO)) {
-                return CONTENT_ICONS.jntVideo();
+                return ci.jntVideo();
             } else if (type.equalsIgnoreCase(JNT_TEXT)) {
-                return CONTENT_ICONS.jntText();
+                return ci.jntText();
             } else if (type.equalsIgnoreCase(JNT_FORM) || type.equals(JNT_SIMPLE_SEARCH_FORM) || type.equals(JNT_ADVANCED_SEARCH_FORM)) {
-                return CONTENT_ICONS.jntForm();
+                return ci.jntForm();
             } else if (type.equalsIgnoreCase(JNT_IMAGE)) {
-                return CONTENT_ICONS.jntImage();
+                return ci.jntImage();
             } else if (type.equalsIgnoreCase(JNT_MAIL)) {
-                return CONTENT_ICONS.jntMail();
+                return ci.jntMail();
             } else if (type.equalsIgnoreCase(JNT_PUBLICATION)) {
-                return CONTENT_ICONS.jntPublication();
+                return ci.jntPublication();
             } else if (type.equalsIgnoreCase(JNT_TAG) || type.equalsIgnoreCase(JNT_PAGE_TAGGING) || type.equalsIgnoreCase(JNT_TAG_CLOUD)) {
-                return CONTENT_ICONS.jntTag();
+                return ci.jntTag();
             } else if (type.equalsIgnoreCase(JNT_CATEGORY)) {
-                return CONTENT_ICONS.jntCategory();
+                return ci.jntCategory();
             } else if (type.equalsIgnoreCase(JNT_NEWS)) {
-                return CONTENT_ICONS.jntNews();
+                return ci.jntNews();
             } else if (type.equalsIgnoreCase(JNT_PIECHART)) {
-                return CONTENT_ICONS.jntPieChart();
+                return ci.jntPieChart();
             } else if (type.equalsIgnoreCase(JNT_FAQ)) {
-                return CONTENT_ICONS.jntFaq();
+                return ci.jntFaq();
             } else if (type.equalsIgnoreCase(JNT_BOOKMARK)) {
-                return CONTENT_ICONS.jntBookmark();
+                return ci.jntBookmark();
             } else if (type.equalsIgnoreCase(JNT_SITE)) {
-                return CONTENT_ICONS.jntSite();
+                return ci.jntSite();
             } else if (type.equalsIgnoreCase(JNT_INTERVIEW)) {
-                return CONTENT_ICONS.jntInterview();
+                return ci.jntInterview();
             } else if (type.equalsIgnoreCase(JNT_COMMENT)) {
-                return CONTENT_ICONS.jntComment();
+                return ci.jntComment();
             } else if (type.equalsIgnoreCase(JNT_BLOGPOST)) {
-                return CONTENT_ICONS.jntBlogpost();
+                return ci.jntBlogpost();
             } else if (type.equalsIgnoreCase(JNT_EVENT)) {
-                return CONTENT_ICONS.jntEvent();
+                return ci.jntEvent();
             } else if (type.equalsIgnoreCase(JNT_PEOPLE)) {
-                return CONTENT_ICONS.jntPeople();
+                return ci.jntPeople();
             } else if (type.equalsIgnoreCase(PERCENT)) {
-                return CONTENT_ICONS.percent();
+                return ci.percent();
             } else if (type.equalsIgnoreCase(JNT_FIELDSET)) {
-                return CONTENT_ICONS.jntFieldset();
+                return ci.jntFieldset();
             } else if (type.equalsIgnoreCase(JNT_INPUT_TEXT)) {
-                return CONTENT_ICONS.jntInputText();
+                return ci.jntInputText();
             } else if (type.equalsIgnoreCase(JNT_RADIOBUTTON_FIELD)) {
-                return CONTENT_ICONS.jntRadiobuttonField();
+                return ci.jntRadiobuttonField();
             } else if (type.equalsIgnoreCase(JNT_PASSWORD_FIELD)) {
-                return CONTENT_ICONS.jntPasswordField();
+                return ci.jntPasswordField();
             } else if (type.equalsIgnoreCase(JNT_CHECKBOX_FIELD)) {
-                return CONTENT_ICONS.jntCheckboxField();
+                return ci.jntCheckboxField();
             } else if (type.equalsIgnoreCase(JNT_SUBMIT_BUTTON)) {
-                return CONTENT_ICONS.jntButton();
+                return ci.jntButton();
             } else if (type.equalsIgnoreCase(JNT_SELECT_FIELD)) {
-                return CONTENT_ICONS.jntSelectField();
+                return ci.jntSelectField();
             } else if (type.equalsIgnoreCase(JNT_INPUT_MULTIPLE)) {
-                return CONTENT_ICONS.jntInputText();
+                return ci.jntInputText();
             } else if (type.equals(JNT_SEARCH_RESULTS)) {
-                return CONTENT_ICONS.list();
+                return ci.list();
             } else if (type.startsWith("jnt:navMenu")) {
-                return CONTENT_ICONS.navMenu();
+                return ci.navMenu();
             }
         }
         if (ext != null) {
             if (ext.equalsIgnoreCase(CONTENT)) {
-                return CONTENT_ICONS.content();
+                return ci.content();
             } else if (ext.equalsIgnoreCase(DIR)) {
-                return CONTENT_ICONS.dir();
+                return ci.dir();
             } else if (ext.equalsIgnoreCase(DOC)) {
-                return CONTENT_ICONS.doc();
+                return ci.doc();
             } else if (ext.equalsIgnoreCase(EXE)) {
-                return CONTENT_ICONS.exe();
+                return ci.exe();
             } else if (ext.equalsIgnoreCase(FILE)) {
-                return CONTENT_ICONS.file();
+                return ci.file();
             } else if (ext.equalsIgnoreCase(GEAR)) {
-                return CONTENT_ICONS.gearth();
+                return ci.gearth();
             } else if (ext.equalsIgnoreCase(HTML)) {
-                return CONTENT_ICONS.html();
+                return ci.html();
             } else if (ext.equalsIgnoreCase(IMG)) {
-                return CONTENT_ICONS.img();
+                return ci.img();
             } else if (ext.equalsIgnoreCase(LIST)) {
-                return CONTENT_ICONS.list();
+                return ci.list();
             } else if (ext.equalsIgnoreCase(MASHUP)) {
-                return CONTENT_ICONS.mashup();
+                return ci.mashup();
             } else if (ext.equalsIgnoreCase(PAGE)) {
-                return CONTENT_ICONS.page();
+                return ci.page();
             } else if (ext.equalsIgnoreCase(PDF)) {
-                return CONTENT_ICONS.pdf();
+                return ci.pdf();
             } else if (ext.equalsIgnoreCase(PLACE_HOLDER)) {
-                return CONTENT_ICONS.placeholder();
+                return ci.placeholder();
             } else if (ext.equalsIgnoreCase(PORTLET)) {
-                return CONTENT_ICONS.portlet();
+                return ci.portlet();
             } else if (ext.equalsIgnoreCase(PPT)) {
-                return CONTENT_ICONS.ppt();
+                return ci.ppt();
             } else if (ext.equalsIgnoreCase(RAR)) {
-                return CONTENT_ICONS.rar();
+                return ci.rar();
             } else if (ext.equalsIgnoreCase(SOUND)) {
-                return CONTENT_ICONS.sound();
+                return ci.sound();
             } else if (ext.equalsIgnoreCase(TXT)) {
-                return CONTENT_ICONS.txt();
+                return ci.txt();
             } else if (ext.equalsIgnoreCase(USER_GROUP)) {
-                return CONTENT_ICONS.userGroup();
+                return ci.userGroup();
             } else if (ext.equalsIgnoreCase(USER)) {
-                return CONTENT_ICONS.user();
+                return ci.user();
             } else if (ext.equalsIgnoreCase(VIDEO)) {
-                return CONTENT_ICONS.video();
+                return ci.video();
             } else if (ext.equalsIgnoreCase(XLS)) {
-                return CONTENT_ICONS.xls();
+                return ci.xls();
             } else if (ext.equalsIgnoreCase(ZIP)) {
-                return CONTENT_ICONS.zip();
+                return ci.zip();
             } else if (ext.equalsIgnoreCase(LOCK)) {
-                return CONTENT_ICONS.lock();
+                return ci.lock();
             } else if (ext.equalsIgnoreCase(QUERY) || ext.equalsIgnoreCase(SEARCH)) {
-                return CONTENT_ICONS.query();
+                return ci.query();
             } else if (ext.equalsIgnoreCase(INTERACTIVE)) {
-                return CONTENT_ICONS.interactive();
+                return ci.interactive();
             } else if (ext.equalsIgnoreCase(STRUCTURED)) {
-                return CONTENT_ICONS.structured();
+                return ci.structured();
             } else if (ext.equalsIgnoreCase(CONTENTLIST)) {
-                return CONTENT_ICONS.contentlist();
-            }   else if (ext.equalsIgnoreCase(FORMCONTENT)) {
-                return CONTENT_ICONS.formcontent();
-            }   else if (ext.equalsIgnoreCase(SANDBOX)) {
-                return CONTENT_ICONS.sandbox();
-            }   else if (ext.equalsIgnoreCase(TEMPLATE)) {
-                return CONTENT_ICONS.template();
+                return ci.contentlist();
+            } else if (ext.equalsIgnoreCase(FORMCONTENT)) {
+                return ci.formcontent();
+            } else if (ext.equalsIgnoreCase(SANDBOX)) {
+                return ci.sandbox();
+            } else if (ext.equalsIgnoreCase(TEMPLATE)) {
+                return ci.template();
             }
         }
-        return CONTENT_ICONS.file();
+        return ci.file();
+    }
+
+    private ContentIconsImageBundle getContentIconsBundle(boolean large) {
+        ContentIconsImageBundle ci = CONTENT_ICONS;
+        if (large) {
+            ci = CONTENT_ICONS_LARGE;
+        }
+        return ci;
     }
 
     public AbstractImagePrototype getLockIcon() {

@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.widget.Label;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
@@ -79,7 +80,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Sergiy Shyrkov
  */
 public class UrlMappingEditor extends LayoutContainer {
-
+  private GWTJahiaNode node ;
     private static class SingleSelectionCheckColumnConfig extends CheckColumnConfig {
 
         /**
@@ -128,6 +129,7 @@ public class UrlMappingEditor extends LayoutContainer {
     public UrlMappingEditor(GWTJahiaNode node, GWTJahiaLanguage locale) {
         super(new FitLayout());
         this.locale = locale;
+        this.node = node;
         setBorders(false);
         store = new ListStore<GWTJahiaUrlMapping>();
 
@@ -221,7 +223,8 @@ public class UrlMappingEditor extends LayoutContainer {
         toolBar.add(add);
 
         ContentPanel cp = new ContentPanel(new FitLayout());
-        cp.setHeaderVisible(false);
+        cp.setHeading(node.getUrl());
+       // cp.setHeaderVisible(false);
         cp.setTopComponent(toolBar);
         cp.add(grid);
 
@@ -229,7 +232,10 @@ public class UrlMappingEditor extends LayoutContainer {
         fs.setLayout(new FitLayout());
         fs.setHeading(Messages.get("ece_seo_urlMapping", "URL mapping"));
         fs.setCollapsible(true);
+
         fs.add(cp);
+
+
 
         add(fs);
     }

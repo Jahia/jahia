@@ -8,7 +8,7 @@
         <property name="jndiName" value="java:comp/env/jdbc/jahia" />
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="settingsBean">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" depends-on="settingsBean">
         <property name="dataSource">
             <ref bean="dataSource"/>
         </property>
@@ -69,6 +69,7 @@
                 </entry>
             </map>
         </property>
+        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
     </bean>
 
     <!-- Uncomment this to use JOTM Transaction Manager with Tomcat and comment the other

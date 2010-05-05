@@ -33,6 +33,7 @@ package org.jahia.services.templates;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
@@ -48,6 +49,10 @@ import org.jahia.utils.profile.ProfileExtensions;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Workspace;
+import javax.jcr.observation.ObservationManager;
 import java.io.File;
 import java.util.*;
 
@@ -116,6 +121,24 @@ class TemplatePackageRegistry {
                 staticAssetMapping.putAll(mappings.getMapping());
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering static asset mappings '" + mappings.getMapping() + "'");
+                }
+            } else if (bean instanceof DefaultEventListener) {
+                final DefaultEventListener eventListener = (DefaultEventListener) bean;
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            final Workspace workspace = session.getWorkspace();
+
+                            ObservationManager observationManager = workspace.getObservationManager();
+                            observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), true, null, eventListener.getNodeTypes(), false);
+                            return null;
+                        }
+                    });
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Registering event listener"+eventListener.getClass().getName()+" for workspace '" + eventListener.getWorkspace() + "'");
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
                 }
             }
             return bean;

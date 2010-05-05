@@ -179,7 +179,9 @@ public class TestHelper {
 
     public static void deleteSite(String name) throws Exception {
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
-        service.removeSite(service.getSiteByKey(name));
+        JahiaSite site = service.getSiteByKey(name);
+        if(site!=null)
+        service.removeSite(site);
     }
 
     public static void cleanDatabase() throws Exception {

@@ -46,6 +46,8 @@ import org.jahia.utils.LanguageCodeConverters;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Unit test for remote publishing
@@ -84,13 +86,12 @@ public class SiteTest extends TestCase {
         JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
         JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
         session.save();
-
-        JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+                                                                                              LanguageCodeConverters.languageCodeToLocale(
+                                                                                                      site.getDefaultLanguage()));
         JCRNodeWrapper liveSite = liveSession.getNode("/sites/jcrRPTest");
 
         File tmp = File.createTempFile("remote", ".log.gz");
@@ -99,9 +100,7 @@ public class SiteTest extends TestCase {
         TestHelper.deleteSite("targetSite");
         site = TestHelper.createSite("targetSite");
 
-
-        RemotePublicationService.getInstance().replayLog(liveSession.getNode("/sites/targetSite"),  new FileInputStream(tmp));
-
-
+        RemotePublicationService.getInstance().replayLog(liveSession.getNode("/sites/targetSite"), new FileInputStream(
+                tmp));
     }
 }

@@ -94,6 +94,7 @@ public class LogReplayTest extends TestCase {
     }
 
     public void testLogAddAndRemoveNode() throws Exception {
+        logger.info("testLogAddAndUpdateOfProperty : start");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
@@ -138,6 +139,11 @@ public class LogReplayTest extends TestCase {
         JCRPublicationService.getInstance()
                 .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
                         true);
+        try {
+            liveSession.getNode("/sites/jcrRPTest/home/source/page1");
+            fail("/sites/jcrRPTest/home/source/page1 should not have been found in live");
+        } catch (PathNotFoundException e) {
+        }
         tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
         RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
         RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
@@ -146,6 +152,7 @@ public class LogReplayTest extends TestCase {
     }
 
     public void testLogAddAndUpdateOfProperty() throws Exception {
+        logger.info("testLogAddAndUpdateOfProperty : start");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
@@ -200,6 +207,7 @@ public class LogReplayTest extends TestCase {
     }
 
     public void testLogAddAndRemoveOfProperty() throws Exception {
+        logger.info("testLogAddAndRemoveOfProperty : start");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
@@ -257,6 +265,7 @@ public class LogReplayTest extends TestCase {
     }
 
     public void testLogMoveOfNode() throws Exception {
+        logger.info("testLogMoveOfNode : start");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
@@ -296,13 +305,12 @@ public class LogReplayTest extends TestCase {
                 .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
                         true);
 
-        now = new GregorianCalendar();
         page1.checkout();
         page3.checkout();
         page2.checkout();
         session.move(page3.getPath(), page1.getPath() + "/page3_moved");
         session.save();
-
+        now = new GregorianCalendar();
         JCRPublicationService.getInstance()
                 .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
                         true);
@@ -328,7 +336,7 @@ public class LogReplayTest extends TestCase {
     }
 
     public void testLogBinaryNode() throws Exception {
-
+        logger.info("testLogBinaryNode : start");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
@@ -387,6 +395,7 @@ public class LogReplayTest extends TestCase {
     }
 
     public void testLogSharedNode() throws Exception {
+        logger.info("testLogSharedNode : start");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
@@ -450,6 +459,7 @@ public class LogReplayTest extends TestCase {
     }
 
     public void testLogOrderingOfNodes() throws Exception {
+        logger.info("testLogOrderingOfNodes : start");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
@@ -499,8 +509,6 @@ public class LogReplayTest extends TestCase {
         JCRPublicationService.getInstance()
                 .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
                         true);
-
-        now = new GregorianCalendar();
         source.checkout();
         page1.checkout();
         page2.checkout();
@@ -523,7 +531,7 @@ public class LogReplayTest extends TestCase {
             pageFound.add(s);
             i++;
         }
-
+        now = new GregorianCalendar();
         JCRPublicationService.getInstance()
                 .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
                         true);

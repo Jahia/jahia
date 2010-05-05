@@ -97,4 +97,7 @@ public abstract class DefaultEventListener implements EventListener {
 
     public abstract String[] getNodeTypes();
 
+    public String getWorkspace() {
+        return workspace;
+    }
 }

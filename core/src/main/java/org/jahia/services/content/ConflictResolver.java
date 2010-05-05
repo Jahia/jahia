@@ -80,7 +80,7 @@ public class ConflictResolver {
                 unresolvedDifferences.add(diff);
             }
         }
-        targetNode.getRealNode().getSession().save();
+        targetNode.getSession().save();
     }
 
     private void computeDifferences() throws RepositoryException {

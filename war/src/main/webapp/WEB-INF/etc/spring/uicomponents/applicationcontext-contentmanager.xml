@@ -291,8 +291,8 @@
 
     <!-- content picker -->
     <bean id="contentpicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value=""/>
-        <property name="folderTypes" value=""/>
+        <property name="nodeTypes" value="nt:base"/>
+        <property name="folderTypes" value="nt:base"/>
         <property name="enableTextMenu" value="false"/>
         <property name="toolbarSet" ref="content-picker"/>
         <property name="hideLeftPanel" value="true"/>

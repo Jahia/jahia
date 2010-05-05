@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -47,8 +48,10 @@ public class ContentTabItem extends PropertiesTabItem {
                 wrapperPanel = new LayoutContainer(new RowLayout());
                 add(wrapperPanel);
             }
-            wrapperPanel.add(createNamePanel());
+            FieldSet fSet = new FieldSet();
+            fSet.add(createNamePanel());
             isNodeNameFieldDisplayed = true;
+            propertiesEditor.insert(fSet,0);
             wrapperPanel.add(propertiesEditor);
         }
 
@@ -65,7 +68,9 @@ public class ContentTabItem extends PropertiesTabItem {
      * @return
      */
     private FormPanel createNamePanel() {
+
         FormPanel formPanel = new FormPanel();
+        formPanel.setLabelAlign(FormPanel.LabelAlign.TOP);
         formPanel.setFieldWidth(550);
         formPanel.setLabelWidth(180);
         formPanel.setFrame(false);

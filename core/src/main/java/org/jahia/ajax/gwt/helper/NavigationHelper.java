@@ -539,7 +539,9 @@ public class NavigationHelper {
             NodeIterator usages = node.getSharedSet();
             while (usages.hasNext()) {
                 JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
-                result.add(new GWTJahiaNodeUsage(usage.getIdentifier(), usage.getPath()));
+                JCRNodeWrapper parent = lookUpParentPageNode(usage);
+
+                result.add(new GWTJahiaNodeUsage(usage.getIdentifier(), usage.getPath(), parent == null ? "" : parent.getPath() + ".html"));
 
             }
         } catch (RepositoryException e) {
@@ -550,8 +552,9 @@ public class NavigationHelper {
             PropertyIterator references = node.getReferences();
             while (references.hasNext()) {
                 JCRPropertyWrapper reference = (JCRPropertyWrapper) references.next();
-                Node refNode = reference.getNode();
-                result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath()));
+                JCRNodeWrapper refNode = (JCRNodeWrapper) reference.getNode();
+                JCRNodeWrapper parent = lookUpParentPageNode(refNode);
+                result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath(), parent == null ? "" : parent.getPath() + ".html"));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -559,6 +562,29 @@ public class NavigationHelper {
 
         return result;
     }
+
+    private JCRNodeWrapper lookUpParentPageNode(JCRNodeWrapper usage) throws RepositoryException {
+        // look for parent page url
+        boolean pageParentFound = false;
+        JCRNodeWrapper parentNode = usage.getParent();
+        while (!pageParentFound) {
+            if (parentNode.isNodeType("jnt:page")) {
+                return parentNode;
+            } else {
+                // case of root
+                if (parentNode.getPath().lastIndexOf("/") == 0) {
+                    return null;
+                }
+
+                // update parent node
+                parentNode = parentNode.getParent();
+            }
+
+        }
+
+        return null;
+    }
+
 
     public List<GWTJahiaNode> executeQuery(Query q, String[] nodeTypesToApply, String[] mimeTypesToMatch, String[] filtersToApply) throws RepositoryException {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();

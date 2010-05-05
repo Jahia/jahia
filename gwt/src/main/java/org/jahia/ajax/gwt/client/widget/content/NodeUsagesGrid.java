@@ -9,9 +9,7 @@ import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -31,26 +29,17 @@ public class NodeUsagesGrid {
     public static Grid<GWTJahiaNodeUsage> createUsageGrid(final List<GWTJahiaNode> nodes) {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig col = new ColumnConfig("url", "URL", 300);
-        columns.add(col);
-        /*col = new ColumnConfig("lang", Messages.getResource("fm_language"), 130);
-    col.setAlignment(Style.HorizontalAlignment.CENTER);
-    columns.add(col);
-    col = new ColumnConfig(Messages.getResource("fm_workflow"), 30);
-    col.setAlignment(Style.HorizontalAlignment.CENTER);
-    col.setRenderer(new GridCellRenderer<GWTJahiaNodeUsage>() {
-        public Object render(GWTJahiaNodeUsage gwtJahiaNodeUsage, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNodeUsage> gwtJahiaNodeUsageListStore, com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> gwtJahiaNodeUsageGrid) {
-            String[] ws = new String[]{Messages.getResource("fm_versioned"), Messages.getResource("fm_live"), Messages.getResource("fm_staging"), Messages.getResource("fm_notify")};
-            String[] images = new String[]{"600", "111", "121", "130"};
-            return "<img src=\"../images/icons/workflow/" + images[gwtJahiaNodeUsage.getWorkflow()] + ".png\">&nbsp;" + ws[gwtJahiaNodeUsage.getWorkflow()];
-        }
-    });
-    col.setHidden(true);
-    columns.add(col);
-    col = new ColumnConfig("versionName", Messages.getResource("fm_version"), 130);
-    col.setAlignment(Style.HorizontalAlignment.CENTER);
-    columns.add(col);*/
+        ColumnConfig col = new ColumnConfig("pageUrl", "Page URL", 300);
+        col.setRenderer(new GridCellRenderer<GWTJahiaNodeUsage>() {
+            public Object render(GWTJahiaNodeUsage gwtJahiaNodeUsage, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNodeUsage> gwtJahiaNodeUsageListStore, com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> gwtJahiaNodeUsageGrid) {
+                return "<a href=\"" + JahiaGWTParameters.getBaseUrl()+ gwtJahiaNodeUsage.getPageUrl() + "\" target=\"_blank\">" + JahiaGWTParameters.getBaseUrl()+ gwtJahiaNodeUsage.getPageUrl()+"<a>";
+            }
+        });
 
+        columns.add(col);
+
+        col = new ColumnConfig("url", "URL", 300);
+        columns.add(col);
         ColumnModel cm = new ColumnModel(columns);
         final ListStore<GWTJahiaNodeUsage> usageStore = new ListStore<GWTJahiaNodeUsage>(new BaseListLoader(
                 new RpcProxy() {
@@ -72,13 +61,13 @@ public class NodeUsagesGrid {
                     }
                 }));
         final Grid<GWTJahiaNodeUsage> tbl = new Grid<GWTJahiaNodeUsage>(usageStore, cm);
-        
+
         tbl.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent tableEvent) {
                 Object url = tableEvent.getModel().get("url");
                 if (url != null && url instanceof String) {
                     instance.getRenderedContent((String) url, null, JahiaGWTParameters.getUILanguage(), null,
-                                                "wrapper.previewwrapper", null, false, null, new AsyncCallback<GWTRenderResult>() {
+                            "wrapper.previewwrapper", null, false, null, new AsyncCallback<GWTRenderResult>() {
                                 public void onSuccess(GWTRenderResult result) {
                                     HTML html = new HTML(result.getResult());
                                     Window w = new Window();

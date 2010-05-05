@@ -44,7 +44,8 @@ import java.io.Serializable;
  */
 public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
 
-    public GWTJahiaNodeUsage() {}
+    public GWTJahiaNodeUsage() {
+    }
 
     public GWTJahiaNodeUsage(int id, int version, int workflow, String extendedWorkflow, String lang, String pageTitle, String url) {
         setId(id);
@@ -56,8 +57,9 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
         setUrl(url);
     }
 
-    public GWTJahiaNodeUsage(String identifier, String url) {
+    public GWTJahiaNodeUsage(String identifier, String url, String pageUrl) {
         setUrl(url);
+        setPageUrl(pageUrl);
         setIdentifier(identifier);
     }
 
@@ -68,7 +70,7 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
     public String getIdentifier() {
         return get("identifier");
     }
-    
+
     public int getId() {
         Integer idInt = get("id");
         if (idInt != null) {
@@ -138,6 +140,14 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
 
     public void setUrl(String url) {
         set("url", url);
+    }
+
+    public String getPageUrl() {
+        return get("pageUrl");
+    }
+
+    public void setPageUrl(String url) {
+        set("pageUrl", url);
     }
 
     public String getVersionName() {

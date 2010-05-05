@@ -33,15 +33,15 @@ import java.util.List;
  * Date: Dec 21, 2009
  * Time: 2:22:24 PM
  */
-class ImagesBrowseTabItem extends BrowseTabItem {
+class FileImagesBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected ListStore<GWTJahiaNode> contentStore;
     protected ImageDragSource dragSource;
 
-    public ImagesBrowseTabItem(GWTSidePanelTab config) {
+    public FileImagesBrowseTabItem(GWTSidePanelTab config) {
         super(JCRClientUtils.ALL_FILES, JCRClientUtils.FOLDER_NODETYPES, config);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.img());
+        setIcon(ContentModelIconProvider.CONTENT_ICONS.tabDocuments());
 
         contentContainer = new LayoutContainer();
         contentContainer.setId("images-view");

@@ -48,10 +48,8 @@ public class SidePanel extends ContentPanel {
                 tabItem = new CreateContentTabItem(tab);
             } else if (tab.getName().equals("content")) {
                 tabItem = new ContentBrowseTabItem(tab);
-            } else if (tab.getName().equals("images")) {
-                tabItem = new ImagesBrowseTabItem(tab);
-            } else if (tab.getName().equals("files")) {
-                tabItem = new FilesBrowseTabItem(tab);
+            } else if (tab.getName().equals("filesimages")) {
+                tabItem = new FileImagesBrowseTabItem(tab);
             } else if (tab.getName().equals("mashups")) {
                 tabItem = new MashupBrowseTabItem(tab);
             } else if (tab.getName().equals("search")) {

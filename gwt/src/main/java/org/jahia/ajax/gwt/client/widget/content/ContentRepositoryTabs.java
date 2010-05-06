@@ -33,7 +33,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.*;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -191,7 +191,7 @@ public class ContentRepositoryTabs extends LeftComponent {
 
         createSearchPanel();
         searchTabITem.setLayout(new FitLayout());
-        searchTabITem.setIcon(ContentModelIconProvider.CONTENT_ICONS.query());
+        searchTabITem.setIcon(StandardIconsProvider.STANDARD_ICONS.query());
         searchTabITem.add(contentSearchForm);
         m_component.add(searchTabITem);
 

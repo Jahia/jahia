@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -41,7 +41,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
 
     public FileImagesBrowseTabItem(GWTSidePanelTab config) {
         super(JCRClientUtils.ALL_FILES, JCRClientUtils.FOLDER_NODETYPES, config);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.img());
+        setIcon(StandardIconsProvider.STANDARD_ICONS.img());
 
         contentContainer = new LayoutContainer();
         contentContainer.setId("images-view");

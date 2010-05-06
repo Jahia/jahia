@@ -36,9 +36,9 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.SearchField;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -265,7 +265,7 @@ public class SearchGrid extends ContentPanel {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                         if (gwtJahiaNode.isFile() || gwtJahiaNode.isMatchFilters()) {
                             final Button pickContentButton = new Button(Messages.get("label_add", "Add"));
-                            pickContentButton.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
+                            pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
                             pickContentButton.setEnabled(true);
                             pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent buttonEvent) {

@@ -39,20 +39,6 @@
         <property name="jcrService"  ref="JCRStoreService"/>
         <property name="jcrVersionService" ref="jcrVersionService" />
         <property name="publication" ref="PublicationHelper"/>
-        <property name="nodetypeIcons">
-            <map>
-                <entry key="unknown" value="file"/>
-                <entry key="jmix:queryContent" value="query"/>
-                <entry key="jmix:searchFormContent" value="query"/>
-                <entry key="jmix:siteComponentContent" value="interactive"/>
-                <entry key="jmix:editorialContent" value="structured"/>
-                <entry key="jmix:listContent" value="contentlist"/>
-                <entry key="jnt:page" value="page"/>
-                <entry key="jnt:user" value="user"/>
-                <entry key="jnt:group" value="user-group"/>
-                <entry key="jmix:sandboxContent" value="sandbox"/>
-            </map>
-        </property>
     </bean>
 
     <bean name="LanguagesHelper" class="org.jahia.ajax.gwt.helper.LanguageHelper"/>

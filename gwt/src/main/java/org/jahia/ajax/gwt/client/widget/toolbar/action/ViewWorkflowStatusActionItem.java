@@ -6,7 +6,6 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.ScrollListener;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.util.Size;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
@@ -72,13 +71,15 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
                 if (info.getAvailableActions().size()>0) {
                     String current = info.getAvailableActions().get(0).getName();
                     allPublished = false;
-                    addInfoLayer(module, "Workflow(s) started : "+current, "red", "red", left, top, right, bottom, removeListener, true);
+                    addInfoLayer(module, "Workflow(s) started : "+current, "red", "red", left, top, right, bottom, removeListener, true,
+                            "0.7");
                 }
             }
         }
 
         if (allPublished) {
-            addInfoLayer(modules.iterator().next(), "No actual worflow(s) started", "black", "white", left,top,right,bottom,removeListener, false);
+            addInfoLayer(modules.iterator().next(), "No actual worflow(s) started", "black", "white", left,top,right,bottom,removeListener, false,
+                    "0.7");
         }
 
         ((EditLinker) linker).getMainModule().addScrollListener(new ScrollListener() {

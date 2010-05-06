@@ -18,7 +18,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorflowNodeType;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.*;
@@ -91,7 +91,7 @@ public class WorkflowContentTypePanel extends ContentPanel {
             }
 
         });
-        add.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
+        add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
         toolBar.add(add);
         toolBar.add(new SeparatorToolItem());
 
@@ -155,7 +155,7 @@ public class WorkflowContentTypePanel extends ContentPanel {
                     }
 
                 });
-                remove.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+                remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 return remove;
             }
         });

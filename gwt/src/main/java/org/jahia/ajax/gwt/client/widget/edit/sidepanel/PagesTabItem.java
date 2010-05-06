@@ -18,6 +18,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.*;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
@@ -42,7 +43,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
     public PagesTabItem(GWTSidePanelTab config) {
         super(config);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.tabPages());
+        setIcon(StandardIconsProvider.STANDARD_ICONS.tabPages());
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());
@@ -139,7 +140,7 @@ public class PagesTabItem extends SidePanelTabItem {
                     }
                 }
 
-                if (activeNode.getExt().equals("icon-page")) {
+                if (activeNode.getIcon().equals("icon-page")) {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 } else if (activeNode.getNodeTypes().contains("jnt:templatesFolder")
                         && EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_TYPE))) {
@@ -190,7 +191,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             final GWTJahiaNode node = PagesTabItem.this.tree.getSelectionModel().getSelectedItem();
-            if (node.getExt().equals("icon-page")) {
+            if (node.getIcon().equals("icon-page")) {
                 l.add(node);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);

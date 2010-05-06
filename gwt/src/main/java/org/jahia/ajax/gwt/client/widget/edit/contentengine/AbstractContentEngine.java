@@ -17,7 +17,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public abstract class AbstractContentEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
+        setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
         setHeading(heading);
 
         // init language switcher

@@ -41,7 +41,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -62,6 +61,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 /**
  * GWT panel that displays a list of workflow process and task history records.
@@ -166,9 +166,9 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         TreeGrid<ModelData> tree = new TreeGrid<ModelData>(store, cm);
         tree.setStateful(true);
         tree.setBorders(true);
-        tree.getStyle().setNodeOpenIcon(ContentModelIconProvider.CONTENT_ICONS.workflow());
-        tree.getStyle().setNodeCloseIcon(ContentModelIconProvider.CONTENT_ICONS.workflow());
-        tree.getStyle().setLeafIcon(ContentModelIconProvider.CONTENT_ICONS.workflowTask());
+        tree.getStyle().setNodeOpenIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
+        tree.getStyle().setNodeCloseIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
+        tree.getStyle().setLeafIcon(StandardIconsProvider.STANDARD_ICONS.workflowTask());
         tree.setAutoExpandColumn("displayName");
         tree.setTrackMouseOver(false);
         cp.add(tree);

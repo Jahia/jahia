@@ -12,7 +12,6 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPrincipal;
@@ -21,7 +20,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 
@@ -198,7 +197,7 @@ public class PrincipalRolePanel extends LayoutContainer {
                     }
                 });
                 button.setData("associatedNode", modelData);
-                button.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+                button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 return button;
             }
         });

@@ -16,7 +16,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -38,7 +38,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
 
     public MashupBrowseTabItem(GWTSidePanelTab config) {
         super(JCRClientUtils.ALL_MASHUPS, JCRClientUtils.PORTLETLIST_NODETYPES, config);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.mashup());
+        setIcon(StandardIconsProvider.STANDARD_ICONS.mashup());
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);

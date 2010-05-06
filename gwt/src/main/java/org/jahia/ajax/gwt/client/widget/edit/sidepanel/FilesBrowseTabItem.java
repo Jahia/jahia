@@ -17,6 +17,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 
@@ -37,7 +38,7 @@ class FilesBrowseTabItem extends BrowseTabItem {
 
     public FilesBrowseTabItem(GWTSidePanelTab config) {
         super(JCRClientUtils.ALL_FILES, JCRClientUtils.FOLDER_NODETYPES, config);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.tabDocuments());
+        setIcon(StandardIconsProvider.STANDARD_ICONS.tabDocuments());
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);
@@ -68,7 +69,7 @@ class FilesBrowseTabItem extends BrowseTabItem {
 
         List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig col = new ColumnConfig("ext", "", 40);
+        ColumnConfig col = new ColumnConfig("icon", "", 40);
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,

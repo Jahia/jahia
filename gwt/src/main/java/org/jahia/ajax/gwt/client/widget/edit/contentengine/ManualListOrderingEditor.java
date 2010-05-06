@@ -20,7 +20,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class ManualListOrderingEditor extends ContentPanel {
     private void init() {
         setBodyBorder(true);
         List<String> columnNames = new ArrayList<String>();
-        columnNames.add("ext");
+        columnNames.add("icon");
         columnNames.add("name");
         columnNames.add("created");
         columnNames.add("createdBy");
@@ -123,7 +123,7 @@ public class ManualListOrderingEditor extends ContentPanel {
 
 
         });
-        moveUp.setIcon(ContentModelIconProvider.getInstance().getMoveUp());
+        moveUp.setIcon(StandardIconsProvider.STANDARD_ICONS.moveUp());
         toolBar.add(moveUp);
 
         Button moveFirst = new Button(Messages.get("label_moveFirst", "move first"), new SelectionListener<ButtonEvent>() {
@@ -143,7 +143,7 @@ public class ManualListOrderingEditor extends ContentPanel {
                 childrenGrid.getView().refresh(false);
             }
         });
-        moveFirst.setIcon(ContentModelIconProvider.getInstance().getMoveFirst());
+        moveFirst.setIcon(StandardIconsProvider.STANDARD_ICONS.moveFirst());
         toolBar.add(moveFirst);
 
         Button moveDown = new Button(Messages.get("label_moveDown", "move down"), new SelectionListener<ButtonEvent>() {
@@ -167,7 +167,7 @@ public class ManualListOrderingEditor extends ContentPanel {
                 }
             }
         });
-        moveDown.setIcon(ContentModelIconProvider.getInstance().getMoveDown());
+        moveDown.setIcon(StandardIconsProvider.STANDARD_ICONS.moveDown());
         toolBar.add(moveDown);
 
         Button moveLast = new Button(Messages.get("label_moveLast", "move last"), new SelectionListener<ButtonEvent>() {
@@ -192,7 +192,7 @@ public class ManualListOrderingEditor extends ContentPanel {
 
             }
         });
-        moveLast.setIcon(ContentModelIconProvider.getInstance().getMoveLast());
+        moveLast.setIcon(StandardIconsProvider.STANDARD_ICONS.moveLast());
         toolBar.add(moveLast);
 
         Button remove = new Button(Messages.get("label_remove", "Delete"), new SelectionListener<ButtonEvent>() {
@@ -204,7 +204,7 @@ public class ManualListOrderingEditor extends ContentPanel {
                 childrenGrid.getView().refresh(false);
             }
         });
-        remove.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+        remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
         toolBar.add(remove);
 
         setLayout(new FitLayout());

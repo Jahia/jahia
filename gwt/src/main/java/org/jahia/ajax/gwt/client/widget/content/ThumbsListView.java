@@ -1,13 +1,10 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.ContentIconsImageBundle;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 /**

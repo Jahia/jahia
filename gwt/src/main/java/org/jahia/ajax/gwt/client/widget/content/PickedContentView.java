@@ -42,13 +42,11 @@ import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
 import java.util.ArrayList;
@@ -152,7 +150,7 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                 final Button pickContentButton = new Button(Messages.getResource("fm_remove"));
-                pickContentButton.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+                pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 pickContentButton.setIconStyle("gwt-icons-delete");
                 pickContentButton.setBorders(false);
                 pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {

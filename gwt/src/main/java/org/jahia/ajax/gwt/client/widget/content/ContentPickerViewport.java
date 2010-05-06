@@ -33,8 +33,8 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -138,7 +138,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
 
         Button ok = new Button(Messages.getResource("fm_save"));
         ok.setHeight(BUTTON_HEIGHT);
-        ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
+        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -155,7 +155,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
 
         Button cancel = new Button(Messages.getResource("fm_cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
-        cancel.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonCancel());
+        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

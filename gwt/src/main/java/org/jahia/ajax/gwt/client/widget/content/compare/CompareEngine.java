@@ -3,7 +3,6 @@ package org.jahia.ajax.gwt.client.widget.content.compare;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -11,7 +10,7 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Constants;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
@@ -54,7 +53,7 @@ public class CompareEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
+        setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
         setHeading(Messages.get("label_compare " + node.getPath(), "Compare " + node.getPath()));
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
@@ -110,7 +109,7 @@ public class CompareEngine extends Window {
     protected void initFooter() {
         Button cancel = new Button(Messages.getResource("fm_cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
-        cancel.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonCancel());
+        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

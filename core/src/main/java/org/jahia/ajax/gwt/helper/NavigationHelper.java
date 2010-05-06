@@ -44,6 +44,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRPortletNode;
@@ -58,6 +59,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
+import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -76,8 +78,6 @@ public class NavigationHelper {
 
     private PublicationHelper publication;
 
-    public Map<String, String> nodetypeIcons;
-
     public void setJcrService(JCRStoreService jcrService) {
         this.jcrService = jcrService;
     }
@@ -88,10 +88,6 @@ public class NavigationHelper {
 
     public void setPublication(PublicationHelper publication) {
         this.publication = publication;
-    }
-
-    public void setNodetypeIcons(Map<String, String> nodetypeIcons) {
-        this.nodetypeIcons = nodetypeIcons;
     }
 
     public void setJcrVersionService(JCRVersionService jcrVersionService) {
@@ -685,7 +681,6 @@ public class NavigationHelper {
         n.setWriteable(node.isWriteable());
         n.setDeleteable(node.isWriteable());
         n.setLockable(node.isLockable());
-        n.setExt("icon-dir");
         n.setLocked(node.isLocked());
         n.setLockOwner(node.getLockOwner());
         n.setThumbnailsMap(new HashMap<String, String>());
@@ -801,8 +796,6 @@ public class NavigationHelper {
         if (names.contains("thumbnail")) {
             n.setPreview(node.getThumbnailUrl("thumbnail"));
             n.setDisplayable(true);
-        } else {
-            n.setPreview(Jahia.getContextPath() + "/engines/images/types/gwt/large/" + n.getExt() + ".png");
         }
         for (String name : names) {
             n.getThumbnailsMap().put(name, node.getThumbnailUrl(name));
@@ -849,35 +842,71 @@ public class NavigationHelper {
 
     public void setIcon(JCRNodeWrapper f, GWTJahiaNode n) {
         try {
+            String folder = getIconsFolder(f.getPrimaryNodeType());
             if (f.isFile()) {
-                n.setExt(new StringBuilder("icon-").append(FileUtils.getFileIcon(f.getName())).toString());
+                n.setIcon(folder + "jnt_file_" + FileUtils.getFileIcon(f.getName()));
             } else if (f.isPortlet()) {
                 n.setPortlet(true);
                 try {
                     JCRPortletNode portletNode = new JCRPortletNode(f);
                     if (portletNode.getContextName().equalsIgnoreCase("/rss")) {
-                        n.setExt("icon-rss");
+                        n.setIcon(folder + "jnt_portlet_rss");
                     } else {
-                        n.setExt("icon-portlet");
+                        n.setIcon(folder + "jnt_portlet");
                     }
                 } catch (RepositoryException e) {
-                    n.setExt("icon-portlet");
+                    n.setIcon(folder + "jnt_portlet");
                 }
             } else if (f.isNodeType("jnt:page") && f.getParent().isNodeType("jnt:templatesFolder")) {
-                n.setExt("icon-template");
+                n.setIcon(folder + "jnt_page_template");
             } else {
-                Map<String, String> map = getNodetypeIcons();
-
-                for (String nt : map.keySet()) {
-                    if (f.isNodeType(nt)) {
-                        n.setExt("icon-" + map.get(nt));
-                        break;
-                    }
-                }
+                final ExtendedNodeType type = f.getPrimaryNodeType();
+                String icon = getIcon(type);
+                n.setIcon(icon);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    public String getIcon(ExtendedNodeType type) throws RepositoryException {
+        String icon = getIconsFolder(type) + type.getName().replace(':', '_');
+        if (check(icon)) {
+            return icon;
+        }
+        for (ExtendedNodeType nodeType : type.getSupertypes()) {
+            icon = getIconsFolder(nodeType) + nodeType.getName().replace(':', '_');
+            if (check(icon)) {
+                return icon;
+            }
+        }
+        return null;
+    }
+
+    private Map<String,Boolean> iconsPresence = new HashMap();
+
+    public boolean check(String icon) {
+        try {
+            if (!iconsPresence.containsKey(icon)) {
+                iconsPresence.put(icon, Jahia.getStaticServletConfig().getServletContext().getResource("/templates/"+icon+".png") != null);
+            }
+            return iconsPresence.get(icon);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return false;
+    }
+
+    public String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
+        String folder = primaryNodeType.getSystemId();
+        if (folder.startsWith("system-")) {
+            folder = "default";
+        } else {
+            folder = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(folder)
+                    .getRootFolder();
+        }
+        folder += "/icons/";
+        return folder;
     }
 
     /**
@@ -968,9 +997,9 @@ public class NavigationHelper {
         return sb.toString();
     }
 
-    public Map<String, String> getNodetypeIcons() {
-        return nodetypeIcons;
-    }
+//    public Map<String, String> getNodetypeIcons() {
+//        return nodetypeIcons;
+//    }
 
     /**
      * Get children node as list: ToDo: remove this method and call directly getNodes() when nested for better performance

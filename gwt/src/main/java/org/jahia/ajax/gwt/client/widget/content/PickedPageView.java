@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -8,7 +9,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -158,7 +158,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
                 fillData(null);
             }
         });
-        pickContentButton.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+        pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
 
         ListStore<TargetModelData> store = new ListStore<TargetModelData>();
         TargetModelData modelData = new TargetModelData();

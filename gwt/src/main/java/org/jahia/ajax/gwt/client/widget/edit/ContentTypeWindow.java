@@ -46,7 +46,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
@@ -84,7 +84,7 @@ public class ContentTypeWindow extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
+        setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
         contentTypeTree = new ContentTypeTree(types, 695,500,25);
         TreeGrid treeGrid = contentTypeTree.getTreeGrid();
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
@@ -111,7 +111,7 @@ public class ContentTypeWindow extends Window {
         ok = new Button(Messages.getResource("fm_ok"));
         ok.setHeight(EditContentEngine.BUTTON_HEIGHT);
         ok.setEnabled(false);
-        ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
+        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -131,7 +131,7 @@ public class ContentTypeWindow extends Window {
 
         cancel = new Button(Messages.getResource("fm_cancel"));
         cancel.setHeight(EditContentEngine.BUTTON_HEIGHT);
-        cancel.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonCancel());
+        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

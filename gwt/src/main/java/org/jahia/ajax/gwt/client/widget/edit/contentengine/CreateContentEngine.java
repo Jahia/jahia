@@ -17,10 +17,9 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,21 +112,21 @@ public class CreateContentEngine extends AbstractContentEngine {
         Button ok = new Button(Messages.getResource("fm_save"));
         ok.setHeight(BUTTON_HEIGHT);
         ok.setEnabled(true);
-        ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
+        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new CreateSelectionListener());
 
         buttonBar.add(ok);
 
         Button okAndNew = new Button(Messages.getResource("fm_saveAndNew"));
         okAndNew.setHeight(BUTTON_HEIGHT);
-        okAndNew.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
+        okAndNew.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
 
         okAndNew.addSelectionListener(new CreateAndAddNewSelectionListener());
         buttonBar.add(okAndNew);
 
         Button cancel = new Button(Messages.getResource("fm_cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
-        cancel.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonCancel());
+        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

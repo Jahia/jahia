@@ -16,7 +16,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.LangPropertiesEditor;
 
@@ -65,7 +65,7 @@ public class TranslateContentEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setIcon(ContentModelIconProvider.CONTENT_ICONS.engineLogoJahia());
+        setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
         setHeading(Messages.get("cm_translate " + node.getName(), "Translate " + node.getName()));
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
@@ -126,13 +126,13 @@ public class TranslateContentEngine extends Window {
     protected void initFooter() {
         ok = new Button(Messages.getResource("fm_save"));
         ok.setHeight(BUTTON_HEIGHT);
-        ok.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonOK());
+        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SaveSelectionListener());
         buttonBar.add(ok);
 
         Button cancel = new Button(Messages.getResource("fm_cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
-        cancel.setIcon(ContentModelIconProvider.CONTENT_ICONS.engineButtonCancel());
+        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

@@ -35,13 +35,11 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.Label;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -73,6 +71,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 /**
  * URL mapping for the node.
@@ -193,7 +192,7 @@ public class UrlMappingEditor extends LayoutContainer {
                                 store.remove(store.getAt(rowIndex));
                             }
                         });
-                button.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+                button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 return button;
             }
         });
@@ -219,7 +218,7 @@ public class UrlMappingEditor extends LayoutContainer {
                 re.startEditing(store.indexOf(mapping), true);
             }
         });
-        add.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
+        add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
         toolBar.add(add);
 
         ContentPanel cp = new ContentPanel(new FitLayout());

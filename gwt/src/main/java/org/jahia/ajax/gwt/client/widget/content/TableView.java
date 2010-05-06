@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.content.FileStoreSorter;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
@@ -86,7 +87,7 @@ public class TableView extends TopRightComponent {
             if (modelData.isLocked().booleanValue()) {
                 String lockOwner = modelData.getLockOwner();
                 return lockOwner != null && lockOwner.equals(JahiaGWTParameters.SYSTEM_USER) ? "<img src='../images/icons/gwt/lock_information.png'>"
-                        : ContentModelIconProvider.getInstance().getLockIcon().getHTML();
+                        : StandardIconsProvider.STANDARD_ICONS.lock().getHTML();
             } else {
                 return "";
             }
@@ -308,7 +309,7 @@ public class TableView extends TopRightComponent {
         List<String> columnNames = new ArrayList<String>(configuration.getTableColumns());
         if (columnNames.isEmpty()) {
             columnNames.add("providerKey");
-            columnNames.add("ext");
+            columnNames.add("icon");
             columnNames.add("name");
             columnNames.add("locked");
             columnNames.add("path");
@@ -329,8 +330,8 @@ public class TableView extends TopRightComponent {
                 col = new ColumnConfig("providerKey", Messages.getResource("fm_column_provider"), 100);
                 col.setSortable(true);
                 col.setResizable(true);
-            } else if ("ext".equals(columnName)) {
-                col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
+            } else if ("icon".equals(columnName)) {
+                col = new ColumnConfig("icon", Messages.getResource("fm_column_type"), 40);
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(EXT_RENDERER);
                 col.setSortable(true);

@@ -59,7 +59,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.form.AutoCompleteComboBox;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -141,7 +141,7 @@ public class ClassificationEditor extends ContentPanel {
                         }
                     });
                     button.setData("associatedNode", modelData);
-                    button.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
+                    button.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
                 }
                 return button != null ? button : new Label("");
             }
@@ -236,7 +236,7 @@ public class ClassificationEditor extends ContentPanel {
                     }
                 });
                 button.setData("associatedNode", modelData);
-                button.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+                button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 return button;
             }
         });
@@ -272,7 +272,7 @@ public class ClassificationEditor extends ContentPanel {
                     }
                 });
                 button.setData("associatedNode", modelData);
-                button.setIcon(ContentModelIconProvider.getInstance().getMinusRound());
+                button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 return button;
             }
         });

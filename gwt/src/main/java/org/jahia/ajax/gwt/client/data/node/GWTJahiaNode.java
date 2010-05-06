@@ -304,12 +304,12 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return get("inheritedNodeTypes");
     }
 
-    public String getExt() {
-        return get("ext");
+    public String getIcon() {
+        return get("icon");
     }
 
-    public void setExt(String ext) {
-        set("ext", ext);
+    public void setIcon(String icon) {
+        set("icon", icon);
     }
 
     public String getProviderKey() {

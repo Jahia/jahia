@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
@@ -59,6 +58,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
@@ -339,7 +339,7 @@ public class ContentTreeGrid extends ContentPanel {
                         public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                             if (gwtJahiaNode.isMatchFilters()) {
                                 final Button pickContentButton = new Button(Messages.get("label_add", "Add"));
-                                pickContentButton.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
+                                pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
                                 pickContentButton.setEnabled(true);
                                 pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                     public void componentSelected(ButtonEvent buttonEvent) {

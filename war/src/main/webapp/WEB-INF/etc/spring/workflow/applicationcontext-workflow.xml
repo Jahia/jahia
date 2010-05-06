@@ -11,13 +11,13 @@
             <map>
                 <entry key="publish">
                     <list>
-                        <value>1_Step_Publication_Process</value>
-                        <value>2_Step_Publication_Process</value>
+                        <value>1-step-publication</value>
+                        <value>2-step-publication</value>
                     </list>
                 </entry>
                 <entry key="unpublish">
                     <list>
-                        <value>1_Step_Unpublication_Process</value>
+                        <value>1-step-unpublication</value>
                     </list>
                 </entry>
             </map>

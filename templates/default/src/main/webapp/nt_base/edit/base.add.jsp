@@ -97,6 +97,12 @@
                     </p>
                 </c:if>
             </c:forEach>
+            <c:if test="${jcr:isNodeType(currentNode, 'jnt:folder')}">
+                <p class="field"><label class="left"
+                                       for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
+                                <input type="text" id="${scriptTypeName}jnt_folder" name="jnt:folder"/></p>
+                <p class="field"><%@include file="formelements/file.jsp" %></p>
+            </c:if>
             <div class="divButton">
                 <c:choose>
                     <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">

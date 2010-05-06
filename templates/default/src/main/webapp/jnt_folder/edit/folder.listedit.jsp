@@ -52,48 +52,37 @@
             </td>
         </tr>
     </c:if>
-    <c:forEach items="${currentNode.nodes}" var="child" begin="${begin}" end="${end}" varStatus="status">
+    <c:forEach items="${currentNode.nodes}" var="child" varStatus="status">
         <tr class="evenLine">
-    <td align="center">
-        <input type="checkbox" value="ACME" name="sitebox">
-    </td>
-    <td >
-        ${fn:escapeXml(child.fileContent.contentType)}
-    </td>
-    <td> <a href="<c:url value='/files${child.path}'/>"><c:if test="${!empty child.properties['jcr:title'].string}">
+            <td align="center">
+                <input type="checkbox" value="ACME" name="sitebox">
+            </td>
+            <td>
+                    ${fn:escapeXml(child.fileContent.contentType)}
+            </td>
+            <td><a href="${url.base}${child.path}.html"><c:if test="${!empty child.properties['jcr:title'].string}">
         ${fn:escapeXml(child.properties['jcr:title'].string)}
     </c:if>
         <c:if test="${empty child.properties['jcr:title'].string}">
         ${fn:escapeXml(child.name)}
-    </c:if>
-        </a>
-    </td>
-    <td>
-        <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
-    </td>
-    <td>
-        <fmt:formatDate value="${child.properties['jcr:lastModified'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
-    </td align="center">
-    <td>
-        <fmt:formatDate value="${child.properties['j:lastPublished'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
-    </td>
-    <td>
-        <workflow:workflowsForNode node="${child}" var="wfs"/>
-        <c:forEach items="${wfs}" var="wf">
-            <c:if test="${not empty wf.formResourceName}">
-                ${wf.name}
-            </c:if>
-        </c:forEach>
-    </td>
-    <td>
-    <c:if test="${child.locked}">
-        <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer" src="${url.currentModule}/images/icons/locked.gif">
-    </c:if>
-    </td>
-            <td class="lastCol">
-            <c:if test="${child.locked}">
-                <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer" src="${url.currentModule}/images/icons/locked.gif">
-            </c:if>
+    </c:if></a>
+            </td>
+            <td>
+                <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
+            </td>
+            <td>
+                <fmt:formatDate value="${child.properties['jcr:lastModified'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
+            </td align="center">
+            <td>
+                <fmt:formatDate value="${child.properties['j:lastPublished'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
+            </td>
+            <td><%@include file="workflow.jspf" %>
+            </td>
+            <td>
+                <c:if test="${child.locked}">
+                    <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
+                         src="${url.currentModule}/images/icons/locked.gif">
+                </c:if>
             </td>
             <td class="lastCol">
                     <%--
@@ -111,35 +100,35 @@
 
             <c:if test="${empty param.ajaxcall}">
                 <%-- include add nodes forms --%>
-                <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="types"/>
+                <c:set var="types" value="jnt:folder,jnt:file"/>
                 <h3 class="titleaddnewcontent">
                     <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message
                         key="label.add.new.content"/>
                 </h3>
                 <script language="JavaScript">
-                    <c:forEach items="${types}" var="type" varStatus="status">
+                    <c:forTokens items="${types}" delims="," var="type" varStatus="status">
                     animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
-                    </c:forEach>
+                    </c:forTokens>
                     animatedcollapse.init();
                 </script>
                 <c:if test="${types != null}">
                     <div class="listEditToolbar">
-                        <c:forEach items="${types}" var="type" varStatus="status">
-                            <jcr:nodeType name="${type.string}" var="nodeType"/>
+                        <c:forTokens items="${types}" delims="," var="type" varStatus="status">
+                            <jcr:nodeType name="${type}" var="nodeType"/>
                             <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
                                     class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
                             </button>
-                        </c:forEach>
+                        </c:forTokens>
                     </div>
 
-                    <c:forEach items="${types}" var="type" varStatus="status">
+                    <c:forTokens items="${types}" delims="," var="type" varStatus="status">
                         <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
                             <template:module node="${currentNode}" templateType="edit" template="add">
-                                <template:param name="resourceNodeType" value="${type.string}"/>
+                                <template:param name="resourceNodeType" value="${type}"/>
                                 <template:param name="currentListURL" value="${url.current}?ajaxcall=true"/>
                             </template:module>
                         </div>
-                    </c:forEach>
+                    </c:forTokens>
                 </c:if>
             </c:if>
 

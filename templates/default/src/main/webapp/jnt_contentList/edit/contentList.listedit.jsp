@@ -84,7 +84,7 @@
                                     pattern="yyyy-MM-dd HH:mm"/>
                 </td>
                 <td>
-                    <%@include file="workflow.jspf" %>
+                   <%@include file="workflow.jspf" %>
                 </td>
                 <td>
                     <c:if test="${child.locked}">
@@ -163,5 +163,5 @@
     </td> </tr>
     </tbody>
 </table>
-    
+
 </c:if>

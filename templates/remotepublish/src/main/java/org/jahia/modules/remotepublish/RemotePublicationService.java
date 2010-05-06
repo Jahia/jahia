@@ -352,7 +352,7 @@ public class RemotePublicationService implements InitializingBean {
                             target.checkout();
                             target.addMixin("jmix:remotelyPublished");
                             target.setProperty("uuid", log.getSourceUuid());
-//                            target.setProperty("lastReplay", end.getDate());
+                            target.setProperty("lastReplay", end.getDate());
                             ReferencesHelper.resolveCrossReferences(session, references);
                             session.save();
                         }

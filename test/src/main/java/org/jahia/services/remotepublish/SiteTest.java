@@ -77,14 +77,16 @@ public class SiteTest extends TestCase {
         }
     }
 
-    public void testLogImport() throws Exception {
+    public void testImportExportOfSmallSite() throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
-        JCRNodeWrapper source = node.addNode("source", "jnt:page");
-        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
-        JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
-        JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
+        JCRNodeWrapper page1 = node.addNode("page1", "jnt:page");
+        page1.setProperty("jcr:title","Page1");
+        JCRNodeWrapper page2 = node.addNode("page2", "jnt:page");
+        page2.setProperty("jcr:title","Page2");
+        JCRNodeWrapper page3 = node.addNode("page3", "jnt:page");
+        page3.setProperty("jcr:title","Page3");
         session.save();
         JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
                                                     Constants.LIVE_WORKSPACE, null, false, true);
@@ -98,9 +100,18 @@ public class SiteTest extends TestCase {
 
         RemotePublicationService.getInstance().generateLog(liveSite, null, new FileOutputStream(tmp));
         TestHelper.deleteSite("targetSite");
-        site = TestHelper.createSite("targetSite");
+        TestHelper.createSite("targetSite");
+        JCRPublicationService.getInstance().publish("/sites/targetSite/home", Constants.EDIT_WORKSPACE,
+                                                    Constants.LIVE_WORKSPACE, null, false, true);
+        RemotePublicationService.getInstance().replayLog(liveSession.getNode("/sites/targetSite"),
+                                                         new FileInputStream(tmp));
 
-        RemotePublicationService.getInstance().replayLog(liveSession.getNode("/sites/targetSite"), new FileInputStream(
-                tmp));
+        liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                              LanguageCodeConverters.languageCodeToLocale(
+                                                                                                      site.getDefaultLanguage()));
+
+        assertNotNull("We should have found /sites/targetSite/home/page1",liveSession.getNode("/sites/targetSite/home/page1"));
+        assertNotNull("We should have found /sites/targetSite/home/page2",liveSession.getNode("/sites/targetSite/home/page2"));
+        assertNotNull("We should have found /sites/targetSite/home/page3",liveSession.getNode("/sites/targetSite/home/page3"));
     }
 }

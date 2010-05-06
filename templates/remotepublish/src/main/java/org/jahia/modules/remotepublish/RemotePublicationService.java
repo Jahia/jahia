@@ -10,6 +10,9 @@ import org.hibernate.impl.SessionFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.importexport.ReferencesHelper;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
@@ -268,25 +271,40 @@ public class RemotePublicationService implements InitializingBean {
             Object[] builder = new String[obj.length];
             for (int i = 0; i < obj.length; i++) {
                 Value value = obj[i];
-                builder[i] = serializePropertyValue(value);
+                builder[i] = serializePropertyValue(value, property.getSession());
             }
             oos.writeObject(builder);
         } else {
-            oos.writeObject(serializePropertyValue(property.getValue()));
+            oos.writeObject(serializePropertyValue(property.getValue(), property.getSession()));
         }
     }
 
-    private Object serializePropertyValue(Value value) throws RepositoryException {
-        if (value.getType() == PropertyType.BINARY) {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-                IOUtils.copy(value.getBinary().getStream(), baos);
-                return baos.toByteArray();
-            } catch (IOException e) {
-                e.printStackTrace();
+    private Object serializePropertyValue(Value value, JCRSessionWrapper session) throws RepositoryException {
+        switch (value.getType()) {
+            case PropertyType.BINARY: {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                try {
+                    IOUtils.copy(value.getBinary().getStream(), baos);
+                    return baos.toByteArray();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                break;
             }
-        } else {
-            return value.getString();
+            case ExtendedPropertyType.WEAKREFERENCE:
+            case PropertyType.REFERENCE: {
+                try {
+                    final JCRNodeWrapper uuid = session.getNodeByUUID(value.getString());
+                    return uuid.getPath();
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                } catch (IllegalStateException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                break;
+            }
+            default:
+                return value.getString();
         }
         return null;
     }
@@ -316,10 +334,11 @@ public class RemotePublicationService implements InitializingBean {
                     session.getPathMapping().put(log.getSourcePath(), target.getPath());
                     Set<String> addedPath = new HashSet<String>();
                     Map<String, Map<String, Object>> missedProperties = new HashMap<String, Map<String, Object>>();
+                    Map<String, List<String>> references = new HashMap<String, List<String>>();
                     Object o;
                     while ((o = ois.readObject()) != null) {
                         if (o instanceof LogEntry) {
-                            parseLogEntry(session, target, ois, log, addedPath, missedProperties, o);
+                            parseLogEntry(session, target, ois, log, addedPath, missedProperties, o,references);
                         } else if (o instanceof LogEntries) {
                             if (logger.isInfoEnabled()) {
                                 logger.info("replayLog - Start Of new LogEntries");
@@ -334,6 +353,7 @@ public class RemotePublicationService implements InitializingBean {
                             target.addMixin("jmix:remotelyPublished");
                             target.setProperty("uuid", log.getSourceUuid());
 //                            target.setProperty("lastReplay", end.getDate());
+                            ReferencesHelper.resolveCrossReferences(session, references);
                             session.save();
                         }
                     }
@@ -349,7 +369,8 @@ public class RemotePublicationService implements InitializingBean {
     }
 
     private void parseLogEntry(JCRSessionWrapper session, JCRNodeWrapper target, ObjectInputStream ois, LogBundle log,
-                               Set<String> addedPath, Map<String, Map<String, Object>> missedProperties, Object o)
+                               Set<String> addedPath, Map<String, Map<String, Object>> missedProperties, Object o,
+                               Map<String, List<String>> references)
             throws IOException, ClassNotFoundException, RepositoryException {
         LogEntry entry = (LogEntry) o;
         String path = target.getPath() + StringUtils.substringAfter(entry.getPath(), log.getSourcePath());
@@ -357,142 +378,167 @@ public class RemotePublicationService implements InitializingBean {
         String name = StringUtils.substringAfterLast(path, "/");
         switch (entry.getEventType()) {
             case Event.NODE_ADDED: {
-                String nodeType = (String) ois.readObject();
-                List<String> sharedSet = (List<String>) ois.readObject();
-                if (!addedPath.contains(path)) {
-                    if (logger.isInfoEnabled()) {
-                        logger.info("replayLog - Adding Node " + path + " with nodetype: " + nodeType);
-                    }
-                    String parentPath = StringUtils.substringBeforeLast(path, "/");
-                    JCRNodeWrapper parent = null;
-                    try {
-                        parent = session.getNode(parentPath);
-                    } catch (RepositoryException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                        break;
-                    }
-                    if (name.endsWith("]")) {
-                        name = StringUtils.substringBeforeLast(name, "[");
-                    }
-                    if (parent.hasNode(name)) {
-                        break;
-                    }
-                    parent.checkout();
-
-                    boolean sharedNode = false;
-                    for (String sharedPath : sharedSet) {
-                        if (!sharedPath.equals(entry.getPath()) && sharedPath.startsWith(log.getSourcePath())) {
-                            String s = target.getPath() + StringUtils.substringAfter(sharedPath, log.getSourcePath());
-                            try {
-                                JCRNodeWrapper node = session.getNode(s);
-                                logger.info("replayLog - Found an existing share at : " + s);
-                                parent.clone(node, name);
-                                sharedNode = true;
-                                break;
-                            } catch (PathNotFoundException e) {
-                                // Share not found : ignore
-                            }
-                        }
-                    }
-                    if (!sharedNode) {
-                        parent.addNode(name, nodeType);
-                    }
-                    addedPath.add(path);
-                }
+                replayLogAddNode(session, target, ois, log, addedPath, entry, path, name);
                 break;
             }
             case Event.NODE_REMOVED: {
-                if (logger.isInfoEnabled()) {
-                    logger.info("replayLog - Removing Node " + path);
-                }
-                try {
-                    final JCRNodeWrapper node = session.getNode(path);
-                    node.getParent().checkout();
-                    node.checkout();
-                    node.remove();
-                    addedPath.remove(path);
-                } catch (RepositoryException e) {
-                    logger.debug(e.getMessage(), e);
-                }
+                replayLogRemoveNode(session, addedPath, path);
                 break;
             }
             case Event.NODE_MOVED: {
-                Map<String, String> map = (Map<String, String>) ois.readObject();
-                String srcPath = map.get("srcChildPath");
-                String destPath = map.get("destChildPath");
-                if (logger.isInfoEnabled()) {
-                    logger.info(
-                            "replayLog - Moving Node " + path + " srcChildPath = " + srcPath + " destChildPath = " + destPath);
-                }
-                final JCRNodeWrapper node = session.getNode(path);
-                JCRNodeWrapper parent = node.getParent();
-                parent.checkout();
-                node.checkout();
-                parent.orderBefore(srcPath, destPath);
+                replayLogMoveNode(session, ois, path);
                 break;
             }
             case Event.PROPERTY_ADDED:
             case Event.PROPERTY_CHANGED: {
-                Object o1 = ois.readObject();
-                try {
-                    if (logger.isInfoEnabled()) {
-                        logger.info("replayLog - Add/Update of property Node " + path);
-                    }
-                    updateProperty(session, path, o1);
-                    if (path.contains("jcr:language") && path.contains("j:translation")) {
-                        String translationPath = StringUtils.substringBeforeLast(path, "/");
-                        Map<String, Object> map = missedProperties.get(translationPath);
-                        if (map != null) {
-                            for (Map.Entry<String, Object> missedProperty : map.entrySet()) {
-                                updateProperty(session, missedProperty.getKey(), missedProperty.getValue());
-                            }
-                        }
-                        missedProperties.remove(translationPath);
-                    }
-                } catch (ConstraintViolationException e) {
-                    logger.debug(
-                            "replayLog - Issue during add/update of property " + path + " (error: " + e.getMessage() + ")",
-                            e);
-                } catch (PathNotFoundException e) {
-                    logger.debug(
-                            "replayLog - Error during add/update of property " + path + " (error: " + e.getMessage() + ")",
-                            e);
-                    if (path.contains("j:translation")) {
-                        String translationPath = StringUtils.substringBeforeLast(path, "/");
-                        Map<String, Object> map = missedProperties.get(translationPath);
-                        if (map == null) {
-                            map = new HashMap<String, Object>();
-                        }
-                        map.put(path, o1);
-                        missedProperties.put(translationPath, map);
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(
-                            "replayLog - Error during add/update of property " + path + " (error: " + e.getMessage() + ")",
-                            e);
-                    throw e;
-                }
+                replayLogSetProperty(session, ois, missedProperties, references, path);
                 break;
             }
             case Event.PROPERTY_REMOVED: {
-                if (logger.isInfoEnabled()) {
-                    logger.info("replayLog - Removing Property " + path);
-                }
-                try {
-                    final JCRNodeWrapper node = session.getNode(StringUtils.substringBeforeLast(path, "/"));
-                    node.checkout();
-                    node.getProperty(name).remove();
-                } catch (PathNotFoundException e) {
-                    logger.debug(
-                            "replayLog - Issue during removal of property " + path + " (error: " + e.getMessage() + ")",
-                            e);
-                } catch (ConstraintViolationException e) {
-                    logger.debug(
-                            "replayLog - Issue during removal of property " + path + " (error: " + e.getMessage() + ")",
-                            e);
-                }
+                replayLogRemoveProperty(session, path, name);
                 break;
             }
+        }
+    }
+
+    private void replayLogRemoveProperty(JCRSessionWrapper session, String path, String name) throws RepositoryException {
+        if (logger.isInfoEnabled()) {
+            logger.info("replayLog - Removing Property " + path);
+        }
+        try {
+            final JCRNodeWrapper node = session.getNode(StringUtils.substringBeforeLast(path, "/"));
+            node.checkout();
+            node.getProperty(name).remove();
+        } catch (PathNotFoundException e) {
+            logger.debug(
+                    "replayLog - Issue during removal of property " + path + " (error: " + e.getMessage() + ")",
+                    e);
+        } catch (ConstraintViolationException e) {
+            logger.debug(
+                    "replayLog - Issue during removal of property " + path + " (error: " + e.getMessage() + ")",
+                    e);
+        }
+    }
+
+    private void replayLogSetProperty(JCRSessionWrapper session, ObjectInputStream ois,
+                             Map<String, Map<String, Object>> missedProperties, Map<String, List<String>> references,
+                             String path) throws IOException, ClassNotFoundException, RepositoryException {
+        Object o1 = ois.readObject();
+        try {
+            if (logger.isInfoEnabled()) {
+                logger.info("replayLog - Add/Update of property Node " + path);
+            }
+            updateProperty(session, path, o1,references);
+            if (path.contains("jcr:language") && path.contains("j:translation")) {
+                String translationPath = StringUtils.substringBeforeLast(path, "/");
+                Map<String, Object> map = missedProperties.get(translationPath);
+                if (map != null) {
+                    for (Map.Entry<String, Object> missedProperty : map.entrySet()) {
+                        updateProperty(session, missedProperty.getKey(), missedProperty.getValue(),references);
+                    }
+                }
+                missedProperties.remove(translationPath);
+            }
+        } catch (ConstraintViolationException e) {
+            logger.debug(
+                    "replayLog - Issue during add/update of property " + path + " (error: " + e.getMessage() + ")",
+                    e);
+        } catch (PathNotFoundException e) {
+            logger.debug(
+                    "replayLog - Error during add/update of property " + path + " (error: " + e.getMessage() + ")",
+                    e);
+            if (path.contains("j:translation")) {
+                String translationPath = StringUtils.substringBeforeLast(path, "/");
+                Map<String, Object> map = missedProperties.get(translationPath);
+                if (map == null) {
+                    map = new HashMap<String, Object>();
+                }
+                map.put(path, o1);
+                missedProperties.put(translationPath, map);
+            }
+        } catch (RepositoryException e) {
+            logger.error(
+                    "replayLog - Error during add/update of property " + path + " (error: " + e.getMessage() + ")",
+                    e);
+            throw e;
+        }
+    }
+
+    private void replayLogMoveNode(JCRSessionWrapper session, ObjectInputStream ois, String path)
+            throws IOException, ClassNotFoundException, RepositoryException {
+        Map<String, String> map = (Map<String, String>) ois.readObject();
+        String srcPath = map.get("srcChildPath");
+        String destPath = map.get("destChildPath");
+        if (logger.isInfoEnabled()) {
+            logger.info(
+                    "replayLog - Moving Node " + path + " srcChildPath = " + srcPath + " destChildPath = " + destPath);
+        }
+        final JCRNodeWrapper node = session.getNode(path);
+        JCRNodeWrapper parent = node.getParent();
+        parent.checkout();
+        node.checkout();
+        parent.orderBefore(srcPath, destPath);
+    }
+
+    private void replayLogRemoveNode(JCRSessionWrapper session, Set<String> addedPath, String path) {
+        if (logger.isInfoEnabled()) {
+            logger.info("replayLog - Removing Node " + path);
+        }
+        try {
+            final JCRNodeWrapper node = session.getNode(path);
+            node.getParent().checkout();
+            node.checkout();
+            node.remove();
+            addedPath.remove(path);
+        } catch (RepositoryException e) {
+            logger.debug(e.getMessage(), e);
+        }
+    }
+
+    private void replayLogAddNode(JCRSessionWrapper session, JCRNodeWrapper target, ObjectInputStream ois, LogBundle log,
+                         Set<String> addedPath, LogEntry entry, String path, String name)
+            throws IOException, ClassNotFoundException, RepositoryException {
+        String nodeType = (String) ois.readObject();
+        List<String> sharedSet = (List<String>) ois.readObject();
+        if (!addedPath.contains(path)) {
+            if (logger.isInfoEnabled()) {
+                logger.info("replayLog - Adding Node " + path + " with nodetype: " + nodeType);
+            }
+            String parentPath = StringUtils.substringBeforeLast(path, "/");
+            JCRNodeWrapper parent = null;
+            try {
+                parent = session.getNode(parentPath);
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                return;
+            }
+            if (name.endsWith("]")) {
+                name = StringUtils.substringBeforeLast(name, "[");
+            }
+            if (parent.hasNode(name)) {
+                return;
+            }
+            parent.checkout();
+
+            boolean sharedNode = false;
+            for (String sharedPath : sharedSet) {
+                if (!sharedPath.equals(entry.getPath()) && sharedPath.startsWith(log.getSourcePath())) {
+                    String s = target.getPath() + StringUtils.substringAfter(sharedPath, log.getSourcePath());
+                    try {
+                        JCRNodeWrapper node = session.getNode(s);
+                        logger.info("replayLog - Found an existing share at : " + s);
+                        parent.clone(node, name);
+                        sharedNode = true;
+                        break;
+                    } catch (PathNotFoundException e) {
+                        // Share not found : ignore
+                    }
+                }
+            }
+            if (!sharedNode) {
+                parent.addNode(name, nodeType);
+            }
+            addedPath.add(path);
         }
     }
 
@@ -516,7 +562,8 @@ public class RemotePublicationService implements InitializingBean {
         sessionFactoryBean = (SessionFactoryImpl) localSessionFactoryBean.getObject();
     }
 
-    private void updateProperty(JCRSessionWrapper session, String path, Object o1) throws RepositoryException {
+    private void updateProperty(JCRSessionWrapper session, String path, Object o1, Map<String, List<String>> references)
+            throws RepositoryException {
         final JCRNodeWrapper node = session.getNode(StringUtils.substringBeforeLast(path, "/"));
         node.checkout();
         String propertyName = StringUtils.substringAfterLast(path, "/");
@@ -529,14 +576,37 @@ public class RemotePublicationService implements InitializingBean {
                 values[i] = deserializePropertyValue(object, session.getValueFactory());
             }
             if (!protectedPropertiesToExport.contains(propertyName)) {
-                node.setProperty(propertyName, values);
+                final ExtendedPropertyDefinition propDef = node.getApplicablePropertyDefinition(propertyName);
+                if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                    for (Value value : values) {
+                        if (!references.containsKey(value.getString())) {
+                            references.put(value.getString(), new ArrayList<String>());
+                        }
+                        references.get(value.getString()).add(node.getIdentifier() + "/" + propertyName);
+                    }
+                } else {
+                    node.setProperty(propertyName, values);
+                }
             } else if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
                 for (Value value : values) {
                     node.addMixin(value.getString());
                 }
             }
         } else {
-            node.setProperty(propertyName, deserializePropertyValue(o1, session.getValueFactory()));
+            final Value value = deserializePropertyValue(o1, session.getValueFactory());
+            final ExtendedPropertyDefinition propDef = node.getApplicablePropertyDefinition(propertyName);
+            if (propDef.getRequiredType() == PropertyType.REFERENCE || propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                try {
+                    if (!references.containsKey(value.getString())) {
+                        references.put(value.getString(), new ArrayList<String>());
+                    }
+                    references.get(value.getString()).add(node.getIdentifier() + "/" + propertyName);
+                } catch (ValueFormatException e) {
+                    logger.debug("Reference value is empty : "+e.getMessage(),e);
+                }
+            } else {
+                node.setProperty(propertyName, value);
+            }
         }
     }
 

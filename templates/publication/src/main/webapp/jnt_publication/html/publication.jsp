@@ -7,7 +7,7 @@
 <jcr:nodeProperty var="file" node="${currentNode}" name="file"/>
 <jcr:nodeProperty var="preview" node="${currentNode}" name="preview"/>
 
-<div class="publicationListItemFloat"><!--start publicationListItem -->
+<div class="publicationListItem"><!--start publicationListItem -->
     <div class="publicationListSpace"><!--start publicationListSpace -->
         <div class="publicationPhoto">
             <a href="${file.node.url}">

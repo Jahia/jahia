@@ -1,9 +1,8 @@
 /******************************************************************************
 *  Publication generic
 ******************************************************************************/
-#bodywrapper div.publicationListItemFloat {
-	float:left;
-	width:50%;
+#bodywrapper div.publicationListItem {
+
 }
 #bodywrapper div.publicationListItemInline {
 	padding-bottom:0.5em;

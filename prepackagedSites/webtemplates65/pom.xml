@@ -24,7 +24,6 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/ACME.xml</descriptor>
                             </descriptors>
-                            <finalName>ACME</finalName>
                         </configuration>
 
                         <phase>validate</phase>
@@ -45,7 +44,6 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/shared.xml</descriptor>
                             </descriptors>
-                            <finalName>shared</finalName>
                         </configuration>
 
                         <phase>validate</phase>

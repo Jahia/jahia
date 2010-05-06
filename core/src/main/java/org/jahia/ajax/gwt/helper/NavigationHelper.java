@@ -389,7 +389,7 @@ public class NavigationHelper {
                 } else if (key.equals(JCRClientUtils.TEMPLATES_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/templatesSet", currentUserSession);
                     if (root != null) {
-                        List<GWTJahiaNode> list = ls(root, "jnt:templatesSetFolder", null, null, currentUserSession);
+                        List<GWTJahiaNode> list = ls(root, "jnt:virtualsite", null, null, currentUserSession);
                         userNodes.addAll(list);
                     }
                 } else if (key.equals(JCRClientUtils.REMOTEPUBLICATIONS_REPOSITORY)) {

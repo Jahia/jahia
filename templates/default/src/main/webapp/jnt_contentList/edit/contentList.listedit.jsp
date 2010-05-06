@@ -63,14 +63,14 @@
                         ${fn:escapeXml(child.primaryNodeType.name)}
                 </td>
                 <td>
-                    <c:if test="${jcr:isNodeType(child,'jnt:contentList' )}"><a
-                        href="${url.base}${child.path}.html"></c:if> <c:if
+                    <a
+                        href="${url.base}${child.path}.html"> <c:if
                         test="${!empty child.properties['jcr:title'].string}">
                     ${fn:escapeXml(child.properties['jcr:title'].string)}
                 </c:if>
                     <c:if test="${empty child.properties['jcr:title'].string}">
                         ${fn:escapeXml(child.name)}
-                    </c:if><c:if test="${jcr:isNodeType(child,'jnt:contentList' )}"></a></c:if>
+                    </c:if></a>
                 </td>
                 <td>
                     <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>

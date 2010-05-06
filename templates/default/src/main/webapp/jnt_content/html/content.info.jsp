@@ -14,12 +14,12 @@
     <td >
         ${fn:escapeXml(currentNode.primaryNodeType.name)}
     </td>
-    <td><c:if test="${!empty currentNode.properties['jcr:title'].string}">
+    <td><a href="${url.base}${currentNode.path}.html"><c:if test="${!empty currentNode.properties['jcr:title'].string}">
         ${fn:escapeXml(currentNode.properties['jcr:title'].string)}
     </c:if>
         <c:if test="${empty currentNode.properties['jcr:title'].string}">
         ${fn:escapeXml(currentNode.name)}
-    </c:if>
+    </c:if></a>
     </td>
     <td>
         <fmt:formatDate value="${currentNode.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>

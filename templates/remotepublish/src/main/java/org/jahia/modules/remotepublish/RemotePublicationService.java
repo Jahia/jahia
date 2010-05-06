@@ -512,10 +512,12 @@ public class RemotePublicationService implements InitializingBean {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 return;
             }
+            boolean allowSameNameSiblings = false;
             if (name.endsWith("]")) {
                 name = StringUtils.substringBeforeLast(name, "[");
+                allowSameNameSiblings = true;
             }
-            if (parent.hasNode(name)) {
+            if (!allowSameNameSiblings && parent.hasNode(name)) {
                 return;
             }
             parent.checkout();

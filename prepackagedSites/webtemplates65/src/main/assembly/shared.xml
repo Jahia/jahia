@@ -1,5 +1,4 @@
 <assembly>
-    <id>shared</id>
     <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
         <format>zip</format>

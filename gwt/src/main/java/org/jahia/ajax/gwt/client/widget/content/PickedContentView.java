@@ -61,9 +61,9 @@ import java.util.List;
  * Time: 9:58:29 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PickedContentView extends BottomRightComponent  implements PickedContent{
+public class PickedContentView extends BottomRightComponent implements PickedContent {
     private String pickerType;
-    private TabPanel m_component;
+    // private TabPanel m_component;
     private GroupingStore<GWTJahiaNode> store;
     private Grid<GWTJahiaNode> m_grid;
     private ThumbsListView m_thumbsListView;
@@ -75,8 +75,8 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
     private String selectionHeaderMessage = "Image selected: ";
     private TabItem itemPreview = new TabItem("Preview");
 
-    public PickedContentView(String selectionLabel,String pickerType, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config) {
-        this.selectionHeaderMessage =  selectionLabel;
+    public PickedContentView(String selectionLabel, String pickerType, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config) {
+        this.selectionHeaderMessage = selectionLabel;
         this.config = config;
         this.pickerType = pickerType;
         this.selectedNodes = selectedNodes;
@@ -89,7 +89,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
      * Create UI
      */
     private void createUI() {
-        m_component = new TabPanel();
+        //  m_component = new TabPanel();
 
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -205,13 +205,13 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
         m_grid.setView(view);
 
 
-        final TabItem item = new TabItem("Selection");
-        item.setLayout(new FillLayout());
-        item.add(m_grid);
-        m_component.add(item);
+        //  final TabItem item = new TabItem("Selection");
+        //  item.setLayout(new FillLayout());
+        //  item.add(m_grid);
+        //  m_component.add(item);
 
         // display preview only for file
-        if (pickerType != null && (pickerType.equalsIgnoreCase(ManagerConfigurationFactory.FILEPICKER))) {
+        /*   if (pickerType != null && (pickerType.equalsIgnoreCase(ManagerConfigurationFactory.FILEPICKER))) {
             if (!pickerType.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
                 m_thumbsListView = new ThumbsListView(true);
                 m_thumbsListView.setStore(store);
@@ -236,7 +236,7 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
         if (multiple && pickerType != null && pickerType.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)){
             m_component.add(itemPreview);
 
-        }
+        }*/
 
         //add(m_component);
 
@@ -328,11 +328,12 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
      * @return
      */
     public Component getComponent() {
-        return m_component;
+        return m_grid;//m_component;
     }
 
     /**
      * return selected content
+     *
      * @return
      */
     public List<GWTJahiaNode> getSelectedContent() {
@@ -340,19 +341,20 @@ public class PickedContentView extends BottomRightComponent  implements PickedCo
     }
 
     /**
-     * return url od the selected content. 
+     * return url od the selected content.
+     *
      * @param rewrite is true, the url is rewrited (ie.: for url that will be used in big text)
      * @return
      */
-    public List<String> getSelectedContentPath(final String jahiaContextPath,final String jahiaServletPath, final boolean rewrite){
-        List<GWTJahiaNode>  selectedContents = getSelectedContent();
-        if(selectedContents == null){
+    public List<String> getSelectedContentPath(final String jahiaContextPath, final String jahiaServletPath, final boolean rewrite) {
+        List<GWTJahiaNode> selectedContents = getSelectedContent();
+        if (selectedContents == null) {
             return null;
-        }else if(selectedContents.isEmpty()){
+        } else if (selectedContents.isEmpty()) {
             return new ArrayList<String>();
-        }else{
+        } else {
             List<String> pathes = new ArrayList<String>();
-            for(GWTJahiaNode s:selectedContents){
+            for (GWTJahiaNode s : selectedContents) {
                 pathes.add(s.getUrl());
             }
             return pathes;

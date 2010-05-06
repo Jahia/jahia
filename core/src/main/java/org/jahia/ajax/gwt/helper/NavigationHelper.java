@@ -160,13 +160,18 @@ public class NavigationHelper {
                 }
                 boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypesToMatch);
                 boolean nameFilter = matchesFilters(childNode.getName(), namefiltersToApply);
-
+                boolean hasNodes = false;
+                try {
+                    hasNodes = childNode.getNodes().hasNext();
+                } catch (RepositoryException e) {
+                    logger.error(e, e);
+                }
                 // collection condition is available only if the parent node is not a nt:query. Else, the node has to matcch the node type condition
-                if (matchVisibilityFilter && matchNodeType && mimeTypeFilter && nameFilter) {
+                if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter|| hasNodes) && nameFilter) {
 
 
                     GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode);
-                    gwtChildNode.setMatchFilters(matchNodeType && nameFilter);
+                    gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
                     try {
                         gwtChildNode.setPublicationInfo(publication.getPublicationInfo(childNode.getIdentifier(), Collections.singleton(currentUserSession.getLocale().toString()), false, currentUserSession));
                     } catch (UnsupportedRepositoryOperationException e) {
@@ -595,8 +600,14 @@ public class NavigationHelper {
             if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
                 // use for pickers
                 boolean isFile = n.isFile();
+                boolean hasNodes = false;
+                try {
+                    hasNodes = n.getNodes().hasNext();
+                } catch (RepositoryException e) {
+                    logger.error(e, e);
+                }
                 boolean matchFilter = (filtersToApply.length == 0 && mimeTypesToMatch.length == 0) || matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n, mimeTypesToMatch);
-                if (matchFilter) {
+                if (matchFilter || hasNodes) {
                     GWTJahiaNode node = getGWTJahiaNode(n);
                     node.setMatchFilters(matchFilter);
                     result.add(node);

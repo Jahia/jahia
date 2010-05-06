@@ -25,14 +25,12 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
 
 
     public ThumbsListView(boolean detailed) {
+        this();
         if (detailed) {
             setTemplate(getDetailedTemplate());
         } else {
             setTemplate(getSimpleTemplate());
         }
-
-        setItemSelector("div.thumb-wrap");
-        setOverStyle("x-view-over");
     }
 
     @Override
@@ -45,9 +43,9 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         int width = model.getWidth();
         if (width > 0) {
             if (width < 80) {
-                model.set("nodeImg", "<img src=\"" + model.getUrl() + "\" title=\"{name}\">");
+                model.set("nodeImg", "<img src=\"" + model.getUrl() + "\" title=\"" + model.getName() + "\">");
             } else {
-                model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"{name}\">");
+                model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
             }
             model.set("widthHTML", "<div><b>" + Messages.get("ece_width", "Width") + " </b>" + model.getWidth() + " px</div>");
             model.set("heightHTML", "<div><b>" + Messages.get("ece_height", "Height") + " </b>" + model.getHeight() + " px</div>");
@@ -68,12 +66,18 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
 
     public native String getSimpleTemplate() /*-{
         return ['<tpl for=".">',
-                '<div class="thumb-wrap" id="{name}">',
-                '<div class="thumb">{nodeImg}</div>',
-                '<div class="x-editable">{shortName}</span></div>',
-                '</tpl>',
-                '<div class="x-clear"></div>'].join("");
-    }-*/;
+      '<div class="thumb-wrap" id="{name}">',
+      '<div class="thumb">{nodeImg}</div>',
+      '<span class="x-editable"> {shortName}</span>',
+      '{widthHTML}',
+      '{heightHTML}',
+      '{tagsHTML}',
+      '</div>',
+      '</tpl>',
+      '<div class="x-clear"></div>'].join("");
+
+      }-*/;
+
 
     public native String getDetailedTemplate() /*-{
     return ['<tpl for=".">',

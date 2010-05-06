@@ -52,6 +52,8 @@ class SearchTabItem extends SidePanelTabItem {
 
     public SearchTabItem(GWTSidePanelTab config) {
         super(config);
+        final String nbResultsAsStrg = config.getParams().get("numberResults");
+        final int nbResults = nbResultsAsStrg == null? 15 : Integer.parseInt(nbResultsAsStrg);
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());
@@ -68,14 +70,14 @@ class SearchTabItem extends SidePanelTabItem {
             public void handleEvent(ComponentEvent be) {
                 // grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
-                loader.load(0, 10);
+                loader.load(0,nbResults);
             }
         });
         final Button ok = new Button(Messages.getResource("fm_search"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 //  grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
-                loader.load(0, 10);
+                loader.load(0, nbResults);
             }
         });
         ok.setIconStyle("gwt-toolbar-icon-savedSearch");

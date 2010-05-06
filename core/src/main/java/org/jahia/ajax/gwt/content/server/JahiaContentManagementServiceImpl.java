@@ -219,7 +219,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException {
-        return new BaseListLoadResult<GWTJahiaNode>(ls(parentNode, nodeTypes, mimeTypes, filters));
+        List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
+        for(GWTJahiaNode n : ls(parentNode, nodeTypes, mimeTypes, filters)){
+            if(n.isMatchFilters()){
+                filteredList.add(n);
+            }
+        }
+        return new BaseListLoadResult<GWTJahiaNode>(filteredList);
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException {

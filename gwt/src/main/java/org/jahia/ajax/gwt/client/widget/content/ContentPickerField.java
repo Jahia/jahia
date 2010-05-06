@@ -127,7 +127,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
 
                 w.setHeading(header);
                 w.setModal(true);
-                w.setSize(800, 600);
+                w.setSize(900, 700);
                 w.setResizable(true);
                 w.setMaximizable(true);
                 w.setBodyBorder(false);

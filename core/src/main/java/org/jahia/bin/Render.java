@@ -101,7 +101,7 @@ public class Render extends HttpServlet implements Controller,
 
     // Here we define the constants for the reserved keywords for post methods
     public static final String NODE_TYPE = "nodeType";
-    public static final String NODE_NAME = "nodeName";
+    public static final String NODE_NAME = "JCRnodeName";
     public static final String NEW_NODE_OUTPUT_FORMAT = "newNodeOutputFormat";
     public static final String REDIRECT_TO = "redirectTo";
     public static final String REDIRECT_HTTP_RESPONSE_CODE = "redirectResponseCode";

@@ -101,7 +101,7 @@ public class DefaultPostAction implements Action {
                     node = session.getNode(realPath.toString());
                 } catch (PathNotFoundException e) {
                     if (node != null) {
-                        node = node.addNode(subPath, "jnt:folder");
+                        node = node.addNode(subPath, "jnt:contentList");
                     }
                 }
             }

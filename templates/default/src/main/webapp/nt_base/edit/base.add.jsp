@@ -97,10 +97,18 @@
                     </p>
                 </c:if>
             </c:forEach>
-            <c:if test="${jcr:isNodeType(currentNode, 'jnt:folder')}">
+            <c:if test="${currentResource.moduleParams.resourceNodeType eq 'jnt:folder'}">
                 <p class="field"><label class="left"
-                                       for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
-                                <input type="text" id="${scriptTypeName}jnt_folder" name="jnt:folder"/></p>
+                                        for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
+                    <input type="text" id="${scriptTypeName}jnt_folder" name="JCRnodeName"/>
+                    <input type="hidden" name="jcr:mixinTypes" value="jmix:contributeMode"/>
+                    <input type="hidden" name="j:editableInContribution" value="true"/>
+                    <input type="hidden" name="j:canDeleteInContribution" value="true"/>
+                    <input type="hidden" name="j:canOrderInContribution" value="true"/>
+                    
+                </p>
+            </c:if>
+            <c:if test="${currentResource.moduleParams.resourceNodeType eq 'jnt:file'}">
                 <p class="field"><%@include file="formelements/file.jsp" %></p>
             </c:if>
             <div class="divButton">

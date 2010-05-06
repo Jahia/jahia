@@ -52,7 +52,7 @@ class SearchTabItem extends SidePanelTabItem {
 
     public SearchTabItem(GWTSidePanelTab config) {
         super(config);
-        final String nbResultsAsStrg = config.getParams().get("numberResults");
+        final String nbResultsAsStrg = config.getParams() == null ? null :config.getParams().get("numberResults");
         final int nbResults = nbResultsAsStrg == null? 15 : Integer.parseInt(nbResultsAsStrg);
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);

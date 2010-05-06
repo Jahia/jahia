@@ -38,21 +38,18 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -77,35 +74,38 @@ import java.util.List;
  * @since : JAHIA 6.1
  *        Created : 20 oct. 2009
  */
-public class ClassificationEditor extends LayoutContainer {
+public class ClassificationEditor extends ContentPanel {
     private TreeStore<GWTJahiaNode> catStore;
     private TreeStore<GWTJahiaNode> tagStore;
     private TreeStore<GWTJahiaNode> treeStore;
-    private TabPanel selectionTabPanel;
-    private AsyncTabItem tagTab;
-    private AsyncTabItem categoriesTab;
-    private static final int TREE_COLUMN_SIZE = 600;
+    private static final int TREE_COLUMN_SIZE = 200;
 
 
     public ClassificationEditor(final GWTJahiaNode node) {
-        setLayout(new RowLayout(Style.Orientation.VERTICAL));
+        setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
+        setWidth("100%");
+        setHeight("100%");
+        setBorders(false);
+        setHeaderVisible(false);
         createStoreAndLoader(node);
 
-        this.setBorders(false);
-        TableData tableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.TOP);
-        tableData.setWidth("100%");
-        tableData.setHeight("50%");
+        final ContentPanel catPanel = new ContentPanel();
+        catPanel.setHeaderVisible(false);
+        catPanel.setSize(400, 300);
+        catPanel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
+        catPanel.add(createCategoriedPickerPanel(), new RowData(1, -1, new Margins(4)));
+        catPanel.add(createSelectedCategoriesPanel(), new RowData(1, -1, new Margins(4)));
 
-        add(createTreeGrid());
+        final ContentPanel tagPanel = new ContentPanel();
+        tagPanel.setHeaderVisible(false);
+        tagPanel.setSize(400, 300);
+        tagPanel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
+        tagPanel.add(createTagsPanel(), new RowData(1, -1, new Margins(4)));
 
-        // Now manage the tab for categories and tags
-        selectionTabPanel = new TabPanel();
-        selectionTabPanel.setWidth("100%");
-        selectionTabPanel.setHeight(380);
-        createCategoriesPanel(selectionTabPanel);
-        createTagsPanel(selectionTabPanel);
-        setHeight(750);
-        add(selectionTabPanel, tableData);
+        add(tagPanel, new RowData(1, 1, new Margins(4, 0, 4, 0)));
+        add(catPanel, new RowData(-1, 1, new Margins(4)));
+        layout();
+
     }
 
     /**
@@ -113,9 +113,9 @@ public class ClassificationEditor extends LayoutContainer {
      *
      * @return
      */
-    private TreeGrid<GWTJahiaNode> createTreeGrid() {
-        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(JCRClientUtils.CATEGORY_REPOSITORY + ";" + JCRClientUtils.TAG_REPOSITORY);
-        treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES + "," + JCRClientUtils.TAG_NODETYPES);
+    private TreeGrid<GWTJahiaNode> createCategoriedPickerPanel() {
+        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(JCRClientUtils.CATEGORY_REPOSITORY+";"+JCRClientUtils.TAG_REPOSITORY);
+        treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES+","+JCRClientUtils.TAG_NODETYPES);
         treeStore = treeGridFactory.getStore();
 
         ColumnConfig name = new ColumnConfig("name", "Name", TREE_COLUMN_SIZE);
@@ -137,20 +137,6 @@ public class ClassificationEditor extends LayoutContainer {
                             final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
                             if (catStore.findModel(node1) == null) {
                                 catStore.add(node1, false);
-                                selectionTabPanel.setSelection(categoriesTab);
-                            }
-                        }
-                    });
-                    button.setData("associatedNode", modelData);
-                    button.setIcon(ContentModelIconProvider.getInstance().getPlusRound());
-                } else if (gwtJahiaNode.getNodeTypes().contains("jnt:tag")) {
-                    button = new Button(Messages.get("label_add", "Add"), new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent buttonEvent) {
-                            final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
-                            if (tagStore.findModel(node1) == null) {
-                                tagStore.add(node1, false);
-                                selectionTabPanel.setSelection(tagTab);
                             }
                         }
                     });
@@ -161,13 +147,8 @@ public class ClassificationEditor extends LayoutContainer {
             }
         });
         action.setFixed(true);
-        TreeGrid<GWTJahiaNode> treeGrid = treeGridFactory.getTreeGrid(new ColumnModel(Arrays.asList(name,new ColumnConfig("count", "count",50), action)));
-        treeGrid.addListener(Events.RowClick, new Listener<GridEvent>() {
-            public void handleEvent(GridEvent gridEvent) {
-                GWTJahiaNode selectedNode = (GWTJahiaNode) gridEvent.getModel();
-                doSelectTab(selectedNode);
-            }
-        });
+        TreeGrid<GWTJahiaNode> treeGrid = treeGridFactory.getTreeGrid(new ColumnModel(Arrays.asList(name, new ColumnConfig("count", "count", 50), action)));
+
         treeGrid.setIconProvider(ContentModelIconProvider.getInstance());
 
         treeGrid.setBorders(true);
@@ -178,14 +159,6 @@ public class ClassificationEditor extends LayoutContainer {
         return treeGrid;
     }
 
-    private void doSelectTab(GWTJahiaNode selectedNode) {
-        String path = selectedNode.getPath();
-        if (path != null && path.indexOf("/categories") == 0) {
-            selectionTabPanel.setSelection(categoriesTab);
-        } else {
-            selectionTabPanel.setSelection(tagTab);
-        }
-    }
 
     private void createStoreAndLoader(final GWTJahiaNode node) {
         TreeLoader<GWTJahiaNode> catLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
@@ -244,8 +217,7 @@ public class ClassificationEditor extends LayoutContainer {
         tagStore = new TreeStore<GWTJahiaNode>(tagLoader);
     }
 
-    private void createCategoriesPanel(TabPanel tabPanel) {
-        categoriesTab = new AsyncTabItem(Messages.get("ece_categories", "Categories"));
+    private Component createSelectedCategoriesPanel() {
         ColumnConfig columnConfig = new ColumnConfig("name", "Name", TREE_COLUMN_SIZE);
         columnConfig.setFixed(true);
         columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
@@ -275,11 +247,12 @@ public class ClassificationEditor extends LayoutContainer {
         catGrid.setAutoExpandColumn("name");
         catGrid.getTreeView().setRowHeight(25);
         catGrid.getTreeView().setForceFit(true);
-        categoriesTab.add(catGrid);
-        tabPanel.add(categoriesTab);
+
+
+        return catGrid;
     }
 
-    private void createTagsPanel(TabPanel tabPanel) {
+    private Component createTagsPanel() {
         ColumnConfig columnConfig;
         columnConfig = new ColumnConfig("name", "Name", TREE_COLUMN_SIZE);
         columnConfig.setFixed(true);
@@ -303,7 +276,6 @@ public class ClassificationEditor extends LayoutContainer {
                 return button;
             }
         });
-        tagTab = new AsyncTabItem(Messages.get("ece_tags", "Tags"));
 
         ContentPanel panel = new ContentPanel();
         panel.setBodyBorder(false);
@@ -312,7 +284,7 @@ public class ClassificationEditor extends LayoutContainer {
         // Add a new tag
         final AutoCompleteComboBox autoCompleteComboBox = new AutoCompleteComboBox(JCRClientUtils.TAG_NODETYPES, 15);
         autoCompleteComboBox.setMaxLength(120);
-        autoCompleteComboBox.setWidth(300);
+        autoCompleteComboBox.setWidth(200);
         autoCompleteComboBox.setName("tagName");
 
         //panel.add(name, data);
@@ -377,8 +349,7 @@ public class ClassificationEditor extends LayoutContainer {
         tagGrid.getTreeView().setForceFit(true);
         panel.add(tagGrid);
 
-        tagTab.add(panel);
-        tabPanel.add(tagTab);
+        return panel;
     }
 
     public TreeStore<GWTJahiaNode> getCatStore() {

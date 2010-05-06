@@ -50,7 +50,7 @@ public class ContentPickerBrowser extends TopRightComponent {
     private GWTManagerConfiguration config;
     private String pickerType;
     private ContentPanel m_component;
-    private List<ContentTreeGrid> contentTreeGrids = new ArrayList<ContentTreeGrid>();
+   // private List<ContentTreeGrid> contentTreeGrids = new ArrayList<ContentTreeGrid>();
     private SearchGrid m_search;
     private TabPanel tabs;
     private TabItem searchTabItem;
@@ -60,19 +60,30 @@ public class ContentPickerBrowser extends TopRightComponent {
         this.pickerType = pickerType;
         this.config = config;
 
+        tabs = new TabPanel();
+        tabs.setHeight(400);
+        tabs.setBodyBorder(false);
+        tabs.setBorders(false);
 
+        // add repositories
         for (String repoId : config.getAccordionPanels()) {
-            ContentTreeGrid treeGrid = new ContentTreeGrid(repoId, selectedNodes, multiple, config) {
+            final ContentTreeGrid treeGrid = new ContentTreeGrid(repoId, selectedNodes, multiple, config) {
                 @Override
                 public void onContentPicked(GWTJahiaNode gwtJahiaNode) {
                     super.onContentPicked(gwtJahiaNode);
                     pickContent(gwtJahiaNode);
                 }
             };
-            contentTreeGrids.add(treeGrid);
+       //     contentTreeGrids.add(treeGrid);
+
+            final TabItem treeTable = new TabItem(Messages.getResource("fm_repository_" + treeGrid.getRepoType()));
+            treeTable.setBorders(false);
+            treeTable.setLayout(new FitLayout());
+            treeTable.add(treeGrid);
+            tabs.add(treeTable);
         }
 
-
+        // add search
         m_search = new SearchGrid(config, multiple) {
             @Override
             public void onContentPicked(GWTJahiaNode gwtJahiaNode) {
@@ -80,34 +91,17 @@ public class ContentPickerBrowser extends TopRightComponent {
                 pickContent(gwtJahiaNode);
             }
         };
-
-        m_component = new ContentPanel(new FitLayout());
-        m_component.setBodyBorder(false);
-        m_component.setBorders(false);
-        m_component.setHeaderVisible(false);
-
-
-        tabs = new TabPanel();
-        tabs.setHeight(400);
-        tabs.setBodyBorder(false);
-        tabs.setBorders(false);
-
-        for (ContentTreeGrid treeGrid : contentTreeGrids) {
-            TabItem treeTable = new TabItem(Messages.getResource("fm_repository_" + treeGrid.getRepoType()));
-            treeTable.setBorders(false);
-            treeTable.setLayout(new FitLayout());
-            treeTable.add(treeGrid);
-            tabs.add(treeTable);
-        }
-
         searchTabItem = new TabItem(Messages.getResource("fm_search"));
         searchTabItem.setBorders(false);
-
-
         searchTabItem.setLayout(new FitLayout());
         searchTabItem.add(m_search);
         tabs.add(searchTabItem);
 
+        // init main component
+        m_component = new ContentPanel(new FitLayout());
+        m_component.setBodyBorder(false);
+        m_component.setBorders(false);
+        m_component.setHeaderVisible(false);
         m_component.add(tabs);
     }
 

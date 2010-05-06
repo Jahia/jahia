@@ -329,12 +329,16 @@
 
     <bean id="sidePanelTab.search" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="search"/>
+        <property name="params">
+            <map>
+                <entry key="numberResults" value="20"/>
+            </map>
+        </property>
 
     </bean>
 
     <bean id="sidePanelTab.workflow" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-        <property name="key" value="workflow"/>
-
+        <property name="key" value="workflow"/>        
     </bean>
 
     <!-- Engine tabs-->

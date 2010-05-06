@@ -35,7 +35,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -48,7 +47,6 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -74,14 +72,9 @@ import java.util.List;
  */
 public class ContentTreeGrid extends ContentPanel {
     private ManagerLinker linker;
-    protected ContentToolbar contentToolbar;
     private TreeGridTopRightComponent treeGridTopRightComponent;
-    protected TreeLoader<GWTJahiaNode> loader;
-    protected ListStore<GWTJahiaNode> mainListStore;
+    private ListStore<GWTJahiaNode> mainListStore;
     private boolean multiple;
-
-
-    protected String selectPathAfterUpload = null;
 
 
     /**
@@ -99,15 +92,19 @@ public class ContentTreeGrid extends ContentPanel {
         setHeaderVisible(false);
         setBorders(false);
         setBodyBorder(false);
+
         // add toolbar
-        contentToolbar = new ContentToolbar(configuration, linker);
+        ContentToolbar contentToolbar = new ContentToolbar(configuration, linker);
         treeGridTopRightComponent = new TreeGridTopRightComponent(repoType, configuration, selectedNodes);
 
 
         // register component linker
         linker.registerComponents(null, treeGridTopRightComponent, null, contentToolbar, null);
 
+        //Log.debug("Add toolbar for repository: "+repoType+", "+contentToolbar.getComponent());
         setTopComponent(contentToolbar.getComponent());
+        
+        // add grid
         BorderLayoutData borderLayoutData = new BorderLayoutData(Style.LayoutRegion.WEST, 300);
         borderLayoutData.setSplit(true);
         add(treeGridTopRightComponent.getComponent(), borderLayoutData);
@@ -230,14 +227,14 @@ public class ContentTreeGrid extends ContentPanel {
 
             m_treeGrid.getTreeView().setRowHeight(25);
             m_treeGrid.setIconProvider(ContentModelIconProvider.getInstance());
-           /* m_treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-                @Override
-                public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                    if (event != null && event.getSelectedItem() != null) {
-                        onContentPicked(event.getSelectedItem());
-                    }
-                }
-            }); */
+            /* m_treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+               @Override
+               public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                   if (event != null && event.getSelectedItem() != null) {
+                       onContentPicked(event.getSelectedItem());
+                   }
+               }
+           }); */
             m_treeGrid.setHideHeaders(true);
             m_treeGrid.setBorders(false);
 

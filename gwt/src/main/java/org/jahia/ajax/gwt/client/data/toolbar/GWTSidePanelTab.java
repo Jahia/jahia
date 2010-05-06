@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public class GWTSidePanelTab  implements Serializable {
     private String name;
+    private String tooltip;
     private GWTJahiaToolbar treeContextMenu;
     private GWTJahiaToolbar tableContextMenu;
     private Map<String, String> params;
@@ -30,6 +31,14 @@ public class GWTSidePanelTab  implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTooltip() {
+        return tooltip;
+    }
+
+    public void setTooltip(String tooltip) {
+        this.tooltip = tooltip;
     }
 
     public GWTJahiaToolbar getTreeContextMenu() {

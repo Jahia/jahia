@@ -30,6 +30,7 @@ public class SidePanelTabItem extends TabItem {
     public SidePanelTabItem(GWTSidePanelTab config) {
         super("&nbsp;");
         this.config = config;
+        getHeader().setToolTip(config.getName());
     }
 
     public void initWithLinker(EditLinker linker) {

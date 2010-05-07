@@ -32,8 +32,6 @@ import java.util.zip.GZIPOutputStream;
 public class JournalListener extends DefaultEventListener {
     private static Logger logger = Logger.getLogger(JournalListener.class);
 
-    private static int i = 1;
-
     private JCRSessionFactory sessionFactory;
 
     private RemotePublicationService remotePublication;

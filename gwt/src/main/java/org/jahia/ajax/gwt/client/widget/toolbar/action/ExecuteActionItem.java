@@ -2,7 +2,10 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.google.gwt.http.client.*;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,26 +15,29 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
  * To change this template use File | Settings | File Templates.
  */
 public class ExecuteActionItem extends BaseActionItem {
-  public static final int STATUS_CODE_OK = 200;
+    public static final int STATUS_CODE_OK = 200;
     private String action;
+
     public void onComponentSelection() {
-        String baseURL =  "http://localhost:8080" + JahiaGWTParameters.getContextPath() + "/cms/render";
-        String localURL = baseURL + "/default/en"  + linker.getSelectedNode().getPath();
-        RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + "." + action + ".do");
-        try {
-          Request response = builder.sendRequest(null, new RequestCallback() {
-            public void onError(Request request, Throwable exception) {
-              // Code omitted for clarity
-            }
+        final List<GWTJahiaNode> gwtJahiaNodes = linker.getSelectedNodes();
+        for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
+            String baseURL = "http://localhost:8080" + JahiaGWTParameters.getContextPath() + "/cms/render";
+            String localURL = baseURL + "/default/" + JahiaGWTParameters.getLanguage() + gwtJahiaNode.getPath();
+            RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + "." + action + ".do");
+            try {
+                Request response = builder.sendRequest(null, new RequestCallback() {
+                    public void onError(Request request, Throwable exception) {
+                        // Code omitted for clarity
+                    }
 
-            public void onResponseReceived(Request request, Response response) {
-              // Code omitted for clarity
+                    public void onResponseReceived(Request request, Response response) {
+                        // Code omitted for clarity
+                    }
+                });
+            } catch (RequestException e) {
+                // Code omitted for clarity
             }
-          });
-        } catch (RequestException e) {
-          // Code omitted for clarity
         }
-
     }
 
     public void handleNewLinkerSelection() {

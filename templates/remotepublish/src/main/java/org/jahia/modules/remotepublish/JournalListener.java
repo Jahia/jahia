@@ -91,10 +91,17 @@ public class JournalListener extends DefaultEventListener {
             for (Integer level : list) {
                 List<Event> eventList = events.get(level);
                 Collections.sort(eventList, new EventComparator());
+                Set<String> movedPaths = new LinkedHashSet<String>();
                 for (Event event : eventList) {
-                    boolean eventWritten = remotePublication.addEntry(event, oos, session, addedPath);
-                    if (!eventsWritten && eventWritten) {
-                        eventsWritten = true;
+                    final int type = event.getType();
+                    if(type == Event.NODE_MOVED) {
+                        movedPaths.add(event.getPath());
+                    }
+                    if((type != Event.NODE_ADDED && type != Event.NODE_REMOVED) || !movedPaths.contains(event.getPath())) {
+                        boolean eventWritten = remotePublication.addEntry(event, oos, session, addedPath);
+                        if (!eventsWritten && eventWritten) {
+                            eventsWritten = true;
+                        }
                     }
                 }
             }
@@ -143,17 +150,17 @@ public class JournalListener extends DefaultEventListener {
                     }
                 }
             } else {
-                if(event1.getType()==Event.NODE_REMOVED) {
+                if(event1.getType()==Event.NODE_MOVED) {
+                    return -1;
+                } else if(event2.getType()==Event.NODE_MOVED) {
+                    return 1;
+                } else if(event1.getType()==Event.NODE_REMOVED) {
                     return -1;
                 } else if(event2.getType()==Event.NODE_REMOVED) {
                     return 1;
                 } else if(event1.getType()==Event.NODE_ADDED) {
                     return -1;
                 } else if(event2.getType()==Event.NODE_ADDED) {
-                    return 1;
-                } else if(event1.getType()==Event.NODE_MOVED) {
-                    return -1;
-                } else if(event2.getType()==Event.NODE_MOVED) {
                     return 1;
                 }
             }

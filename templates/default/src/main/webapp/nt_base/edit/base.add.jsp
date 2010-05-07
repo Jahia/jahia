@@ -38,7 +38,14 @@
             <c:set var="formAction" value="${url.base}${currentNode.path}/*"/>
         </c:otherwise>
     </c:choose>
-    <form action="${formAction}" method="post" id="${currentNode.name}${scriptTypeName}">
+    <form action="${formAction}" method="post"
+    <c:if test="${!(currentResource.moduleParams.resourceNodeType eq 'jnt:file' || currentResource.moduleParams.resourceNodeType eq 'jnt:folder')}">
+          id="${currentNode.name}${scriptTypeName}"
+    </c:if>
+    <c:if test="${currentResource.moduleParams.resourceNodeType eq 'jnt:file'}">
+        enctype="multipart/form-data"
+    </c:if>    
+            >
         <c:choose>
             <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
                 <input type="hidden" name="process" value="${currentResource.moduleParams.workflowStartForm}"/>
@@ -109,7 +116,13 @@
                 </p>
             </c:if>
             <c:if test="${currentResource.moduleParams.resourceNodeType eq 'jnt:file'}">
-                <p class="field"><%@include file="formelements/file.jsp" %></p>
+                <p class="field">
+                    <label class="left"
+                                        for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
+                    <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>
+                    <input type="file" name="file"/>
+
+                </p>
             </c:if>
             <div class="divButton">
                 <c:choose>
@@ -137,30 +150,30 @@
             </div>
         </fieldset>
     </form>
-    <script type="text/javascript">
-        var options${fn:replace(currentNode.name,'-',"_")}${scriptTypeName} = {
-            success: function() {
-            <c:choose>
-            <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
-                replace('${currentResource.moduleParams.workflowStartFormWFCallbackId}', '${currentResource.moduleParams.workflowStartFormWFCallbackURL}', "${currentResource.moduleParams.workflowStartFormWFCallbackJS};$('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});");
-            </c:when>
-            <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
-                replace('${currentResource.moduleParams.workflowTaskFormCallbackId}', '${currentResource.moduleParams.workflowTaskFormCallbackURL}', "${currentResource.moduleParams.workflowTaskFormCallbackJS};$('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});");
-            </c:when>
-            <c:otherwise>
-                replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', "$('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});");
-            </c:otherwise>
-            </c:choose>
-                $.each(richTextEditors, function(key, value) {
-                    value.setData("");
-                });
-            },
-            dataType: "json",
-            resetForm : true
-        };// wait for the DOM to be loaded
-        $(document).ready(function() {
-            // bind 'myForm' and provide a simple callback function
-            $('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});
-        });
-    </script>
+        <script type="text/javascript">
+            var options${fn:replace(currentNode.name,'-',"_")}${scriptTypeName} = {
+                success: function() {
+                <c:choose>
+                <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
+                    replace('${currentResource.moduleParams.workflowStartFormWFCallbackId}', '${currentResource.moduleParams.workflowStartFormWFCallbackURL}', "${currentResource.moduleParams.workflowStartFormWFCallbackJS};$('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});");
+                </c:when>
+                <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
+                    replace('${currentResource.moduleParams.workflowTaskFormCallbackId}', '${currentResource.moduleParams.workflowTaskFormCallbackURL}', "${currentResource.moduleParams.workflowTaskFormCallbackJS};$('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});");
+                </c:when>
+                <c:otherwise>
+                    replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', "$('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});");
+                </c:otherwise>
+                </c:choose>
+                    $.each(richTextEditors, function(key, value) {
+                        value.setData("");
+                    });
+                },
+                dataType: "json",
+                resetForm : true
+            };// wait for the DOM to be loaded
+            $(document).ready(function() {
+                // bind 'myForm' and provide a simple callback function
+                $('#${currentNode.name}${scriptTypeName}').ajaxForm(options${fn:replace(currentNode.name,'-','_')}${scriptTypeName});
+            });
+        </script>
 </div>

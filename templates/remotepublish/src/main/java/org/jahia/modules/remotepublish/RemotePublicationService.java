@@ -1,18 +1,28 @@
 package org.jahia.modules.remotepublish;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.jahia.api.Constants;
+import org.jahia.bin.ActionResult;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.importexport.ReferencesHelper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
@@ -20,7 +30,9 @@ import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBea
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.observation.Event;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -616,5 +628,76 @@ public class RemotePublicationService implements InitializingBean {
         org.hibernate.classic.Session hibSession = sessionFactoryBean.openSession();
         hibSession.save(journal);
         hibSession.close();
+    }
+
+    public ActionResult executeRemotePublication(JCRNodeWrapper node) throws Exception {
+        if (!node.isNodeType("jnt:remotePublication")) {
+            return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, null);
+        }
+
+        String remoteUrl = node.getProperty("remoteUrl").getString();
+        String remotePath = node.getProperty("remotePath").getString();
+        JCRNodeWrapper source = (JCRNodeWrapper) node.getProperty("node").getNode();
+        String remoteUser = node.getProperty("remoteUser").getString();
+        String remotePassword = node.getProperty("remotePassword").getString();
+
+        logger.info("Execute remote publication on "+remoteUrl  + remotePath);
+
+        HttpClient client = new HttpClient();
+        client.getParams().setAuthenticationPreemptive(true);
+
+        final URL url = new URL(remoteUrl);
+        client.getHostConfiguration().setHost(url.getHost(), url.getPort(), url.getProtocol());
+
+        org.apache.commons.httpclient.Credentials defaultcreds = new UsernamePasswordCredentials(remoteUser, remotePassword);
+        client.getState()
+                .setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
+
+        PostMethod prepare = new PostMethod(remoteUrl + remotePath + ".preparereplay.do");
+        prepare.addRequestHeader(new Header("accept", "application/json"));
+        prepare.addParameter("sourceUuid", source.getIdentifier());
+        client.executeMethod(prepare);
+        if (prepare.getStatusCode() != HttpServletResponse.SC_OK) {
+            logger.error("Error received on prepare : "+prepare.getStatusCode());
+            return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject(new HashMap()));
+        }
+        JSONObject response = new JSONObject(prepare.getResponseBodyAsString());
+
+        Boolean ready = response.getBoolean("ready");
+
+        Calendar lastDate = null;
+        if (response.has("lastReplay")) {
+            lastDate = ISO8601.parse(response.getString("lastReplay"));
+        }
+
+        prepare.releaseConnection();
+        if (ready) {
+            final File file = new File("/tmp/remote.log");
+
+            // Get source node from live session ?
+            source = JCRSessionFactory.getInstance().getCurrentUserSession("live").getNode(source.getCorrespondingNodePath("live"));
+            generateLog(source, lastDate, new FileOutputStream(file));
+
+            PostMethod replay = new PostMethod(remoteUrl + remotePath + ".replay.do");
+            replay.addRequestHeader(new Header("accept", "application/json"));
+            Part[] parts = {
+                    new StringPart("value", "value"),
+                    new FilePart("log", file)
+            };
+
+            replay.setRequestEntity(new MultipartRequestEntity(parts, replay.getParams()));
+            client.executeMethod(replay);
+
+            if (replay.getStatusCode() != HttpServletResponse.SC_OK) {
+                logger.error("Error received on replay : "+prepare.getStatusCode());
+                return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject(new HashMap()));
+            }
+
+            replay.releaseConnection();
+
+            return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject(new HashMap()));
+        } else {
+            return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject(new HashMap()));
+        }
     }
 }

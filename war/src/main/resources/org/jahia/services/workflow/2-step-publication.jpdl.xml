@@ -23,7 +23,7 @@
         <transition to="end"/>
     </custom>
     <custom class="org.jahia.services.workflow.jbpm.custom.Publish" g="582,223,80,40" name="publication">
-        <transition to="end"/>
+        <transition to="execute remote publication"/>
     </custom>
     <end g="683,263,80,40" name="end"/>
     <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" name="unlock for correction" g="259,203,133,39">
@@ -33,4 +33,16 @@
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
         <transition name="finished" to="lock" g="-45,-11"/>
     </task>
+    <custom class="org.jahia.modules.remotepublish.jbpm.custom.CallRemotePublish" g="582,223,80,40" name="execute remote publication">
+        <transition name="choose remote publication" to="choose remote publication"/>
+        <transition name="no remote publication" to="end"/>
+    </custom>
+    <task name="choose remote publication" g="104,205,116,39" form="jnt:workflowRemotePublicationForm">
+        <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
+        <transition name="remote publish" to="remote publication" g="-45,-11"/>
+        <transition g="-30,3" name="bypass" to="end"/>
+    </task>
+    <custom class="org.jahia.modules.remotepublish.jbpm.custom.ExecuteRemotePublish" g="582,223,80,40" name="remote publication">
+        <transition to="end"/>
+    </custom>
 </process>

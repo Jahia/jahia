@@ -4,7 +4,7 @@
  - uuid (string)
  - lastReplay (date)
 
-[jnt:remotePublicationSchedule] > nt:base
+[jnt:cronExpression] > nt:base
  - hour (long)
  - minute (long)
  - seconds (long)
@@ -18,7 +18,10 @@
  - remotePath (string)
  - remoteUser (string)
  - remotePassword (string)
- + schedule (jnt:remotePublicationSchedule) multiple
+ + schedule (jnt:cronExpression) multiple
 
 [jnt:remotePublications] > nt:base
  + * (jnt:remotePublication)
+
+[jnt:workflowRemotePublicationForm] > nt:base
+- remotePublicationToExecute (weakreference) mandatory

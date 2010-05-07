@@ -91,10 +91,10 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         try {
             ExtendedNodeType type = null;
-            if (node != null) {
-                type = node.getPrimaryNodeType();
-            } else if (nodeType != null) {
+            if (nodeType != null) {
                 type = NodeTypeRegistry.getInstance().getNodeType(nodeType);
+            } else if (node != null) {
+                type = node.getPrimaryNodeType();
             }
             if (type != null) {
                 final List<ExtendedItemDefinition> extendedItemDefinitionList = type.getItems();
@@ -113,10 +113,12 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                         if (map.size() > 0) {
                             final Map<String, ChoiceListInitializer> initializers = ChoiceListInitializerService.getInstance().getInitializers();
                             List<ChoiceListValue> listValues = null;
+                            final HashMap<String, Object> context = new HashMap<String, Object>();
+                            context.put("contextNode",node);
                             for (Map.Entry<String, String> entry : map.entrySet()) {
                                 if (initializers.containsKey(entry.getKey())) {
                                     listValues = initializers.get(entry.getKey()).getChoiceListValues(
-                                            (ExtendedPropertyDefinition) definition, type, entry.getValue(), listValues, Jahia.getThreadParamBean().getLocale(), new HashMap<String, Object>() 
+                                            (ExtendedPropertyDefinition) definition, type, entry.getValue(), listValues, Jahia.getThreadParamBean().getLocale(), context
                                     );
                                 }
                             }

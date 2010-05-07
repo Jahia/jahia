@@ -102,4 +102,6 @@ public interface JahiaContentDefinitionService extends RemoteService {
 
     List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node) throws GWTJahiaServiceException;
 
+    GWTJahiaNodeType getWFFormForNodeAndNodeType(GWTJahiaNode node, String formResourceName)
+            throws GWTJahiaServiceException;
 }

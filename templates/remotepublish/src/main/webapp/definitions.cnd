@@ -24,4 +24,4 @@
  + * (jnt:remotePublication)
 
 [jnt:workflowRemotePublicationForm] > nt:base
-- remotePublicationToExecute (weakreference) mandatory
+- remotePublicationToExecute (weakreference,choicelist[nodes='/remotePublications;jnt:remotePublication',remotePublication]) mandatory

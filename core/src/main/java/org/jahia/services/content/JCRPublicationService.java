@@ -12,6 +12,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
+import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
@@ -189,13 +190,23 @@ public class JCRPublicationService extends JahiaService {
                 Collections.reverse(toUnlock);
                 for (JCRNodeWrapper node : toUnlock) {
                     if (node.isLocked()) {
-                        node.forceUnlock();
+                        try {
+                            node.forceUnlock();
+                        } catch (LockException e) {
+                            logger.error("Cannot unlock node "+node.getPath(), e);
+                            throw e;
+                        }
                     }
                 }
                 for (JCRNodeWrapper reference : references) {
                     JCRNodeWrapper ref = session.getNode(reference.getPath());
                     if (ref.isLocked()) {
-                        ref.forceUnlock();
+                        try {
+                            ref.forceUnlock();
+                        } catch (LockException e) {
+                            logger.error("Cannot unlock node "+ref.getPath(), e);
+                            throw e;
+                        }
                     }
                 }
                 return null;

@@ -28,4 +28,9 @@
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="remotePublication" ref="remotePublicationService"/>
     </bean>
+
+    <bean id="remotePublicationInitializer" class="org.jahia.modules.remotepublish.initializers.RemotePublicationInitializers">
+        <property name="key" value="remotePublication"/>
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+    </bean>
 </beans>

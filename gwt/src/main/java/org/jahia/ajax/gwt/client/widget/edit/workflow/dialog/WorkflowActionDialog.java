@@ -100,7 +100,7 @@ public class WorkflowActionDialog extends Window {
         actionPanel.setScrollMode(Style.Scroll.AUTOY);
         String formResourceName = action.getFormResourceName();
         if (formResourceName!=null && !"".equals(formResourceName)) {
-            definitionsAsync.getNodeType(formResourceName, new AsyncCallback<GWTJahiaNodeType>() {
+            definitionsAsync.getWFFormForNodeAndNodeType(node,formResourceName, new AsyncCallback<GWTJahiaNodeType>() {
                 public void onFailure(Throwable caught) {
                     //To change body of implemented methods use File | Settings | File Templates.
                 }

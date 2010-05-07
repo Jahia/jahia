@@ -98,4 +98,17 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(e.toString());
         }
     }
+
+    public GWTJahiaNodeType getWFFormForNodeAndNodeType(GWTJahiaNode node, String formResourceName)
+            throws GWTJahiaServiceException {
+        try {
+            JCRNodeWrapper nodeWrapper = retrieveCurrentSession().getNode(node.getPath());
+            Map<String,Object> context = new HashMap<String,Object>();
+            context.put("contextNode", nodeWrapper);
+            return contentDefinition.getNodeType(formResourceName, context, getUILocale());
+        } catch (RepositoryException e) {
+            logger.error("Cannot get node", e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
 }

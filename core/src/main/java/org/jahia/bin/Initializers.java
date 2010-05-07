@@ -143,10 +143,13 @@ public class Initializers extends HttpServlet implements Controller {
                         if (map.size() > 0) {
                             final Map<String, ChoiceListInitializer> initializers = ChoiceListInitializerService.getInstance().getInitializers();
                             List<ChoiceListValue> listValues = null;
+                            final HashMap<String, Object> context = new HashMap<String, Object>();
+                            context.put("contextNode",node);
                             for (Map.Entry<String, String> entry : map.entrySet()) {
                                 if (initializers.containsKey(entry.getKey())) {
                                     listValues = initializers.get(entry.getKey()).getChoiceListValues(
-                                            (ExtendedPropertyDefinition) definition, type, entry.getValue(), listValues, locale, new HashMap<String, Object>()
+                                            (ExtendedPropertyDefinition) definition, type, entry.getValue(), listValues, locale,
+                                            context
                                     );
                                 }
                             }

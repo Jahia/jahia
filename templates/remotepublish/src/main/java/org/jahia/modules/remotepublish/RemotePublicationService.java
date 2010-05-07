@@ -308,8 +308,8 @@ public class RemotePublicationService implements InitializingBean {
                 try {
                     final JCRNodeWrapper uuid = session.getNodeByUUID(value.getString());
                     return uuid.getPath();
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
+                } catch (ItemNotFoundException e) {
+                    logger.debug(e.getMessage(), e);
                 } catch (IllegalStateException e) {
                     logger.error(e.getMessage(), e);
                 }

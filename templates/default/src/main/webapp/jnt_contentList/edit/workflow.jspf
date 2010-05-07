@@ -1,3 +1,4 @@
+<c:if test="${not child.locked}">
 <workflow:workflowsForNode workflowAction="publish" var="workflows" node="${child}"/>
 <br/>
 <c:forEach items="${workflows}" var="wf">
@@ -15,7 +16,7 @@
                    onclick="startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true','${animatedWFs}${animatedTasks}animatedcollapse.reinit();')"/></c:otherwise>
     </c:choose>
 </c:forEach>
-
+</c:if>
 <workflow:tasksForNode var="tasks" node="${child}"/>
 <br/>
 <c:forEach items="${tasks}" var="task">
@@ -36,7 +37,7 @@
         </c:otherwise>
     </c:choose>
 </c:forEach>
-
+<c:if test="${not child.locked}">
     <c:forEach items="${workflows}" var="wf">
         <c:choose>
             <c:when test="${not empty wf.formResourceName}">
@@ -53,6 +54,7 @@
             </c:when>
         </c:choose>
     </c:forEach>
+    </c:if>
     <c:forEach items="${tasks}" var="task">
         <c:choose>
             <c:when test="${not empty task.formResourceName}">

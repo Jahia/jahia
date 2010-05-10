@@ -9,10 +9,14 @@
 
 <tr class="evenLine">
     <td align="center">
-        <input type="checkbox" value="ACME" name="sitebox">
     </td>
     <td >
-        ${fn:escapeXml(currentNode.primaryNodeType.name)}
+        <c:if test="${jcr:isNodeType(currentNode, 'jnt:contentList')}">
+            <img  height="24" width="24" border="0" style="cursor: pointer;" src="${url.currentModule}/images/icons/folder-contenu.png"/>
+        </c:if>
+        <c:if test="${!jcr:isNodeType(currentNode, 'jnt:contentList')}">
+            ${fn:escapeXml(currentNode.primaryNodeType.name)}
+        </c:if>
     </td>
     <td><a href="${url.base}${currentNode.path}.html"><c:if test="${!empty currentNode.properties['jcr:title'].string}">
         ${fn:escapeXml(currentNode.properties['jcr:title'].string)}

@@ -9,7 +9,7 @@
 
 <tr class="evenLine">
     <td align="center">
-        <input type="checkbox" value="ACME" name="sitebox">
+       
     </td>
     <td >
         ${fn:escapeXml(currentNode.primaryNodeType.name)}

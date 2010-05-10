@@ -35,7 +35,11 @@
 <table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">
     <thead>
     <tr>
-        <th width="5%" align="center">&nbsp;</th>
+        <th width="5%" align="center">
+            <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
+                <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="${url.currentModule}/images/icons/folder_up.png"></a></div></th>
+            </c:if>
+        </th>
         <th width="5%"><fmt:message key="label.type"/> </th>
         <th width="35%"><fmt:message key="label.title"/> </th>
         <th width="10%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_creationDate"/> </th>
@@ -47,20 +51,18 @@
     </tr>
     </thead>
     <tbody>
-    <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
-    <tr>
-        <td colspan="9">
-            <a href="${url.base}${currentNode.parent.path}.html"><fmt:message key="parent"/></a>
-        </td>
-    </tr>
-    </c:if>
         <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
             <tr class="evenLine">
                 <td align="center">
-                    <input type="checkbox" value="ACME" name="sitebox">
+                    
                 </td>
-                <td>
+                <td >
+                    <c:if test="${jcr:isNodeType(child, 'jnt:contentList')}">
+                        <img  height="24" width="24" border="0" style="cursor: pointer;" src="${url.currentModule}/images/icons/folder-contenu.png"/>
+                    </c:if>
+                    <c:if test="${!jcr:isNodeType(child, 'jnt:contentList')}">
                         ${fn:escapeXml(child.primaryNodeType.name)}
+                    </c:if>
                 </td>
                 <td>
                     <a

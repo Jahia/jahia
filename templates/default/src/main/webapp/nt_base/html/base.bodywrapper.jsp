@@ -1,3 +1,4 @@
+<%@ page import="org.jahia.bin.Jahia" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -44,8 +45,8 @@
 <div class="container container_16">
     <div id="topTitle">
         <div class="grid_16">
-                  <h1 class="hide"><fmt:message key="administration"/> Jahia</h1>
-                  <h2 class="edit"><fmt:message key="administration"/></h2>
+                  <h1 class="hide">Jahia</h1>
+                  <h2 class="edit">&nbsp;</h2>
         </div>
     </div>
 </div>
@@ -71,7 +72,6 @@
 
 <!--stop content-->
 <div id="copyright">
-  &copy; Copyright 2002-2010  <a target="newJahia" href="http://www.jahia.com">Jahia Solutions Group SA</a> -&nbsp;Tous droits réservés.&nbsp;Jahia 6.5.0 r31312</div>
-
+    <%=Jahia.COPYRIGHT%>&nbsp;Jahia <%=Jahia.VERSION + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber() %></div>
 
 <div class="clear"></div></div><!--stop bodywrapper-->

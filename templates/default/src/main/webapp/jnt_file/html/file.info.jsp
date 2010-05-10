@@ -18,8 +18,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <tr class="evenLine">
     <td align="center">
-        <input type="checkbox" value="ACME" name="sitebox">
-    </td>
+   </td>
     <td >
         ${fn:escapeXml(currentNode.fileContent.contentType)}
     </td>

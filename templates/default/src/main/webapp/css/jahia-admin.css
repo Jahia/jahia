@@ -27,6 +27,11 @@ br.clearFloat{
 }
 /* general */
 body {
+  background-color:#f1f5fa;
+  padding: 0;
+  margin: 0;
+}
+.bodywrapper-jahia-admin {
   font-family:Arial, Verdana, Helvetica, sans-serif;
   background-color:#f1f5fa;
   font-size:11px!important;
@@ -155,7 +160,7 @@ table.evenOddTable th,table.evenOddTable td {
   border-width: 0 1px 0 0;
   background: #ffffff;
   color: #666666;
-  background: url(images/bkg-th.png) repeat-x top left;
+  background:#e6e7e6 url(images/bkg-th.png) repeat-x top left;
   font-weight: bold;
   font-size: 11px;
   text-align: left;

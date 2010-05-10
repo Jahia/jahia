@@ -131,12 +131,11 @@
                             </siteImportLocation>
                             <cluster_activated>false</cluster_activated>
                             <processingServer>true</processingServer>
-                            <databaseUrl>jdbc:mysql://10.8.37.246/qa_243?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
-                            <!--databaseType>oracle</databaseType>
-                            <databaseUrl>jdbc:oracle:thin:@10.8.37.8:1521:TEST</databaseUrl>
-                            <databaseUsername>QA_243</databaseUsername-->
+                            <databaseType>postgresql</databaseType>
+                            <databaseUrl>jdbc:postgresql://10.8.37.186:5432/qa_243</databaseUrl>
                             <databaseUsername>jahia</databaseUsername>
                             <databasePassword>jahia</databasePassword>
+                            <overwritedb>true</overwritedb>
                             <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>
                             <localIp>10.8.37.243</localIp>

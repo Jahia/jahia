@@ -1147,8 +1147,8 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRemotePublicationActionItem"/>
         </property>
         <property name="titleKey" value="label.createRemotePublication"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-newRemotePublication"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-newRemotePublication"/>
     </bean>
 
     <bean id="org.jahia.toolbar.item.exectuteRemotePublication" class="org.jahia.services.uicomponents.bean.toolbar.Item">
@@ -1158,8 +1158,8 @@
             </bean>
         </property>
         <property name="titleKey" value="label.executeRemotePublication"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-newcategory"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-newcategory"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-executeRemotePublication"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-executeRemotePublication"/>
     </bean>
 
 

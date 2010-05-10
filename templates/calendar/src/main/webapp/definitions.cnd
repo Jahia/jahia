@@ -1,0 +1,6 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:calendar] > jnt:content, jmix:editorialContent
+ - list (weakreference)
+ - startDateProperty (string)
+ - endDateProperty (string)

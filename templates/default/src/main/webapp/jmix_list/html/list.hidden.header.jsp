@@ -1,3 +1,5 @@
+<%@ page import="org.apache.jackrabbit.commons.json.JsonParser" %>
+<%@ page import="org.json.JSONObject" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -84,6 +86,10 @@
 
     <c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">
         <jcr:sort list="${currentList}" properties="${currentNode.properties.firstField.string},${currentNode.properties.firstDirection.string},${currentNode.properties.secondField.string},${currentNode.properties.secondDirection.string},${currentNode.properties.thirdField.string},${currentNode.properties.thirdDirection.string}" var="currentList" scope="request"/>
+    </c:if>
+
+    <c:if test="${not empty param.filter}">
+        <jcr:filter var="currentList" list="${currentList}" properties="${param.filter}" node="${currentNode}" scope="request"/>
     </c:if>
 
     <c:if test="${empty editable}">

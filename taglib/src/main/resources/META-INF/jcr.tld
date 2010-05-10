@@ -512,6 +512,43 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Filter a list of nodes</description>
+        <name>filter</name>
+        <tag-class>org.jahia.taglibs.jcr.node.JCRFilterTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>the name of the exposed bean</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the list of nodes to filter</description>
+            <name>list</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the properties on which we sort</description>
+            <name>properties</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the list node itself</description>
+            <name>node</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
+        </attribute>
+        <attribute>
+            <description>the scope of the bean (see PageContext)</description>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
     <function>
         <description>
             Get label value depending on the specified local

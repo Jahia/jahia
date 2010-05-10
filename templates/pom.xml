@@ -99,6 +99,7 @@
         <module>docspace</module>
         <module>docConverter</module>
         <module>facets</module>
+        <module>calendar</module>
     </modules>
 
 

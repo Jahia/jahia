@@ -231,7 +231,21 @@ public class ContentManagerHelper {
 
     public void createFolder(String parentPath, String name, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
-        createNode(parentPath, name, "jnt:folder", null, new ArrayList<GWTJahiaNodeProperty>(), currentUserSession);
+        JCRNodeWrapper parentNode;
+        final JCRSessionWrapper jcrSessionWrapper;
+        try {
+            jcrSessionWrapper = currentUserSession;
+            parentNode = jcrSessionWrapper.getNode(parentPath);
+            if (parentNode.isNodeType("jnt:folder")) {
+                createNode(parentPath, name, "jnt:folder", null, new ArrayList<GWTJahiaNodeProperty>(), currentUserSession);
+            } else {
+                createNode(parentPath, name, "jnt:contentList", null, new ArrayList<GWTJahiaNodeProperty>(), currentUserSession);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.toString(), e);
+            throw new GWTJahiaServiceException(
+                    new StringBuilder(parentPath).append(" could not be accessed :\n").append(e.toString()).toString());
+        }
     }
 
     public String findAvailableName(JCRNodeWrapper dest, String name, JCRSessionWrapper currentUserSession)

@@ -96,6 +96,7 @@
         <property name="tabs">
             <list>
                 <ref bean="editenginestab.content"/>
+                <ref bean="editenginestab.template"/>
                 <ref bean="editenginestab.layout"/>
                 <ref bean="editenginestab.metadata"/>
                 <ref bean="editenginestab.classification"/>

@@ -23,7 +23,7 @@
     <td >
         ${fn:escapeXml(currentNode.fileContent.contentType)}
     </td>
-    <td> <a href="<c:url value='/files${currentNode.path}'/>"><c:if test="${!empty currentNode.properties['jcr:title'].string}">
+    <td> <a href="${currentNode.url}"><c:if test="${!empty currentNode.properties['jcr:title'].string}">
         ${fn:escapeXml(currentNode.properties['jcr:title'].string)}
     </c:if>
         <c:if test="${empty currentNode.properties['jcr:title'].string}">

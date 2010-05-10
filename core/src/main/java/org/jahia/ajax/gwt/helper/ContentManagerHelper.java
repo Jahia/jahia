@@ -281,7 +281,6 @@ public class ContentManagerHelper {
                                final JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             if (newChildrenList == null) {
-                logger.error("Children list nodes don't change");
                 return;
             }
 

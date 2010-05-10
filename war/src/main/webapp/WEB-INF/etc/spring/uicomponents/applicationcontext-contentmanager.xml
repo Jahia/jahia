@@ -8,7 +8,50 @@
     <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
-        <property name="toolbarSet" ref="document-manager"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="menu"/>
+                                        <property name="titleKey"
+                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.createFolder"/>
+                                                <ref bean="org.jahia.toolbar.item.upload"/>
+                                                <ref bean="org.jahia.toolbar.item.download"/>
+                                                <ref bean="org.jahia.toolbar.item.preview"/>
+                                                <ref bean="org.jahia.toolbar.item.Separator"/>
+                                                <ref bean="org.jahia.toolbar.item.lock"/>
+                                                <ref bean="org.jahia.toolbar.item.unlock"/>
+                                                <ref bean="org.jahia.toolbar.item.Separator"/>
+                                                <ref bean="org.jahia.toolbar.item.zip"/>
+                                                <ref bean="org.jahia.toolbar.item.unzip"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                                </list>
+                            </property>
+                            <property name="contextMenu" value="true"/>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/documents-menu"/>
+                                </bean>
+                            </property>
+                        </bean>
+                        <ref bean="org.jahia.toolbar.manager.documents.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="enableTextMenu" value="true"/>
         <property name="displayProvider" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -52,7 +95,41 @@
     <bean id="mashupmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:portlet"/>
         <property name="folderTypes" value="jnt:portletList"/>
-        <property name="toolbarSet" ref="mashup-manager"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="menu"/>
+                                        <property name="titleKey"
+                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.createFolder"/>
+                                                <ref bean="org.jahia.toolbar.item.newMashup"/>
+                                                <ref bean="org.jahia.toolbar.item.newRss"/>
+                                                <ref bean="org.jahia.toolbar.item.newGadget"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/mashups-menu"/>
+                                </bean>
+                            </property>
+                        </bean>
+                        <ref bean="org.jahia.toolbar.manager.mashups.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displayExt" value="false"/>
@@ -94,7 +171,41 @@
     <bean id="categorymanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:category"/>
         <property name="folderTypes" value="jnt:category"/>
-        <property name="toolbarSet" ref="category-manager"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="menu"/>
+                                        <property name="titleKey"
+                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.newCategory"/>
+                                                <ref bean="org.jahia.toolbar.item.Separator"/>
+                                                <ref bean="org.jahia.toolbar.item.export"/>
+                                                <ref bean="org.jahia.toolbar.item.import"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/categories-menu"/>
+                                </bean>
+                            </property>
+                            <property name="contextMenu" value="true"/>
+                        </bean>
+                        <ref bean="org.jahia.toolbar.manager.categories.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displayExt" value="false"/>
@@ -134,7 +245,65 @@
     <bean id="tagmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:tag"/>
         <property name="folderTypes" value="jnt:tag"/>
-        <property name="toolbarSet" ref="tag-manager"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="button"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.newTag"/>
+                                                <ref bean="org.jahia.toolbar.item.Separator"/>
+                                                <ref bean="org.jahia.toolbar.item.export"/>
+                                                <ref bean="org.jahia.toolbar.item.import"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/tags-shortcuts"/>
+                                </bean>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="menu"/>
+                                        <property name="titleKey"
+                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.newTag"/>
+                                                <ref bean="org.jahia.toolbar.item.Separator"/>
+                                                <ref bean="org.jahia.toolbar.item.export"/>
+                                                <ref bean="org.jahia.toolbar.item.import"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/tags-menu"/>
+                                </bean>
+                            </property>
+                            <property name="contextMenu" value="true"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>
         <property name="displayExt" value="false"/>
@@ -178,7 +347,55 @@
     <bean id="remotepublicationmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:remotePublication"/>
         <property name="folderTypes" value="jnt:remotePublications"/>
-        <property name="toolbarSet" ref="remotepublication-manager"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="button"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.exectuteRemotePublication"/>
+                                                <ref bean="org.jahia.toolbar.item.newRemotePublication"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/remotepublication-shortcuts"/>
+                                </bean>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="menu"/>
+                                        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.newRemotePublication"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/remotepublication-menu"/>
+                                </bean>
+                            </property>
+                            <property name="contextMenu" value="true"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>
         <property name="displayExt" value="false"/>
@@ -202,7 +419,6 @@
         <property name="tabs">
             <list>
                 <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
             </list>
         </property>
         <!-- table columns-->
@@ -220,7 +436,34 @@
 
         <property name="nodeTypes" value="jnt:portletDefinitions"/>
         <property name="folderTypes" value="nt:folder"/>
-        <property name="toolbarSet" ref="portlet-definition-manager"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="button"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.delete"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/portletDefinitions-shortcuts"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="false"/>
         <property name="enableFileDoubleClick" value="false"/>
@@ -257,12 +500,321 @@
 
     </bean>
 
+
+    <!-- file manager -->
+    <bean id="contentmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="nt:base"/>
+        <property name="folderTypes" value="nt:base"/>
+        <property name="enableTextMenu" value="true"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="menu"/>
+                                        <property name="titleKey"
+                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.createFolder"/>
+                                                <ref bean="org.jahia.toolbar.item.newContentList"/>
+                                                <ref bean="org.jahia.toolbar.item.createContent"/>
+                                                <ref bean="org.jahia.toolbar.item.createPage"/>
+                                                <ref bean="org.jahia.toolbar.item.newMashup"/>
+                                                <ref bean="org.jahia.toolbar.item.newRss"/>
+                                                <ref bean="org.jahia.toolbar.item.newGadget"/>
+                                                <ref bean="org.jahia.toolbar.item.upload"/>
+                                                <ref bean="org.jahia.toolbar.item.download"/>
+                                                <ref bean="org.jahia.toolbar.item.Separator"/>
+                                                <ref bean="org.jahia.toolbar.item.lock"/>
+                                                <ref bean="org.jahia.toolbar.item.unlock"/>
+                                                <ref bean="org.jahia.toolbar.item.Separator"/>
+                                                <ref bean="org.jahia.toolbar.item.zip"/>
+                                                <ref bean="org.jahia.toolbar.item.unzip"/>
+                                                <ref bean="org.jahia.toolbar.item.Separator"/>
+                                                <ref bean="org.jahia.toolbar.item.export"/>
+                                                <ref bean="org.jahia.toolbar.item.import"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                                </list>
+                            </property>
+                            <property name="contextMenu" value="true"/>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/content-menu"/>
+                                </bean>
+                            </property>
+                        </bean>
+                        <ref bean="org.jahia.toolbar.manager.content.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="true"/>
+        <property name="displaySearchInFile" value="true"/>
+        <property name="displaySearchInTag" value="true"/>
+        <!-- accordion -->
+        <property name="accordionPanels">
+            <list>
+                <ref bean="repository.global"/>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list>
+                <ref bean="column.providerKey"/>
+                <ref bean="column.icon"/>
+                <ref bean="column.name"/>
+                <ref bean="column.locked"/>
+                <ref bean="column.path"/>
+                <ref bean="column.size"/>
+                <ref bean="column.publicationInfo"/>
+                <ref bean="column.created"/>
+                <ref bean="column.createdBy"/>
+                <ref bean="column.lastModified"/>
+                <ref bean="column.lastModifiedBy"/>
+                <ref bean="column.lastPublished"/>
+                <ref bean="column.lastPublishedBy"/>
+            </list>
+        </property>
+
+       <!-- tabs -->
+        <property name="tabs">
+            <list>
+                <ref bean="tab.roles"/>
+                <ref bean="tab.modes"/>
+                <ref bean="tab.authorizations"/>
+                <ref bean="tab.usage"/>
+                <ref bean="tab.versioning"/>
+            </list>
+        </property>
+
+
+    </bean>
+
+    <!-- sitemanager manager -->
+    <bean id="sitemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="jnt:page"/>
+        <property name="folderTypes" value="jnt:page"/>
+        <property name="enableTextMenu" value="true"/>
+        <property name="displaySize" value="false"/>
+        <property name="displayDate" value="false"/>
+        <property name="allowCollections" value="true"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="button"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.createPage"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/sites-shortcuts"/>
+                                </bean>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="menu"/>
+                                        <property name="titleKey"
+                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="org.jahia.toolbar.item.createPage"/>
+                                                <ref bean="org.jahia.toolbar.item.Separator"/>
+                                                <ref bean="org.jahia.toolbar.item.lock"/>
+                                                <ref bean="org.jahia.toolbar.item.unlock"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                                </list>
+                            </property>
+                            <property name="contextMenu" value="true"/>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/sites-menu"/>
+                                </bean>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="true"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="defaultView" value="1"/>
+
+
+        <!-- accordion -->
+        <property name="accordionPanels">
+            <list>
+                <ref bean="repository.site"/>
+            </list>
+        </property>
+
+         <!-- columns -->
+        <property name="tableColumns">
+            <list>
+                <ref bean="column.icon"/>
+                <ref bean="column.name"/>
+                <ref bean="column.locked"/>
+                <ref bean="column.lastModified"/>
+                <ref bean="column.lastModifiedBy"/>
+                <ref bean="column.publicationInfo"/>
+            </list>
+        </property>
+
+        <!-- tabs -->
+        <property name="tabs">
+            <list>
+                <ref bean="tab.info"/>
+                <ref bean="tab.authorizations"/>
+                <ref bean="tab.usage"/>
+                <ref bean="tab.versioning"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- file manager -->
+    <bean id="rolesmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="jnt:role"/>
+        <property name="folderTypes" value="jnt:role"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <ref bean="org.jahia.toolbar.manager.roles.menu"/>
+                        <ref bean="org.jahia.toolbar.manager.roles.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+        <property name="hideLeftPanel" value="true"/>
+        <property name="enableTextMenu" value="true"/>
+        <property name="displayExt" value="false"/>
+        <property name="displaySize" value="false"/>
+        <property name="displayDate" value="false"/>
+        <property name="displaySearch" value="false"/>
+        <property name="expandRoot" value="true"/>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="false"/>
+        <property name="defaultView" value="1"/>
+
+        <!-- accordion panels-->
+        <property name="accordionPanels">
+            <list>
+                <ref bean="repository.role"/>
+            </list>
+        </property>
+        <!-- tabs -->
+        <property name="tabs">
+            <list>
+                <ref bean="tab.principalRolesMapping"/>
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list>
+                <ref bean="column.name"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- file manager -->
+    <bean id="siterolesmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="jnt:role"/>
+        <property name="folderTypes" value="jnt:role"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <ref bean="org.jahia.toolbar.manager.roles.menu"/>
+                        <ref bean="org.jahia.toolbar.manager.roles.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+        <property name="hideLeftPanel" value="true"/>
+        <property name="enableTextMenu" value="true"/>
+        <property name="displayExt" value="false"/>
+        <property name="displaySize" value="false"/>
+        <property name="displayDate" value="false"/>
+        <property name="displaySearch" value="false"/>
+        <property name="expandRoot" value="true"/>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="defaultView" value="1"/>
+
+        <!-- accordion panels-->
+        <property name="accordionPanels">
+            <list>
+                <ref bean="repository.siteRole"/>
+            </list>
+        </property>
+        <!-- tabs -->
+        <property name="tabs">
+            <list>
+                <ref bean="tab.principalRolesMapping"/>
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list>
+                <ref bean="column.name"/>
+            </list>
+        </property>
+
+    </bean>
+
     <!-- filepicker -->
     <bean id="filepicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint"/>
         <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
         <property name="enableTextMenu" value="false"/>
-        <property name="toolbarSet" ref="file-picker"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <ref bean="org.jahia.toolbar.manager.documents.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="hideLeftPanel" value="true"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
@@ -294,7 +846,15 @@
         <property name="nodeTypes" value="nt:base"/>
         <property name="folderTypes" value="nt:base"/>
         <property name="enableTextMenu" value="false"/>
-        <property name="toolbarSet" ref="content-picker"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <ref bean="org.jahia.toolbar.manager.content.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="hideLeftPanel" value="true"/>
 
         <property name="displaySearchInPage" value="true"/>
@@ -328,7 +888,15 @@
     <bean id="linkpicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:page"/>
         <property name="folderTypes" value="nt:folder"/>
-        <property name="toolbarSet" ref="file-picker"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <ref bean="org.jahia.toolbar.manager.documents.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="enableTextMenu" value="false"/>
         <property name="hideLeftPanel" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -359,7 +927,15 @@
     <bean id="mashuppicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:portlet"/>
         <property name="folderTypes" value="jnt:portletList"/>
-        <property name="toolbarSet" ref="mashup-picker"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <ref bean="org.jahia.toolbar.manager.mashups.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
@@ -407,7 +983,15 @@
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displayExt" value="false"/>
         <property name="displaySize" value="false"/>
-        <property name="toolbarSet" ref="category-picker"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <ref bean="org.jahia.toolbar.manager.categories.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
@@ -442,181 +1026,6 @@
 
     </bean>
 
-    <!-- file manager -->
-    <bean id="complete" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="nt:base"/>
-        <property name="folderTypes" value="nt:base"/>
-        <property name="enableTextMenu" value="true"/>
-        <property name="toolbarSet" ref="content-manager"/>
-        <property name="displaySearchInPage" value="false"/>
-        <property name="displaySearchInContent" value="true"/>
-        <property name="displaySearchInFile" value="true"/>
-        <property name="displaySearchInTag" value="true"/>
-        <!-- accordion -->
-        <property name="accordionPanels">
-            <list>
-                <ref bean="repository.global"/>
-            </list>
-        </property>
-
-        <!-- table columns-->
-        <property name="tableColumns">
-            <list>
-                <ref bean="column.providerKey"/>
-                <ref bean="column.icon"/>
-                <ref bean="column.name"/>
-                <ref bean="column.locked"/>
-                <ref bean="column.path"/>
-                <ref bean="column.size"/>
-                <ref bean="column.publicationInfo"/>
-                <ref bean="column.created"/>
-                <ref bean="column.createdBy"/>
-                <ref bean="column.lastModified"/>
-                <ref bean="column.lastModifiedBy"/>
-                <ref bean="column.lastPublished"/>
-                <ref bean="column.lastPublishedBy"/>
-            </list>
-        </property>
-        
-       <!-- tabs -->
-        <property name="tabs">
-            <list>
-                <ref bean="tab.roles"/>
-                <ref bean="tab.modes"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
-                <ref bean="tab.versioning"/>
-            </list>
-        </property>
-
-
-    </bean>
-
-    <!-- sitemanager manager -->
-    <bean id="sitemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="jnt:page"/>
-        <property name="folderTypes" value="jnt:page"/> 
-        <property name="enableTextMenu" value="true"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
-        <property name="allowCollections" value="true"/>
-        <property name="toolbarSet" ref="site-manager"/>
-        <property name="displaySearchInPage" value="true"/>
-        <property name="displaySearchInContent" value="false"/>
-        <property name="displaySearchInFile" value="false"/>
-        <property name="displaySearchInTag" value="true"/>
-        <property name="defaultView" value="1"/>
-
-
-        <!-- accordion -->
-        <property name="accordionPanels">
-            <list>
-                <ref bean="repository.site"/>
-            </list>
-        </property>
-
-         <!-- columns -->
-        <property name="tableColumns">
-            <list>
-                <ref bean="column.icon"/>
-                <ref bean="column.name"/>
-                <ref bean="column.locked"/>
-                <ref bean="column.lastModified"/>
-                <ref bean="column.lastModifiedBy"/>
-                <ref bean="column.publicationInfo"/>
-            </list>
-        </property>
-
-        <!-- tabs -->
-        <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
-                <ref bean="tab.versioning"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- file manager -->
-    <bean id="rolesmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="jnt:role"/>
-        <property name="folderTypes" value="jnt:role"/>
-        <property name="toolbarSet" ref="role-manager"/>
-
-        <property name="hideLeftPanel" value="true"/>
-        <property name="enableTextMenu" value="true"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
-        <property name="displaySearch" value="false"/>
-        <property name="expandRoot" value="true"/>
-        <property name="displaySearchInPage" value="false"/>
-        <property name="displaySearchInContent" value="false"/>
-        <property name="displaySearchInFile" value="false"/>
-        <property name="displaySearchInTag" value="false"/>
-        <property name="defaultView" value="1"/>
-
-        <!-- accordion panels-->
-        <property name="accordionPanels">
-            <list>
-                <ref bean="repository.role"/>
-            </list>
-        </property>
-        <!-- tabs -->
-        <property name="tabs">
-            <list>
-                <ref bean="tab.principalRolesMapping"/>
-            </list>
-        </property>
-        <!-- table columns-->
-        <property name="tableColumns">
-            <list>
-                <ref bean="column.name"/>
-            </list>
-        </property>
-    </bean>
-
-
-    <!-- file manager -->
-    <bean id="siterolesmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="jnt:role"/>
-        <property name="folderTypes" value="jnt:role"/>
-        <property name="toolbarSet" ref="role-manager"/>
-
-        <property name="hideLeftPanel" value="true"/>
-        <property name="enableTextMenu" value="true"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
-        <property name="displaySearch" value="false"/>
-        <property name="expandRoot" value="true"/>
-        <property name="displaySearchInPage" value="false"/>
-        <property name="displaySearchInContent" value="false"/>
-        <property name="displaySearchInFile" value="false"/>
-        <property name="displaySearchInTag" value="true"/>
-        <property name="defaultView" value="1"/>
-
-        <!-- accordion panels-->
-        <property name="accordionPanels">
-            <list>
-                <ref bean="repository.siteRole"/>
-            </list>
-        </property>
-        <!-- tabs -->
-        <property name="tabs">
-            <list>
-                <ref bean="tab.principalRolesMapping"/>
-            </list>
-        </property>
-        <!-- table columns-->
-        <property name="tableColumns">
-            <list>
-                <ref bean="column.name"/>
-            </list>
-        </property>
-
-    </bean>
 
     <!-- accordion -->
     <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
@@ -783,6 +1192,187 @@
 
     <bean id="column.lastPublishedBy" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
         <property name="key" value="lastPublishedBy"/>
+    </bean>
+
+    <!-- Category Manager -->
+    <bean id="org.jahia.toolbar.manager.categories.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                    <property name="layout" value="button"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="org.jahia.toolbar.item.newCategory"/>
+                            <ref bean="org.jahia.toolbar.item.Separator"/>
+                            <ref bean="org.jahia.toolbar.item.export"/>
+                            <ref bean="org.jahia.toolbar.item.import"/>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="toolbar/categories-shortcuts"/>
+            </bean>
+        </property>
+    </bean>
+    <!-- end of the Category Manager -->
+
+    <!-- Content Manager -->
+    <bean id="org.jahia.toolbar.manager.content.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                    <property name="layout" value="button"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="org.jahia.toolbar.item.createFolder"/>
+                            <ref bean="org.jahia.toolbar.item.newContentList"/>
+                            <ref bean="org.jahia.toolbar.item.createContent"/>
+                            <ref bean="org.jahia.toolbar.item.createPage"/>
+                            <ref bean="org.jahia.toolbar.item.newMashup"/>
+                            <ref bean="org.jahia.toolbar.item.newRss"/>
+                            <ref bean="org.jahia.toolbar.item.newGadget"/>
+                            <ref bean="org.jahia.toolbar.item.upload"/>
+                            <ref bean="org.jahia.toolbar.item.download"/>
+                            <ref bean="org.jahia.toolbar.item.webfolder"/>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="toolbar/content-shortcuts"/>
+            </bean>
+        </property>
+    </bean>
+    <!-- end of the Content Manager -->
+
+    <!-- Document Manager -->
+
+    <bean id="org.jahia.toolbar.manager.documents.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                    <property name="layout" value="button"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="org.jahia.toolbar.item.createFolder"/>
+                            <ref bean="org.jahia.toolbar.item.upload"/>
+                            <ref bean="org.jahia.toolbar.item.download"/>
+                            <ref bean="org.jahia.toolbar.item.preview"/>
+                            <ref bean="org.jahia.toolbar.item.webfolder"/>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="toolbar/documents-shortcuts"/>
+            </bean>
+        </property>
+    </bean>
+    <!-- end of the Document Manager -->
+
+    <!-- Mashup Manager -->
+    <bean id="org.jahia.toolbar.manager.mashups.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="contextMenu" value="true"/>
+        <property name="items">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                    <property name="layout" value="button"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="org.jahia.toolbar.item.createFolder"/>
+                            <ref bean="org.jahia.toolbar.item.newMashup"/>
+                            <ref bean="org.jahia.toolbar.item.newRss"/>
+                            <ref bean="org.jahia.toolbar.item.newGadget"/>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="toolbar/mashups-shortcuts"/>
+            </bean>
+        </property>
+    </bean>
+    <!-- end of the Mashup Manager -->
+
+    <!-- roles -->
+    <bean id="org.jahia.toolbar.manager.roles.menu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                    <property name="layout" value="menu"/>
+                    <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="org.jahia.toolbar.item.newRole"/>
+                            <ref bean="org.jahia.toolbar.item.Separator"/>
+                            <ref bean="org.jahia.toolbar.item.export"/>
+                            <ref bean="org.jahia.toolbar.item.import"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                    <property name="layout" value="menu"/>
+                    <property name="titleKey" value="label.edit"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="org.jahia.toolbar.item.rename"/>
+                            <ref bean="org.jahia.toolbar.item.delete"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="toolbar/roles-menu"/>
+            </bean>
+        </property>
+        <property name="contextMenu" value="true"/>
+    </bean>
+    <bean id="org.jahia.toolbar.manager.roles.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                    <property name="layout" value="button"/>
+                    <property name="items">
+                        <list>
+                            <ref bean="org.jahia.toolbar.item.newRole"/>
+                            <ref bean="org.jahia.toolbar.item.Separator"/>
+                            <ref bean="org.jahia.toolbar.item.export"/>
+                            <ref bean="org.jahia.toolbar.item.import"/>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
+                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+            </list>
+        </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                <property name="siteActionPermission" value="toolbar/roles-shortcuts"/>
+            </bean>
+        </property>
     </bean>
 
 </beans>

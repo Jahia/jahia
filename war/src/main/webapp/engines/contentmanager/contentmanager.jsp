@@ -46,7 +46,7 @@
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />
 	</head>
 	<body>
-		<internal:contentManager startPath="" enginemode="true" conf="complete"/>
+		<internal:contentManager startPath="" enginemode="true" conf="contentmanager"/>
         <internal:gwtGenerateDictionary/>        
 	</body>
 </html>

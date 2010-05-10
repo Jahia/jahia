@@ -37,19 +37,11 @@ package org.jahia.ajax.gwt.client.util.content.actions;
  */
 public class ManagerConfigurationFactory {
 
-    public static final String FILEMANAGER = "filemanager";
-    public static final String MASHUPMANAGER = "mashupmanager";
-    public static final String CATEGORYMANAGER = "categorymanager";
-    public static final String TAGMANAGER = "tagmanager";
-    public static final String PORTLETDEFINITIONMANAGER = "portletdefinitionmanager";
     public static final String FILEPICKER = "filepicker";
     public static final String CONTENTPICKER = "contentpicker";
     public static final String LINKPICKER = "linkpicker";
     public static final String MASHUPPICKER = "mashuppicker";
     public static final String CATEGORYPICKER = "categorypicker";
-    public static final String COMPLETE = "complete";
-    public static final String SITEMANAGER = "sitemanager";
     public static final String ROLESMANAGER = "rolesmanager";
-    public static final String SITEROLESMANAGER = "siterolesmanager";
 
 }

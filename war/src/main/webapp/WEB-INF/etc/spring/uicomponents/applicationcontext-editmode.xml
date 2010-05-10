@@ -4,6 +4,16 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
+    <bean name="editmodeEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="customEditors" >
+            <map>
+                <entry key="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTabPropertyEditor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
     <!-- studiomode -->
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="topToolbar">
@@ -73,26 +83,26 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="jmix:list"/>
                     <property name="tabs">
-                        <list>
-                            <ref bean="editenginestab.listOrderingContent"/>
-                            <ref bean="editenginestab.template"/>
-                            <ref bean="editenginestab.layout"/>
-                            <ref bean="editenginestab.options"/>
-                            <ref bean="editenginestab.rights"/>
-                            <ref bean="editenginestab.usages"/>
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>listOrderingContent</value>
+                            <value>template</value>
+                            <value>layout</value>
+                            <value>option</value>
+                            <value>rights</value>
+                            <value>usages</value>
                         </list>
                     </property>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
-                        <list>
-                            <ref bean="editenginestab.content"/>
-                            <ref bean="editenginestab.template"/>
-                            <ref bean="editenginestab.layout"/>
-                            <ref bean="editenginestab.options"/>
-                            <ref bean="editenginestab.rights"/>
-                            <ref bean="editenginestab.usages"/>
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>content</value>
+                            <value>template</value>
+                            <value>layout</value>
+                            <value>option</value>
+                            <value>rights</value>
+                            <value>usages</value>
                         </list>
                     </property>
                 </bean>
@@ -105,22 +115,22 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
-                        <list>
-                            <ref bean="editenginestab.createpage"/>
-                            <ref bean="editenginestab.template"/>
-                            <ref bean="editenginestab.options"/>
-                            <ref bean="editenginestab.rights"/>
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>createpage</value>
+                            <value>template</value>
+                            <value>option</value>
+                            <value>rights</value>
                         </list>
                     </property>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
-                        <list>
-                            <ref bean="editenginestab.content"/>
-                            <ref bean="editenginestab.template"/>
-                            <ref bean="editenginestab.layout"/>
-                            <ref bean="editenginestab.options"/>
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>content</value>
+                            <value>template</value>
+                            <value>layout</value>
+                            <value>option</value>
                         </list>
                     </property>
                 </bean>
@@ -129,7 +139,7 @@
 
         <!-- tabs-->
         <property name="tabs">
-            <list>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                 <ref bean="sidePanelTab.templates"/>
                 <ref bean="sidePanelTab.createContent"/>
                 <ref bean="sidePanelTab.content"/>
@@ -212,37 +222,37 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="jmix:list"/>
                     <property name="tabs">
-                        <list>
-                            <ref bean="editenginestab.listOrderingContent"/>
-                            <ref bean="editenginestab.template"/>
-                            <ref bean="editenginestab.layout"/>
-                            <ref bean="editenginestab.metadata"/>
-                            <ref bean="editenginestab.classification"/>
-                            <ref bean="editenginestab.options"/>
-                            <ref bean="editenginestab.rights"/>
-                            <ref bean="editenginestab.usages"/>
-                            <ref bean="editenginestab.publication"/>
-                            <ref bean="editenginestab.workflow"/>
-                            <ref bean="editenginestab.seo"/>
-                            <ref bean="editenginestab.analytics"/>
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>listOrderingContent</value>
+                            <value>template</value>
+                            <value>layout</value>
+                            <value>metadata</value>
+                            <value>classification</value>
+                            <value>options</value>
+                            <value>rights</value>
+                            <value>usages</value>
+                            <value>publication</value>
+                            <value>workflow</value>
+                            <value>seo</value>
+                            <value>analytics</value>
                         </list>
                     </property>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
-                        <list>
-                            <ref bean="editenginestab.content"/>
-                            <ref bean="editenginestab.layout"/>
-                            <ref bean="editenginestab.metadata"/>
-                            <ref bean="editenginestab.classification"/>
-                            <ref bean="editenginestab.options"/>
-                            <ref bean="editenginestab.rights"/>
-                            <ref bean="editenginestab.usages"/>
-                            <ref bean="editenginestab.publication"/>
-                            <ref bean="editenginestab.workflow"/>
-                            <ref bean="editenginestab.seo"/>
-                            <ref bean="editenginestab.analytics"/>
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>content</value>
+                            <value>layout</value>
+                            <value>metadata</value>
+                            <value>classification</value>
+                            <value>options</value>
+                            <value>rights</value>
+                            <value>usages</value>
+                            <value>publication</value>
+                            <value>workflow</value>
+                            <value>seo</value>
+                            <value>analytics</value>
                         </list>
                     </property>
                 </bean>
@@ -255,25 +265,25 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
-                        <list>
-                            <ref bean="editenginestab.createpage"/>
-                            <ref bean="editenginestab.metadata"/>
-                            <ref bean="editenginestab.classification"/>
-                            <ref bean="editenginestab.options"/>
-                            <ref bean="editenginestab.rights"/>
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>createpage</value>
+                            <value>metadata</value>
+                            <value>classification</value>
+                            <value>options</value>
+                            <value>rights</value>
                         </list>
                     </property>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
-                        <list>
-                            <ref bean="editenginestab.content"/>
-                            <ref bean="editenginestab.layout"/>
-                            <ref bean="editenginestab.metadata"/>
-                            <ref bean="editenginestab.classification"/>
-                            <ref bean="editenginestab.options"/>
-                            <ref bean="editenginestab.rights"/>
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>content</value>
+                            <value>layout</value>
+                            <value>metadata</value>
+                            <value>classification</value>
+                            <value>options</value>
+                            <value>rights</value>
                         </list>
                     </property>
                 </bean>
@@ -453,63 +463,6 @@
 
     <bean id="sidePanelTab.workflow" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="workflow"/>
-    </bean>
-
-    <!-- Engine tabs-->
-    <bean id="editenginestab.content" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="content"/>
-    </bean>
-
-    <bean id="editenginestab.listOrderingContent" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="listOrderingContent"/>
-    </bean>
-
-    <bean id="editenginestab.createpage" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="createPage"/>
-    </bean>
-
-    <bean id="editenginestab.template" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="template"/>
-    </bean>
-
-    <bean id="editenginestab.layout" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="layout"/>
-    </bean>
-
-    <bean id="editenginestab.options" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="option"/>
-    </bean>
-
-    <bean id="editenginestab.rights" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="rights"/>
-    </bean>
-
-    <bean id="editenginestab.usages" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="usages"/>
-    </bean>
-
-    <bean id="editenginestab.metadata" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="metadata"/>
-    </bean>
-
-    <bean id="editenginestab.classification" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="classification"/>
-    </bean>
-
-    <bean id="editenginestab.publication" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="publication"/>
-    </bean>
-
-    <bean id="editenginestab.workflow" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="workflow"/>
-    </bean>
-
-    <bean id="editenginestab.seo" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="seo"/>
-    </bean>
-
-    <bean id="editenginestab.analytics" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="analytics"/>
     </bean>
 
 

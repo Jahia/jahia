@@ -48,6 +48,8 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.uicomponents.bean.Visibility;
+import org.jahia.services.uicomponents.bean.contentmanager.Column;
+import org.jahia.services.uicomponents.bean.contentmanager.Repository;
 import org.jahia.services.uicomponents.bean.editmode.*;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.editmode.SidePanelTab;
@@ -550,7 +552,7 @@ public class UIConfigHelper {
                 gwtConfig.setToolbarSet(createGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, config.getToolbarSet()));
 
                 // add table columns
-                for (org.jahia.services.uicomponents.bean.contentmanager.Item item : config.getTableColumns()) {
+                for (Column item : config.getTableColumns()) {
                     if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
                         gwtConfig.addColumn(item.getKey());
                     }
@@ -565,7 +567,7 @@ public class UIConfigHelper {
                 }
 
                 // add accordion panels
-                for (org.jahia.services.uicomponents.bean.contentmanager.Item item : config.getAccordionPanels()) {
+                for (Repository item : config.getAccordionPanels()) {
                     if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
                         gwtConfig.addAccordion(item.getKey());
                     }

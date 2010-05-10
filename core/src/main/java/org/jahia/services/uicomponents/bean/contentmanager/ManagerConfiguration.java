@@ -20,8 +20,8 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     private String beanName;
     private boolean enableTextMenu;
 
-    private List<Item> tableColumns;
-    private List<Item> accordionPanels;
+    private List<Column> tableColumns;
+    private List<Repository> accordionPanels;
     private List<Item> tabs;
 
     private String selectedAccordion = null;
@@ -58,8 +58,8 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
 
     public ManagerConfiguration() {
-        tableColumns = new ArrayList<Item>();
-        accordionPanels = new ArrayList<Item>();
+        tableColumns = new ArrayList<Column>();
+        accordionPanels = new ArrayList<Repository>();
         tabs = new ArrayList<Item>();
     }
 
@@ -79,19 +79,19 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.hideLeftPanel = hide;
     }
 
-    public List<Item> getTableColumns() {
+    public List<Column> getTableColumns() {
         return tableColumns;
     }
 
-    public void setTableColumns(List<Item> tableColumns) {
+    public void setTableColumns(List<Column> tableColumns) {
         this.tableColumns = tableColumns;
     }
 
-    public List<Item> getAccordionPanels() {
+    public List<Repository> getAccordionPanels() {
         return accordionPanels;
     }
 
-    public void setAccordionPanels(List<Item> accordionPanels) {
+    public void setAccordionPanels(List<Repository> accordionPanels) {
         this.accordionPanels = accordionPanels;
     }
 

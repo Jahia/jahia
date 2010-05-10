@@ -4,6 +4,19 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
+    <bean name="managerEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="customEditors" >
+            <map>
+                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.ColumnPropertyEditor"/>
+                </entry>
+                <entry key="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <bean class="org.jahia.services.uicomponents.bean.contentmanager.RepositoryPropertyEditor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
     <!-- file manager -->
     <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint"/>
@@ -79,14 +92,22 @@
         </property>
         <!-- table columns-->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.providerKey"/>
-                <ref bean="column.icon"/>
-                <ref bean="column.name"/>
-                <ref bean="column.locked"/>
-                <ref bean="column.path"/>
-                <ref bean="column.size"/>
-                <ref bean="column.lastModified"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                    <property name="key" value="providerKey"/>
+                    <property name="visibility">
+                        <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
+                            <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
+                            <property name="alsoCountDynamicProviders" value="false"/>
+                        </bean>
+                    </property>
+                </bean>
+                <value>icon</value>
+                <value>name</value>
+                <value>locked</value>
+                <value>path</value>
+                <value>size</value>
+                <value>lastModified</value>
             </list>
         </property>
     </bean>
@@ -158,11 +179,11 @@
         </property>
         <!-- table columns-->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.name"/>
-                <ref bean="column.locked"/>
-                <ref bean="column.path"/>
-                <ref bean="column.lastModified"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name</value>
+                <value>locked</value>
+                <value>path</value>
+                <value>lastModified</value>
             </list>
         </property>
     </bean>
@@ -232,11 +253,11 @@
         </property>
         <!-- table columns-->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.icon"/>
-                <ref bean="column.name"/>
-                <ref bean="column.locked"/>
-                <ref bean="column.path"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon</value>
+                <value>name</value>
+                <value>locked</value>
+                <value>path</value>
             </list>
         </property>
     </bean>
@@ -332,12 +353,12 @@
         </property>
         <!-- table columns-->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.icon"/>
-                <ref bean="column.name"/>
-                <ref bean="column.count"/>
-                <ref bean="column.locked"/>
-                <ref bean="column.path"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon</value>
+                <value>name</value>
+                <value>count</value>
+                <value>locked</value>
+                <value>path</value>
             </list>
         </property>
 
@@ -423,8 +444,8 @@
         </property>
         <!-- table columns-->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.name"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name</value>
             </list>
         </property>
 
@@ -493,8 +514,8 @@
         </property>
         <!-- table columns-->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.name"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column"> 
+                <value>name</value>
             </list>
         </property>
 
@@ -571,20 +592,28 @@
 
         <!-- table columns-->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.providerKey"/>
-                <ref bean="column.icon"/>
-                <ref bean="column.name"/>
-                <ref bean="column.locked"/>
-                <ref bean="column.path"/>
-                <ref bean="column.size"/>
-                <ref bean="column.publicationInfo"/>
-                <ref bean="column.created"/>
-                <ref bean="column.createdBy"/>
-                <ref bean="column.lastModified"/>
-                <ref bean="column.lastModifiedBy"/>
-                <ref bean="column.lastPublished"/>
-                <ref bean="column.lastPublishedBy"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                    <property name="key" value="providerKey"/>
+                    <property name="visibility">
+                        <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
+                            <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
+                            <property name="alsoCountDynamicProviders" value="false"/>
+                        </bean>
+                    </property>
+                </bean>
+                <value>icon</value>
+                <value>name</value>
+                <value>locked</value>
+                <value>path</value>
+                <value>size</value>
+                <value>publicationInfo</value>
+                <value>created</value>
+                <value>createdBy</value>
+                <value>lastModified</value>
+                <value>lastModifiedBy</value>
+                <value>lastPublished</value>
+                <value>lastPublishedBy</value>
             </list>
         </property>
 
@@ -682,13 +711,13 @@
 
          <!-- columns -->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.icon"/>
-                <ref bean="column.name"/>
-                <ref bean="column.locked"/>
-                <ref bean="column.lastModified"/>
-                <ref bean="column.lastModifiedBy"/>
-                <ref bean="column.publicationInfo"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon</value>
+                <value>name</value>
+                <value>locked</value>
+                <value>lastModified</value>
+                <value>lastModifiedBy</value>
+                <value>publicationInfo</value>
             </list>
         </property>
 
@@ -745,8 +774,8 @@
         </property>
         <!-- table columns-->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.name"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name</value>
             </list>
         </property>
     </bean>
@@ -794,8 +823,8 @@
         </property>
         <!-- table columns-->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.name"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name</value>
             </list>
         </property>
 
@@ -947,9 +976,9 @@
         <property name="hideLeftPanel" value="true"/>
 
         <property name="tableColumns">
-            <list>
-                <ref bean="column.name"/>
-                <ref bean="column.picker"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name</value>
+                <value>picker</value>
             </list>
         </property>
 
@@ -1001,9 +1030,9 @@
 
         <!-- columns -->
         <property name="tableColumns">
-            <list>
-                <ref bean="column.name"/>
-                <ref bean="column.picker"/>
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name</value>
+                <value>picker</value>
             </list>
         </property>
 
@@ -1028,68 +1057,68 @@
 
 
     <!-- accordion -->
-    <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="globalRepository"/>
     </bean>
 
-    <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websiteRepository"/>
     </bean>
 
-    <bean id="repository.websitemahsup" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.websitemahsup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websiteMashupRepository"/>
     </bean>
 
-    <bean id="repository.shared" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.shared" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedRepository"/>
     </bean>
 
-    <bean id="repository.myexternal" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.myexternal" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myExternalRepository"/>
     </bean>
 
-    <bean id="repository.mymashup" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.mymashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myMashupRepository"/>
     </bean>
 
-    <bean id="repository.my" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.my" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myRepository"/>
     </bean>
 
-    <bean id="repository.users" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.users" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="usersRepository"/>
     </bean>
 
-    <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="categoryRepository"/>
     </bean>
 
-    <bean id="repository.tag" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.tag" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="tagRepository"/>
     </bean>
 
-    <bean id="repository.remotePublication" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.remotePublication" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
             <property name="key" value="remotePublicationsRepository"/>
    </bean>
 
 
-    <bean id="repository.role" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.role" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="roleRepository"/>
     </bean>
 
-    <bean id="repository.siteRole" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.siteRole" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRoleRepository"/>
     </bean>
 
-    <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRepository"/>
     </bean>
 
-    <bean id="repository.portletdefinition" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.portletdefinition" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="portletDefinitionRepository"/>
     </bean>
 
-    <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
+    <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedMashupRepository"/>
     </bean>
 
@@ -1125,73 +1154,6 @@
 
     <bean id="tab.modes" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
         <property name="key" value="modes"/>
-    </bean>
-
-    <!-- columns -->
-    <bean id="column.providerKey" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="providerKey"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
-                <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
-                <property name="alsoCountDynamicProviders" value="false"/>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="column.icon" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="icon"/>
-    </bean>
-
-    <bean id="column.name" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="name"/>
-    </bean>
-
-    <bean id="column.locked" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="locked"/>
-    </bean>
-
-    <bean id="column.path" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="path"/>
-    </bean>
-
-    <bean id="column.size" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="size"/>
-    </bean>
-
-    <bean id="column.lastModified" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="lastModified"/>
-    </bean>
-
-    <bean id="column.lastModifiedBy" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="lastModifiedBy"/>
-    </bean>
-
-    <bean id="column.publicationInfo" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="publicationInfo"/>
-    </bean>
-
-    <bean id="column.count" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="count"/>
-    </bean>
-
-    <bean id="column.picker" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="picker"/>
-    </bean>
-
-    <bean id="column.created" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="created"/>
-    </bean>
-
-    <bean id="column.createdBy" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="createdBy"/>
-    </bean>
-
-    <bean id="column.lastPublished" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="lastPublished"/>
-    </bean>
-
-    <bean id="column.lastPublishedBy" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="lastPublishedBy"/>
     </bean>
 
     <!-- Category Manager -->

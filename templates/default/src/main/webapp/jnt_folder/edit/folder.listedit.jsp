@@ -61,12 +61,23 @@
                     ${fn:escapeXml(child.fileContent.contentType)}
                 </c:if>
             </td>
-            <td><a href="${url.base}${child.path}.html"><c:if test="${!empty child.properties['jcr:title'].string}">
+            <td>                <c:if test="${jcr:isNodeType(child, 'jnt:folder')}">
+                <a href="${url.base}${child.path}.html"><c:if test="${!empty child.properties['jcr:title'].string}">
         ${fn:escapeXml(child.properties['jcr:title'].string)}
     </c:if>
         <c:if test="${empty child.properties['jcr:title'].string}">
         ${fn:escapeXml(child.name)}
     </c:if></a>
+                </c:if>
+                <c:if test="${!jcr:isNodeType(child, 'jnt:folder')}">
+                    <a href="${child.url}"><c:if test="${!empty child.properties['jcr:title'].string}">
+            ${fn:escapeXml(child.properties['jcr:title'].string)}
+        </c:if>
+            <c:if test="${empty child.properties['jcr:title'].string}">
+            ${fn:escapeXml(child.name)}
+        </c:if></a>
+                </c:if>
+
             </td>
             <td>
                 <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>

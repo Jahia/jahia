@@ -82,6 +82,12 @@
 .gwt-toolbar-icon-newcategory {
     background-image: url(../images/new-category.png) !important;
 }
+.gwt-toolbar-icon-newRemotePublication {
+    background-image: url(../images/new-remote-publication.png) !important;
+}
+.gwt-toolbar-icon-executeRemotePublication {
+    background-image: url(../images/execute-remote-publication.png) !important;
+}
 
 .gwt-toolbar-icon-newrssmashup {
     background-image: url(../images/new-rss-mashup.png) !important;

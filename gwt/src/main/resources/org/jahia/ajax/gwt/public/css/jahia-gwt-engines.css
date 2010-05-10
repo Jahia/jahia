@@ -12,23 +12,23 @@
 }
 
 .gwt-toolbar-icon-tableview {
-    background-image: url(../images/table.png) !important;
+    background-image: url(../images/table-view.png) !important;
 }
 
 .gwt-toolbar-icon-treetableview {
-    background-image: url(../images/treetable.png) !important;
+    background-image: url(../images/tree-table-view.png) !important;
 }
 
 .gwt-toolbar-icon-iconview {
-    background-image: url(../images/icons.png) !important;
+    background-image: url(../images/icon-view.png) !important;
 }
 
 .gwt-toolbar-icon-iconview-detailed {
-    background-image: url(../images/treetable.png) !important;
+    background-image: url(../images/icon-view-detailed.png) !important;
 }
 
 .gwt-toolbar-icon-templateview {
-    background-image: url(../images/template.png) !important;
+    background-image: url(../images/template-view.png) !important;
 }
 
 .gwt-toolbar-icon-addFile {
@@ -36,11 +36,11 @@
 }
 
 .gwt-toolbar-icon-addContent {
-    background-image: url(../images/add_content.png) !important;
+    background-image: url(../images/add-content.png) !important;
 }
 
 .gwt-toolbar-icon-addContentList {
-    background-image: url(../images/add_content_list.png) !important;
+    background-image: url(../images/add-content-list.png) !important;
 }
 
 .gwt-toolbar-icon-newfolder {
@@ -48,11 +48,11 @@
 }
 
 .gwt-toolbar-icon-newcontent {
-    background-image: url(../images/add_content.png) !important;
+    background-image: url(../images/add-content.png) !important;
 }
 
 .gwt-toolbar-icon-editcontent {
-    background-image: url(../images/edit.png) !important;
+    background-image: url(../images/edit-content.png) !important;
 }
 
 .gwt-toolbar-icon-publish {
@@ -64,31 +64,31 @@
 }
 
 .gwt-toolbar-icon-reversepublish {
-    background-image: url(../images/refresh.png) !important;
+    background-image: url(../images/reverse-publish.png) !important;
 }
 
 .gwt-toolbar-icon-newpage {
-    background-image: url(../images/page_add.png) !important;
+    background-image: url(../images/add-page.png) !important;
 }
 
 .gwt-toolbar-icon-viewpublishstatus {
-    background-image: url(../images/viewStatus.png) !important;
+    background-image: url(../images/view-publish-status.png) !important;
 }
 
 .gwt-toolbar-icon-newmashup {
-    background-image: url(../images/application_add.png) !important;
+    background-image: url(../images/new-mashup.png) !important;
 }
 
 .gwt-toolbar-icon-newcategory {
-    background-image: url(../images/add-file.png) !important;
+    background-image: url(../images/new-category.png) !important;
 }
 
 .gwt-toolbar-icon-newrssmashup {
-    background-image: url(../images/rss.gif) !important;
+    background-image: url(../images/new-rss-mashup.png) !important;
 }
 
 .gwt-toolbar-icon-newgooglegadgetmashup {
-    background-image: url(../images/google_gadget.png) !important;
+    background-image: url(../images/new-google-gadget-mashup.png) !important;
 }
 
 .gwt-toolbar-icon-remove {
@@ -167,6 +167,8 @@
     background-image: url(../images/export.png) !important;
 }
 
+
+
 .gwt-toolbar-icon-resize-bw {
     background-image: url(../images/disabled/resize.png) !important;
 }
@@ -184,19 +186,19 @@
 }
 
 .gwt-toolbar-icon-newcontent-bw {
-    background-image: url(../images/disabled/add-file.png) !important;
+    background-image: url(../images/disabled/add-content.png) !important;
 }
 
 .gwt-toolbar-icon-newmashup-bw {
-    background-image: url(../images/disabled/application_add.png) !important;
+    background-image: url(../images/disabled/new-mashup.png) !important;
 }
 
 .gwt-toolbar-icon-newrssmashup-bw {
-    background-image: url(../images/disabled/rss.gif) !important;
+    background-image: url(../images/disabled/new-rss-mashup.png) !important;
 }
 
 .gwt-toolbar-icon-newgooglegadgetmashup-bw {
-    background-image: url(../images/disabled/google_gadget.png) !important;
+    background-image: url(../images/disabled/new-google-gadget-mashup.png) !important;
 }
 
 .gwt-toolbar-icon-remove-bw {
@@ -275,24 +277,26 @@
     background-image: url(../images/disabled/export.png) !important;
 }
 
+
+
 .gwt-toolbar-icon-myRepository {
-    background-image: url(../images/home.png) !important;
+    background-image: url(../images/my-repository.png) !important;
 }
 
 .gwt-toolbar-icon-usersRepository {
-    background-image: url(../images/users.png) !important;
+    background-image: url(../images/users-repository.png) !important;
 }
 
 .gwt-toolbar-icon-myMashupRepository {
-    background-image: url(../images/home.png) !important;
+    background-image: url(../images/my-mashup-repository.png) !important;
 }
 
 .gwt-toolbar-icon-savedSearch {
-    background-image: url(../images/search.png) !important;
+    background-image: url(../images/saved-search.png) !important;
 }
 
 .gwt-toolbar-icon-myExternalRepository {
-    background-image: url(../images/ext-repository.png) !important;
+    background-image: url(../images/my-external-repository.png) !important;
 }
 
 .gwt-toolbar-icon-sharedRepository {
@@ -300,15 +304,15 @@
 }
 
 .gwt-toolbar-icon-sharedMashupRepository {
-    background-image: url(../images/shared-repository.png) !important;
+    background-image: url(../images/shared-mashup-repository.png) !important;
 }
 
 .gwt-toolbar-icon-websiteRepository {
-    background-image: url(../images/site-repository.png) !important;
+    background-image: url(../images/website-repository.png) !important;
 }
 
 .gwt-toolbar-icon-websiteMashupRepository {
-    background-image: url(../images/site-repository.png) !important;
+    background-image: url(../images/website-mashup-repository.png) !important;
 }
 
 .gwt-toolbar-icon-mashupRepository {
@@ -316,15 +320,15 @@
 }
 
 .gwt-toolbar-icon-globalRepository {
-    background-image: url(../images/repository.png) !important;
+    background-image: url(../images/global-repository.png) !important;
 }
 
 .gwt-toolbar-icon-saveAsSharedComponent {
-    background-image: url(../images/disk_blue.png) !important;
+    background-image: url(../images/save-as-shared-component.png) !important;
 }
 
 fm-globalMashupRepository {
-    background-image: url(../images/repository.png) !important;
+    background-image: url(../images/global-mashup-repository.png) !important;
 }
 
 .gwt-toolbar-icon-previewPane {
@@ -1005,7 +1009,7 @@ html>body .gwt-versionComparison-versionsPanel {
 
 /*categories picker*/
 .gwt-categoriespiker-icon-select {
-    background-image: url(../images/document_into.png) !important;
+    background-image: url(../images/categoriespiker-icon-select.png) !important;
 }
 
 /* date field */
@@ -1088,7 +1092,7 @@ html>body .gwt-versionComparison-versionsPanel {
 }
 
 .gwt-icon-newapp {
-    background-image: url(../images/application_add.png);
+    background-image: url(../images/add-application.png);
 }
 
 .ext-ux-wiz-Header {

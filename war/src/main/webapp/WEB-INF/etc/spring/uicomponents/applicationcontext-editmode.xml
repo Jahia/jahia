@@ -71,6 +71,19 @@
         <property name="editEngines">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
+                    <property name="nodeType" value="jmix:list"/>
+                    <property name="tabs">
+                        <list>
+                            <ref bean="editenginestab.listOrderingContent"/>
+                            <ref bean="editenginestab.template"/>
+                            <ref bean="editenginestab.layout"/>
+                            <ref bean="editenginestab.options"/>
+                            <ref bean="editenginestab.rights"/>
+                            <ref bean="editenginestab.usages"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list>

@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -902,8 +903,13 @@ public class NavigationHelper {
         if (folder.startsWith("system-")) {
             folder = "default";
         } else {
-            folder = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(folder)
-                    .getRootFolder();
+            final JahiaTemplatesPackage aPackage =
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(folder);
+            if (aPackage != null) {
+                folder = aPackage.getRootFolder();
+            } else {
+                folder = "default"; // todo handle portlets 
+            }
         }
         folder += "/icons/";
         return folder;

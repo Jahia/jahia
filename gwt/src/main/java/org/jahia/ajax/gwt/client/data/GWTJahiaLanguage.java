@@ -54,14 +54,6 @@ public class GWTJahiaLanguage extends BaseModelData {
         set("displayName", displayName);
     }
 
-    public String getCountryIsoCode() {
-        return get("countryIsoCode");
-    }
-
-    public void setCountryIsoCode(String countryIsoCode) {
-        set("countryIsoCode", countryIsoCode);
-    }
-
     public void setLanguage(String language) {
         set("language", language);
     }

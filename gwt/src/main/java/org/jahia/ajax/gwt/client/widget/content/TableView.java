@@ -76,7 +76,7 @@ public class TableView extends TopRightComponent {
 
     private static String[] STATE_IMAGES = new String[]{"000", "111", "121", "000", "000", "000"};
 
-    private static final GridCellRenderer<GWTJahiaNode> EXT_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
+    private static final GridCellRenderer<GWTJahiaNode> ICON_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
             return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
         }
@@ -333,7 +333,7 @@ public class TableView extends TopRightComponent {
             } else if ("icon".equals(columnName)) {
                 col = new ColumnConfig("icon", Messages.getResource("fm_column_type"), 40);
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
-                col.setRenderer(EXT_RENDERER);
+                col.setRenderer(ICON_RENDERER);
                 col.setSortable(true);
                 col.setResizable(true);
             } else if ("locked".equals(columnName)) {

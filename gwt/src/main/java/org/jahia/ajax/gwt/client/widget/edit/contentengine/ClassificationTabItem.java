@@ -6,7 +6,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.definition.ClassificationEditor;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.List;
 public class ClassificationTabItem extends EditEngineTabItem {
     private ClassificationEditor classificationEditor;
 
-    public ClassificationTabItem(AbstractContentEngine engine) {
+    public ClassificationTabItem(NodeHolder engine) {
         super(Messages.get("ece_classification", "Classification"), engine);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabClassification());
     }

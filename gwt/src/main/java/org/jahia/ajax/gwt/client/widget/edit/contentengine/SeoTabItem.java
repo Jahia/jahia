@@ -64,7 +64,7 @@ public class SeoTabItem extends EditEngineTabItem {
      * 
      * @param engine reference to the owner
      */
-    public SeoTabItem(AbstractContentEngine engine) {
+    public SeoTabItem(NodeHolder engine) {
         super(Messages.get("ece_seo", "SEO"), engine);
         editorsByLanguage = new HashMap<String, UrlMappingEditor>(1);
     }

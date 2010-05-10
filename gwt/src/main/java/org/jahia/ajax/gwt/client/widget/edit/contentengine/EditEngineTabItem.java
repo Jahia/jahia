@@ -12,15 +12,16 @@ import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class EditEngineTabItem extends AsyncTabItem {
-    protected AbstractContentEngine engine;
+    protected NodeHolder engine;
+    protected boolean toolbarEnabled;
 
-    protected EditEngineTabItem(AbstractContentEngine engine) {
+    protected EditEngineTabItem(NodeHolder engine) {
         this.engine = engine;
         setLayout(new FitLayout());
         setStyleName("x-panel-mc");
     }
 
-    protected EditEngineTabItem(String title, AbstractContentEngine engine) {
+    protected EditEngineTabItem(String title, NodeHolder engine) {
         super(title);
         this.engine = engine;
         setLayout(new FitLayout());
@@ -32,5 +33,12 @@ public abstract class EditEngineTabItem extends AsyncTabItem {
      */
     public abstract void create(GWTJahiaLanguage locale);
 
-    
+
+    public boolean handleMultipleSelection() {
+        return false;
+    }
+
+    public void setToolbarEnabled(boolean enabled) {
+        this.toolbarEnabled = enabled;
+    }
 }

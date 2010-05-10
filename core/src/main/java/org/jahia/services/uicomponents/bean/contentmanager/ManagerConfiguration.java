@@ -1,6 +1,7 @@
 package org.jahia.services.uicomponents.bean.contentmanager;
 
 import org.jahia.services.uicomponents.bean.contentmanager.Item;
+import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.toolbar.ToolbarSet;
 import org.springframework.beans.factory.BeanNameAware;
 
@@ -22,7 +23,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     private List<Column> tableColumns;
     private List<Repository> accordionPanels;
-    private List<Item> tabs;
+    private List<EngineTab> tabs;
 
     private String selectedAccordion = null;
     private boolean hideLeftPanel = false;
@@ -60,18 +61,18 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
         accordionPanels = new ArrayList<Repository>();
-        tabs = new ArrayList<Item>();
+        tabs = new ArrayList<EngineTab>();
     }
 
     public void setSelectedAccordion(String accordion) {
         selectedAccordion = accordion;
     }
 
-    public List<Item> getTabs() {
+    public List<EngineTab> getTabs() {
         return tabs;
     }
 
-    public void setTabs(List<Item> tabs) {
+    public void setTabs(List<EngineTab> tabs) {
         this.tabs = tabs;
     }
 

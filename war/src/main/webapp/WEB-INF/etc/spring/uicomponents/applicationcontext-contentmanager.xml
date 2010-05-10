@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean name="managerEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-        <property name="customEditors" >
+        <property name="customEditors">
             <map>
                 <entry key="org.jahia.services.uicomponents.bean.contentmanager.Column">
                     <bean class="org.jahia.services.uicomponents.bean.contentmanager.ColumnPropertyEditor"/>
@@ -83,11 +83,12 @@
         </property>
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
-                <ref bean="tab.versioning"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
+                <value>classification</value>
+                <value>versioning</value>
             </list>
         </property>
         <!-- table columns-->
@@ -171,10 +172,10 @@
         </property>
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
             </list>
         </property>
         <!-- table columns-->
@@ -245,10 +246,10 @@
         </property>
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
             </list>
         </property>
         <!-- table columns-->
@@ -346,9 +347,9 @@
         </property>
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>rights</value>
+                <value>usages</value>
             </list>
         </property>
         <!-- table columns-->
@@ -364,8 +365,9 @@
 
     </bean>
 
-        <!-- remote publication manager -->
-    <bean id="remotepublicationmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <!-- remote publication manager -->
+    <bean id="remotepublicationmanager"
+          class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:remotePublication"/>
         <property name="folderTypes" value="jnt:remotePublications"/>
         <property name="toolbarSet">
@@ -397,7 +399,8 @@
                                 <list>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
                                         <property name="layout" value="menu"/>
-                                        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                        <property name="titleKey"
+                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
                                                 <ref bean="org.jahia.toolbar.item.newRemotePublication"/>
@@ -438,8 +441,8 @@
         </property>
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.authorizations"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>rights</value>
             </list>
         </property>
         <!-- table columns-->
@@ -453,7 +456,8 @@
 
 
     <!-- portlet definition manager -->
-    <bean id="portletdefinitionmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="portletdefinitionmanager"
+          class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
 
         <property name="nodeTypes" value="jnt:portletDefinitions"/>
         <property name="folderTypes" value="nt:folder"/>
@@ -506,15 +510,15 @@
         </property>
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.portlets"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>portlets</value>
+                <value>rights</value>
+                <value>usages</value>
             </list>
         </property>
         <!-- table columns-->
         <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column"> 
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>name</value>
             </list>
         </property>
@@ -617,14 +621,21 @@
             </list>
         </property>
 
-       <!-- tabs -->
+        <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.roles"/>
-                <ref bean="tab.modes"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
-                <ref bean="tab.versioning"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>content</value>
+                <value>layout</value>
+                <value>metadata</value>
+                <value>classification</value>
+                <value>option</value>
+                <value>rights</value>
+                <value>usages</value>
+                <value>publication</value>
+                <value>workflow</value>
+                <value>seo</value>
+                <value>analytics</value>
             </list>
         </property>
 
@@ -709,7 +720,7 @@
             </list>
         </property>
 
-         <!-- columns -->
+        <!-- columns -->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon</value>
@@ -723,11 +734,13 @@
 
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
-                <ref bean="tab.versioning"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
+                <value>versioning</value>
+                <value>analytics</value>
+                <value>seo</value>
             </list>
         </property>
     </bean>
@@ -768,8 +781,8 @@
         </property>
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.principalRolesMapping"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>principalRolesMapping</value>
             </list>
         </property>
         <!-- table columns-->
@@ -817,8 +830,8 @@
         </property>
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.principalRolesMapping"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>principalRolesMapping</value>
             </list>
         </property>
         <!-- table columns-->
@@ -851,11 +864,11 @@
         <property name="displaySearchInTag" value="true"/>
 
         <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
-                <ref bean="tab.versioning"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
+                <value>versioning</value>
             </list>
         </property>
         <!-- accordion panels-->
@@ -892,11 +905,11 @@
 
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
-                <ref bean="tab.versioning"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
+                <value>versioning</value>
             </list>
         </property>
 
@@ -941,11 +954,11 @@
 
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
-                <ref bean="tab.versioning"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
+                <value>versioning</value>
             </list>
         </property>
 
@@ -995,10 +1008,10 @@
 
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
             </list>
         </property>
 
@@ -1045,10 +1058,10 @@
 
         <!-- tabs -->
         <property name="tabs">
-            <list>
-                <ref bean="tab.info"/>
-                <ref bean="tab.authorizations"/>
-                <ref bean="tab.usage"/>
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
             </list>
         </property>
 
@@ -1056,108 +1069,9 @@
     </bean>
 
 
-    <!-- accordion -->
-    <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="globalRepository"/>
-    </bean>
-
-    <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="websiteRepository"/>
-    </bean>
-
-    <bean id="repository.websitemahsup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="websiteMashupRepository"/>
-    </bean>
-
-    <bean id="repository.shared" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="sharedRepository"/>
-    </bean>
-
-    <bean id="repository.myexternal" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="myExternalRepository"/>
-    </bean>
-
-    <bean id="repository.mymashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="myMashupRepository"/>
-    </bean>
-
-    <bean id="repository.my" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="myRepository"/>
-    </bean>
-
-    <bean id="repository.users" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="usersRepository"/>
-    </bean>
-
-    <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="categoryRepository"/>
-    </bean>
-
-    <bean id="repository.tag" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="tagRepository"/>
-    </bean>
-
-    <bean id="repository.remotePublication" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-            <property name="key" value="remotePublicationsRepository"/>
-   </bean>
-
-
-    <bean id="repository.role" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="roleRepository"/>
-    </bean>
-
-    <bean id="repository.siteRole" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="siteRoleRepository"/>
-    </bean>
-
-    <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="siteRepository"/>
-    </bean>
-
-    <bean id="repository.portletdefinition" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="portletDefinitionRepository"/>
-    </bean>
-
-    <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="sharedMashupRepository"/>
-    </bean>
-
-
-    <!-- tab -->
-    <bean id="tab.info" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="info"/>
-    </bean>
-
-    <bean id="tab.principalRolesMapping" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="principalRolesMapping"/>
-    </bean>
-
-    <bean id="tab.authorizations" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="authorization"/>
-    </bean>
-
-    <bean id="tab.usage" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="usage"/>
-    </bean>
-
-    <bean id="tab.versioning" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="versioning"/>
-    </bean>
-
-    <bean id="tab.portlets" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="portlets"/>
-    </bean>
-
-    <bean id="tab.roles" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="roles"/>
-    </bean>
-
-    <bean id="tab.modes" class="org.jahia.services.uicomponents.bean.contentmanager.Item">
-        <property name="key" value="modes"/>
-    </bean>
-
     <!-- Category Manager -->
-    <bean id="org.jahia.toolbar.manager.categories.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+    <bean id="org.jahia.toolbar.manager.categories.shortcuts"
+          class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
         <property name="items">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
@@ -1220,7 +1134,8 @@
 
     <!-- Document Manager -->
 
-    <bean id="org.jahia.toolbar.manager.documents.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+    <bean id="org.jahia.toolbar.manager.documents.shortcuts"
+          class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
         <property name="items">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
@@ -1336,5 +1251,72 @@
             </bean>
         </property>
     </bean>
+
+
+    <!-- accordion -->
+    <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="globalRepository"/>
+    </bean>
+
+    <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="websiteRepository"/>
+    </bean>
+
+    <bean id="repository.websitemahsup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="websiteMashupRepository"/>
+    </bean>
+
+    <bean id="repository.shared" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="sharedRepository"/>
+    </bean>
+
+    <bean id="repository.myexternal" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="myExternalRepository"/>
+    </bean>
+
+    <bean id="repository.mymashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="myMashupRepository"/>
+    </bean>
+
+    <bean id="repository.my" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="myRepository"/>
+    </bean>
+
+    <bean id="repository.users" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="usersRepository"/>
+    </bean>
+
+    <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="categoryRepository"/>
+    </bean>
+
+    <bean id="repository.tag" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="tagRepository"/>
+    </bean>
+
+    <bean id="repository.remotePublication" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="remotePublicationsRepository"/>
+    </bean>
+
+    <bean id="repository.role" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="roleRepository"/>
+    </bean>
+
+    <bean id="repository.siteRole" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="siteRoleRepository"/>
+    </bean>
+
+    <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="siteRepository"/>
+    </bean>
+
+    <bean id="repository.portletdefinition" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="portletDefinitionRepository"/>
+    </bean>
+
+    <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="sharedMashupRepository"/>
+    </bean>
+
 
 </beans>

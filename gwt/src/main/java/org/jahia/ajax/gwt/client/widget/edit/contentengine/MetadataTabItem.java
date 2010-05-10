@@ -2,7 +2,6 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import java.util.Arrays;
 
@@ -14,7 +13,7 @@ import java.util.Arrays;
  * To change this template use File | Settings | File Templates.
  */
 public class MetadataTabItem extends PropertiesTabItem {
-    public MetadataTabItem(AbstractContentEngine engine) {
+    public MetadataTabItem(NodeHolder engine) {
         super(Messages.get("ece_metadata", "Metadata"), engine, GWTJahiaItemDefinition.METADATA);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabMetadata());
         excludedTypes = Arrays.asList("jmix:categorized", "jmix:tagged");

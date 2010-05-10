@@ -24,7 +24,7 @@ public class CreatePageTabItem extends PropertiesTabItem {
     protected List<GWTJahiaNode> reusable;
     protected ComboBox<GWTJahiaNode> combo;
 
-    public CreatePageTabItem(AbstractContentEngine engine) {
+    public CreatePageTabItem(NodeHolder engine) {
         super("Page infos",engine, GWTJahiaItemDefinition.CONTENT);
         setMultiLang(true);
     }

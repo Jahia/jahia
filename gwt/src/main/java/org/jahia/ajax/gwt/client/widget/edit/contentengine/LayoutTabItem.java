@@ -5,9 +5,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -17,7 +15,6 @@ import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +30,7 @@ public class LayoutTabItem extends PropertiesTabItem {
     private LayoutContainer wrapperPanel;
     private LayoutContainer htmlPreview;
 
-    public LayoutTabItem(AbstractContentEngine engine) {
+    public LayoutTabItem(NodeHolder engine) {
         super(Messages.get("ece_layout", "Layout"), engine, GWTJahiaItemDefinition.LAYOUT);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabLayout());
     }

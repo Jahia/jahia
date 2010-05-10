@@ -1,6 +1,9 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -22,7 +25,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 public class RightsTabItem extends EditEngineTabItem {
     private AclEditor rightsEditor;
 
-    public RightsTabItem(AbstractContentEngine engine) {
+    public RightsTabItem(NodeHolder engine) {
         super(Messages.get("ece_rights", "Rights"), engine);
     }
 
@@ -32,7 +35,7 @@ public class RightsTabItem extends EditEngineTabItem {
             setProcessed(true);
             final GWTJahiaNode node = engine.getNode();
             getACL(node);
-        } else if (engine.getParent() != null)  {
+        } else if (engine.getParentNode() != null)  {
             setProcessed(true);
             final GWTJahiaNode node = engine.getParentNode();
             getACL(node);
@@ -40,15 +43,17 @@ public class RightsTabItem extends EditEngineTabItem {
     }
 
     private void getACL(final GWTJahiaNode node) {
+        mask("Loading ACL ...");
         JahiaContentManagementService.App.getInstance().getACL(node.getPath(), new AsyncCallback<GWTJahiaNodeACL>() {
             /**
              * onsuccess
              * @param gwtJahiaNodeACL
              */
             public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
+                unmask();
                 // auth. editor
                 rightsEditor = new AclEditor(gwtJahiaNodeACL, node.getAclContext());
-                rightsEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL);
+                rightsEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL); //todo parameterize
                 rightsEditor.setCanBreakInheritance(false);
                 if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
                     rightsEditor.setReadOnly(true);
@@ -56,8 +61,12 @@ public class RightsTabItem extends EditEngineTabItem {
                     rightsEditor.setReadOnly(!node.isWriteable() || node.isLocked());
                 }
                 Button saveButton = rightsEditor.getSaveButton();
-                saveButton.setVisible(false);
-                //saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, AUTH_TAB_ITEM));
+                if (toolbarEnabled) {
+                    saveButton.setVisible(true);
+                    saveButton.addSelectionListener(new SaveAclSelectionListener(engine.getNode()));
+                }
+
+
                 setLayout(new FitLayout());
                 add(rightsEditor.renderNewAclPanel());
                 layout();
@@ -73,7 +82,32 @@ public class RightsTabItem extends EditEngineTabItem {
         });
     }
 
+    protected class SaveAclSelectionListener extends SelectionListener<ButtonEvent> {
+        private GWTJahiaNode selectedNode;
+        private GWTJahiaNodeACL acl;
+
+        private SaveAclSelectionListener(GWTJahiaNode selectedNode) {
+            this.selectedNode = selectedNode;
+            this.acl = rightsEditor.getAcl();
+        }
+
+        public void componentSelected(ButtonEvent event) {
+            JahiaContentManagementService.App.getInstance().setACL(selectedNode.getPath(), acl, new AsyncCallback() {
+                public void onSuccess(Object o) {
+                    Info.display("", "ACL saved");
+                    rightsEditor.setSaved();
+                }
+
+                public void onFailure(Throwable throwable) {
+                    Log.error("acl save failed", throwable);
+                }
+            });
+        }
+    }
+
+
     public AclEditor getRightsEditor() {
         return rightsEditor;
     }
+
 }

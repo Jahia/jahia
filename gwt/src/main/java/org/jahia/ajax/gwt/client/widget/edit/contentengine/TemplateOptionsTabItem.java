@@ -2,7 +2,6 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +11,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
  * To change this template use File | Settings | File Templates.
  */
 public class TemplateOptionsTabItem extends PropertiesTabItem {
-    public TemplateOptionsTabItem(AbstractContentEngine engine) {
+    public TemplateOptionsTabItem(NodeHolder engine) {
         super(Messages.get("ece_templates", "Template"), engine, GWTJahiaItemDefinition.TEMPLATE);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabOption());
     }

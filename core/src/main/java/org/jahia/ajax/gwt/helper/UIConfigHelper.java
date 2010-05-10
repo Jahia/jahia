@@ -559,7 +559,7 @@ public class UIConfigHelper {
                 }
 
                 // add tabs
-                for (org.jahia.services.uicomponents.bean.contentmanager.Item item : config.getTabs()) {
+                for (EngineTab item : config.getTabs()) {
                     if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
                         gwtConfig.addTab(item.getKey());
                     }

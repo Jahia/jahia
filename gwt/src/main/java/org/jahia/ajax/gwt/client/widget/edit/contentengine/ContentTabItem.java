@@ -8,10 +8,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,13 +25,13 @@ public class ContentTabItem extends PropertiesTabItem {
         return name;
     }
 
-    public ContentTabItem(AbstractContentEngine engine) {
+    public ContentTabItem(NodeHolder engine) {
         super(Messages.get("ece_content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
         setMultiLang(true);
     }
 
-    public ContentTabItem(AbstractContentEngine engine, boolean multilangue) {
+    public ContentTabItem(NodeHolder engine, boolean multilangue) {
         this(engine);
         setMultiLang(multilangue);
     }
@@ -96,5 +92,12 @@ public class ContentTabItem extends PropertiesTabItem {
      */
     public boolean isNodeNameFieldDisplayed() {
         return isNodeNameFieldDisplayed;
+    }
+
+    public void setProcessed(boolean processed) {
+        if (!processed) {
+            wrapperPanel = null;
+        }
+        super.setProcessed(processed);
     }
 }

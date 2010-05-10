@@ -4,7 +4,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
-import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -26,7 +25,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
     private AnalyticsDataVisualizer dataVisualizer;
     private GWTJahiaAnalyticsQuery lastQuery;
 
-    public AnalyticsTabItem(AbstractContentEngine engine) {
+    public AnalyticsTabItem(NodeHolder engine) {
         super(Messages.get("ece_analytics", "Analytics"), engine);
     }
 

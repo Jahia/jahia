@@ -228,7 +228,7 @@
                             <value>layout</value>
                             <value>metadata</value>
                             <value>classification</value>
-                            <value>options</value>
+                            <value>option</value>
                             <value>rights</value>
                             <value>usages</value>
                             <value>publication</value>
@@ -246,7 +246,7 @@
                             <value>layout</value>
                             <value>metadata</value>
                             <value>classification</value>
-                            <value>options</value>
+                            <value>option</value>
                             <value>rights</value>
                             <value>usages</value>
                             <value>publication</value>
@@ -269,7 +269,7 @@
                             <value>createpage</value>
                             <value>metadata</value>
                             <value>classification</value>
-                            <value>options</value>
+                            <value>option</value>
                             <value>rights</value>
                         </list>
                     </property>
@@ -282,7 +282,7 @@
                             <value>layout</value>
                             <value>metadata</value>
                             <value>classification</value>
-                            <value>options</value>
+                            <value>option</value>
                             <value>rights</value>
                         </list>
                     </property>

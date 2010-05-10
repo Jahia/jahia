@@ -21,6 +21,7 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ import java.util.Map;
  * Time: 1:57:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractContentEngine extends Window {
+public abstract class AbstractContentEngine extends Window implements NodeHolder {
     public static final int BUTTON_HEIGHT = 24;
 
     protected static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
@@ -239,6 +240,14 @@ public abstract class AbstractContentEngine extends Window {
 
     public boolean isExistingNode() {
         return existingNode;
+    }
+
+    public boolean isMultipleSelection() {
+        return false;
+    }
+
+    public List<GWTJahiaNode> getNodes() {
+        return Arrays.asList(node);
     }
 
     /**

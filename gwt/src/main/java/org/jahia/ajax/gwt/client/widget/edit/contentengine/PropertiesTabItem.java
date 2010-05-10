@@ -1,18 +1,25 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +37,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
     
 
 
-    protected PropertiesTabItem(String title, AbstractContentEngine engine, String dataType) {
+    protected PropertiesTabItem(String title, NodeHolder engine, String dataType) {
         super(title, engine);
         this.dataType = dataType;
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();
@@ -77,7 +84,9 @@ public class PropertiesTabItem extends EditEngineTabItem {
         if (!isMultiLang() && isProcessed()) {
             return;
         }
+        mask("Loading properties...");
         if (engine.getMixin() != null) {
+            unmask();
             boolean addSharedLangLabel = true;
             List<GWTJahiaNodeProperty> previousNon18nProperties = null;
 
@@ -128,6 +137,46 @@ public class PropertiesTabItem extends EditEngineTabItem {
 
             propertiesEditor.setVisible(true);
 
+            if (toolbarEnabled) {
+                ToolBar toolBar = new ToolBar();
+
+                propertiesEditor.setTopComponent(toolBar);
+
+                Button item = new Button(Messages.getResource("fm_save"));
+                item.setIconStyle("gwt-icons-save");
+                item.setEnabled(engine.getNode().isWriteable() && !engine.getNode().isLocked());
+                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent event) {
+                        final List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
+                        final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
+
+                        if (propertiesEditor != null) {
+                            //properties.addAll(pe.getProperties());
+                            for (GWTJahiaNode node : engine.getNodes()) {
+                                node.getNodeTypes().removeAll(propertiesEditor.getRemovedTypes());
+                                node.getNodeTypes().addAll(propertiesEditor.getAddedTypes());
+                                node.getNodeTypes().addAll(propertiesEditor.getTemplateTypes());
+                            }
+
+                            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(engine.getNodes(), null,
+                                    getLangPropertiesMap(true),propertiesEditor.getProperties(), new AsyncCallback() {
+                                        public void onFailure(Throwable throwable) {
+                                            Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                                            Log.error("failed", throwable);
+                                        }
+
+                                        public void onSuccess(Object o) {
+                                            Info.display("", "Properties saved");
+                                            //getLinker().refreshTable();
+                                        }
+                                    });
+                        }
+                    }
+                });
+                toolBar.add(new FillToolItem());
+                toolBar.add(item);
+            }
+
             layout();
         }
     }
@@ -168,5 +217,11 @@ public class PropertiesTabItem extends EditEngineTabItem {
         return mapProperties;
     }
 
-
+    public void setProcessed(boolean processed) {
+        if (!processed && langPropertiesEditorMap != null) {
+            langPropertiesEditorMap.clear();
+            propertiesEditor = null;
+        }
+        super.setProcessed(processed);
+    }
 }

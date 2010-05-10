@@ -5,7 +5,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.content.NodeUsagesGrid;
 
 import java.util.Arrays;
@@ -19,7 +18,7 @@ import java.util.Arrays;
  */
 public class UsagesTabItem extends EditEngineTabItem {
 
-    public UsagesTabItem(AbstractContentEngine engine) {
+    public UsagesTabItem(NodeHolder engine) {
         super(Messages.get("fm_usages", "Usages"), engine);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
     }

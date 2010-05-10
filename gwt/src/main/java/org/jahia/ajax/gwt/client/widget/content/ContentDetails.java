@@ -32,50 +32,33 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.content.versioning.VersioningPanel;
-import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.security.PrincipalRolePanel;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -84,26 +67,14 @@ import java.util.List;
  * @author rfelden
  * @version 23 juin 2008 - 16:15:46
  */
-public class ContentDetails extends BottomRightComponent {
+public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private GWTManagerConfiguration config;
     private ContentPanel m_component;
-    private AsyncTabItem infoTabItem;
-    private AsyncTabItem propertiesTabItem;
-    private AsyncTabItem portletsTabItem;
-    private AsyncTabItem authorizationsTabItem;
-    private AsyncTabItem portletRolesTabItem;
-    private AsyncTabItem modesTabItem;
-    private AsyncTabItem usagesTabItem;
-    private AsyncTabItem versioningTabItem;
-    private AsyncTabItem principalRoleTabItem;
-    private FlowPanel infoPanel;
     private TabPanel tabs;
-    private AclEditor modeAclEditor;
-    private AclEditor roleAclEditor;
-    private AclEditor authAclEditor;
-    private static int ROLES_TAB_ITEM = 1;
-    private static int MODES_TAB_ITEM = 2;
-    private static int AUTH_TAB_ITEM = 3;
+    private List<GWTJahiaNodeType> types;
+    private List<GWTJahiaNodeType> mixin;
+    private Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
+    private GWTJahiaLanguage language;
 
     private List<GWTJahiaNode> selectedNodes = null;
 
@@ -122,88 +93,11 @@ public class ContentDetails extends BottomRightComponent {
         tabs = new TabPanel();
         tabs.setBodyBorder(false);
         tabs.setBorders(false);
+        tabs.setAnimScroll(true);
+        tabs.setTabScroll(true);
 
-        // info
-        infoPanel = new FlowPanel();
-        infoPanel.addStyleName("infoPane");
-        infoTabItem = new AsyncTabItem();
-        infoTabItem.setText(Messages.getResource("fm_information"));
-        infoTabItem.add(infoPanel);
         // properties
-        propertiesTabItem = new AsyncTabItem();
-        propertiesTabItem.setLayout(new FitLayout());
-        propertiesTabItem.setText(Messages.getResource("fm_properties"));
-
-        // portlets
-        portletsTabItem = new AsyncTabItem();
-        portletsTabItem.setLayout(new FitLayout());
-        portletsTabItem.setText(Messages.get("fm_portlets", "Portlets"));
-
-        // roles
-        portletRolesTabItem = new AsyncTabItem();
-        portletRolesTabItem.setLayout(new FitLayout());
-        portletRolesTabItem.setText(Messages.getResource("fm_roles"));
-        portletRolesTabItem.setEnabled(false);
-
-        // modes
-        modesTabItem = new AsyncTabItem();
-        modesTabItem.setLayout(new FitLayout());
-        modesTabItem.setText(Messages.getResource("fm_modes"));
-        modesTabItem.setEnabled(false);
-
-        // authorizations
-        authorizationsTabItem = new AsyncTabItem();
-        authorizationsTabItem.setLayout(new FitLayout());
-        authorizationsTabItem.setText(Messages.getResource("fm_authorizations"));
-
-        // usage
-        usagesTabItem = new AsyncTabItem();
-        usagesTabItem.setText(Messages.getResource("fm_usages"));
-        usagesTabItem.setLayout(new FitLayout());
-
-        // versions
-        versioningTabItem = new AsyncTabItem();
-        versioningTabItem.setText("Versioning");
-        versioningTabItem.setLayout(new FitLayout());
-
-        // principale roles mapping
-        principalRoleTabItem = new AsyncTabItem();
-        principalRoleTabItem.setText(Messages.get("label_principalMapping", "Principal mapping"));
-        principalRoleTabItem.setLayout(new FitLayout());
-
-        // add all tabs
-        if (config.getTabs().contains(JCRClientUtils.INFO)) {
-            // tabs.add(infoTabItem);
-        }
-        tabs.add(infoTabItem);
-
-        if (config.getTabs().contains(JCRClientUtils.PRINCIPAL_ROLES_MAPPING)) {
-            tabs.add(principalRoleTabItem);
-        }
-        tabs.add(propertiesTabItem);
-
-        if (config.getTabs().contains(JCRClientUtils.ROLES_ACL)) {
-            tabs.add(portletRolesTabItem);
-        }
-        if (config.getTabs().contains("portlets")) {
-            tabs.add(portletsTabItem);
-        }
-        if (config.getTabs().contains(JCRClientUtils.MODES_ACL)) {
-            tabs.add(modesTabItem);
-        }
-
-
-        if (config.getTabs().contains(JCRClientUtils.AUTHORIZATIONS)) {
-            tabs.add(authorizationsTabItem);
-        }
-
-        if (config.getTabs().contains(JCRClientUtils.USAGE)) {
-            tabs.add(usagesTabItem);
-        }
-
-        if (config.getTabs().contains(JCRClientUtils.VERSIONING)) {
-            tabs.add(versioningTabItem);
-        }
+        initTabs();
 
         tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
@@ -216,6 +110,46 @@ public class ContentDetails extends BottomRightComponent {
         m_component.add(tabs);
     }
 
+
+    /**
+     * Creates and initializes all window tabs.
+     */
+    protected void initTabs() {
+        for (String tab : config.getTabs()) {
+            if (tab.equals("info")) {
+                tabs.add(new InfoTabItem(this));
+            } else if (tab.equals("content")) {
+                tabs.add(new ContentTabItem(this));
+            } else if (tab.equals("template")) {
+                tabs.add(new TemplateOptionsTabItem(this));
+            } else if (tab.equals("layout")) {
+                tabs.add(new LayoutTabItem(this));
+            } else if (tab.equals("metadata")) {
+                tabs.add(new MetadataTabItem(this));
+            } else if (tab.equals("classification")) {
+                tabs.add(new ClassificationTabItem(this));
+            } else if (tab.equals("option")) {
+                tabs.add(new OptionsTabItem(this));
+            } else if (tab.equals("rights")) {
+                tabs.add(new RightsTabItem(this));
+            } else if (tab.equals("usages")) {
+                tabs.add(new UsagesTabItem(this));
+            } else if (tab.equals("publication")) {
+                tabs.add(new PublicationTabItem(this));
+            } else if (tab.equals("workflow")) {
+                tabs.add(new WorkflowTabItem(this));
+            } else if (tab.equals("seo")) {
+                tabs.add(new SeoTabItem(this));
+            } else if (tab.equals("analytics")) {
+                tabs.add(new AnalyticsTabItem(this));
+            }
+        }
+        for (TabItem tabItem : tabs.getItems()) {
+            ((EditEngineTabItem)tabItem).setToolbarEnabled(true);
+        }
+    }
+
+
     public Component getComponent() {
         return m_component;
     }
@@ -223,38 +157,20 @@ public class ContentDetails extends BottomRightComponent {
 
     public void clear() {
         m_component.setHeading("&nbsp;");
-        infoPanel.clear();
-        propertiesTabItem.removeAll();
-        portletsTabItem.removeAll();
-        portletRolesTabItem.removeAll();
-        modesTabItem.removeAll();
-        authorizationsTabItem.removeAll();
-        usagesTabItem.removeAll();
-        versioningTabItem.removeAll();
-        principalRoleTabItem.removeAll();
         selectedNodes = null;
-        infoTabItem.setProcessed(false);
-        infoTabItem.setEnabled(false);
-        propertiesTabItem.setProcessed(false);
-        propertiesTabItem.setEnabled(false);
-        portletsTabItem.setProcessed(false);
-        portletsTabItem.setEnabled(false);
-        portletRolesTabItem.setProcessed(false);
-        portletRolesTabItem.setEnabled(false);
-        modesTabItem.setProcessed(false);
-        modesTabItem.setEnabled(false);
-        authorizationsTabItem.setProcessed(false);
-        authorizationsTabItem.setEnabled(false);
-        usagesTabItem.setProcessed(false);
-        usagesTabItem.setEnabled(false);
-        versioningTabItem.setProcessed(false);
-        versioningTabItem.setEnabled(false);
-        principalRoleTabItem.setProcessed(false);
-        principalRoleTabItem.setEnabled(false);
+        for (TabItem item : tabs.getItems()) {
+            ((EditEngineTabItem)item).setProcessed(false);
+            item.setEnabled(false);
+        }
     }
 
     public void fillData(Object selectedItem) {
         clear();
+
+        properties = null;
+        types = null;
+        mixin = null;
+
         if (selectedItem != null) {
             if (selectedItem instanceof GWTJahiaNode) {
                 selectedNodes = new ArrayList<GWTJahiaNode>();
@@ -282,31 +198,41 @@ public class ContentDetails extends BottomRightComponent {
             m_component.setHeading(heading);
 
             if (selectedNodes.size() == 1) {
-                infoTabItem.setEnabled(true);
-                propertiesTabItem.setEnabled(true);
-                portletsTabItem.setEnabled(true);
-                if (selectedNodes.get(0).isPortlet()) {
-                    modesTabItem.setEnabled(true);
-                    portletRolesTabItem.setEnabled(true);
-                } else {
-                    modesTabItem.setEnabled(false);
-                    portletRolesTabItem.setEnabled(false);
-                }
-                authorizationsTabItem.setEnabled(true);
-                usagesTabItem.setEnabled(true);
-                versioningTabItem.setEnabled(true);
-                principalRoleTabItem.setEnabled(true);
-            } else if (selectedNodes.size() > 1) {
-                infoTabItem.setEnabled(true);
-                propertiesTabItem.setEnabled(false);
-                portletsTabItem.setEnabled(false);
-                modesTabItem.setEnabled(false);
-                portletRolesTabItem.setEnabled(false);
-                authorizationsTabItem.setEnabled(false);
-                usagesTabItem.setEnabled(false);
-                versioningTabItem.setEnabled(false);
-                principalRoleTabItem.setEnabled(false);
+                JahiaContentManagementService.App.getInstance().getProperties(selectedNodes.get(0).getPath(), JahiaGWTParameters.getLanguage(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+                    public void onFailure(Throwable throwable) {
+                        Log.debug("Cannot get properties", throwable);
+                    }
 
+                    public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                        GWTJahiaNode node = result.getNode();
+                        types = result.getNodeTypes();
+                        properties = result.getProperties();
+                        language = result.getCurrentLocale();
+
+                        //todo : do this in one pass
+                        JahiaContentDefinitionService.App.getInstance().getAvailableMixin(node, new AsyncCallback<List<GWTJahiaNodeType>>() {
+                            public void onSuccess(List<GWTJahiaNodeType> result) {
+                                mixin = result;
+                                fillCurrentTab();
+                            }
+
+                            public void onFailure(Throwable caught) {
+
+                            }
+                        });
+
+                        fillCurrentTab();
+                    }
+                });
+                for (TabItem item : tabs.getItems()) {
+                    item.setEnabled(true);
+                }
+            } else if (selectedNodes.size() > 1) {
+                for (TabItem item : tabs.getItems()) {
+                    if (((EditEngineTabItem)item).handleMultipleSelection()) {
+                        item.setEnabled(true);
+                    }
+                }
             }
 
 
@@ -317,578 +243,45 @@ public class ContentDetails extends BottomRightComponent {
 
     private void fillCurrentTab() {
         TabItem currentTab = tabs.getSelectedItem();
-        if (!currentTab.isEnabled()) {
-            currentTab = infoTabItem;
-            tabs.setSelection(currentTab);
-        }
-        if (currentTab == infoTabItem) {
-            displayInfo();
-        } else if (currentTab == propertiesTabItem) {
-            displayProperties();
-        } else if (currentTab == portletsTabItem) {
-            displayPortlets();
-        } else if (currentTab == portletRolesTabItem) {
-            displayRoles();
-        } else if (currentTab == modesTabItem) {
-            displayModes();
-        } else if (currentTab == authorizationsTabItem) {
-            displayAuthorization();
-        } else if (currentTab == usagesTabItem) {
-            displayFileUsages();
-        } else if (currentTab == versioningTabItem) {
-            displayVersioning();
-        } else if (currentTab == principalRoleTabItem) {
-            displayPrincipalRole();
-        }
-    }
 
-    /**
-     * Display portlets
-     */
-    private void displayPortlets() {
-        if (!portletsTabItem.isProcessed() && selectedNodes.size() == 1) {
-
-            final ListStore<GWTJahiaPortletDefinition> store = new ListStore<GWTJahiaPortletDefinition>();
-            JahiaContentManagementService.App.getInstance().searchPortlets(selectedNodes.get(0).getUUID(), new AsyncCallback<List<GWTJahiaPortletDefinition>>() {
-                public void onSuccess(List<GWTJahiaPortletDefinition> result) {
-                    store.add(result);
-                }
-
-                public void onFailure(Throwable caught) {
-                    // do nothing
-                }
-            });
-
-            List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-            columns.add(new ColumnConfig("displayName", Messages.getNotEmptyResource("mw_name", "Name"), 170));
-            columns.add(new ColumnConfig("description", Messages.getNotEmptyResource("mw_description", "Description"), 330));
-
-            ColumnModel cm = new ColumnModel(columns);
-            com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaPortletDefinition> grid = new com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaPortletDefinition>(store, cm);
-            grid.setBorders(true);
-
-            ContentPanel panel = new ContentPanel();
-            panel.setLayout(new FitLayout());
-            panel.setHeaderVisible(false);
-            panel.setBodyBorder(false);
-            panel.setBorders(false);
-            panel.setFrame(false);
-            panel.setCollapsible(false);
-            panel.setButtonAlign(Style.HorizontalAlignment.CENTER);
-            panel.add(grid);
-            portletsTabItem.add(panel);
-            portletsTabItem.setProcessed(true);
-            portletsTabItem.layout();
-        }
-    }
-
-    // INFO TAB
-
-    public void displayInfo() {
-        if (!infoTabItem.isProcessed()) {
-            Grid g = new Grid(1, 2);
-            g.setCellSpacing(10);
-            FlowPanel flowPanel = new FlowPanel();
-
-            if (selectedNodes.size() == 1) {
-                final GWTJahiaNode selectedNode = selectedNodes.get(0);
-
-                if (!infoTabItem.isProcessed()) {
-
-                    String preview = selectedNode.getPreview();
-                    if (preview != null) {
-                        g.setWidget(0, 0, new Image(preview));
-                    }
-                    String name = selectedNode.getName();
-                    if (name != null) {
-                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_name") + ":</b> " + name));
-                    }
-                    String path = selectedNode.getPath();
-                    if (path != null) {
-                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_path") + ":</b> " + path));
-                    }
-                    String id = selectedNode.getUUID();
-                    if (id != null) {
-                        flowPanel.add(new HTML("<b>" + Messages.get("fm_info_uuid", "ID") + ":</b> " + id));
-                    }
-                    if (config.isDisplaySize() && selectedNode.isFile()) {
-                        Long s = selectedNode.getSize();
-                        if (s != null) {
-                            flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_size") + ":</b> " + Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
-                        }
-                    }
-                    if (config.isDisplayDate()) {
-                        Date date = selectedNode.getLastModified();
-                        if (date != null) {
-                            flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lastModif") + ":</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
-                        }
-                    }
-                    if (config.isDisplayLock() && selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
-                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lock") + ":</b> " + selectedNode.getLockOwner()));
-                    }
-
-                    flowPanel.add(new HTML("<b>Types:</b> "+ selectedNode.getNodeTypes()));
-                    flowPanel.add(new HTML("<b>Tags:</b> "+ selectedNode.getTags()));
-                }
-            } else {
-                int numberFiles = 0;
-                int numberFolders = 0;
-                long size = 0;
-
-                for (GWTJahiaNode selectedNode : selectedNodes) {
-                    if (selectedNode.isFile()) {
-                        numberFiles++;
-                        size += selectedNode.getSize();
-                    } else {
-                        numberFolders++;
-                    }
-                }
-                flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_nbFiles") + " :</b> " + numberFiles));
-                flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_nbFolders") + " :</b> " + numberFolders));
-                flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_totalSize") + " :</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedSize(size)));
-            }
-            g.setWidget(0, 1, flowPanel);
-            infoPanel.add(g);
-            infoTabItem.setProcessed(true);
-        }
-
-    }
-
-    /**
-     * Display properties
-     */
-    public void displayProperties() {
-        if (!propertiesTabItem.isProcessed()) {
-            if (selectedNodes.size() == 1) {
-                final GWTJahiaNode selectedNode = selectedNodes.get(0);
-                if (getLinker() != null) {
-                    getLinker().loading("collecting properties...");
-                }
-
-                service.getProperties(selectedNode.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-                    public void onFailure(Throwable throwable) {
-                        Log.debug("Cannot get properties", throwable);
-                    }
-
-                    public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                        final List<GWTJahiaNode> elements = new ArrayList<GWTJahiaNode>();
-                        elements.add(selectedNode);
-
-                        List<String> list = new ArrayList<String>();
-                        list.add("jcr:content");
-                        list.add("j:thumbnail");
-                        final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, null, list, null, selectedNode.isWriteable(), false);
-
-                        ToolBar toolBar = new ToolBar();
-                        propertiesEditor.setTopComponent(toolBar);
-
-                        Button item = new Button(Messages.getResource("fm_save"));
-                        item.setIconStyle("gwt-icons-save");
-                        item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
-                        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                            public void componentSelected(ButtonEvent event) {
-                                JahiaContentManagementService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
-                                    public void onFailure(Throwable throwable) {
-                                        Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                        Log.error("failed", throwable);
-                                    }
-
-                                    public void onSuccess(Object o) {
-                                        Info.display("", "Properties saved");
-                                        //getLinker().refreshTable();
-                                    }
-                                });
-                            }
-                        });
-                        toolBar.add(new FillToolItem());
-                        toolBar.add(item);
-                        item = new Button(Messages.getResource("fm_restore"));
-                        item.setIconStyle("gwt-icons-restore");
-                        item.setEnabled(selectedNode.isWriteable() && !selectedNode.isLocked());
-
-                        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                            public void componentSelected(ButtonEvent event) {
-                                propertiesEditor.resetForm();
-                            }
-                        });
-                        toolBar.add(item);
-                        toolBar.setVisible(true);
-                        propertiesTabItem.add(propertiesEditor);
-
-                        m_component.layout();
-
-                        propertiesTabItem.setProcessed(true);
-                        if (getLinker() != null) {
-                            getLinker().loaded();
-                        }
-                    }
-                });
-            } else {
-                if (getLinker() != null) {
-                    getLinker().loading("collecting properties...");
-                }
-
-                List<String> nodeTypes = new ArrayList<String>();
-
-                boolean writeable = true;
-                for (GWTJahiaNode selectedNode : selectedNodes) {
-                    for (String nodeType : selectedNode.getNodeTypes()) {
-                        if (!nodeTypes.contains(nodeType)) {
-                            nodeTypes.add(nodeType);
-                        }
-                    }
-                    writeable &= selectedNode.isWriteable() && !selectedNode.isLocked();
-                }
-                final boolean w = writeable;
-                cDefService.getNodeTypes(nodeTypes, new AsyncCallback<List<GWTJahiaNodeType>>() {
-                    public void onFailure(Throwable throwable) {
-                        Log.debug("Cannot get properties", throwable);
-                    }
-
-                    public void onSuccess(List<GWTJahiaNodeType> gwtJahiaNodeTypes) {
-                        final PropertiesEditor propertiesEditor = new PropertiesEditor(gwtJahiaNodeTypes, true, true);
-
-                        ToolBar toolBar = new ToolBar();
-                        propertiesEditor.setTopComponent(toolBar);
-
-                        Button item = new Button(Messages.getResource("fm_save"));
-                        item.setEnabled(w);
-                        item.setIconStyle("fm-save");
-                        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                            public void componentSelected(ButtonEvent event) {
-                                JahiaContentManagementService.App.getInstance().saveProperties(selectedNodes, propertiesEditor.getProperties(), new AsyncCallback() {
-                                    public void onFailure(Throwable throwable) {
-                                        Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                        Log.error("failed", throwable);
-                                    }
-
-                                    public void onSuccess(Object o) {
-                                        Info.display("", "Properties saved");
-                                        //getLinker().refreshTable();
-                                    }
-                                });
-                            }
-                        });
-                        toolBar.add(item);
-                        item = new Button(Messages.getResource("fm_restore"));
-                        item.setEnabled(w);
-                        item.setIconStyle("fm-restore");
-                        item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                            public void componentSelected(ButtonEvent event) {
-                                propertiesEditor.resetForm();
-                            }
-                        });
-                        toolBar.add(item);
-                        toolBar.setVisible(true);
-
-                        propertiesTabItem.add(propertiesEditor);
-
-                        m_component.layout();
-                        propertiesTabItem.setProcessed(true);
-                        if (getLinker() != null) {
-                            getLinker().loaded();
-                        }
-                    }
-                });
+        if (currentTab instanceof EditEngineTabItem) {
+            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab;
+            if (!engineTabItem.isProcessed()) {
+                engineTabItem.create(language);
+                m_component.layout();
             }
         }
     }
 
-    // ACL TAB
-
-    private void renderRoles() {
-        if (!roleAclEditor.isEmpty()) {
-            portletRolesTabItem.setEnabled(true);
-            portletRolesTabItem.add(roleAclEditor.renderNewAclPanel());
-        } else {
-            portletRolesTabItem.setEnabled(false);
-        }
-        portletRolesTabItem.layout();
+    public List<GWTJahiaNodeType> getNodeTypes() {
+        return types;
     }
 
-
-    private void renderModes() {
-        if (!modeAclEditor.isEmpty()) {
-            modesTabItem.setEnabled(true);
-            modesTabItem.add(modeAclEditor.renderNewAclPanel());
-        } else {
-            modesTabItem.setEnabled(false);
-        }
-        modesTabItem.layout();
+    public List<GWTJahiaNodeType> getMixin() {
+        return mixin;
     }
 
-
-    private void renderAuthorization() {
-        authorizationsTabItem.add(authAclEditor.renderNewAclPanel());
-        authorizationsTabItem.layout();
+    public GWTJahiaNode getNode() {
+        return selectedNodes.get(0);
     }
 
-
-    public void displayRoles() {
-        if (selectedNodes.size() == 1) {
-            final GWTJahiaNode selectedNode = selectedNodes.get(0);
-            if (!portletRolesTabItem.isProcessed()) {
-                if (getLinker() != null) {
-                    getLinker().loading("collecting roles acls...");
-                }
-                service.getACL(selectedNode.getPath(), new AsyncCallback<GWTJahiaNodeACL>() {
-                    /**
-                     * onsuccess
-                     * @param gwtJahiaNodeACL
-                     */
-                    public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
-                        // auth. editor
-                        roleAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext(), false);
-                        roleAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_roles", "Add group-role mapping"));
-                        roleAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_roles", "Add user-role mapping"));
-                        roleAclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
-                        roleAclEditor.setCanBreakInheritance(false);
-                        roleAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
-                        Button saveButton = roleAclEditor.getSaveButton();
-                        saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, ROLES_TAB_ITEM));
-                        renderRoles();
-                        portletRolesTabItem.setProcessed(true);
-
-                        if (getLinker() != null) {
-                            getLinker().loaded();
-                        }
-                    }
-
-                    /**
-                     * On failure
-                     * @param throwable
-                     */
-                    public void onFailure(Throwable throwable) {
-                        Log.debug("Cannot retrieve acl", throwable);
-                    }
-
-                });
-            }
-        }
+    public List<GWTJahiaNode> getNodes() {
+        return selectedNodes;
     }
 
-    public void displayModes() {
-        if (selectedNodes.size() == 1) {
-            final GWTJahiaNode selectedNode = selectedNodes.get(0);
-            if (!modesTabItem.isProcessed()) {
-                if (getLinker() != null) {
-                    getLinker().loading("collecting modes...");
-                }
-                service.getACL(selectedNode.getPath(), new AsyncCallback<GWTJahiaNodeACL>() {
-                    /**
-                     * onsuccess
-                     * @param gwtJahiaNodeACL
-                     */
-                    public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
-                        // auth. editor
-                        modeAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext(), false);
-                        modeAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_modes", "Add group-mode mapping"));
-                        modeAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_modes", "Add user-mode mapping"));
-                        modeAclEditor.setAclGroup(JCRClientUtils.MODES_ACL);
-                        modeAclEditor.setCanBreakInheritance(false);
-                        modeAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
-                        Button saveButton = modeAclEditor.getSaveButton();
-                        saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, MODES_TAB_ITEM));
-                        renderModes();
-                        modesTabItem.setProcessed(true);
-
-                        if (getLinker() != null) {
-                            getLinker().loaded();
-                        }
-
-                    }
-
-                    /**
-                     * On failure
-                     * @param throwable
-                     */
-                    public void onFailure(Throwable throwable) {
-                        Log.debug("Cannot retrieve acl", throwable);
-                    }
-
-                });
-            }
-        }
+    public GWTJahiaNode getParentNode() {
+        return null;
     }
 
-    public void displayAuthorization() {
-        if (selectedNodes.size() == 1) {
-            final GWTJahiaNode selectedNode = selectedNodes.get(0);
-            if (!authorizationsTabItem.isProcessed()) {
-                if (getLinker() != null) {
-                    getLinker().loading("collecting authorization acls...");
-                }
-                service.getACL(selectedNode.getPath(), new AsyncCallback<GWTJahiaNodeACL>() {
-                    /**
-                     * onsuccess
-                     * @param gwtJahiaNodeACL
-                     */
-                    public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
-                        // auth. editor
-                        authAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext());
-                        authAclEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL);
-                        authAclEditor.setCanBreakInheritance(false);
-                        if (!(selectedNode.getProviderKey().equals("default") || selectedNode.getProviderKey().equals("jahia"))) {
-                            authAclEditor.setReadOnly(true);
-                        } else {
-                            authAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
-                        }
-                        Button saveButton = authAclEditor.getSaveButton();
-                        saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, AUTH_TAB_ITEM));
-                        renderAuthorization();
-                        authorizationsTabItem.setProcessed(true);
-
-                        if (getLinker() != null) {
-                            getLinker().loaded();
-                        }
-                    }
-
-                    /**
-                     * On failure
-                     * @param throwable
-                     */
-                    public void onFailure(Throwable throwable) {
-                        Log.debug("Cannot retrieve acl", throwable);
-                    }
-
-                });
-            }
-        }
+    public boolean isExistingNode() {
+        return true;
     }
 
-    // FILE USAGES TAB
-
-    public void displayFileUsages() {
-        if (!usagesTabItem.isProcessed()) {
-
-            final com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> tbl = NodeUsagesGrid.createUsageGrid(selectedNodes);
-            usagesTabItem.add(tbl);
-            usagesTabItem.setProcessed(true);
-            usagesTabItem.layout();
-        }
+    public boolean isMultipleSelection() {
+        return selectedNodes.size() > 1;
     }
 
-    protected class SaveAclSelectionListener extends SelectionListener<ButtonEvent> {
-        private GWTJahiaNode selectedNode;
-        private GWTJahiaNodeACL acl;
-        private int flag;
-
-        private SaveAclSelectionListener(GWTJahiaNode selectedNode, int flag) {
-            this.selectedNode = selectedNode;
-            this.flag = flag;
-            if (flag == ROLES_TAB_ITEM) {
-                this.acl = roleAclEditor.getAcl();
-            } else if (flag == MODES_TAB_ITEM) {
-                this.acl = modeAclEditor.getAcl();
-            } else if (flag == AUTH_TAB_ITEM) {
-                this.acl = authAclEditor.getAcl();
-            }
-        }
-
-        public void componentSelected(ButtonEvent event) {
-            JahiaContentManagementService.App.getInstance().setACL(selectedNode.getPath(), acl, new AsyncCallback() {
-                public void onSuccess(Object o) {
-                    if (flag == ROLES_TAB_ITEM) {
-                        roleAclEditor.setSaved();
-                    } else if (flag == MODES_TAB_ITEM) {
-                        modeAclEditor.setSaved();
-                    } else if (flag == AUTH_TAB_ITEM) {
-                        authAclEditor.setSaved();
-                    }
-                    //getLinker().getTopRightObject().refresh(); // refresh should not be needed
-                }
-
-                public void onFailure(Throwable throwable) {
-                    Log.error("acl save failed", throwable);
-                }
-
-
-            });
-
-        }
+    public Map<String, GWTJahiaNodeProperty> getProperties() {
+        return properties;
     }
-
-    /**
-     * Display versioning
-     */
-    public void displayVersioning() {
-        if (selectedNodes.size() == 1) {
-            final GWTJahiaNode selectedNode = selectedNodes.get(0);
-            if (!versioningTabItem.isProcessed()) {
-                if (selectedNode.isVersioned()) {
-                    VersioningPanel versionPanel = new VersioningPanel(selectedNode, config.isEnableFileDoubleClick()) {
-                        @Override
-                        public void onRowDoubleClick(GWTJahiaNodeVersion version) {
-                            if (config.isEnableFileDoubleClick()) {
-                                if (getSelectedNode().isDisplayable()) {
-                                    ImagePopup.popImage(version.getNode());
-                                } else {
-                                    ContentActions.download(getLinker(), version.getNode(), version.getNode().getUrl());
-                                }
-                            }
-                        }
-
-
-                        @Override
-                        public void afterRestore() {
-                            getLinker().refreshTable();
-                        }
-                    };
-
-                    versioningTabItem.add(versionPanel);
-                } else {
-                    versioningTabItem.setLayout(new FlowLayout());
-                    versioningTabItem.add(new Text("File is not versioned yet"));
-                    com.extjs.gxt.ui.client.widget.button.Button button = new com.extjs.gxt.ui.client.widget.button.Button("Activate versioning");
-
-                    button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                        public void componentSelected(ButtonEvent event) {
-                            List<String> list = new ArrayList<String>();
-                            list.add(selectedNode.getPath());
-                            service.activateVersioning(list, new AsyncCallback() {
-                                public void onFailure(Throwable caught) {
-                                    Window.alert("failure");
-                                }
-
-                                public void onSuccess(Object result) {
-                                    selectedNode.getNodeTypes().add("mix:versionable");
-                                    versioningTabItem.removeAll();
-                                    versioningTabItem.setProcessed(false);
-                                    versioningTabItem.setLayout(new FitLayout());
-                                    TabItem currentTab = tabs.getSelectedItem();
-                                    if (currentTab == versioningTabItem) {
-                                        displayVersioning();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                    versioningTabItem.add(button);
-                }
-                versioningTabItem.setProcessed(true);
-                versioningTabItem.layout();
-            }
-        }
-    }
-
-    /**
-     * Display principal mapping
-     */
-    public void displayPrincipalRole() {
-        if (selectedNodes.size() == 1) {
-            final GWTJahiaNode selectedNode = selectedNodes.get(0);
-            if (!principalRoleTabItem.isProcessed()) {
-                String path = selectedNode.getPath();
-                String site = path.startsWith("/sites/") ? path.substring("/sites/".length(), path.indexOf("/", "/sites/".length())) : null;
-                PrincipalRolePanel principalRolePanel = new PrincipalRolePanel(new GWTJahiaRole(selectedNode.getName(), site));
-
-                principalRoleTabItem.add(principalRolePanel);
-                principalRoleTabItem.setProcessed(true);
-                principalRoleTabItem.layout();
-
-            }
-        }
-    }
-
-
 }

@@ -2,7 +2,6 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +11,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
  * To change this template use File | Settings | File Templates.
  */
 public class PublicationTabItem extends PropertiesTabItem {
-    public PublicationTabItem(AbstractContentEngine engine) {
+    public PublicationTabItem(NodeHolder engine) {
         super(Messages.get("ece_publication", "Publication"), engine, GWTJahiaItemDefinition.CACHE);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabPublication());
     }

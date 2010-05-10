@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -67,7 +68,8 @@ import java.util.Date;
 public class SearchGrid extends ContentPanel {
 
     //private ContentPanel m_component;
-    private Grid<GWTJahiaNode> grid;
+    //private Grid<GWTJahiaNode> grid;
+    private ThumbsListView listView;
     private ListStore<GWTJahiaNode> store;
 
     private GWTManagerConfiguration config;
@@ -83,9 +85,10 @@ public class SearchGrid extends ContentPanel {
         setLayout(new FitLayout());
         setBorders(false);
         setBodyBorder(false);
-        SearchField searchField = new SearchField("Search: ", false) {
+        setId("images-view");
+        SearchField searchField = new SearchField(Messages.get("label_search","Search")+": ", false) {
             public void onFieldValidation(String value) {
-                setSearchContent(value);
+                setSearchContent(value,listView);
             }
 
             public void onSaveButtonClicked(String value) {
@@ -95,7 +98,17 @@ public class SearchGrid extends ContentPanel {
         setHeaderVisible(false);
         setTopComponent(searchField);
         store = new ListStore<GWTJahiaNode>();
-        grid = new Grid<GWTJahiaNode>(store, getHeaders());
+        listView = new ThumbsListView(true);
+        listView.setStore(store);
+        listView.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                if (event != null && event.getSelectedItem() != null) {
+                    onContentPicked(event.getSelectedItem());
+                }
+            }
+        });
+        /*grid = new Grid<GWTJahiaNode>(store, getHeaders());
         grid.getView().setForceFit(true);
         grid.setBorders(false);
         grid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
@@ -107,11 +120,29 @@ public class SearchGrid extends ContentPanel {
                 }
             }
         });
-        add(grid);
+        add(grid);*/
+
+
+        listView = new ThumbsListView(false);
+        listView.setStore(store);
+        listView.setBorders(false);
+        listView.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        listView.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                if (event != null && event.getSelectedItem() != null) {
+                    onContentPicked(event.getSelectedItem());
+                }
+            }
+        });
+
+
+        add(listView);
     }
 
-    public void setSearchContent(final String text) {
+    public void setSearchContent(final String text,final Component parent) {
         clearTable();
+        parent.mask(Messages.get("label_search","Search"));
         if (text != null && text.length() > 0) {
             final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
@@ -123,11 +154,12 @@ public class SearchGrid extends ContentPanel {
                     } else {
                         Log.debug("No result found in search");
                     }
+                    parent.unmask();
                 }
 
                 public void onFailure(Throwable throwable) {
                     Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
-
+                    parent.unmask();
                 }
 
 
@@ -156,7 +188,7 @@ public class SearchGrid extends ContentPanel {
     }
 
     public Object getSelection() {
-        return grid.getSelectionModel().getSelectedItems();
+        return listView.getSelectionModel().getSelectedItems();
     }
 
     public void refresh() {
@@ -165,7 +197,7 @@ public class SearchGrid extends ContentPanel {
 
 
     public void clearSelection() {
-        grid.getSelectionModel().deselectAll();
+        listView.getSelectionModel().deselectAll();
     }
 
     /**

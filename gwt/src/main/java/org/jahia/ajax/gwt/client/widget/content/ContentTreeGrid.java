@@ -126,7 +126,7 @@ public class ContentTreeGrid extends LayoutContainer {
         BaseListLoader<ListLoadResult<GWTJahiaNode>> listLoader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                contentContainer.mask();
+                contentContainer.mask(Messages.get("label_loading","Loading"));
                 JahiaContentManagementService.App.getInstance()
                         .lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), null, listAsyncCallback);
 

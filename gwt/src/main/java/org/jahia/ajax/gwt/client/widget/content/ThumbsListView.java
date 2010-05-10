@@ -63,7 +63,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
 
     public native String getSimpleTemplate() /*-{
         return ['<tpl for=".">',
-      '<div class="thumb-wrap" id="{name}">',
+      '<div title="{name}" class="thumb-wrap" id="{name}">',
       '<div class="thumb">{nodeImg}</div>',
       '<span class="x-editable"> {shortName}</span>',
       '{widthHTML}',

@@ -123,7 +123,7 @@ public class SearchGrid extends ContentPanel {
         add(grid);*/
 
 
-        listView = new ThumbsListView(false);
+        listView = new ThumbsListView(true);
         listView.setStore(store);
         listView.setBorders(false);
         listView.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);

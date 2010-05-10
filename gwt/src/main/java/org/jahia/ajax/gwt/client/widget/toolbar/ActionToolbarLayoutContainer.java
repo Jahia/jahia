@@ -139,7 +139,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
             addActionToolbar(toolbar);
         } else if (toolbarSet != null) {
             createToolbarUI(toolbarSet);
-        }else if (toolbarGroup != null) {
+        } else if (toolbarGroup != null) {
             loadToolbars();
         }
     }

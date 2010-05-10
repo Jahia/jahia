@@ -46,9 +46,11 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -70,44 +72,53 @@ import java.util.List;
 /**
  * TreeTable file picker for use within classic engines.
  */
-public class ContentTreeGrid extends ContentPanel {
+public class ContentTreeGrid extends LayoutContainer {
     private ManagerLinker linker;
-    private TreeGridTopRightComponent treeGridTopRightComponent;
     private ListStore<GWTJahiaNode> mainListStore;
+    private final GWTManagerConfiguration configuration;
+    private List<GWTJahiaNode> selectedNodes;
     private boolean multiple;
-
+    private String repositoryType;
 
     /**
      * Content tree table
      *
-     * @param repoType
+     * @param repositoryType
      * @param selectedNodes
      * @param multiple
      * @param configuration
      */
-    public ContentTreeGrid(String repoType, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration configuration) {
+    public ContentTreeGrid(String repositoryType, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration configuration) {
         this.multiple = multiple;
         this.linker = new ManagerLinker(configuration);
-        setLayout(new BorderLayout());
-        setHeaderVisible(false);
-        setBorders(false);
-        setBodyBorder(false);
+        this.repositoryType = repositoryType;
+        this.configuration = configuration;
+        this.selectedNodes = selectedNodes;
+
+    }
+
+    @Override
+    protected void onRender(Element parent, int pos) {
+        super.onRender(parent, pos);
+        setLayout(new FitLayout());
+        final ContentPanel mainContent = new ContentPanel();
+        mainContent.setLayout(new BorderLayout());
+        mainContent.setHeaderVisible(false);
+        mainContent.setBorders(false);
+        mainContent.setBodyBorder(false);
 
         // add toolbar
-        ContentToolbar contentToolbar = new ContentToolbar(configuration, linker);
-        treeGridTopRightComponent = new TreeGridTopRightComponent(repoType, configuration, selectedNodes);
+        final ContentToolbar contentToolbar = new ContentToolbar(configuration, linker);
+        final TreeGridTopRightComponent treeGridTopRightComponent = new TreeGridTopRightComponent(repositoryType, configuration, selectedNodes);
 
 
         // register component linker
         linker.registerComponents(null, treeGridTopRightComponent, null, contentToolbar, null);
 
-        //Log.debug("Add toolbar for repository: "+repoType+", "+contentToolbar.getComponent());
-        setTopComponent(contentToolbar.getComponent());
-        
         // add grid
         BorderLayoutData borderLayoutData = new BorderLayoutData(Style.LayoutRegion.WEST, 300);
         borderLayoutData.setSplit(true);
-        add(treeGridTopRightComponent.getComponent(), borderLayoutData);
+        mainContent.add(treeGridTopRightComponent.getComponent(), borderLayoutData);
 
         // center
         final LayoutContainer contentContainer = new LayoutContainer();
@@ -120,8 +131,6 @@ public class ContentTreeGrid extends ContentPanel {
                         .lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), null, listAsyncCallback);
 
             }
-
-
         });
         mainListStore = new ListStore<GWTJahiaNode>(listLoader);
 
@@ -151,8 +160,12 @@ public class ContentTreeGrid extends ContentPanel {
         contentContainer.setBorders(true);
         contentContainer.setScrollMode(Style.Scroll.AUTOY);
         contentContainer.add(thumbsListView);
-        add(contentContainer, centerLayoutData);
+        mainContent.add(contentContainer, centerLayoutData);
 
+        mainContent.setTopComponent(contentToolbar.getComponent());
+
+        add(mainContent);
+        
 
     }
 
@@ -173,7 +186,7 @@ public class ContentTreeGrid extends ContentPanel {
      * @return String
      */
     protected String getRepoType() {
-        return treeGridTopRightComponent.repositoryType;
+        return repositoryType;
     }
 
 

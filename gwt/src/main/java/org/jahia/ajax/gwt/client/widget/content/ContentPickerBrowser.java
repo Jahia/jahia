@@ -50,7 +50,6 @@ public class ContentPickerBrowser extends TopRightComponent {
     private GWTManagerConfiguration config;
     private String pickerType;
     private ContentPanel m_component;
-   // private List<ContentTreeGrid> contentTreeGrids = new ArrayList<ContentTreeGrid>();
     private SearchGrid m_search;
     private TabPanel tabs;
     private TabItem searchTabItem;
@@ -74,7 +73,6 @@ public class ContentPickerBrowser extends TopRightComponent {
                     pickContent(gwtJahiaNode);
                 }
             };
-       //     contentTreeGrids.add(treeGrid);
 
             final TabItem treeTable = new TabItem(Messages.getResource("fm_repository_" + treeGrid.getRepoType()));
             treeTable.setBorders(false);

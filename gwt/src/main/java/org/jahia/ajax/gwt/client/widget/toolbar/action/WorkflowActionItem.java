@@ -90,6 +90,7 @@ public class WorkflowActionItem extends BaseActionItem {
                 }
                 if (bypassWorkflow) {
                     MenuItem item = new MenuItem("Bypass workflow");
+                    item.setIconStyle("gwt-toolbar-icon-workflow-bypass");
                     isEnabled = true;
                     item.addSelectionListener(new SelectionListener<MenuEvent>() {
                         @Override

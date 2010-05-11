@@ -443,6 +443,9 @@
 [jmix:referencesInField] mixin
  + j:referenceInField (jnt:referenceInField) multiple
 
+[jmix:bindedComponent] mixin
+ - j:bindedComponent (weakreference)
+
 //---------------------------------------------------------
 // Caches
 //---------------------------------------------------------

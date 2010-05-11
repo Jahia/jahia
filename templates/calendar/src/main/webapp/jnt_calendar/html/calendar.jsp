@@ -21,7 +21,7 @@
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="fullcalendar.js"/>
 
-<jcr:nodeProperty node="${currentNode}" name="list" var="linked"/>
+<jcr:nodeProperty node="${currentNode}" name="j:bindedComponent" var="linked"/>
 
 <c:forEach items="${linked.node.nodes}" var="linkedChild" varStatus="status">
     <fmt:formatDate pattern="yyyy-MM-dd" value="${linkedChild.properties[currentNode.properties.startDateProperty.string].date.time}" var="startDate"/>
@@ -57,3 +57,4 @@
     });
 </template:addResources>
 <div id="calendar${currentNode.identifier}"></div>
+<template:linker path="*"/>

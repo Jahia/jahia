@@ -63,6 +63,7 @@ public class EditModeDNDListener extends DNDListener {
     public static final String SOURCE_TEMPLATE = "sourceTemplate";
     public static final String SOURCE_NODETYPE = "sourceNodeType";
     public static final String OPERATION_CALLED = "operationCalled";
+    public static final String BINDED_REFERENCE_TYPE = "bindedReferenceType";
 
     public EditModeDNDListener(EditLinker editLinker) {
         this.editLinker = editLinker;
@@ -227,6 +228,19 @@ public class EditModeDNDListener extends DNDListener {
                 String q = e.getStatus().getData(SOURCE_QUERY);
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 JahiaContentManagementService.App.getInstance().saveSearchOnTopOf(q, targetPath, "jnt_query", callback);
+            } else if (BINDED_REFERENCE_TYPE.equals(sourceType)) {
+                // Item move
+                final GWTJahiaNode jahiaNode = (GWTJahiaNode) e.getStatus().getData(TARGET_NODE);
+                List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
+                List<GWTJahiaNode> srcNodes = e.getStatus().getData(SOURCE_NODES);
+                final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty("j:bindedComponent",
+                                                                                           new GWTJahiaNodePropertyValue(
+                                                                                                   jahiaNode,
+                                                                                                   GWTJahiaNodePropertyType.WEAKREFERENCE));
+                properties.add(gwtJahiaNodeProperty);
+                e.getStatus().setData(OPERATION_CALLED, "true");
+                JahiaContentManagementService.App.getInstance().saveProperties(srcNodes, properties, callback);
+
             }
         } else if (PAGETREE_TYPE.equals(targetType)) {
             if (PAGETREE_TYPE.equals(sourceType)) {

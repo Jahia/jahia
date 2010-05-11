@@ -64,6 +64,8 @@ public class ModuleHelper {
                     module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, referenceTypes, templateInfo, m);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, nodetypes, referenceTypes, m);
+                } else if (type.equals("linker")) {
+                    module = new LinkerModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, referenceTypes, templateInfo, m);
                 }
                 allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
                 if (module != null) {

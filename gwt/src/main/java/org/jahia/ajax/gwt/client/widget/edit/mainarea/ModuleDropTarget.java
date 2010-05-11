@@ -109,15 +109,16 @@ public class ModuleDropTarget extends DropTarget {
 //            return;
 //        }
 
-        if (module.getParentModule().getNode().isWriteable() && !module.getParentModule().getNode().isLocked()) {
+        final GWTJahiaNode jahiaNode = module.getParentModule().getNode();
+        if (jahiaNode.isWriteable() && !jahiaNode.isLocked()) {
             String nodetypes = module.getParentModule().getNodeTypes();
             boolean allowed = checkNodeType(e, nodetypes);
 
-            if (allowed) {
+            if (allowed) {                
                 e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, targetType);
                 e.getStatus().setData(EditModeDNDListener.TARGET_REFERENCE_TYPE, null);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
-                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : module.getParentModule().getNode());
+                e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : jahiaNode);
             } else if (module.getParentModule().getReferenceTypes().length() > 0 && e.getStatus().getData(EditModeDNDListener.SOURCE_NODES) != null) {
                 String[] refs = module.getParentModule().getReferenceTypes().split(" ");
                 List<String> allowedRefs = new ArrayList<String>();
@@ -132,7 +133,7 @@ public class ModuleDropTarget extends DropTarget {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, targetType);
                     e.getStatus().setData(EditModeDNDListener.TARGET_REFERENCE_TYPE, allowedRefs);
                     e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
-                    e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : module.getParentModule().getNode());
+                    e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : jahiaNode);
                 }
             }
             e.getStatus().setStatus(allowed);

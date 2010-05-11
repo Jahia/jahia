@@ -692,6 +692,20 @@
             <type>boolean</type>
         </attribute>
     </tag>
+
+    <tag>
+        <description>Define a linker area for linking to another module.
+        </description>
+        <name>linker</name>
+        <tag-class>org.jahia.taglibs.template.include.LinkerTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Relative or absolute path to the node to include</description>
+            <name>path</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
     
     <tag-file>
     	<description>

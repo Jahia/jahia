@@ -98,8 +98,8 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         String username;
 
         if (getCurrentUser() == null) {
-            logger.error("null thread parambean");
-            throw new RepositoryException("Null thread parambean");
+            logger.error("Null thread user");
+            throw new RepositoryException("Null thread user");
         }
 
         JahiaUser user = getCurrentUser();

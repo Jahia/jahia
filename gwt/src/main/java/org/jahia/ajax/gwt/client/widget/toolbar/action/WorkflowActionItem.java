@@ -63,6 +63,7 @@ public class WorkflowActionItem extends BaseActionItem {
                     if (processes == null || processes.contains(wf.getId())) {
                         isEnabled = true;
                         MenuItem item = new MenuItem("Start new : " + wf.getName());
+                        item.setIconStyle("gwt-toolbar-icon-workflow-start");
                         item.addSelectionListener(new SelectionListener<MenuEvent>() {
                             @Override
                             public void componentSelected(MenuEvent ce) {
@@ -105,6 +106,7 @@ public class WorkflowActionItem extends BaseActionItem {
                 statusActionItem.init(getGwtToolbarItem(), linker);
                 MenuItem workflowItem = statusActionItem.getMenuItem();
                 statusActionItem.updateTitle("Show Workflow Status");
+                workflowItem.setIconStyle("gwt-toolbar-icon-workflow-status");
                 menu.add(workflowItem);
             }
         } else {

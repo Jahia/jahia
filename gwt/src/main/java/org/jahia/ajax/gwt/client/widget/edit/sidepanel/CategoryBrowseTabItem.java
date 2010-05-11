@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -71,9 +72,9 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
         contentStore = new ListStore<GWTJahiaNode>(listLoader);
 
         // grid
-        final List<String> columnNames = new ArrayList<String>();
-        columnNames.add("icon");
-        columnNames.add("name");
+        final List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
+        columnNames.add(new GWTColumn("icon","icon",40));
+        columnNames.add(new GWTColumn("icon","name",300));
         final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(new NodeColumnConfigList(columnNames)));
         contentContainer.add(grid);
 

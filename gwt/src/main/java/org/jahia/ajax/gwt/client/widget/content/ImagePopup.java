@@ -48,8 +48,8 @@ public class ImagePopup extends Window {
     public ImagePopup(final GWTJahiaNode n) {
         super() ;
 
-        int w = n.getWidth();
-        int h = n.getHeight();
+        int w = Integer.parseInt((String) n.get("j:width"));
+        int h = Integer.parseInt((String) n.get("j:height"));
         final float ratio = Float.valueOf(w+18)/Float.valueOf(h+34) ;
         Log.debug("ratio: " + ratio) ;
         if (w > 800) {

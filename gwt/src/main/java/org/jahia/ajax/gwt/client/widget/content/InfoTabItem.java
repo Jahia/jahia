@@ -64,7 +64,7 @@ public class InfoTabItem extends EditEngineTabItem {
                                 Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
                     }
                 }
-                Date date = selectedNode.getLastModified();
+                Date date = selectedNode.get("jcr:lastModified");
                 if (date != null) {
                     flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lastModif") + ":</b> " +
                             org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));

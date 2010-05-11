@@ -25,6 +25,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,7 +55,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                 JahiaContentManagementService.App.getInstance()
-                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", null, null, listAsyncCallback);
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "nt:file", null, null, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:width", "j:height"), listAsyncCallback);
             }
         };
 
@@ -101,7 +102,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
                 w.setModal(true);
                 w.setClosable(true);
                 w.setMaximizable(true);
-                w.setSize(Math.max(node.getWidth() + 60, 400), Math.max(node.getHeight() + 80, 50));
+                w.setSize(Math.max(Integer.parseInt((String)node.get("j:width")) + 60, 400), Math.max(Integer.parseInt((String)node.get("j:height")) + 80, 50));
                 w.setBlinkModal(true);
                 w.setPlain(true);
                 w.setToolTip(text);

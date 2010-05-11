@@ -64,7 +64,6 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
     // private TabPanel m_component;
     private GroupingStore<GWTJahiaNode> store;
     private Grid<GWTJahiaNode> m_grid;
-    private ThumbsListView m_thumbsListView;
     private GWTManagerConfiguration config;
     private boolean readOnly = false;
     private boolean multiple;

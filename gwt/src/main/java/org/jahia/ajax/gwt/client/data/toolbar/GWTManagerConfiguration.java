@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.io.Serializable;
 import java.util.List;
@@ -47,7 +48,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private String name;
     private boolean enableTextMenu;
 
-    private List<String> tableColumns;
+    private List<GWTColumn> tableColumns;
+    private List<String> tableColumnKeys;
 
     private List<String> accordionPanels;
     private List<String> tabs;
@@ -84,7 +86,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
 
     public GWTManagerConfiguration() {
-        tableColumns = new ArrayList<String>();
+        tableColumns = new ArrayList<GWTColumn>();
+        tableColumnKeys = new ArrayList<String>();
         accordionPanels = new ArrayList<String>();
         tabs = new ArrayList<String>();
     }
@@ -97,8 +100,9 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         this.name = name;
     }
 
-    public void addColumn(String col) {
+    public void addColumn(GWTColumn col) {
         tableColumns.add(col);
+        tableColumnKeys.add(col.getKey());
     }
 
     public void addAccordion(String accordion) {
@@ -125,8 +129,18 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         this.hideLeftPanel = hide;
     }
 
-    public List<String> getTableColumns() {
+    public List<GWTColumn> getTableColumns() {
+        if (tableColumns.isEmpty()) {
+            addColumn(new GWTColumn("name", Messages.getResource("fm_column_name"),150));
+        }
         return tableColumns;
+    }
+
+    public List<String> getTableColumnKeys() {
+        if (tableColumns.isEmpty()) {
+            addColumn(new GWTColumn("name", Messages.getResource("fm_column_name"),150));
+        }
+        return tableColumnKeys;
     }
 
     public List<String> getAccordionPanels() {

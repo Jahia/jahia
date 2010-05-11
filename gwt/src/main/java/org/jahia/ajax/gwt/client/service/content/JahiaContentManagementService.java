@@ -75,11 +75,11 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTEditConfiguration getEditConfiguration(String name) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> fields) throws GWTJahiaServiceException;
 
-    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException;
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> fields) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> fields, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException;
 
     /**
      * Get a node by its path if existing.

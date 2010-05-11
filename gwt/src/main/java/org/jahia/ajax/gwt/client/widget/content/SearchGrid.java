@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -198,130 +199,6 @@ public class SearchGrid extends ContentPanel {
 
     public void clearSelection() {
         listView.getSelectionModel().deselectAll();
-    }
-
-    /**
-     * Get heder from config
-     *
-     * @return
-     */
-    private ColumnModel getHeaders() {
-        List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
-        List<String> columnIds = config.getTableColumns();
-        if (columnIds == null || columnIds.size() == 0) {
-            columnIds.add("name");
-            columnIds.add("size");
-            columnIds.add("date");
-            columnIds.add("version");
-            columnIds.add("picker");
-        }
-        for (String s1 : columnIds) {
-            if (s1.equals("name")) {
-                ColumnConfig col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 300);
-                headerList.add(col);
-            } else if (s1.equals("size")) {
-                ColumnConfig col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 70);
-                col.setAlignment(Style.HorizontalAlignment.CENTER);
-                col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                    public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        if (gwtJahiaNode != null && gwtJahiaNode.getSize() != null) {
-                            long size = gwtJahiaNode.getSize().longValue();
-                            return Formatter.getFormattedSize(size);
-                        } else {
-                            return "-";
-                        }
-                    }
-                });
-                headerList.add(col);
-            } else if (s1.equals("date")) {
-                ColumnConfig col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 80);
-                col.setAlignment(Style.HorizontalAlignment.CENTER);
-                col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                    public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        Date d = gwtJahiaNode.getLastModified();
-                        if (d != null) {
-                            return DateTimeFormat.getFormat("d/MM/y").format(d).toString();
-                        } else {
-                            return "-";
-                        }
-                    }
-                });
-                headerList.add(col);
-            } else if (s1.equals("version")) {
-                ColumnConfig col = new ColumnConfig("version", Messages.getResource("versioning_versionLabel"), 150);
-                col.setFixed(true);
-                col.setHidden(true);
-                col.setAlignment(Style.HorizontalAlignment.CENTER);
-                col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                    public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        List<GWTJahiaNodeVersion> versions = gwtJahiaNode.getVersions();
-                        if (versions != null) {
-                            SimpleComboBox<String> combo = new SimpleComboBox<String>();
-                            combo.setForceSelection(true);
-                            combo.setTriggerAction(ComboBox.TriggerAction.ALL);
-                            for (GWTJahiaNodeVersion version : versions) {
-                                combo.add(version.getVersionNumber() + " (" + DateTimeFormat.getFormat("d/MM/y hh:mm").format(version.getDate()).toString() + ")");
-                            }
-                            final String s2 = "Always Latest Version";
-                            combo.add(s2);
-                            combo.setSimpleValue(s2);
-                            combo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
-                                @Override
-                                public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> simpleComboValueSelectionChangedEvent) {
-                                    SimpleComboValue<String> value = simpleComboValueSelectionChangedEvent.getSelectedItem();
-                                    String value1 = value.getValue();
-                                    if (!s2.equals(value1))
-                                        gwtJahiaNode.setSelectedVersion(value1.split("\\(")[0].trim());
-                                }
-                            });
-                            combo.setDeferHeight(true);
-                            return combo;
-                        } else {
-                            SimpleComboBox<String> combo = new SimpleComboBox<String>();
-                            combo.setForceSelection(false);
-                            combo.setTriggerAction(ComboBox.TriggerAction.ALL);
-                            combo.add("No version");
-                            combo.setSimpleValue("No version");
-                            combo.setEnabled(false);
-                            combo.setDeferHeight(true);
-                            return combo;
-                        }
-                    }
-                });
-                headerList.add(col);
-            } else if (s1.equals("picker") && multiple) {
-                ColumnConfig col = new ColumnConfig("action", "action", 100);
-
-                col.setAlignment(Style.HorizontalAlignment.RIGHT);
-                col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                    public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                        if (gwtJahiaNode.isFile() || gwtJahiaNode.isMatchFilters()) {
-                            final Button pickContentButton = new Button(Messages.get("label_add", "Add"));
-                            pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
-                            pickContentButton.setEnabled(true);
-                            pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                                public void componentSelected(ButtonEvent buttonEvent) {
-                                    onContentPicked(gwtJahiaNode);
-                                }
-                            });
-                            return pickContentButton;
-                        } else {
-                            return new Text("");
-                        }
-                    }
-
-                    /**
-                     * Return true id the node is selectable
-                     * @param gwtJahiaNode
-                     * @return
-                     */
-
-                });
-                col.setFixed(true);
-                headerList.add(col);
-            }
-        }
-        return new ColumnModel(headerList);
     }
 
     /**

@@ -63,16 +63,8 @@ public class ImageResize extends Window {
 
         this.linker = linker ;
 
-        int w = n.getWidth();
-        int h = n.getHeight();
-        if (w > 800) {
-            h = h * 800 / w;
-            w = 800;
-        }
-        if (h > 350) {
-            w = w * 350 / h;
-            h = 350;
-        }
+        final int w = Integer.parseInt((String) n.get("j:width"));
+        final int h = Integer.parseInt((String) n.get("j:height"));
 
         setHeading(Messages.getResource("fm_resize"));
         setSize(500, 200);
@@ -87,13 +79,13 @@ public class ImageResize extends Window {
 
         final NumberField wf = new NumberField();
         wf.setName("width");
-        wf.setValue(new Integer(n.getWidth()));
+        wf.setValue(new Integer(w));
         wf.setFieldLabel(Messages.getResource("fm_width"));
         form.add(wf);
 
         final NumberField hf = new NumberField();
         hf.setName("height");
-        hf.setValue(new Integer(n.getHeight()));
+        hf.setValue(new Integer(h));
         hf.setFieldLabel(Messages.getResource("fm_height"));
         form.add(hf);
 
@@ -105,18 +97,18 @@ public class ImageResize extends Window {
 
         hf.addListener(Events.KeyUp, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                if (keepRatio.getValue()) wf.setValue(n.getWidth() * hf.getValue().intValue() / n.getHeight());
+                if (keepRatio.getValue()) wf.setValue(w * hf.getValue().intValue() / h);
             }
         });
         wf.addListener(Events.KeyUp, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                if (keepRatio.getValue()) hf.setValue(n.getHeight() * wf.getValue().intValue() / n.getWidth());
+                if (keepRatio.getValue()) hf.setValue(h * wf.getValue().intValue() / w);
             }
         });
 
         keepRatio.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                if (keepRatio.getValue()) hf.setValue(n.getHeight() * wf.getValue().intValue() / n.getWidth());
+                if (keepRatio.getValue()) hf.setValue(h * wf.getValue().intValue() / w);
             }
         });
 

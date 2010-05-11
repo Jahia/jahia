@@ -63,8 +63,8 @@ public class ImageCrop extends Window {
         super();
 
         this.linker = linker;
-        int w = n.getWidth();
-        int h = n.getHeight();
+        int w = Integer.parseInt((String) n.get("j:width"));
+        int h = Integer.parseInt((String) n.get("j:height"));
         if (w > 800) {
             h = h * 800 / w;
             w = 800;

@@ -376,10 +376,10 @@ fm-globalMashupRepository {
     padding: 3px;
 }
 
-#images-view .thumb img {
-    height: 60px;
-    width: 80px;
-}
+/*#images-view .thumb img {*/
+    /*height: 60px;*/
+    /*width: 80px;*/
+/*}*/
 
 #images-view .thumb-wrap {
     border: 1px solid #ffffff;

@@ -22,6 +22,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                 JahiaContentManagementService.App.getInstance()
-                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:portlet", null, null, listAsyncCallback);
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:portlet", null, null, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS), listAsyncCallback);
             }
         };
 

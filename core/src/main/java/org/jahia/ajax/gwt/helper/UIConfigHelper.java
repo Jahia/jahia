@@ -44,9 +44,12 @@ import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
+import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.contentmanager.Repository;
@@ -68,6 +71,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -554,7 +558,25 @@ public class UIConfigHelper {
                 // add table columns
                 for (Column item : config.getTableColumns()) {
                     if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
-                        gwtConfig.addColumn(item.getKey());
+                        GWTColumn col = new GWTColumn();
+                        col.setKey(item.getKey());
+                        if (item.getTitleKey() != null) {
+                            col.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+                        } else if (item.getDeclaringNodeType() != null) {
+                            try {
+                                ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(item.getDeclaringNodeType()).getPropertyDefinition(item.getKey());
+                                col.setTitle(epd.getLabel(uiLocale != null ? uiLocale : locale));
+                            } catch (Exception e) {
+                                logger.error("Cannot get node type name",e);
+                                col.setTitle(item.getKey());
+                            }
+                        } else if (item.getTitle() != null) {
+                            col.setTitle(item.getTitle());
+                        } else {
+                            col.setTitle(item.getKey());
+                        }
+                        col.setSize(item.getSize());
+                        gwtConfig.addColumn(col);
                     }
                 }
 

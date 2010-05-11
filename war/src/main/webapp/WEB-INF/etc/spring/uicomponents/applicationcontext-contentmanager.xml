@@ -103,12 +103,11 @@
                         </bean>
                     </property>
                 </bean>
-                <value>icon</value>
-                <value>name</value>
-                <value>locked</value>
-                <value>path</value>
-                <value>size</value>
-                <value>lastModified</value>
+                <value>icon,40</value>
+                <value>name,240</value>
+                <value>locked,60</value>
+                <value>size,140</value>
+                <value>mix:lastModified.jcr:lastModified,10</value>
             </list>
         </property>
     </bean>
@@ -181,10 +180,9 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name</value>
-                <value>locked</value>
-                <value>path</value>
-                <value>lastModified</value>
+                <value>name,240</value>
+                <value>locked,60</value>
+                <value>jcr:lastModified,100</value>
             </list>
         </property>
     </bean>
@@ -255,10 +253,9 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>icon</value>
-                <value>name</value>
-                <value>locked</value>
-                <value>path</value>
+                <value>icon,40</value>
+                <value>name,240</value>
+                <value>locked,60</value>
             </list>
         </property>
     </bean>
@@ -355,11 +352,10 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>icon</value>
-                <value>name</value>
+                <value>icon,40</value>
+                <value>name,240</value>
                 <value>count</value>
-                <value>locked</value>
-                <value>path</value>
+                <value>locked,60</value>
             </list>
         </property>
 
@@ -442,13 +438,15 @@
         <!-- tabs -->
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>content</value>
                 <value>rights</value>
             </list>
         </property>
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name</value>
+                <value>name,200</value>
+                <value>remoteUrl,200</value>
             </list>
         </property>
 
@@ -519,7 +517,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name</value>
+                <value>name,240</value>
             </list>
         </property>
 
@@ -594,33 +592,6 @@
             </list>
         </property>
 
-        <!-- table columns-->
-        <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                    <property name="key" value="providerKey"/>
-                    <property name="visibility">
-                        <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
-                            <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
-                            <property name="alsoCountDynamicProviders" value="false"/>
-                        </bean>
-                    </property>
-                </bean>
-                <value>icon</value>
-                <value>name</value>
-                <value>locked</value>
-                <value>path</value>
-                <value>size</value>
-                <value>publicationInfo</value>
-                <value>created</value>
-                <value>createdBy</value>
-                <value>lastModified</value>
-                <value>lastModifiedBy</value>
-                <value>lastPublished</value>
-                <value>lastPublishedBy</value>
-            </list>
-        </property>
-
         <!-- tabs -->
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
@@ -639,6 +610,31 @@
             </list>
         </property>
 
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                    <property name="key" value="providerKey"/>
+                    <property name="visibility">
+                        <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
+                            <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
+                            <property name="alsoCountDynamicProviders" value="false"/>
+                        </bean>
+                    </property>
+                </bean>
+                <value>icon,40</value>
+                <value>name,240</value>
+                <value>locked,60</value>
+                <value>size,140</value>
+                <value>publicationInfo,30</value>
+                <value>mix:created.jcr:created,100</value>
+                <value>mix:created.jcr:createdBy,100</value>
+                <value>mix:lastModified.jcr:lastModified,100</value>
+                <value>mix:lastModified.jcr:lastModifiedBy,100</value>
+                <value>jmix:lastPublished.j:lastPublished,100</value>
+                <value>jmix:lastPublished.j:lastPublishedBy,100</value>
+            </list>
+        </property>
 
     </bean>
 
@@ -720,17 +716,6 @@
             </list>
         </property>
 
-        <!-- columns -->
-        <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>icon</value>
-                <value>name</value>
-                <value>locked</value>
-                <value>lastModified</value>
-                <value>lastModifiedBy</value>
-                <value>publicationInfo</value>
-            </list>
-        </property>
 
         <!-- tabs -->
         <property name="tabs">
@@ -741,6 +726,18 @@
                 <value>versioning</value>
                 <value>analytics</value>
                 <value>seo</value>
+            </list>
+        </property>
+
+        <!-- columns -->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40</value>
+                <value>name,240</value>
+                <value>locked,60</value>
+                <value>mix:lastModified.jcr:lastModified,100</value>
+                <value>mix:lastModified.jcr:lastModifiedBy,100</value>
+                <value>publicationInfo,30</value>
             </list>
         </property>
     </bean>
@@ -788,7 +785,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name</value>
+                <value>name,240</value>
             </list>
         </property>
     </bean>
@@ -837,7 +834,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name</value>
+                <value>name,240</value>
             </list>
         </property>
 
@@ -863,14 +860,6 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
 
-        <property name="tabs">
-            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <value>info</value>
-                <value>rights</value>
-                <value>usages</value>
-                <value>versioning</value>
-            </list>
-        </property>
         <!-- accordion panels-->
         <property name="accordionPanels">
             <list>
@@ -881,6 +870,21 @@
             </list>
         </property>
 
+        <property name="tabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+                <value>rights</value>
+                <value>usages</value>
+                <value>versioning</value>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,300</value>
+            </list>
+        </property>
     </bean>
 
     <!-- content picker -->
@@ -903,6 +907,17 @@
         <property name="displaySearchInContent" value="true"/>
         <property name="displaySearchInTag" value="true"/>
 
+        <!-- accordion panels-->
+        <property name="accordionPanels">
+            <list>
+                <ref bean="repository.global"/>
+                <ref bean="repository.website"/>
+                <ref bean="repository.shared"/>
+                <ref bean="repository.myexternal"/>
+                <ref bean="repository.my"/>
+            </list>
+        </property>
+
         <!-- tabs -->
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
@@ -913,14 +928,10 @@
             </list>
         </property>
 
-        <!-- accordion panels-->
-        <property name="accordionPanels">
-            <list>
-                <ref bean="repository.global"/>
-                <ref bean="repository.website"/>
-                <ref bean="repository.shared"/>
-                <ref bean="repository.myexternal"/>
-                <ref bean="repository.my"/>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,300</value>
             </list>
         </property>
 
@@ -962,6 +973,12 @@
             </list>
         </property>
 
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,300</value>
+            </list>
+        </property>
 
     </bean>
 
@@ -988,13 +1005,6 @@
         <property name="displaySize" value="false"/>
         <property name="hideLeftPanel" value="true"/>
 
-        <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name</value>
-                <value>picker</value>
-            </list>
-        </property>
-
         <property name="defaultView" value="3"/>
 
         <!-- accordion panels-->
@@ -1012,6 +1022,13 @@
                 <value>info</value>
                 <value>rights</value>
                 <value>usages</value>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,300</value>
             </list>
         </property>
 
@@ -1041,14 +1058,6 @@
         <property name="hideLeftPanel" value="true"/>
         <property name="defaultView" value="3"/>
 
-        <!-- columns -->
-        <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name</value>
-                <value>picker</value>
-            </list>
-        </property>
-
         <!-- accordion -->
         <property name="accordionPanels">
             <list>
@@ -1065,6 +1074,12 @@
             </list>
         </property>
 
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,300</value>
+            </list>
+        </property>
 
     </bean>
 

@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
@@ -55,15 +56,16 @@ public class ManualListOrderingEditor extends ContentPanel {
 
     private void init() {
         setBodyBorder(true);
-        List<String> columnNames = new ArrayList<String>();
-        columnNames.add("icon");
-        columnNames.add("name");
-        columnNames.add("created");
-        columnNames.add("createdBy");
-        columnNames.add("lastModified");
-        columnNames.add("lastModifiedBy");
+        List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
+        columnNames.add(new GWTColumn("icon","icon",10));
+        columnNames.add(new GWTColumn("name","name",10));
+        columnNames.add(new GWTColumn("created","created",10));
+        columnNames.add(new GWTColumn("createdBy","createdBy",10));
+        columnNames.add(new GWTColumn("lastModified","lastModified",10));
+        columnNames.add(new GWTColumn("lastModifiedBy","lastModifiedBy",10));
 
-        final List<ColumnConfig> columnConfigList = new NodeColumnConfigList(columnNames);
+        final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
+        columnConfigList.init();
         final CheckBoxSelectionModel<GWTJahiaNode> sm = new CheckBoxSelectionModel<GWTJahiaNode>();
 
         columnConfigList.add(0, new RowNumberer());
@@ -74,7 +76,8 @@ public class ManualListOrderingEditor extends ContentPanel {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getPath());
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:content", null, null, listAsyncCallback);
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:content", null, null,
+                        null, listAsyncCallback);
                 childrenGrid.unmask();
             }
 

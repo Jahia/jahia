@@ -37,15 +37,17 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         model.set("nameLabel", Messages.get("fm_column_name", "Name"));
         model.set("authorLabel", Messages.get("versioning_author", "Auhor"));
         model.set("tagsLabel", Messages.get("ece_tags", "tags"));
-        int width = model.getWidth();
-        if (width > 0) {
-            if (width < 80) {
+        String width = model.get("j:width");
+        if (width != null) {
+            if (Integer.parseInt(width) < 80) {
                 model.set("nodeImg", "<img src=\"" + model.getUrl() + "\" title=\"" + model.getName() + "\">");
             } else {
                 model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
             }
-            model.set("widthHTML", "<div><b>" + Messages.get("ece_width", "Width") + " </b>" + model.getWidth() + " px</div>");
-            model.set("heightHTML", "<div><b>" + Messages.get("ece_height", "Height") + " </b>" + model.getHeight() + " px</div>");
+            model.set("widthHTML", "<div><b>" + Messages.get("ece_width", "Width") + " </b>" + model.get("j:width") + " px</div>");
+            model.set("heightHTML", "<div><b>" + Messages.get("ece_height", "Height") + " </b>" + model.get("j:height") + " px</div>");
+        } else if (model.getPreview() != null) {
+            model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
         } else {
             model.set("nodeImg", ContentModelIconProvider.getInstance().getIcon(model, true).getHTML());
         }

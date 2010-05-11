@@ -31,18 +31,15 @@
  */
 package org.jahia.ajax.gwt.client.data.node;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * GWT bean that represents a single JCR node.
@@ -51,28 +48,52 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
  * @version 19 juin 2008 - 15:57:38
  */
 public class GWTJahiaNode extends BaseTreeModel implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
+    public static final String TAGS = "tags";
+    public static final String NAME = "name";
+    public static final String PATH = "path";
+    public static final String ICON = "icon";
+    public static final String LOCKED = "locked";
+    public static final String LOCKABLE = "lockable";
+    public static final String WRITEABLE = "writeable";
+    public static final String DELETEABLE = "deleteable";
+    public static final String UUID = "uuid";
+    public static final String DISPLAY_NAME = "displayName";
+    public static final String FILE = "file";
+    public static final String SIZE = "size";
+    public static final String NODE_TYPES = "nodeTypes";
+    public static final String INHERITED_NODE_TYPES = "inheritedNodeTypes";
+    public static final String ACL_CONTEXT = "aclContext";
+    public static final String PROVIDER_KEY = "providerKey";
+    public static final String PREVIEW = "preview";
+    public static final String THUMBNAILS = "thumbnails";
+    public static final String SITE_UUID = "siteUUID";
+    public static final String CURRENT_VERSION = "currentVersion";
+    public static final String VERSIONS = "versions";
+    public static final String CHILDREN_INFO = "childrenInfo";
+    public static final String COUNT = "count";
+    public static final String PUBLICATION_INFO = "publicationInfo";
+
+    public static final List<String> DEFAULT_FIELDS =
+            Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:template", "j:width", "j:height");
+    public static final List<String> RESERVED_FIELDS =
+            Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, WRITEABLE, DELETEABLE, UUID, DISPLAY_NAME, FILE,
+                    SIZE, NODE_TYPES, INHERITED_NODE_TYPES, ACL_CONTEXT, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,
+                    CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT);
 
     private boolean displayable = false;
     private boolean isShared = false;
-    private boolean isTemplateLocked = false;
-    private boolean isTemplateShared = false;
-    private boolean isTemplateDeployed = false;
     private String url;
     private boolean hasChildren = false;
-    private boolean hasFolderChildren = false;
     private boolean portlet = false;
     private String normalizedName = null;
     private boolean versioned = false;
-    private int width = 0;
-    private int height = 0;
-    private SortInfo sortInfo = new SortInfo("name", Style.SortDir.ASC);
+    private SortInfo sortInfo = new SortInfo(NAME, Style.SortDir.ASC);
     private List<GWTJahiaNodeVersion> versions;
     private String selectedVersion;
     private String languageCode;
     private boolean expandOnLoad = false;
     private boolean selectedOnLoad = false;
-    private Map<String,Boolean> languageWriteable;
-    private Map<String,Boolean> languageLocked = new HashMap<String, Boolean>();
+    private Map<String, Boolean> languageLocked = new HashMap<String, Boolean>();
     private GWTJahiaNode referencedNode;
     private GWTJahiaPublicationInfo publicationInfo;
     private GWTJahiaWorkflowInfo workflowInfo;
@@ -89,14 +110,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public boolean hasChildren() {
         return hasChildren;
-    }
-
-    public void setHasFolderChildren(boolean hasChildren) {
-        this.hasFolderChildren = hasChildren;
-    }
-
-    public boolean hasFolderChildren() {
-        return hasFolderChildren;
     }
 
     public void setDisplayable(boolean disp) {
@@ -116,257 +129,175 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public void setLockable(Boolean lockable) {
-        set("lockable", lockable);
+        set(LOCKABLE, lockable);
     }
 
     public Boolean isLockable() {
-        return get("lockable");
+        return get(LOCKABLE);
     }
 
     public void setLocked(Boolean locked) {
-        set("locked", locked);
+        set(LOCKED, locked);
     }
 
     public Boolean isLocked() {
-        return get("locked");
-    }
-
-    public Boolean isLanguageLocked(String language) {
-        return languageLocked.containsKey(language) && languageLocked.get(language);
+        return get(LOCKED);
     }
 
     public void setLanguageLocked(String language, Boolean locked) {
         languageLocked.put(language, locked);
     }
 
+    public Boolean isLanguageLocked(String language) {
+        return languageLocked.containsKey(language) && languageLocked.get(language);
+    }
+
     public void setWriteable(Boolean writeable) {
-        set("writeable", writeable);
+        set(WRITEABLE, writeable);
     }
 
     public Boolean isWriteable() {
-        return get("writeable");
+        return get(WRITEABLE);
     }
 
     public Boolean isLanguageWriteable(String language) {
-        return get("writeable");
+        return get(WRITEABLE);
     }
 
     public void setDeleteable(Boolean deleteable) {
-        set("deleteable", deleteable);
+        set(DELETEABLE, deleteable);
     }
 
     public Boolean isDeleteable() {
-        return get("deleteable");
-    }
-
-    public void setFileProperties(Map<String, String> map) {
-        set("properties", map);
-    }
-
-    public Map<String, String> getFileProperties() {
-        return get("properties");
-    }
-
-    public String getName() {
-        return get("name");
-    }
-
-    public String getUUID() {
-        return get("uuid");
-    }
-
-    public String getPath() {
-        return get("path");
+        return get(DELETEABLE);
     }
 
     public void setName(String name) {
-        set("name", name);
+        set(NAME, name);
     }
 
-    public void setDisplayName(String name) {
-        set("displayName", name);
-    }
-
-    public String getDisplayName() {
-        return get("displayName");
+    public String getName() {
+        return get(NAME);
     }
 
     public void setUUID(String uuid) {
-        set("uuid", uuid);
+        set(UUID, uuid);
+    }
+
+    public String getUUID() {
+        return get(UUID);
+    }
+
+    public void setDisplayName(String name) {
+        set(DISPLAY_NAME, name);
+    }
+
+    public String getDisplayName() {
+        return get(DISPLAY_NAME);
     }
 
     public void setPath(String path) {
-        set("path", path);
+        set(PATH, path);
     }
 
-    public Date getCreated() {
-        return get("created");
+    public String getPath() {
+        return get(PATH);
     }
-
-    public String getCreatedBy() {
-        return get("createdBy");
-    }
-
-    public Date getLastPublished() {
-        return get("lastPublished");
-    }
-
-    public String getLastPublishedBy() {
-        return get("lastPublishedBy");
-    }
-
-    public Date getLastModified() {
-        return get("lastModified");
-    }
-
-    public String getLastModifiedBy() {
-        return get("lastModifiedBy");
-    }
-
-    public void setCreated(Date date) {
-        set("created", date);
-    }
-
-    public void setCreatedBy(String creationUser) {
-        set("createdBy", creationUser);
-    }
-
-    public void setLastModified(Date date) {
-        set("lastModified", date);
-    }
-
-    public void setLastModifiedBy(String lastModificationUser) {
-        set("lastModifiedBy", lastModificationUser);
-    }
-
-    public void setLastPublished(Date date) {
-        set("lastPublished", date);
-    }
-
-    public void setLastPublishedBy(String lastPublicationUser) {
-        set("lastPublishedBy", lastPublicationUser);
-    }
-
 
     public void setTags(String tags) {
-        set("tags", tags);
+        set(TAGS, tags);
     }
 
     public String getTags() {
-        return get("tags");
-    }
-
-    public void setCollection(Boolean collection) {
-        set("collection", collection);
-    }
-
-    public Boolean isCollection() {
-        return get("collection");
+        return get(TAGS);
     }
 
     public void setFile(Boolean file) {
-        set("file", file);
+        set(FILE, file);
     }
 
     public Boolean isFile() {
-        return get("file");
+        return get(FILE);
     }
 
     public void setSize(Long size) {
-        set("size", size);
+        set(SIZE, size);
     }
 
     public Long getSize() {
-        return get("size");
+        return get(SIZE);
     }
 
     public void setNodeTypes(List<String> nodeTypes) {
-        set("nodeTypes", nodeTypes);
+        set(NODE_TYPES, nodeTypes);
     }
 
     public List<String> getNodeTypes() {
-        return get("nodeTypes");
+        return get(NODE_TYPES);
     }
 
     public void setInheritedNodeTypes(List<String> nodeTypes) {
-        set("inheritedNodeTypes", nodeTypes);
-    }
-
-    public String getAclContext() {
-        return get("aclContext");
-    }
-
-    public void setAclContext(String aclContext) {
-        set("aclContext", aclContext);
+        set(INHERITED_NODE_TYPES, nodeTypes);
     }
 
     public List<String> getInheritedNodeTypes() {
-        return get("inheritedNodeTypes");
+        return get(INHERITED_NODE_TYPES);
     }
 
-    public String getIcon() {
-        return get("icon");
+    public void setAclContext(String aclContext) {
+        set(ACL_CONTEXT, aclContext);
+    }
+
+    public String getAclContext() {
+        return get(ACL_CONTEXT);
     }
 
     public void setIcon(String icon) {
-        set("icon", icon);
+        set(ICON, icon);
     }
 
-    public String getProviderKey() {
-        return get("providerKey");
+    public String getIcon() {
+        return get(ICON);
     }
 
     public void setProviderKey(String providerName) {
-        set("providerKey", providerName);
+        set(PROVIDER_KEY, providerName);
     }
 
-    public String getPreview() {
-        return get("preview");
+    public String getProviderKey() {
+        return get(PROVIDER_KEY);
     }
 
     public void setPreview(String preview) {
-        set("preview", preview);
+        set(PREVIEW, preview);
     }
 
-    public Map<String, String> getThumbnailsMap() {
-        return get("thumbnails");
+    public String getPreview() {
+        return get(PREVIEW);
     }
 
     public void setThumbnailsMap(Map<String, String> preview) {
-        set("thumbnails", preview);
+        set(THUMBNAILS, preview);
     }
 
-    public String getDescription() {
-        return get("description");
+    public Map<String, String> getThumbnailsMap() {
+        return get(THUMBNAILS);
     }
 
     public void setDescription(String description) {
         set("description", description);
     }
 
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int h) {
-        height = h;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int w) {
-        width = w;
-    }
-
-    public String getSiteUUID() {
-        return get("siteUUID");
+    public String getDescription() {
+        return get("description");
     }
 
     public void setSiteUUID(String siteUUID) {
-        set("siteUUID", siteUUID);
+        set(SITE_UUID, siteUUID);
+    }
+
+    public String getSiteUUID() {
+        return get(SITE_UUID);
     }
 
     public boolean isVersioned() {
@@ -383,14 +314,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public void setMatchFilters(boolean matchFilters) {
         this.matchFilters = matchFilters;
-    }
-
-    public String toString() {
-        return getPath();
-    }
-
-    public boolean equals(GWTJahiaNode other) {
-        return getPath().equals(other.getPath());
     }
 
     public String getNormalizedName() {
@@ -471,11 +394,11 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
     public void setCurrentVersion(String currentVersion) {
-        set("currentVersion", currentVersion);
+        set(CURRENT_VERSION, currentVersion);
     }
 
     public String getCurrentVersion() {
-        return get("currentVersion");
+        return get(CURRENT_VERSION);
     }
 
     public void setSelectedVersion(String selectedVersion) {
@@ -485,84 +408,88 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public String getSelectedVersion() {
         return selectedVersion;
     }
-    
+
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
     }
 
     public String getLanguageCode() {
         return languageCode;
-    }    
-
-    public String getTemplate() {
-        return get("template");
-    }
-
-    public void setTemplate(String template) {
-        set("template", template);
-    }
-
-    public boolean isShared() {
-        return isShared;
     }
 
     public void setIsShared(boolean isShared) {
         this.isShared = isShared;
     }
 
-    public GWTJahiaNode getReferencedNode() {
-        return referencedNode;
+    public boolean isShared() {
+        return isShared;
     }
 
     public void setReferencedNode(GWTJahiaNode referencedNode) {
         this.referencedNode = referencedNode;
     }
 
-    public boolean isExpandOnLoad() {
-        return expandOnLoad;
+    public GWTJahiaNode getReferencedNode() {
+        return referencedNode;
     }
 
     public void setExpandOnLoad(boolean expandOnLoad) {
         this.expandOnLoad = expandOnLoad;
     }
 
-    public boolean isSelectedOnLoad() {
-        return selectedOnLoad;
+    public boolean isExpandOnLoad() {
+        return expandOnLoad;
     }
 
     public void setSelectedOnLoad(boolean selectedOnLoad) {
         this.selectedOnLoad = selectedOnLoad;
     }
 
+    public boolean isSelectedOnLoad() {
+        return selectedOnLoad;
+    }
+
     public boolean isPage() {
         return getInheritedNodeTypes().contains("jnt:page") || getNodeTypes().contains("jnt:page");
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        GWTJahiaNode that = (GWTJahiaNode) o;
-
-        if (getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null) return false;
-
-        return true;
-    }
-
-    public GWTJahiaPublicationInfo getPublicationInfo() {
-        return publicationInfo;
     }
 
     public void setPublicationInfo(GWTJahiaPublicationInfo publicationInfo) {
         this.publicationInfo = publicationInfo;
     }
 
-    public GWTJahiaWorkflowInfo getWorkflowInfo() {
-        return workflowInfo;
+    public GWTJahiaPublicationInfo getPublicationInfo() {
+        return publicationInfo;
     }
 
     public void setWorkflowInfo(GWTJahiaWorkflowInfo workflowInfo) {
         this.workflowInfo = workflowInfo;
     }
+
+    public GWTJahiaWorkflowInfo getWorkflowInfo() {
+        return workflowInfo;
+    }
+
+    public String toString() {
+        return getPath();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        GWTJahiaNode that = (GWTJahiaNode) o;
+
+        if (getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+
 }

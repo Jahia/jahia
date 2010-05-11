@@ -35,38 +35,32 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -128,7 +122,8 @@ public class ContentTreeGrid extends LayoutContainer {
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 contentContainer.mask(Messages.get("label_loading","Loading"));
                 JahiaContentManagementService.App.getInstance()
-                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), null, listAsyncCallback);
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), null,
+                                GWTJahiaNode.DEFAULT_FIELDS, listAsyncCallback);
 
             }
         });
@@ -214,17 +209,48 @@ public class ContentTreeGrid extends LayoutContainer {
         private void init() {
 
             GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repositoryType != null ? repositoryType : JCRClientUtils.GLOBAL_REPOSITORY);
-            //factory.setNodeTypes(configuration.getNodeTypes());
-            factory.setFolderTypes(configuration.getFolderTypes());
+            factory.setNodeTypes(configuration.getFolderTypes());
             factory.setMimeTypes(configuration.getMimeTypes());
             factory.setFilters(configuration.getFilters());
+            factory.setFields(GWTJahiaNode.DEFAULT_FIELDS);
             List<String> selectedPath = new ArrayList<String>();
             for (GWTJahiaNode node : selectedNodes) {
                 selectedPath.add(node.getPath());
             }
             factory.setSelectedPath(selectedPath);
             loader = factory.getLoader();
-            m_treeGrid = factory.getTreeGrid(getHeaders());
+            NodeColumnConfigList columnConfigList = new NodeColumnConfigList(configuration.getTableColumns());
+            columnConfigList.init();
+            columnConfigList.get(0).setRenderer(new TreeGridCellRenderer());
+
+            if (multiple) {
+                ColumnConfig picker = new ColumnConfig("action", "action", 100);
+
+                picker.setAlignment(Style.HorizontalAlignment.RIGHT);
+                picker.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+                    public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
+                        if (gwtJahiaNode.isMatchFilters()) {
+                            final Button pickContentButton = new Button(Messages.get("label_add", "Add"));
+                            pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
+                            pickContentButton.setEnabled(true);
+                            pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                public void componentSelected(ButtonEvent buttonEvent) {
+                                    onContentPicked(gwtJahiaNode);
+                                }
+                            });
+                            return pickContentButton;
+                        } else {
+                            return new Text("");
+                        }
+                    }
+
+                });
+                picker.setFixed(true);
+
+                columnConfigList.add(picker);
+            }
+
+            m_treeGrid = factory.getTreeGrid(new ColumnModel(columnConfigList));
             m_treeGrid.addListener(Events.RowClick, new Listener<GridEvent>() {
                 public void handleEvent(GridEvent gridEvent) {
                     if (mainListStore != null) {
@@ -252,125 +278,6 @@ public class ContentTreeGrid extends LayoutContainer {
             m_treeGrid.setBorders(false);
 
 
-        }
-
-
-        /**
-         * Get header from configuration
-         *
-         * @return ColumnModel
-         */
-        private ColumnModel getHeaders() {
-            List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
-            List<String> columnIds = configuration.getTableColumns();
-            if (columnIds == null || columnIds.size() == 0) {
-                columnIds = new ArrayList<String>();
-                columnIds.add("name");
-                // columnIds.add("size");
-                // columnIds.add("date");
-                // columnIds.add("version");
-                // columnIds.add("picker");
-            }
-            for (String s1 : columnIds) {
-                if (s1.equals("name")) {
-                    ColumnConfig col = new ColumnConfig("displayName", Messages.getResource("fm_column_name"), 300);
-                    col.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
-                    headerList.add(col);
-                } else if (s1.equals("size")) {
-                    ColumnConfig col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 70);
-                    col.setAlignment(Style.HorizontalAlignment.CENTER);
-                    col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                        public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                            if (gwtJahiaNode != null && gwtJahiaNode.getSize() != null) {
-                                long size = gwtJahiaNode.getSize();
-                                return Formatter.getFormattedSize(size);
-                            } else {
-                                return "-";
-                            }
-                        }
-                    });
-                    headerList.add(col);
-                } else if (s1.equals("date")) {
-                    ColumnConfig col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 80);
-                    col.setAlignment(Style.HorizontalAlignment.CENTER);
-                    col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                        public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                            Date d = gwtJahiaNode.getLastModified();
-                            if (d != null) {
-                                return DateTimeFormat.getFormat("d/MM/y").format(d);
-                            } else {
-                                return "-";
-                            }
-                        }
-                    });
-                    headerList.add(col);
-                } else if (s1.equals("version")) {
-                    ColumnConfig col = new ColumnConfig("version", Messages.getResource("versioning_versionLabel"), 250);
-                    col.setAlignment(Style.HorizontalAlignment.CENTER);
-                    col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                        public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                            List<GWTJahiaNodeVersion> versions = gwtJahiaNode.getVersions();
-                            if (versions != null) {
-                                SimpleComboBox<String> combo = new SimpleComboBox<String>();
-                                combo.setForceSelection(true);
-                                combo.setTriggerAction(ComboBox.TriggerAction.ALL);
-                                for (GWTJahiaNodeVersion version : versions) {
-                                    combo.add(version.getVersionNumber() + " (" + DateTimeFormat.getFormat("d/MM/y hh:mm").format(version.getDate()) + ")");
-                                }
-                                final String s2 = "Always Latest Version";
-                                combo.add(s2);
-                                combo.setSimpleValue(s2);
-                                combo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
-                                    @Override
-                                    public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> simpleComboValueSelectionChangedEvent) {
-                                        SimpleComboValue<String> value = simpleComboValueSelectionChangedEvent.getSelectedItem();
-                                        String value1 = value.getValue();
-                                        if (!s2.equals(value1))
-                                            gwtJahiaNode.setSelectedVersion(value1.split("\\(")[0].trim());
-                                    }
-                                });
-                                combo.setDeferHeight(true);
-                                return combo;
-                            } else {
-                                SimpleComboBox<String> combo = new SimpleComboBox<String>();
-                                combo.setForceSelection(false);
-                                combo.setTriggerAction(ComboBox.TriggerAction.ALL);
-                                combo.add("No version");
-                                combo.setSimpleValue("No version");
-                                combo.setEnabled(false);
-                                combo.setDeferHeight(true);
-                                return combo;
-                            }
-                        }
-                    });
-                    headerList.add(col);
-                } else if (s1.equals("picker") && multiple) {
-                    ColumnConfig col = new ColumnConfig("action", "action", 100);
-
-                    col.setAlignment(Style.HorizontalAlignment.RIGHT);
-                    col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-                        public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                            if (gwtJahiaNode.isMatchFilters()) {
-                                final Button pickContentButton = new Button(Messages.get("label_add", "Add"));
-                                pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
-                                pickContentButton.setEnabled(true);
-                                pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                                    public void componentSelected(ButtonEvent buttonEvent) {
-                                        onContentPicked(gwtJahiaNode);
-                                    }
-                                });
-                                return pickContentButton;
-                            } else {
-                                return new Text("");
-                            }
-                        }
-
-                    });
-                    col.setFixed(true);
-                    headerList.add(col);
-                }
-            }
-            return new ColumnModel(headerList);
         }
 
         public void setContent(Object root) {

@@ -17,11 +17,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -169,20 +171,13 @@ class SearchTabItem extends SidePanelTabItem {
         toolBar.bind(loader);
         contentStore = new ListStore<GWTJahiaNode>(loader);
 
-        List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
+        List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
+        columnNames.add(new GWTColumn("icon","icon",40));
+        columnNames.add(new GWTColumn("displayName",Messages.getResource("fm_info_name"),280));
+        final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
+        columnConfigList.init();
 
-        ColumnConfig col = new ColumnConfig("icon", "", 40);
-        col.setAlignment(Style.HorizontalAlignment.CENTER);
-        col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
-                                 ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
-            }
-        });
-        displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 280));
-        grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
-
+        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(columnConfigList));
 
         //contentContainer.add(grid);
 

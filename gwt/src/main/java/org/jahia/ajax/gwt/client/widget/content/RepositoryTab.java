@@ -88,9 +88,9 @@ public class RepositoryTab extends ContentPanel {
         // tree component
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repositoryType);
         factory.setNodeTypes(config.getFolderTypes());
-        factory.setFolderTypes(config.getFolderTypes());
         factory.setMimeTypes(config.getMimeTypes());
         factory.setFilters(config.getFilters());
+        factory.setFields(config.getTableColumnKeys());
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();
@@ -153,14 +153,7 @@ public class RepositoryTab extends ContentPanel {
             protected void handleAppendDrop(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
                 if (dndEvent.getStatus().getStatus()) {
                     ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
-                    boolean folder = false;
-                    for (GWTJahiaNode node : (List<GWTJahiaNode>) dndEvent.getData()) {
-                        folder |= node.isCollection();
-                    }
-                    if (folder) {
-//                        init = true;
-                        loader.load();
-                    }
+                    loader.load();
                 }
             }
 

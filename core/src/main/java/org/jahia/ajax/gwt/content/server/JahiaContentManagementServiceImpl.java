@@ -214,28 +214,28 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> ls(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException {
-        return navigation.ls(parentNode, nodeTypes, mimeTypes, filters, retrieveCurrentSession());
+    public List<GWTJahiaNode> ls(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters, List<String> fields) throws GWTJahiaServiceException {
+        return navigation.ls(parentNode, nodeTypes, mimeTypes, filters, fields, retrieveCurrentSession());
     }
 
-    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException {
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters, List<String> fields) throws GWTJahiaServiceException {
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
-        for (GWTJahiaNode n : ls(parentNode, nodeTypes, mimeTypes, filters)) {
-            if (n.isMatchFilters()) {
+        for(GWTJahiaNode n : ls(parentNode, nodeTypes, mimeTypes, filters, fields)){
+            if(n.isMatchFilters()){
                 filteredList.add(n);
             }
         }
         return new BaseListLoadResult<GWTJahiaNode>(filteredList);
     }
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> fields, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(repositoryType);
         }
 
         logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
 
-        return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, selectedNodes, openPaths,
+        return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths,
                 getSite(), retrieveCurrentSession());
     }
 

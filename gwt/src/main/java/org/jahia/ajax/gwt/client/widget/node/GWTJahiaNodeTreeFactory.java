@@ -28,8 +28,8 @@ public class GWTJahiaNodeTreeFactory {
     private boolean init = true;
     protected String repository;
     protected String nodeTypes;
-    protected String folderTypes;
     protected String filters;
+    protected List<String> fields = GWTJahiaNode.DEFAULT_FIELDS;
     protected String mimeTypes;
     protected List<String> selectedPath = new ArrayList<String>();
     protected List<String> openPath = new ArrayList<String>();
@@ -85,12 +85,14 @@ public class GWTJahiaNodeTreeFactory {
         this.nodeTypes = nodeTypes;
     }
 
-    public void setFolderTypes(String folderTypes) {
-        this.folderTypes = folderTypes;
-    }
-
     public void setFilters(String filters) {
         this.filters = filters;
+    }
+
+    public void setFields(List<String> fields) {
+        this.fields = new ArrayList<String>(fields);
+        this.fields.add(GWTJahiaNode.CHILDREN_INFO);
+        this.fields.add(GWTJahiaNode.ICON);
     }
 
     public void setMimeTypes(String mimeTypes) {
@@ -217,7 +219,8 @@ public class GWTJahiaNodeTreeFactory {
         @Override
         protected void load(Object currentPage, AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
             if (currentPage == null) {
-                JahiaContentManagementService.App.getInstance().getRoot(repository, nodeTypes+","+folderTypes, mimeTypes, filters, selectedPath, openPath, listAsyncCallback);
+                JahiaContentManagementService.App.getInstance().getRoot(repository, nodeTypes, mimeTypes, filters,
+                        fields, selectedPath, openPath, listAsyncCallback);
             } else {
                 GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) currentPage;
                 if (gwtJahiaNode.isExpandOnLoad()) {
@@ -227,7 +230,8 @@ public class GWTJahiaNodeTreeFactory {
                     }
                     listAsyncCallback.onSuccess(list);
                 } else {
-                    JahiaContentManagementService.App.getInstance().ls(gwtJahiaNode,nodeTypes+","+folderTypes, mimeTypes, filters, listAsyncCallback);
+                    JahiaContentManagementService.App.getInstance().ls(gwtJahiaNode,nodeTypes, mimeTypes, filters,
+                            fields, listAsyncCallback);
                 }
             }
         }

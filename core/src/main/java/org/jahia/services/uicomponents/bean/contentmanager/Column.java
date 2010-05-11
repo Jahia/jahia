@@ -1,7 +1,6 @@
 package org.jahia.services.uicomponents.bean.contentmanager;
 
 import org.jahia.services.uicomponents.bean.Visibility;
-import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
 
@@ -12,20 +11,16 @@ import java.io.Serializable;
  * Time: 3:03:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Column implements Serializable, BeanNameAware {
-    private String name;
+public class Column implements Serializable {
     private String key;
+    private String title;
+    private String titleKey;
+    private String declaringNodeType;
+    private int size = 100;
+
     private Visibility visibility;
 
     public Column() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Visibility getVisibility() {
@@ -44,7 +39,35 @@ public class Column implements Serializable, BeanNameAware {
         this.key = key;
     }
 
-    public void setBeanName(String name) {
-        this.name = name;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitleKey() {
+        return titleKey;
+    }
+
+    public void setTitleKey(String titleKey) {
+        this.titleKey = titleKey;
+    }
+
+    public String getDeclaringNodeType() {
+        return declaringNodeType;
+    }
+
+    public void setDeclaringNodeType(String declaringNodeType) {
+        this.declaringNodeType = declaringNodeType;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 }

@@ -189,6 +189,7 @@ public class Resource {
             while (true) {
                 if (current.getParent().isNodeType("jnt:virtualsite") && (current.isNodeType("jnt:folder") || current.isNodeType("jnt:contentList")))  {
                     bodywrapper = "bodywrapper";
+                    current = node;
                     break;
                 }
                 if (current.hasProperty("j:bodywrapper")) {
@@ -202,7 +203,7 @@ public class Resource {
         } catch (RepositoryException e) {
             logger.error("Cannot find wrapper",e);
         }
-        return wrappers.push(new Wrapper(bodywrapper, node));
+        return wrappers.push(new Wrapper(bodywrapper, current));
     }
 
     @Override

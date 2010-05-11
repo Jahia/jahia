@@ -542,8 +542,8 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
         <property name="titleKey" value="label.studio"/>
-        <property name="minIconStyle" value="gwt-toolbar-icon-edit-min"/>
-        <property name="mediumIconStyle" value="gwt-toolbar-icon-edit-normal"/>
+        <property name="minIconStyle" value="gwt-toolbar-icon-templates-studio"/>
+        <property name="mediumIconStyle" value="gwt-toolbar-icon-templates-studio"/>
         <property name="descriptionKey" value="label.studio"/>
         <property name="properties">
             <list>

@@ -164,7 +164,7 @@ public class NavigationHelper {
                     logger.error(e, e);
                 }
                 // collection condition is available only if the parent node is not a nt:query. Else, the node has to matcch the node type condition
-                if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter|| hasNodes) && nameFilter) {
+                if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
 
 
                     GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode);
@@ -565,12 +565,61 @@ public class NavigationHelper {
         return result;
     }
 
+    /**
+     * Get nodes by category
+     *
+     * @param path
+     * @param currentUserSession
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public List<GWTJahiaNode> getNodesByCategory(String path, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+        JCRNodeWrapper node;
+        try {
+            node = currentUserSession.getNode(path);
+        } catch (RepositoryException e) {
+            logger.error(e.toString(), e);
+            throw new GWTJahiaServiceException(new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
+        }
+        final List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
+
+        try {
+            PropertyIterator references = node.getReferences();
+            Set<String> alreadyIncludedIdentifiers = new HashSet<String>();
+            while (references.hasNext()) {
+                JCRPropertyWrapper reference = (JCRPropertyWrapper) references.next();
+                JCRNodeWrapper currentNode = reference.getParent();
+                // avoid duplicate and category nodes
+                if (!currentNode.isNodeType(Constants.JAHIANT_CATEGORY)) {
+                    if (currentNode.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                        currentNode = currentNode.getParent();
+                    }
+                    if (!alreadyIncludedIdentifiers.contains(currentNode.getIdentifier())) {
+                        result.add(getGWTJahiaNode(currentNode));
+                        alreadyIncludedIdentifiers.add(currentNode.getIdentifier());
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return result;
+    }
+
     private JCRNodeWrapper lookUpParentPageNode(JCRNodeWrapper usage) throws RepositoryException {
+        return lookUpParentNode(usage, "jnt:page");
+    }
+
+    private JCRNodeWrapper lookUpParentNode(JCRNodeWrapper usage, String nodeType) throws RepositoryException {
+        if (nodeType == null) {
+            return null;
+        }
         // look for parent page url
         boolean pageParentFound = false;
         JCRNodeWrapper parentNode = usage.getParent();
         while (!pageParentFound) {
-            if (parentNode.isNodeType("jnt:page")) {
+            if (parentNode.isNodeType(nodeType)) {
                 return parentNode;
             } else {
                 // case of root
@@ -884,12 +933,12 @@ public class NavigationHelper {
         return null;
     }
 
-    private Map<String,Boolean> iconsPresence = new HashMap();
+    private Map<String, Boolean> iconsPresence = new HashMap();
 
     public boolean check(String icon) {
         try {
             if (!iconsPresence.containsKey(icon)) {
-                iconsPresence.put(icon, Jahia.getStaticServletConfig().getServletContext().getResource("/templates/"+icon+".png") != null);
+                iconsPresence.put(icon, Jahia.getStaticServletConfig().getServletContext().getResource("/templates/" + icon + ".png") != null);
             }
             return iconsPresence.get(icon);
         } catch (MalformedURLException e) {

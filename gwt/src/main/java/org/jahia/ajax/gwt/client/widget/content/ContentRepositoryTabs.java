@@ -191,7 +191,7 @@ public class ContentRepositoryTabs extends LeftComponent {
 
         createSearchPanel();
         searchTabITem.setLayout(new FitLayout());
-        searchTabITem.setIcon(StandardIconsProvider.STANDARD_ICONS.query());
+        searchTabITem.setIcon(StandardIconsProvider.STANDARD_ICONS.tabQuery());
         searchTabITem.add(contentSearchForm);
         m_component.add(searchTabITem);
 

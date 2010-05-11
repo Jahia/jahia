@@ -349,6 +349,11 @@ public class SearchHelper {
             criteria.getLanguages().setValue(gwtQuery.getLanguage().getLanguage());
         }
 
+        // category
+        if (gwtQuery.getCategories() != null && !gwtQuery.getCategories().isEmpty()) {
+            criteria.getLanguages().setValue(gwtQuery.getLanguage().getLanguage());
+        }
+
         // query string
         if (gwtQuery.getQuery() != null && gwtQuery.getQuery().length() > 0) {
             criteria.getTerms().get(0).setTerm(gwtQuery.getQuery());
@@ -359,6 +364,7 @@ public class SearchHelper {
             fields.setTitle(gwtQuery.isInMetadatas());
             fields.setDescription(gwtQuery.isInMetadatas());
             fields.setKeywords(gwtQuery.isInMetadatas());
+
         }
 
         return jcrSearchProvider.buildQuery(criteria, session);

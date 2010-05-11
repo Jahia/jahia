@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean name="editmodeEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-        <property name="customEditors" >
+        <property name="customEditors">
             <map>
                 <entry key="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                     <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTabPropertyEditor"/>
@@ -144,6 +144,7 @@
                 <ref bean="sidePanelTab.createContent"/>
                 <ref bean="sidePanelTab.content"/>
                 <ref bean="sidePanelTab.filesimages"/>
+                <ref bean="sidePanelTab.categories"/>
                 <ref bean="sidePanelTab.mashups"/>
                 <ref bean="sidePanelTab.search"/>
                 <ref bean="sidePanelTab.workflow"/>
@@ -297,6 +298,7 @@
                 <ref bean="sidePanelTab.createContent"/>
                 <ref bean="sidePanelTab.content"/>
                 <ref bean="sidePanelTab.filesimages"/>
+                <ref bean="sidePanelTab.categories"/>
                 <ref bean="sidePanelTab.mashups"/>
                 <ref bean="sidePanelTab.search"/>
                 <ref bean="sidePanelTab.workflow"/>
@@ -309,7 +311,8 @@
     <bean id="sidePanelTab.templates" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="templates"/>
         <property name="treeContextMenu">
-            <bean id="org.jahia.toolbar.sidePanel.templates" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="org.jahia.toolbar.sidePanel.templates"
+                  class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="org.jahia.toolbar.item.createTemplate"/>
@@ -320,7 +323,8 @@
                             <property name="titleKey" value="label.templatesDeploy"/>
                         </bean>
                         <ref bean="org.jahia.toolbar.item.createPage"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="org.jahia.toolbar.item.edit">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item"
+                              parent="org.jahia.toolbar.item.edit">
                             <property name="titleKey" value="label.rename"/>
                             <property name="minIconStyle" value="gwt-toolbar-icon-rename"/>
                             <property name="mediumIconStyle" value="gwt-toolbar-icon-rename"/>
@@ -346,7 +350,8 @@
                 <property name="items">
                     <list>
                         <ref bean="org.jahia.toolbar.item.createPage"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="org.jahia.toolbar.item.edit">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item"
+                              parent="org.jahia.toolbar.item.edit">
                             <property name="titleKey" value="label.rename"/>
                             <property name="minIconStyle" value="gwt-toolbar-icon-rename"/>
                             <property name="mediumIconStyle" value="gwt-toolbar-icon-rename"/>
@@ -367,6 +372,15 @@
 
     <bean id="sidePanelTab.createContent" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="createContent"/>
+    </bean>
+
+    <bean id="sidePanelTab.categories" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+        <property name="key" value="categories"/>
+        <property name="params">
+            <map>
+                <entry key="limit" value="500"/>
+            </map>
+        </property>
     </bean>
 
     <bean id="sidePanelTab.content" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">

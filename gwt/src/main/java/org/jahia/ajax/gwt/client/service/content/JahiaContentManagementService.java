@@ -178,6 +178,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public List<GWTJahiaNodeUsage> getUsages(String path) throws GWTJahiaServiceException;
 
+    public PagingLoadResult<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category, int offset, int limit) throws GWTJahiaServiceException;
+
     public void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException;
 
     public void unzip(List<String> paths) throws GWTJahiaServiceException;

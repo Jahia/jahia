@@ -56,12 +56,15 @@ public class SidePanel extends ContentPanel {
                 tabItem = new SearchTabItem(tab);
             } else if (tab.getName().equals("workflow")) {
                 tabItem = new WorkflowTabItem(tab);
-            } else {
+            } else if (tab.getName().equals("categories")) {
+                tabItem = new CategoryBrowseTabItem(tab);
+            }
+
+            else {
                 continue;
             }
             tabs.add(tabItem);
         }
-
         TabPanel tabPanel = new TabPanel();
 
         for (TabItem tab : tabs) {

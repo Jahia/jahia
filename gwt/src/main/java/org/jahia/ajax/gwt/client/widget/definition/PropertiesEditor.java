@@ -133,7 +133,6 @@ public class PropertiesEditor extends FormPanel {
         setScrollMode(Style.Scroll.AUTO);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
-
         renderForm();
     }
 

@@ -59,7 +59,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
-import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -207,6 +206,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     /**
      * Retrive all chidlren nodes
+     *
      * @param parentNode
      * @param nodeTypes
      * @param mimeTypes
@@ -220,8 +220,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException {
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
-        for(GWTJahiaNode n : ls(parentNode, nodeTypes, mimeTypes, filters)){
-            if(n.isMatchFilters()){
+        for (GWTJahiaNode n : ls(parentNode, nodeTypes, mimeTypes, filters)) {
+            if (n.isMatchFilters()) {
                 filteredList.add(n);
             }
         }
@@ -670,8 +670,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void move(String sourcePath, String targetPath) throws GWTJahiaServiceException {
         try {
-            logger.error("******** Source Path: " + sourcePath);
-            logger.error("******** Target Path: " + targetPath);
             contentManager.move(sourcePath, targetPath, retrieveCurrentSession());
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
@@ -709,6 +707,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNodeUsage> getUsages(String path) throws GWTJahiaServiceException {
         return navigation.getUsages(path, retrieveCurrentSession());
     }
+
+    public List<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category) throws GWTJahiaServiceException {
+        return navigation.getNodesByCategory(category.getPath(), retrieveCurrentSession());
+    }
+
+    public PagingLoadResult<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category, int limit, int offset) throws GWTJahiaServiceException {
+        // ToDo: handle pagination directly in the jcr
+        final List<GWTJahiaNode> result = getNodesByCategory(category);
+        int size = result.size();
+        new ArrayList<GWTJahiaNode>(result.subList(offset, Math.min(size, offset + limit)));
+        return new BasePagingLoadResult<GWTJahiaNode>(result, offset, size);
+    }
+
 
     public void zip(List<String> paths, String archiveName) throws GWTJahiaServiceException {
         zip.zip(paths, archiveName, retrieveCurrentSession());
@@ -931,6 +942,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return nodes;
     }
+
     /**
      * Publish the specified path.
      *
@@ -1274,7 +1286,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId,
-            GWTJahiaWorkflowHistoryItem historyItem, String locale) throws GWTJahiaServiceException {
+                                                                     GWTJahiaWorkflowHistoryItem historyItem, String locale) throws GWTJahiaServiceException {
         return workflow.getWorkflowHistoryItems(nodeId, historyItem, retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)));
     }
 

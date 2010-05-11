@@ -167,6 +167,8 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getUsages(String path, AsyncCallback<List<GWTJahiaNodeUsage>> async);
 
+    void getNodesByCategory(GWTJahiaNode category,int offset, int limit,AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
+
     void zip(List<String> paths, String archiveName, AsyncCallback async);
 
     void unzip(List<String> paths, AsyncCallback async);

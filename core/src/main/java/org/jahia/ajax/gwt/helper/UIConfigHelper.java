@@ -740,6 +740,7 @@ public class UIConfigHelper {
                 gwtToolbarItem.setProcesses(processes);
                 // todo : use the role assigned to the action for bypassing workflow ?
                 final WorkflowActionItem workflowActionItem = new WorkflowActionItem(processes, jahiaUser.isAdminMember(0), item.getActionItem());
+                gwtToolbarItem.setMinIconStyle("gwt-toolbar-icon-workflow-start");
                 gwtToolbarItem.setActionItem(workflowActionItem);
             } catch (RepositoryException e) {
                 logger.error("Cannot get workflows", e);

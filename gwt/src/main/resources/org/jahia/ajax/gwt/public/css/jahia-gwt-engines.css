@@ -31,6 +31,20 @@
     background-image: url(../images/template-view.png) !important;
 }
 
+.gwt-toolbar-icon-workflow-start {
+    background-image: url(../images/min/workflow-start.png) !important;
+}
+
+.gwt-toolbar-icon-workflow-status {
+    background-image: url(../images/min/workflow-status.png) !important;
+}
+
+.gwt-toolbar-icon-templates-studio {
+    background-image: url(../images/min/templates-studio.png) !important;
+}
+
+
+
 .gwt-toolbar-icon-addFile {
     background-image: url(../images/add-file.png) !important;
 }

@@ -41,7 +41,7 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("tab_addContent.png")
     public AbstractImagePrototype tabAddContent();
 
-    @Resource("tab_browseContent.gif")
+    @Resource("tab_browseContent.png")
     public AbstractImagePrototype tabBrowseContent();
 
     @Resource("tab_documents.png")

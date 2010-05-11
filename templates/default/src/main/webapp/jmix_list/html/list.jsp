@@ -15,7 +15,7 @@
 
 <template:include template="hidden.header"/>
 
-<c:if test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
+<c:if test="${currentResource.bodywrapper eq 'bodywrapper'}">
     <c:if test="${subNodesTemplate != 'info'}">
         <template:addWrapper name="system"/>
     </c:if>

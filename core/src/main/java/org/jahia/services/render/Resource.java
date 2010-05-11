@@ -63,6 +63,7 @@ public class Resource {
     private String forcedTemplate;
     private String contextConfiguration;
     private Stack<Wrapper> wrappers;
+    private String bodywrapper;
 
     private Set<JCRNodeWrapper> dependencies;
     private List<String> missingResources;
@@ -186,17 +187,22 @@ public class Resource {
         JCRNodeWrapper current = node;
         try {
             while (true) {
+                if (current.getParent().isNodeType("jnt:virtualsite") && (current.isNodeType("jnt:folder") || current.isNodeType("jnt:contentList")))  {
+                    bodywrapper = "bodywrapper";
+                    break;
+                }
                 if (current.hasProperty("j:bodywrapper")) {
-                    return wrappers.push(new Wrapper(current.getProperty("j:bodywrapper").getString(), current));
+                    bodywrapper = current.getProperty("j:bodywrapper").getString();
+                    break;
                 }
                 current = current.getParent();
             }
         } catch (ItemNotFoundException e) {
-            wrappers.push(new Wrapper("bodywrapper", node));
+                return wrappers.push(new Wrapper("bodywrapper", node));
         } catch (RepositoryException e) {
             logger.error("Cannot find wrapper",e);
         }
-        return null;
+        return wrappers.push(new Wrapper(bodywrapper, node));
     }
 
     @Override
@@ -309,6 +315,10 @@ public class Resource {
         public int hashCode() {
             return nodeType.getName().hashCode();
         }
+    }
+
+    public String getBodywrapper() {
+        return bodywrapper;
     }
 
     public class Wrapper {

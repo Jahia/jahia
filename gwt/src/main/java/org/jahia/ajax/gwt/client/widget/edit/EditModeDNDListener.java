@@ -22,10 +22,7 @@ import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngi
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -66,6 +63,7 @@ public class EditModeDNDListener extends DNDListener {
     public static final String SOURCE_NODETYPE = "sourceNodeType";
     public static final String OPERATION_CALLED = "operationCalled";
     public static final String BINDED_REFERENCE_TYPE = "bindedReferenceType";
+    public static final String BINDED_MIXIN_TYPES = "bindedMixinTypes";
 
     public EditModeDNDListener(EditLinker editLinker) {
         this.editLinker = editLinker;
@@ -234,6 +232,18 @@ public class EditModeDNDListener extends DNDListener {
             } else if (BINDED_REFERENCE_TYPE.equals(sourceType)) {
                 // Item move
                 final GWTJahiaNode jahiaNode = (GWTJahiaNode) e.getStatus().getData(TARGET_NODE);
+                if(e.getStatus().getData(BINDED_MIXIN_TYPES)!=null) {
+                    jahiaNode.getNodeTypes().add((String) e.getStatus().getData(BINDED_MIXIN_TYPES));
+                    async.saveProperties(Arrays.asList(jahiaNode),new ArrayList<GWTJahiaNodeProperty>(), new AsyncCallback() {
+                        public void onFailure(Throwable throwable) {
+                            //To change body of implemented methods use File | Settings | File Templates.
+                        }
+
+                        public void onSuccess(Object o) {
+                            //To change body of implemented methods use File | Settings | File Templates.
+                        }
+                    });
+                }
                 List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
                 final List<GWTJahiaNode> srcNodes = e.getStatus().getData(SOURCE_NODES);
                 final GWTJahiaNodeProperty gwtJahiaNodeProperty = new GWTJahiaNodeProperty("j:bindedComponent",

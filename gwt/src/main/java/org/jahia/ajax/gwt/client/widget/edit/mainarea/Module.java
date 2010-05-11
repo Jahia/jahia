@@ -165,4 +165,8 @@ public abstract class Module extends LayoutContainer {
             head.setText(headerText);
         }
     }
+
+    public String getScriptInfo() {
+        return scriptInfo;
+    }
 }

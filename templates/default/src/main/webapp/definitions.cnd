@@ -91,6 +91,8 @@
 
 [jnt:pageTagging] > jnt:content, mix:title, jmix:siteComponentContent
 
+[jnt:tagging] > jnt:content, mix:title, jmix:siteComponentContent, jmix:bindedComponent
+
 [jnt:tagCloud] > jnt:content, mix:title, jmix:siteComponentContent
  - j:usageThreshold (long) = 1
 

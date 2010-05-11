@@ -54,20 +54,15 @@ public class LinkerTag extends ModuleTag implements ParamParent {
 
     private static Logger logger = Logger.getLogger(LinkerTag.class);
 
-    private String areaType = "jnt:contentList";
-    private boolean forceCreation;
-
-    public void setAreaType(String areaType) {
-        this.areaType = areaType;
-    }
-
-    public void setForceCreation(boolean forceCreation) {
-        this.forceCreation = forceCreation;
-    }
+    private String mixinType;
 
     @Override
     protected String getModuleType() throws RepositoryException {
         return "linker";
+    }
+
+    public void setMixinType(String mixinType) {
+        this.mixinType = mixinType;
     }
 
     @Override
@@ -80,7 +75,7 @@ public class LinkerTag extends ModuleTag implements ParamParent {
         }
 
         if (renderContext.isEditMode()) {
-            printModuleStart("linker", false, false, false, false, currentPath, null, null);
+            printModuleStart("linker", false, false, false, false, currentPath, null, mixinType);
             printModuleEnd();
         }
     }

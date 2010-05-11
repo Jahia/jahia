@@ -32,6 +32,7 @@
 package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -545,7 +546,7 @@ public class Service extends JahiaService {
     }
 
     public void addNewTag(NodeWrapper node, final String value, KnowledgeHelper drools) throws RepositoryException {
-        String siteKey = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getSiteKey() : null;
+        String siteKey = node.getPath().startsWith("/sites/")? StringUtils.substringBefore(node.getPath().substring(7),"/"):null;
         if (siteKey == null) {
             logger.warn("Current site cannot be detected. Skip adding new tag for the node " + node.getPath());
             return;

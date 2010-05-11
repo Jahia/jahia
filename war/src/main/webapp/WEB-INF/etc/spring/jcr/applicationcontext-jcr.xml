@@ -205,6 +205,9 @@
     	<property name="showHidden" value="false"/>
     	<property name="showProtected" value="true"/>
     </bean>
+    <bean id="commponentLinkerInitializer" class="org.jahia.services.content.nodetypes.initializers.ComponentLinkerChoiceListInitializer">
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+    </bean>
     <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" factory-method="getInstance">
         <property name="initializers">
             <map>
@@ -221,6 +224,7 @@
                 <entry key="flag" value-ref="countryFlagInitializer"/>                
                 <entry key="sortableFieldnames" value-ref="sortableFieldnamesInitializer"/>
                 <entry key="moduleImage" value-ref="moduleImageInitializer"/>
+                <entry key="linkerProps" value-ref="commponentLinkerInitializer"/>
             </map>
         </property>
     </bean>

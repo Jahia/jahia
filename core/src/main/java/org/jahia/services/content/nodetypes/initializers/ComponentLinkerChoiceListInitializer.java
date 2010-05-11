@@ -1,6 +1,7 @@
 /**
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,14 +20,14 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license
+ * http://www.jahia.com/license"
  *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
- * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
+ * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.content.nodetypes.initializers;
@@ -34,76 +35,84 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
-import org.jahia.services.render.RenderContext;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import java.util.*;
 
 /**
- * Initializer to fill combobox with field names, which can be chosen to sort a
- * list.
- * 
- * @author Benjamin Papez
- * @author Sergiy Shyrkov
+ * Created by IntelliJ IDEA.
+ *
+ * @author : rincevent
+ * @since : JAHIA 6.1
+ *        Created : 11 mai 2010
  */
-public class SortableFieldnamesChoiceListInitializerImpl implements ChoiceListInitializer, ChoiceListRenderer {
-    private transient static Logger logger = Logger.getLogger(TemplatesChoiceListInitializerImpl.class);
+public class ComponentLinkerChoiceListInitializer implements ChoiceListInitializer {
+    private transient static Logger logger = Logger.getLogger(ComponentLinkerChoiceListInitializer.class);
+    private JCRSessionFactory sessionFactory;
 
-    private Set<String> excludedNodeTypes = Collections.emptySet();
+    public void setSessionFactory(JCRSessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-    private boolean showHidden;
-
-    private boolean showProtected = true;
-
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
-        if (context == null) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType,
+                                                     String param, List<ChoiceListValue> values, Locale locale,
+                                                     Map<String, Object> context) {
+        List<ChoiceListValue> choiceListValues = new ArrayList<ChoiceListValue>();
+        JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) context.get("contextNode");
+        ExtendedPropertyDefinition[] propertyDefs;
+        if (nodeWrapper == null) {
             return Collections.emptyList();
         }
-
-        JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
-
-        ExtendedPropertyDefinition[] propertyDefs;
         try {
-            if (node == null && realNodeType == null) {
-                return Collections.emptyList();
-            } else if (node != null) {
-                // TODO get the child nodes, their types and declared properties
-                propertyDefs = getCommonChildNodeDefinitions(node,showHidden,showProtected,excludedNodeTypes);
+            if (nodeWrapper.isNodeType("jmix:bindedComponent")) {
+                JCRNodeWrapper bindedNode = (JCRNodeWrapper) nodeWrapper.getProperty("j:bindedComponent").getNode();
+                if (bindedNode.isNodeType("jnt:contentList")) {
+                    if (bindedNode.isNodeType("jmix:listRestrictions")) {
+                        final Value[] values1 = bindedNode.getProperty("j:allowedTypes").getValues();
+                        propertyDefs = getCommonChildNodeDefinitions(values1, true, true,
+                                                                     new LinkedHashSet<String>());
+                    } else if (bindedNode.hasNodes()) {
+                        propertyDefs = SortableFieldnamesChoiceListInitializerImpl.getCommonChildNodeDefinitions(
+                                bindedNode, true, true, new LinkedHashSet<String>());
+                    } else {
+                        return Collections.emptyList();
+                    }
+                } else {
+                    propertyDefs = bindedNode.getPrimaryNodeType().getPropertyDefinitions();
+                }
             } else {
-                propertyDefs = realNodeType.getPropertyDefinitions();
+                return Collections.emptyList();
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             return Collections.emptyList();
         }
-
-        List<ChoiceListValue> vs = new LinkedList<ChoiceListValue>();
         for (ExtendedPropertyDefinition propertyDef : propertyDefs) {
-            vs.add(new ChoiceListValue(propertyDef.getLabel(locale), null, new ValueImpl(
+            choiceListValues.add(new ChoiceListValue(propertyDef.getLabel(locale), null, new ValueImpl(
                     propertyDef.getName(), PropertyType.STRING, false)));
         }
-        Collections.sort(vs);
-
-        return vs;
+        Collections.sort(choiceListValues);
+        return choiceListValues;
     }
 
     @SuppressWarnings("unchecked")
-    public static ExtendedPropertyDefinition[] getCommonChildNodeDefinitions(JCRNodeWrapper node,boolean showHidden,boolean showProtected,Set<String> excludedNodeTypes) throws RepositoryException {
+    public static ExtendedPropertyDefinition[] getCommonChildNodeDefinitions(Value[] values, boolean showHidden,
+                                                                             boolean showProtected,
+                                                                             Set<String> excludedNodeTypes)
+            throws RepositoryException {
         Map<String, Map<String, ExtendedPropertyDefinition>> defs = null;
-        if (node.hasNodes()) {
-            NodeIterator children = node.getNodes();
-            while (children.hasNext()) {
-
-                JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
+        final NodeTypeRegistry typeRegistry = NodeTypeRegistry.getInstance();
+        if (values.length > 0) {
+            for (Value value : values) {
+                final ExtendedNodeType type = typeRegistry.getNodeType(value.getString());
                 if (defs == null) {
                     // first child
                     defs = LazyMap.decorate(new HashMap<String, Map<String, ExtendedPropertyDefinition>>(),
@@ -112,7 +121,7 @@ public class SortableFieldnamesChoiceListInitializerImpl implements ChoiceListIn
                                                     return new HashMap<String, ExtendedPropertyDefinition>();
                                                 }
                                             });
-                    for (ExtendedPropertyDefinition propertyDef : child.getPrimaryNodeType().getPropertyDefinitions()) {
+                    for (ExtendedPropertyDefinition propertyDef : type.getPropertyDefinitions()) {
                         // filter out hidden and protected if needed
                         if ((showHidden || !propertyDef.isHidden()) && (showProtected || !propertyDef.isProtected())) {
                             ExtendedNodeType nodeType = propertyDef.getDeclaringNodeType();
@@ -125,7 +134,7 @@ public class SortableFieldnamesChoiceListInitializerImpl implements ChoiceListIn
                     // filter out node types
                     for (Iterator<String> iterator = defs.keySet().iterator(); iterator.hasNext();) {
                         String commonType = iterator.next();
-                        if (!child.isNodeType(commonType)) {
+                        if (!type.isNodeType(commonType)) {
                             // the node has no such type --> remove the type from common
                             iterator.remove();
                         }
@@ -147,29 +156,5 @@ public class SortableFieldnamesChoiceListInitializerImpl implements ChoiceListIn
         } else {
             return new ExtendedPropertyDefinition[0];
         }
-    }
-
-    public Map<String, Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
-            throws RepositoryException {
-        Map<String, Object> map = new HashMap<String, Object>(1);
-        map.put("displayName", getStringRendering(context, propertyWrapper));
-        return map;
-    }
-
-    public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
-            throws RepositoryException {
-        return JCRContentUtils.getDisplayLabel(propertyWrapper, context.getMainResource().getLocale());
-    }
-
-    public void setExcludedNodeTypes(Set<String> excludedNodeTypes) {
-        this.excludedNodeTypes = excludedNodeTypes;
-    }
-
-    public void setShowHidden(boolean showHidden) {
-        this.showHidden = showHidden;
-    }
-
-    public void setShowProtected(boolean showProtected) {
-        this.showProtected = showProtected;
     }
 }

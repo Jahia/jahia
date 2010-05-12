@@ -136,8 +136,16 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     };
 
     public NodeColumnConfigList(List<GWTColumn> columnList) {
-        this.columnList = columnList;
+        this(columnList,false);
     }
+
+    public NodeColumnConfigList(List<GWTColumn> columnList, boolean init) {
+        this.columnList = columnList;
+        if(init){
+            init();
+        }
+    }
+
 
     /**
      * @return

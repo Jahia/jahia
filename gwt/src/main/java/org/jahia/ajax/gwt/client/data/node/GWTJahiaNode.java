@@ -75,6 +75,10 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:template", "j:width", "j:height");
+
+    public static final List<String> DEFAULT_REFERENCE_FIELDS =
+            Arrays.asList(ICON, COUNT, CHILDREN_INFO,NAME);
+
     public static final List<String> RESERVED_FIELDS =
             Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, WRITEABLE, DELETEABLE, UUID, DISPLAY_NAME, FILE,
                     SIZE, NODE_TYPES, INHERITED_NODE_TYPES, ACL_CONTEXT, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,

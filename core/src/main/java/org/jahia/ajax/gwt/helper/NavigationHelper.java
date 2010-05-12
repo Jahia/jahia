@@ -633,7 +633,7 @@ public class NavigationHelper {
                         currentNode = currentNode.getParent();
                     }
                     if (!alreadyIncludedIdentifiers.contains(currentNode.getIdentifier())) {
-                        result.add(getGWTJahiaNode(currentNode));
+                        result.add(getGWTJahiaNode(currentNode,Arrays.asList(GWTJahiaNode.ICON,GWTJahiaNode.NAME)));
                         alreadyIncludedIdentifiers.add(currentNode.getIdentifier());
                     }
                 }

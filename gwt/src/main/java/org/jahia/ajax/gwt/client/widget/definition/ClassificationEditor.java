@@ -87,7 +87,7 @@ public class ClassificationEditor extends ContentPanel {
         setHeight("100%");
         setBorders(false);
         setHeaderVisible(false);
-        initStoreAndLoader(node);
+        initStores(node);
 
         final ContentPanel catPanel = new ContentPanel();
         catPanel.setHeaderVisible(false);
@@ -114,7 +114,7 @@ public class ClassificationEditor extends ContentPanel {
      * @return
      */
     private TreeGrid<GWTJahiaNode> createCategoriedPickerPanel() {
-        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(JCRClientUtils.CATEGORY_REPOSITORY);
+        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(JCRClientUtils.CATEGORY_REPOSITORY, GWTJahiaNode.DEFAULT_REFERENCE_FIELDS);
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         treeStore = treeGridFactory.getStore();
 
@@ -159,35 +159,22 @@ public class ClassificationEditor extends ContentPanel {
         return treeGrid;
     }
 
+    /**
+     * init all stores
+     *
+     * @param node
+     */
+    private void initStores(final GWTJahiaNode node) {
+        initCategoriesStoreA(node);
+        initTagsStore(node);
+    }
 
-    private void initStoreAndLoader(final GWTJahiaNode node) {
-        TreeLoader<GWTJahiaNode> catLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-                if (node != null) {
-                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                    async.getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-                        public void onFailure(Throwable caught) {
-                            //To change body of implemented methods use File | Settings | File Templates.
-                        }
-
-                        public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                            final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get(
-                                    "j:defaultCategory");
-                            if (gwtJahiaNodeProperty != null) {
-                                final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
-                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
-                                for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
-                                    nodes.add(propertyValue.getNode());
-                                }
-                                listAsyncCallback.onSuccess(nodes);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-        catStore = new TreeStore<GWTJahiaNode>(catLoader);
+    /**
+     * init tag store
+     *
+     * @param node
+     */
+    private void initTagsStore(final GWTJahiaNode node) {
         TreeLoader<GWTJahiaNode> tagLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
             @Override
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
@@ -215,6 +202,42 @@ public class ClassificationEditor extends ContentPanel {
         });
 
         tagStore = new TreeStore<GWTJahiaNode>(tagLoader);
+    }
+
+    /**
+     * init categories store
+     *
+     * @param node
+     */
+    private void initCategoriesStoreA(final GWTJahiaNode node) {
+        TreeLoader<GWTJahiaNode> catLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
+            @Override
+            protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
+                if (node != null) {
+                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+                    async.getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+                        public void onFailure(Throwable caught) {
+                            //To change body of implemented methods use File | Settings | File Templates.
+                        }
+
+                        public void onSuccess(GWTJahiaGetPropertiesResult result) {
+                            final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get(
+                                    "j:defaultCategory");
+                            if (gwtJahiaNodeProperty != null) {
+                                final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
+                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
+                                for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
+                                    nodes.add(propertyValue.getNode());
+                                }
+                                listAsyncCallback.onSuccess(nodes);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        catStore = new TreeStore<GWTJahiaNode>(catLoader);
     }
 
     private Component createSelectedCategoriesPanel() {
@@ -292,7 +315,7 @@ public class ClassificationEditor extends ContentPanel {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                async.getTagNode(autoCompleteComboBox.getRawValue(),true, new AsyncCallback<GWTJahiaNode>() {
+                async.getTagNode(autoCompleteComboBox.getRawValue(), true, new AsyncCallback<GWTJahiaNode>() {
                     /**
                      * On success
                      * @param result
@@ -308,7 +331,7 @@ public class ClassificationEditor extends ContentPanel {
                      * @param caught
                      */
                     public void onFailure(Throwable caught) {
-                        Log.error(caught.getMessage(),caught);
+                        Log.error(caught.getMessage(), caught);
                     }
 
 

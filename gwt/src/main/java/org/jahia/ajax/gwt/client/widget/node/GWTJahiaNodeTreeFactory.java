@@ -39,10 +39,15 @@ public class GWTJahiaNodeTreeFactory {
     protected TreeStore<GWTJahiaNode> store;
 
     public GWTJahiaNodeTreeFactory(final String repositoryType) {
+        this(repositoryType,GWTJahiaNode.DEFAULT_FIELDS);
+    }
+
+    public GWTJahiaNodeTreeFactory(final String repositoryType, List<String> fields) {
         repository = repositoryType;
         nodeTypes = "";
         filters = "";
         mimeTypes = "";
+        this.fields = fields;
     }
 
     public GWTJahiaNodeTreeLoader getLoader() {

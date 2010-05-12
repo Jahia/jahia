@@ -28,12 +28,14 @@ under the License.
             <item name="Introduction" href="./index.html"/>
             <item name="Contribution Mode" href="./contribute.html"/>
             <item name="Dynamic Module" href="./dynamic_module.html"/>
-            <item name="Rendering filters" href="./filter.html"/>
+            <item name="Rendering filters" href="./renderingFilter.html"/>
             <item name="Reusable component" href="./reusableComponent.html"/>
             <item name="Areas" href="./areas.html"/>
             <item name="Rules" href="./rules.html"/>
             <item name="REST API" href="rest.html" />
             <item name="Auto-completion" href="./autocompletion.html"/>
+            <item name="List filters" href="./listFilter.html"/>
+            <item name="Binded components" href="./bindedComponents.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

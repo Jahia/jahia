@@ -1,0 +1,86 @@
+BindedComponents
+
+  This mechanism allows to define in a module that this module need to be linked to another module to be fully effective.
+
+  For example we can define a calendar module that will drive a list of news by displaying links on the days that have
+  news (with the number of news per day).
+
+  This can be extended to allow our calendar to interact with any type of list of content.
+
+  - We will see first how to define a binded component
+  - Then how to refer to the binded element to drive it
+  - How the user can define the bound between two component
+
+* Define a binded component:
+
+  In your <<cnd>> file you definition should inherit the mixin type: <<<<jmix:bindedComponent>>>>. This mixin define a
+  simple weakreference as a property.
+
+----------------------------------------------
+[jmix:bindedComponent] mixin
+ - j:bindedComponent (weakreference)
+----------------------------------------------
+
+  A usage example :
+
+----------------------------------------------
+[jnt:tagging] > jnt:content, mix:title, jmix:siteComponentContent, jmix:bindedComponent
+----------------------------------------------
+
+    This definition only define that the tagging element has to be bound to be effective
+
+  Another usage example :
+
+----------------------------------------------
+[jnt:calendar] > jnt:content, jmix:editorialContent, jmix:bindedComponent
+ - startDateProperty (string,choicelist[linkerProps])
+ - endDateProperty (string,choicelist[linkerProps])
+----------------------------------------------
+
+    This definition extend the fact that the calendar component needs to be bound to another component and also add two
+    properties that are initialized based on the list of properties available from the bound component. If I bind my calendar
+    to a list of news, I will have access to all the news properties to drive the list, and I should choose a date
+    property to make my calendar work.
+
+* How to refer to the binded element to drive it
+
+  In your module files just access to the property <<j:bindedComponent>> to have access to the binded component and
+  use it as you would.
+
+
+  An example from the calendar module, that fill a map with the number of node per date.
+  
+------------------------------------------------
+<jcr:nodeProperty node="${currentNode}" name="j:bindedComponent" var="linked"/>
+
+<c:forEach items="${linked.node.nodes}" var="linkedChild" varStatus="status">
+    <fmt:formatDate pattern="yyyy-MM-dd" value="${linkedChild.properties[currentNode.properties.startDateProperty.string].date.time}" var="startDate"/>
+    <c:choose>
+        <c:when test="${empty datas[startDate]}">
+            <c:set target="${datas}" property="${startDate}" value="1"/>
+        </c:when>
+        <c:otherwise>
+            <c:set target="${datas}" property="${startDate}" value="${datas[startDate]+1}"/>
+        </c:otherwise>
+    </c:choose>
+</c:forEach>
+-------------------------------------------------
+
+* How the user can define the bound between two component ?
+
+  To allow the user to define to which component your module will be bound you have to define a draggable element in
+  your module file. This draggable element will be drop by the user to the element he want to bound to your module.
+
+  To define this element just use the tag <<<<\<template:linker\>>>>>.
+
+  A simple example from calendar :
+
+-------------------------------------
+<template:linker path="*"/>
+-------------------------------------
+
+  A more advanced example from tagging, that define taht on the bound component we need to add a mixin type :
+
+--------------------------------------
+<template:linker path="*" mixinType="jmix:tagged"/>
+--------------------------------------   

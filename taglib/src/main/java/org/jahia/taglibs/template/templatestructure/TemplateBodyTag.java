@@ -161,8 +161,12 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             pageContext.getOut().println(buf.toString());
 
             if (renderContext != null) {
-                if (renderContext.isEditMode()) {
-                    Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
+                if (renderContext.isEditMode()) {                    
+                    Resource r = (Resource) pageContext.getRequest().getAttribute("wrappedResource");
+                    if (r == null) {
+                        r = (Resource) pageContext.getRequest().getAttribute("currentResource");
+                    }
+
                     pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
                     pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
 

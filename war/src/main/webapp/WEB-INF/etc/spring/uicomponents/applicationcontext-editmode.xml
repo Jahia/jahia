@@ -116,7 +116,7 @@
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>createpage</value>
+                            <value>createPage</value>
                             <value>template</value>
                             <value>option</value>
                             <value>rights</value>
@@ -267,7 +267,7 @@
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>createpage</value>
+                            <value>createPage</value>
                             <value>metadata</value>
                             <value>classification</value>
                             <value>option</value>

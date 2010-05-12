@@ -29,7 +29,7 @@
     <c:set var="listTotalSize" value="${fn:length(result.nodes)}" scope="request"/>
     <c:choose>
         <c:when test="${empty param.pagesize}">
-            <c:set var="pageSize" value="10"/>
+            <c:set var="pageSize" value="40"/>
         </c:when>
         <c:otherwise>
             <c:set var="pageSize" value="${param.pagesize}"/>

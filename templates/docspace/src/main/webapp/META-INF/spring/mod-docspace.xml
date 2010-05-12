@@ -9,4 +9,8 @@
     <bean class="org.jahia.modules.docspace.PublishFile">
         <property name="name" value="publishFile"/>
     </bean>
+    <bean id="myDocspacesProfileExtension" class="org.jahia.utils.profile.ProfileExtension">
+        <property name="key" value="mydocspaces"/>
+        <property name="displayName" value="My Docspaces"/>
+    </bean>
 </beans>

@@ -19,6 +19,8 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="ajaxreplace.js"/>
 <c:if test="${not empty paginationActive and totalSize > 0 and nbPages > 1}">
     <c:set var="searchUrl" value="${url.current}"/>
     <c:if test="${not empty currentResource.moduleParams.displaySearchParams}">

@@ -17,12 +17,13 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="css" resources="960.css"/>
+<template:addResources type="css" resources="docspace.css"/>
+<template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addWrapper name="wrapper.dashboard"/>
 <div id="${currentNode.identifier}">
     <jcr:sql var="result"
-             sql="select * from [jnt:content] as p where p.[jcr:createdBy]='${currentNode.name}' or p.[jcr:lastModifiedBy]='${currentNode.name}' order by p.[jcr:lastModified] desc"/>
+             sql="select * from [jnt:docspace] as file order by file.[jcr:lastModified] desc"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
     <c:set var="listTotalSize" value="${fn:length(result.nodes)}" scope="request"/>
     <c:choose>
@@ -34,17 +35,15 @@
         </c:otherwise>
     </c:choose>
     <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
-    <ul>
+    <ul class="docspacelist">
         <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
-            <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
             <li>
-                <a href="${url.base}${subchild.path}.html" target="_blank">
-                    <c:choose>
-                        <c:when test="${not empty title}">${title.string}</c:when>
-                        <c:otherwise>${subchild.name}</c:otherwise>
-                    </c:choose>
-                </a>
-                &nbsp;<span><fmt:message key="label.lastModif"/>:&nbsp;<fmt:formatDate value="${subchild.properties['jcr:lastModified'].date.time}" dateStyle="short" type="both"/></span>
+                <c:if test="${jcr:hasPermission(subchild, 'write')}">
+                    <a class="adocspace" href="${url.basePreview}${subchild.path}.html"
+                       title="${subchild.name}">${functions:abbreviate(subchild.name,20,30,'...')}</a>
+                </c:if>
+                &nbsp;<span><fmt:message key="label.lastModif"/>:&nbsp;<fmt:formatDate
+                    value="${subchild.properties['jcr:lastModified'].date.time}" dateStyle="short" type="both"/></span>
             </li>
         </c:forEach>
     </ul>

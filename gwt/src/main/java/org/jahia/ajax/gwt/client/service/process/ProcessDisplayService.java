@@ -59,14 +59,14 @@ public interface ProcessDisplayService extends RemoteService {
         public static synchronized ProcessDisplayServiceAsync getInstance() {
             if (app == null) {
                 String relativeServiceEntryPoint = createEntryPointUrl();
-                String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                String serviceEntryPoint = URL.getAbsoluteURL(relativeServiceEntryPoint);
                 app = (ProcessDisplayServiceAsync) GWT.create(ProcessDisplayService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
 
                 JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
                     public void updateEntryPointUrl() {
                         String relativeServiceEntryPoint = createEntryPointUrl();
-                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                        String serviceEntryPoint = URL.getAbsoluteURL(relativeServiceEntryPoint);
                         ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
                     }
                 });

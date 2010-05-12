@@ -323,14 +323,14 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
         public static synchronized JahiaContentManagementServiceAsync getInstance() {
             if (app == null) {
                 String relativeServiceEntryPoint = createEntryPointUrl();
-                String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                String serviceEntryPoint = URL.getAbsoluteURL(relativeServiceEntryPoint);
                 app = (JahiaContentManagementServiceAsync) GWT.create(JahiaContentManagementService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
 
                 JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
                     public void updateEntryPointUrl() {
                         String relativeServiceEntryPoint = createEntryPointUrl();
-                        String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                        String serviceEntryPoint = URL.getAbsoluteURL(relativeServiceEntryPoint);
                         ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
                     }
                 });

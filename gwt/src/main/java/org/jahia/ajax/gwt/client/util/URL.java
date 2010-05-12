@@ -84,7 +84,7 @@ public class URL {
      * @param url
      * @return
      */
-    public static String getAbsolutleURL(String url) {
+    public static String getAbsoluteURL(String url) {
         String server = getServerBaseURL();
         return server + url;
     }

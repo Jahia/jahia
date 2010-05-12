@@ -61,7 +61,7 @@ public interface ToolbarService extends RemoteService {
         public static synchronized ToolbarServiceAsync getInstance() {
             if (ourInstance == null) {
                 String relativeServiceEntryPoint = createEntryPointUrl();
-                String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                String serviceEntryPoint = URL.getAbsoluteURL(relativeServiceEntryPoint);
                 ourInstance = (ToolbarServiceAsync) GWT.create(ToolbarService.class);
                 ((ServiceDefTarget) ourInstance).setServiceEntryPoint(serviceEntryPoint);
             }

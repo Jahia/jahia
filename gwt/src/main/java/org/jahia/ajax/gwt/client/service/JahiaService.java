@@ -56,14 +56,14 @@ public interface JahiaService extends RemoteService {
         public static synchronized JahiaServiceAsync getInstance() {
             if (app == null) {
                 String relativeServiceEntryPoint = createEntryPointUrl();
-                String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                String serviceEntryPoint = URL.getAbsoluteURL(relativeServiceEntryPoint);
                 app = (JahiaServiceAsync) GWT.create(JahiaService.class);
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
 
                 JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
                     public void updateEntryPointUrl() {
                         String relativeServiceEntryPoint = createEntryPointUrl();
-                String serviceEntryPoint = URL.getAbsolutleURL(relativeServiceEntryPoint);
+                String serviceEntryPoint = URL.getAbsoluteURL(relativeServiceEntryPoint);
                         ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
                     }
                 });

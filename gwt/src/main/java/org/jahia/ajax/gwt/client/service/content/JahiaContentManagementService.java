@@ -90,6 +90,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException;
 
+    public GWTJahiaNode getTagNode(String tagName, boolean create) throws GWTJahiaServiceException;
+
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException;

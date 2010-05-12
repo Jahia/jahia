@@ -80,6 +80,8 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      */
     void getNode(String path,AsyncCallback<GWTJahiaNode> async);
 
+    void getTagNode(String tagName, boolean create,AsyncCallback<GWTJahiaNode> async);
+
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths, AsyncCallback async);
 
     void search(String searchString, int limit, AsyncCallback<List<GWTJahiaNode>> async);

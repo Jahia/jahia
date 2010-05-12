@@ -470,7 +470,7 @@ public class NavigationHelper {
      * Return a node if existing exception otherwise
      *
      * @param path               the path to test an dget the node if existing
-     * @param currentUserSession  @return the existing node
+     * @param currentUserSession @return the existing node
      * @throws GWTJahiaServiceException it node does not exist
      */
     public GWTJahiaNode getNode(String path, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
@@ -479,6 +479,37 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(
                     new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
+        }
+    }
+
+    /**
+     * Get tag node
+     *
+     * @param name
+     * @param site
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTJahiaNode getTagNode(String name, JCRSiteNode site) throws GWTJahiaServiceException {
+        try {
+            JCRNodeWrapper node = site.getNode("tags");
+            if (name == null) {
+                return getGWTJahiaNode(node);
+            }
+            if (node.hasNode(name)) {
+                return getGWTJahiaNode(node.getNode(name));
+            }
+            return null;
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    public JCRNodeWrapper getTagsNode(JCRSiteNode site) throws GWTJahiaServiceException {
+        try {
+            return site.getNode("tags");
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
@@ -830,7 +861,7 @@ public class NavigationHelper {
         //count
         if (fields.contains(GWTJahiaNode.COUNT)) {
             try {
-                n.set("count", JCRContentUtils.size(node.getWeakReferences()));
+                n.set("count", JCRContentUtils.size(node.getWeakReferences())+JCRContentUtils.size(node.getReferences()));
             } catch (RepositoryException e) {
                 logger.warn("Unable to count node references for node");
             }

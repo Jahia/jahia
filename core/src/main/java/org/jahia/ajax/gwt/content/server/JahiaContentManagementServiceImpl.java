@@ -220,8 +220,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters, List<String> fields) throws GWTJahiaServiceException {
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
-        for(GWTJahiaNode n : ls(parentNode, nodeTypes, mimeTypes, filters, fields)){
-            if(n.isMatchFilters()){
+        for (GWTJahiaNode n : ls(parentNode, nodeTypes, mimeTypes, filters, fields)) {
+            if (n.isMatchFilters()) {
                 filteredList.add(n);
             }
         }
@@ -250,6 +250,23 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException {
         return navigation.getNode(path, retrieveCurrentSession());
     }
+
+    /**
+     * Get nodes tag by name
+     * @param tagName
+     * @param create
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public GWTJahiaNode getTagNode(String tagName, boolean create) throws GWTJahiaServiceException {
+        GWTJahiaNode tagNode = navigation.getTagNode(tagName, getSite());
+        if (tagNode == null && create) {
+            return createNode(navigation.getTagsNode(getSite()).getPath(), tagName, "jnt:tag", null, null, new ArrayList<GWTJahiaNodeProperty>());
+        } else {
+            return tagNode;
+        }
+    }
+
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException {
         getRequest().getSession().setAttribute(navigation.SAVED_OPEN_PATHS + repositoryType, paths);

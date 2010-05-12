@@ -87,7 +87,7 @@ public class ClassificationEditor extends ContentPanel {
         setHeight("100%");
         setBorders(false);
         setHeaderVisible(false);
-        createStoreAndLoader(node);
+        initStoreAndLoader(node);
 
         final ContentPanel catPanel = new ContentPanel();
         catPanel.setHeaderVisible(false);
@@ -114,8 +114,8 @@ public class ClassificationEditor extends ContentPanel {
      * @return
      */
     private TreeGrid<GWTJahiaNode> createCategoriedPickerPanel() {
-        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(JCRClientUtils.CATEGORY_REPOSITORY+";"+JCRClientUtils.TAG_REPOSITORY);
-        treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES+","+JCRClientUtils.TAG_NODETYPES);
+        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(JCRClientUtils.CATEGORY_REPOSITORY);
+        treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         treeStore = treeGridFactory.getStore();
 
         ColumnConfig name = new ColumnConfig("name", "Name", TREE_COLUMN_SIZE);
@@ -160,7 +160,7 @@ public class ClassificationEditor extends ContentPanel {
     }
 
 
-    private void createStoreAndLoader(final GWTJahiaNode node) {
+    private void initStoreAndLoader(final GWTJahiaNode node) {
         TreeLoader<GWTJahiaNode> catLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
             @Override
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
@@ -292,8 +292,7 @@ public class ClassificationEditor extends ContentPanel {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                final String s = treeStore.getRootItems().get(1).getPath();
-                async.getNode(s + "/" + autoCompleteComboBox.getRawValue(), new AsyncCallback<GWTJahiaNode>() {
+                async.getTagNode(autoCompleteComboBox.getRawValue(),true, new AsyncCallback<GWTJahiaNode>() {
                     /**
                      * On success
                      * @param result
@@ -309,21 +308,7 @@ public class ClassificationEditor extends ContentPanel {
                      * @param caught
                      */
                     public void onFailure(Throwable caught) {
-                        async.createNode(s, autoCompleteComboBox.getRawValue(), "jnt:tag", null, null, new ArrayList<GWTJahiaNodeProperty>(),
-                                new AsyncCallback<GWTJahiaNode>() {
-                                    public void onFailure(Throwable caught) {
-                                        com.google.gwt.user.client.Window.alert(
-                                                "New tag creation failed\n\n" + caught.getLocalizedMessage());
-                                        Log.error("failed", caught);
-                                    }
-
-                                    public void onSuccess(GWTJahiaNode result) {
-                                        if (tagStore.findModel(result) == null) {
-                                            tagStore.add(result, false);
-                                        }
-                                        treeStore.add(treeStore.getRootItems().get(1), result, true);
-                                    }
-                                });
+                        Log.error(caught.getMessage(),caught);
                     }
 
 

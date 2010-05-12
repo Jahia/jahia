@@ -46,18 +46,23 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  */
 public class SeparatorActionItem implements ActionItem {
 
-    public void setEnabled(boolean enabled) {}
+    public void setEnabled(boolean enabled) {
+    }
+
+    public Component getCustomItem() {
+        return null;
+    }
 
     public Button getTextToolItem() {
-        return null ;
+        return null;
     }
 
     public Item getMenuItem() {
-        return new SeparatorMenuItem() ;
+        return new SeparatorMenuItem();
     }
 
     public Item getContextMenuItem() {
-        return new SeparatorMenuItem() ;
+        return new SeparatorMenuItem();
     }
 
     public GWTJahiaToolbarItem getGwtToolbarItem() {
@@ -72,7 +77,7 @@ public class SeparatorActionItem implements ActionItem {
     }
 
     public void onComponentSelection() {
-        
+
     }
 
     public void setTextToolitem(Component textToolitem) {
@@ -84,6 +89,6 @@ public class SeparatorActionItem implements ActionItem {
     }
 
     public void setContextMenuItem(MenuItem contextMenuItem) {
-        
+
     }
 }

@@ -48,6 +48,12 @@ public interface ActionItem extends Serializable {
 
     public void setEnabled(boolean enabled) ;
 
+    /**
+     * If implemented and doesn't return null, the actionItem component will be always the one returned by this method
+     * @return
+     */
+    public Component getCustomItem() ;
+
     public Component getTextToolItem() ;
 
     public Item getMenuItem() ;

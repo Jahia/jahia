@@ -1,16 +1,11 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -24,52 +19,76 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class LanguageSwitcherActionItem extends BaseActionItem {
+    private transient ComboBox<GWTJahiaLanguage> mainComponent;
+    private List<GWTJahiaLanguage> gwtJahiaLanguages;
+    private GWTJahiaLanguage selectedLang;
+
     public LanguageSwitcherActionItem() {
+
     }
 
-    private String siteKey = null;
+    public void setLanguages(List<GWTJahiaLanguage> gwtJahiaLanguages) {
+        this.gwtJahiaLanguages = gwtJahiaLanguages;
+    }
 
-    @Override
-    public void handleNewLinkerSelection() {
-        if (siteKey != null && siteKey.equals(JahiaGWTParameters.getSiteUUID())) {
-            return;
-        }
 
-        final Menu menu = new Menu();
-
-        menu.removeAll();
-
-        JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
-        contentService.getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
-            public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
-                if (gwtJahiaLanguages != null && !gwtJahiaLanguages.isEmpty()) {
-                    for (final GWTJahiaLanguage gwtJahiaLanguage : gwtJahiaLanguages) {
-                        MenuItem item = new MenuItem(gwtJahiaLanguage.getDisplayName());
-                        item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                            @Override
-                            public void componentSelected(MenuEvent ce) {
-                                ((EditLinker) linker).getMainModule().switchLanguage(gwtJahiaLanguage.getLanguage());
-                            }
-                        });
-                        menu.add(item);
-                    }
-                }
-            }
-
-            public void onFailure(Throwable throwable) {
-                Log.error("Unable to load available languages", throwable);
-            }
-        });
-
-        setEnabled(true);
-
-        setSubMenu(menu);
-
-        siteKey = JahiaGWTParameters.getSiteUUID();
+    public void setSelectedLang(GWTJahiaLanguage selectedLang) {
+        this.selectedLang = selectedLang;
     }
 
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
+        initMainComponent();
     }
+
+
+    /**
+     * init main component
+     */
+    private void initMainComponent() {
+        mainComponent = new ComboBox<GWTJahiaLanguage>();
+        mainComponent.setStore(new ListStore<GWTJahiaLanguage>());
+        mainComponent.getStore().add(gwtJahiaLanguages);
+        mainComponent.setDisplayField("displayName");
+        mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
+                ((EditLinker) linker).getMainModule().switchLanguage(event.getSelectedItem().getLanguage());
+            }
+        });
+        mainComponent.setTemplate(getLangSwitchingTemplate());
+        mainComponent.setTypeAhead(true);
+        mainComponent.setTriggerAction(ComboBox.TriggerAction.ALL);
+        mainComponent.setForceSelection(true);
+        mainComponent.setValue(selectedLang);
+        setEnabled(true);
+    }
+
+
+    @Override
+    public Component getCustomItem() {
+        return mainComponent;
+    }
+
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        mainComponent.setEnabled(enabled);
+    }
+
+    /**
+     * LangSwithcing template
+     *
+     * @return
+     */
+    private static native String getLangSwitchingTemplate()  /*-{
+    return  [
+    '<tpl for=".">',
+    '<div class="x-combo-list-item"><img src="{image}"/> {displayName}</div>',
+    '</tpl>'
+    ].join("");
+  }-*/;
+
+
 }

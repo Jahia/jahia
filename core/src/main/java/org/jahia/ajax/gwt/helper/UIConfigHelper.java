@@ -39,12 +39,13 @@ import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
 import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
-import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -71,7 +72,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -86,12 +86,17 @@ public class UIConfigHelper {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(UIConfigHelper.class);
     private static Map<String, Class<?>> CLASS_CACHE = new HashMap<String, Class<?>>();
     private static transient SchedulerService SCHEDULER_SERVICE;
-
+    private LanguageHelper languages;
     private JahiaPreferencesService preferencesService;
 
     public void setPreferencesService(JahiaPreferencesService preferencesService) {
         this.preferencesService = preferencesService;
     }
+
+    public void setLanguages(LanguageHelper languages) {
+        this.languages = languages;
+    }
+
     /**
      * Get gwt toolbar for the current user
      *
@@ -153,6 +158,7 @@ public class UIConfigHelper {
     /**
      * Execute action
      * ToDo:  remove JahiaData
+     *
      * @param gwtPropertiesMap
      * @return
      * @throws GWTJahiaServiceException
@@ -205,7 +211,7 @@ public class UIConfigHelper {
      * @param gwtJahiaStateInfo
      * @return
      */
-    public GWTJahiaStateInfo updateGWTJahiaStateInfo(JCRSiteNode site, JahiaUser jahiaUser, Locale uiLocale,GWTJahiaStateInfo gwtJahiaStateInfo) throws GWTJahiaServiceException {
+    public GWTJahiaStateInfo updateGWTJahiaStateInfo(JCRSiteNode site, JahiaUser jahiaUser, Locale uiLocale, GWTJahiaStateInfo gwtJahiaStateInfo) throws GWTJahiaServiceException {
         try {
             if (gwtJahiaStateInfo == null) {
                 gwtJahiaStateInfo = new GWTJahiaStateInfo();
@@ -224,7 +230,7 @@ public class UIConfigHelper {
 
             // check pdisplay
             if (gwtJahiaStateInfo.isCheckProcessInfo()) {
-                GWTJahiaProcessJobInfo gwtProcessJobInfo = updateGWTProcessJobInfo(jahiaUser,gwtJahiaStateInfo.getGwtProcessJobInfo());
+                GWTJahiaProcessJobInfo gwtProcessJobInfo = updateGWTProcessJobInfo(jahiaUser, gwtJahiaStateInfo.getGwtProcessJobInfo());
                 gwtJahiaStateInfo.setGwtProcessJobInfo(gwtProcessJobInfo);
                 if (gwtProcessJobInfo.isJobExecuting()) {
                     gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-wait-min");
@@ -238,7 +244,7 @@ public class UIConfigHelper {
 
                 // pdisplay need refresh need refresh
                 if (gwtProcessJobInfo.isJobFinished()) {
-                    gwtJahiaStateInfo.setAlertMessage(getResources("label.processManagering.jobfinished",uiLocale,site));
+                    gwtJahiaStateInfo.setAlertMessage(getResources("label.processManagering.jobfinished", uiLocale, site));
 
                     // current user job ended
                     if (gwtProcessJobInfo.isCurrentUserJob() && !gwtProcessJobInfo.isSystemJob()) {
@@ -250,8 +256,8 @@ public class UIConfigHelper {
                     if (gwtJahiaStateInfo.isNeedRefresh() || gwtProcessJobInfo.isCurrentPageValidated()) {
                         gwtJahiaStateInfo.setNeedRefresh(true);
                         gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-refresh");
-                        gwtJahiaStateInfo.setText(getResources("label.processManagering.reloadPage",uiLocale,site));
-                        gwtJahiaStateInfo.setRefreshMessage(getResources("label.processManagering.reloadPage",uiLocale,site));
+                        gwtJahiaStateInfo.setText(getResources("label.processManagering.reloadPage", uiLocale, site));
+                        gwtJahiaStateInfo.setRefreshMessage(getResources("label.processManagering.reloadPage", uiLocale, site));
                     }
 
                 } else {
@@ -453,7 +459,7 @@ public class UIConfigHelper {
      * @return
      */
     public GWTJahiaToolbar createGWTToolbar(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Toolbar toolbar) {
-        if(toolbar == null){
+        if (toolbar == null) {
             logger.debug("Toolbar parameter is null.");
             return null;
         }
@@ -510,6 +516,7 @@ public class UIConfigHelper {
 
     /**
      * Get manage configuration
+     *
      * @param site
      * @param jahiaUser
      * @param locale
@@ -519,7 +526,7 @@ public class UIConfigHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTManagerConfiguration getGWTManagerConfiguration(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request,String name) throws GWTJahiaServiceException {
+    public GWTManagerConfiguration getGWTManagerConfiguration(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String name) throws GWTJahiaServiceException {
         try {
             ManagerConfiguration config = (ManagerConfiguration) SpringContextSingleton.getBean(name);
             if (config != null) {
@@ -557,7 +564,7 @@ public class UIConfigHelper {
 
                 // add table columns
                 for (Column item : config.getTableColumns()) {
-                    if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
+                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
                         GWTColumn col = new GWTColumn();
                         col.setKey(item.getKey());
                         if (item.getTitleKey() != null) {
@@ -567,7 +574,7 @@ public class UIConfigHelper {
                                 ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(item.getDeclaringNodeType()).getPropertyDefinition(item.getKey());
                                 col.setTitle(epd.getLabel(uiLocale != null ? uiLocale : locale));
                             } catch (Exception e) {
-                                logger.error("Cannot get node type name",e);
+                                logger.error("Cannot get node type name", e);
                                 col.setTitle(item.getKey());
                             }
                         } else if (item.getTitle() != null) {
@@ -582,7 +589,7 @@ public class UIConfigHelper {
 
                 // add tabs
                 for (EngineTab item : config.getTabs()) {
-                    if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
+                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
                         gwtConfig.addTab(item.getKey());
                     }
 
@@ -590,7 +597,7 @@ public class UIConfigHelper {
 
                 // add accordion panels
                 for (Repository item : config.getAccordionPanels()) {
-                    if (checkVisibility(site,jahiaUser,locale,request,item.getVisibility())) {
+                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
                         gwtConfig.addAccordion(item.getKey());
                     }
                 }
@@ -768,7 +775,13 @@ public class UIConfigHelper {
                 logger.error("Cannot get workflows", e);
             }
         } else {
-            gwtToolbarItem.setActionItem(item.getActionItem());
+            ActionItem actionItem = item.getActionItem();
+            if (actionItem instanceof LanguageSwitcherActionItem) {
+                ((LanguageSwitcherActionItem) actionItem).setSelectedLang(languages.getCurrentLang(uiLocale));
+                ((LanguageSwitcherActionItem) actionItem).setLanguages(languages.getLanguages(site, jahiaUser, uiLocale));
+            }
+
+            gwtToolbarItem.setActionItem(actionItem);
         }
 
         return gwtToolbarItem;
@@ -786,8 +799,8 @@ public class UIConfigHelper {
             if (config != null) {
                 GWTEditConfiguration gwtConfig = new GWTEditConfiguration();
                 gwtConfig.setName(config.getName());
-                gwtConfig.setTopToolbar(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, config.getTopToolbar()));
-                gwtConfig.setContextMenu(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, config.getContextMenu()));
+                gwtConfig.setTopToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
+                gwtConfig.setContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
                 gwtConfig.setTabs(createGWTSidePanelTabList(site, jahiaUser, locale, uiLocale, request, config.getTabs()));
                 gwtConfig.setCreateEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getCreateEngines()));
                 gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getEditEngines()));
@@ -803,6 +816,7 @@ public class UIConfigHelper {
 
     /**
      * Create GWTSidePanelTab list
+     *
      * @param site
      * @param jahiaUser
      * @param locale
@@ -815,11 +829,11 @@ public class UIConfigHelper {
         // create side panel tabs
         List<GWTSidePanelTab> gwtSidePanelTabList = new ArrayList<GWTSidePanelTab>();
         for (SidePanelTab sidePanelTab : tabs) {
-            if (checkVisibility(site,jahiaUser,locale,request,sidePanelTab.getVisibility())) {
+            if (checkVisibility(site, jahiaUser, locale, request, sidePanelTab.getVisibility())) {
                 final GWTSidePanelTab gwtSidePanel = new GWTSidePanelTab(sidePanelTab.getKey());
-                gwtSidePanel.setTooltip(getResources("label."+sidePanelTab.getKey()+"Tab",uiLocale,site));
-                gwtSidePanel.setTreeContextMenu(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, sidePanelTab.getTreeContextMenu()));
-                gwtSidePanel.setTableContextMenu(createGWTToolbar(site,  jahiaUser,  locale,  uiLocale,  request, sidePanelTab.getTableContextMenu()));
+                gwtSidePanel.setTooltip(getResources("label." + sidePanelTab.getKey() + "Tab", uiLocale, site));
+                gwtSidePanel.setTreeContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTreeContextMenu()));
+                gwtSidePanel.setTableContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTableContextMenu()));
                 gwtSidePanel.setParams(sidePanelTab.getParams());
                 gwtSidePanelTabList.add(gwtSidePanel);
             }
@@ -829,6 +843,7 @@ public class UIConfigHelper {
 
     /**
      * Create gwt engine list
+     *
      * @param site
      * @param jahiaUser
      * @param locale
@@ -840,13 +855,13 @@ public class UIConfigHelper {
         // edit engine
         List<GWTEngine> gwtEngineList = new ArrayList<GWTEngine>();
         for (Engine engine : engines) {
-            if (checkVisibility(site,jahiaUser,locale,request,engine.getVisibility())) {
+            if (checkVisibility(site, jahiaUser, locale, request, engine.getVisibility())) {
                 final GWTEngine gwtEngine = new GWTEngine();
                 gwtEngine.setNodeType(engine.getNodeType());
 
                 final List<String> engineTabs = new ArrayList<String>();
                 for (EngineTab engineTab : engine.getTabs()) {
-                    if (checkVisibility(site,jahiaUser,locale,request,engineTab.getVisibility())) {
+                    if (checkVisibility(site, jahiaUser, locale, request, engineTab.getVisibility())) {
                         engineTabs.add(engineTab.getKey());
                     }
                 }
@@ -890,7 +905,7 @@ public class UIConfigHelper {
      * @param visibility
      * @return
      */
-    private boolean checkVisibility(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request,Visibility visibility) {
+    private boolean checkVisibility(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request, Visibility visibility) {
         return visibility == null || (visibility != null && visibility.getRealValue(site, jahiaUser, locale, request));
     }
 

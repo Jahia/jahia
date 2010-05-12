@@ -93,44 +93,49 @@ public class ActionToolbar extends ToolBar {
             } else if (actionItem != null) {
                 actionItem.init(gwtToolbarItem, linker);
 
-                Log.debug(gwtToolbarItem.getType() + " - items group layout =" + gwtToolbarItemsGroup.getLayout());
-                if (gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
-                    // handle case of menuSeparator
-                    if (isSeparator(gwtToolbarItem)) {
-                        // add menu separator only if we have at least one menuitem
-                        if (menu.getItemCount() > 0) {
-                            if (isSeparator(gwtToolbarItem)) {
-                                menu.add(new SeparatorMenuItem());
-                            } else {
-                                Log.debug("Fill item not allowed in menu");
-                            }
-                        }
-                    }
-                    // case of other items
-                    else {
-                        toolItem = actionItem.getMenuItem();
-                        if (toolItem != null) {
-                            if (gwtToolbarItem.getType() != null && gwtToolbarItem.getType().equalsIgnoreCase(Constants.ITEMS_TOOLBARLABEL)) {
-                                toolItem.setEnabled(false);
-                            }
-                            menu.add(toolItem);
-                        }
-                        addMenu = true;
-                    }
-                } else if (gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_BUTTON || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ONLY_LABEL || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_BUTTON_LABEL) {
-                    if (isSeparator(gwtToolbarItem)) {
-                        add(new SeparatorToolItem());
-                    } else {
-                        toolItem = actionItem.getTextToolItem();
-                        add(toolItem);
-                    }
+                if (actionItem.getCustomItem() != null) {
+                    add(actionItem.getCustomItem());
                 } else {
-                    gwtToolbarItemsGroup.setLayout(Constants.LAYOUT_BUTTON);
-                    if (isSeparator(gwtToolbarItem)) {
-                        add(new SeparatorToolItem());
+
+                    Log.debug(gwtToolbarItem.getType() + " - items group layout =" + gwtToolbarItemsGroup.getLayout());
+                    if (gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
+                        // handle case of menuSeparator
+                        if (isSeparator(gwtToolbarItem)) {
+                            // add menu separator only if we have at least one menuitem
+                            if (menu.getItemCount() > 0) {
+                                if (isSeparator(gwtToolbarItem)) {
+                                    menu.add(new SeparatorMenuItem());
+                                } else {
+                                    Log.debug("Fill item not allowed in menu");
+                                }
+                            }
+                        }
+                        // case of other items
+                        else {
+                            toolItem = actionItem.getMenuItem();
+                            if (toolItem != null) {
+                                if (gwtToolbarItem.getType() != null && gwtToolbarItem.getType().equalsIgnoreCase(Constants.ITEMS_TOOLBARLABEL)) {
+                                    toolItem.setEnabled(false);
+                                }
+                                menu.add(toolItem);
+                            }
+                            addMenu = true;
+                        }
+                    } else if (gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_BUTTON || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_ONLY_LABEL || gwtToolbarItemsGroup.getLayout() == Constants.LAYOUT_BUTTON_LABEL) {
+                        if (isSeparator(gwtToolbarItem)) {
+                            add(new SeparatorToolItem());
+                        } else {
+                            toolItem = actionItem.getTextToolItem();
+                            add(toolItem);
+                        }
                     } else {
-                        toolItem = actionItem.getTextToolItem();
-                        add(toolItem);
+                        gwtToolbarItemsGroup.setLayout(Constants.LAYOUT_BUTTON);
+                        if (isSeparator(gwtToolbarItem)) {
+                            add(new SeparatorToolItem());
+                        } else {
+                            toolItem = actionItem.getTextToolItem();
+                            add(toolItem);
+                        }
                     }
                 }
             }

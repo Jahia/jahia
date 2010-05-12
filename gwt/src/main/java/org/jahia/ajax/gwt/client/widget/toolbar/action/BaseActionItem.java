@@ -67,6 +67,9 @@ public abstract class BaseActionItem implements ActionItem {
     public BaseActionItem() {
     }
 
+    public Component getCustomItem() {
+        return null;
+    }
 
     /**
      * Get text toolitem

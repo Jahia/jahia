@@ -13,4 +13,5 @@
 </c:if>
 <c:if test="${not empty target.string}"><c:set var="target"> target="${target.string}"</c:set></c:if>
 <c:if test="${not empty description.string}"><c:set var="linkTitle"> title="${fn:escapeXml(description.string)}"</c:set></c:if>
-<a href="${link}"${target}${linkTitle}>${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}</a>
+<c:if test="${not empty listItemCssClass}"><c:set var="cssClassToBeUsed">class="${listItemCssClass}"</c:set></c:if><li ${cssClassToBeUsed}>
+<a href="${link}"${target}${linkTitle}>${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}</a></li>

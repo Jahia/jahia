@@ -24,8 +24,7 @@
                             <property name="layout" value="menu"/>
                             <property name="titleKey" value="label.new"/>
                             <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
-                            <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
-                            <property name="items">
+                                                        <property name="items">
                                 <list>
                                     <ref bean="org.jahia.toolbar.item.createTemplate"/>
                                     <ref bean="org.jahia.toolbar.item.createPage"/>
@@ -163,8 +162,7 @@
                             <property name="layout" value="menu"/>
                             <property name="titleKey" value="label.new"/>
                             <property name="minIconStyle" value="gwt-toolbar-icon-newaction-min"/>
-                            <property name="mediumIconStyle" value="gwt-toolbar-icon-newaction-normal"/>
-                            <property name="items">
+                                                        <property name="items">
                                 <list>
                                     <ref bean="org.jahia.toolbar.item.createPage"/>
                                     <ref bean="org.jahia.toolbar.item.createContent"/>
@@ -205,7 +203,6 @@
                         <ref bean="org.jahia.toolbar.itemsgroup.EditAction"/>
                         <ref bean="org.jahia.toolbar.item.Separator"/>
                         <ref bean="org.jahia.toolbar.itemsgroup.PublicationAction"/>
-                        <ref bean="org.jahia.toolbar.itemsgroup.WorkflowAction"/>
                     </list>
                 </property>
                 <property name="visibility">
@@ -327,8 +324,7 @@
                               parent="org.jahia.toolbar.item.edit">
                             <property name="titleKey" value="label.rename"/>
                             <property name="minIconStyle" value="gwt-toolbar-icon-rename"/>
-                            <property name="mediumIconStyle" value="gwt-toolbar-icon-rename"/>
-                        </bean>
+                                                    </bean>
                         <ref bean="org.jahia.toolbar.item.edit"/>
                         <ref bean="org.jahia.toolbar.item.delete"/>
                         <ref bean="org.jahia.toolbar.item.Separator"/>
@@ -354,8 +350,7 @@
                               parent="org.jahia.toolbar.item.edit">
                             <property name="titleKey" value="label.rename"/>
                             <property name="minIconStyle" value="gwt-toolbar-icon-rename"/>
-                            <property name="mediumIconStyle" value="gwt-toolbar-icon-rename"/>
-                        </bean>
+                                                    </bean>
                         <ref bean="org.jahia.toolbar.item.edit"/>
                         <ref bean="org.jahia.toolbar.item.delete"/>
                         <ref bean="org.jahia.toolbar.item.Separator"/>

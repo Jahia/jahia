@@ -219,25 +219,18 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
     /**
-     * Publish the specified path.
-     *
-     * @param path the path to publish, will not auto publish the parents
-     */
-    public void publish(String path, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException;
-
-    /**
      * Publish the specified paths.
      *
      * @param path the list of node paths to publish, will not auto publish the parents
      */
-    public void publish(List<String> path, boolean reverse) throws GWTJahiaServiceException;
+    public void publish(List<String> path, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException;
 
     /**
      * Unpublish the specified path and its subnodes.
      *
      * @param path the path to unpublish, will not unpublish the references
      */
-    public void unpublish(String path) throws GWTJahiaServiceException;
+    public void unpublish(List<String> path) throws GWTJahiaServiceException;
 
     /**
      * Get the publication status information for a particular path.
@@ -246,6 +239,14 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      */
     public GWTJahiaPublicationInfo getPublicationInfo(String uuid, boolean includeReferences) throws GWTJahiaServiceException;
+
+    /**
+     * Get the publication status information for multiple pathes.
+     *
+     * @param uuids path to get publication info from
+     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     */
+    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean includeReferences) throws GWTJahiaServiceException;
 
     /**
      * Get all deployed workflow in the system
@@ -262,13 +263,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTJahiaWorkflowNodeTypeConfig getWorkflowNodeTypeConfig() throws GWTJahiaServiceException;
 
-    /**
-     * Get the publication status information for multiple pathes.
-     *
-     * @param uuids path to get publication info from
-     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
-     */
-    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids) throws GWTJahiaServiceException;
 
     public String getHighlighted(String original, String amendment) throws GWTJahiaServiceException;
 

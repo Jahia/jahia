@@ -24,10 +24,13 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.*;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowManagerEngine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -153,16 +156,25 @@ public class EditActions {
      * @param linker
      */
     public static void publish(final Linker linker) {
-        GWTJahiaNode selectedNode = linker.getSelectedNode();
-        if (selectedNode == null) {
-            selectedNode = linker.getMainNode();
+        List<GWTJahiaNode> selectedNodes = linker.getSelectedNodes();
+        if (selectedNodes.isEmpty()) {
+            selectedNodes = new ArrayList<GWTJahiaNode>();
+            selectedNodes.add(linker.getMainNode());
         }
-        if (selectedNode != null) {
-            final GWTJahiaNode s = selectedNode;
-            JahiaContentManagementService.App.getInstance().getPublicationInfo(s.getUUID(), true,
-                    new AsyncCallback<GWTJahiaPublicationInfo>() {
-                        public void onSuccess(GWTJahiaPublicationInfo result) {
-                            new PublicationStatusWindow(linker, s, result).show();
+        if (!selectedNodes.isEmpty()) {
+            final List<GWTJahiaNode> s = new ArrayList<GWTJahiaNode>();
+            List<String> uuids = new ArrayList<String>();
+            for (GWTJahiaNode selectedNode : selectedNodes) {
+                if (ModuleHelper.getWrappedContentInfo().containsKey(selectedNode.getUUID())) {
+                    uuids.addAll(ModuleHelper.getWrappedContentInfo().get(selectedNode.getUUID()));
+                }
+                uuids.add(selectedNode.getUUID());
+            }
+
+            JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, true,
+                    new AsyncCallback<Map<String,GWTJahiaPublicationInfo>>() {
+                        public void onSuccess(Map<String,GWTJahiaPublicationInfo> result) {
+                            new PublicationStatusWindow(linker, result).show();
                         }
 
                         public void onFailure(Throwable caught) {
@@ -186,7 +198,7 @@ public class EditActions {
         if (selectedNode != null) {
             final GWTJahiaNode s = selectedNode;
 
-            JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), false, "", true, new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), false, "", true, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
@@ -226,7 +238,7 @@ public class EditActions {
             selectedNode = linker.getMainNode();
         }
         if (selectedNode != null) {
-            JahiaContentManagementService.App.getInstance().unpublish(selectedNode.getPath(), new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().unpublish(Arrays.asList(selectedNode.getPath()), new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
@@ -305,7 +317,7 @@ public class EditActions {
                     ok.setEnabled(false);
                     cancel.setEnabled(false);
                     List<String> selectedPaths = new ArrayList<String>();
-                    JahiaContentManagementService.App.getInstance().publish(selectedNode.getPath(), true, comments.getValue(), false, new AsyncCallback() {
+                    JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), true, comments.getValue(), false, new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());

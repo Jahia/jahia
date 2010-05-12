@@ -977,7 +977,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param paths the list of node paths to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
-    public void publish(List<String> paths, boolean reverse) throws GWTJahiaServiceException {
+    public void publish(List<String> paths, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession();
         publication.publish(paths, Collections.singleton(session.getLocale().toString()), getRemoteJahiaUser(), false, session);
     }
@@ -985,13 +985,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Unpublish the specified path and its subnodes.
      *
-     * @param path the path to unpublish, will not unpublish the references
+     * @param paths the path to unpublish, will not unpublish the references
      * @throws GWTJahiaServiceException
      */
-    public void unpublish(String path) throws GWTJahiaServiceException {
+    public void unpublish(List<String> paths) throws GWTJahiaServiceException {
         long l = System.currentTimeMillis();
         JCRSessionWrapper session = retrieveCurrentSession();
-        publication.unpublish(path, Collections.singleton(session.getLocale().toString()), session.getUser());
+        for (String s : paths) {
+            publication.unpublish(s, Collections.singleton(session.getLocale().toString()), session.getUser());
+        }
         logger.debug("-->" + (System.currentTimeMillis() - l));
     }
 
@@ -1006,6 +1008,26 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         JCRSessionWrapper session = retrieveCurrentSession();
         return publication.getPublicationInfo(uuid, Collections.singleton(session.getLocale().toString()), full, session);
     }
+
+
+    /**
+     * Get the publication status information for multiple pathes.
+     *
+     * @param uuids path to get publication info from
+     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @throws GWTJahiaServiceException
+     */
+    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean full) throws GWTJahiaServiceException {
+        Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
+        for (String uuid : uuids) {
+            JCRSessionWrapper session = retrieveCurrentSession();
+            map.put(uuid, publication.getPublicationInfo(uuid, Collections.singleton(session.getLocale().toString()), full, session));
+        }
+
+        return map;
+    }
+
+
 
     /**
      * Get worflow info by path
@@ -1066,23 +1088,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     }
 
-
-    /**
-     * Get the publication status information for multiple pathes.
-     *
-     * @param uuids path to get publication info from
-     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
-     * @throws GWTJahiaServiceException
-     */
-    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids) throws GWTJahiaServiceException {
-        Map<String, GWTJahiaPublicationInfo> map = new HashMap<String, GWTJahiaPublicationInfo>();
-        for (String uuid : uuids) {
-            JCRSessionWrapper session = retrieveCurrentSession();
-            map.put(uuid, publication.getPublicationInfo(uuid, Collections.singleton(session.getLocale().toString()), false, session));
-        }
-
-        return map;
-    }
 
     /**
      * Get site languages

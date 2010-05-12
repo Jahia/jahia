@@ -139,4 +139,11 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         this.applicationContext = applicationContext; 
     }
 
+    public void log(String message, Throwable t) {
+        logger.error(message, t);
+    }
+
+    public void log(String msg) {
+        logger.info(msg);
+    }
 }

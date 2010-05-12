@@ -209,20 +209,12 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
     /**
-     * Publish the specified path.
-     *
-     * @param path the path to publish, will not auto publish the parents
-     * @param async Local implementation of callback to react on return for asynchronous call to publish
-     */
-    void publish(String path, boolean allSubTree, String comments, boolean reverse, AsyncCallback async);
-
-    /**
      * Publish the specified paths.
      *
      * @param paths the list of node paths to publish
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      */
-    void publish(List<String> paths, boolean reverse, AsyncCallback async);
+    void publish(List<String> paths, boolean allSubTree, String comments, boolean reverse, AsyncCallback async);
 
     /**
      * Unpublish the specified path and its subnodes.
@@ -230,7 +222,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      * @param path the path to unpublish, will not unpublish the references
      * @param async Local implementation of callback to react on return for asynchronous call to unpublish
      */
-    void unpublish(String path, AsyncCallback async);
+    void unpublish(List<String> path, AsyncCallback async);
 
     /**
      * Get the publication status information for a particular path.
@@ -239,6 +231,14 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
     void getPublicationInfo(String uuid, boolean includeReferences, AsyncCallback<GWTJahiaPublicationInfo> async);
+
+    /**
+     * Get the publication status information for a particular path.
+     *
+     * @param uuids uuids to get publication info from
+     * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
+     */
+    void getPublicationInfo(List<String> uuids, boolean includeReferences, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
 
     /**
      * Get all deployed workflow in the system
@@ -261,15 +261,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getNodeTypeWorkflowRule(AsyncCallback<List<GWTJahiaWorflowNodeType>> async);
 
     void getWorkflowNodeTypeConfig(AsyncCallback<GWTJahiaWorkflowNodeTypeConfig> async);
-
-    /**
-     * Get the publication status information for a particular path.
-     *
-     * @param uuids uuids to get publication info from
-     * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
-     */
-    void getPublicationInfo(List<String> uuids, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
-
 
     /**
      * Get higthligthed

@@ -46,7 +46,6 @@ import java.util.List;
  */
 public class Item implements Serializable, BeanNameAware {
     private String id;
-    private String mediumIconStyle;
     private String minIconStyle;
     private String title;
     private String titleKey;
@@ -65,14 +64,6 @@ public class Item implements Serializable, BeanNameAware {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getMediumIconStyle() {
-        return mediumIconStyle;
-    }
-
-    public void setMediumIconStyle(String mediumIconStyle) {
-        this.mediumIconStyle = mediumIconStyle;
     }
 
     public String getMinIconStyle() {

@@ -61,8 +61,6 @@ public class LanguageItemsResolver extends DefaultItemsResolver {
                     // add to itemsgroup
                     if (item != null) {
                         String minIconStyle = getLangIconStyle(lang);
-                        String maxIconStyle = getLangIconStyle(lang);
-                        item.setMediumIconStyle(maxIconStyle);
                         item.setMinIconStyle(minIconStyle);
 
                         if (selectedLang != null) {

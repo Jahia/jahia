@@ -651,7 +651,6 @@ public class UIConfigHelper {
         gwtToolbarItemsGroup.setLayout(getLayoutAsInt(itemsGroup.getLayout()));
 
         gwtToolbarItemsGroup.setNeedSeparator(itemsGroup.isSeparator());
-        gwtToolbarItemsGroup.setMediumIconStyle(itemsGroup.getMediumIconStyle());
         gwtToolbarItemsGroup.setMinIconStyle(itemsGroup.getMinIconStyle());
         if (itemsGroup.getTitleKey() != null) {
             gwtToolbarItemsGroup.setItemsGroupTitle(getResources(itemsGroup.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
@@ -741,7 +740,6 @@ public class UIConfigHelper {
         } else {
             gwtToolbarItem.setDescription(gwtToolbarItem.getTitle());
         }
-        gwtToolbarItem.setMediumIconStyle(item.getMediumIconStyle());
         gwtToolbarItem.setMinIconStyle(item.getMinIconStyle());
         if (item.getSelected() != null) {
             gwtToolbarItem.setSelected(item.getSelected().getRealValue(site, jahiaUser, locale));
@@ -759,30 +757,30 @@ public class UIConfigHelper {
         gwtToolbarItem.setProperties(pMap);
 
 
-        if (item.getWorkflowAction() != null) {
-            try {
-                List<WorkflowDefinition> def = WorkflowService.getInstance().getWorkflowsForAction(item.getWorkflowAction());
-                List<String> processes = new ArrayList<String>();
-                for (WorkflowDefinition workflowDefinition : def) {
-                    processes.add(workflowDefinition.getKey());
-                }
-                gwtToolbarItem.setProcesses(processes);
-                // todo : use the role assigned to the action for bypassing workflow ?
-                final WorkflowActionItem workflowActionItem = new WorkflowActionItem(processes, jahiaUser.isAdminMember(0), item.getActionItem());
-                gwtToolbarItem.setMinIconStyle("gwt-toolbar-icon-workflow-start");
-                gwtToolbarItem.setActionItem(workflowActionItem);
-            } catch (RepositoryException e) {
-                logger.error("Cannot get workflows", e);
-            }
-        } else {
+//        if (item.getWorkflowAction() != null) {
+//            try {
+//                List<WorkflowDefinition> def = WorkflowService.getInstance().getWorkflowsForAction(item.getWorkflowAction());
+//                List<String> processes = new ArrayList<String>();
+//                for (WorkflowDefinition workflowDefinition : def) {
+//                    processes.add(workflowDefinition.getKey());
+//                }
+//                gwtToolbarItem.setProcesses(processes);
+//                // todo : use the role assigned to the action for bypassing workflow ?
+//                final WorkflowActionItem workflowActionItem = new WorkflowActionItem(processes, jahiaUser.isAdminMember(0), item.getActionItem());
+//                gwtToolbarItem.setMinIconStyle("gwt-toolbar-icon-workflow-start");
+//                gwtToolbarItem.setActionItem(workflowActionItem);
+//            } catch (RepositoryException e) {
+//                logger.error("Cannot get workflows", e);
+//            }
+//        } else {
             ActionItem actionItem = item.getActionItem();
             if (actionItem instanceof LanguageSwitcherActionItem) {
-                ((LanguageSwitcherActionItem) actionItem).setSelectedLang(languages.getCurrentLang(uiLocale));
-                ((LanguageSwitcherActionItem) actionItem).setLanguages(languages.getLanguages(site, jahiaUser, uiLocale));
+                ((LanguageSwitcherActionItem) actionItem).setSelectedLang(languages.getCurrentLang(locale));
+                ((LanguageSwitcherActionItem) actionItem).setLanguages(languages.getLanguages(site, jahiaUser, locale));
             }
 
             gwtToolbarItem.setActionItem(actionItem);
-        }
+//        }
 
         return gwtToolbarItem;
     }

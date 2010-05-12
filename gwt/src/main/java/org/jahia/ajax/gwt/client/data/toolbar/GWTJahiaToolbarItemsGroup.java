@@ -45,7 +45,6 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
     private String id;
     private String type;
     private String itemsGroupTitle;
-    private String mediumIconStyle;
     private String minIconStyle;
     private boolean needSeparator;
     private int layout;
@@ -77,14 +76,6 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
 
     public int getLayout() {
         return layout;
-    }
-
-    public String getMediumIconStyle() {
-        return mediumIconStyle;
-    }
-
-    public void setMediumIconStyle(String mediumIconStyle) {
-        this.mediumIconStyle = mediumIconStyle;
     }
 
     public String getMinIconStyle() {

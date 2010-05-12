@@ -86,6 +86,7 @@ public class WorkflowActionItem extends BaseActionItem {
                             }
                         });
                         menu.add(item);
+                        break;
                     }
                 }
                 if (bypassWorkflow) {
@@ -100,15 +101,6 @@ public class WorkflowActionItem extends BaseActionItem {
                     });
                     menu.add(item);
                 }
-            }
-            if (processes == null) {
-                isEnabled = true;
-                ViewWorkflowStatusActionItem statusActionItem = new ViewWorkflowStatusActionItem();
-                statusActionItem.init(getGwtToolbarItem(), linker);
-                MenuItem workflowItem = statusActionItem.getMenuItem();
-                statusActionItem.updateTitle("Show Workflow Status");
-                workflowItem.setIconStyle("gwt-toolbar-icon-workflow-status");
-                menu.add(workflowItem);
             }
         } else {
             menu.removeAll();

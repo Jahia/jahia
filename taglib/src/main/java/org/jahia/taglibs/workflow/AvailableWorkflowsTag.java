@@ -2,7 +2,6 @@ package org.jahia.taglibs.workflow;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
@@ -11,9 +10,6 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.TagSupport;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

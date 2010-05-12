@@ -29,6 +29,7 @@ public class ModuleHelper {
 
     private static Map<String, List<String>> children;
     private static Map<String, GWTJahiaNodeType> nodeTypes;
+    private static Map<String, List<String>> wrappedContentInfo;
 
     public static void initAllModules(final MainModule m, HTML html) {
         modules = new ArrayList<Module>();
@@ -39,6 +40,8 @@ public class ModuleHelper {
         modules.add(m);
         modulesByPath.get(m.getPath()).add(m);
         modulesById.put(m.getModuleId(), m);
+
+        wrappedContentInfo = new HashMap<String, List<String>>();
 
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
 
@@ -76,6 +79,13 @@ public class ModuleHelper {
                     modulesByPath.get(path).add(module);
                     modulesById.put(id, module);
                 }
+            } if ("wrappedContentInfo".equals(jahiatype)) {
+                String wrappedNode = DOM.getElementAttribute(divElement, "wrappedNode");
+                String wrapperContent = DOM.getElementAttribute(divElement, "wrapperContent");
+                if (!wrappedContentInfo.containsKey(wrappedNode)) {
+                    wrappedContentInfo.put(wrappedNode, new ArrayList<String>());
+                }
+                wrappedContentInfo.get(wrappedNode).add(wrapperContent);
             }
         }
 
@@ -230,4 +240,7 @@ public class ModuleHelper {
         return list;
     }
 
+    public static Map<String, List<String>> getWrappedContentInfo() {
+        return wrappedContentInfo;
+    }
 }

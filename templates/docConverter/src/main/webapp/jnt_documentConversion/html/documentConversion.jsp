@@ -4,6 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -95,7 +96,7 @@
 	</div>
 </div><!--stop boxconverter -->
 
-
+<%--
 <div class="boxconverter "><!--start boxconverter -->
             <div class="boxconverterpadding16 boxconvertermarginbottom16">
                 <div class="boxconverter-inner">
@@ -105,11 +106,11 @@
                     </div>
                     <div class="imagefloatleft">
 					  <div class="itemImage itemImageLeft"><span class="icon6464 doc6464"></span></div>
-					  <div class="itemImageConverterArrow itemImageLeft"><a href="#"><img alt="" src="${url.currentModule}/img/convert.png"/></a></div>
+					  <div class="itemImageConverterArrow itemImageLeft"><a href="#"><img alt="" src="${url.currentModule}/images/convert.png"/></a></div>
 					  <div class="itemImage itemImageLeft"><span class="icon6464 pdf6464"></span></div>
 					</div>
                     <h3 >Document original : Le nom de mon document.Doc</h3>
-                    <h3 >Document transforme : <a href="#"><img alt="" src="${url.currentModule}/img/download.png"/> Le nom de mon document.PDF</a></h3>
+                    <h3 >Document transforme : <a href="#"><img alt="" src="${url.currentModule}/images/download.png"/> Le nom de mon document.PDF</a></h3>
                     <span class="clearMaringPadding converterdate">Date de Transformation : 10/02/2010</span>
 	  <span class="clearMaringPadding converterauthor"><a href="#">Par Regis Mora</a></span>
                     <!--stop boxconverter -->
@@ -183,7 +184,7 @@
 </div>
 <div class="clear"></div><br/><br/>
 
-
+ --%>
 
     <h4 class="boxconverter-title2">Rapport des transformations</h4>
 
@@ -208,141 +209,36 @@
     <thead>
         <tr>
             <th class="center" id="Statut" scope="col">Statut</th>
-            <th id="TitleOriginal" scope="col">Nom Document Original<a title="sort down" href="#"> <img src="${url.currentModule}/img/sort-arrow-down.png" alt="down"/></a></th>
+            <th id="TitleOriginal" scope="col">Nom Document Original<a title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
             <th class="center" id="OriginalDoc" scope="col">Format Original</th>
             <th class="center" id="TranformDoc" scope="col">Format Transforme</th>
-            <th class="center" id="Date" scope="col">Date de convertion <a title="sort down" href="#"> <img src="${url.currentModule}/img/sort-arrow-up.png" alt="up"/></a></th>
-            <th class="center" id="User" scope="col">Utilisateur<a title="sort down" href="#"> <img src="${url.currentModule}/img/sort-arrow-up.png" alt="up"/></a></th>
+            <th class="center" id="Date" scope="col">Date de convertion <a title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a></th>
+            <th class="center" id="User" scope="col">Utilisateur<a title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a></th>
             <th class="center" id="Download" scope="col">Download</th>
         </tr>
     </thead>
+    <jcr:sql var="result"
+             sql="select * from [jnt:convertedFile] as conversion where ischildnode(conversion, ['/shared/conversions']) order by conversion.[jcr:lastModified] desc"/>
+
+    <c:set var="currentList" value="${result.nodes}" scope="request"/>
+    <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
+    <c:set var="listTotalSize" value="${end}" scope="request"/>
 
     <tbody>
-        <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="odd">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/valide.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
-        </tr>
-        <tr class="even">
-            <td class="center" headers="Statut"><img alt="" src="${url.currentModule}/img/error.png" /></td>
-            <td headers="TitleOriginal"><a href="#">Titre de mon document</a></td>
-            <td class="center" headers="OriginalDoc">.Word</td>
-            <td class="center" headers="TranformDoc">.PDF</td>
-            <td class="center" headers="Date">20 Nov 2009</td>
-            <td class="center" headers="User">Regis Mora</td>
-            <td class="center" headers="Download"><a href="#"><img alt="" src="${url.currentModule}/img/download.png"/></a></td>
+    <c:forEach items="${currentList}" var="subchild" begin="0" end="${end}">
+    <c:set var="conversionStatus">
+        <c:if test="${subchild.propertiesAsString['conversionSucceeded']}"><img alt="" src="${url.currentModule}/images/valide.png" /></c:if>
+        <c:if test="${not subchild.propertiesAsString['conversionSucceeded']}"><img alt="" src="${url.currentModule}/images/error.png" /></c:if>
+    </c:set>
+    <tr class="odd">
+            <td class="center" headers="Statut">${conversionStatus}</td>
+            <td headers="TitleOriginal"><a href="#">${subchild.propertiesAsString['originDocName']}</a></td>
+            <td class="center" headers="OriginalDoc">${subchild.propertiesAsString['originDocFormat']}</td>
+            <td class="center" headers="TranformDoc">${subchild.propertiesAsString['convertedDocFormat']}</td>
+            <td class="center" headers="Date">${subchild.propertiesAsString['conversionDate']}</td>
+            <td class="center" headers="User">${subchild.propertiesAsString['jcr:createdBy']}</td>
+            <td class="center" headers="Download"><a href="${subchild.propertiesAsString['convertedDocFile']}"><img alt="" src="${url.currentModule}/images/download.png"/></a></td>
+    </c:forEach>
         </tr>
     </tbody>
 </table>

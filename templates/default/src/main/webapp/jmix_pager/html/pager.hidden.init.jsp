@@ -13,4 +13,12 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-<template:initPager totalSize="${listTotalSize}" pageSize="${currentNode.properties['pageSize'].long}" id="${currentNode.identifier}"/>
+<c:choose>
+        <c:when test="${empty param.pagesize}">
+            <c:set var="pageSize" value="${currentNode.properties['pageSize'].long}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="pageSize" value="${param.pagesize}"/>
+        </c:otherwise>
+    </c:choose>
+<template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>

@@ -62,7 +62,9 @@ public class InitPagerTag extends TagSupport {
 
         int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);
         int end = endStr == null ? pageSize - 1 : Integer.parseInt(endStr);
-
+        if(totalSize < pageSize) {
+            begin = 0;
+        }
         long nbPages = totalSize / pageSize;
         if (nbPages * pageSize < totalSize) {
             nbPages++;

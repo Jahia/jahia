@@ -29,4 +29,8 @@
         <property name="name" value="commentTask"/>
         <property name="workflowService" ref="workflowService"/>
     </bean>
+    <bean id="myContentProfileExtension" class="org.jahia.utils.profile.ProfileExtension">
+        <property name="key" value="mycontent"/>
+        <property name="displayName" value="My Contents"/>
+    </bean>
 </beans>

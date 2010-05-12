@@ -326,6 +326,7 @@
  extends = jnt:content, jnt:page
  itemtype = layout
  - j:bodywrapper (string, choicelist[templates=bodywrapper])
+ + wrapperContent (jnt:contentList) = jnt:contentList mandatory autocreated
 
 [jmix:renderableList] mixin
  - j:subNodesTemplate (string, choicelist[templates=subnodes,resourceBundle,image]) nofulltext

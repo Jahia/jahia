@@ -194,12 +194,13 @@ public class Resource {
                 }
                 if (current.hasProperty("j:bodywrapper")) {
                     bodywrapper = current.getProperty("j:bodywrapper").getString();
+                    current = current.getNode("wrapperContent");
                     break;
                 }
                 current = current.getParent();
             }
         } catch (ItemNotFoundException e) {
-                return wrappers.push(new Wrapper("bodywrapper", node));
+            return wrappers.push(new Wrapper("bodywrapper", node));
         } catch (RepositoryException e) {
             logger.error("Cannot find wrapper",e);
         }

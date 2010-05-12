@@ -42,6 +42,7 @@
           </pagecontent>
         </double>
       </templates>
+      <wrapperContent jcr:primaryType="jnt:contentList">
       <logo jcr:primaryType="jnt:contentList" />
       <simpleSearch jcr:primaryType="jnt:contentList">
         <simpleSearchForm result="/templatesSet/templates-intranet/search-results" jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" j:templateLocked="true" />
@@ -53,6 +54,7 @@
         <shortcuts jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:shortcuts" j:templateLocked="true" />
       </topMenu>
       <footer jcr:primaryType="jnt:contentList" />
+      </wrapperContent>
       <search-results jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" j:sourceTemplate="/templatesSet/templates-web/templates/simple" priority="0.5">
         <j:translation j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly" j:sourceTemplate="d06c5c24-25ec-4548-9ba4-6b1e1e50e627" jcr:language="en" jcr:title_en="Search results" priority="0.5" />
         <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">

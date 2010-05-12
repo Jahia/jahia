@@ -54,6 +54,7 @@
           </row1>
         </pagecontent>
       </search-results>
+      <wrapperContent jcr:primaryType="jnt:contentList">
       <header jcr:primaryType="jnt:contentList">
         <shortcuts j:templateShared="false" j:template="inline" jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:shortcuts" j:templateLocked="true" />
       </header>
@@ -68,6 +69,7 @@
       </topMenu>
       <logoFooter jcr:primaryType="jnt:contentList" />
       <footer jcr:primaryType="jnt:contentList" />
+      </wrapperContent>
     </templates-web>
   </templatesSet>
 </content>

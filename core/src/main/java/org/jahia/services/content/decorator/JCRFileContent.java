@@ -158,4 +158,13 @@ public class JCRFileContent {
         }
     }
 
+    public String getText() {
+        try {
+            Node content = getContentNode();
+            Property extractedTextProp = content.getProperty(Constants.JCR_DATA);
+            return extractedTextProp != null ? extractedTextProp.getString() : null;
+        } catch (RepositoryException e) {
+        }
+        return null;
+    }
 }

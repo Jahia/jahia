@@ -48,7 +48,7 @@ public class GWTJahiaToolbarItem implements Serializable {
     private GWTJahiaToolbarItemsGroup parentItemsGroup;
     private String id;
     private String type;
-    private String minIconStyle;
+    private String icon;
     private String title;
     private boolean displayTitle;
     private String description;
@@ -87,16 +87,12 @@ public class GWTJahiaToolbarItem implements Serializable {
         this.type = type;
     }
 
-    public String getMinIconStyle() {
-        if (minIconStyle != null) {
-            return minIconStyle;
-        } else {
-            return "";
-        }
+    public String getIcon() {
+        return icon;
     }
 
-    public void setMinIconStyle(String minIconStyle) {
-        this.minIconStyle = minIconStyle;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public String getTitle() {

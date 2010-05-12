@@ -11,7 +11,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
  * Time: 6:58:53 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CreatePageActionItem extends BaseActionItem {
+public class NewPageActionItem extends BaseActionItem {
     public void onComponentSelection() {
         EditActions.createPage(linker);
     }

@@ -13,6 +13,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.Constants;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SeparatorActionItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -148,9 +149,9 @@ public class ActionToolbar extends ToolBar {
         // add menu
         if (addMenu) {
             Button menuToolItem = new Button(gwtToolbarItemsGroup.getItemsGroupTitle());
-            String minIconStyle = gwtToolbarItemsGroup.getMinIconStyle();
+            String minIconStyle = gwtToolbarItemsGroup.getIcon();
             if (minIconStyle != null) {
-                menuToolItem.setIconStyle(minIconStyle);
+                menuToolItem.setIcon(ToolbarIconProvider.getInstance().getIcon(gwtToolbarItemsGroup.getIcon()));
             }
             menuToolItem.setMenu(menu);
             add(menuToolItem);

@@ -34,23 +34,23 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.createFolder"/>
-                                                <ref bean="org.jahia.toolbar.item.upload"/>
-                                                <ref bean="org.jahia.toolbar.item.download"/>
-                                                <ref bean="org.jahia.toolbar.item.preview"/>
-                                                <ref bean="org.jahia.toolbar.item.Separator"/>
-                                                <ref bean="org.jahia.toolbar.item.lock"/>
-                                                <ref bean="org.jahia.toolbar.item.unlock"/>
-                                                <ref bean="org.jahia.toolbar.item.Separator"/>
-                                                <ref bean="org.jahia.toolbar.item.zip"/>
-                                                <ref bean="org.jahia.toolbar.item.unzip"/>
+                                                <ref bean="Toolbar.Item.NewFolder"/>
+                                                <ref bean="Toolbar.Item.upload"/>
+                                                <ref bean="Toolbar.Item.Download"/>
+                                                <ref bean="Toolbar.Item.FilePreview"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Lock"/>
+                                                <ref bean="Toolbar.Item.Unlock"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Zip"/>
+                                                <ref bean="Toolbar.Item.Unzip"/>
                                             </list>
                                         </property>
                                     </bean>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Remote"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Image"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.View"/>
                                 </list>
                             </property>
                             <property name="contextMenu" value="true"/>
@@ -129,15 +129,15 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.createFolder"/>
-                                                <ref bean="org.jahia.toolbar.item.newMashup"/>
-                                                <ref bean="org.jahia.toolbar.item.newRss"/>
-                                                <ref bean="org.jahia.toolbar.item.newGadget"/>
+                                                <ref bean="Toolbar.Item.NewFolder"/>
+                                                <ref bean="Toolbar.Item.NewMashup"/>
+                                                <ref bean="Toolbar.Item.NewRss"/>
+                                                <ref bean="Toolbar.Item.NewGadget"/>
                                             </list>
                                         </property>
                                     </bean>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.View"/>
                                 </list>
                             </property>
                             <property name="visibility">
@@ -204,14 +204,14 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.newCategory"/>
-                                                <ref bean="org.jahia.toolbar.item.Separator"/>
-                                                <ref bean="org.jahia.toolbar.item.export"/>
-                                                <ref bean="org.jahia.toolbar.item.import"/>
+                                                <ref bean="Toolbar.Item.NewCategory"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Export"/>
+                                                <ref bean="Toolbar.Item.Import"/>
                                             </list>
                                         </property>
                                     </bean>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
                                 </list>
                             </property>
                             <property name="visibility">
@@ -275,16 +275,16 @@
                                         <property name="layout" value="button"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.newTag"/>
-                                                <ref bean="org.jahia.toolbar.item.Separator"/>
-                                                <ref bean="org.jahia.toolbar.item.export"/>
-                                                <ref bean="org.jahia.toolbar.item.import"/>
+                                                <ref bean="Toolbar.Item.newTag"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Export"/>
+                                                <ref bean="Toolbar.Item.Import"/>
                                             </list>
                                         </property>
                                     </bean>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
                                 </list>
                             </property>
                             <property name="visibility">
@@ -302,14 +302,14 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.newTag"/>
-                                                <ref bean="org.jahia.toolbar.item.Separator"/>
-                                                <ref bean="org.jahia.toolbar.item.export"/>
-                                                <ref bean="org.jahia.toolbar.item.import"/>
+                                                <ref bean="Toolbar.Item.newTag"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Export"/>
+                                                <ref bean="Toolbar.Item.Import"/>
                                             </list>
                                         </property>
                                     </bean>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
                                 </list>
                             </property>
                             <property name="visibility">
@@ -377,10 +377,10 @@
                                         <property name="layout" value="button"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.exectuteRemotePublication"/>
-                                                <ref bean="org.jahia.toolbar.item.newRemotePublication"/>
-                                                <ref bean="org.jahia.toolbar.item.rename"/>
-                                                <ref bean="org.jahia.toolbar.item.delete"/>
+                                                <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
+                                                <ref bean="Toolbar.Item.NewRemotePublication"/>
+                                                <ref bean="Toolbar.Item.Rename"/>
+                                                <ref bean="Toolbar.Item.Delete"/>
                                             </list>
                                         </property>
                                     </bean>
@@ -401,10 +401,10 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.exectuteRemotePublication"/>
-                                                <ref bean="org.jahia.toolbar.item.newRemotePublication"/>
-                                                <ref bean="org.jahia.toolbar.item.rename"/>
-                                                <ref bean="org.jahia.toolbar.item.delete"/>
+                                                <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
+                                                <ref bean="Toolbar.Item.NewRemotePublication"/>
+                                                <ref bean="Toolbar.Item.Rename"/>
+                                                <ref bean="Toolbar.Item.Delete"/>
                                             </list>
                                         </property>
                                     </bean>
@@ -476,11 +476,11 @@
                                         <property name="layout" value="button"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.delete"/>
+                                                <ref bean="Toolbar.Item.Delete"/>
                                             </list>
                                         </property>
                                     </bean>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
                                 </list>
                             </property>
                             <property name="visibility">
@@ -548,31 +548,31 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.createFolder"/>
-                                                <ref bean="org.jahia.toolbar.item.newContentList"/>
-                                                <ref bean="org.jahia.toolbar.item.createContent"/>
-                                                <ref bean="org.jahia.toolbar.item.createPage"/>
-                                                <ref bean="org.jahia.toolbar.item.newMashup"/>
-                                                <ref bean="org.jahia.toolbar.item.newRss"/>
-                                                <ref bean="org.jahia.toolbar.item.newGadget"/>
-                                                <ref bean="org.jahia.toolbar.item.upload"/>
-                                                <ref bean="org.jahia.toolbar.item.download"/>
-                                                <ref bean="org.jahia.toolbar.item.Separator"/>
-                                                <ref bean="org.jahia.toolbar.item.lock"/>
-                                                <ref bean="org.jahia.toolbar.item.unlock"/>
-                                                <ref bean="org.jahia.toolbar.item.Separator"/>
-                                                <ref bean="org.jahia.toolbar.item.zip"/>
-                                                <ref bean="org.jahia.toolbar.item.unzip"/>
-                                                <ref bean="org.jahia.toolbar.item.Separator"/>
-                                                <ref bean="org.jahia.toolbar.item.export"/>
-                                                <ref bean="org.jahia.toolbar.item.import"/>
+                                                <ref bean="Toolbar.Item.NewFolder"/>
+                                                <ref bean="Toolbar.Item.NewContentList"/>
+                                                <ref bean="Toolbar.Item.NewContent"/>
+                                                <ref bean="Toolbar.Item.NewPage"/>
+                                                <ref bean="Toolbar.Item.NewMashup"/>
+                                                <ref bean="Toolbar.Item.NewRss"/>
+                                                <ref bean="Toolbar.Item.NewGadget"/>
+                                                <ref bean="Toolbar.Item.upload"/>
+                                                <ref bean="Toolbar.Item.Download"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Lock"/>
+                                                <ref bean="Toolbar.Item.Unlock"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Zip"/>
+                                                <ref bean="Toolbar.Item.Unzip"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Export"/>
+                                                <ref bean="Toolbar.Item.Import"/>
                                             </list>
                                         </property>
                                     </bean>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.remote"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.image"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.view"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Remote"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Image"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.View"/>
                                 </list>
                             </property>
                             <property name="contextMenu" value="true"/>
@@ -663,13 +663,13 @@
                                         <property name="layout" value="button"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.createPage"/>
+                                                <ref bean="Toolbar.Item.NewPage"/>
                                             </list>
                                         </property>
                                     </bean>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
                                 </list>
                             </property>
                             <property name="visibility">
@@ -687,14 +687,14 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="org.jahia.toolbar.item.createPage"/>
-                                                <ref bean="org.jahia.toolbar.item.Separator"/>
-                                                <ref bean="org.jahia.toolbar.item.lock"/>
-                                                <ref bean="org.jahia.toolbar.item.unlock"/>
+                                                <ref bean="Toolbar.Item.NewPage"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Lock"/>
+                                                <ref bean="Toolbar.Item.Unlock"/>
                                             </list>
                                         </property>
                                     </bean>
-                                    <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.menu.edit"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
                                 </list>
                             </property>
                             <property name="contextMenu" value="true"/>
@@ -1099,16 +1099,16 @@
                     <property name="layout" value="button"/>
                     <property name="items">
                         <list>
-                            <ref bean="org.jahia.toolbar.item.newCategory"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.item.export"/>
-                            <ref bean="org.jahia.toolbar.item.import"/>
+                            <ref bean="Toolbar.Item.NewCategory"/>
+                            <ref bean="Toolbar.Item.Separator"/>
+                            <ref bean="Toolbar.Item.Export"/>
+                            <ref bean="Toolbar.Item.Import"/>
                         </list>
                     </property>
                 </bean>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
         </property>
         <property name="visibility">
@@ -1127,22 +1127,22 @@
                     <property name="layout" value="button"/>
                     <property name="items">
                         <list>
-                            <ref bean="org.jahia.toolbar.item.createFolder"/>
-                            <ref bean="org.jahia.toolbar.item.newContentList"/>
-                            <ref bean="org.jahia.toolbar.item.createContent"/>
-                            <ref bean="org.jahia.toolbar.item.createPage"/>
-                            <ref bean="org.jahia.toolbar.item.newMashup"/>
-                            <ref bean="org.jahia.toolbar.item.newRss"/>
-                            <ref bean="org.jahia.toolbar.item.newGadget"/>
-                            <ref bean="org.jahia.toolbar.item.upload"/>
-                            <ref bean="org.jahia.toolbar.item.download"/>
-                            <ref bean="org.jahia.toolbar.item.webfolder"/>
+                            <ref bean="Toolbar.Item.NewFolder"/>
+                            <ref bean="Toolbar.Item.NewContentList"/>
+                            <ref bean="Toolbar.Item.NewContent"/>
+                            <ref bean="Toolbar.Item.NewPage"/>
+                            <ref bean="Toolbar.Item.NewMashup"/>
+                            <ref bean="Toolbar.Item.NewRss"/>
+                            <ref bean="Toolbar.Item.NewGadget"/>
+                            <ref bean="Toolbar.Item.upload"/>
+                            <ref bean="Toolbar.Item.Download"/>
+                            <ref bean="Toolbar.Item.Webfolder"/>
                         </list>
                     </property>
                 </bean>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
         </property>
         <property name="visibility">
@@ -1163,17 +1163,17 @@
                     <property name="layout" value="button"/>
                     <property name="items">
                         <list>
-                            <ref bean="org.jahia.toolbar.item.createFolder"/>
-                            <ref bean="org.jahia.toolbar.item.upload"/>
-                            <ref bean="org.jahia.toolbar.item.download"/>
-                            <ref bean="org.jahia.toolbar.item.preview"/>
-                            <ref bean="org.jahia.toolbar.item.webfolder"/>
+                            <ref bean="Toolbar.Item.NewFolder"/>
+                            <ref bean="Toolbar.Item.upload"/>
+                            <ref bean="Toolbar.Item.Download"/>
+                            <ref bean="Toolbar.Item.FilePreview"/>
+                            <ref bean="Toolbar.Item.Webfolder"/>
                         </list>
                     </property>
                 </bean>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
         </property>
         <property name="visibility">
@@ -1193,16 +1193,16 @@
                     <property name="layout" value="button"/>
                     <property name="items">
                         <list>
-                            <ref bean="org.jahia.toolbar.item.createFolder"/>
-                            <ref bean="org.jahia.toolbar.item.newMashup"/>
-                            <ref bean="org.jahia.toolbar.item.newRss"/>
-                            <ref bean="org.jahia.toolbar.item.newGadget"/>
+                            <ref bean="Toolbar.Item.NewFolder"/>
+                            <ref bean="Toolbar.Item.NewMashup"/>
+                            <ref bean="Toolbar.Item.NewRss"/>
+                            <ref bean="Toolbar.Item.NewGadget"/>
                         </list>
                     </property>
                 </bean>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.copy"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
         </property>
         <property name="visibility">
@@ -1222,10 +1222,10 @@
                     <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                     <property name="items">
                         <list>
-                            <ref bean="org.jahia.toolbar.item.newRole"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.item.export"/>
-                            <ref bean="org.jahia.toolbar.item.import"/>
+                            <ref bean="Toolbar.Item.NewRole"/>
+                            <ref bean="Toolbar.Item.Separator"/>
+                            <ref bean="Toolbar.Item.Export"/>
+                            <ref bean="Toolbar.Item.Import"/>
                         </list>
                     </property>
                 </bean>
@@ -1234,8 +1234,8 @@
                     <property name="titleKey" value="label.edit"/>
                     <property name="items">
                         <list>
-                            <ref bean="org.jahia.toolbar.item.rename"/>
-                            <ref bean="org.jahia.toolbar.item.delete"/>
+                            <ref bean="Toolbar.Item.Rename"/>
+                            <ref bean="Toolbar.Item.Delete"/>
                         </list>
                     </property>
                 </bean>
@@ -1255,15 +1255,15 @@
                     <property name="layout" value="button"/>
                     <property name="items">
                         <list>
-                            <ref bean="org.jahia.toolbar.item.newRole"/>
-                            <ref bean="org.jahia.toolbar.item.Separator"/>
-                            <ref bean="org.jahia.toolbar.item.export"/>
-                            <ref bean="org.jahia.toolbar.item.import"/>
+                            <ref bean="Toolbar.Item.NewRole"/>
+                            <ref bean="Toolbar.Item.Separator"/>
+                            <ref bean="Toolbar.Item.Export"/>
+                            <ref bean="Toolbar.Item.Import"/>
                         </list>
                     </property>
                 </bean>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.file.modify"/>
-                <ref bean="org.jahia.toolbar.itemsgroup.ContentManager.shortcuts.refresh"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
         </property>
         <property name="visibility">

@@ -41,7 +41,6 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowActionItem;
 import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.bin.Jahia;
@@ -65,13 +64,10 @@ import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.jahia.services.uicomponents.bean.toolbar.*;
 import org.jahia.services.uicomponents.bean.toolbar.Item;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.workflow.WorkflowDefinition;
-import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -651,7 +647,7 @@ public class UIConfigHelper {
         gwtToolbarItemsGroup.setLayout(getLayoutAsInt(itemsGroup.getLayout()));
 
         gwtToolbarItemsGroup.setNeedSeparator(itemsGroup.isSeparator());
-        gwtToolbarItemsGroup.setMinIconStyle(itemsGroup.getMinIconStyle());
+        gwtToolbarItemsGroup.setIcon(itemsGroup.getIcon());
         if (itemsGroup.getTitleKey() != null) {
             gwtToolbarItemsGroup.setItemsGroupTitle(getResources(itemsGroup.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
         } else {
@@ -728,6 +724,7 @@ public class UIConfigHelper {
     private GWTJahiaToolbarItem createGWTItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Item item) {
         // GWTJahiaToolbarItem
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
+        gwtToolbarItem.setId(item.getId());
         if (item.getTitleKey() != null) {
             gwtToolbarItem.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
         } else {
@@ -740,7 +737,7 @@ public class UIConfigHelper {
         } else {
             gwtToolbarItem.setDescription(gwtToolbarItem.getTitle());
         }
-        gwtToolbarItem.setMinIconStyle(item.getMinIconStyle());
+        gwtToolbarItem.setIcon(item.getIcon());
         if (item.getSelected() != null) {
             gwtToolbarItem.setSelected(item.getSelected().getRealValue(site, jahiaUser, locale));
         } else {

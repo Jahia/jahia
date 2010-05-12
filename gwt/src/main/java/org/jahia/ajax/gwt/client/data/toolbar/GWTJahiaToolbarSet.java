@@ -47,10 +47,6 @@ public class GWTJahiaToolbarSet implements Serializable {
         return toolbarList;
     }
 
-    public void setToolbarList(List<GWTJahiaToolbar> toolbarList) {
-        this.toolbarList = toolbarList;
-    }
-
     public void addGWTToolbar(GWTJahiaToolbar gwtToolbar) {
         if (toolbarList == null) {
             toolbarList = new ArrayList<GWTJahiaToolbar>();

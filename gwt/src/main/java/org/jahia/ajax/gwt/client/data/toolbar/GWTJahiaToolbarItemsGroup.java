@@ -31,8 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.data.toolbar;
 
-import com.allen_sauer.gwt.log.client.Log;
-
 import java.util.List;
 import java.io.Serializable;
 
@@ -45,7 +43,7 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
     private String id;
     private String type;
     private String itemsGroupTitle;
-    private String minIconStyle;
+    private String icon;
     private boolean needSeparator;
     private int layout;
     private List<GWTJahiaToolbarItem> gwtToolbarItems;
@@ -78,12 +76,12 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
         return layout;
     }
 
-    public String getMinIconStyle() {
-        return minIconStyle;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setMinIconStyle(String minIconStyle) {
-        this.minIconStyle = minIconStyle;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public void setLayout(int layout) {

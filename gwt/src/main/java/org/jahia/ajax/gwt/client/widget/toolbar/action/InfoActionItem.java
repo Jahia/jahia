@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.Constants;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 
 import java.util.Map;
 
@@ -55,8 +56,11 @@ public class InfoActionItem extends BaseActionItem {
     public Component createNewToolItem() {
         // TO DO: find a better implementation of this item. The current one is ....
         final Button item = new Button();
-        item.setIconStyle(getGwtToolbarItem().getMinIconStyle());
-        Map preferences = getGwtToolbarItem().getProperties();
+        final GWTJahiaToolbarItem toolbarItem = getGwtToolbarItem();
+        if (toolbarItem.getIcon() != null) {
+            item.setIcon(ToolbarIconProvider.getInstance().getIcon(toolbarItem.getIcon()));
+        }
+        Map preferences = toolbarItem.getProperties();
         if (preferences != null) {
             final GWTJahiaProperty info = (GWTJahiaProperty) preferences.get(Constants.INFO);
             if (info != null) {

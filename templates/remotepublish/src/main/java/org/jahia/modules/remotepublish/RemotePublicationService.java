@@ -652,8 +652,8 @@ public class RemotePublicationService implements InitializingBean {
         org.apache.commons.httpclient.Credentials defaultcreds = new UsernamePasswordCredentials(remoteUser, remotePassword);
         client.getState()
                 .setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
-
-        PostMethod prepare = new PostMethod(remoteUrl + remotePath + ".preparereplay.do");
+        String lang = source.resolveSite().getDefaultLanguage();
+        PostMethod prepare = new PostMethod(remoteUrl + "/render/live/" + lang + remotePath + ".preparereplay.do");
         prepare.addRequestHeader(new Header("accept", "application/json"));
         prepare.addParameter("sourceUuid", source.getIdentifier());
         client.executeMethod(prepare);
@@ -678,7 +678,7 @@ public class RemotePublicationService implements InitializingBean {
             source = JCRSessionFactory.getInstance().getCurrentUserSession("live").getNode(source.getCorrespondingNodePath("live"));
             generateLog(source, lastDate, new FileOutputStream(file));
 
-            PostMethod replay = new PostMethod(remoteUrl + remotePath + ".replay.do");
+            PostMethod replay = new PostMethod(remoteUrl + "/render/live/" + lang + remotePath + ".replay.do");
             replay.addRequestHeader(new Header("accept", "application/json"));
             Part[] parts = {
                     new StringPart("value", "value"),
@@ -689,7 +689,7 @@ public class RemotePublicationService implements InitializingBean {
             client.executeMethod(replay);
 
             if (replay.getStatusCode() != HttpServletResponse.SC_OK) {
-                logger.error("Error received on replay : "+prepare.getStatusCode());
+                logger.error("Error received on replay : "+replay.getStatusCode());
                 return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject(new HashMap()));
             }
 

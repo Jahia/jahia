@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
+import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
@@ -90,13 +91,13 @@ public abstract class FormQuickRemotePublication extends FormPanel {
 
         final TextField remoteUrlField = new TextField();
         remoteUrlField.setName("remoteUrl");
-        remoteUrlField.setEmptyText("http://www.targetsite.com/cms/render/live/en");
+        remoteUrlField.setEmptyText("http://www.targetsite.com/cms");
         remoteUrlField.setValidator(new Validator() {
             public String validate(Field<?> field, String s) {
-                if (s.startsWith("http") && s.contains("://") && s.contains("/render/live") && !s.endsWith("/")) {
+                if (s.startsWith("http") && s.contains("://") && !s.endsWith("/")) {
                     return null;
                 } else {
-                    return "Remote URL should match format: http(s)://www.targetsite.com/cms/render/live/en";
+                    return "Remote URL should match format: http(s)://www.targetsite.com/cms";
                 }
             }
         });
@@ -146,36 +147,57 @@ public abstract class FormQuickRemotePublication extends FormPanel {
         Button saveButton = new Button(Messages.getResource("fm_save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent componentEvent) {
-                final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
-                List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = new ArrayList<GWTJahiaNodeProperty>();
-                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remoteUrl", new GWTJahiaNodePropertyValue(
-                        remoteUrlField.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
-                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remotePath", new GWTJahiaNodePropertyValue(
-                        remotePath.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
-                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remoteUser", new GWTJahiaNodePropertyValue(
-                        remoteUser.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
-                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remotePassword", new GWTJahiaNodePropertyValue(
-                        remotePassword.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
-                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("node", new GWTJahiaNodePropertyValue(
-                        localPath.getValue().get(0).getUUID(), GWTJahiaNodePropertyType.STRING)));
 
-                final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                async.createNode("/remotePublications", nameField.getValue().toString(), "jnt:remotePublication", null,
-                                 null, gwtJahiaNodeProperties, langCodeProperties, new AsyncCallback<GWTJahiaNode>() {
-                            public void onSuccess(GWTJahiaNode gwtJahiaNode) {
-                                if (getParent() instanceof Window) {
-                                    ((Window) getParent()).close();
-                                }
-                                onRemotePublicationCreated();
-                            }
+                String url = remoteUrlField.getValue().toString() + "/render/live/" + localPath.getValue().get(0).getLanguageCode() + remotePath.getValue().toString();
+                RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url + ".preparereplay.do");
+                builder.setUser(remoteUser.getValue().toString());
+                builder.setPassword(remotePassword.getValue().toString());
+                try {
+                    Request response = builder.sendRequest("testOnly=true", new RequestCallback() {
+                        public void onError(Request request, Throwable exception) {
+                            com.google.gwt.user.client.Window.alert("Cannot create connection");
+                        }
 
-                            public void onFailure(Throwable throwable) {
-                                Log.error("Unable to create a remote publication", throwable);
-                                if (getParent() instanceof Window) {
-                                    ((Window) getParent()).hide();
-                                }
+                        public void onResponseReceived(Request request, Response response) {
+                            if (response.getStatusCode() == 200) {
+                            final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
+                            List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = new ArrayList<GWTJahiaNodeProperty>();
+                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remoteUrl", new GWTJahiaNodePropertyValue(
+                                    remoteUrlField.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
+                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remotePath", new GWTJahiaNodePropertyValue(
+                                    remotePath.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
+                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remoteUser", new GWTJahiaNodePropertyValue(
+                                    remoteUser.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
+                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remotePassword", new GWTJahiaNodePropertyValue(
+                                    remotePassword.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
+                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("node", new GWTJahiaNodePropertyValue(
+                                    localPath.getValue().get(0).getUUID(), GWTJahiaNodePropertyType.STRING)));
+
+                            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
+                            service.createNode("/remotePublications", nameField.getValue().toString(), "jnt:remotePublication", null,
+                                             null, gwtJahiaNodeProperties, langCodeProperties, new AsyncCallback<GWTJahiaNode>() {
+                                        public void onSuccess(GWTJahiaNode gwtJahiaNode) {
+                                            if (getParent() instanceof Window) {
+                                                ((Window) getParent()).close();
+                                            }
+                                            onRemotePublicationCreated();
+                                        }
+
+                                        public void onFailure(Throwable throwable) {
+                                            Log.error("Unable to create a remote publication", throwable);
+                                            if (getParent() instanceof Window) {
+                                                ((Window) getParent()).hide();
+                                            }
+                                        }
+                                    });
+                            } else {
+                                com.google.gwt.user.client.Window.alert("Cannot contact remote server : error "+response.getStatusCode());
                             }
-                        });
+                        }
+                    });
+                } catch (RequestException e) {
+                    // Code omitted for clarity
+                }
             }
         });
         addButton(saveButton);

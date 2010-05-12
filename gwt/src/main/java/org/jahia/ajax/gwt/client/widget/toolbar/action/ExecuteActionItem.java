@@ -23,17 +23,24 @@ public class ExecuteActionItem extends BaseActionItem {
         for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
             String baseURL = "http://localhost:8080" + JahiaGWTParameters.getContextPath() + "/cms/render";
             String localURL = baseURL + "/default/" + JahiaGWTParameters.getLanguage() + gwtJahiaNode.getPath();
+            linker.loading("Executing action ...");
             RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + "." + action + ".do");
             try {
                 Request response = builder.sendRequest(null, new RequestCallback() {
                     public void onError(Request request, Throwable exception) {
-                        // Code omitted for clarity
+                        com.google.gwt.user.client.Window.alert("Cannot create connection");
+                        linker.loaded();
                     }
 
                     public void onResponseReceived(Request request, Response response) {
-                        // Code omitted for clarity
+                        if (response.getStatusCode() != 200) {
+                            com.google.gwt.user.client.Window.alert("Cannot contact remote server : error "+response.getStatusCode());
+                        }
+                        linker.loaded();
                     }
                 });
+
+
             } catch (RequestException e) {
                 // Code omitted for clarity
             }

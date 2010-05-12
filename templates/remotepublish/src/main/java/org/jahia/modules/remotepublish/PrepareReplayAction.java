@@ -37,7 +37,9 @@ public class PrepareReplayAction implements Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         final JCRNodeWrapper node = resource.getNode();
-
+        if (!parameters.containsKey("sourceUuid")) {
+            return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+        }
         Map map = new HashMap();
         if (node.isNodeType("jmix:remotelyPublished")) {
             String uuid = node.getProperty("uuid").getString();

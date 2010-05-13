@@ -93,7 +93,7 @@ public class ToolbarIconProvider {
 
             @Override
             public String getHTML() {
-                return "<img src=\""+getUrl()+"\" />";
+                return "<img src=\""+getUrl()+"\" width=\"16\" height=\"16\" />";
             }
         };
     }

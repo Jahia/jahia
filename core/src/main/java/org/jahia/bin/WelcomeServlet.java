@@ -46,13 +46,6 @@ public class WelcomeServlet extends HttpServlet {
         if (site == null) {
                 response.sendRedirect(request.getContextPath() + "/administration");
             } else {
-
-                final ProcessingContextFactory pcf = (ProcessingContextFactory) SpringContextSingleton.
-                        getInstance().getContext().getBean(ProcessingContextFactory.class.getName());
-
-                ParamBean jParams = pcf.getContext(request, response, context);
-
-            
                 String base;
 
                 final String jcrPath = "/sites/" + site.getSiteKey() + "/home";
@@ -60,13 +53,13 @@ public class WelcomeServlet extends HttpServlet {
                 try {
                     JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE)
                             .getNode(jcrPath);
-                    base = jParams.getRequest().getContextPath() + Render.getRenderServletPath() + "/" +
-                            Constants.LIVE_WORKSPACE + "/" + jParams.getLocale();
+                    base = request.getContextPath() + Render.getRenderServletPath() + "/" +
+                            Constants.LIVE_WORKSPACE + "/" + site.getDefaultLanguage();
                 } catch (PathNotFoundException e) {
                     try {
                         JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode(jcrPath);
-                        base = jParams.getRequest().getContextPath() + Edit.getEditServletPath() + "/" +
-                                Constants.EDIT_WORKSPACE + "/" + jParams.getLocale();
+                        base = request.getContextPath() + Edit.getEditServletPath() + "/" +
+                                Constants.EDIT_WORKSPACE + "/" + site.getDefaultLanguage();
                     } catch (PathNotFoundException e2) {
                         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

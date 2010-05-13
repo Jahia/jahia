@@ -756,7 +756,11 @@ public class ProcessingContext {
         }
         if (locales.isEmpty()) {
             if (currentLocale == null) {
-                currentLocale = Locale.getDefault();
+                if (getDefaultSite() != null) {
+                    currentLocale = LanguageCodeConverters.languageCodeToLocale(getDefaultSite().getDefaultLanguage());
+                } else {
+                    currentLocale = Locale.ENGLISH;
+                }
             }
             locales.add(currentLocale);
         }
@@ -947,7 +951,11 @@ public class ProcessingContext {
             logger.error("Error while retrieving the default system locale", t);
         }
         if (getCurrentLocale() == null) {
-            setCurrentLocale(Locale.getDefault());
+            if (getDefaultSite() != null) {
+                currentLocale = LanguageCodeConverters.languageCodeToLocale(getDefaultSite().getDefaultLanguage());
+            } else {
+                currentLocale = Locale.ENGLISH;
+            }
         }
         return getCurrentLocale();
     }

@@ -961,25 +961,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-     * Publish the specified path.
-     *
-     * @param path the path to publish, will not auto publish the parents
-     * @throws GWTJahiaServiceException
-     */
-    public void publish(String path, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException {
-        JCRSessionWrapper session = retrieveCurrentSession();
-        publication.publish(path, Collections.singleton(session.getLocale().toString()), allSubTree, reverse, session);
-    }
-
-    /**
      * Publish the specified paths.
      *
      * @param paths the list of node paths to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
-    public void publish(List<String> paths, boolean allSubTree, String comments, boolean reverse) throws GWTJahiaServiceException {
+    public void publish(List<String> paths, boolean allSubTree, String comments, boolean workflow, boolean reverse) throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession();
-        publication.publish(paths, Collections.singleton(session.getLocale().toString()), getRemoteJahiaUser(), false, session);
+        publication.publish(paths, Collections.singleton(session.getLocale().toString()), allSubTree, comments, workflow, reverse, session);
     }
 
     /**

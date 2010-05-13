@@ -138,9 +138,24 @@ public class WorkflowService {
      * @return A list of available workflows per provider.
      */
     public List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user) throws RepositoryException {
+        return getPossibleWorkflows(node, user, null);
+    }
+
+    /**
+     * This method list all possible workflows for the specified node.
+     *
+     * @param node
+     * @param user
+     * @return A list of available workflows per provider.
+     */
+    public List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user, final String action) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<WorkflowDefinition>>() {
             public List<WorkflowDefinition> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                final List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
+                List<WorkflowDefinition> workflowsForAction = null;
+                if (action != null) {
+                    workflowsForAction = getWorkflowsForAction(action);
+                }
+                final List<WorkflowDefinition> workflows = new ArrayList<WorkflowDefinition>();
                 JCRNodeWrapper rule = getApplicableWorkflowRule(node, session);
                 if (rule != null) {
                     Value[] values = rule.getProperty("j:availableWorkflows").getValues();
@@ -149,21 +164,24 @@ public class WorkflowService {
                         String providerKey = StringUtils.substringBefore(value.getString(), ":");
 
                         WorkflowDefinition definition = lookupProvider(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey);
+                        if (workflowsForAction != null && !workflowsForAction.contains(definition)) {
+                            continue;
+                        }
                         if (user == null || user.isAdminMember(0)) {
-                            workflowsByProvider.add(definition);
+                            workflows.add(definition);
                         } else {
                             List<JahiaPrincipal> users = getAssignedRole(node, definition, START_ROLE);
                             for (JahiaPrincipal jahiaPrincipal : users) {
                                 if ((jahiaPrincipal instanceof JahiaGroup && ((JahiaGroup)jahiaPrincipal).isMember(user)) ||
                                         (jahiaPrincipal instanceof JahiaUser && ((JahiaUser)jahiaPrincipal).getUserKey().equals(user.getUserKey()))) {
-                                    workflowsByProvider.add(definition);
+                                    workflows.add(definition);
                                     break;
                                 }
                             }
                         }
                     }
                 }
-                return workflowsByProvider;
+                return workflows;
             }
         });
     }

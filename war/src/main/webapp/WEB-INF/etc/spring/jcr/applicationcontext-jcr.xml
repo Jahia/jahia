@@ -154,6 +154,7 @@
                             <value>j:templateShared</value>
                 			<value>j:published</value>
                 			<value>j:tags</value>
+                			<value>j:locktoken</value>
                 		</set>
                 	</property>
                 </bean>

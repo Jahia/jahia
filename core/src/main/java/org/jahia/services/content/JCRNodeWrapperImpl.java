@@ -1425,6 +1425,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             } catch (RepositoryException e) {
                 return true;
             }
+        } else {
+            logger.error("Lost lock ! "+objectNode.getPath());
         }
         if (session.getLocale() != null && !isNodeType("jnt:translation")) {
             Node trans = getOrCreateI18N(session.getLocale());

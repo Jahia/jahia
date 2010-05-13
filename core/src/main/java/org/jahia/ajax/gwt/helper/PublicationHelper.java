@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
@@ -10,12 +11,13 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowVariable;
 
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,16 +29,21 @@ import java.util.Map;
 public class PublicationHelper {
     private static Logger logger = Logger.getLogger(PublicationHelper.class);
 
-    private JCRPublicationService publicationService ;
+    private JCRPublicationService publicationService;
+    private WorkflowService workflowService;
 
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
     }
 
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
+    }
+
     /**
      * Get the publication status information for a particular path.
      *
-     * @param uuid to get publication info from
+     * @param uuid               to get publication info from
      * @param currentUserSession
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
@@ -104,8 +111,8 @@ public class PublicationHelper {
      * Referenced nodes will also be published.
      * Parent node must be published, or will be published if publishParent is true.
      *
-     * @param path          Path of the node to publish
-     * @param languages     Set of languages to publish if null publish all languages
+     * @param path      Path of the node to publish
+     * @param languages Set of languages to publish if null publish all languages
      * @param reverse
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
@@ -128,15 +135,52 @@ public class PublicationHelper {
      * Referenced nodes will also be published.
      * Parent node must be published, or will be published if publishParent is true.
      *
-     * @param paths         list of paths of the nodes to publish
-     * @param languages     Set of languages to publish if null publish all languages
-     * @param user          the user for obtaining the jcr session
-     * @param publishParent Recursively publish the parents
-     * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
-     *          in case of any RepositoryException
+     * @param paths     list of paths of the nodes to publish
+     * @param languages Set of languages to publish if null publish all languages
+     * @param comments
+     * @param workflow  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      */
-    public void publish(List<String> paths, Set<String> languages, JahiaUser user, boolean publishParent, JCRSessionWrapper session) throws GWTJahiaServiceException {
-        // TODO implement me!
+    public void publish(List<String> paths, Set<String> languages, boolean allSubTree, String comments, boolean workflow, boolean reverse, JCRSessionWrapper session) throws GWTJahiaServiceException {
+        try {
+            if (workflow) {
+                // todo : handle allsubtree / reverse
+                Map<WorkflowDefinition, List<JCRNodeWrapper>> m = new HashMap<WorkflowDefinition, List<JCRNodeWrapper>>();
+                for (String path : paths) {
+                    JCRNodeWrapper n = session.getNode(path);
+                    List<WorkflowDefinition> def = workflowService.getPossibleWorkflows(n, session.getUser(), "publish");
+                    if (def.isEmpty()) {
+                        publicationService.publish(path, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
+                    } else {
+                        if (!m.containsKey(def.get(0))) {
+                            m.put(def.get(0), new ArrayList<JCRNodeWrapper>());
+                        }
+                        m.get(def.get(0)).add(n);
+                    }
+                }
+
+                HashMap<String, Object> map = new HashMap<String, Object>();
+                List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
+                values.add(new WorkflowVariable(comments, PropertyType.STRING));
+                map.put("jcr:title", values);
+
+                for (Map.Entry<WorkflowDefinition, List<JCRNodeWrapper>> entry : m.entrySet()) {
+                    for (JCRNodeWrapper wrapper : entry.getValue()) {
+                        workflowService.startProcess(wrapper, entry.getKey().getKey(), entry.getKey().getProvider(), map);
+                    }
+                }
+            } else {
+                for (String path : paths) {
+                    if (reverse) {
+                        publicationService.publish(path, Constants.LIVE_WORKSPACE, session.getWorkspace().getName(), languages, false, allSubTree);
+                    } else {
+                        publicationService.publish(path, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("repository exception", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
     /**

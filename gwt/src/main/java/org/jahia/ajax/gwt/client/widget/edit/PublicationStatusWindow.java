@@ -110,8 +110,8 @@ class PublicationStatusWindow extends Window {
             if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
                 info.set("mainTitle", info.getTitle());
                 store.add(info);
-                paths.add(info.getPath());
             }
+            paths.add(info.getPath());
             for (ModelData data : info.getChildren()) {
                 GWTJahiaPublicationInfo subInfo = (GWTJahiaPublicationInfo) data;
                 if (subInfo.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
@@ -162,11 +162,34 @@ class PublicationStatusWindow extends Window {
             }
         });
         final Button ok = new Button(Messages.getResource("publication_publish"));
+        final Button noWorkflow = new Button("Bypass workflow");
+
         SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 ok.setEnabled(false);
                 cancel.setEnabled(false);
-                JahiaContentManagementService.App.getInstance().publish(paths, false, comments.getValue(), false, new AsyncCallback() {
+                JahiaContentManagementService.App.getInstance().publish(paths, false, comments.getValue(), true, false, new AsyncCallback() {
+                    public void onFailure(Throwable caught) {
+                        Log.error("Cannot publish", caught);
+                        com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
+                        hide();
+                    }
+
+                    public void onSuccess(Object result) {
+                        Info.display("Workflow started", "Workflow started");
+                        linker.refresh(Linker.REFRESH_ALL);
+                        hide();
+                    }
+                });
+            }
+        };
+        ok.addSelectionListener(selectionListener);
+
+        selectionListener = new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                ok.setEnabled(false);
+                cancel.setEnabled(false);
+                JahiaContentManagementService.App.getInstance().publish(paths, false, comments.getValue(), false, false, new AsyncCallback() {
                     public void onFailure(Throwable caught) {
                         Log.error("Cannot publish", caught);
                         com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
@@ -181,9 +204,11 @@ class PublicationStatusWindow extends Window {
                 });
             }
         };
-        ok.addSelectionListener(selectionListener);
+        noWorkflow.addSelectionListener(selectionListener);
+
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         addButton(ok);
+        addButton(noWorkflow);
         addButton(cancel);
     }
 }

@@ -70,7 +70,7 @@ public class AggregateCacheFilter extends AbstractFilter {
     private static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
 
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
-    private static final String RESSOURCES = "ressources";
+    private static final String RESOURCES = "resources";
 
     public static void clearNotCacheableFragmentCache() {
         notCacheableFragment.clear();
@@ -162,7 +162,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                     final String output = outputDocument.toString();
                     cachedRenderContent = surroundWithCacheTag(key, output);
                     CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
-                    cacheEntry.setProperty(RESSOURCES,renderContext.getStaticAssets());
+                    cacheEntry.setProperty(RESOURCES,renderContext.getStaticAssets());
                     Element cachedElement = new Element(perUserKey, cacheEntry);
                     if (expiration > 0) {
                         cachedElement.setTimeToLive(expiration.intValue() + 1);
@@ -236,7 +236,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                         String content = (String) cacheEntry.getObject();
                         outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                                aggregateContent(cache, content, renderContext));
-                        renderContext.addStaticAsset((Map<String, Set<String>>)cacheEntry.getProperty(RESSOURCES));
+                        renderContext.addStaticAsset((Map<String, Set<String>>)cacheEntry.getProperty(RESOURCES));
                     } else {
                         cache.put(new Element(cacheKey,null));
                         logger.debug("Missing content : "+cacheKey);

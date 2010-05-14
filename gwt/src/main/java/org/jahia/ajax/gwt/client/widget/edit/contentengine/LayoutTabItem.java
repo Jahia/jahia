@@ -66,6 +66,7 @@ public class LayoutTabItem extends PropertiesTabItem {
 
             if (wrapperPanel == null) {
                 wrapperPanel = new LayoutContainer(new RowLayout());
+                wrapperPanel.setScrollMode(Style.Scroll.AUTO);
                 add(wrapperPanel);
             }
             wrapperPanel.add(propertiesEditor);

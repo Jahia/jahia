@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -42,6 +43,7 @@ public class ContentTabItem extends PropertiesTabItem {
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
             if (wrapperPanel == null) {
                 wrapperPanel = new LayoutContainer(new RowLayout());
+                wrapperPanel.setScrollMode(Style.Scroll.AUTO);
                 add(wrapperPanel);
             }
             FieldSet fSet = new FieldSet();

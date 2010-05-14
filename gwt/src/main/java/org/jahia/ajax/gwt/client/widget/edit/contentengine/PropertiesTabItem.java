@@ -1,12 +1,14 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
@@ -41,6 +43,8 @@ public class PropertiesTabItem extends EditEngineTabItem {
         super(title, engine);
         this.dataType = dataType;
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();
+        setLayout(new FitLayout());
+        setScrollMode(Style.Scroll.AUTO);
     }
 
     /**
@@ -190,6 +194,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
      */
     public void attachPropertiesEditor() {
         add(propertiesEditor);
+        layout();
     }
 
     public boolean isMultiLang() {

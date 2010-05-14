@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -39,6 +40,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
     public void attachPropertiesEditor() {
         if (wrapperPanel == null) {
             wrapperPanel = new LayoutContainer(new RowLayout());
+            wrapperPanel.setScrollMode(Style.Scroll.AUTO);
             add(wrapperPanel);
         }
         wrapperPanel.add(propertiesEditor);

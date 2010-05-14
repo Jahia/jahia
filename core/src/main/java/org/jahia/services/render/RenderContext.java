@@ -188,6 +188,17 @@ public class RenderContext {
         }
     }
 
+    public void addStaticAsset(Map<String, Set<String>> staticAssets) {
+        for (Map.Entry<String, Set<String>> entry : staticAssets.entrySet()) {
+            final Set<String> assets = getStaticAssets(entry.getKey());
+            if(assets!=null) {
+                assets.addAll(entry.getValue());
+            } else {
+                this.staticAssets.put(entry.getKey(),entry.getValue());
+            }
+        }
+    }
+
     public Set<String> getStaticAssets(String assetType) {
         return staticAssets.get(assetType);
     }
@@ -258,14 +269,4 @@ public class RenderContext {
         return previewMode;
     }
 
-    public void addStaticAsset(Map<String, Set<String>> staticAssets) {
-        for (Map.Entry<String, Set<String>> entry : staticAssets.entrySet()) {
-            final Set<String> assets = getStaticAssets(entry.getKey());
-            if(assets!=null) {
-                assets.addAll(entry.getValue());
-            } else {
-                this.staticAssets.put(entry.getKey(),entry.getValue());
-            }
-        }
-    }
 }

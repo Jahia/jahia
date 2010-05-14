@@ -96,7 +96,7 @@ public class RemotePublicationService implements InitializingBean {
 
         if (calendar != null) {
             final Criteria criteria = session.createCriteria(Journal.class);
-            criteria.add(Restrictions.ge("eventDate", calendar.getTime()));
+            criteria.add(Restrictions.gt("eventDate", calendar.getTime()));
             journalList = criteria.list();
         } else {
             final Criteria criteria = session.createCriteria(Journal.class);

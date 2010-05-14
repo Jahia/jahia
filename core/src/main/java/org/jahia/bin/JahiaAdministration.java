@@ -436,10 +436,9 @@ public class JahiaAdministration extends HttpServlet {
         // init locale
         Locale defaultLocale = (Locale) session
                 .getAttribute(ProcessingContext.SESSION_LOCALE);
-        if (defaultLocale == null) {
-            defaultLocale = request.getLocale() != null ? request.getLocale()
-                    : Locale.ENGLISH;
-        }
+//        if (defaultLocale == null) {
+//            defaultLocale = request.getLocale() != null ? request.getLocale() : Locale.ENGLISH;
+//        }
         session.setAttribute(ProcessingContext.SESSION_LOCALE, defaultLocale);
 
         String contentTypeStr = "text/html;charset=";

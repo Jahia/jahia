@@ -16,6 +16,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="wf" type="org.jahia.services.workflow.WorkflowDefinition"--%>
 <tr class="evenLine">
     <td align="center">
    </td>
@@ -40,11 +41,9 @@
         <fmt:formatDate value="${currentNode.properties['j:lastPublished'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
     </td>
     <td>
-        <workflow:workflowsForNode node="${currentNode}" var="wfs"/>
+        <workflow:activeWorkflow node="${currentNode}" var="wfs"/>
         <c:forEach items="${wfs}" var="wf">
-            <c:if test="${not empty wf.formResourceName}">
-                ${wf.name}
-            </c:if>
+                ${wf.id}  
         </c:forEach>
     </td>
     <td class="lastCol">

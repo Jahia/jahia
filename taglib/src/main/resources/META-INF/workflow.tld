@@ -62,4 +62,25 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <description>Exposes the active workflows for the specified node.</description>
+        <name>activeWorkflow</name>
+        <tag-class>org.jahia.taglibs.workflow.ActiveWorkflowTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>node</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

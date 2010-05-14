@@ -1,11 +1,15 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -22,6 +26,7 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
     private transient ComboBox<GWTJahiaLanguage> mainComponent;
     private List<GWTJahiaLanguage> gwtJahiaLanguages;
     private GWTJahiaLanguage selectedLang;
+    private String siteKey;
 
     public LanguageSwitcherActionItem() {
 
@@ -42,11 +47,30 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
         initMainComponent();
     }
 
+    @Override
+    public void handleNewLinkerSelection() {
+        super.handleNewLinkerSelection();
+        if (linker.getMainNode()!= null && !linker.getMainNode().getSiteUUID().equalsIgnoreCase(siteKey)) {
+            siteKey = linker.getMainNode().getSiteUUID();
+            JahiaContentManagementService.App.getInstance().getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
+                public void onSuccess(List<GWTJahiaLanguage> languages) {
+                    mainComponent.getStore().removeAll();
+                    mainComponent.getStore().add(languages);
+                }
+
+                public void onFailure(Throwable throwable) {
+                    mainComponent.getStore().removeAll();
+                }
+            });
+        }
+
+    }
 
     /**
      * init main component
      */
     private void initMainComponent() {
+        siteKey = JahiaGWTParameters.getSiteUUID();        
         mainComponent = new ComboBox<GWTJahiaLanguage>();
         mainComponent.setStore(new ListStore<GWTJahiaLanguage>());
         mainComponent.getStore().add(gwtJahiaLanguages);

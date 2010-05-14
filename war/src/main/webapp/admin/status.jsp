@@ -45,6 +45,7 @@
 <%@ page import="org.hibernate.stat.SecondLevelCacheStatistics" %>
 <%@ page import="org.hibernate.stat.EntityStatistics" %>
 <%@ page import="org.springframework.orm.hibernate3.support.HibernateDaoSupport" %>
+<%@ page import="org.hibernate.SessionFactory" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 
 <%
@@ -269,8 +270,8 @@
             </tr>
         </thead>
         <%
-            HibernateDaoSupport dao = null; // todo put any hibernate dao here
-            Statistics statistics = dao.getHibernateTemplate().getSessionFactory().getStatistics();
+            SessionFactory factory = (SessionFactory) SpringContextSingleton.getInstance().getContext().getBean("sessionFactory");
+            Statistics statistics = factory.getStatistics();
             if (statistics.isStatisticsEnabled()) {
         %>
         <tr class="oddLine">

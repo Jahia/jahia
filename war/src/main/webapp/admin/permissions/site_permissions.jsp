@@ -42,6 +42,8 @@
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.jahia.services.sites.JahiaSite" %>
+<%@ page import="org.jahia.params.ProcessingContext" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -76,7 +78,7 @@
 </div>
 <div class="content-item">
  <div class="dex-subTabBar">
-    <div id="gwtpermissionrole" siteKey="<%=Jahia.getThreadParamBean().getSiteKey()%>" rootPath='<%="/sites/"+Jahia.getThreadParamBean().getSiteKey()+"/roles"%>' class="jahia-admin-gxt"></div>
+    <div id="gwtpermissionrole" siteKey="<%=((JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE)).getSiteKey()%>" rootPath='<%="/sites/"+((JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE)).getSiteKey()+"/roles"%>' class="jahia-admin-gxt"></div>
  </div>
 
 </div>

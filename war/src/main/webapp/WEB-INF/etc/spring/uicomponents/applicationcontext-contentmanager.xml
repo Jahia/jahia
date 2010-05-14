@@ -263,7 +263,7 @@
     <!-- tag manager -->
     <bean id="tagmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:tag"/>
-        <property name="folderTypes" value="jnt:tag"/>
+        <property name="folderTypes" value="jnt:tagList"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">

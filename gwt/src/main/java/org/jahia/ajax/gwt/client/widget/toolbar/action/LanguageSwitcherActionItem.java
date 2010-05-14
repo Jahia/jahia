@@ -54,6 +54,7 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
             siteKey = linker.getMainNode().getSiteUUID();
             JahiaContentManagementService.App.getInstance().getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
                 public void onSuccess(List<GWTJahiaLanguage> languages) {
+                    gwtJahiaLanguages = languages;
                     mainComponent.getStore().removeAll();
                     mainComponent.getStore().add(languages);
                 }

@@ -298,7 +298,7 @@
     create table JBPM4_LOB (
         DBID_ bigint not null,
         DBVERSION_ integer not null,
-        BLOB_VALUE_ blob(255),
+        BLOB_VALUE_ blob,
         DEPLOYMENT_ bigint,
         NAME_ clob(255),
         primary key (DBID_)

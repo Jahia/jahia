@@ -548,16 +548,16 @@ public class Render extends HttpServlet implements Controller,
             paramBean = Jahia.createParamBean(req, resp, req.getSession());
             req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
 
+            URLResolver urlResolver = new URLResolver(req.getPathInfo());
+
             // check permission
-            if (!hasAccess(Jahia.getThreadParamBean().getUser(), Jahia.getThreadParamBean().getSiteKey())) {
+            if (!hasAccess(JCRSessionFactory.getInstance().getCurrentUser(), urlResolver.getSiteKey())) {
                 if (JahiaUserManagerService.isGuest(Jahia.getThreadParamBean().getUser())) {
                     throw new JahiaUnauthorizedException();
                 } else {
                     throw new JahiaForbiddenAccessException();
                 }
             }
-
-            URLResolver urlResolver = new URLResolver(req.getPathInfo());
 
             req.getSession().setAttribute("workspace",
                     urlResolver.getWorkspace());

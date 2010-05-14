@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 
 /**
@@ -9,5 +11,8 @@ import java.io.Serializable;
  * Time: 6:27:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTConfiguration implements Serializable {
+public class GWTConfiguration implements IsSerializable, Serializable {
+
+    public GWTConfiguration() {
+    }
 }

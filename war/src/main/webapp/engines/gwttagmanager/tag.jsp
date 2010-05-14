@@ -1,4 +1,6 @@
 <%@ page import="org.jahia.bin.Jahia" %>
+<%@ page import="org.jahia.services.sites.JahiaSite" %>
+<%@ page import="org.jahia.params.ProcessingContext" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -42,9 +44,9 @@
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
 </head>
 <body>
+
 <internal:contentManager enginemode="true"
-                      rootPath='<%="/sites/"+Jahia.getThreadParamBean().getSiteKey()+"/tags"%>'
-                      nodeTypes="jnt:tag"
+                      rootPath='<%="/sites/"+((JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE)).getSiteKey()+"/tags"%>'
                       conf="tagmanager"/>
 <internal:gwtGenerateDictionary/>
 </body>

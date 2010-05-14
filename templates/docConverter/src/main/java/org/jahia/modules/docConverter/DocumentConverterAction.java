@@ -52,9 +52,7 @@ public class DocumentConverterAction implements Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
-        if (!converterService.isEnabled()) {
-
-        }
+        if (converterService.isEnabled()) {
         // Get parameters + file
         final ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
         final FileUpload fu = paramBean.getFileUpload();
@@ -109,7 +107,7 @@ public class DocumentConverterAction implements Action {
         convertedFileNode.setProperty("conversionSucceeded", conversionSucceeded);
 
         session.save();
-
+        }
         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     }
 

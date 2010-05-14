@@ -22,7 +22,7 @@
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}">
         <input type="hidden" name="nodetype" value="jnt:bookmark">
         <input type="hidden" name="url" value="">
-        <input id="bookmark"  type="submit"/>
+        <input class="button" id="bookmark"  type="submit"/>
         <script type="text/javascript">
             document.forms['bookmark'].elements['jcr:title'].value = document.title;
             document.forms['bookmark'].elements['url'].value = document.location;

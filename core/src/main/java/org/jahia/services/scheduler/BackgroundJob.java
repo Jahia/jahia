@@ -230,6 +230,7 @@ public abstract class BackgroundJob implements StatefulJob {
         if (opMode == null || opMode.length() == 0) {
             opMode = ProcessingContext.NORMAL;
         }
+        JCRSessionFactory.getInstance().setCurrentUser(user);
         ProcessingContext context = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), site, user, page, elr, opMode);
         final URLGenerator urlGenerator = new BasicURLGeneratorImpl();
         context.setUrlGenerator(urlGenerator);

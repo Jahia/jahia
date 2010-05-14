@@ -236,7 +236,7 @@ public class WorkflowService {
         Map<Locale,List<Workflow>> workflowsByLocale = new HashMap<Locale,List<Workflow>>();
         try {
             if (node.isNodeType("jmix:workflow")) {
-                NodeIterator ni = node.getNodes("j:translation");
+                NodeIterator ni = node.getNodes("j:translation*");
                 while (ni.hasNext()) {
                     Node n = ((JCRNodeWrapper) ni.next()).getRealNode();
                     final String lang = n.getProperty("jcr:language").getString();

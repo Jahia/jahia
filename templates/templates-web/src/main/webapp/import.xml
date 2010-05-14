@@ -5,7 +5,7 @@
       <contents jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:contentList" j:checkinDate="2010-04-30T15:43:00.492+02:00">
         <site_components jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:contentList" j:checkinDate="2010-04-30T15:43:00.492+02:00">
           <simple-search result="/templatesSet/templates-web/search-results" jcr:mixinTypes="jmix:templateInformation jmix:shareable" j:published="true" jcr:primaryType="jnt:simpleSearchForm" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
-            <j:translation result="4de7bb8b-6cf8-4886-ab6e-4b1a6612951a" jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Simple search" j:checkinDate="2010-04-30T15:43:00.492+02:00" />
+            <j:translation_en result="4de7bb8b-6cf8-4886-ab6e-4b1a6612951a" jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Simple search" j:checkinDate="2010-04-30T15:43:00.492+02:00" />
           </simple-search>
           <side-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable" j:template="sideMenu" j:published="true" jcr:primaryType="jnt:navMenu" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
             <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:published="true" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="2" j:allowedTypes="jnt:page" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true" />
@@ -16,7 +16,7 @@
       <mashups jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:portletList" j:checkinDate="2010-04-30T15:43:00.492+02:00" />
       <themes jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" />
       <home jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
-        <j:translation jcr:title_en="Home" jcr:language="en" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />
+        <j:translation_en jcr:title_en="Home" jcr:language="en" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />
         <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
           <row1 column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
             <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
@@ -28,7 +28,7 @@
       </home>
       <templates jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:templatesFolder" j:checkinDate="2010-04-21T10:59:52.531+02:00">
         <simple jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
-          <j:translation jcr:language="en" jcr:title_en="Simple" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />
+          <j:translation_en  jcr:language="en" jcr:title_en="Simple" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />
           <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
             <row1 column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
               <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
@@ -41,13 +41,13 @@
         </simple>
       </templates>
       <search-results jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" j:sourceTemplate="/templatesSet/templates-web/templates/simple" priority="0.5">
-        <j:translation j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly" j:sourceTemplate="d06c5c24-25ec-4548-9ba4-6b1e1e50e627" jcr:language="en" jcr:title_en="Search results" priority="0.5" />
+        <j:translation_en j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly" j:sourceTemplate="d06c5c24-25ec-4548-9ba4-6b1e1e50e627" jcr:language="en" jcr:title_en="Search results" priority="0.5" />
         <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
           <row1 column="1col16" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
             <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
               <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
               <results autoSuggest="true" pageSize="10" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
-                <j:translation autoSuggest="true" pageSize="10" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" autoSuggestHitCount="2" jcr:language="en" jcr:title_en="Results" autoSuggestMinimumHitCount="2" />
+                <j:translation_en autoSuggest="true" pageSize="10" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" autoSuggestHitCount="2" jcr:language="en" jcr:title_en="Results" autoSuggestMinimumHitCount="2" />
               </results>
             </col1>
             <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
@@ -62,7 +62,7 @@
       <topMenu jcr:primaryType="jnt:contentList">
         <top-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable" j:published="true" jcr:primaryType="jnt:navMenu" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
           <home j:node="/templatesSet/templates-web/home" jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:navMenuNodeLink" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
-            <j:translation jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Home" j:checkinDate="2010-04-30T15:43:00.492+02:00" />
+            <j:translation_en jcr:mixinTypes="jmix:templateInformation" j:published="true" jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Home" j:checkinDate="2010-04-30T15:43:00.492+02:00" />
           </home>
           <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="1" j:published="true" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1" j:allowedTypes="jnt:page" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true" />
         </top-menu>

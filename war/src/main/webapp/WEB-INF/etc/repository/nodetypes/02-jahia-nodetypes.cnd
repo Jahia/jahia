@@ -69,7 +69,7 @@
   - * (undefined)
 
 [jmix:i18n] mixin
- + j:translation (jnt:translation) multiple
+ + * (jnt:translation)
 
 //---------------------------------------------------------
 // Access control

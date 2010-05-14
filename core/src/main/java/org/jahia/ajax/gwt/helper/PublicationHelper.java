@@ -83,10 +83,10 @@ public class PublicationHelper {
                 String key = StringUtils.substringBeforeLast(entry.getKey(), "/j:translation");
                 GWTJahiaPublicationInfo lastPub = gwtInfos.get(key);
                 if (lastPub != null) {
-                    if (pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHABLE && pi.getStatus() > gwtInfo.getStatus()) {
+                    if (pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHABLE && pi.getStatus() > lastPub.getStatus()) {
                         lastPub.setStatus(pi.getStatus());
                     }
-                    if (gwtInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED && pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHED) {
+                    if (lastPub.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED && pi.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHED) {
                         lastPub.setStatus(pi.getStatus());
                     }
                 }

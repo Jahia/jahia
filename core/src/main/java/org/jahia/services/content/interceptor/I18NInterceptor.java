@@ -23,11 +23,11 @@ public class I18NInterceptor implements PropertyInterceptor {
     private Set<String> skippedProperties;
     
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException {
-        return !definition.isInternationalized() && node.hasNode("j:translation") && !skippedProperties.contains(definition.getName());
+        return !definition.isInternationalized() && node.getNodes("j:translation*").hasNext() && !skippedProperties.contains(definition.getName());
     }
 
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        NodeIterator ni = node.getNodes("j:translation");
+        NodeIterator ni = node.getNodes("j:translation*");
 
         // duplicate on all translation nodes
 
@@ -45,7 +45,7 @@ public class I18NInterceptor implements PropertyInterceptor {
     }
 
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        NodeIterator ni = node.getNodes("j:translation");
+        NodeIterator ni = node.getNodes("j:translation*");
 
         // duplicate on all translation nodes
 
@@ -60,7 +60,7 @@ public class I18NInterceptor implements PropertyInterceptor {
     }
 
     public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value[] originalValues) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        NodeIterator ni = node.getNodes("j:translation");
+        NodeIterator ni = node.getNodes("j:translation*");
 
         // duplicate on all translation nodes
 

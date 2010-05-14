@@ -497,7 +497,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         while (ni.hasNext()) {
             Node node = ni.nextNode();
-            if (session.getLocale() == null || !node.getName().equals("j:translation")) {
+            if (session.getLocale() == null || !node.getName().startsWith("j:translation_")) {
                 try {
                     JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), session);
                     list.add(child);
@@ -874,17 +874,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (node != null) {
                 return node;
             }
-        } else {
-            NodeIterator ni = objectNode.getNodes("j:translation");
-            while (ni.hasNext()) {
-                node = ni.nextNode();
-                i18NobjectNodes.put(locale, node);
-                if (locale.toString().equals(node.getProperty("jcr:language").getString())) {
-                    return node;
-                }
-            }
-            i18NobjectNodes.put(locale, null);
+        } else if (objectNode.hasNode("j:translation_"+locale)) {
+            node = objectNode.getNode("j:translation_"+locale);
+            i18NobjectNodes.put(locale, node);
+            return node;
         }
+
         if (fallback) {
             final Locale fallbackLocale = getSession().getFallbackLocale();
             if (fallbackLocale != null && fallbackLocale != locale) {
@@ -898,7 +893,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             return getI18N(locale, false);
         } catch (RepositoryException e) {
-            Node t = objectNode.addNode("j:translation", "jnt:translation");
+            Node t = objectNode.addNode("j:translation_"+locale, "jnt:translation");
             t.setProperty("jcr:language", locale.toString());
             PropertyIterator pi = objectNode.getProperties();
             while (pi.hasNext()) {
@@ -1465,7 +1460,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public List<Locale> getLockedLocales() throws RepositoryException {
         List<Locale> r = new ArrayList<Locale>();
-        NodeIterator ni = objectNode.getNodes("j:translation");
+        NodeIterator ni = objectNode.getNodes("j:translation*");
         while (ni.hasNext()) {
             Node n = ni.nextNode();
             if (n.isLocked()) {
@@ -1962,7 +1957,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public boolean hasNode(String s) throws RepositoryException {
         // add mountpoints here
         final boolean b = objectNode.hasNode(s);
-        if (b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !"j:translation".equals(s)) {
+        if (b && Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName()) && !s.startsWith("j:translation")) {
             final JCRNodeWrapper wrapper;
             try {
                 wrapper = (JCRNodeWrapper) getNode(s);

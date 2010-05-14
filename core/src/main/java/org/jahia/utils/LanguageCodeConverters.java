@@ -105,12 +105,12 @@ public class LanguageCodeConverters {
      */
     public static Locale getLocaleFromCode(String code) {
         if (code == null || code.length() == 0) {
-            return Locale.getDefault() ;
+            return Locale.ENGLISH ;
         }
         Locale loc ;
         String[] codes = code.split("_") ;
         if (codes.length == 0) {
-            return Locale.getDefault() ;
+            return Locale.ENGLISH ;
         } else if (codes.length == 1) {
             loc = new Locale(codes[0]) ;
         } else if (codes.length == 2) {
@@ -118,7 +118,7 @@ public class LanguageCodeConverters {
         } else if (codes.length == 3) {
             loc = new Locale(codes[0], codes[1], codes[2]) ;
         } else {
-            return Locale.getDefault() ;
+            return Locale.ENGLISH ;
         }
         return loc ;
     }
@@ -234,7 +234,7 @@ public class LanguageCodeConverters {
         if ("".equals(variant)) {
             if ("".equals(country)) {
                 if ("".equals(language)) {
-                    return Locale.getDefault();
+                    return Locale.ENGLISH;
                 } else {
                     return new Locale(language, "");
                 }

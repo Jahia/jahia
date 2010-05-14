@@ -31,13 +31,18 @@
  */
 package org.jahia.bin.filters.jcr;
 
+import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.params.valves.AuthValveContext;
+import org.jahia.pipelines.Pipeline;
+import org.jahia.pipelines.PipelineException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.params.ProcessingContext;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -48,20 +53,33 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class JcrSessionFilter implements Filter {
+    private static final transient Logger logger = Logger.getLogger(JcrSessionFilter.class);
 
     public void init(FilterConfig filterConfig) throws ServletException {
 
     }
 
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
+        final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {
             if (Jahia.isInitiated()) {
-                HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-                if (httpServletRequest.getSession(false) != null) {
-                    sessionFactory.setCurrentUser((JahiaUser) httpServletRequest.getSession().getAttribute(ProcessingContext.SESSION_USER));
+                final Pipeline authPipeline = Jahia.getAuthPipeline();
+                try {
+                    sessionFactory.setCurrentUser(null);
+                    authPipeline.invoke(new AuthValveContext((HttpServletRequest) servletRequest,
+                            (HttpServletResponse) servletResponse, sessionFactory));
+                } catch (PipelineException pe) {
+                    logger.error("Error while authorizing user", pe);
                 }
             }
+
+            if (sessionFactory.getCurrentUser() == null) {
+                final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
+                sessionFactory
+                        .setCurrentUser(userMgr.lookupUser(JahiaUserManagerService.GUEST_USERNAME));
+            }
+
             filterChain.doFilter (servletRequest, servletResponse );
         } finally {
             if (Jahia.isInitiated()) {

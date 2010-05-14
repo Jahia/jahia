@@ -323,8 +323,9 @@ public class URLFilterTest {
                 { "/edit/default/fr", Constants.EDIT_WORKSPACE, Locale.FRENCH, "/", PathNotFoundException.class, "" },
                 { "/edit/default/fr/sites/test/home.html", Constants.EDIT_WORKSPACE, Locale.FRENCH, "/sites/test/home.html", JCRNodeWrapper.class, "/sites/test/home" }, };
         for (Object[] testPath : testPathes) {
-            URLResolver urlResolver = new URLResolver((String) testPath[0],
-                    TESTSITE_NAME);
+            URLResolver urlResolver = new URLResolver((String) testPath[0]);
+            urlResolver.setSiteKey(TESTSITE_NAME);
+
             assertTrue("Path " + testPath[0] + " not resolved correctly",
                     testPath[1].equals(urlResolver.getWorkspace())
                             && testPath[2].equals(urlResolver.getLocale())
@@ -391,28 +392,25 @@ public class URLFilterTest {
                         Constants.EDIT_WORKSPACE, Locale.FRENCH).getUrl()
                 .equals("/testpage/french2"));
 
-        URLResolver urlResolver = new URLResolver("/edit/default/testpage",
-                TESTSITE_NAME);
+        URLResolver urlResolver = new URLResolver("/edit/default/testpage");
         JCRNodeWrapper resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
 
-        urlResolver = new URLResolver("/edit/default/testpage/french2",
-                TESTSITE_NAME);
+        urlResolver = new URLResolver("/edit/default/testpage/french2");
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "fr".equals(resolvedNode.getLanguage()));
 
-        urlResolver = new URLResolver("/edit/default/testpage/french",
-                TESTSITE_NAME);
+        urlResolver = new URLResolver("/edit/default/testpage/french");
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "fr".equals(resolvedNode.getLanguage()));
 
-        urlResolver = new URLResolver("/edit/default/testpage2", TESTSITE_NAME);
+        urlResolver = new URLResolver("/edit/default/testpage2");
         try {
             resolvedNode = urlResolver.getNode();
             assertNull("Node should not be returned as mapping is not active",
@@ -420,14 +418,13 @@ public class URLFilterTest {
         } catch (PathNotFoundException e) {
         }
 
-        urlResolver = new URLResolver("/edit/default/testpage/page3",
-                TESTSITE_NAME);
+        urlResolver = new URLResolver("/edit/default/testpage/page3");
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
 
-        urlResolver = new URLResolver("/render/live/testpage", TESTSITE_NAME);
+        urlResolver = new URLResolver("/render/live/testpage");
         try {
             resolvedNode = urlResolver.getNode();
             assertNull(
@@ -442,14 +439,13 @@ public class URLFilterTest {
                 SITECONTENT_ROOT_NODE, Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true, true);
         
-        urlResolver = new URLResolver("/render/live/testpage", TESTSITE_NAME);
+        urlResolver = new URLResolver("/render/live/testpage");
         resolvedNode = urlResolver.getNode();
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
 
-        urlResolver = new URLResolver("/render/live/testpage/french2",
-                TESTSITE_NAME);
+        urlResolver = new URLResolver("/render/live/testpage/french2");
         try {
             resolvedNode = urlResolver.getNode();
             assertNull(

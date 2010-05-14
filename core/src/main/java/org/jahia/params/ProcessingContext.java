@@ -117,8 +117,6 @@ import org.jahia.bin.JahiaInterface;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
-import org.jahia.pipelines.Pipeline;
-import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.content.JCRSessionFactory;
@@ -924,7 +922,7 @@ public class ProcessingContext {
     // @author NK
 
     /**
-     * Actually use the client preferred locale if found, else returns the Locale.getDefault() value. <p/> This function provides a full
+     * Actually use the client preferred locale if found, else returns the Locale.ENGLISH value. <p/> This function provides a full
      * accept-language implementation, but caches the result. Therefore it assumes that the language is NOT changed during a request other
      * by methods provided by the ProcessingContext class. <p/> Warning, this method supposes that the current data has been already
      * initialized and is available : - JahiaSite - JahiaUser - Session
@@ -2061,18 +2059,7 @@ public class ProcessingContext {
     }
 
     protected void resolveUser() throws JahiaException {
-
-        final Pipeline authPipeline = Jahia.getAuthPipeline();
-        try {
-            authPipeline.invoke(this);
-        } catch (PipelineException pe) {
-            logger.error("Error while authorizing user", pe);
-            setTheUser(null);
-        }
-
-        if (getTheUser() == null) {
-            setUserGuest();
-        }
+        setTheUser(JCRSessionFactory.getInstance().getCurrentUser());
     }
 
     /**
@@ -2081,7 +2068,6 @@ public class ProcessingContext {
      * @param aUser JahiaUser
      */
     public void setTheUser(final JahiaUser aUser) {
-        JCRSessionFactory.getInstance().setCurrentUser(aUser);
         this.theUser = aUser;
     }
 

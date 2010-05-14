@@ -116,7 +116,7 @@ public abstract class BackgroundJob implements StatefulJob {
         if ( jParams.getCurrentLocale() != null ){
             jobDataMap.put(JOB_CURRENT_LOCALE, jParams.getCurrentLocale().toString());
         } else {
-            jobDataMap.put(JOB_CURRENT_LOCALE,Locale.getDefault().toString());
+            jobDataMap.put(JOB_CURRENT_LOCALE,Locale.ENGLISH.toString());
         }
         jobDataMap.put(JOB_SCHEME, jParams.getScheme());
         jobDataMap.put(JOB_SERVERNAME, jParams.getServerName());

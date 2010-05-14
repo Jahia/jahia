@@ -31,8 +31,6 @@
  */
 package org.jahia.params.valves;
 
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
@@ -58,8 +56,8 @@ public class ContainerAuthValveImpl implements Valve {
     }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-        ProcessingContext processingContext = (ProcessingContext) context;
-        HttpServletRequest request = ((ParamBean) processingContext).getRequest();
+        AuthValveContext authContext = (AuthValveContext) context;
+        HttpServletRequest request = authContext.getRequest();
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
             if (logger.isDebugEnabled()) {
@@ -70,7 +68,7 @@ public class ContainerAuthValveImpl implements Valve {
                 JahiaUser jahiaUser =
                         ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(principal.getName());
                 if (jahiaUser != null) {
-                    processingContext.setTheUser(jahiaUser);
+                    authContext.getSessionFactory().setCurrentUser(jahiaUser);
                     return;
                 }
             } catch (Exception e) {

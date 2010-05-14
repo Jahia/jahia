@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.engines.mysettings.MySettingsEngine;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
@@ -45,12 +44,14 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.JahiaString;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.List;
@@ -81,121 +82,98 @@ public class LoginEngineAuthValveImpl implements Valve {
     }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-        try {
-            final ProcessingContext jParams = (ProcessingContext) context;
-            final String theScreen = jParams.getParameter("screen");
+        final AuthValveContext authContext = (AuthValveContext) context;
+        final HttpServletRequest httpServletRequest = authContext.getRequest();
+        final String theScreen = httpServletRequest.getParameter("screen");
 
-            JahiaUser theUser = null;
-            boolean ok = false;
+        JahiaUser theUser = null;
+        boolean ok = false;
 
-            if ("1".equals(jParams.getParameter(LOGIN_TAG_PARAMETER))) {
+        if ("1".equals(httpServletRequest.getParameter(LOGIN_TAG_PARAMETER))) {
 
-                final String username = jParams.getParameter("username");
-                final String password = jParams.getParameter("password");
+            final String username = httpServletRequest.getParameter("username");
+            final String password = httpServletRequest.getParameter("password");
 
-                if ((username != null) && (password != null)) {
-                    final ServicesRegistry theRegistry = ServicesRegistry.getInstance();
-                    if (theRegistry != null) {
-                        JahiaUserManagerService theService = theRegistry.getJahiaUserManagerService();
-                        if (theService != null) {
-                            // Check if the user has site access ( even though it is not a user of this site )
-                            theUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
-                            if (theUser != null) {
-                                if (theUser.verifyPassword(password)) {
-                                    ok = true;
-                                } else {
-                                    logger.warn("Couldn't validate password for user " + theUser.getUserKey() + "!");
-                                    logger.debug("User " + username + " entered bad password");
-                                    jParams.setAttribute(VALVE_RESULT, BAD_PASSWORD);
-                                }
+            if ((username != null) && (password != null)) {
+                final ServicesRegistry theRegistry = ServicesRegistry.getInstance();
+                if (theRegistry != null) {
+                    JahiaUserManagerService theService = theRegistry.getJahiaUserManagerService();
+                    if (theService != null) {
+                        // Check if the user has site access ( even though it is not a user of this site )
+                        theUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
+                        if (theUser != null) {
+                            if (theUser.verifyPassword(password)) {
+                                ok = true;
                             } else {
-                                jParams.setAttribute(VALVE_RESULT, UNKNOWN_USER);
+                                logger.warn("Couldn't validate password for user " + theUser.getUserKey() + "!");
+                                logger.debug("User " + username + " entered bad password");
+                                httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
                             }
+                        } else {
+                            httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
                         }
                     }
                 }
             }
-            if (ok) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("User " + theUser + " logged in.");
-                }
-                ParamBean paramBean = null;
-                if (jParams instanceof ParamBean) {
-                    paramBean = (ParamBean) jParams;
-                    paramBean.invalidateSession();
-                }
-                jParams.setAttribute(VALVE_RESULT, OK);
-                jParams.setUser(theUser);
-
-                // do a switch to the user's preferred language
-                if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
-                    Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, jParams.getSite());
-                    if (jParams.getSite() != null) {
-                        List<Locale> siteLocales = jParams.getSite().getLanguagesAsLocales();
-                        if (siteLocales.contains(preferredUserLocale)) {
-                            jParams.getSessionState()
-                                    .setAttribute(ProcessingContext.SESSION_LOCALE, preferredUserLocale);
-                            jParams.setCurrentLocale(preferredUserLocale);
-                            jParams.setLocaleList(null);
-                        }
-                    }
-                }
-
-                String useCookie = jParams.getParameter(USE_COOKIE);
-                if ((useCookie != null) && ("on".equals(useCookie))) {
-                    // the user has indicated he wants to use cookie authentication
-                    // now let's create a random identifier to store in the cookie.
-                    String cookieUserKey = null;
-                    // now let's look for a free random cookie value key.
-                    while (cookieUserKey == null) {
-                        cookieUserKey = JahiaString.generateRandomString(cookieAuthConfig.getIdLength());
-                        Properties searchCriterias = new Properties();
-                        searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-                        Set<Principal> foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService()
-                                .searchUsers(searchCriterias);
-                        if (foundUsers.size() > 0) {
-                            cookieUserKey = null;
-                        }
-                    }
-                    // let's save the identifier for the user in the database
-                    theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-                    // now let's save the same identifier in the cookie.
-                    Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey);
-                    authCookie
-                            .setPath(StringUtils.isNotEmpty(jParams.getContextPath()) ? jParams.getContextPath() : "/");
-                    authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
-                    if (paramBean != null) {
-                        HttpServletResponse realResponse = paramBean.getRealResponse();
-                        realResponse.addCookie(authCookie);
-                    }
-                }
-
-                enforcePasswordPolicy(theUser, paramBean);
-                theUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE,
-                        String.valueOf(System.currentTimeMillis()));
-                checkRedirect(paramBean);
-            } else {
-                valveContext.invokeNext(context);
-            }
-        } catch (JahiaException e) {
-            throw new PipelineException(e);
         }
-    }
+        if (ok) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("User " + theUser + " logged in.");
+            }
+            ParamBean paramBean = null;
+            if (httpServletRequest.getSession(false) != null) {
+                httpServletRequest.getSession().invalidate();
+            }
+            httpServletRequest.setAttribute(VALVE_RESULT, OK);
+            authContext.getSessionFactory().setCurrentUser(theUser);
 
-    private void checkRedirect(ParamBean ctx) {
-        String redirectUrl = null;
-        try {
-            if ("POST".equals(ctx.getRequest().getMethod())) {
-                String doRedirect = ctx.getRequest().getParameter(DO_REDIRECT);
-                if (doRedirect != null && (Boolean.valueOf(doRedirect) || "1".equals(doRedirect))) {
-                    redirectUrl = ctx.composePageUrl();
+            // do a switch to the user's preferred language
+            if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
+                Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser);
+                JahiaSite site = (JahiaSite) authContext.getRequest().getSession().getAttribute(ProcessingContext.SESSION_SITE);
+                if (site != null) {
+                    List<Locale> siteLocales = site.getLanguagesAsLocales();
+                    if (siteLocales.contains(preferredUserLocale)) {
+                        httpServletRequest.getSession()
+                                .setAttribute(ProcessingContext.SESSION_LOCALE, preferredUserLocale);
+                    }
                 }
             }
-            if (redirectUrl != null) {
-                ctx.getResponse().sendRedirect(redirectUrl);
+
+            String useCookie = httpServletRequest.getParameter(USE_COOKIE);
+            if ((useCookie != null) && ("on".equals(useCookie))) {
+                // the user has indicated he wants to use cookie authentication
+                // now let's create a random identifier to store in the cookie.
+                String cookieUserKey = null;
+                // now let's look for a free random cookie value key.
+                while (cookieUserKey == null) {
+                    cookieUserKey = JahiaString.generateRandomString(cookieAuthConfig.getIdLength());
+                    Properties searchCriterias = new Properties();
+                    searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
+                    Set<Principal> foundUsers =
+                            ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias);
+                    if (foundUsers.size() > 0) {
+                        cookieUserKey = null;
+                    }
+                }
+                // let's save the identifier for the user in the database
+                theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
+                // now let's save the same identifier in the cookie.
+                Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey);
+                authCookie.setPath(StringUtils.isNotEmpty(httpServletRequest.getContextPath()) ?
+                        httpServletRequest.getContextPath() : "/");
+                authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
+                if (paramBean != null) {
+                    HttpServletResponse realResponse = paramBean.getRealResponse();
+                    realResponse.addCookie(authCookie);
+                }
             }
-        } catch (Exception ex) {
-            logger.error("Unable to perform client-side redirect after login. Cause: " + ex.getMessage(), ex);
+
+            enforcePasswordPolicy(theUser, paramBean);
+            theUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE,
+                    String.valueOf(System.currentTimeMillis()));
+        } else {
+            valveContext.invokeNext(context);
         }
     }
 

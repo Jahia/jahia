@@ -182,7 +182,7 @@ public class TextExtractionListener extends DefaultEventListener {
         if (ctx == null) {
             JahiaUser member = userManagerService.lookupUser(user);
             ctx = new ProcessingContext(settingsBean, System.currentTimeMillis(), null, member, null);
-            ctx.setCurrentLocale(Locale.getDefault());
+            ctx.setCurrentLocale(Locale.ENGLISH);
         }
 
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + fileNode.getName(),

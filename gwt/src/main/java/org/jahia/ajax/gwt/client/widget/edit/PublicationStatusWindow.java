@@ -167,6 +167,7 @@ class PublicationStatusWindow extends Window {
         SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 ok.setEnabled(false);
+                noWorkflow.setEnabled(false);
                 cancel.setEnabled(false);
                 JahiaContentManagementService.App.getInstance().publish(paths, false, comments.getValue(), true, false, new AsyncCallback() {
                     public void onFailure(Throwable caught) {
@@ -188,6 +189,7 @@ class PublicationStatusWindow extends Window {
         selectionListener = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 ok.setEnabled(false);
+                noWorkflow.setEnabled(false);
                 cancel.setEnabled(false);
                 JahiaContentManagementService.App.getInstance().publish(paths, false, comments.getValue(), false, false, new AsyncCallback() {
                     public void onFailure(Throwable caught) {

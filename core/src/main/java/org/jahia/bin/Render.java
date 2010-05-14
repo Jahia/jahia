@@ -557,7 +557,7 @@ public class Render extends HttpServlet implements Controller,
                 }
             }
 
-            URLResolver urlResolver = new URLResolver(req.getPathInfo(), paramBean.getSiteKey());
+            URLResolver urlResolver = new URLResolver(req.getPathInfo());
 
             req.getSession().setAttribute("workspace",
                     urlResolver.getWorkspace());

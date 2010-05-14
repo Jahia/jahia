@@ -199,7 +199,7 @@ public class LanguageCodeConverters {
         if ("".equals(variant)) {
             if ("".equals(country)) {
                 if ("".equals(language)) {
-                    return Locale.getDefault();
+                    return Locale.ENGLISH;
                 } else {
                     return new Locale(language, "");
                 }

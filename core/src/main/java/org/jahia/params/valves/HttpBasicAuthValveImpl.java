@@ -33,13 +33,10 @@
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,8 +55,8 @@ public class HttpBasicAuthValveImpl implements Valve {
     }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-        ProcessingContext processingContext = (ProcessingContext) context;
-        HttpServletRequest request = ((ParamBean)processingContext).getRequest();
+        AuthValveContext authContext = (AuthValveContext) context;
+        HttpServletRequest request = authContext.getRequest();
         String auth = request.getHeader("Authorization");
         if (auth != null) {
             try {
@@ -79,7 +76,7 @@ public class HttpBasicAuthValveImpl implements Valve {
                         if (logger.isDebugEnabled()) {
                             logger.debug("User " + user + " authenticated.");
                         }
-                        processingContext.setTheUser(jahiaUser);
+                        authContext.getSessionFactory().setCurrentUser(jahiaUser);
                         return;
                     } else {
                         logger.debug("User found but incorrect password : " + user);

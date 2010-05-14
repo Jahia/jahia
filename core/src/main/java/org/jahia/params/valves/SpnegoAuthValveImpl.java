@@ -39,6 +39,8 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.security.spnego.SpnegoAuthenticator;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <p>Title: SPNEGO auth valve</p>
  * <p>Description: authenticate users with SPNEGO for Kerberos/NTLM authentication</p>
@@ -61,22 +63,22 @@ public class SpnegoAuthValveImpl extends SsoValve {
     /**
      * @throws org.jahia.exceptions.JahiaException
      */
-    public String validateCredentials(Object credentials, ProcessingContext paramBean) throws JahiaException {
+    public String validateCredentials(Object credentials, HttpServletRequest request) throws JahiaException {
         return ((Principal) credentials).getName();
     }
 
 
     /**
      */
-    public Object retrieveCredentials(ProcessingContext processingContext) throws Exception {
-        SpnegoAuthenticator auth = (SpnegoAuthenticator) processingContext.getSessionState().getAttribute(SpnegoHttpFilter.SSOAUTHENTICATOR_KEY);
+    public Object retrieveCredentials(HttpServletRequest request) throws Exception {
+        SpnegoAuthenticator auth = (SpnegoAuthenticator) request.getSession().getAttribute(SpnegoHttpFilter.SSOAUTHENTICATOR_KEY);
         return auth == null ? null : auth.getPrincipal();
     }
 
     /**
      * @throws JahiaInitializationException
      */
-    public String getRedirectUrl(ProcessingContext processingContext) throws JahiaException {
+    public String getRedirectUrl(HttpServletRequest processingContext) throws JahiaException {
         return null;
     }
 }

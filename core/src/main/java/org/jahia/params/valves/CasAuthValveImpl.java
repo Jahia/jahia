@@ -38,6 +38,8 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.sso.CasService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <p>Title: CAS valve</p>
  * <p>Description: authenticate users with a CAS server.</p>
@@ -65,10 +67,10 @@ public class CasAuthValveImpl extends SsoValve {
     /**
      * @throws org.jahia.exceptions.JahiaException
      */
-    public String validateCredentials(Object credentials, ProcessingContext paramBean)
+    public String validateCredentials(Object credentials, HttpServletRequest request)
         throws JahiaException {
         try {
-            return CasService.getInstance().validateTicket((String) credentials, paramBean, getServiceUrl(paramBean));
+            return CasService.getInstance().validateTicket((String) credentials, request, getServiceUrl(request));
         } catch (Exception e) {
             throw new JahiaException("Cannot validate CAS credentials", "Cannot validate CAS credentials", JahiaException.SECURITY_ERROR, JahiaException.WARNING_SEVERITY,e);
         }
@@ -77,8 +79,8 @@ public class CasAuthValveImpl extends SsoValve {
 
     /**
      */
-    public Object retrieveCredentials(ProcessingContext processingContext) throws Exception {
-        String ticket = ((ParamBean)processingContext).getRequest().getParameter("ticket");
+    public Object retrieveCredentials(HttpServletRequest request) throws Exception {
+        String ticket = request.getParameter("ticket");
         if (ticket == null) {
             return null;
         }
@@ -91,40 +93,35 @@ public class CasAuthValveImpl extends SsoValve {
     /**
      * @throws JahiaInitializationException
      */
-    public String getRedirectUrl(ProcessingContext processingContext) throws JahiaException {
+    public String getRedirectUrl(HttpServletRequest request) throws JahiaException {
         CasService casService = CasService.getInstance();
 
-        String redirectUrl = getServiceUrl(processingContext);
+        String redirectUrl = getServiceUrl(request);
 
         return casService.getLoginUrl() + "?service=" + redirectUrl;
     }
 
-    private String getServiceUrl(ProcessingContext processingContext) {
-        int pid = processingContext.getPageID();
-        if (pid == -1) {
-            logger.warn("pid is -1");
-            String spid = processingContext.getParameter("pid");
-            try {
-                pid = Integer.parseInt(spid);
-                logger.debug("pid parameter = "+pid);
-            } catch (NumberFormatException e) {
-            }
-            logger.debug("contentpage = "+processingContext.getContentPage());
-            logger.debug("homecontentpage = "+processingContext.getSite().getHomeContentPage());
-        }
-
-        logger.debug("get serviceUrl, pid = "+pid );
-        final String siteServerName = processingContext.getSite().getServerName();
-
-        final StringBuffer redirectUrl = new StringBuffer(processingContext.getScheme() + "://");
-        redirectUrl.append(siteServerName);
-
-        if (processingContext.getServerPort() != 80) {
-            redirectUrl.append(":");
-            redirectUrl.append(processingContext.getServerPort());
-        }
-
-        redirectUrl.append(processingContext.getContextPath());
+    private String getServiceUrl(HttpServletRequest request) {
+//            logger.warn("pid is -1");
+//            String spid = processingContext.getParameter("pid");
+//            try {
+//                pid = Integer.parseInt(spid);
+//                logger.debug("pid parameter = "+pid);
+//            } catch (NumberFormatException e) {
+//            }
+//            logger.debug("contentpage = "+processingContext.getContentPage());
+//            logger.debug("homecontentpage = "+processingContext.getSite().getHomeContentPage());
+//
+//
+        final StringBuffer redirectUrl = new StringBuffer(request.getScheme() + "://");
+//        redirectUrl.append(siteServerName);
+//
+//        if (processingContext.getServerPort() != 80) {
+//            redirectUrl.append(":");
+//            redirectUrl.append(processingContext.getServerPort());
+//        }
+//
+        redirectUrl.append(request.getContextPath());
         redirectUrl.append(Jahia.getServletPath());
 
         return redirectUrl.toString();

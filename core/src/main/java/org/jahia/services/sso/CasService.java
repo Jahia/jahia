@@ -40,6 +40,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 import org.xml.sax.SAXException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -110,7 +111,7 @@ public class CasService extends JahiaService {
      * @throws JahiaInitializationException
      * @return the id of the authenticated user, or null if none.
      */
-    public String validateTicket(String ticket, ProcessingContext paramBean, String serviceUrl)
+    public String validateTicket(String ticket, HttpServletRequest paramBean, String serviceUrl)
     throws IOException, SAXException, ParserConfigurationException, CASAuthenticationException, MalformedURLException, JahiaException {
 
         // create a new ticket validator
@@ -130,7 +131,7 @@ public class CasService extends JahiaService {
             throw new CASAuthenticationException("error #" + sv.getErrorCode() + " while validating ticket '" + ticket + "': " + sv.getErrorMessage());
         }
 
-        paramBean.getSessionState().setAttribute("cas.pgtiou",sv.getPgtIou());
+        paramBean.getSession().setAttribute("cas.pgtiou",sv.getPgtIou());
 
         return sv.getUser();
 

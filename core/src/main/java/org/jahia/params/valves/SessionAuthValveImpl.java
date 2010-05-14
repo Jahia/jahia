@@ -29,21 +29,22 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.params.valves;
+package org.jahia.params.valves;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.registries.ServicesRegistry;
 
 /**
  * <p>Title: </p>
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2004</p>
  * <p>Company: Jahia Ltd</p>
+ *
  * @author not attributable
  * @version 1.0
  */
@@ -53,21 +54,17 @@ public class SessionAuthValveImpl implements Valve {
     }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-        ProcessingContext processingContext = (ProcessingContext) context;
+        AuthValveContext authContext = (AuthValveContext) context;
         JahiaUser jahiaUser = null;
-        // Get the current user out of the session. If there is no user
-        // present, then assign the guest user to this session.
-        // If the site has changed, switch to user to guest user
-        if (!"login".equals(processingContext.getEngine())) {
-            jahiaUser = (JahiaUser) processingContext.getSessionState().getAttribute(ProcessingContext.SESSION_USER);
-            if(jahiaUser!=null)
-            jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(jahiaUser.getUserKey());
+        jahiaUser = (JahiaUser) authContext.getRequest().getSession().getAttribute(ProcessingContext.SESSION_USER);
+        if (jahiaUser != null) {
+            jahiaUser =
+                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(jahiaUser.getUserKey());
         }
-
         if (JahiaUserManagerService.isGuest(jahiaUser)) {
             valveContext.invokeNext(context);
         } else {
-            processingContext.setTheUser(jahiaUser);
+            authContext.getSessionFactory().setCurrentUser(jahiaUser);
         }
     }
 

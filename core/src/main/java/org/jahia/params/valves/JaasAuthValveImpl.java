@@ -29,27 +29,26 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.params.valves;
+package org.jahia.params.valves;
 
 import org.apache.log4j.Logger;
+import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
-import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.security.license.LicenseActionChecker;
+import org.jahia.services.usermanager.JahiaUser;
 
+import javax.security.auth.Subject;
+import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
-import javax.security.auth.login.Configuration;
-import javax.security.auth.Subject;
 import java.io.*;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Iterator;
-import java.security.Principal;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,34 +58,32 @@ import java.security.Principal;
  * To change this template use File | Settings | File Templates.
  */
 public class JaasAuthValveImpl implements Valve {
-    
-    private static final transient Logger logger = Logger
-            .getLogger(JaasAuthValveImpl.class);
-    
+
+    private static final transient Logger logger = Logger.getLogger(JaasAuthValveImpl.class);
+
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
 
         if (!LicenseActionChecker.isAuthorizedByLicense("org.jahia.params.valves.JaasAuthValve", 0)) {
             valveContext.invokeNext(context);
         }
 
-        ProcessingContext processingContext = (ProcessingContext) context;
-        if (!"login".equals(processingContext.getEngine())) {
-            try {
-                LoginContext lc = new LoginContext("jahia");
-                lc.login();
-                Subject s = lc.getSubject();
-                Collection<Principal> ps = s.getPrincipals();
-                for (Iterator<Principal> iterator = ps.iterator(); iterator.hasNext();) {
-                    Principal principal = iterator.next();
-                    JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(principal.getName());
-                    if (user != null) {
-                        processingContext.setTheUser(user);
-                        return;
-                    }
+        AuthValveContext authContext = (AuthValveContext) context;
+        try {
+            LoginContext lc = new LoginContext("jahia");
+            lc.login();
+            Subject s = lc.getSubject();
+            Collection<Principal> ps = s.getPrincipals();
+            for (Iterator<Principal> iterator = ps.iterator(); iterator.hasNext();) {
+                Principal principal = iterator.next();
+                JahiaUser user =
+                        ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(principal.getName());
+                if (user != null) {
+                    authContext.getSessionFactory().setCurrentUser(user);
+                    return;
                 }
-            } catch (LoginException e) {
-                logger.error(e.getMessage(), e);
             }
+        } catch (LoginException e) {
+            logger.error(e.getMessage(), e);
         }
         valveContext.invokeNext(context);
         return;
@@ -96,7 +93,8 @@ public class JaasAuthValveImpl implements Valve {
         if (Configuration.getConfiguration().getAppConfigurationEntry("jahia") == null) {
             try {
                 String config = System.getProperty("java.security.auth.login.config");
-                File source = new File(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath()+"/config/jaas.config");
+                File source = new File(
+                        org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/config/jaas.config");
                 if (config == null) {
                     // No jaas config defined -> set the system property to our config
                     System.setProperty("java.security.auth.login.config", source.toURL().toString());
@@ -113,7 +111,7 @@ public class JaasAuthValveImpl implements Valve {
                     BufferedWriter fw = new BufferedWriter(new FileWriter(target, true));
                     BufferedReader fr = new BufferedReader(new FileReader(source));
                     fw.newLine();
-                    String l ;
+                    String l;
                     while ((l = fr.readLine()) != null) {
                         System.out.println(l);
                         fw.write(l);

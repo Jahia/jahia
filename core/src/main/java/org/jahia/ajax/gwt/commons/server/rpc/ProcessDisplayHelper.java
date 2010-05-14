@@ -281,7 +281,7 @@ public class ProcessDisplayHelper {
 
     public static String prettyPrintDate(Locale locale, long dateL) {
         if (locale == null) {
-            locale = Locale.getDefault();
+            locale = Locale.ENGLISH;
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT, locale);
         return dateFormat.format(new Date(dateL));

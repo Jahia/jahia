@@ -101,12 +101,10 @@ public class URLResolver {
      * resolving URLs of incoming requests.
      *
      * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
-     * @param siteKey  the site-key resolved via the URL (e.g. via domain to sitekey mapping)
      */
-    public URLResolver(String urlPathInfo, String siteKey) {
+    public URLResolver(String urlPathInfo) {
         super();
         this.urlPathInfo = urlPathInfo;
-        setSiteKey(siteKey);
         servletPart = StringUtils.substring(getUrlPathInfo(), 1,
                 StringUtils.indexOf(getUrlPathInfo(), "/", 1));
         path = StringUtils.substring(getUrlPathInfo(),

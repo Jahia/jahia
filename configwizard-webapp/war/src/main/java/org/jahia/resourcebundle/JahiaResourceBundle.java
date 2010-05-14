@@ -138,7 +138,7 @@ public class JahiaResourceBundle
     public static ResourceBundle getAdminDefaultResourceBundle(Locale locale ){
 
         if ( locale == null ){
-            locale= Locale.getDefault();
+            locale= Locale.ENGLISH;
         }
         ResourceBundle res = null;
 

@@ -83,7 +83,7 @@ public class DateBean {
         if (dateFormat == null || dateFormat.trim().equals("")) {
             dateFormat = DateUtils.DEFAULT_DATETIME_FORMAT;
         }
-        Locale l = Locale.getDefault();
+        Locale l = Locale.ENGLISH;
         if (context != null && context.getLocale() != null) {
             l = context.getLocale();
         }
@@ -101,7 +101,7 @@ public class DateBean {
     public DateBean(ProcessingContext context, SimpleDateFormat dateFormat) {
         this.dateFormat = dateFormat;
         if (this.dateFormat == null) {
-            Locale l = Locale.getDefault();
+            Locale l = Locale.ENGLISH;
             if (context != null && context.getLocale() != null) {
                 l = context.getLocale();
             }

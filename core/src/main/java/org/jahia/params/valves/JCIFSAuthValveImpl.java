@@ -31,8 +31,6 @@
  */
 package org.jahia.params.valves;
 
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
@@ -59,8 +57,8 @@ public class JCIFSAuthValveImpl implements Valve {
             valveContext.invokeNext(context);
         }
 
-        ProcessingContext processingContext = (ProcessingContext) context;
-        HttpServletRequest request = ((ParamBean) processingContext).getRequest();
+        AuthValveContext authContext = (AuthValveContext) context;
+        HttpServletRequest request = authContext.getRequest();
         if (request.getAttribute("ntlmAuthType") != null) {
             Principal principal = (Principal) request.getAttribute("ntlmPrincipal");
             if (principal != null) {
@@ -79,7 +77,7 @@ public class JCIFSAuthValveImpl implements Valve {
                     JahiaUser jahiaUser =
                             ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(userName);
                     if (jahiaUser != null) {
-                        processingContext.setTheUser(jahiaUser);
+                        authContext.getSessionFactory().setCurrentUser(jahiaUser);
                         return;
                     }
                 } catch (Exception e) {

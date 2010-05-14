@@ -33,8 +33,6 @@ package org.jahia.params.valves;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.exceptions.JahiaSessionExpirationException;
-import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
@@ -42,6 +40,8 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.usermanager.JahiaUser;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>Title: Generic SSO auth valve</p>
@@ -63,21 +63,21 @@ public abstract class SsoValve implements Valve {
     /**
      * Retrieve the credentials from the request.
      *
-     * @param processingContext parameters
+     * @param request parameters
      * @return an object.
      * @throws Exception any exception
      */
-    public abstract Object retrieveCredentials(ProcessingContext processingContext) throws Exception;
+    public abstract Object retrieveCredentials(HttpServletRequest request) throws Exception;
 
     /**
      * Validate the credentials.
      *
      * @param credentials the crendentials.
-     * @param paramBean
+     * @param request
      * @return the id of user that was authenticated, or null if none.
      * @throws Exception any exception
      */
-    public abstract String validateCredentials(Object credentials, ProcessingContext paramBean) throws JahiaException;
+    public abstract String validateCredentials(Object credentials, HttpServletRequest request) throws JahiaException;
 
     /**
      * @see org.jahia.pipelines.valves.Valve#invoke(java.lang.Object, org.jahia.pipelines.valves.ValveContext)
@@ -89,21 +89,22 @@ public abstract class SsoValve implements Valve {
         }
 
         logger.debug("starting " + this.getClass().getName() + ".invoke()...");
-        ProcessingContext processingContext = (ProcessingContext) context;
+        AuthValveContext authContext = (AuthValveContext) context;
 
         // at first look if the user was previously authenticated
         JahiaUser sessionUser = null;
-        sessionUser = (JahiaUser) processingContext.getSessionState().getAttribute(ProcessingContext.SESSION_USER);
+        final HttpServletRequest servletRequest = authContext.getRequest();
+        sessionUser = (JahiaUser) servletRequest.getSession().getAttribute(ProcessingContext.SESSION_USER);
         if (sessionUser != null && !sessionUser.getUsername().equals("guest")) {
             logger.debug("user '" + sessionUser.getUsername() + "' was already authenticated!");
-            processingContext.setTheUser(sessionUser);
+            authContext.getSessionFactory().setCurrentUser(sessionUser);
             return;
         }
 
         logger.debug("retrieving credentials...");
         Object credentials;
         try {
-            credentials = retrieveCredentials(processingContext);
+            credentials = retrieveCredentials(servletRequest);
         } catch (Exception e) {
             throw new PipelineException("exception was thrown while retrieving credentials!", e);
         }
@@ -116,7 +117,7 @@ public abstract class SsoValve implements Valve {
         logger.debug("validating credentials...");
         String uid;
         try {
-            uid = validateCredentials(credentials, processingContext);
+            uid = validateCredentials(credentials, servletRequest);
         } catch (Exception e) {
             throw new PipelineException("exception was thrown while validating credentials!", e);
         }
@@ -130,19 +131,14 @@ public abstract class SsoValve implements Valve {
         if (user == null) {
             throw new PipelineException("user '" + uid + "' was authenticated but not found in database!");
         }
-        try {
-            if (processingContext instanceof ParamBean) {
-                ParamBean paramBean = (ParamBean) processingContext;
-                paramBean.invalidateSession();
-            }
-        } catch (JahiaSessionExpirationException e) {
-            logger.error(e.getMessage(), e);
+        if (servletRequest.getSession(false) != null) {
+            servletRequest.getSession().invalidate();
         }
         // user has been successfully authenticated, note this in the current session.
-        processingContext.getSessionState().setAttribute(ProcessingContext.SESSION_USER, user);
+        servletRequest.getSession().setAttribute(ProcessingContext.SESSION_USER, user);
 
         // eventually set the Jahia user
-        processingContext.setTheUser(user);
+        authContext.getSessionFactory().setCurrentUser(user);
     }
 
     /**
@@ -151,6 +147,6 @@ public abstract class SsoValve implements Valve {
      * @return a URL.
      * @throws JahiaInitializationException
      */
-    public abstract String getRedirectUrl(ProcessingContext paramBean) throws JahiaException;
+    public abstract String getRedirectUrl(HttpServletRequest paramBean) throws JahiaException;
 
 }

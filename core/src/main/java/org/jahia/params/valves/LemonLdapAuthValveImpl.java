@@ -33,8 +33,6 @@
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
@@ -68,8 +66,8 @@ public class LemonLdapAuthValveImpl implements Valve {
             valveContext.invokeNext(context);
         }
 
-        ProcessingContext processingContext = (ProcessingContext) context;
-        HttpServletRequest request = ((ParamBean)processingContext).getRequest();
+        AuthValveContext authContext = (AuthValveContext) context;
+        HttpServletRequest request = authContext.getRequest();
         String auth = request.getHeader("Authorization");
         if (auth != null) {
             try {
@@ -85,13 +83,13 @@ public class LemonLdapAuthValveImpl implements Valve {
 
                 List<? extends JahiaUserManagerProvider> v = ServicesRegistry.getInstance().getJahiaUserManagerService().getProviderList();
                 for (Iterator<? extends JahiaUserManagerProvider> iterator = v.iterator(); iterator.hasNext();) {
-                    JahiaUserManagerProvider userManagerProviderBean = (JahiaUserManagerProvider) iterator.next();
+                    JahiaUserManagerProvider userManagerProviderBean = iterator.next();
                     if (userManagerProviderBean.getClass().getName().equals(JahiaUserManagerLDAPProvider.class.getName())) {
                         JahiaUserManagerLDAPProvider jahiaUserManagerLDAPProvider = (JahiaUserManagerLDAPProvider)userManagerProviderBean;
                         JahiaUser jahiaUser = jahiaUserManagerLDAPProvider.lookupUserFromDN(dn);
                         if (jahiaUser != null) {
                             logger.debug("DN found in ldap provider, user authenticated");
-                            processingContext.setTheUser(jahiaUser);
+                            authContext.getSessionFactory().setCurrentUser(jahiaUser);
                             request.setAttribute("lemonldap.profile", prof);
                         }
                         return;

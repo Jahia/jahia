@@ -238,7 +238,7 @@ public final class UserPreferencesHelper {
                 .languageCodeToLocale(propValue) : null;
 
         if (null == locale) {
-            locale = Locale.getDefault();
+            locale = Locale.ENGLISH;
         }
         return locale;
     }

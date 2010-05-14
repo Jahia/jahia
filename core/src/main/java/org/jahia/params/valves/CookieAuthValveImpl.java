@@ -29,12 +29,13 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.params.valves;
+package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ParamBean;
+import org.jahia.bin.Render;
+import org.jahia.engines.EngineMessage;
+import org.jahia.engines.EngineMessages;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
@@ -46,17 +47,11 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.JahiaString;
-import org.jahia.engines.EngineMessage;
-import org.jahia.engines.EngineMessages;
-import org.jahia.engines.mysettings.MySettingsEngine;
-import org.jahia.exceptions.JahiaSessionExpirationException;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
 import java.security.Principal;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
@@ -66,23 +61,22 @@ import java.util.Set;
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2004</p>
  * <p>Company: Jahia Ltd</p>
+ *
  * @author not attributable
  * @version 1.0
  */
 
 public class CookieAuthValveImpl implements Valve {
-    private static final transient Logger logger = Logger
-            .getLogger(CookieAuthValveImpl.class);
-    
+    private static final transient Logger logger = Logger.getLogger(CookieAuthValveImpl.class);
+
     private CookieAuthConfig cookieAuthConfig;
-    
-    public void invoke (Object context, ValveContext valveContext)
-        throws PipelineException {
-        ProcessingContext processingContext = (ProcessingContext) context;
+
+    public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+        AuthValveContext authContext = (AuthValveContext) context;
         JahiaUser jahiaUser = null;
         // now lets look for a cookie in case we are using cookie-based
         // authentication.
-        Cookie[] cookies = cookieAuthConfig.isActivated() ? ((ParamBean)processingContext).getRequest().getCookies() : null;
+        Cookie[] cookies = cookieAuthConfig.isActivated() ? authContext.getRequest().getCookies() : null;
         if (cookies == null) {
             // no cookies at all sent by the client, let's go to the next
             // valve.
@@ -104,14 +98,13 @@ public class CookieAuthValveImpl implements Valve {
             // user that has the corresponding key.
             Properties searchCriterias = new Properties();
             String userPropertyName = cookieAuthConfig.getUserPropertyName();
-            searchCriterias.setProperty(userPropertyName,
-                                        authCookie.getValue());
+            searchCriterias.setProperty(userPropertyName, authCookie.getValue());
             Set<Principal> foundUsers = ServicesRegistry.getInstance().
-                             getJahiaUserManagerService().searchUsers(searchCriterias);
+                    getJahiaUserManagerService().searchUsers(searchCriterias);
             if (foundUsers.size() == 1) {
                 jahiaUser = (JahiaUser) foundUsers.iterator().next();
-                processingContext.getSessionState().setAttribute(ProcessingContext.
-                    SESSION_USER, jahiaUser);
+                authContext.getRequest().getSession().setAttribute(ProcessingContext.
+                        SESSION_USER, jahiaUser);
 
                 if (cookieAuthConfig.isRenewalActivated()) {
                     // we can now renew the cookie.
@@ -122,20 +115,20 @@ public class CookieAuthValveImpl implements Valve {
                         searchCriterias = new Properties();
                         searchCriterias.setProperty(userPropertyName, cookieUserKey);
                         Set<Principal> usersWithKey = ServicesRegistry.getInstance().
-                                           getJahiaUserManagerService().
-                                           searchUsers(searchCriterias);
+                                getJahiaUserManagerService().
+                                searchUsers(searchCriterias);
                         if (usersWithKey.size() > 0) {
                             cookieUserKey = null;
                         }
                     }
                     // let's save the identifier for the user in the database
-                    jahiaUser.setProperty(userPropertyName,
-                                          cookieUserKey);
+                    jahiaUser.setProperty(userPropertyName, cookieUserKey);
                     // now let's save the same identifier in the cookie.
                     authCookie.setValue(cookieUserKey);
-                    authCookie.setPath(StringUtils.isNotEmpty(processingContext.getContextPath()) ? processingContext.getContextPath() : "/");
+                    authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
+                            authContext.getRequest().getContextPath() : "/");
                     authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
-                    HttpServletResponse realResponse = ((ParamBean)processingContext).getRealResponse();
+                    HttpServletResponse realResponse = authContext.getResponse();
                     realResponse.addCookie(authCookie);
                 }
             }
@@ -143,86 +136,51 @@ public class CookieAuthValveImpl implements Valve {
         if (jahiaUser == null) {
             valveContext.invokeNext(context);
         } else {
-            try {
-                if (processingContext instanceof ParamBean) {
-                    ParamBean paramBean = (ParamBean) processingContext;
-                    paramBean.invalidateSession();
-                }
-            } catch (JahiaSessionExpirationException e) {
-                logger.error(e.getMessage(), e);
+            if (authContext.getRequest().getSession(false) != null) {
+                authContext.getRequest().getSession().invalidate();
             }
-            processingContext.setTheUser(jahiaUser);
+            authContext.getSessionFactory().setCurrentUser(jahiaUser);
 
             // do a switch to the user's preferred language
             if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
-                Locale preferredUserLocale = UserPreferencesHelper
-                        .getPreferredLocale(jahiaUser, processingContext
-                                .getSite());
-                if (processingContext.getSite() != null) {
-                    List<Locale> siteLocales;
-                    siteLocales = processingContext.getSite().getLanguagesAsLocales();
-                    if (siteLocales.contains(preferredUserLocale)) {
-                        processingContext.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE,
-                                                                         preferredUserLocale);
-                        processingContext.setCurrentLocale(preferredUserLocale);
-                        processingContext.setLocaleList(null);
-                    }
-
-                }
+                Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(jahiaUser);
             }
-            
-            enforcePasswordPolicy(jahiaUser, (ParamBean)processingContext);
-            jahiaUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE, String
-                    .valueOf(System.currentTimeMillis()));
+
+            enforcePasswordPolicy(jahiaUser, authContext);
+            jahiaUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE,
+                    String.valueOf(System.currentTimeMillis()));
         }
     }
 
-    public void initialize () {
+    public void initialize() {
     }
 
-    private void enforcePasswordPolicy(JahiaUser theUser, ParamBean paramBean) {
-        PolicyEnforcementResult evalResult = ServicesRegistry.getInstance()
-                .getJahiaPasswordPolicyService().enforcePolicyOnLogin(theUser);
+    private void enforcePasswordPolicy(JahiaUser theUser, AuthValveContext authContext) {
+        PolicyEnforcementResult evalResult =
+                ServicesRegistry.getInstance().getJahiaPasswordPolicyService().enforcePolicyOnLogin(theUser);
         if (!evalResult.isSuccess()) {
             EngineMessages policyMsgs = evalResult.getEngineMessages();
             EngineMessages resultMessages = new EngineMessages();
-            for (Iterator<EngineMessage> iterator = policyMsgs.getMessages().iterator(); iterator
-                    .hasNext();) {
+            for (Iterator<EngineMessage> iterator = policyMsgs.getMessages().iterator(); iterator.hasNext();) {
                 resultMessages.add((EngineMessage) iterator.next());
             }
-            if (paramBean != null) {
-                paramBean.getRequest().getSession().setAttribute(
-                        EngineMessages.CONTEXT_KEY, resultMessages);
+            if (authContext != null) {
+                authContext.getRequest().getSession().setAttribute(EngineMessages.CONTEXT_KEY, resultMessages);
                 try {
                     String redirectUrl = null;
-                    if (paramBean.getPageID() != -1) {
-                        redirectUrl = paramBean
-                                .composeEngineUrl(MySettingsEngine.ENGINE_NAME)
-                                + "?screen=" + MySettingsEngine.EDIT_TOKEN;
-                    } else {
-                        redirectUrl = new StringBuffer(64).append(
-                                paramBean.getRequest().getContextPath())
-                                .append(Jahia.getServletPath()).append(
-                                        "/engineName/"
-                                                + MySettingsEngine.ENGINE_NAME)
-                                .append("/pid/").append(
-                                        paramBean.getSite().getHomePageID())
-                                .append(
-                                        "?screen="
-                                                + MySettingsEngine.EDIT_TOKEN)
-                                .toString();
-                    }
-                    paramBean.getResponse().sendRedirect(redirectUrl);
+                    redirectUrl = new StringBuffer(64).append(authContext.getRequest().getContextPath()).append("/cms/")
+                            .append(Render.getRenderServletPath()).append("/default/en/users").append(theUser.getName())
+                            .append(".html").toString();
+                    authContext.getResponse().sendRedirect(redirectUrl);
                 } catch (Exception ex) {
-                    logger.error(
-                            "Unable to forward to the mysettings engine page",
-                            ex);
+                    logger.error("Unable to forward to the mysettings engine page", ex);
                 }
             }
         }
+
     }
 
-	public void setCookieAuthConfig(CookieAuthConfig config) {
-    	this.cookieAuthConfig = config;
+    public void setCookieAuthConfig(CookieAuthConfig config) {
+        this.cookieAuthConfig = config;
     }
 }

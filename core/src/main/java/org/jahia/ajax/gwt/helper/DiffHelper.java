@@ -46,7 +46,7 @@ public class DiffHelper {
 
             final ContentHandler postProcess = filter.xsl(result, "jahiahtmlheader.xsl");
 
-            final Locale locale = Locale.getDefault();
+            final Locale locale = Locale.ENGLISH;
             final String prefix = "diff";
 
             final HtmlCleaner cleaner = new HtmlCleaner();

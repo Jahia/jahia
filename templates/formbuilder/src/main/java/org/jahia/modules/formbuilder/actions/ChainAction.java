@@ -86,7 +86,8 @@ public class ChainAction implements Action, InitializingBean {
             for (String actionToDo : actions) {
                 if (DefaultPostAction.ACTION_NAME.equals(actionToDo)) {
                     String s = urlResolver.getUrlPathInfo().replace(".chain.do", "/*");
-                    URLResolver resolver = new URLResolver(s, urlResolver.getSiteKey());
+                    URLResolver resolver = new URLResolver(s);
+                    resolver.setSiteKey(urlResolver.getSiteKey());
                     result = defaultPostAction.doExecute(req, renderContext, resource, parameters, resolver);
                 } else {
                     Action action = actionsMap.get(actionToDo);

@@ -61,6 +61,7 @@ public class URLGenerator {
     private String baseEdit;
     private String basePreview;
     private String ckeditor;
+    private String toPDF;
 
     public URLGenerator(RenderContext context, Resource resource, JCRStoreService jcrStoreService) {
         this.context = context;
@@ -113,6 +114,7 @@ public class URLGenerator {
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         logout = getContext() + Logout.getLogoutServletPath();
         initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+        toPDF = getContext() + ToPDFServlet.getToPDFServletPath() + "/" + resource.getWorkspace();
         captcha = getContext() + Captcha.getCaptchaServletPath();
         templatesPath = getContext() + "/templates";
     }
@@ -352,5 +354,9 @@ public class URLGenerator {
 
     public String getCkEditor() {
         return ckeditor;
+    }
+
+    public String getToPDF() {
+        return toPDF;
     }
 }

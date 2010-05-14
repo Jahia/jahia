@@ -76,7 +76,10 @@
                     <div class="imagefloatleft">
                         <div class="itemImage itemImageLeft"><a
                                 href="${currentNode.url}"><img title="Download" value="download"
-                                                               src="${url.currentModule}/css/img/documentbig.png"/></a>
+                                                               src="${url.currentModule}/css/img/files/${functions:fileExtension(currentNode.name)}.png"/></a>
+                            <a
+                                href="${url.toPDF}?path=${currentNode.path}"><img title="PDF" value="pdf"
+                                                               src="${url.currentModule}/css/img/files/pdf.png"/></a>
                         </div>
                     </div>
                     <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}"><img

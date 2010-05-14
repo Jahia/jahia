@@ -244,16 +244,4 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         }
         attributes.put(s1, o);
     }
-
-
-
-
-
-    /**
-     * Check if there is a least one google analytics profile
-     *
-     * @param jahiaSite
-     * @return
-     */
-
 }

@@ -6,4 +6,9 @@
         <property name="name" value="add"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
     </bean>
+    <bean id="bookmarksProfileExtension" class="org.jahia.utils.profile.ProfileExtension">
+        <property name="key" value="bookmarks"/>
+        <property name="displayName" value="Bookmarks"/>
+    </bean>
+
 </beans>

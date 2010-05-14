@@ -101,6 +101,7 @@
         <module>facets</module>
         <module>calendar</module>
         <module>staticHTML</module>
+        <module>bookmarks</module>
     </modules>
 
 

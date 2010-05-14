@@ -1,7 +1,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:bookmark] > jnt:content, mix:title, jmix:editorialContent
-- url (string)
+- url (string) 
 - date (date)
 
 [jnt:bookmarks] > jnt:content, mix:title

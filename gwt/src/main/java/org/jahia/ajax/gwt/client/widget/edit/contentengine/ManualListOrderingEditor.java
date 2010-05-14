@@ -24,10 +24,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * GWT control for performing manual list item ordering and deletion of a single or multiple items.
@@ -57,12 +54,13 @@ public class ManualListOrderingEditor extends ContentPanel {
     private void init() {
         setBodyBorder(true);
         List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
-        columnNames.add(new GWTColumn("icon","icon",10));
-        columnNames.add(new GWTColumn("name","name",10));
-        columnNames.add(new GWTColumn("created","created",10));
-        columnNames.add(new GWTColumn("createdBy","createdBy",10));
-        columnNames.add(new GWTColumn("lastModified","lastModified",10));
-        columnNames.add(new GWTColumn("lastModifiedBy","lastModifiedBy",10));
+        columnNames.add(new GWTColumn("icon","icon",50));
+        columnNames.add(new GWTColumn("name","name",100));
+        columnNames.add(new GWTColumn("created","created",75));
+        columnNames.add(new GWTColumn("createdBy","createdBy",75));
+        columnNames.add(new GWTColumn("lastModified","lastModified",75));
+        columnNames.add(new GWTColumn("lastModifiedBy","lastModifiedBy",75));
+
 
         final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
         columnConfigList.init();
@@ -77,7 +75,7 @@ public class ManualListOrderingEditor extends ContentPanel {
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getPath());
                 JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:content", null, null,
-                        null, listAsyncCallback);
+                        Arrays.asList("icon","name","created","createdBy","lastModified","lastModifiedBy"), listAsyncCallback);
                 childrenGrid.unmask();
             }
 

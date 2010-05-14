@@ -13,189 +13,125 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="format" type="org.artofsolving.jodconverter.document.DocumentFormat"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
 <template:addResources type="css" resources="converter.css,files-icons.css"/>
+<c:if test="${renderContext.loggedIn}">
+<jcr:sql var="result"
+         sql="select * from [jmix:convertedFile] as conversion where isdescendantnode(conversion, ['/users/${renderContext.user.name}/']) order by conversion.[jcr:lastModified] desc"/>
+<c:set var="currentList" value="${result.nodes}" scope="request"/>
+<c:set var="listTotalSize" value="${functions:length(result.nodes)}" scope="request"/>
+<c:choose>
+    <c:when test="${empty param.pagesize}">
+        <c:set var="pageSize" value="20"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="pageSize" value="${param.pagesize}"/>
+    </c:otherwise>
+</c:choose>
+<template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}"
+                    id="${currentNode.identifier}"/>
+<h4 class="boxconverter-title2"><fmt:message key="label.upload.file.for.conversion"/></h4>
 
-<div class="container container_16"><!--start container_16-->
-	<div class='grid_6'><!--start grid_6-->
-<c:if test="${!renderContext.loggedIn}">
+<div class="boxconverter"><!--start boxconverter -->
+    <div class="boxconvertergrey boxconverterpadding10 boxconvertermarginbottom16">
+        <div class="boxconverter-inner">
+            <div class="boxconverter-inner-border">
+                <div class="Form formconverterupload"><!--start formconverterupload-->
+                    <form action="${url.base}${currentNode.path}.convert.do" method="post"
+                          enctype="multipart/form-data" id="conversionForm">
+                        <input type="hidden" name="redirectTo"
+                               value="${url.base}${renderContext.mainResource.node.path}"/>
 
-<div class="boxconverter">
-                <div class="boxconvertergrey boxconverterpadding16 boxconvertermarginbottom16">
+                        <p>
+                            <label for="uploadfile" class="left"><fmt:message key="label.upload.a.document"/>:</label>
+                            <input id="uploadfile" name="fileField" tabindex="1" type="file"/>
+                        </p>
 
-                    <div class="boxconverter-inner">
-                        <div class="boxconverter-inner-border"><!--start boxconverter -->
+                        <p>
+                            <label for="conversionType" class="left"><fmt:message key="label.transform.into"/>:</label>
+                            <select name="mimeType" id="conversionType">
+                                <c:forEach items="${functions:possibleFormats()}" var="format">
+                                    <option value="${format.mediaType}">${format.extension}&nbsp;(${format.name})</option>
+                                </c:forEach>
+                            </select>
+                            <input type="submit" id="submit" class="button" value="Convert" tabindex="4"/>
+                        </p>
+                    </form>
 
-				  <div class="Form formLoginConverter">
-                  <form method="post" action="index.html">
-                  <h3 class="boxconvertertitleh3">Accés Document converter</h3>
-				<fieldset><legend>Login spécifique Document converter</legend>
-                <p><label for="convertertitle" class="left">Login :</label>
-                <input type="text" name="convertertitle" id="convertertitle" class="field" value="" tabindex="25" /></p>
-                <p><label for="loginConverterPassword" class="left">Password :</label>
-                <input type="text" name="loginConverterPassword" id="loginConverterPassword" class="field" value="" tabindex="25" /></p>
-                <div class="formMarginLeft"><input type="submit" name="submit" id="submit" class="button" value="Accés" tabindex="28" />
                 </div>
-              </fieldset>
-              </form>
-              </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        $(document).ready(new function(){
+            $("#conversionType")
+        });
+    </script>
+<!--stop boxconverter -->
+<c:if test="${listTotalSize > 0}">
+    <c:forEach items="${result.nodes}" var="lastNode" begin="0" end="0">
+        <div class="boxconverter "><!--start boxconverter -->
+            <div class="boxconverterpadding16 boxconvertermarginbottom16">
+                <div class="boxconverter-inner">
+                    <div class="boxconverter-inner-border">
+                        <div class="floatright">
+
+                        </div>
+                        <div class="imagefloatleft">
+                            <div class="itemImage itemImageLeft"><span class="icon6464 ${functions:fileExtension(lastNode.properties.originDocName.string)}6464"></span></div>
+                            <div class="itemImageConverterArrow itemImageLeft"><a href="#"><img alt=""
+                                                                                                src="${url.currentModule}/img/convert.png"/></a>
+                            </div>
+                            <div class="itemImage itemImageLeft"><span class="icon6464 ${functions:fileExtension(lastNode.name)}6464"></span></div>
+                        </div>
+                        <h3><fmt:message
+                                key="label.from"/>:&nbsp;${functions:abbreviate(lastNode.properties.originDocName.string,20,30,'...')}</h3>
+
+                        <h3><fmt:message key="label.to"/>:&nbsp;<a href="#"><img alt=""
+                                                                                 src="${url.currentModule}/images/download.png"/>${functions:abbreviate(lastNode.name,20,30,'...')}
+                        </a></h3>
+                   <span class="clearMaringPadding converterdate"><fmt:message
+                           key="label.conversion.date"/>:&nbsp;<fmt:formatDate
+                           value="${lastNode.properties['jcr:lastModified'].date.time}" dateStyle="short"
+                           type="both"/></span>
+                        <!--stop boxconverter -->
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--stop boxconverter -->
+        <c:if test="${lastNode.properties.conversionSucceeded.boolean eq false}">
+            <div class="boxconverter">
+                <div class=" boxconverterred boxconverterpadding16 boxconvertermarginbottom16">
+                    <div class="boxconverter-inner">
+                        <div class="boxconverter-inner-border">
+                            <h3 class="boxconvertertitleh3 clearMaringPadding"><fmt:message key="label.error"/>:</h3>
+
+                            <p class="clearMaringPadding">${lastNode.properties.conversionFailedMessage.string}</p>
+
                             <div class="clear"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--stop boxconverter -->
-
-      <div class='clear'></div></div><!--stop grid_6-->
-
-    <div class='grid_10'><!--start grid_10-->
-
-
-<div class='clear'></div></div><!--stop grid_10-->
-
-
-
-
-<div class='clear'></div></div><!--stop container_16-->
-
+        </c:if>
+    </c:forEach>
 </c:if>
 
-<c:if test="${renderContext.loggedIn}">
+<h4 class="boxconverter-title2"><fmt:message key="label.conversion.report"/></h4>
 
-    <div class="container container_16"> <!--start container_16-->
+<div class="boxconverter" id="${currentNode.identifier}">
+<div class="boxconvertergrey boxconverterpadding16 boxconvertermarginbottom16">
+<div class="boxconverter-inner">
+<div class="boxconverter-inner-border"><!--start boxconverter -->
 
-
-
-	<div class='grid_16'><!--start grid_16-->
-    <h4 class="boxconverter-title2">Uploader un document pour transformation</h4>
-<div class="boxconverter"><!--start boxconverter -->
-	<div class="boxconvertergrey boxconverterpadding10 boxconvertermarginbottom16">
-		<div class="boxconverter-inner">
-			<div class="boxconverter-inner-border">
-           <div class="Form formconverterupload"><!--start formconverterupload-->
-                        <form action="${url.base}${currentNode.path}.convert.do" method="post" enctype="multipart/form-data">
-						<input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}" />
-                        <p>
-                        <label for="uploadfile" class="left">Upload a document : </label>
-                            <input id="uploadfile" name="fileField" tabindex="1" type="file" />
-                        </p>
-                        <p>
-                        <label for="uploadfile" class="left">Transform into : </label>
-                        <select name="mimeType">
-                        <option value="application/pdf">Pdf</option>
-                        <option value="application/msword">Word</option>
-                        <option value="text/plain">Text</option>
-                        </select>
-                        <input type="submit" id="submit" class="button" value="Convert" tabindex="4" />
-                        </p>
-              </form>
-
-			</div>
-            </div>
-		</div>
-	</div>
-</div><!--stop boxconverter -->
-
-<%--
-<div class="boxconverter "><!--start boxconverter -->
-            <div class="boxconverterpadding16 boxconvertermarginbottom16">
-                <div class="boxconverter-inner">
-                  <div class="boxconverter-inner-border">
-                    <div class="floatright">
-
-                    </div>
-                    <div class="imagefloatleft">
-					  <div class="itemImage itemImageLeft"><span class="icon6464 doc6464"></span></div>
-					  <div class="itemImageConverterArrow itemImageLeft"><a href="#"><img alt="" src="${url.currentModule}/images/convert.png"/></a></div>
-					  <div class="itemImage itemImageLeft"><span class="icon6464 pdf6464"></span></div>
-					</div>
-                    <h3 >Document original : Le nom de mon document.Doc</h3>
-                    <h3 >Document transforme : <a href="#"><img alt="" src="${url.currentModule}/images/download.png"/> Le nom de mon document.PDF</a></h3>
-                    <span class="clearMaringPadding converterdate">Date de Transformation : 10/02/2010</span>
-	  <span class="clearMaringPadding converterauthor"><a href="#">Par Regis Mora</a></span>
-                    <!--stop boxconverter -->
-                    <div class="clear"></div>
-                  </div>
-			</div>
-		</div>
-</div><!--stop boxconverter -->
-
-<div class="boxconverter">
-            <div class=" boxconverterred boxconverterpadding16 boxconvertermarginbottom16">
-                <div class="boxconverter-inner">
-                    <div class="boxconverter-inner-border">
-                    <h3 class="boxconvertertitleh3 clearMaringPadding">Erreur :</h3>
-                    <p class="clearMaringPadding">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean scelerisque lorem sed metus vehicula non venenatis eros blandit. Donec molestie vestibulum nunc, ac molestie augue semper a. Quisque ut pharetra sem. Ut vitae urna ipsum.</p>
-                      <div class="clear"></div>
-                  </div>
-			</div>
-		</div>
-</div>
-<div class="boxconverter">
-            <div class=" boxconvertergreen boxconverterpadding16 boxconvertermarginbottom16">
-                <div class="boxconverter-inner">
-                    <div class="boxconverter-inner-border">
-
-                    <h3 class="boxconvertertitleh3 clearMaringPadding">Transformation Valide :</h3>
-                    <p class="clearMaringPadding">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean scelerisque lorem sed metus vehicula non venenatis eros blandit. Donec molestie vestibulum nunc, ac molestie augue semper a. Quisque ut pharetra sem. Ut vitae urna ipsum.</p>
-                      <div class="clear"></div>
-                  </div>
-			</div>
-		</div>
-</div>
-<h3>Icones disponibles :</h3>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 file6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 video6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 pptx6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 exe6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 doc6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 html6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 img6464"></span></div>
-</div>
-<div class="clear"></div><br/><br/>
-
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 sound6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 xls6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 zip6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 txt6464"></span></div>
-</div>
-<div class="imagefloatleft">
-    <div class="itemImage itemImageLeft"><span class="icon6464 pdf6464"></span></div>
-</div>
-<div class="clear"></div><br/><br/>
-
- --%>
-
-    <h4 class="boxconverter-title2">Rapport des transformations</h4>
-
-    <div class="boxconverter">
-            <div class="boxconvertergrey boxconverterpadding16 boxconvertermarginbottom16">
-                <div class="boxconverter-inner">
-                    <div class="boxconverter-inner-border"><!--start boxconverter -->
-
-<table width="100%" class="table tableConverterRapport " summary="Rapport de mes transformations">
-    <caption class=" hidden">
-    Edition Mes taches en cours (table)
+<table width="100%" class="table tableConverterRapport "
+       summary="<fmt:message key="label.conversion.report"/>">
+    <caption class="hidden">
+        <fmt:message key="label.conversion.report"/>
     </caption>
     <colgroup>
         <col span="1" width="10%" class="col1"/>
@@ -207,64 +143,54 @@
         <col span="1" width="10%" class="col5"/>
     </colgroup>
     <thead>
-        <tr>
-            <th class="center" id="Statut" scope="col">Statut</th>
-            <th id="TitleOriginal" scope="col">Nom Document Original<a title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-down.png" alt="down"/></a></th>
-            <th class="center" id="OriginalDoc" scope="col">Format Original</th>
-            <th class="center" id="TranformDoc" scope="col">Format Transforme</th>
-            <th class="center" id="Date" scope="col">Date de convertion <a title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a></th>
-            <th class="center" id="User" scope="col">Utilisateur<a title="sort down" href="#"> <img src="${url.currentModule}/images/sort-arrow-up.png" alt="up"/></a></th>
-            <th class="center" id="Download" scope="col">Download</th>
-        </tr>
+    <tr>
+        <th class="center" id="Statut" scope="col"><fmt:message key="label.status"/></th>
+        <th id="TitleOriginal" scope="col"><fmt:message key="label.original.name"/></th>
+        <th class="center" id="OriginalDoc" scope="col"><fmt:message key="label.original.type"/></th>
+        <th class="center" id="TranformDoc" scope="col"><fmt:message key="label.converted.type"/></th>
+        <th class="center" id="Date" scope="col"><fmt:message key="label.conversion.date"/></th>
+        <th class="center" id="User" scope="col"><fmt:message key="label.user"/></th>
+        <th class="center" id="Download" scope="col"><fmt:message key="label.download"/></th>
+    </tr>
     </thead>
-    <jcr:sql var="result"
-             sql="select * from [jnt:convertedFile] as conversion where ischildnode(conversion, ['/shared/conversions']) order by conversion.[jcr:lastModified] desc"/>
-
-    <c:set var="currentList" value="${result.nodes}" scope="request"/>
-    <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
-    <c:set var="listTotalSize" value="${end}" scope="request"/>
-
     <tbody>
-    <c:forEach items="${currentList}" var="subchild" begin="0" end="${end}">
-    <c:set var="conversionStatus">
-        <c:if test="${subchild.propertiesAsString['conversionSucceeded']}"><img alt="" src="${url.currentModule}/images/valide.png" /></c:if>
-        <c:if test="${not subchild.propertiesAsString['conversionSucceeded']}"><img alt="" src="${url.currentModule}/images/error.png" /></c:if>
-    </c:set>
-    <tr class="odd">
+    <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
+        <c:set var="conversionStatus">
+            <c:choose>
+                <c:when test="${subchild.properties.conversionSucceeded.boolean}">
+                    <img alt="" src="${url.currentModule}/img/valide.png"/>
+                </c:when>
+                <c:otherwise>
+                    <img alt="" src="${url.currentModule}/img/error.png"/>
+                </c:otherwise>
+            </c:choose>
+        </c:set>
+        <tr class="<c:choose><c:when test="${status.count mod 2 eq 0}">even</c:when><c:otherwise>odd</c:otherwise></c:choose>">
             <td class="center" headers="Statut">${conversionStatus}</td>
-            <td headers="TitleOriginal"><a href="#">${subchild.propertiesAsString['originDocName']}</a></td>
-            <td class="center" headers="OriginalDoc">${subchild.propertiesAsString['originDocFormat']}</td>
-            <td class="center" headers="TranformDoc">${subchild.propertiesAsString['convertedDocFormat']}</td>
-            <td class="center" headers="Date">${subchild.propertiesAsString['conversionDate']}</td>
-            <td class="center" headers="User">${subchild.propertiesAsString['jcr:createdBy']}</td>
-            <td class="center" headers="Download"><a href="${subchild.propertiesAsString['convertedDocFile']}"><img alt="" src="${url.currentModule}/images/download.png"/></a></td>
-    </c:forEach>
+            <td headers="TitleOriginal">${functions:abbreviate(subchild.properties.originDocName.string,20,30,'...')}</td>
+            <td class="center"
+                headers="OriginalDoc">${subchild.properties.originDocFormat.string}</td>
+            <td class="center"
+                headers="TranformDoc">${subchild.properties.convertedDocFormat.string}</td>
+            <td class="center" headers="Date"><fmt:formatDate
+                    value="${subchild.properties['jcr:lastModified'].date.time}" dateStyle="short"
+                    type="both"/></td>
+            <td class="center" headers="User">${subchild.properties['jcr:lastModifiedBy'].string}</td>
+            <td class="center" headers="Download"><a
+                    href="${subchild.url}"><img alt="" src="${url.currentModule}/img/download.png"/></a>
+            </td>
         </tr>
+    </c:forEach>
     </tbody>
 </table>
-<div class="pagination"><!--start pagination-->
-                  <div class="paginationPosition"> <span>Page 2 of 2 - 450 results</span> - Show
-                    <select name="paginationShow" id="paginationShow">
-                      <option>20</option>
-                      <option>50</option>
-                      <option>100</option>
-                    </select>
-                  </div>
-                  <div class="paginationNavigation"> <a href="#" class="previousLink">Previous</a> <span><a href="#" class="paginationPageUrl">1</a></span> <span><a href="#" class="paginationPageUrl">2</a></span> <span><a href="#" class="paginationPageUrl">3</a></span> <span><a href="#" class="paginationPageUrl">4</a></span> <span><a href="#" class="paginationPageUrl">5</a></span> <span class="currentPage">6</span> <a href="#" class="nextLink">Next</a> </div>
-               <div class="clear"></div>
-</div><!--stop pagination-->
+<template:displayPagination nbItemsList="5,10,20,40,60,80,100,200"/>
+<template:removePager id="${currentNode.identifier}"/>
+<!--stop pagination-->
 <div class="clear"></div>
 
-                  </div>
-			</div>
-		</div>
-</div><!--stop boxconverter -->
-
-<div class='clear'></div></div><!--stop grid_16-->
-
-
-
-	<div class='clear'></div>
 </div>
-
+</div>
+</div>
+</div>
+<!--stop boxconverter -->
 </c:if>

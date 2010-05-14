@@ -51,13 +51,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
+import org.artofsolving.jodconverter.document.DocumentFamily;
+import org.artofsolving.jodconverter.document.DocumentFormat;
+import org.artofsolving.jodconverter.document.DocumentFormatRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 
@@ -69,7 +73,7 @@ public final class FileUtils {
     
     private static Map<String, String> fileExtensionIcons;
     private static String[] fileExtensionIconsMapping;
-    
+    private static DocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
     /***
      * getInstance
      * EV    19.12.2000
@@ -432,5 +436,51 @@ public final class FileUtils {
      */
     private FileUtils () {
         logger.debug("Starting fileUtils");
+    }
+
+    public static String getFileIconFromMimetype(String mimeType) {
+        DocumentFormat df = formatRegistry.getFormatByMediaType(mimeType);
+        if (df == null) {
+            return null;
+        }
+        Map<String, String> mappings = getFileExtensionIcons();
+        if (mappings == null) {
+            return "file";
+        }
+
+        String icon = mappings.get(df.getExtension());
+
+        return icon != null ? icon : mappings.get("unknown");
+    }
+
+    public static String getExtensionFromMimeType(String mimeType) {
+        DocumentFormat df = formatRegistry.getFormatByMediaType(mimeType);
+        if (df == null) {
+            return null;
+        }
+        return df.getExtension();
+    }
+
+    public static String getExtension(String fileName) {
+        return FilenameUtils.getExtension(fileName);
+    }
+
+    public static List<DocumentFormat> getPossibleFormats() {
+        Set<DocumentFormat> map = new LinkedHashSet<DocumentFormat>();
+        Set<DocumentFormat> formatSet = formatRegistry.getOutputFormats(DocumentFamily.TEXT);
+        map.addAll(formatSet);
+        formatSet = formatRegistry.getOutputFormats(DocumentFamily.SPREADSHEET);
+        map.addAll(formatSet);
+        formatSet = formatRegistry.getOutputFormats(DocumentFamily.PRESENTATION);
+        map.addAll(formatSet);
+        formatSet = formatRegistry.getOutputFormats(DocumentFamily.DRAWING);
+        map.addAll(formatSet);
+        List<DocumentFormat> list = new ArrayList<DocumentFormat>(map);
+        Collections.sort(list, new Comparator<DocumentFormat>() {
+            public int compare(DocumentFormat o1, DocumentFormat o2) {
+                return o1.getExtension().compareTo(o2.getExtension());
+            }
+        });
+        return list;
     }
 }

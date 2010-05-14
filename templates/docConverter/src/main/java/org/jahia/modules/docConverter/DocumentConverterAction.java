@@ -3,12 +3,13 @@ package org.jahia.modules.docConverter;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.artofsolving.jodconverter.office.OfficeException;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.Render;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +41,6 @@ public class DocumentConverterAction implements Action {
     private DocumentConverterService converterService;
 
 
-
     public String getName() {
         return name;
     }
@@ -54,7 +53,7 @@ public class DocumentConverterAction implements Action {
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
         if (!converterService.isEnabled()) {
-                
+
         }
         // Get parameters + file
         final ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
@@ -62,16 +61,19 @@ public class DocumentConverterAction implements Action {
         DiskFileItem inputFile = fu.getFileItems().get("fileField");
         List<String> mimeTypeList = parameters.get("mimeType");
 
-        String returnedMimeType = mimeTypeList != null ? mimeTypeList.get(0):null;
+        String returnedMimeType = mimeTypeList != null ? mimeTypeList.get(0) : null;
 
         // Convert
         boolean conversionSucceeded = true;
         String failureMessage = null;
         File convertedFile = null;
         try {
-            convertedFile = converterService.convert(inputFile.getStoreLocation(),
-                                inputFile.getContentType(), returnedMimeType);
-        } catch(IOException ioe) {
+            convertedFile = converterService.convert(inputFile.getStoreLocation(), inputFile.getContentType(),
+                                                     returnedMimeType);
+        } catch (IOException ioe) {
+            conversionSucceeded = false;
+            failureMessage = ioe.getMessage();
+        } catch (OfficeException ioe) {
             conversionSucceeded = false;
             failureMessage = ioe.getMessage();
         }
@@ -82,33 +84,29 @@ public class DocumentConverterAction implements Action {
 
 
         // Create a conversion node and the file node if all succeeded
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-
-        JCRNodeWrapper conversionsNode = session.getNode("/shared/conversions");
-        conversionsNode.checkout();
-        JCRNodeWrapper conversionNode = conversionsNode.addNode(String.valueOf(System.currentTimeMillis()), "jnt:convertedFile");
-
+        JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
         String originFileName = inputFile.getName();
         String originMimeType = inputFile.getContentType();
-        String convertedFileName = FilenameUtils.getBaseName(inputFile.getName()) + "." + converterService.getExtension(returnedMimeType);
-        String convertedFileUUID = null;
+        String convertedFileName = FilenameUtils.getBaseName(inputFile.getName()) + "." + converterService.getExtension(
+                returnedMimeType);
+        JCRNodeWrapper convertedFilesNode = session.getNode("/users/" + renderContext.getUser().getName() + "/files");
+        JCRNodeWrapper convertedFileNode;
         if (conversionSucceeded) {
-            JCRNodeWrapper convertedFilesNode = session.getNode("/users/" + renderContext.getUser().getName() + "/files");
             FileInputStream iStream = new FileInputStream(convertedFile);
-
-            JCRNodeWrapper convertedFileNode = convertedFilesNode.uploadFile(convertedFileName, iStream, returnedMimeType);
-            convertedFileUUID = convertedFileNode.getIdentifier();
-            conversionNode.setProperty("convertedDocFile", convertedFileUUID);
+            convertedFileNode = convertedFilesNode.uploadFile(convertedFileName, iStream, returnedMimeType);
+            convertedFileNode.addMixin("jmix:convertedFile");
             iStream.close();
         } else {
-           conversionNode.setProperty("conversionFailureMessage", failureMessage);
+            convertedFileNode = convertedFilesNode.uploadFile(convertedFileName, inputFile.getInputStream(), inputFile.getContentType());
+            convertedFileNode.addMixin("jmix:convertedFile");
+            convertedFileNode.setProperty("conversionFailedMessage", failureMessage);
         }
 
-        conversionNode.setProperty("originDocName", originFileName);
-        conversionNode.setProperty("originDocFormat", originMimeType);
-        conversionNode.setProperty("convertedDocName", convertedFileName);
-        conversionNode.setProperty("convertedDocFormat", returnedMimeType);
-        conversionNode.setProperty("conversionSucceeded", conversionSucceeded);
+        convertedFileNode.setProperty("originDocName", originFileName);
+        convertedFileNode.setProperty("originDocFormat", originMimeType);
+        convertedFileNode.setProperty("convertedDocName", convertedFileName);
+        convertedFileNode.setProperty("convertedDocFormat", returnedMimeType);
+        convertedFileNode.setProperty("conversionSucceeded", conversionSucceeded);
 
         session.save();
 
@@ -116,9 +114,7 @@ public class DocumentConverterAction implements Action {
     }
 
 
-    
-
-  /**
+    /**
      * @param converterService the converterService to set
      */
     public void setConverterService(DocumentConverterService converterService) {

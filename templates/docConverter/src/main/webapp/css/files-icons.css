@@ -30,7 +30,7 @@
 #bodywrapper span.pdf6464 {
     background: url(../img/files/pdf6464.png ) no-repeat top left;
 }
-#bodywrapper span.sound6464, #bodywrapper a.wav6464 {
+#bodywrapper span.sound6464, #bodywrapper a.wav6464, #bodywrapper span.mp36464, #bodywrapper span.mpeg6464, #bodywrapper span.mpg6464 {
     background: url(../img/files/sound6464.png ) no-repeat top left;
 }
 #bodywrapper span.txt6464 {
@@ -42,7 +42,7 @@
 #bodywrapper span.txt {
     background: url(../img/files/txt6464.png ) no-repeat top left;
 }
-#bodywrapper span.zip6464, #bodywrapper a.sit6464, #bodywrapper span.rar6464,  #bodywrapper span.tar6464, #bodywrapper span.gz6464  {
+#bodywrapper span.zip6464, #bodywrapper a.sit6464, #bodywrapper span.rar6464,  #bodywrapper span.tar6464, #bodywrapper span.gz6464, #bodywrapper span.jar6464  {
     background: url(../img/files/archive6464.png ) no-repeat top left;
 }
 

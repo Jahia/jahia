@@ -36,6 +36,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.BasicSessionState;
 import org.jahia.params.ParamBean;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.version.EntryLoadRequest;
@@ -94,6 +95,7 @@ public class TestServlet  extends HttpServlet {
             ctx.setEntryLoadRequest(new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, ctx.getLocales()));
 
             JahiaUser admin = JahiaAdminUser.getAdminUser(0);
+            JCRSessionFactory.getInstance().setCurrentUser(admin);
             ctx.setTheUser(admin);
         } catch (JahiaException e) {
             logger.error("Error getting user", e);

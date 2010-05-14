@@ -63,11 +63,11 @@
 #bodywrapper p.newsInfo {
     font-size: 90%;
     margin: 0.5em 0;
-    padding: 0.2em;
+    padding: 0.5em;
     line-height: 1em;
     font-weight: bold;
-    border-bottom: 1px solid #ccc;
-    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #EAEAEA;
+    border-top: 1px solid #EAEAEA;
 }
 
 #bodywrapper .newsImg {
@@ -168,6 +168,7 @@
 #bodywrapper .newsListItem {
     border-bottom: 1px solid #eaeaea;
     margin-bottom: 1em;
+	padding-bottom: 1em;
     clear: both;
     width: 100%;
     position: relative;

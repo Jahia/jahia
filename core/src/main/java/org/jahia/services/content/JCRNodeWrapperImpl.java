@@ -2372,20 +2372,21 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         final Locale locale = jcrSessionWrapper.getLocale();
         try {
             if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName())) {
-                final boolean translated = objectNode.hasNode("j:translation");
+// todo : need to find more consistent way to check i18n validity
+//                final boolean translated = objectNode.hasNode("j:translation");
                 if (locale != null) {
-                    if (jcrSessionWrapper.getFallbackLocale() == null && translated) {
-                        getI18N(locale, false);
-                    }
-                    if (translated) {
-                        if (getI18N(locale).hasProperty("j:published") && !getI18N(locale).getProperty("j:published").getBoolean()) {
-                            return false;
-                        }
-                    } else {
+//                    if (jcrSessionWrapper.getFallbackLocale() == null && translated) {
+//                        getI18N(locale, false);
+//                    }
+//                    if (translated) {
+//                        if (getI18N(locale).hasProperty("j:published") && !getI18N(locale).getProperty("j:published").getBoolean()) {
+//                            return false;
+//                        }
+//                    } else {
                         if (objectNode.hasProperty("j:published") && !objectNode.getProperty("j:published").getBoolean()) {
                             return false;
                         }
-                    }
+//                    }
                 }
             }
         } catch (RepositoryException e) {

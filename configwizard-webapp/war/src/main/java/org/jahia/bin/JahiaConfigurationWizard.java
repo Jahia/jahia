@@ -48,6 +48,8 @@ import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1336,9 +1338,12 @@ public class JahiaConfigurationWizard extends HttpServlet {
             // close the connection with the database connection admin manager...
             db.databaseClose();
             String dbUrl = (String)values.get("database_url");
-            if  (dbUrl.startsWith("jdbc:hsqldb:file:") && dbUrl.indexOf("WEB-INF") != -1) {
-                db.getConnection().createStatement().execute("SHUTDOWN");
-                // default embedded hsql
+            if  (dbUrl.startsWith("jdbc:derby:directory:") && dbUrl.indexOf("WEB-INF") != -1) {
+                try {
+                    DriverManager.getConnection(dbUrl + ";shutdown=true");
+                } catch (SQLException e) {
+                    // Derby issues SQLException on shutdown
+                }
                 int lastSlashIndex = dbUrl.lastIndexOf(System.getProperty("file.separator"));
                 String path = dbUrl.substring(dbUrl.indexOf("WEB-INF"), lastSlashIndex != -1 ? lastSlashIndex : dbUrl.length());
                 FileUtils.copyDirectory(new File(context.getRealPath(path)), new File(context.getRealPath("WEB-INF/jahia/" + path)));
@@ -1413,9 +1418,9 @@ public class JahiaConfigurationWizard extends HttpServlet {
 
             if (serverInfo.contains(SERVER_TOMCAT)) {
                 String fullDestinationPath = (String) values.get("server_home")+"webapps"+System.getProperty("file.separator")+deployToDir;
-                if  (dbUrl.startsWith("jdbc:hsqldb:file:") && dbUrl.indexOf("WEB-INF") != -1) {
+                if  (dbUrl.startsWith("jdbc:derby:directory:") && dbUrl.indexOf("WEB-INF") != -1) {
                     String path = dbUrl.substring(dbUrl.indexOf("WEB-INF"));
-                    values.put("database_url", "jdbc:hsqldb:file:"
+                    values.put("database_url", "jdbc:derby:directory:"
                             + fullDestinationPath
                             + (fullDestinationPath.endsWith("/")
                                     || fullDestinationPath.endsWith("\\") ? ""
@@ -1439,9 +1444,9 @@ public class JahiaConfigurationWizard extends HttpServlet {
                 logger.info("Moved "+ oldDir.getCanonicalFile()+ " to "+newDir + " in " + (System.currentTimeMillis() - startTime) + " ms");
             } else if (serverInfo.contains(SERVER_JBOSS)) {
                 String fullDestinationPath = (String) values.get("server_home")+"deploy"+System.getProperty("file.separator")+deployToDir;
-                if  (dbUrl.startsWith("jdbc:hsqldb:file:") && dbUrl.indexOf("WEB-INF") != -1) {
+                if  (dbUrl.startsWith("jdbc:derby:directory:") && dbUrl.indexOf("WEB-INF") != -1) {
                     String path = dbUrl.substring(dbUrl.indexOf("WEB-INF"));
-                    values.put("database_url", "jdbc:hsqldb:file:"
+                    values.put("database_url", "jdbc:derby:directory:"
                             + fullDestinationPath
                             + (fullDestinationPath.endsWith("/")
                                     || fullDestinationPath.endsWith("\\") ? ""

@@ -86,7 +86,7 @@ mail_maxRegroupingOfPreviousException                  = 500
 # but rather through container-managed datasource connection. In Tomcat 
 # these can be found in the following file:
 # <jahia-web-app-dir>/META-INF/context.xml
-db_script                                              =   hypersonic.script
+db_script                                              =   derby_embedded.script
 # The following setting is used to limit the number of in values passed
 # in SELECT * FROM XXX WHERE XXXX IN (VALUE_LIST) because some databases
 # have limitations. Normally you shouldn't need to modify this parameter.

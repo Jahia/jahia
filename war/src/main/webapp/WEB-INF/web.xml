@@ -331,10 +331,6 @@
     </listener>
     
     <listener>
-        <listener-class>org.jahia.bin.HypersonicLauncherListener</listener-class>
-    </listener>
-
-    <listener>
         <listener-class>org.jahia.bin.listeners.JahiaContextLoaderListener</listener-class>
     </listener>
 

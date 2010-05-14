@@ -2,7 +2,7 @@
 
 jahia.database.name     =  Sun JavaDB / Apache Derby database engine (embedded)
 jahia.database.driver   =  org.apache.derby.jdbc.EmbeddedDriver
-jahia.database.url      =  jdbc:derby:jahia;create=true
+jahia.database.url      =  jdbc:derby:directory:$context/WEB-INF/var/dbdata/jahia;create=true
 jahia.database.user     =
 jahia.database.pass     =
 jahia.database.transactions = false
@@ -14,8 +14,8 @@ jahia.nested_transaction_allowed = false
 jahia.quartz.selectWithLockSQL = SELECT * FROM {0}LOCKS WHERE LOCK_NAME = ?
 jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 jahia.quartz.serializable = false
-jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.db.SimpleDbPersistenceManager
-jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
+jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.DerbyPersistenceManager
+jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DerbyFileSystem
 jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.DatabaseJournal
 jahia.jackrabbit.schema = default
 jahia.jboss.datasource.typeMapping = Derby

@@ -119,20 +119,14 @@
             <version>${driver.postgresql.version}</version>
 
         </dependency>
-        <!--Hypersonic dependencies -->
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${driver.hsqldb.version}</version>
 
-        </dependency>
         <!-- Microsoft SQL Server 2005 -->
         <dependency>
             <groupId>microsoft</groupId>
             <artifactId>sqljdbc</artifactId>
             <version>${driver.mssql.version}</version>
-
         </dependency>
+        
         <!-- Oracle Db Server -->
         <dependency>
             <groupId>com.oracle</groupId>
@@ -145,17 +139,28 @@
             <version>${driver.oracle.version}</version>
         </dependency>
 
+        <!-- Derby -->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>${driver.derby.version}</version>
+        </dependency>
+        <dependency>
+           <groupId>org.apache.derby</groupId>
+           <artifactId>derby</artifactId>
+           <version>${driver.derby.version}</version>
+        </dependency>        
+            
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
             <version>1.9.7</version>
-
         </dependency>
 
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>2.0.0</version>
+            <version>2.0.3</version>
             <scope>provided</scope>
         </dependency>
 

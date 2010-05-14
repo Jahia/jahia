@@ -532,12 +532,6 @@
         </dependency>
 
         <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${driver.hsqldb.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
             <version>1.9.14</version>
@@ -1075,6 +1069,12 @@
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-db</artifactId>
             <version>${jbpm.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>hsqldb</groupId>
+                    <artifactId>hsqldb</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>

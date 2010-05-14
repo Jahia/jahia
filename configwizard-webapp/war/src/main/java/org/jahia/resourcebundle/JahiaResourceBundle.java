@@ -46,9 +46,8 @@ import java.util.ResourceBundle;
 public class JahiaResourceBundle
 {
 
-    public static final String ENGINE_DEFAULT_RESOURCE_BUNDLE = "JahiaEnginesResources";
     public static final String ADMIN_DEFAULT_RESOURCE_BUNDLE = "JahiaAdministrationResources";
-    public static final String MESSAGE_DEFAULT_RESOURCE_BUNDLE = "JahiaMessageResources";
+    public static final String MESSAGE_DEFAULT_RESOURCE_BUNDLE = "JahiaInternalResources";
 
 
 

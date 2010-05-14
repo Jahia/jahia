@@ -91,9 +91,9 @@ public class ActionTest extends TestCase {
         JCRNodeWrapper target = node.addNode("target", "jnt:page");
 
         JCRNodeWrapper rp = node.addNode("rp", "jnt:remotePublication");
-        String baseurl = "http://localhost:8080" + Jahia.getContextPath() + "/cms/render";
+        String baseurl = "http://localhost:8080" + Jahia.getContextPath() + "/cms";
 
-        rp.setProperty("remoteUrl", baseurl + "/live/en");
+        rp.setProperty("remoteUrl", baseurl);
         rp.setProperty("node", source);
         rp.setProperty("remotePath", target.getPath());
         rp.setProperty("remoteUser", "root");
@@ -106,7 +106,7 @@ public class ActionTest extends TestCase {
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);
 
-        final URL url = new URL(baseurl + "/default/en" + rp.getPath() + ".remotepublish.do");
+        final URL url = new URL(baseurl + "/render/default/en" + rp.getPath() + ".remotepublish.do");
 
         Credentials defaultcreds = new UsernamePasswordCredentials("root", "root1234");
         client.getState().setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);

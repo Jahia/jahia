@@ -592,7 +592,7 @@ public class JCRPublicationService extends JahiaService {
                         try {
                             destinationSession.getNode(destinationParentPath + "/" + currentNode.getName());
                             destinationParent.orderBefore(sourceNode.getName(), currentNode.getName());
-                            destinationParent.getRealNode().getSession().save();
+                            destinationParent.getSession().save();
                             break;
                         } catch (PathNotFoundException e1) {
 

@@ -18,6 +18,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="960.css"/>
+<template:addResources type="css" resources="bookmarks.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addWrapper name="wrapper.dashboard"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
@@ -36,17 +37,20 @@
         </c:otherwise>
     </c:choose>
     <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
-    <ul id="${currentNode.UUID}">
+    <ul class="userMyBookmarksList" id="${currentNode.UUID}">
         <c:forEach items="${currentList}" var="bookmark" varStatus="status" begin="${begin}" end="${end}">
 
             <li>
                 <jcr:nodeProperty node="${bookmark}" name="jcr:title" var="title"/>
                 <jcr:node var="myNode" path="${bookmark.path}"/>
-                <a href="${bookmark.properties['url'].string}">${bookmark.properties['jcr:title'].string}</a>
+                <a class="userMyBookmarksListIcon" href="${bookmark.properties['url'].string}">${bookmark.properties['jcr:title'].string}</a>
                 &nbsp;<span>&nbsp;<fmt:formatDate
                     value="${bookmark.properties['date'].date.time}" dateStyle="short" type="both"/></span>
-               <button onclick="deleteNode('${bookmark.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
+               <div class="floatright">
+               &nbsp;<button onclick="deleteNode('${bookmark.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
                     <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
+               </div>
+               <div class="clear"></div>
             </li>
         </c:forEach>
     </ul>

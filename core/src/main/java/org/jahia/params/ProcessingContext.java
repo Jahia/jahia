@@ -451,15 +451,6 @@ public class ProcessingContext {
     }
 
     /**
-     * constructor EV 03.11.2000 EV 04.11.2000 now request object in parameters EV 05.11.2000 invalid page passed from critical to error EV
-     * 20.11.2000 okay, everything changed... old framework, get a life
-     */
-    public ProcessingContext(final long aStartTime) throws JahiaException {
-        this(aStartTime, null);
-
-    } // end constructor
-
-    /**
      * Set the engine name if it was specified in request.
      */
     protected void setEngineNameIfAvailable() {

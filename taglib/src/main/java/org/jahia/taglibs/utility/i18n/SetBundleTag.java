@@ -34,6 +34,7 @@ package org.jahia.taglibs.utility.i18n;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -76,11 +77,11 @@ public class SetBundleTag extends TagSupport {
     public int doStartTag() throws JspException {
         // Position localisationContext
         if (basename != null && !"".equals(basename)) {
-            ProcessingContext context = null;
+            RenderContext context = null;
             Locale locale = null;
             try {
-                context = Utils.getProcessingContext(pageContext, true);
-                locale = context != null ? (useUiLocale ? context.getUILocale() : context.getLocale()) : pageContext.getRequest().getLocale();
+                context = Utils.getRenderContext(pageContext);
+                locale = context != null ? (useUiLocale ? context.getUILocale() : context.getMainResourceLocale()) : pageContext.getRequest().getLocale();
             } catch (Exception e) {
                 logger.debug(e.getMessage(), e);
                 locale = pageContext.getRequest().getLocale();

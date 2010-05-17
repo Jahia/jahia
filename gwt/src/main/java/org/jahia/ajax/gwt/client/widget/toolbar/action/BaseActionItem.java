@@ -31,23 +31,22 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 
 import java.util.Map;
 
@@ -256,20 +255,6 @@ public abstract class BaseActionItem implements ActionItem {
      */
     public Component createNewToolItem() {
         return new Button();
-    }
-
-
-    /**
-     * Gwt GWT JahiaPage
-     *
-     * @return
-     */
-    protected GWTJahiaPageContext getJahiaGWTPageContext() {
-        // init panel
-        GWTJahiaPageContext page = new GWTJahiaPageContext(URL.getRelativeURL());
-        page.setPid(JahiaGWTParameters.getPID());
-        page.setMode(JahiaGWTParameters.getOperationMode());
-        return page;
     }
 
 

@@ -32,7 +32,6 @@
 package org.jahia.services.content.textextraction;
 
 import org.apache.log4j.Logger;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.rules.ExtractionService;
@@ -54,7 +53,7 @@ public class TextExtractorJob extends BackgroundJob {
 
     private static Logger logger = Logger.getLogger(TextExtractorJob.class);
     
-    public void executeJahiaJob(JobExecutionContext jobExecutionContext, ProcessingContext processingContext) throws Exception {
+    public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();
         String path = (String) data.get(PATH);
         String providerPath = (String) data.get(PROVIDER);
@@ -68,7 +67,7 @@ public class TextExtractorJob extends BackgroundJob {
             logger.info("Start text extraction job for node " + path);
         }
 
-        ExtractionService.getInstance().extractText(provider, path, extractNodePath, processingContext);
+        ExtractionService.getInstance().extractText(provider, path, extractNodePath);
 
         logger.info("... finished text extraction job for node " + path);
     }

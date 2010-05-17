@@ -75,7 +75,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      */
     public GWTJahiaAjaxActionResult execute(Map<String, GWTJahiaProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
         // ToDO : remove JahiaData
-        return uiConfigHelper.execute(retrieveJahiaData(),gwtPropertiesMap);
+        return uiConfigHelper.execute(gwtPropertiesMap);
     }
 
 

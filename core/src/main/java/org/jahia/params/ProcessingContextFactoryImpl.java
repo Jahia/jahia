@@ -70,29 +70,6 @@ public class ProcessingContextFactoryImpl implements ProcessingContextFactory {
         return paramBean;
     }
 
-    public ParamBean getContext(final HttpServletRequest request,
-                                final HttpServletResponse response,
-                                final ServletContext servletContext,
-                                final String extraURLParams)
-            throws JahiaException, JahiaSiteNotFoundException, JahiaPageNotFoundException {
-        final URLGenerator urlGenerator = new ServletURLGeneratorImpl(request, response);
-        final long startTime = System.currentTimeMillis();
-        // get the main http method...
-        final String requestMethod = request.getMethod();
-        int intRequestMethod = 0;
-
-        if (requestMethod.equals("GET")) {
-            intRequestMethod = ProcessingContext.GET_METHOD;
-        } else if (requestMethod.equals("POST")) {
-            intRequestMethod = ProcessingContext.POST_METHOD;
-        }
-        final ParamBean paramBean = new ParamBean(request, response, servletContext,
-                org.jahia.settings.SettingsBean.getInstance(), startTime,
-                intRequestMethod, extraURLParams);
-        paramBean.setUrlGenerator(urlGenerator);
-        return paramBean;
-    }
-
     public ProcessingContext getContext(SessionState sessionState) {
         if (sessionState == null) {
             // todo Generate a new session ID in a meaningful way.

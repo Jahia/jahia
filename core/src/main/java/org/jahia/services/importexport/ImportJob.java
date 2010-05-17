@@ -35,11 +35,11 @@ import org.apache.commons.io.IOUtils;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.sites.JahiaSite;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -68,7 +68,7 @@ public class ImportJob extends BackgroundJob {
 
     public static final String COPY_TO_JCR = "copyToJCR";
 
-    public void executeJahiaJob(JobExecutionContext jobExecutionContext, ProcessingContext context) throws Exception {
+    public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
@@ -78,6 +78,8 @@ public class ImportJob extends BackgroundJob {
         if (key != null) {
             target = ContentObject.getContentObjectInstance(ObjectKey.getInstance(key));
         }
+
+        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) jobDataMap.get(JOB_SITEKEY));
 
         String uri = (String) jobDataMap.get(URI);
         JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
@@ -92,7 +94,7 @@ public class ImportJob extends BackgroundJob {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             IOUtils.copy(f.getFileContent().downloadFile(), fileOutputStream);
             fileOutputStream.close();
-            ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, actions, result, context.getSite());
+            ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, actions, result, site);
 
 //            if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END))) {
 //                if (result.getErrors().isEmpty()) {

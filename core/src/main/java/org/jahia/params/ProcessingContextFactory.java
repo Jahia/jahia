@@ -60,20 +60,6 @@ public interface ProcessingContextFactory {
                                 ServletContext servletContext)
             throws JahiaException, JahiaSiteNotFoundException, JahiaPageNotFoundException;
 
-    /**
-     * Get a processing context for a servlet request context. This will usually construct
-     * a usual ParamBean object.
-     * @param request
-     * @param response
-     * @param servletContext
-     * @param extraURLParams This String will be appended to the PathInfo when constructing the ParamBean
-     */
-    public ParamBean getContext(HttpServletRequest request,
-                                HttpServletResponse response,
-                                ServletContext servletContext,
-                                String extraURLParams)
-            throws JahiaException, JahiaSiteNotFoundException, JahiaPageNotFoundException;
-
 
     /**
      * Get a processing context for a non-servlet context. This is mostly used by test cases

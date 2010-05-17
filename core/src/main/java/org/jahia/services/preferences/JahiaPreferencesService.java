@@ -41,6 +41,7 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.generic.GenericJahiaPreference;
 import org.jahia.services.preferences.impl.JahiaPreferencesJCRProviders;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
 import java.security.Principal;
@@ -261,23 +262,23 @@ public class JahiaPreferencesService extends JahiaService {
      *
      * @param prefName  the key
      * @param prefValue the value
-     * @param jParams   the processing context
+     * @param user
      */
-    public void setGenericPreferenceValue(String prefName, String prefValue, ProcessingContext jParams) {
+    public void setGenericPreferenceValue(String prefName, String prefValue, final JahiaUser user) {
         try {
-            if (jParams.getUser().getUsername().equals("guest")) {
+            if (user.getUsername().equals("guest")) {
                 return;
             }
             JahiaPreferencesProvider<GenericJahiaPreference> basicProvider = getGenericPreferencesProvider();
 
             // create generic preference key
-            JahiaPreference<GenericJahiaPreference> preference = basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesQueryHelper.getSimpleSQL(prefName));
+            JahiaPreference<GenericJahiaPreference> preference = basicProvider.getJahiaPreference(user, JahiaPreferencesQueryHelper.getSimpleSQL(prefName));
             if (preference == null) {
                 if(prefValue == null){
                     return;
                 }
 
-                preference = basicProvider.createJahiaPreferenceNode(jParams);
+                preference = basicProvider.createJahiaPreferenceNode(user);
                 preference.getNode().setPrefName(prefName);
             }else{
                 // delete preference

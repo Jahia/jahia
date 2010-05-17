@@ -52,6 +52,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.util.*;
 import java.math.BigDecimal;
@@ -386,7 +387,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return the absolute webdav url
      */
-    String getAbsoluteWebdavUrl(ParamBean jParams);
+    String getAbsoluteWebdavUrl(final HttpServletRequest request);
 
     /**
      * Get the webdav url

@@ -195,11 +195,9 @@ public class ExtractionService {
      * @param provider the JCR store provider
      * @param sourcePath the path to the file node
      * @param extractionNodePath the optional path to the node receiving the extracted text
-     * @param context the Jahia processing context
      * @throws IOException
      */
-    public void extractText(final JCRStoreProvider provider, final String sourcePath, final String extractionNodePath,
-            final ProcessingContext context) throws IOException {
+    public void extractText(final JCRStoreProvider provider, final String sourcePath, final String extractionNodePath) throws IOException {
 
         if (!textExtractionService.isEnabled()) {
             return;

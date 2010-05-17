@@ -394,7 +394,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         }
                     }
 
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Initial import for site "+site.getSiteKey(), ImportJob.class, jParams);
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Initial import for site "+site.getSiteKey(), ImportJob.class);
                     JobDataMap jobDataMap;
                     jobDataMap = jobDetail.getJobDataMap();
 
@@ -420,6 +420,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         }
                         jobDataMap.put(ImportJob.FILENAME, initialZipName);
                     }
+                    jobDataMap.put(ImportJob.JOB_SITEKEY, site.getSiteKey());
                     jobDataMap.put(ImportJob.CONTENT_TYPE, "application/zip");
                     jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, site.getID());
                     jobDataMap.put(BackgroundJob.JOB_TYPE,ImportJob.IMPORT_TYPE);

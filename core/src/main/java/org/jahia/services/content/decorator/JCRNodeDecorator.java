@@ -31,7 +31,6 @@
  */
 package org.jahia.services.content.decorator;
 
-import org.jahia.params.ParamBean;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -47,6 +46,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.util.*;
 import java.math.BigDecimal;
@@ -135,8 +135,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getUrl();
     }
 
-    public String getAbsoluteWebdavUrl(ParamBean jParams) {
-        return node.getAbsoluteWebdavUrl(jParams);
+    public String getAbsoluteWebdavUrl(final HttpServletRequest request) {
+        return node.getAbsoluteWebdavUrl(request);
     }
 
     public String getWebdavUrl() {

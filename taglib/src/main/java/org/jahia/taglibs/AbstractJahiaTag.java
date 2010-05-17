@@ -36,19 +36,17 @@ import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
-import org.jahia.data.beans.JahiaBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.utils.i18n.ResourceBundleMarker;
-import org.jahia.taglibs.utility.Utils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.render.URLGenerator;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -211,38 +209,6 @@ public class AbstractJahiaTag extends BodyTagSupport {
                             .getSite().getTemplatePackageName());
         }
         return bundle;
-    }
-
-    /**
-     * Returns an {@link JahiaBean} instance with current Jahia data.
-     *
-     * @return an {@link JahiaBean} instance with current Jahia data
-     */
-    /*
-    protected JahiaBean getJahiaBean() {
-        return getJahiaBean(true);
-    }
-    */
-
-    /**
-     * Returns an {@link JahiaBean} instance with current Jahia data.
-     *
-     * @param createIfNotFound will create the bean if it is not found
-     * @return an {@link JahiaBean} instance with current Jahia data
-     */
-    /*
-    protected JahiaBean getJahiaBean(boolean createIfNotFound) {
-        return Utils.getJahiaBean(pageContext, createIfNotFound);
-    }
-    */
-
-    /**
-     * Returns current {@link ProcessingContext} instance.
-     *
-     * @return current {@link ProcessingContext} instance
-     */
-    protected ProcessingContext getProcessingContext() {
-        return Utils.getProcessingContext(pageContext);
     }
 
     /**

@@ -37,12 +37,10 @@ import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
-import org.jahia.content.ContentObject;
 import org.jahia.content.NodeOperationResult;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
 import org.jahia.engines.EngineMessage;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.ProcessAction;
@@ -62,7 +60,7 @@ import org.quartz.JobDetail;
 public class ProcessDisplayHelper {
     private static transient final Logger logger = Logger.getLogger(ProcessDisplayHelper.class);
 
-    public static GWTJahiaProcessJob getGWTJahiaProcessJob(JobDetail currentJobDetail, ProcessingContext jParams) {
+    public static GWTJahiaProcessJob getGWTJahiaProcessJob(JobDetail currentJobDetail, final Locale locale) {
         GWTJahiaProcessJob gwtProcessJob = new GWTJahiaProcessJob();
         JobDataMap currentJobDataMap = currentJobDetail.getJobDataMap();
         String currentJobStatus = currentJobDataMap.getString(BackgroundJob.JOB_STATUS);
@@ -78,11 +76,11 @@ public class ProcessDisplayHelper {
             int jobPid = Integer.parseInt(currentJobPid);
             gwtProcessJob.setJobPid(currentJobPid);
             String pageUrl = "";
-            try {
-                pageUrl = jParams.composePageUrl(jobPid, currentJobLocale);
-            } catch (JahiaException e) {
-                logger.debug("Can't compose page url [pid:" + jobPid + "]", e);
-            }
+//            try {
+//                pageUrl = jParams.composePageUrl(jobPid, currentJobLocale);
+//            } catch (JahiaException e) {
+//                logger.debug("Can't compose page url [pid:" + jobPid + "]", e);
+//            }
             gwtProcessJob.setAbsolutePageUrl(pageUrl);
         }
 
@@ -124,12 +122,12 @@ public class ProcessDisplayHelper {
         String currentJobBegin = currentJobDataMap.getString(BackgroundJob.JOB_BEGIN);
         logger.debug("job begin at: " + currentJobBegin);
         gwtProcessJob.setJobBeginComparable(currentJobBegin);
-        gwtProcessJob.setJobBegin(prettyPrintDate(jParams.getLocale(), currentJobBegin));
+        gwtProcessJob.setJobBegin(prettyPrintDate(locale, currentJobBegin));
 
         // job: created
         String currentJobCreated = currentJobDataMap.getString(BackgroundJob.JOB_CREATED);
         gwtProcessJob.setJobCreatedComparable(currentJobCreated);
-        gwtProcessJob.setJobCreated(prettyPrintDate(jParams.getLocale(), currentJobCreated));
+        gwtProcessJob.setJobCreated(prettyPrintDate(locale, currentJobCreated));
 
         // job: duration
         String currentJobDuration = currentJobDataMap.getString(BackgroundJob.JOB_DURATION);
@@ -138,7 +136,7 @@ public class ProcessDisplayHelper {
         //job: end
         String currentJobEnd = currentJobDataMap.getString(BackgroundJob.JOB_END);
         gwtProcessJob.setJobEndComparable(currentJobEnd);
-        gwtProcessJob.setJobEnd(prettyPrintDate(jParams.getLocale(), currentJobEnd));
+        gwtProcessJob.setJobEnd(prettyPrintDate(locale, currentJobEnd));
 
         //job: site key
         String currentJobSiteKey = currentJobDataMap.getString(BackgroundJob.JOB_SITEKEY);
@@ -191,7 +189,7 @@ public class ProcessDisplayHelper {
                 if (!displayTitles.containsKey(objectKey.getKey())) {
                     String title = null;
                     try {
-                        title = ContentObject.getInstance(objectKey).getDisplayName(jParams);
+//                        title = ContentObject.getInstance(objectKey).getDisplayName(jParams);
                     } catch (Exception e) {}
                     if (title == null || title.length() == 0) {
                         title = objectKey.getKey();
@@ -209,8 +207,8 @@ public class ProcessDisplayHelper {
 
         Map<String, Map<String, GWTJahiaNodeOperationResult>> logs = new HashMap<String, Map<String, GWTJahiaNodeOperationResult>>();
         if (currentJobLogTOR != null) {
-            processLogs(currentJobLogTOR.getWarnings(), GWTJahiaNodeOperationResultItem.WARNING, logs, jParams);
-            processLogs(currentJobLogTOR.getErrors(), GWTJahiaNodeOperationResultItem.ERROR, logs, jParams);
+            processLogs(currentJobLogTOR.getWarnings(), GWTJahiaNodeOperationResultItem.WARNING, logs, locale);
+            processLogs(currentJobLogTOR.getErrors(), GWTJahiaNodeOperationResultItem.ERROR, logs, locale);
             gwtProcessJob.setStatus(currentJobLogTOR.getStatus());
             gwtProcessJob.setLogSize(currentJobLogTOR.getWarnings().size() + currentJobLogTOR.getErrors().size());
         }
@@ -223,7 +221,8 @@ public class ProcessDisplayHelper {
         return gwtProcessJob;
     }
 
-    private static void processLogs(List errList, int type, Map<String, Map<String, GWTJahiaNodeOperationResult>> logs, ProcessingContext jParams) {
+    private static void processLogs(List errList, int type, Map<String, Map<String, GWTJahiaNodeOperationResult>> logs,
+                                    final Locale locale) {
         if (errList != null) {
             for (Object o : errList) {
                 try {
@@ -241,12 +240,13 @@ public class ProcessDisplayHelper {
                         }
                         GWTJahiaNodeOperationResult logsForObjectAndLang = logsForObject.get(lang);
                         EngineMessage currentEngineMessage = nodeOperationResult.getMsg();
-                        String localeKeyValue = currentEngineMessage.isResource() ? getLocaleJahiaEnginesResource(jParams.getLocale(), currentEngineMessage.getKey()) : currentEngineMessage.getKey();
+                        String localeKeyValue = currentEngineMessage.isResource() ? getLocaleJahiaEnginesResource(
+                                locale, currentEngineMessage.getKey()) : currentEngineMessage.getKey();
                         String message = null;
                         if (localeKeyValue != null) {
                             if (currentEngineMessage.getValues() != null) {
                                 MessageFormat msgFormat = new MessageFormat(localeKeyValue);
-                                msgFormat.setLocale(jParams.getLocale());
+                                msgFormat.setLocale(locale);
                                 message = msgFormat.format(currentEngineMessage.getValues());
                             } else {
                                 message = localeKeyValue;

@@ -45,10 +45,9 @@ import java.util.Map;
 public abstract class AjaxAction {
     /**
      * Execute ajax action
-     * @param jahiaData
      * @param action
      * @param gwtPropertiesMap
      * @return
      */
-    public abstract GWTJahiaAjaxActionResult execute(JahiaData jahiaData,String action, Map<String, GWTJahiaProperty> gwtPropertiesMap);
+    public abstract GWTJahiaAjaxActionResult execute(String action, Map<String, GWTJahiaProperty> gwtPropertiesMap);
 }

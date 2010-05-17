@@ -787,7 +787,15 @@ public class JCRPublicationService extends JahiaService {
         JCRSessionWrapper liveSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
         PublicationInfo info = new PublicationInfo();
 
-        JCRNodeWrapper stageNode = session.getNodeByUUID(uuid);
+        JCRNodeWrapper stageNode = null;
+        try {
+            stageNode = session.getNodeByUUID(uuid);
+        } catch (ItemNotFoundException e) {
+            stageNode = liveSession.getNodeByUUID(uuid);
+            info.setPath(stageNode.getPath());
+            info.setStatus(PublicationInfo.LIVE_ONLY);
+            return info;
+        }
         info.setPath(stageNode.getPath());
         JCRNodeWrapper publishedNode = null;
         try {

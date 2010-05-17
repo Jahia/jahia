@@ -34,24 +34,14 @@
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
-import org.jahia.params.BasicURLGeneratorImpl;
-import org.jahia.params.ProcessingContext;
-import org.jahia.params.URLGenerator;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
 import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -98,7 +88,7 @@ public abstract class BackgroundJob implements StatefulJob {
     public static final String STATUS_ABORTED = "aborted";
     public static final String STATUS_INTERRUPTED = "interrupted";
 
-    public static JobDetail createJahiaJob(String desc, Class<? extends BackgroundJob> jobClass, ProcessingContext jParams) {
+    public static JobDetail createJahiaJob(String desc, Class<? extends BackgroundJob> jobClass) {
         long now = System.currentTimeMillis();
         // jobdetail is non-volatile,durable,non-recoverable
         JobDetail jobDetail = new JobDetail("BackgroundJob-" + idGen.nextIdentifier(),
@@ -110,19 +100,8 @@ public abstract class BackgroundJob implements StatefulJob {
         jobDetail.setDescription(desc);
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.putAsString(JOB_CREATED, now); //creation
-        jobDataMap.put(JOB_SITEKEY, jParams.getSiteKey());
-        jobDataMap.put(JOB_USERKEY, jParams.getUser().getUserKey());
-        jobDataMap.putAsString(JOB_PID, jParams.getPageID());
-        if ( jParams.getCurrentLocale() != null ){
-            jobDataMap.put(JOB_CURRENT_LOCALE, jParams.getCurrentLocale().toString());
-        } else {
-            jobDataMap.put(JOB_CURRENT_LOCALE,Locale.ENGLISH.toString());
-        }
-        jobDataMap.put(JOB_SCHEME, jParams.getScheme());
-        jobDataMap.put(JOB_SERVERNAME, jParams.getServerName());
-        jobDataMap.put(JOB_PARAMETER_MAP, jParams.getParameterMap());
-        jobDataMap.putAsString(JOB_SERVERPORT, jParams.getServerPort());
-        jobDataMap.put(JOB_OPMODE, jParams.getOperationMode());
+        jobDataMap.put(JOB_USERKEY, JCRSessionFactory.getInstance().getCurrentUser().getUserKey());
+
         jobDetail.setJobDataMap(jobDataMap);
         return jobDetail;
     }
@@ -140,13 +119,12 @@ public abstract class BackgroundJob implements StatefulJob {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap data = jobDetail.getJobDataMap();
         long now = System.currentTimeMillis();
-        updateAllLocks(jobDetail);
         logger.info("execute Background job " + jobDetail.getName() + "\n started @ " + new Date(now));
-        ProcessingContext context = null;
         String status = STATUS_FAILED;
         try {
-            context = getProcessingContextFromBackgroundJobDataMap(data);
-            executeJahiaJob(jobExecutionContext, context);
+            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY));
+            JCRSessionFactory.getInstance().setCurrentUser(user);
+            executeJahiaJob(jobExecutionContext);
             status = data.getString(BackgroundJob.JOB_STATUS);
             if ( !(BackgroundJob.STATUS_ABORTED.equals(status) ||
                     BackgroundJob.STATUS_FAILED.equals(status) ||
@@ -159,12 +137,6 @@ public abstract class BackgroundJob implements StatefulJob {
             throw new JobExecutionException(e);
         } finally {
 
-            try {
-                releaseAllLocks(context, jobDetail);
-            } catch (Exception e) {
-                logger.error("Cannot release locks",e);
-            }
-                                         
             ServicesRegistry.getInstance().getCacheService().syncClusterNow();
             JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
 
@@ -204,62 +176,21 @@ public abstract class BackgroundJob implements StatefulJob {
                 }
             }
             data.put(JOB_STATUS, status);
-            this.postExecution(jobExecutionContext, context);
+            this.postExecution(jobExecutionContext);
             JCRSessionFactory.getInstance().closeAllSessions();
         }
     }
 
-    private ProcessingContext getProcessingContextFromBackgroundJobDataMap(JobDataMap data) throws JahiaException {
-        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) data.get(JOB_SITEKEY));
-        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY));
-        // not all background job requires page
-        int pageId = Integer.parseInt((String) data.get(JOB_PID));
-        ContentPage page = null;
-        if ( pageId != -1 ){
-            try {
-                page = ContentPage.getPage(pageId);
-            } catch (JahiaException e) {
-                logger.warn("Page "+pageId + " does not exist anymore");
-            }
-        }
-
-        Locale locale = LanguageCodeConverters.languageCodeToLocale(data.getString(JOB_CURRENT_LOCALE));
-        EntryLoadRequest elr = new EntryLoadRequest(EntryLoadRequest.STAGED);
-        elr.setFirstLocale(locale.toString());
-        String opMode = data.getString(JOB_OPMODE);
-        if (opMode == null || opMode.length() == 0) {
-            opMode = ProcessingContext.NORMAL;
-        }
-        JCRSessionFactory.getInstance().setCurrentUser(user);
-        ProcessingContext context = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), site, user, page, elr, opMode);
-        final URLGenerator urlGenerator = new BasicURLGeneratorImpl();
-        context.setUrlGenerator(urlGenerator);
-        context.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE, locale);
-        context.setCurrentLocale(locale);
-        context.setScheme(data.getString(JOB_SCHEME));
-        context.setServerName(data.getString(JOB_SERVERNAME));
-        context.setServerPort(Integer.parseInt(data.getString(JOB_SERVERPORT)));
-        context.setContextPath(Jahia.getContextPath());
-        context.setParameterMap((Map) data.get(JOB_PARAMETER_MAP));
-        return context;
-    }
-
-    public abstract void executeJahiaJob(JobExecutionContext jobExecutionContext, ProcessingContext processingContext)
+    public abstract void executeJahiaJob(JobExecutionContext jobExecutionContext)
             throws Exception;
 
     /**
      * Sub class can perform specific post execution task hehe
      *
      * @param jobExecutionContext
-     * @param processingContext
      */
-    protected void postExecution(JobExecutionContext jobExecutionContext, ProcessingContext processingContext) {
+    protected void postExecution(JobExecutionContext jobExecutionContext) {
         // by default do nothing
     }
 
-    private void updateAllLocks(JobDetail jobDetail) {
-    }
-
-    private void releaseAllLocks(ProcessingContext processingContext, JobDetail jobDetail) {
-    }
 }

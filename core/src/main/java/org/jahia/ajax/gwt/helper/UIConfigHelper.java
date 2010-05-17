@@ -159,7 +159,7 @@ public class UIConfigHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaAjaxActionResult execute(JahiaData jData, Map<String, GWTJahiaProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
+    public GWTJahiaAjaxActionResult execute(Map<String, GWTJahiaProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
         final GWTJahiaProperty classActionProperty = gwtPropertiesMap.get(Constants.CLASS_ACTION);
         final GWTJahiaProperty actionProperty = gwtPropertiesMap.get(Constants.ACTION);
 
@@ -185,7 +185,7 @@ public class UIConfigHelper {
                         logger.debug("Execute [" + classActionValue + "," + actionValue + "]");
                     }
                     AjaxAction ajaxAction = (AjaxAction) getClassInstance(classActionValue);
-                    return ajaxAction.execute(jData, actionValue, gwtPropertiesMap);
+                    return ajaxAction.execute(actionValue, gwtPropertiesMap);
                 } catch (Exception e) {
                     logger.error(e, e);
                 }

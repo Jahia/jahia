@@ -348,7 +348,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public String getAbsolutePath(String path) throws GWTJahiaServiceException {
-        return navigation.getAbsolutePath(path, retrieveParamBean(), retrieveCurrentSession());
+        return navigation.getAbsolutePath(path, retrieveCurrentSession(), getRequest());
     }
 
     public void checkWriteable(List<String> paths) throws GWTJahiaServiceException {
@@ -899,11 +899,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public String getNodeURL(String path, String locale, int mode) throws GWTJahiaServiceException {
-        return this.template.getNodeURL(path, mode, retrieveParamBean().getRequest(), retrieveParamBean().getResponse(), retrieveCurrentSession());
+        return this.template.getNodeURL(path, mode, getRequest(), getResponse(), retrieveCurrentSession());
     }
 
     public String getNodeURL(String path, String version, String workspace, String locale, int mode) throws GWTJahiaServiceException {
-        return this.template.getNodeURL(path, version, mode, retrieveParamBean().getRequest(), retrieveParamBean().getResponse(), retrieveCurrentSession(workspace));
+        return this.template.getNodeURL(path, version, mode, getRequest(), getResponse(), retrieveCurrentSession(workspace));
     }
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {

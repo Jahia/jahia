@@ -36,7 +36,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
@@ -53,7 +52,6 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
-import org.jahia.services.pages.ContentPage;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
@@ -152,32 +150,15 @@ public class Service extends JahiaService {
                 ContentObject dest = ContentObject.getContentObjectInstance(ContentObjectKey.getInstance(destKey));
                 JahiaSite site = sitesService.getSite(dest.getSiteID());
 
-                Locale locale;
-                if (uri.endsWith(".zip")) {
-                    locale = site.getLanguagesAsLocales().iterator().next();
-                } else {
-                    locale = LanguageCodeConverters.languageCodeToLocale(st.nextToken().replace("-", "_"));
-                }
-
-                JahiaUser member = siteUserManager.getMember(
-                        site.getID(), user.getName());
-                ContentPage page = ContentPage.getPage(dest.getPageID());
-
-                ProcessingContext jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(),
-                        System.currentTimeMillis(), site, member, page);
-                jParams.setOperationMode(ProcessingContext.EDIT);
-                jParams.setCurrentLocale(locale);
-//                jParams.setServerName(m.getRequest().getServerName());
-//                jParams.setScheme(m.getRequest().getScheme());
-//                jParams.setServerPort(m.getRequest().getServerPort());
                 Class<ImportJob> jobClass = ImportJob.class;
 
-                JobDetail jobDetail = BackgroundJob.createJahiaJob("Import content to " + destKey, jobClass, jParams);
+                JobDetail jobDetail = BackgroundJob.createJahiaJob("Import content to " + destKey, jobClass);
 
                 JobDataMap jobDataMap;
                 jobDataMap = jobDetail.getJobDataMap();
 
                 jobDataMap.put(ImportJob.TARGET, destKey);
+                jobDataMap.put(ImportJob.JOB_SITEKEY, site.getSiteKey());
                 jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, site.getID());
                 jobDataMap.put(ImportJob.URI, uri);
                 if (uri.toLowerCase().endsWith(".zip")) {

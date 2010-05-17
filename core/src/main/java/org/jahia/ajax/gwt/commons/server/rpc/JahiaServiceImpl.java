@@ -70,18 +70,7 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
         GWTJahiaPortletOutputBean result = new GWTJahiaPortletOutputBean();
         try {
             int fieldId = Integer.parseInt(windowID);
-            ParamBean jParams = retrieveParamBean();
-            jParams.setQueryString(queryString);
-            jParams.setPathInfo(pathInfo);
-            jParams.setAttribute("org.jahia.data.JahiaData", new JahiaData(jParams));
-            jParams.setAttribute("currentRequest", new RequestBean(new GuiBean(jParams), jParams));
-            jParams.setAttribute("currentSite", new SiteBean(jParams.getSite(), jParams));
-            jParams.setAttribute("currentPage", new PageBean(jParams.getPage(), jParams));
-            jParams.setAttribute("currentUser", jParams.getUser());
-            jParams.setAttribute("currentJahia", new JahiaBean(jParams));
-            jParams.setAttribute("jahia", new JahiaBean(jParams));
-            jParams.setAttribute("fieldId", windowID);
-            String portletOutput = servicesRegistry.getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, jParams.getUser(), jParams.getRealRequest(), jParams.getResponse(), jParams.getContext());
+            String portletOutput = servicesRegistry.getApplicationsDispatchService().getAppOutput(fieldId, entryPointIDStr, getRemoteJahiaUser(), getRequest(), getResponse(), getServletContext());
             try {
                 JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(entryPointIDStr);
                 String nodeTypeName = node.getPrimaryNodeTypeName();
@@ -120,7 +109,8 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
 
     public GWTJahiaProcessJob getProcessJob(String name, String groupName) {
         try {
-            return ProcessDisplayHelper.getGWTJahiaProcessJob(ServicesRegistry.getInstance().getSchedulerService().getJobDetail(name, groupName), retrieveParamBean());
+            return ProcessDisplayHelper.getGWTJahiaProcessJob(ServicesRegistry.getInstance().getSchedulerService().getJobDetail(name, groupName),
+                    getLocale());
         } catch (JahiaException e) {
             logger.error("unable to get process job", e);
         }

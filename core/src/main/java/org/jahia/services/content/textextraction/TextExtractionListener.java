@@ -186,7 +186,7 @@ public class TextExtractionListener extends DefaultEventListener {
         }
 
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + fileNode.getName(),
-                TextExtractorJob.class, ctx);
+                TextExtractorJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put(TextExtractorJob.PROVIDER, fileNode.getProvider().getMountPoint());
         jobDataMap.put(TextExtractorJob.PATH, fileNode.getPath());

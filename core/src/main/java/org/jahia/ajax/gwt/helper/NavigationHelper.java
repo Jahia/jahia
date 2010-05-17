@@ -44,7 +44,6 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
@@ -60,6 +59,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
+import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.util.*;
 
@@ -544,7 +544,7 @@ public class NavigationHelper {
         return node.getUrl();
     }
 
-    public String getAbsolutePath(String path, ParamBean jParams, JCRSessionWrapper currentUserSession)
+    public String getAbsolutePath(String path, JCRSessionWrapper currentUserSession, final HttpServletRequest request)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
         try {
@@ -559,7 +559,7 @@ public class NavigationHelper {
                     new StringBuilder("User ").append(currentUserSession.getUser().getUsername())
                             .append(" has no read access to ").append(node.getName()).toString());
         }
-        return node.getAbsoluteWebdavUrl(jParams);
+        return node.getAbsoluteWebdavUrl(request);
     }
 
     public List<GWTJahiaNodeUsage> getUsages(String path, JCRSessionWrapper currentUserSession)

@@ -31,8 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.form;
 
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-
 import com.extjs.gxt.ui.client.store.ListStore;
 
 /**
@@ -44,7 +42,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
  */
 public interface CompletionItems {
 
-    public ListStore getCompletionItems(GWTJahiaPageContext jahiaPage, String match);
+    public ListStore getCompletionItems(String match);
 
     public String getValueKey();
 

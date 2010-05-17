@@ -333,7 +333,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
         }
 
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID();
+            return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID() + "&workspace="+JahiaGWTParameters.getWorkspace();
         }
     }
 

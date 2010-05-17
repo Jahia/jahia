@@ -34,14 +34,12 @@ package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
-import org.jahia.data.JahiaData;
 import org.jahia.engines.EngineMessage;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.*;
 
 import java.text.MessageFormat;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -60,20 +58,19 @@ public class SimpleAjaxActionImpl extends AjaxAction {
     /**
      * Execute the method that corresponds to the action
      *
-     * @param jahiaData
      * @param action
      * @param gwtPropertiesMap
      * @return
      */
-    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
+    public GWTJahiaAjaxActionResult execute(String action, Map gwtPropertiesMap) {
         GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
         if (action != null) {
             if (action.equalsIgnoreCase(USER_INFO)) {
-                result.setValue(userInfo(jahiaData, gwtPropertiesMap));
+                result.setValue(userInfo(gwtPropertiesMap));
             } else if (action.equalsIgnoreCase(LICENSE_INFO)) {
-                result.setValue(licenseInfo(jahiaData, gwtPropertiesMap));
+                result.setValue(licenseInfo(gwtPropertiesMap));
             } else if (action.equalsIgnoreCase(SEND_EMAIL_INFO)) {
-                result.setValue(sendEmail(jahiaData, gwtPropertiesMap));
+                result.setValue(sendEmail(gwtPropertiesMap));
             }
         }
         result.addError("Error: Action [" + action + "] not found.");
@@ -83,25 +80,23 @@ public class SimpleAjaxActionImpl extends AjaxAction {
     /**
      * Get informatin about the connectged user
      *
-     * @param jahiaData
      * @param gwtPropertiesMap
      * @return
      */
-    public String userInfo(JahiaData jahiaData, Map gwtPropertiesMap) {
+    public String userInfo(Map gwtPropertiesMap) {
         return "user info";
     }
 
     /**
      * Get information about the license
      *
-     * @param jahiaData
      * @param gwtPropertiesMap
      * @return
      */
-    public String licenseInfo(JahiaData jahiaData, Map gwtPropertiesMap) {
+    public String licenseInfo(Map gwtPropertiesMap) {
         int daysLeft = LicenseManager.getInstance().getJahiaMaxUsageDays();
         if (daysLeft > 0) {
-            return getMessage(jahiaData, new EngineMessage("org.jahia.bin.JahiaConfigurationWizard.congratulations.daysLeftInLicense.label", Integer.valueOf(daysLeft)));
+            return getMessage(new EngineMessage("org.jahia.bin.JahiaConfigurationWizard.congratulations.daysLeftInLicense.label", Integer.valueOf(daysLeft)));
         }
         return "unknown";
     }
@@ -110,11 +105,10 @@ public class SimpleAjaxActionImpl extends AjaxAction {
     /**
      * Send email to the current user
      *
-     * @param jahiaData
      * @param gwtPropertiesMap
      * @return
      */
-    public String sendEmail(JahiaData jahiaData, Map gwtPropertiesMap) {
+    public String sendEmail(Map gwtPropertiesMap) {
         return "send email";
     }
 
@@ -122,11 +116,10 @@ public class SimpleAjaxActionImpl extends AjaxAction {
     /**
      * Flusch all Caches
      *
-     * @param jahiaData
      * @param gwtPropertiesMap
      * @return
      */
-    public String flushAllCaches(JahiaData jahiaData, Map gwtPropertiesMap) {
+    public String flushAllCaches(Map gwtPropertiesMap) {
         GWTJahiaProperty fluschTypeProp = (GWTJahiaProperty) gwtPropertiesMap.get("flush");
         if (fluschTypeProp != null) {
             String cacheType = fluschTypeProp.getValue();
@@ -145,13 +138,11 @@ public class SimpleAjaxActionImpl extends AjaxAction {
     /**
      * Get Message that depends on the currentLocale
      *
-     * @param jahiaData
      * @param allowedDaysMsg
      * @return
      */
-    private String getMessage(JahiaData jahiaData, EngineMessage allowedDaysMsg) {
-        final Locale currentLocale = jahiaData.getProcessingContext().getLocale();
-        final MessageFormat msgFormat = new MessageFormat(allowedDaysMsg.getKey(), currentLocale);
+    private String getMessage(EngineMessage allowedDaysMsg) {
+        final MessageFormat msgFormat = new MessageFormat(allowedDaysMsg.getKey(), null);
         return msgFormat.format(allowedDaysMsg.getValues());
     }
 }

@@ -33,14 +33,10 @@ package org.jahia.taglibs.utility;
 
 import java.util.Iterator;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import org.jahia.bin.Jahia;
-import org.jahia.data.JahiaData;
-import org.jahia.data.beans.JahiaBean;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
@@ -49,6 +45,7 @@ import org.jahia.gui.GuiBean;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
+import org.jahia.services.render.RenderContext;
 import org.jahia.utils.JahiaConsole;
 
 /**
@@ -101,72 +98,6 @@ public class Utils {
         return i;
     }
 
-    /**
-     * Returns an {@link JahiaBean} instance with current Jahia data.
-     *
-     * @param pageContext current page context object
-     * @return an {@link JahiaBean} instance with current Jahia data
-     */
-    public static JahiaBean getJahiaBean(PageContext pageContext) {
-        return getJahiaBean(pageContext, false);
-    }
-
-    /**
-     * Returns an {@link JahiaBean} instance with current Jahia data.
-     *
-     * @param pageContext      current page context object
-     * @param createIfNotFound will create the bean if it is not found
-     * @return an {@link JahiaBean} instance with current Jahia data
-     */
-    public static JahiaBean getJahiaBean(PageContext pageContext, boolean createIfNotFound) {
-        JahiaBean bean = (JahiaBean) pageContext.getAttribute("jahia", PageContext.REQUEST_SCOPE);
-        if (bean == null) {
-            bean = (JahiaBean) pageContext.getAttribute("currentJahia", PageContext.REQUEST_SCOPE);
-            if(createIfNotFound) {
-                ProcessingContext ctx = getProcessingContext(pageContext, true);
-                if (ctx != null) {
-                    bean = new JahiaBean(ctx);
-                    pageContext.setAttribute("jahia", bean, PageContext.REQUEST_SCOPE);
-                    pageContext.setAttribute("currentJahia", bean, PageContext.REQUEST_SCOPE);
-                }
-            }
-        }
-        return bean;
-    }
-
-    /**
-     * Returns current {@link JahiaData} instance.
-     *
-     * @param pageContext current page context object
-     * @return current {@link JahiaData} instance
-     */
-    public static JahiaData getJahiaData(PageContext pageContext) {
-        return getJahiaData(pageContext.getRequest());
-    }
-
-
-    /**
-     * Returns current {@link JahiaData} instance.
-     *
-     * @param processingContext current processing context object
-     * @return current {@link JahiaData} instance
-     */
-    public static JahiaData getJahiaData(ProcessingContext processingContext) {
-        return (JahiaData) processingContext
-                .getAttribute("org.jahia.data.JahiaData");
-    }
-
-
-    /**
-     * Returns current {@link JahiaData} instance.
-     *
-     * @param request current request object
-     * @return current {@link JahiaData} instance
-     */
-    public static JahiaData getJahiaData(ServletRequest request) {
-        return (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-    }
-
 
     /**
      * Method getParentName :  returns the name of the parent, that means the complete name
@@ -192,50 +123,8 @@ public class Utils {
     }
 
 
-    /**
-     * Returns current {@link ProcessingContext} instance.
-     *
-     * @param pageContext current page context
-     * @return current {@link ProcessingContext} instance
-     */
-    public static ProcessingContext getProcessingContext(
-            PageContext pageContext) {
-        JahiaBean jBean = getJahiaBean(pageContext);
-        ProcessingContext ctx = jBean != null ? jBean.getProcessingContext()
-                : (ProcessingContext) pageContext
-                .getAttribute("org.jahia.params.ParamBean",
-                        PageContext.REQUEST_SCOPE);
-        return ctx != null ? ctx : Jahia.getThreadParamBean();
-    }
-
-    /**
-     * Returns current {@link ProcessingContext} instance.
-     *
-     * @param pageContext current page context
-     * @param createIfNotFound will create the processing context if it is not found
-     * @return current {@link ProcessingContext} instance
-     */
-    public static ProcessingContext getProcessingContext(
-            PageContext pageContext, boolean createIfNotFound) {
-        ProcessingContext ctx = getProcessingContext(pageContext);
-        if (ctx == null && createIfNotFound) {
-            try {
-                ctx = ((ProcessingContextFactory) SpringContextSingleton
-                        .getInstance().getContext().getBean(
-                                ProcessingContextFactory.class.getName()))
-                        .getContext(
-                                (HttpServletRequest) pageContext.getRequest(),
-                                (HttpServletResponse) pageContext.getResponse(),
-                                pageContext.getServletContext());
-            } catch (JahiaSiteNotFoundException e) {
-                throw new JahiaBadRequestException(e);
-            } catch (JahiaPageNotFoundException e) {
-                throw new JahiaBadRequestException(e);
-            } catch (JahiaException e) {
-                throw new JahiaBadRequestException(e);
-            }
-        }
-        return ctx;
+    public static RenderContext getRenderContext(PageContext pageContext) {
+        return (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
     }
 
     /**

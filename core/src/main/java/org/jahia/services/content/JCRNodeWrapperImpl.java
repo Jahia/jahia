@@ -38,7 +38,6 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
@@ -57,6 +56,7 @@ import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.security.AccessControlException;
@@ -365,9 +365,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public String getAbsoluteWebdavUrl(ParamBean jParams) {
+    public String getAbsoluteWebdavUrl(final HttpServletRequest request) {
         if (objectNode != null) {
-            return provider.getAbsoluteContextPath(jParams.getRealRequest()) + getWebdavUrl();
+            return provider.getAbsoluteContextPath(request) + getWebdavUrl();
         }
         return "";
     }

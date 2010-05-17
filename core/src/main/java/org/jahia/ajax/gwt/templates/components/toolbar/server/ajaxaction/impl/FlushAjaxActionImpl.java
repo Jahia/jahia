@@ -31,14 +31,10 @@
  */
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
-import java.text.MessageFormat;
-import java.util.Locale;
 import java.util.Map;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
-import org.jahia.data.JahiaData;
-import org.jahia.engines.EngineMessage;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.registries.ServicesRegistry;
 
@@ -55,12 +51,11 @@ public class FlushAjaxActionImpl extends AjaxAction {
     /**
      * Execute the method that correponds to the action
      *
-     * @param jahiaData
      * @param action
      * @param gwtPropertiesMap
      * @return
      */
-    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
+    public GWTJahiaAjaxActionResult execute(String action, Map gwtPropertiesMap) {
         GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
         if (action != null) {
 

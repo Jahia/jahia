@@ -77,8 +77,7 @@ public class JCRPreferenceTag extends AbstractJahiaTag {
             JCRNodeWrapper value = service.getGenericPreferenceNode(name,
                                                                     Jahia.getThreadParamBean().getUser());
             if (value == null && defaultValue !=null) {
-                service.setGenericPreferenceValue(name, defaultValue,
-                                                  Jahia.getThreadParamBean());
+                service.setGenericPreferenceValue(name, defaultValue, Jahia.getThreadParamBean().getUser());
                 value = service.getGenericPreferenceNode(name, Jahia.getThreadParamBean().getUser());
             }
             pageContext.setAttribute(var, value);

@@ -32,8 +32,6 @@
 package org.jahia.ajax.gwt.client.core;
 
 import com.google.gwt.i18n.client.Dictionary;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,31 +66,10 @@ public class JahiaGWTParameters {
     private static String baseUrl;
     private static String language;
     private static String siteUUID;
-
-
-    /**
-     * Retrieve GWTJahiaPage object
-     *
-     * @return a new instance of a GWTJahiaPage.
-     */
-    public static GWTJahiaPageContext getGWTJahiaPageContext() {
-        // init panel
-        GWTJahiaPageContext page = new GWTJahiaPageContext(URL.getRelativeURL());
-        page.setPid(JahiaGWTParameters.getPID());
-        page.setMode(JahiaGWTParameters.getOperationMode());
-        return page;
-    }
-
-    public static int getPID() {
-        return -1;
-    }
+    private static String workspace;
 
     public static String getServiceEntryPoint() {
         return jahiaParamDictionary.get(SERVICE_ENTRY_POINT);
-    }
-
-    public static String getOperationMode() {
-        return "normal";
     }
 
     public static String getCurrentUser() {
@@ -144,6 +121,24 @@ public class JahiaGWTParameters {
 
     public static void setSiteUUID(String newSiteUUID) {
         siteUUID = newSiteUUID;
+        for (UrlUpdater urlUpdater : updaters) {
+            urlUpdater.updateEntryPointUrl();
+        }
+    }
+
+    public static String getWorkspace() {
+        if (workspace == null) {
+            if (jahiaParamDictionary.keySet().contains(WORKSPACE)) {
+                workspace = jahiaParamDictionary.get(WORKSPACE);
+            } else {
+                workspace = "";
+            }
+        }
+        return workspace;
+    }
+
+    public static void setWorkspace(String newWorkspace) {
+        workspace = newWorkspace;
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();
         }

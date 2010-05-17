@@ -75,16 +75,6 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     private ServletContext servletContext;
 
     /**
-     * build JahiaData
-     *
-     * @return
-     * @deprecated
-     */
-    private JahiaData buildJahiaData() {
-        return buildJahiaData(false);
-    }
-
-    /**
      * Retrive current session
      *
      * @return
@@ -103,7 +93,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      */
     protected JCRSessionWrapper retrieveCurrentSession(Locale locale) throws GWTJahiaServiceException {
         try {
-            return JCRSessionFactory.getInstance().getCurrentUserSession("default", locale, null);
+            return JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), locale, null);
         } catch (RepositoryException e) {
             logger.error(e, e);
             throw new GWTJahiaServiceException("Cannot open user session");
@@ -123,23 +113,6 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             logger.error(e, e);
             throw new GWTJahiaServiceException("Cannot open user session");
         }
-    }
-
-    /**
-     * build JahiaData
-     *
-     * @return
-     * @deprecated
-     */
-    private JahiaData buildJahiaData(boolean doBuildData) {
-        ProcessingContext jParams = retrieveParamBean();
-        JahiaData jData = null;
-        try {
-            jData = new JahiaData(jParams, doBuildData);
-        } catch (JahiaException e) {
-            logger.error(e, e);
-        }
-        return jData;
     }
 
     /**
@@ -166,6 +139,18 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
             logger.error("Cannot get site",e);
         }
         return null;
+    }
+
+    /**
+     * Get workspace
+     *
+     * @return
+     */
+    protected String getWorkspace() {
+        if (!StringUtils.isEmpty(request.getParameter("workspace"))) {
+            return request.getParameter("workspace");
+        }
+        return "default";
     }
 
     /**
@@ -209,13 +194,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @return
      */
     protected JahiaUser getRemoteJahiaUser() {
-        // get session
-        ParamBean paramBean = retrieveParamBean();
-        if (paramBean != null) {
-            return paramBean.getUser();
-        } else {
-            return (JahiaUser) getRequest().getSession().getAttribute(ParamBean.SESSION_USER);
-        }
+        return JCRSessionFactory.getInstance().getCurrentUser();
     }
 
     /**
@@ -269,77 +248,6 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
 
     public ServletContext getServletContext() {
         return servletContext;
-    }
-
-    /**
-     * Retrieve JahiaData object corresponding to the current request
-     *
-     * @return
-     * @deprecated
-     */
-    protected JahiaData retrieveJahiaData() {
-        final HttpServletRequest request = getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute(ORG_JAHIA_DATA_JAHIA_DATA);
-        if (jData == null) {
-            ProcessingContext jParams = retrieveParamBean();
-
-            // put jdata
-            try {
-                jData = new JahiaData(jParams, true);
-                request.setAttribute(ORG_JAHIA_DATA_JAHIA_DATA, jData);
-            } catch (JahiaException e) {
-                // this can happen if the url doesn't contain enought parameter to create the JahiData
-                request.removeAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN);
-                jData = buildJahiaData();
-            } catch (Exception e) {
-                logger.error(e, e);
-            }
-
-            // set int the attribute of the request
-            if (jData != null) {
-                request.setAttribute(ORG_JAHIA_DATA_JAHIA_DATA, jData);
-            }
-
-        }
-        return jData;
-    }
-
-    /**
-     * Retrieve paramBean
-     *
-     * @return
-     * @deprecated
-     */
-    protected ParamBean retrieveParamBean() {
-        final HttpServletRequest request = getRequest();
-
-        ParamBean jParams = getParamBeanRequestAttr();
-        if (jParams == null) {
-            logger.debug("Init processing context");
-            // build processing context and jParam
-            final HttpServletResponse response = getResponse();
-            final ServletContext context = getServletContext();
-            final BeanFactory bf = SpringContextSingleton.getInstance().getContext();
-            final ProcessingContextFactory pcf = (ProcessingContextFactory) bf.getBean(ProcessingContextFactory.class.getName());
-            try {
-                // build jParam
-                jParams = pcf.getContext(request, response, context, null);
-                request.setAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN, jParams);
-                return jParams;
-            } catch (JahiaSiteNotFoundException e) {
-                logger.debug("Can't create ParamBean for current ajax call due to '" + e.getMessage() + "'");
-                logger.warn("Jahia is starting --> ajax call canceled. '");
-            }
-            catch (Exception e) {
-                logger.error(e, e);
-            }
-        } else {
-            logger.debug("Processing context found in request");
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("jParam: " + jParams);
-        }
-        return jParams;
     }
 
     public void setRequest(HttpServletRequest request) {

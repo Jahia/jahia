@@ -31,14 +31,16 @@
  */
 package org.jahia.ajax.gwt.client.widget.form;
 
-import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,7 +56,7 @@ public class UserCompletionItems implements CompletionItems {
         service = UserManagerService.App.getInstance();
     }
 
-    public ListStore<GWTJahiaUser> getCompletionItems(final GWTJahiaPageContext jahiaPage, final String match) {
+    public ListStore<GWTJahiaUser> getCompletionItems(final String match) {
 
         if (service == null){
             return null;

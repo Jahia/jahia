@@ -31,24 +31,13 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
-import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionInfo;
-import org.jahia.ajax.gwt.client.service.subscription.SubscriptionServiceAsync;
-import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
-import org.jahia.ajax.gwt.client.widget.Linker;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -56,6 +45,17 @@ import com.extjs.gxt.ui.client.widget.layout.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
+import org.jahia.ajax.gwt.client.service.subscription.SubscriptionServiceAsync;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionInfo;
+import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Toolbar items provider for subscription services.
@@ -67,8 +67,6 @@ public class SubscriptionsActionItem extends BaseActionItem {
     private transient Button cancel;
 
     private transient LayoutContainer eventsContainer;
-
-    private transient GWTJahiaPageContext pageContext;
 
     private transient FormPanel panel;
 
@@ -92,13 +90,12 @@ public class SubscriptionsActionItem extends BaseActionItem {
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);    //To change body of overridden methods use File | Settings | File Templates.
         service = SubscriptionService.App.getInstance();
-        pageContext = this.getJahiaGWTPageContext();
     }
 
     @Override
     public void onComponentSelection() {
         List<SubscriptionInfo> subscriptions = new LinkedList<SubscriptionInfo>();
-        String source = "ContentPage_" + pageContext.getPid();
+        String source = "ContentPage_";
         GWTJahiaProperty eventsProperty = getGwtToolbarItem().getProperties()
                 .get("events");
         String[] events = eventsProperty != null
@@ -205,7 +202,7 @@ public class SubscriptionsActionItem extends BaseActionItem {
 
     private void updateSubscriptions() {
         List<SubscriptionInfo> subscriptions = new LinkedList<SubscriptionInfo>();
-        String source = "ContentPage_" + pageContext.getPid();
+        String source = "ContentPage_";
         LayoutContainer leftColumn = (LayoutContainer) eventsContainer
                 .getItem(0);
         LayoutContainer rightColumn = (LayoutContainer) eventsContainer

@@ -268,7 +268,7 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 #bodywrapper .docspacelist li p {
 	padding:0;
 }
-#bodywrapper .docspacelist li.last {
+#bodywrapper .docspacelist li:last-child {
 	border-bottom-color:#fff;
 }
 #bodywrapper span.docspacelistinfo{

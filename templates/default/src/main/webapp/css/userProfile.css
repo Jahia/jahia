@@ -168,7 +168,7 @@ margin-bottom:2px
 #bodywrapper .userMyContentList li p {
 	padding:0;
 }
-#bodywrapper .userMyContentList li.last {
+#bodywrapper .userMyContentList li:last-child {
 	border-bottom-color:#fff;
 }
 #bodywrapper ul.userMyContentList li:hover{

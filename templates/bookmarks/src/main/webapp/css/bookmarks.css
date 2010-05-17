@@ -25,7 +25,7 @@ margin:0px 5px;
 #bodywrapper .userMyBookmarksList li p {
 	padding:0;
 }
-#bodywrapper .userMyBookmarksList li.last {
+#bodywrapper .userMyBookmarksList li:last-child {
 	border-bottom-color:#fff;
 }
 #bodywrapper ul.userMyBookmarksList li:hover{

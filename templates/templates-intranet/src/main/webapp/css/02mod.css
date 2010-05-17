@@ -194,3 +194,13 @@ Search form top
 #bodywrapper #search-bar form.simplesearchform {
 	width:340px !important;
 }
+/******************************************************************************
+Calendar
+******************************************************************************/
+.fc-event, .fc-agenda .fc-event-time, .fc-event a {
+	background-color:#3366CC;
+	border-color:#3366CC;
+}
+#bodywrapper .fc-header h2 {
+	background:none
+}

@@ -32,44 +32,33 @@
 
 package org.jahia.bin;
 
-import org.apache.commons.fileupload.disk.DiskFileItem;
+import static org.jahia.api.Constants.LIVE_WORKSPACE;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.transform.DocumentConverterService;
-import org.jahia.settings.SettingsBean;
-import org.jahia.tools.files.FileUpload;
-import org.jahia.utils.LanguageCodeConverters;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.util.Locale;
-
-import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 /**
  * Performs conversion of the submitted document into specified format.
  *
- * @author Fabrice Cantegrel
- * @author Sergiy Shyrkov
+ * @author Cédric Mailleux
  */
 public class ToPDFServlet extends HttpServlet implements Controller {
 
     private static Logger logger = Logger.getLogger(ToPDFServlet.class);
 
     private DocumentConverterService converterService;
-
-    private SettingsBean settingsBean;
 
     private String defaultWorkspace = LIVE_WORKSPACE;
     /*
@@ -93,6 +82,8 @@ public class ToPDFServlet extends HttpServlet implements Controller {
             JCRNodeWrapper node = session.getNode(nodePath);
             if(node.isNodeType("nt:file")) {
                 response.setContentType(converterService.getMimeType("pdf"));
+                response.setHeader("Content-Disposition", "attachment; filename=\""
+                        + StringUtils.substringBeforeLast(node.getName(), ".") + ".pdf\"");
                 converterService.convert(node.getFileContent().downloadFile(),FilenameUtils.getExtension(node.getName()),response.getOutputStream(),converterService.getMimeType("pdf"));
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path should be a file");
@@ -109,13 +100,6 @@ public class ToPDFServlet extends HttpServlet implements Controller {
      */
     public void setConverterService(DocumentConverterService converterService) {
         this.converterService = converterService;
-    }
-
-    /**
-     * @param settingsBean the settingsBean to set
-     */
-    public void setSettingsBean(SettingsBean settingsBean) {
-        this.settingsBean = settingsBean;
     }
 
     public static String getToPDFServletPath() {

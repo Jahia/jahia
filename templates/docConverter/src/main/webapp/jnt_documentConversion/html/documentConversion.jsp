@@ -14,7 +14,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="format" type="org.artofsolving.jodconverter.document.DocumentFormat"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
+<template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="css" resources="converter.css,files.css"/>
 <c:if test="${renderContext.loggedIn}">
 <jcr:sql var="result"
@@ -52,7 +52,7 @@
                             <label for="conversionType" class="left"><fmt:message key="label.transform.into"/>:</label>
                             <select name="mimeType" id="conversionType">
                                 <c:forEach items="${functions:possibleFormats()}" var="format">
-                                    <option value="${format.mediaType}">${format.extension}&nbsp;(${format.name})</option>
+                                    <option value="${format.mediaType}">${format.extension}&nbsp;(${fn:escapeXml(format.name)})</option>
                                 </c:forEach>
                             </select>
                             <input type="submit" id="submit" class="button" value="Convert" tabindex="4"/>
@@ -87,10 +87,10 @@
                             <div class="itemImage itemImageLeft"><span class="icon_large ${functions:fileExtension(lastNode.name)}_large"></span></div>
                         </div>
                         <h3><fmt:message
-                                key="label.from"/>:&nbsp;${functions:abbreviate(lastNode.properties.originDocName.string,20,30,'...')}</h3>
+                                key="label.from"/>:&nbsp;${fn:escapeXml(functions:abbreviate(lastNode.properties.originDocName.string,20,30,'...'))}</h3>
 
-                        <h3><fmt:message key="label.to"/>:&nbsp;<a href="#"><img alt=""
-                                                                                 src="${url.currentModule}/images/download.png"/>${functions:abbreviate(lastNode.name,20,30,'...')}
+                        <h3><fmt:message key="label.to"/>:&nbsp;<a href="${lastNode.url}"><img alt=""
+                                                                                 src="${url.currentModule}/images/download.png"/>${fn:escapeXml(functions:abbreviate(lastNode.name,20,30,'...'))}
                         </a></h3>
                    <span class="clearMaringPadding converterdate"><fmt:message
                            key="label.conversion.date"/>:&nbsp;<fmt:formatDate
@@ -110,7 +110,7 @@
                         <div class="boxconverter-inner-border">
                             <h3 class="boxconvertertitleh3 clearMaringPadding"><fmt:message key="label.error"/>:</h3>
 
-                            <p class="clearMaringPadding">${lastNode.properties.conversionFailedMessage.string}</p>
+                            <p class="clearMaringPadding">${fn:escapeXml(lastNode.properties.conversionFailedMessage.string)}</p>
 
                             <div class="clear"></div>
                         </div>
@@ -165,9 +165,9 @@
                 </c:otherwise>
             </c:choose>
         </c:set>
-        <tr class="<c:choose><c:when test="${status.count mod 2 eq 0}">even</c:when><c:otherwise>odd</c:otherwise></c:choose>">
+        <tr class="${status.count mod 2 eq 0 ? 'even' : 'odd'}">
             <td class="center" headers="Statut">${conversionStatus}</td>
-            <td headers="TitleOriginal">${functions:abbreviate(subchild.properties.originDocName.string,20,30,'...')}</td>
+            <td headers="TitleOriginal">${fn:escapeXml(functions:abbreviate(subchild.properties.originDocName.string,20,30,'...'))}</td>
             <td class="center"
                 headers="OriginalDoc">${subchild.properties.originDocFormat.string}</td>
             <td class="center"

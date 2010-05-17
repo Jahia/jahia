@@ -101,6 +101,11 @@ public class DocumentConverterService implements ApplicationContextAware {
 
         try {
             officeManager.execute(getConversionTask(inputFile, inputFormat, outputFile, outputFormat));
+        } catch (OfficeException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            }
+            throw e;
         } finally {
             if (logger.isInfoEnabled()) {
                 logger.info("Conversion took " + (System.currentTimeMillis() - startTime) + " ms");
@@ -137,11 +142,12 @@ public class DocumentConverterService implements ApplicationContextAware {
             return;
         }
         File inputFile = null;
+        File outputFile = null;
         try {
             
             inputFile = getFile(inputStream);
             // The outputFile required by the service
-            File outputFile = createTempFile();
+            outputFile = createTempFile();
 
             // convert inputFile to outputFile
             convert(inputFile,
@@ -155,6 +161,7 @@ public class DocumentConverterService implements ApplicationContextAware {
             logger.warn("A problem occurred during the transformation", ioe);
         } finally {
             FileUtils.deleteQuietly(inputFile);
+            FileUtils.deleteQuietly(outputFile);
         }
     }
 
@@ -162,34 +169,23 @@ public class DocumentConverterService implements ApplicationContextAware {
      * Converts the provided file, considering provided mime-types.
      *
      * @param inputFile the source File
-     * @param inputFileExtension the source Name
+     * @param inputFileMimeType the source file content type
      * @param outputMimeType the output MIME type
      *
      * @return A File, which is inputFile converted into a mimeType defined by outputMimeType
      * @throws OfficeException in case of a conversion error
      */
-    public File convert(File inputFile, String inputFileExtension, String outputMimeType) throws IOException, OfficeException {
+    public File convert(File inputFile, String inputFileMimeType, String outputMimeType) throws IOException, OfficeException {
 
         if (!isEnabled()) {
             return null;
         }
         
-        File outputFile = null;
+        File outputFile = createTempFile();
 
-        try {
-
-            // The outputFile required by the service
-            outputFile = createTempFile();
-
-            // convert inputFile to outputFile
-            convert(inputFile,
-                    formatRegistry.getFormatByExtension(inputFileExtension),
-                    outputFile, getFormatByMimeType(outputMimeType));
-
-        } catch (IOException ioe) {
-            logger.warn("A problem occurred during the transformation", ioe);
-            throw new IOException("A problem occurred during the transformation");
-        }
+        // convert inputFile to outputFile
+        convert(inputFile, formatRegistry.getFormatByMediaType(inputFileMimeType), outputFile,
+                getFormatByMimeType(outputMimeType));
 
         return outputFile;
     }

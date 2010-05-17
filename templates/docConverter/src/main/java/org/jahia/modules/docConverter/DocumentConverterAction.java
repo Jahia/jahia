@@ -2,12 +2,10 @@ package org.jahia.modules.docConverter;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
 import org.artofsolving.jodconverter.office.OfficeException;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Jahia;
-import org.jahia.bin.Render;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -28,14 +26,12 @@ import java.util.Map;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * Document conversion action.
  * User: fabrice
  * Date: Apr 20, 2010
  * Time: 11:14:20 AM
- * To change this template use File | Settings | File Templates.
  */
 public class DocumentConverterAction implements Action {
-    private transient static Logger logger = Logger.getLogger(DocumentConverterAction.class);
     private String name;
 
     private DocumentConverterService converterService;

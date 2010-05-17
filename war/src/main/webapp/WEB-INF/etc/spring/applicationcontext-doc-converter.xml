@@ -24,21 +24,13 @@
                         <property name="settingsBean" ref="settingsBean" />
                     </bean>
                 </entry>
-            </map>
-        </property>
-    </bean>
-
-    <bean name="toPDF" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="urlMap">
-            <map>
                 <entry key="/toPDF/**">
                     <bean class="org.jahia.bin.ToPDFServlet">
                         <property name="converterService" ref="DocumentConverterService"/>
-                        <property name="settingsBean" ref="settingsBean" />
                     </bean>
                 </entry>
             </map>
         </property>
     </bean>
-    
+
 </beans>

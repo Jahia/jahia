@@ -32,7 +32,6 @@
 
 package org.jahia.bin;
 
-import java.io.File;
 import java.io.InputStream;
 
 import javax.servlet.http.HttpServlet;

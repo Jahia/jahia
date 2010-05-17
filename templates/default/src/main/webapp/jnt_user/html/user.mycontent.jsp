@@ -17,7 +17,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="contentlist.css"/>
+<template:addResources type="css" resources="userProfile.css"/>
 <template:addResources type="css" resources="960.css"/>
 <template:addWrapper name="wrapper.dashboard"/>
 <div id="${currentNode.identifier}">
@@ -34,11 +34,11 @@
         </c:otherwise>
     </c:choose>
     <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
-    <ul>
+    <ul class="userMyContentList">
         <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
             <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
             <li>
-                <a href="${url.base}${subchild.path}.html" target="_blank">
+                <a class="userMyContentListIcon" href="${url.base}${subchild.path}.html" target="_blank">
                     <c:choose>
                         <c:when test="${not empty title}">${title.string}</c:when>
                         <c:otherwise>${subchild.name}</c:otherwise>

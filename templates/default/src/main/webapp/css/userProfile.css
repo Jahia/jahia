@@ -144,3 +144,47 @@ margin-bottom:2px
 #bodywrapper ul.group-list h4 {
 	border-bottom:none;
 }
+/******************************************************************************
+*  userMyContentList
+******************************************************************************/
+
+#bodywrapper ul.userMyContentList  {
+	position:relative;
+	margin:0;
+	margin-bottom:20px;
+	list-style:none;
+	border:1px solid #ccc;
+	padding:0
+}
+#bodywrapper .userMyContentList li {
+	background-color:#e1e1e1;
+	border-color:#fff #fff #ccc ;
+	border-style:solid;
+	border-width:1px;
+	padding:2px 5px;
+	margin:0;
+	list-style:none
+}
+#bodywrapper .userMyContentList li p {
+	padding:0;
+}
+#bodywrapper .userMyContentList li.last {
+	border-bottom-color:#fff;
+}
+#bodywrapper ul.userMyContentList li:hover{
+	background-color:#eaeaea
+}
+#bodywrapper ul.userMyContentList a,
+#bodywrapper ul.userMyContentList a:link,
+#bodywrapper ul.userMyContentList a:visited {
+	text-decoration: none;
+}
+#bodywrapper ul.userMyContentList a:hover,
+#bodywrapper ul.userMyContentList a:active {
+	text-decoration:underline;
+}
+#bodywrapper a.userMyContentListIcon {
+	background:transparent url(img/content.png) no-repeat scroll 0.2em 0;
+	padding-left:24px;
+}
+

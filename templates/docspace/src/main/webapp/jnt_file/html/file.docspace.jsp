@@ -77,26 +77,29 @@
                         <div class="itemImage itemImageLeft"><a
                                 href="${currentNode.url}"><img title="Download" value="download"
                                                                src="${url.currentModule}/css/img/files/${functions:fileExtension(currentNode.name)}.png"/></a>
+                            <c:url var="pdfLink" value="${url.toPDF}" context="/">
+                                <c:param name="path" value="${currentNode.path}"/>
+                            </c:url>
                             <a
-                                href="${url.toPDF}?path=${currentNode.path}"><img title="PDF" value="pdf"
+                                href="${pdfLink}"><img title="PDF" value="pdf"
                                                                src="${url.currentModule}/css/img/files/pdf.png"/></a>
                         </div>
                     </div>
                     <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}"><img
                             title="Download" value="download"
-                            src="${url.currentModule}/css/img/download.png"/> ${currentNode.name} ${currentNode.baseVersion.name}
+                            src="${url.currentModule}/css/img/download.png"/>&nbsp;${currentNode.name}&nbsp;${currentNode.baseVersion.name}
                     </a></h3>
 
                     <p class="clearMaringPadding docspacedate "><fmt:message key="label.created"/> : <fmt:formatDate
                             value="${currentNode.properties['jcr:created'].time}" pattern="yyyy/MM/dd"/>, <fmt:message
-                            key="docspace.label.document.createdBy"/> <span class="author"><a
+                            key="docspace.label.document.createdBy"/>&nbsp;<span class="author"><a
                             href="${url.base}/users/${currentNode.properties['jcr:createdBy'].string}.html">${currentNode.properties['jcr:createdBy'].string}</a></span>
                     </p>
 
                     <p class="clearMaringPadding docspacedate"><fmt:message
                             key="docspace.label.document.lastModification"/> <fmt:formatDate
                             value="${currentNode.properties['jcr:lastModified'].time}" pattern="yyyy/MM/dd"/>,
-                        <fmt:message key="docspace.label.document.createdBy"/> <span class="author"><a
+                        <fmt:message key="docspace.label.document.createdBy"/>&nbsp;<span class="author"><a
                                 href="${url.base}/users/${currentNode.properties['jcr:lastModifiedBy'].string}.html">${currentNode.properties['jcr:lastModifiedBy'].string}</a></span>
                     </p>
 

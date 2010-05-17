@@ -15,7 +15,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="format" type="org.artofsolving.jodconverter.document.DocumentFormat"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js,jquery.maskedinput-1.2.2.js"/>
-<template:addResources type="css" resources="converter.css,files-icons.css"/>
+<template:addResources type="css" resources="converter.css,files.css"/>
 <c:if test="${renderContext.loggedIn}">
 <jcr:sql var="result"
          sql="select * from [jmix:convertedFile] as conversion where isdescendantnode(conversion, ['/users/${renderContext.user.name}/']) order by conversion.[jcr:lastModified] desc"/>
@@ -80,11 +80,11 @@
 
                         </div>
                         <div class="imagefloatleft">
-                            <div class="itemImage itemImageLeft"><span class="icon6464 ${functions:fileExtension(lastNode.properties.originDocName.string)}6464"></span></div>
+                            <div class="itemImage itemImageLeft"><span class="icon_large ${functions:fileExtension(lastNode.properties.originDocName.string)}_large"></span></div>
                             <div class="itemImageConverterArrow itemImageLeft"><a href="#"><img alt=""
                                                                                                 src="${url.currentModule}/img/convert.png"/></a>
                             </div>
-                            <div class="itemImage itemImageLeft"><span class="icon6464 ${functions:fileExtension(lastNode.name)}6464"></span></div>
+                            <div class="itemImage itemImageLeft"><span class="icon_large ${functions:fileExtension(lastNode.name)}_large"></span></div>
                         </div>
                         <h3><fmt:message
                                 key="label.from"/>:&nbsp;${functions:abbreviate(lastNode.properties.originDocName.string,20,30,'...')}</h3>

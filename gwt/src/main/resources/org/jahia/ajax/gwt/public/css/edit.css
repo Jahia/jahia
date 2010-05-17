@@ -1,3 +1,36 @@
+.x-panel-linker {
+    background : #ffffcc url(../images/xtheme-jahia-andromeda/panel/panellinker.png) top left;
+    color: #000 !important;
+	font-weight: bold;
+    font-size: 9px;
+    border:1px solid #ffcc33;
+	padding: 0px 5px ;
+	vertical-align: middle;
+    horizontal-align:middle;
+	margin-bottom:5px;
+	margin-top:5px;
+    text-align:center;
+    font-family: tahoma, arial, verdana, sans-serif;
+    font-size: 9px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	overflow: hidden;
+	cursor: url('../images/xtheme-jahia-andromeda/panel/link.cur'), pointer; 
+}
+.x-panel-linker p {
+	margin:0 !important;
+	padding:0 !important;
+}
+.x-panel-linker p.linkPath {
+	margin:0 !important;
+	padding:0 !important;
+}
+.x-panel-linker p.linkAction {
+	color:#FF0000
+}
+
+
 /** styles added for list module in order to make them as nice as jahia6 **/
 
 .x-panel-header-simplemodule {
@@ -8,8 +41,10 @@
     font-size: 9px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999;
     border:none;
 	padding: 2px 5px ;
 	vertical-align: middle;
@@ -25,8 +60,10 @@
     font-size: 9px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999;
     border:none;
 	padding: 2px 5px ;
 	vertical-align: middle;
@@ -42,8 +79,10 @@
     font-size: 9px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999;
     border:none;
 	padding: 2px 5px ;
 	vertical-align: middle;
@@ -71,6 +110,7 @@
     font-size: 9px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 
 }
 
@@ -88,6 +128,7 @@
 	margin-top:1px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 #bodywrapper button.button-placeholder:hover {
 	background:none;

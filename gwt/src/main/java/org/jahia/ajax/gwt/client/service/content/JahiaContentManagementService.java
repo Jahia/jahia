@@ -219,11 +219,11 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
     /**
-     * Publish the specified paths.
+     * Publish the specified uuids.
      *
-     * @param path the list of node paths to publish, will not auto publish the parents
+     * @param uuids the list of node uuids to publish, will not auto publish the parents
      */
-    public void publish(List<String> path, boolean allSubTree, String comments, boolean workflow, boolean reverse) throws GWTJahiaServiceException;
+    public void publish(List<String> uuids, boolean allSubTree, String comments, boolean workflow, boolean reverse) throws GWTJahiaServiceException;
 
     /**
      * Unpublish the specified path and its subnodes.

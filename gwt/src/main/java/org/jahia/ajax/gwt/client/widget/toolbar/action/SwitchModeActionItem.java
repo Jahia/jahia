@@ -1,6 +1,9 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.Constants;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 
 /**
@@ -12,6 +15,18 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
  */
 public class SwitchModeActionItem extends BaseActionItem {
 
+    public void handleNewLinkerSelection() {
+        final String mode = getPropertyValue(getGwtToolbarItem(), "mode");
+        if (mode.equalsIgnoreCase("live")) {
+            if (linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
+                    || linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE
+                    || linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                setEnabled(false);
+            } else {
+                setEnabled(true);
+            }
+        }
+    }
 
     @Override
     public void onComponentSelection() {

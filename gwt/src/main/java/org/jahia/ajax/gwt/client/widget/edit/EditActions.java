@@ -198,7 +198,7 @@ public class EditActions {
         if (selectedNode != null) {
             final GWTJahiaNode s = selectedNode;
 
-            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getPath()), false, "", false, true, new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), false, "", false, true, new AsyncCallback() {
                 public void onFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
@@ -316,8 +316,11 @@ public class EditActions {
                 public void componentSelected(ButtonEvent event) {
                     ok.setEnabled(false);
                     cancel.setEnabled(false);
-                    List<String> selectedPaths = new ArrayList<String>();
-                    JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getPath()), true, comments.getValue(), false,  false, new AsyncCallback() {
+                    List<String> toPublish = new ArrayList<String>();
+                    toPublish.add(selectedNode.getUUID());
+                    toPublish.addAll(ModuleHelper.getWrappedContentInfo().get(selectedNode.getUUID()));
+
+                    JahiaContentManagementService.App.getInstance().publish(toPublish, true, comments.getValue(), false,  false, new AsyncCallback() {
                         public void onFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());

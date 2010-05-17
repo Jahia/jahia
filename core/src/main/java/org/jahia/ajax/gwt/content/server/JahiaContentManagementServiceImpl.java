@@ -961,14 +961,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-     * Publish the specified paths.
+     * Publish the specified uuids.
      *
      * @param paths the list of node paths to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
-    public void publish(List<String> paths, boolean allSubTree, String comments, boolean workflow, boolean reverse) throws GWTJahiaServiceException {
+    public void publish(List<String> uuids, boolean allSubTree, String comments, boolean workflow, boolean reverse) throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession();
-        publication.publish(paths, Collections.singleton(session.getLocale().toString()), allSubTree, comments, workflow, reverse, session);
+        publication.publish(uuids, Collections.singleton(session.getLocale().toString()), allSubTree, comments, workflow, reverse, session);
     }
 
     /**

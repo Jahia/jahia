@@ -135,21 +135,21 @@ public class PublicationHelper {
      * Referenced nodes will also be published.
      * Parent node must be published, or will be published if publishParent is true.
      *
-     * @param paths     list of paths of the nodes to publish
+     * @param uuids     list of uuids of the nodes to publish
      * @param languages Set of languages to publish if null publish all languages
      * @param comments
      * @param workflow  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      */
-    public void publish(List<String> paths, Set<String> languages, boolean allSubTree, String comments, boolean workflow, boolean reverse, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public void publish(List<String> uuids, Set<String> languages, boolean allSubTree, String comments, boolean workflow, boolean reverse, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
             if (workflow) {
                 // todo : handle allsubtree / reverse
                 Map<WorkflowDefinition, List<JCRNodeWrapper>> m = new HashMap<WorkflowDefinition, List<JCRNodeWrapper>>();
-                for (String path : paths) {
-                    JCRNodeWrapper n = session.getNode(path);
+                for (String uuid : uuids) {
+                    JCRNodeWrapper n = session.getNodeByUUID(uuid);
                     List<WorkflowDefinition> def = workflowService.getPossibleWorkflows(n, session.getUser(), "publish");
                     if (def.isEmpty()) {
-                        publicationService.publish(path, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
+                        publicationService.publish(n.getPath(), session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
                     } else {
                         if (!m.containsKey(def.get(0))) {
                             m.put(def.get(0), new ArrayList<JCRNodeWrapper>());
@@ -169,11 +169,12 @@ public class PublicationHelper {
                     }
                 }
             } else {
-                for (String path : paths) {
+                for (String uuid : uuids) {
+                    JCRNodeWrapper n = session.getNodeByUUID(uuid);
                     if (reverse) {
-                        publicationService.publish(path, Constants.LIVE_WORKSPACE, session.getWorkspace().getName(), languages, false, allSubTree);
+                        publicationService.publish(n.getPath(), Constants.LIVE_WORKSPACE, session.getWorkspace().getName(), languages, false, allSubTree);
                     } else {
-                        publicationService.publish(path, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
+                        publicationService.publish(n.getPath(), session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
                     }
                 }
             }

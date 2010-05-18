@@ -144,12 +144,12 @@
             <c:forEach items="${result.nodes}" var="document" end="9">
                 <li>
                     <c:if test="${jcr:hasPermission(document, 'write')}">
-                        <a class="${functions:fileIcon(document.name)}"
+                        <span class="icon ${functions:fileIcon(document.name)}"></span><a
                            href="${url.basePreview}${document.path}.docspace.html"
                            title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
                     </c:if>
                     <c:if test="${not jcr:hasPermission(document, 'write')}">
-                        <a class="${functions:fileIcon(document.name)}"
+                        <span class="icon ${functions:fileIcon(document.name)}"></span><a 
                            href="${url.baseLive}${document.path}.docspace.html"
                            title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
                     </c:if>

@@ -74,15 +74,8 @@
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
                     <div class="imagefloatleft">
-                        <div class="itemImage itemImageLeft"><a
-                                href="${currentNode.url}"><img title="Download" value="download"
-                                                               src="${url.currentModule}/css/img/files/${functions:fileExtension(currentNode.name)}.png"/></a>
-                            <c:url var="pdfLink" value="${url.toPDF}" context="/">
-                                <c:param name="path" value="${currentNode.path}"/>
-                            </c:url>
-                            <a
-                                href="${pdfLink}"><img title="PDF" value="pdf"
-                                                               src="${url.currentModule}/css/img/files/pdf.png"/></a>
+                        <div class="itemImage itemImageLeft">
+									<span class="icon_large ${functions:fileIcon(currentNode.name)}_large"></span>
                         </div>
                     </div>
                     <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}"><img

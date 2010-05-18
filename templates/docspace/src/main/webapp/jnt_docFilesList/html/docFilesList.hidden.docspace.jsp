@@ -14,7 +14,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.dataTables.min.js"/>
-<template:addResources type="css" resources="dataTables.css"/>
+<template:addResources type="css" resources="files.css,dataTables.css"/>
 <template:include template="hidden.header"/>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -45,7 +45,7 @@
 </script>
 <table width="100%" class="table fileListTable" summary="file List Table" id="fileListTable">
     <caption class=" hidden">
-        Edition Mes taches en cours (table)
+        
     </caption>
     <colgroup>
         <col span="1" width="5%" class="col1"/>
@@ -83,8 +83,7 @@
                 <c:choose>
                     <c:when test="${jcr:isNodeType(subchild, 'jnt:docspace')}"><a style="display:block;width:32px;height:32px"><img alt="docspace" src="${url.currentModule}/css/img/docspacemedium.png" height="32" width="32"/></a></c:when>
                     <c:otherwise>
-                        <a style="display:block;width:16px;height:16px"
-                           class="${functions:fileIcon(subchild.name)}"></a>                    </c:otherwise>
+                        <span class="icon ${functions:fileIcon(subchild.name)}"></span>                    </c:otherwise>
                 </c:choose>            </td>
           <td headers="Title">
 			<a href="${url.base}${subchild.path}<c:if test="${jcr:isNodeType(subchild, 'jnt:docspaceFile')}">.docspace</c:if>.html">${subchild.name}</a><br />

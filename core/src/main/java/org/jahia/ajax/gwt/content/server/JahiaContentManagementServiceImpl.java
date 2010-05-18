@@ -106,6 +106,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private SeoHelper seo;
     private UIConfigHelper uiConfig;
     private AnalyticsHelper analytics;
+    private int expiration;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
@@ -175,6 +176,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setUiConfig(UIConfigHelper uiConfig) {
         this.uiConfig = uiConfig;
+    }
+
+    public void setExpiration(int expiration) {
+        this.expiration = expiration;
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -1301,4 +1306,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return workflow.getWorkflowHistoryItems(nodeId, historyItem, retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)));
     }
 
+    public Integer isValidSession()  throws GWTJahiaServiceException {
+        // >0 : shedule poll repeating for this value
+        // 0 : session expire
+        // <0 : polling desactivated
+        return getRequest().isRequestedSessionIdValid()?expiration:0;
+    }
 }

@@ -313,4 +313,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
             AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> callback);
 
     void getTasksForUser(AsyncCallback<List<GWTJahiaNode>> async);
+
+    void isValidSession(AsyncCallback<Integer> async)  throws GWTJahiaServiceException;
 }

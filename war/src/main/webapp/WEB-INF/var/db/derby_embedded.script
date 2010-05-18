@@ -1,6 +1,6 @@
 # Jahia Derby Database configuration file
 
-jahia.database.name     =  Sun JavaDB / Apache Derby database engine (embedded)
+jahia.database.name     =  Sun JavaDB / Apache Derby (embedded)
 jahia.database.driver   =  org.apache.derby.jdbc.EmbeddedDriver
 jahia.database.url      =  jdbc:derby:directory:$context/WEB-INF/var/dbdata/jahia;create=true
 jahia.database.user     =

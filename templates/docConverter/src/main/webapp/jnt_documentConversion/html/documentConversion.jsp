@@ -90,7 +90,7 @@
                                 key="label.from"/>:&nbsp;${fn:escapeXml(functions:abbreviate(lastNode.properties.originDocName.string,20,30,'...'))}</h3>
 
                         <h3><fmt:message key="label.to"/>:&nbsp;<a href="${lastNode.url}"><img alt=""
-                                                                                 src="${url.currentModule}/images/download.png"/>${fn:escapeXml(functions:abbreviate(lastNode.name,20,30,'...'))}
+                                                                                 src="${url.currentModule}/img/download.png"/>&nbsp;${fn:escapeXml(functions:abbreviate(lastNode.name,20,30,'...'))}
                         </a></h3>
                    <span class="clearMaringPadding converterdate"><fmt:message
                            key="label.conversion.date"/>:&nbsp;<fmt:formatDate

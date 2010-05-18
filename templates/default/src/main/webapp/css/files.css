@@ -87,6 +87,9 @@
 #bodywrapper li.rar,  #bodywrapper li.tar, #bodywrapper li.gz    {
     background: url(../icons/jnt_file_rar.png ) no-repeat scroll 0.5em 0.5em;
 }
+#bodywrapper li.swf    {
+    background: url(../icons/jnt_flash.png ) no-repeat scroll 0.5em 0.5em;
+}
 
 /* ------- Special treatment for serach results when result hit is a file ------- */
 
@@ -146,6 +149,10 @@
     background: url(../icons/jnt_file_rar.png ) no-repeat scroll 0.2em 0em;
     padding-left:24px;
 }
+#bodywrapper a.swf    {
+    background: url(../icons/jnt_flash.png ) no-repeat scroll 0.2em 0em;
+	padding-left:24px;
+}
 #bodywrapper a.jahiapage    {
     background: url(../icons/jnt_file_html.png ) no-repeat scroll 0.2em 0em;
     padding-left:24px;
@@ -198,5 +205,39 @@
 }
 #bodywrapper span.zip_large, #bodywrapper a.sit_large, #bodywrapper span.rar_large,  #bodywrapper span.tar_large, #bodywrapper span.gz_large, #bodywrapper span.jar_large {
     background: url(../icons/jnt_file_zip_large.png ) no-repeat top left;
+}
+
+#bodywrapper span.swf_large {
+    background: url(../icons/jnt_flash_large.png ) no-repeat top left;
+}
+#bodywrapper span.odg_large {
+    background: url(../icons/jnt_file_odg_large.png ) no-repeat top left;
+}
+#bodywrapper span.odp_large {
+    background: url(../icons/jnt_file_odp_large.png ) no-repeat top left;
+}
+#bodywrapper span.ods_large {
+    background: url(../icons/jnt_file_ods_large.png ) no-repeat top left;
+}
+#bodywrapper span.odt_large {
+    background: url(../icons/jnt_file_odt_large.png ) no-repeat top left;
+}
+#bodywrapper span.rtf_large {
+    background: url(../icons/jnt_file_rtf_large.png ) no-repeat top left;
+}
+#bodywrapper span.svg_large {
+    background: url(../icons/jnt_file_svg_large.png ) no-repeat top left;
+}
+#bodywrapper span.sxc_large {
+    background: url(../icons/jnt_file_sxc_large.png ) no-repeat top left;
+}
+#bodywrapper span.sxi_large {
+    background: url(../icons/jnt_file_sxi_large.png ) no-repeat top left;
+}
+#bodywrapper span.sxw_large {
+    background: url(../icons/jnt_file_sxc_large.png ) no-repeat top left;
+}
+#bodywrapper span.tsv_large {
+    background: url(../icons/jnt_file_tsv_large.png ) no-repeat top left;
 }
 /* ------- File types (end) ------- */

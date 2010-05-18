@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -147,7 +148,7 @@ public class SearchGrid extends ContentPanel {
         if (text != null && text.length() > 0) {
             final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
-            service.search(text, 0, config.getNodeTypes(), config.getMimeTypes(), config.getFilters(), new AsyncCallback<List<GWTJahiaNode>>() {
+            service.search(text, 0, config.getNodeTypes(), config.getMimeTypes(), config.getFilters(), new BaseAsyncCallback<List<GWTJahiaNode>>() {
                 public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                     if (gwtJahiaNodes != null) {
                         Log.debug("Found " + gwtJahiaNodes.size() + " results with text: " + text);
@@ -158,7 +159,7 @@ public class SearchGrid extends ContentPanel {
                     parent.unmask();
                 }
 
-                public void onFailure(Throwable throwable) {
+                public void onApplicationFailure(Throwable throwable) {
                     Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
                     parent.unmask();
                 }

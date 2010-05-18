@@ -43,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -175,7 +176,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
 
                             final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
                             service.createNode("/remotePublications", nameField.getValue().toString(), "jnt:remotePublication", null,
-                                             null, gwtJahiaNodeProperties, langCodeProperties, new AsyncCallback<GWTJahiaNode>() {
+                                             null, gwtJahiaNodeProperties, langCodeProperties, new BaseAsyncCallback<GWTJahiaNode>() {
                                         public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                                             if (getParent() instanceof Window) {
                                                 ((Window) getParent()).close();
@@ -183,7 +184,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
                                             onRemotePublicationCreated();
                                         }
 
-                                        public void onFailure(Throwable throwable) {
+                                        public void onApplicationFailure(Throwable throwable) {
                                             Log.error("Unable to create a remote publication", throwable);
                                             if (getParent() instanceof Window) {
                                                 ((Window) getParent()).hide();

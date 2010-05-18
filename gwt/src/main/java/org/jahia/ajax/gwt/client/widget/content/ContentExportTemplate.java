@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -66,7 +67,7 @@ public class ContentExportTemplate extends Window {
 
         setModal(true);
 
-        JahiaContentManagementService.App.getInstance().getExportUrl(n.getPath(), new AsyncCallback<String>() {
+        JahiaContentManagementService.App.getInstance().getExportUrl(n.getPath(), new BaseAsyncCallback<String>() {
 
             public void onSuccess(String result) {
                 HTML link = new HTML("<br /><a href=\"" + result + ".xml?cleanup=template"+ "\" target=\"_new\">" + n.getName() + ".xml</a>");
@@ -76,7 +77,7 @@ public class ContentExportTemplate extends Window {
                 layout();
             }
 
-            public void onFailure(Throwable caught) {
+            public void onApplicationFailure(Throwable caught) {
                 com.google.gwt.user.client.Window.alert(Messages.getResource("fm_fail") + "\n" + caught.getLocalizedMessage());
                 Log.error(Messages.getResource("fm_fail"), caught);
             }

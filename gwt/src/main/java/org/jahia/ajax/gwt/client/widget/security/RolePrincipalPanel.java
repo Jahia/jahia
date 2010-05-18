@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -50,13 +51,13 @@ public class RolePrincipalPanel extends LayoutContainer {
         super.onRender(parent, index);
         //setLayout(new FitLayout());
         Log.debug("Get role for site: " + siteKey);
-        JahiaContentManagementService.App.getInstance().getRoles(siteKey, isGroup, principalKey, new AsyncCallback<List<GWTJahiaRole>>() {
+        JahiaContentManagementService.App.getInstance().getRoles(siteKey, isGroup, principalKey, new BaseAsyncCallback<List<GWTJahiaRole>>() {
             public void onSuccess(List<GWTJahiaRole> gwtRoles) {
                 roles = gwtRoles;
                 updateUI();
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Error while retrieving roles", throwable);
             }
         });
@@ -150,22 +151,22 @@ public class RolePrincipalPanel extends LayoutContainer {
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {
                         if (checkbox.getValue()) {
-                            contentService.grantRoleToUser(role,isGroup, principalKey, new AsyncCallback() {
+                            contentService.grantRoleToUser(role,isGroup, principalKey, new BaseAsyncCallback() {
                                 public void onSuccess(Object o) {
                                     Log.debug("role granted");
                                 }
 
-                                public void onFailure(Throwable throwable) {
+                                public void onApplicationFailure(Throwable throwable) {
                                     Log.error("Error while granting role to user", throwable);
                                 }
                             });
                         } else {
-                            contentService.removeRoleToPrincipal(role, isGroup, principalKey, new AsyncCallback() {
+                            contentService.removeRoleToPrincipal(role, isGroup, principalKey, new BaseAsyncCallback() {
                                 public void onSuccess(Object o) {
                                     Log.debug("role revoked");
                                 }
 
-                                public void onFailure(Throwable throwable) {
+                                public void onApplicationFailure(Throwable throwable) {
                                     Log.error("Error while removing role from principal " + principalKey, throwable);
                                 }
                             });

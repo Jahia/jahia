@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -52,14 +53,14 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
         super.handleNewLinkerSelection();
         if (linker.getMainNode()!= null && !linker.getMainNode().getSiteUUID().equalsIgnoreCase(siteKey)) {
             siteKey = linker.getMainNode().getSiteUUID();
-            JahiaContentManagementService.App.getInstance().getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
+            JahiaContentManagementService.App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
                 public void onSuccess(List<GWTJahiaLanguage> languages) {
                     gwtJahiaLanguages = languages;
                     mainComponent.getStore().removeAll();
                     mainComponent.getStore().add(languages);
                 }
 
-                public void onFailure(Throwable throwable) {
+                public void onApplicationFailure(Throwable throwable) {
                     mainComponent.getStore().removeAll();
                 }
             });

@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.form;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -86,7 +87,7 @@ public abstract class FormQuickRSS extends FormQuickMashup {
         Button saveButton = new Button(Messages.getResource("label.save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                JahiaContentManagementService.App.getInstance().createRSSPortletInstance(getFolderPath(),(String) nameField.getValue(), (String) urlField.getValue(), new AsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createRSSPortletInstance(getFolderPath(),(String) nameField.getValue(), (String) urlField.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                         onMashupCreated();                        
                         if(getParent() instanceof Window){
@@ -94,7 +95,7 @@ public abstract class FormQuickRSS extends FormQuickMashup {
                         }
                     }
 
-                    public void onFailure(Throwable throwable) {
+                    public void onApplicationFailure(Throwable throwable) {
                         Log.error("Unable to create rss portlet", throwable);
                         if(getParent() instanceof Window){
                             ((Window)getParent()).close();

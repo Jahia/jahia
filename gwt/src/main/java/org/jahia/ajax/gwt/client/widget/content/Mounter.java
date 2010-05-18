@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -108,8 +109,8 @@ public class Mounter extends Window {
                 linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.mounting.label")) ;
                 submit.setEnabled(false);
                 cancel.setEnabled(false);
-                JahiaContentManagementService.App.getInstance().mount("", f.getValue(), t.getValue(), new AsyncCallback() {
-                    public void onFailure(Throwable throwable) {
+                JahiaContentManagementService.App.getInstance().mount("", f.getValue(), t.getValue(), new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
                         Log.error(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.mount.label"), throwable);
                         linker.loaded() ;
                         com.google.gwt.user.client.Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.mount.label") + " " + t.getValue());

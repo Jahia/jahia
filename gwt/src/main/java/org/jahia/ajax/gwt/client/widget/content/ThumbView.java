@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -211,8 +212,8 @@ public class ThumbView extends TopRightComponent {
                 getLinker().loading("listing directory content...");
             }
             service.ls((GWTJahiaNode) root, configuration.getNodeTypes()+","+configuration.getFolderTypes(), configuration.getMimeTypes(), configuration.getFilters(),
-                    GWTJahiaNode.DEFAULT_FIELDS, new AsyncCallback<List<GWTJahiaNode>>() {
-                public void onFailure(Throwable throwable) {
+                    GWTJahiaNode.DEFAULT_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                public void onApplicationFailure(Throwable throwable) {
                     Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
                     if (getLinker() != null) {
                         getLinker().loaded();

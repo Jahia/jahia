@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -198,10 +199,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             m_component.setHeading(heading);
 
             if (selectedNodes.size() == 1) {
-                JahiaContentManagementService.App.getInstance().getProperties(selectedNodes.get(0).getPath(), JahiaGWTParameters.getLanguage(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-                    public void onFailure(Throwable throwable) {
-                        Log.debug("Cannot get properties", throwable);
-                    }
+                JahiaContentManagementService.App.getInstance().getProperties(selectedNodes.get(0).getPath(), JahiaGWTParameters.getLanguage(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
 
                     public void onSuccess(GWTJahiaGetPropertiesResult result) {
                         GWTJahiaNode node = result.getNode();
@@ -210,15 +208,12 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         language = result.getCurrentLocale();
 
                         //todo : do this in one pass
-                        JahiaContentDefinitionService.App.getInstance().getAvailableMixin(node, new AsyncCallback<List<GWTJahiaNodeType>>() {
+                        JahiaContentDefinitionService.App.getInstance().getAvailableMixin(node, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                             public void onSuccess(List<GWTJahiaNodeType> result) {
                                 mixin = result;
                                 fillCurrentTab();
                             }
 
-                            public void onFailure(Throwable caught) {
-
-                            }
                         });
 
                         fillCurrentTab();

@@ -57,11 +57,11 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         this.contentDefinition = contentDefinition;
     }
 
-    public GWTJahiaNodeType getNodeType(String name) {
+    public GWTJahiaNodeType getNodeType(String name) throws GWTJahiaServiceException {
         return contentDefinition.getNodeType(name, new HashMap<String, Object>(), getUILocale());
     }
 
-    public List<GWTJahiaNodeType> getNodeTypes(List<String> names) {
+    public List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException {
         return contentDefinition.getNodeTypes(names, new HashMap<String, Object>(), getUILocale());
     }
 
@@ -82,7 +82,7 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getPageTemplates(retrieveCurrentSession(), getSite());
     }
 
-    public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) {
+    public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) throws GWTJahiaServiceException{
         return contentDefinition.getAvailableMixin(type, new HashMap<String, Object>(), getUILocale());
     }
 

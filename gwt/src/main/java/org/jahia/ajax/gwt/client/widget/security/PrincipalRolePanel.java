@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPrincipal;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
@@ -42,13 +43,13 @@ public class PrincipalRolePanel extends LayoutContainer {
     public PrincipalRolePanel(GWTJahiaRole role) {
         this.role = role;
         setLayout(new FitLayout());
-        contentService.getPrincipalsInRole(role, new AsyncCallback<List<GWTJahiaPrincipal>>() {
+        contentService.getPrincipalsInRole(role, new BaseAsyncCallback<List<GWTJahiaPrincipal>>() {
             public void onSuccess(List<GWTJahiaPrincipal> p) {
                 principals = p;
                 updateUI();
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Error while retrieving roles", throwable);
             }
         });
@@ -86,7 +87,7 @@ public class PrincipalRolePanel extends LayoutContainer {
                     }
                 }
                 if (pList.size() > 0) {
-                    contentService.grantRoleToPrincipals(role, pList, new AsyncCallback() {
+                    contentService.grantRoleToPrincipals(role, pList, new BaseAsyncCallback() {
                         public void onSuccess(Object o) {
                             Log.debug("Grant role to groups");
                             for (GWTJahiaPrincipal p : pList) {
@@ -96,7 +97,7 @@ public class PrincipalRolePanel extends LayoutContainer {
                             }
                         }
     
-                        public void onFailure(Throwable throwable) {
+                        public void onApplicationFailure(Throwable throwable) {
                             Log.error("Error while granting role to groups", throwable);
                         }
                     });
@@ -111,7 +112,7 @@ public class PrincipalRolePanel extends LayoutContainer {
                     }
                 }
                 if (pList.size() > 0) {
-                    contentService.grantRoleToPrincipals(role, pList, new AsyncCallback() {
+                    contentService.grantRoleToPrincipals(role, pList, new BaseAsyncCallback() {
                         public void onSuccess(Object o) {
                             Log.debug("Grant role to users");
                             for (GWTJahiaPrincipal p : pList) {
@@ -121,7 +122,7 @@ public class PrincipalRolePanel extends LayoutContainer {
                             }
                         }
     
-                        public void onFailure(Throwable throwable) {
+                        public void onApplicationFailure(Throwable throwable) {
                             Log.error("Error while granting role to users", throwable);
                         }
                     });
@@ -184,13 +185,13 @@ public class PrincipalRolePanel extends LayoutContainer {
                         final GWTJahiaPrincipal principal = (GWTJahiaPrincipal) buttonEvent.getButton().getData("associatedNode");
                         final List<GWTJahiaPrincipal> principalList = new ArrayList<GWTJahiaPrincipal>(1);
                         principalList.add(principal);
-                        contentService.removeRoleToPrincipals(role, principalList, new AsyncCallback() {
+                        contentService.removeRoleToPrincipals(role, principalList, new BaseAsyncCallback() {
                             public void onSuccess(Object o) {
                                 Log.debug("Revoke role from principal " + principal.getKey());
                                 store.remove(principal);
                             }
 
-                            public void onFailure(Throwable throwable) {
+                            public void onApplicationFailure(Throwable throwable) {
                                 Log.error("Error while revoking role from principal", throwable);
                             }
                         });

@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
@@ -75,7 +76,7 @@ public class ActionMenu extends Menu {
     public ActionMenu(final String toolbar, final Linker linker) {
         super();
         this.linker = linker;
-        ToolbarService.App.getInstance().getGWTToolbars(toolbar, new AsyncCallback<GWTJahiaToolbarSet>() {
+        ToolbarService.App.getInstance().getGWTToolbars(toolbar, new BaseAsyncCallback<GWTJahiaToolbarSet>() {
             public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
                 if (gwtJahiaToolbarSet != null && !gwtJahiaToolbarSet.getToolbarList().isEmpty()) {
                     createMenu(gwtJahiaToolbarSet);
@@ -83,7 +84,7 @@ public class ActionMenu extends Menu {
                 layout();
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Unable to get toolbar bean '" + toolbar + "'", throwable);
             }
         });

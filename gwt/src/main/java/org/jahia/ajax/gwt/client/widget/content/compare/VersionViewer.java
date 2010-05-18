@@ -16,6 +16,7 @@ import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -221,7 +222,7 @@ public class VersionViewer extends ContentPanel {
             mask();
             if (version == null || (version.getVersionNumber() == null || version.getVersionNumber().length() == 0)) {
                 // version is not specified. Current.
-                contentService.getNodeURL(currentNode.getPath(), locale, currentMode, new AsyncCallback<String>() {
+                contentService.getNodeURL(currentNode.getPath(), locale, currentMode, new BaseAsyncCallback<String>() {
                     public void onSuccess(String url) {
                         currentFrame = setUrl(url);
                         setHeading(url);
@@ -229,13 +230,13 @@ public class VersionViewer extends ContentPanel {
                         unmask();
                     }
 
-                    public void onFailure(Throwable throwable) {
+                    public void onApplicationFailure(Throwable throwable) {
                         Log.error("", throwable);
                         unmask();
                     }
                 });
             } else {
-                contentService.getNodeURL(version.getNode().getPath(), Long.toString(version.getCheckinDate().getTime()), workspace, locale, currentMode, new AsyncCallback<String>() {
+                contentService.getNodeURL(version.getNode().getPath(), Long.toString(version.getCheckinDate().getTime()), workspace, locale, currentMode, new BaseAsyncCallback<String>() {
                     public void onSuccess(String url) {
                         currentFrame = setUrl(url);
                         setHeading(url);
@@ -243,7 +244,7 @@ public class VersionViewer extends ContentPanel {
                         unmask();
                     }
 
-                    public void onFailure(Throwable throwable) {
+                    public void onApplicationFailure(Throwable throwable) {
                         Log.error("", throwable);
                         unmask();
                     }
@@ -274,7 +275,7 @@ public class VersionViewer extends ContentPanel {
      * Compare version
      */
     public void displayHighLigth() {
-        contentService.getHighlighted(getCompareWith(), getInnerHTML(), new AsyncCallback<String>() {
+        contentService.getHighlighted(getCompareWith(), getInnerHTML(), new BaseAsyncCallback<String>() {
             public void onSuccess(String s) {
                 IFrameElement frameElement = IFrameElement.as(currentFrame.getElement());
                 Document document = frameElement.getContentDocument();
@@ -284,7 +285,7 @@ public class VersionViewer extends ContentPanel {
                 }
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Error when triing to display higthligthing", throwable);
             }
         });

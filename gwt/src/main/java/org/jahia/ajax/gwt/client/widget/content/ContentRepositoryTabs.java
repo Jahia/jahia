@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.*;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
@@ -128,8 +129,8 @@ public class ContentRepositoryTabs extends LeftComponent {
                 if (item != null) {
                     List<String> queryNode = new ArrayList<String>();
                     queryNode.add(((GWTJahiaNode) item.getData("query")).getPath());
-                    service.deletePaths(queryNode, new AsyncCallback() {
-                        public void onFailure(Throwable throwable) {
+                    service.deletePaths(queryNode, new BaseAsyncCallback() {
+                        public void onApplicationFailure(Throwable throwable) {
                             Window.alert("Query deletion failed\n\n" + throwable.getLocalizedMessage());
                         }
 
@@ -212,8 +213,8 @@ public class ContentRepositoryTabs extends LeftComponent {
             }
             String newName = Window.prompt("Enter the new name for " + (selection.isFile().booleanValue() ? "file " : "folder ") + selection.getName(), selection.getName());
             if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
-                service.rename(selection.getPath(), newName, new AsyncCallback() {
-                    public void onFailure(Throwable throwable) {
+                service.rename(selection.getPath(), newName, new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
                         Window.alert("Rename failed\n\n" + throwable.getLocalizedMessage());
                     }
 
@@ -265,11 +266,7 @@ public class ContentRepositoryTabs extends LeftComponent {
 
     private void retrieveSavedSearch() {
         queryList.removeAll();
-        service.getSavedSearch(new AsyncCallback<List<GWTJahiaNode>>() {
-            public void onFailure(Throwable throwable) {
-                // ...
-            }
-
+        service.getSavedSearch(new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                 for (GWTJahiaNode query : gwtJahiaNodes) {
                     addSavedSearch(query, false);

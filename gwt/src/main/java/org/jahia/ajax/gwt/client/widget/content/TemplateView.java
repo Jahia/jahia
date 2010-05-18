@@ -39,6 +39,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -69,7 +70,7 @@ public class TemplateView extends TopRightComponent {
     public void setContent(final Object root) {
         clearTable();
         if (root != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(((GWTJahiaNode) root).getPath(), null, null, null, null, null, false, null, new AsyncCallback<GWTRenderResult>() {
+            JahiaContentManagementService.App.getInstance().getRenderedContent(((GWTJahiaNode) root).getPath(), null, null, null, null, null, false, null, new BaseAsyncCallback<GWTRenderResult>() {
                 public void onSuccess(GWTRenderResult result) {
                     html = new HTML(result.getResult());
                     m_component.add(html);
@@ -95,7 +96,7 @@ public class TemplateView extends TopRightComponent {
 
                 }
 
-                public void onFailure(Throwable caught) {
+                public void onApplicationFailure(Throwable caught) {
                     Log.error("", caught);
                     Window.alert("-->"+caught.getMessage());
                 }

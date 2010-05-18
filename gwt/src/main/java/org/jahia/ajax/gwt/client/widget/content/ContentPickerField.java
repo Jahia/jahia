@@ -43,6 +43,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -119,7 +120,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         if (disabled || isReadOnly()) {
             return;
         }
-        JahiaContentManagementService.App.getInstance().getManagerConfiguration(configuration, new AsyncCallback<GWTManagerConfiguration>() {
+        JahiaContentManagementService.App.getInstance().getManagerConfiguration(configuration, new BaseAsyncCallback<GWTManagerConfiguration>() {
             public void onSuccess(GWTManagerConfiguration config) {
                 final Window w = new Window();
                 w.setLayout(new FitLayout());
@@ -158,7 +159,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
                 w.show();
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Error while loading user permission", throwable);
             }
         });

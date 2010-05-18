@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.layout.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -109,8 +110,8 @@ public class SubscriptionsActionItem extends BaseActionItem {
         }
 
         service.requestSubscriptionStatus(subscriptions,
-                        new AsyncCallback<List<SubscriptionInfo>>() {
-                    public void onFailure(Throwable caught) {
+                        new BaseAsyncCallback<List<SubscriptionInfo>>() {
+                    public void onApplicationFailure(Throwable caught) {
                         MessageBox mb = new MessageBox();
                         mb.setType(MessageBoxType.ALERT);
                         mb.setIcon(MessageBox.ERROR);
@@ -218,8 +219,8 @@ public class SubscriptionsActionItem extends BaseActionItem {
         }
 
         service.updateSubscriptionStatus(subscriptions,
-                new AsyncCallback<Boolean>() {
-                    public void onFailure(Throwable caught) {
+                new BaseAsyncCallback<Boolean>() {
+                    public void onApplicationFailure(Throwable caught) {
                         MessageBox mb = new MessageBox();
                         mb.setType(MessageBoxType.ALERT);
                         mb.setIcon(MessageBox.ERROR);

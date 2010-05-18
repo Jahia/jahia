@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.widget.node;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -48,12 +49,12 @@ public class NodeRender extends HTML {
 
     public NodeRender(final GWTJahiaNode node) {
         setHTML("Loading...");
-        JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(),null, null, null, null, null, false, null, new AsyncCallback<GWTRenderResult>() {
+        JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(),null, null, null, null, null, false, null, new BaseAsyncCallback<GWTRenderResult>() {
            public void onSuccess(GWTRenderResult s) {
                setHTML(s.getResult());
            }
 
-           public void onFailure(Throwable throwable) {
+           public void onApplicationFailure(Throwable throwable) {
                setHTML("Error whenn loading "+node.getPath());
            }
        });

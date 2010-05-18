@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -191,8 +192,8 @@ class PublicationStatusWindow extends Window {
             noWorkflow.setEnabled(false);
             cancel.setEnabled(false);
             JahiaContentManagementService
-                    .App.getInstance().publish(uuids, false, comments.getValue(), workflow, false, new AsyncCallback() {
-                public void onFailure(Throwable caught) {
+                    .App.getInstance().publish(uuids, false, comments.getValue(), workflow, false, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
                     hide();

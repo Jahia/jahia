@@ -48,8 +48,8 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
@@ -100,40 +100,35 @@ public class WorkflowInstancesPanel extends ContentPanel {
             public void handleEvent(final RowExpanderEvent be) {
                 GWTJahiaNode node = (GWTJahiaNode) be.getModel();
                 GWTJahiaWorkflowAction action = node.getWorkflowInfo().getAvailableActions().get(0);
-                GWTJahiaWorkflowHistoryItem item = new GWTJahiaWorkflowHistoryItem("", action.getProcessId(),
-                                                                                   action.getProvider(), false, null,
-                                                                                   null, null);
+                GWTJahiaWorkflowHistoryItem item =
+                        new GWTJahiaWorkflowHistoryItem("", action.getProcessId(), action.getProvider(), false, null,
+                                null, null);
                 async.getWorkflowHistoryItems(node.getUUID(), item, action.getLocale(),
-                                              new AsyncCallback<List<GWTJahiaWorkflowHistoryItem>>() {
-                                                  public void onFailure(Throwable caught) {
-                                                      //To change body of implemented methods use File | Settings | File Templates.
-                                                  }
-
-                                                  public void onSuccess(List<GWTJahiaWorkflowHistoryItem> result) {
-                                                      Element bodyElement = be.getBodyElement();
-                                                      StringBuilder html = new StringBuilder();
-                                                      for (GWTJahiaWorkflowHistoryItem item : result) {
-                                                          GWTJahiaWorkflowHistoryTask task = (GWTJahiaWorkflowHistoryTask) item;
-                                                          html.append("<p style=\"background-color:white").append(
-                                                                  "\"><span>Start:&nbsp;").append(
-                                                                  DateTimeFormat.getMediumDateTimeFormat().format(
-                                                                          item.getStartDate())).append("</span>");
-                                                          if (task.getAssignee() != null) {
-                                                              html.append("<span>&nbsp;by&nbsp;").append(
-                                                                      task.getAssignee()).append("</span>");
-                                                          }
-                                                          if (task.getOutcome() != null) {
-                                                              html.append("<span>&nbsp;has&nbsp;").append(
-                                                                      task.getOutcome()).append("</span>");
-                                                              html.append("<span>&nbsp;at&nbsp;").append(
-                                                                      DateTimeFormat.getMediumDateTimeFormat().format(
-                                                                          item.getEndDate())).append("</span>");
-                                                          }
-                                                          html.append("</p><br/>");
-                                                      }
-                                                      bodyElement.appendChild(new HTML(html.toString()).getElement());
-                                                  }
-                                              });
+                        new BaseAsyncCallback<List<GWTJahiaWorkflowHistoryItem>>() {
+                            public void onSuccess(List<GWTJahiaWorkflowHistoryItem> result) {
+                                Element bodyElement = be.getBodyElement();
+                                StringBuilder html = new StringBuilder();
+                                for (GWTJahiaWorkflowHistoryItem item : result) {
+                                    GWTJahiaWorkflowHistoryTask task = (GWTJahiaWorkflowHistoryTask) item;
+                                    html.append("<p style=\"background-color:white").append("\"><span>Start:&nbsp;")
+                                            .append(DateTimeFormat.getMediumDateTimeFormat().format(
+                                                    item.getStartDate())).append("</span>");
+                                    if (task.getAssignee() != null) {
+                                        html.append("<span>&nbsp;by&nbsp;").append(task.getAssignee())
+                                                .append("</span>");
+                                    }
+                                    if (task.getOutcome() != null) {
+                                        html.append("<span>&nbsp;has&nbsp;").append(task.getOutcome())
+                                                .append("</span>");
+                                        html.append("<span>&nbsp;at&nbsp;")
+                                                .append(DateTimeFormat.getMediumDateTimeFormat().format(
+                                                        item.getEndDate())).append("</span>");
+                                    }
+                                    html.append("</p><br/>");
+                                }
+                                bodyElement.appendChild(new HTML(html.toString()).getElement());
+                            }
+                        });
                 be.setCancelled(false);
             }
         });
@@ -213,25 +208,7 @@ public class WorkflowInstancesPanel extends ContentPanel {
                 List<GWTJahiaWorkflowAction> actions = node.getWorkflowInfo().getAvailableActions();
                 GWTJahiaWorkflowAction action = actions.get(0);
                 final Label label = new Label();
-                async.getTaskComments(action, new AsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
-                    /**
-                     * Called when an asynchronous call fails to complete normally.
-                     * {@link com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException}s, {@link com.google.gwt.user.client.rpc.InvocationException}s,
-                     * or checked exceptions thrown by the service method are examples of the type
-                     * of failures that can be passed to this method.
-                     * <p/>
-                     * <p>
-                     * If <code>caught</code> is an instance of an
-                     * {@link com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException} the application should try to
-                     * get into a state where a browser refresh can be safely done.
-                     * </p>
-                     *
-                     * @param caught failure encountered while executing a remote procedure call
-                     */
-                    public void onFailure(Throwable caught) {
-                        //To change body of implemented methods use File | Settings | File Templates.
-                    }
-
+                async.getTaskComments(action, new BaseAsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
                     /**
                      * Called when an asynchronous call completes successfully.
                      *
@@ -239,8 +216,8 @@ public class WorkflowInstancesPanel extends ContentPanel {
                      */
                     public void onSuccess(List<GWTJahiaWorkflowTaskComment> result) {
                         if (result.size() > 0) {
-                            label.setText(DateTimeFormat.getMediumDateTimeFormat().format(result.get(
-                                    result.size() - 1).getTime()));
+                            label.setText(DateTimeFormat.getMediumDateTimeFormat().format(
+                                    result.get(result.size() - 1).getTime()));
                         }
                     }
                 });
@@ -266,9 +243,7 @@ public class WorkflowInstancesPanel extends ContentPanel {
                     window.setScrollMode(Style.Scroll.AUTO);
                     window.setSize(800, 600);
                     async.getRenderedContent(node.getPath(), action.getWorkspace(), action.getLocale(), null,
-                                             "bodywrapper", null, false, null, new AsyncCallback<GWTRenderResult>() {
-                                public void onFailure(Throwable caught) {
-                                }
+                            "bodywrapper", null, false, null, new BaseAsyncCallback<GWTRenderResult>() {
 
                                 public void onSuccess(GWTRenderResult result) {
                                     HTML html = new HTML(result.getResult());
@@ -288,8 +263,8 @@ public class WorkflowInstancesPanel extends ContentPanel {
     public void refreshData() {
         contentStore.removeAll();
         final WorkflowInstancesPanel workflowInstancesPanel = this;
-        async.getTasksForUser(new AsyncCallback<List<GWTJahiaNode>>() {
-            public void onFailure(Throwable caught) {
+        async.getTasksForUser(new BaseAsyncCallback<List<GWTJahiaNode>>() {
+            public void onApplicationFailure(Throwable caught) {
                 Info.display("Workflow not started", "Workflow not started");
             }
 

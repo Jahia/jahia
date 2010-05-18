@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -311,15 +312,12 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setTypeAhead(true);
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
         combo.setForceSelection(true);
-        JahiaContentManagementService.App.getInstance().getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
+        JahiaContentManagementService.App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
             public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
                 combo.getStore().removeAll();
                 combo.getStore().add(gwtJahiaLanguages);
             }
 
-            public void onFailure(Throwable throwable) {
-                Log.error("Error while loading languages");
-            }
         });
         return combo;
     }

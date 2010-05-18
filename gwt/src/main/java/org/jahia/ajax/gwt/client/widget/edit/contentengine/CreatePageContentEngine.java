@@ -3,6 +3,7 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
@@ -43,8 +44,8 @@ public class CreatePageContentEngine extends CreateContentEngine {
         } else {
             final GWTJahiaNode template = createPageTab.getTemplate().get(0);
             props.add(new GWTJahiaNodeProperty("j:sourceTemplate", new GWTJahiaNodePropertyValue(template.getUUID(), GWTJahiaNodePropertyType.WEAKREFERENCE)));
-            contentService.copyAndSaveProperties(Arrays.asList(template.getPath()), parentNode.getPath(), mixin , newNodeACL, langCodeProperties, props, new AsyncCallback() {
-                public void onFailure(Throwable caught) {
+            contentService.copyAndSaveProperties(Arrays.asList(template.getPath()), parentNode.getPath(), mixin , newNodeACL, langCodeProperties, props, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable caught) {
                     Window.alert("error1: "+caught);
                 }
 

@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
@@ -86,16 +87,11 @@ public class LayoutTabItem extends PropertiesTabItem {
      */
     private void updatePreview(String template, Map<String, String> contextParams) {
         if (engine.getNode() != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(engine.getNode().getPath(), null, null, template, "previewwrapper", contextParams, false, null, new AsyncCallback<GWTRenderResult>() {
+            JahiaContentManagementService.App.getInstance().getRenderedContent(engine.getNode().getPath(), null, null, template, "previewwrapper", contextParams, false, null, new BaseAsyncCallback<GWTRenderResult>() {
                 public void onSuccess(GWTRenderResult result) {
                     HTML html = new HTML(result.getResult());
                     setHTML(html);
                     layout();
-                }
-
-                public void onFailure(Throwable caught) {
-                    Log.error("", caught);
-                    com.google.gwt.user.client.Window.alert("-update preview->" + caught.getMessage());
                 }
             });
         } else {

@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.client.widget.process;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
 import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserViewport;
@@ -69,8 +70,8 @@ public class ProcessDisplayPanel extends TriPanelBrowserViewport {
         // superclass constructor (define linker)
         super(null);
 
-        ProcessDisplayService.App.getInstance().getPreferences(new AsyncCallback<GWTJahiaProcessJobPreference>() {
-            public void onFailure(Throwable throwable) {
+        ProcessDisplayService.App.getInstance().getPreferences(new BaseAsyncCallback<GWTJahiaProcessJobPreference>() {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Unable to load preference", throwable);
                 GWTJahiaProcessJobPreference gwtJahiaProcessJobPreference = new GWTJahiaProcessJobPreference();
                 gwtJahiaProcessJobPreference.setMaxJobs(100);

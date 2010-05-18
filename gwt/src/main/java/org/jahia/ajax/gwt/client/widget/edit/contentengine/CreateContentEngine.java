@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -148,10 +149,10 @@ public class CreateContentEngine extends AbstractContentEngine {
      * load mixin
      */
     private void loadMixin() {
-        definitionService.getAvailableMixin(nodeTypes.iterator().next(), new AsyncCallback<List<GWTJahiaNodeType>>() {
+        definitionService.getAvailableMixin(nodeTypes.iterator().next(), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
             public void onSuccess(List<GWTJahiaNodeType> result) {
                 mixin = result;
-                contentService.getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
+                contentService.getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
                     public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
                         if (gwtJahiaLanguages != null && !gwtJahiaLanguages.isEmpty()) {
                             for (GWTJahiaLanguage gwtJahiaLanguage : gwtJahiaLanguages) {
@@ -165,14 +166,14 @@ public class CreateContentEngine extends AbstractContentEngine {
                         fillCurrentTab();
                     }
 
-                    public void onFailure(Throwable throwable) {
+                    public void onApplicationFailure(Throwable throwable) {
                         Log.error("Unable to load avalibale mixin", throwable);
                     }
                 });
 
             }
 
-            public void onFailure(Throwable caught) {
+            public void onApplicationFailure(Throwable caught) {
                 Log.error("Unable to load avalibale mixin", caught);
             }
         });
@@ -242,8 +243,8 @@ public class CreateContentEngine extends AbstractContentEngine {
     }
 
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
-        final AsyncCallback<GWTJahiaNode> callback = new AsyncCallback<GWTJahiaNode>() {
-            public void onFailure(Throwable throwable) {
+        final AsyncCallback<GWTJahiaNode> callback = new BaseAsyncCallback<GWTJahiaNode>() {
+            public void onApplicationFailure(Throwable throwable) {
                 com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                 Log.error("failed", throwable);
             }

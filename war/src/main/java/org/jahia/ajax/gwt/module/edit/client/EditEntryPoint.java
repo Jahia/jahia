@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
@@ -29,7 +30,7 @@ public class EditEntryPoint extends CommonEntryPoint {
 
         final RootPanel panel = RootPanel.get("editmode");
         if (panel != null) {
-            JahiaContentManagementService.App.getInstance().getEditConfiguration(DOM.getElementAttribute(panel.getElement(), "config"), new AsyncCallback<GWTEditConfiguration>() {
+            JahiaContentManagementService.App.getInstance().getEditConfiguration(DOM.getElementAttribute(panel.getElement(), "config"), new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     panel.add(new EditPanelViewport(DOM.getInnerHTML(panel.getElement()),
                             DOM.getElementAttribute(panel.getElement(), "path"),
@@ -37,7 +38,7 @@ public class EditEntryPoint extends CommonEntryPoint {
                             DOM.getElementAttribute(panel.getElement(), "locale"), gwtEditConfiguration));
                 }
 
-                public void onFailure(Throwable throwable) {
+                public void onApplicationFailure(Throwable throwable) {
                     Log.error("Error when loading EditConfiguration", throwable);
                 }
             });

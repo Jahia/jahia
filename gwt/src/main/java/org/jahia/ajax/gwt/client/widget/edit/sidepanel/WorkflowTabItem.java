@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
@@ -125,8 +126,8 @@ public class WorkflowTabItem extends SidePanelTabItem {
             }
         }
 
-        jahiaContentManagementServiceAsync.getNodesWithPublicationInfo(list, new AsyncCallback<List<GWTJahiaNode>>() {
-            public void onFailure(Throwable caught) {
+        jahiaContentManagementServiceAsync.getNodesWithPublicationInfo(list, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+            public void onApplicationFailure(Throwable caught) {
                 Info.display("Workflow not started", "Workflow not started");
             }
 

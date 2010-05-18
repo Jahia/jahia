@@ -67,14 +67,10 @@ public class JavaScriptApi {
     }
 
     static void renderPortlet(final Element e, String windowID, String entryPointInstanceID, String pathInfo, String queryString) {
-        JahiaService.App.getInstance().drawPortletInstanceOutput(windowID, entryPointInstanceID, pathInfo, queryString, new AsyncCallback<GWTJahiaPortletOutputBean>() {
+        JahiaService.App.getInstance().drawPortletInstanceOutput(windowID, entryPointInstanceID, pathInfo, queryString, new BaseAsyncCallback<GWTJahiaPortletOutputBean>() {
             public void onSuccess(GWTJahiaPortletOutputBean result) {
                 e.setInnerHTML(result.getHtmlOutput());
                 Log.info("Portlet successfully loaded.");
-            }
-
-            public void onFailure(Throwable throwable) {
-                Log.error("Error loading portlet HTML", throwable);
             }
         });
     }

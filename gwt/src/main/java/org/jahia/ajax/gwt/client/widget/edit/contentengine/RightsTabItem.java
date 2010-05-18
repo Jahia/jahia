@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -44,7 +45,7 @@ public class RightsTabItem extends EditEngineTabItem {
 
     private void getACL(final GWTJahiaNode node) {
         mask("Loading ACL ...");
-        JahiaContentManagementService.App.getInstance().getACL(node.getPath(), new AsyncCallback<GWTJahiaNodeACL>() {
+        JahiaContentManagementService.App.getInstance().getACL(node.getPath(), new BaseAsyncCallback<GWTJahiaNodeACL>() {
             /**
              * onsuccess
              * @param gwtJahiaNodeACL
@@ -76,7 +77,7 @@ public class RightsTabItem extends EditEngineTabItem {
              * On failure
              * @param throwable
              */
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot retrieve acl", throwable);
             }
         });
@@ -92,13 +93,13 @@ public class RightsTabItem extends EditEngineTabItem {
         }
 
         public void componentSelected(ButtonEvent event) {
-            JahiaContentManagementService.App.getInstance().setACL(selectedNode.getPath(), acl, new AsyncCallback() {
+            JahiaContentManagementService.App.getInstance().setACL(selectedNode.getPath(), acl, new BaseAsyncCallback() {
                 public void onSuccess(Object o) {
                     Info.display("", "ACL saved");
                     rightsEditor.setSaved();
                 }
 
-                public void onFailure(Throwable throwable) {
+                public void onApplicationFailure(Throwable throwable) {
                     Log.error("acl save failed", throwable);
                 }
             });

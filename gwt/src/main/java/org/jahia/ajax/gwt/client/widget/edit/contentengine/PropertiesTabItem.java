@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -163,8 +164,8 @@ public class PropertiesTabItem extends EditEngineTabItem {
                             }
 
                             JahiaContentManagementService.App.getInstance().savePropertiesAndACL(engine.getNodes(), null,
-                                    getLangPropertiesMap(true),propertiesEditor.getProperties(), new AsyncCallback() {
-                                        public void onFailure(Throwable throwable) {
+                                    getLangPropertiesMap(true),propertiesEditor.getProperties(), new BaseAsyncCallback() {
+                                        public void onApplicationFailure(Throwable throwable) {
                                             Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                                             Log.error("failed", throwable);
                                         }

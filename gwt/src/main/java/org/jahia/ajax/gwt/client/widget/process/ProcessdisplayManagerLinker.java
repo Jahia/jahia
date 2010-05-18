@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.process;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
 import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
@@ -52,8 +53,8 @@ public class ProcessdisplayManagerLinker extends ManagerLinker {
 
 
     public void refreshPreferenceAndTable() {
-        ProcessDisplayService.App.getInstance().getPreferences(new AsyncCallback<GWTJahiaProcessJobPreference>() {
-            public void onFailure(Throwable throwable) {
+        ProcessDisplayService.App.getInstance().getPreferences(new BaseAsyncCallback<GWTJahiaProcessJobPreference>() {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Enable to load preference", throwable);
                 refreshTable();
             }

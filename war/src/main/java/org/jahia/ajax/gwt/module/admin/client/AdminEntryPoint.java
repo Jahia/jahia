@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.module.admin.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -92,11 +93,7 @@ public class AdminEntryPoint extends CommonEntryPoint {
         UserGroupSelect ug = new UserGroupSelect(new UserGroupAdder() {
             public void addUsers(List<GWTJahiaUser> users) {
                 for (GWTJahiaUser user : users) {
-                    UserManagerService.App.getInstance().getFormattedPrincipal(user.getUserKey(), 'u', pattern.split("\\|"), new AsyncCallback<String[]>() {
-                        public void onFailure(Throwable throwable) {
-
-                        }
-
+                    UserManagerService.App.getInstance().getFormattedPrincipal(user.getUserKey(), 'u', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
                         public void onSuccess(String[] strings) {
                             add(strings[0], strings[1]);
                         }
@@ -106,11 +103,7 @@ public class AdminEntryPoint extends CommonEntryPoint {
 
             public void addGroups(List<GWTJahiaGroup> groups) {
                 for (GWTJahiaGroup group : groups) {
-                    UserManagerService.App.getInstance().getFormattedPrincipal(group.getGroupKey(), 'g', pattern.split("\\|"), new AsyncCallback<String[]>() {
-                        public void onFailure(Throwable throwable) {
-
-                        }
-
+                    UserManagerService.App.getInstance().getFormattedPrincipal(group.getGroupKey(), 'g', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
                         public void onSuccess(String[] strings) {
                             add(strings[0], strings[1]);
                         }

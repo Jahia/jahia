@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
@@ -86,8 +87,8 @@ public class ProcessJobTopBar extends TopBar {
         deleteItem.setIconStyle("gwt-pdisplay-icons-delete");
         deleteItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                ProcessDisplayService.App.getInstance().deleteJob(selectedGWTJahiaProcessJob, new AsyncCallback() {
-                    public void onFailure(Throwable throwable) {
+                ProcessDisplayService.App.getInstance().deleteJob(selectedGWTJahiaProcessJob, new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
                         Log.error("Unable to delete waiting job");
                     }
 
@@ -193,8 +194,8 @@ public class ProcessJobTopBar extends TopBar {
     private void initTimer() {
         Timer timer = new Timer() {
             public void run() {
-                ProcessDisplayService.App.getInstance().getGWTProcessJobStat(GWTJahiaProcessJobStat.TIMER_MODE, new AsyncCallback<GWTJahiaProcessJobStat>() {
-                    public void onFailure(Throwable throwable) {
+                ProcessDisplayService.App.getInstance().getGWTProcessJobStat(GWTJahiaProcessJobStat.TIMER_MODE, new BaseAsyncCallback<GWTJahiaProcessJobStat>() {
+                    public void onApplicationFailure(Throwable throwable) {
                         infoItem.setIconStyle("gwt-pdisplay-icons-error");
                     }
 
@@ -291,8 +292,8 @@ public class ProcessJobTopBar extends TopBar {
                 gwtJahiaProcessJobPreferences.setRefreshAtEndOfAnyPageWorkflow(true);
 
                 // make an ajax call to save preferences
-                ProcessDisplayService.App.getInstance().savePreferences(gwtJahiaProcessJobPreferences, new AsyncCallback() {
-                    public void onFailure(Throwable throwable) {
+                ProcessDisplayService.App.getInstance().savePreferences(gwtJahiaProcessJobPreferences, new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
                         window.hide();
                     }
 

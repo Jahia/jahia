@@ -131,7 +131,7 @@ public class LeftPanel extends LeftComponent {
 
     private void retrieveTypes() {
         typesList.removeAll() ;
-//        service.getNodeTypes(new AsyncCallback<List<GWTJahiaNodeType>>() {
+//        service.getNodeTypes(new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
 //            public void onFailure(Throwable throwable) {
 //                 ...
 //            }

@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -123,13 +124,13 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         if (config.isExpandRoot()) {
             DeferredCommand.addCommand(new Command() {
                 public void execute() {
-                    JahiaContentManagementService.App.getInstance().getNode(rootPath, new AsyncCallback<GWTJahiaNode>() {
+                    JahiaContentManagementService.App.getInstance().getNode(rootPath, new BaseAsyncCallback<GWTJahiaNode>() {
                         public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                             linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode);
                             linker.refresh();
                         }
 
-                        public void onFailure(Throwable throwable) {
+                        public void onApplicationFailure(Throwable throwable) {
                             Log.error("Unable to load node with path " + rootPath, throwable);
                         }
                     });

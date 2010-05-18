@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -274,14 +275,10 @@ public class ContentSearchForm extends ContentPanel {
         combo.setTypeAhead(true);
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
         combo.setForceSelection(true);
-        JahiaContentManagementService.App.getInstance().getSiteLanguages(new AsyncCallback<List<GWTJahiaLanguage>>() {
+        JahiaContentManagementService.App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
             public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
                 combo.getStore().removeAll();
                 combo.getStore().add(gwtJahiaLanguages);
-            }
-
-            public void onFailure(Throwable throwable) {
-                Log.error("Error while loading languages");
             }
         });
         return combo;
@@ -297,13 +294,13 @@ public class ContentSearchForm extends ContentPanel {
         int limit = 500;
         int offset = 0;
         Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," + inNameField.getValue() + "," + inTagField.getValue());
-        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, new AsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+        JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
             public void onSuccess(PagingLoadResult<GWTJahiaNode> gwtJahiaNodePagingLoadResult) {
                 linker.getTopRightObject().setProcessedContent(gwtJahiaNodePagingLoadResult.getData());
                 linker.loaded();
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.debug("error while searching nodes due to:", throwable);
                 linker.getTopRightObject().setProcessedContent(null);
                 linker.loaded();
@@ -343,12 +340,12 @@ public class ContentSearchForm extends ContentPanel {
             if (name != null && name.length() > 0) {
                 name = JCRClientUtils.cleanUpFilename(name);
                 final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-                service.saveSearch(query,null, name, new AsyncCallback<GWTJahiaNode>() {
+                service.saveSearch(query,null, name, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
                         Log.debug("saved.");
                     }
 
-                    public void onFailure(Throwable throwable) {
+                    public void onApplicationFailure(Throwable throwable) {
                         if (throwable instanceof ExistingFileException) {
                             Window.alert(Messages.getNotEmptyResource("fm_inUseSaveSearch", "The entered name is already in use."));
                         } else {

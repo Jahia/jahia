@@ -12,6 +12,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -120,7 +121,7 @@ public class MainModule extends Module {
     private void refresh() {
         JahiaContentManagementService.App.getInstance()
                 .getRenderedContent(path, null, editLinker.getLocale(), template, "bodywrapper", null, true,
-                        config.getName(), new AsyncCallback<GWTRenderResult>() {
+                        config.getName(), new BaseAsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
                                 int i = getVScrollPosition();
                                 head.setText("Page : " + path);
@@ -138,9 +139,6 @@ public class MainModule extends Module {
                                 switchStaticAssets(result.getStaticAssets());
                             }
 
-                            public void onFailure(Throwable caught) {
-                                GWT.log("error", caught);
-                            }
                         });
 
     }

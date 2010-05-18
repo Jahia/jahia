@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
@@ -143,8 +144,8 @@ public class ImageResize extends Window {
     }
 
     private void resizeImage(final String path, final String targetName, final int width, final int height, final boolean force) {
-         JahiaContentManagementService.App.getInstance().resizeImage(path, targetName, width, height, force, new AsyncCallback() {
-             public void onFailure(Throwable throwable) {
+         JahiaContentManagementService.App.getInstance().resizeImage(path, targetName, width, height, force, new BaseAsyncCallback() {
+             public void onApplicationFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
                      if (com.google.gwt.user.client.Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
                          resizeImage(path, targetName, width, height, true);

@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaCheckedLink;
 import org.jahia.ajax.gwt.client.data.linkchecker.GWTJahiaLinkCheckerStatus;
 import org.jahia.ajax.gwt.client.service.linkchecker.LinkCheckerService;
@@ -122,11 +123,7 @@ public class LinkChecker extends ContentPanel {
         m_timer = new Timer() {
             public void run() {
                 Log.debug("polling...");
-                LinkCheckerService.App.getInstance().lookForCheckedLinks(new AsyncCallback<GWTJahiaLinkCheckerStatus>() {
-                    public void onFailure(Throwable throwable) {
-                        Log.error(throwable.toString());
-                    }
-
+                LinkCheckerService.App.getInstance().lookForCheckedLinks(new BaseAsyncCallback<GWTJahiaLinkCheckerStatus>() {
                     public void onSuccess(GWTJahiaLinkCheckerStatus status) {
                         List<GWTJahiaCheckedLink> gwtJahiaCheckedLinks = status.getLinks();
                         for (GWTJahiaCheckedLink link: gwtJahiaCheckedLinks) {
@@ -174,11 +171,7 @@ public class LinkChecker extends ContentPanel {
         Button checkLinks = new Button(Messages.getResource("lc_checkLinks"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 m_store.removeAll();
-                LinkCheckerService.App.getInstance().checkLinks(new AsyncCallback<Boolean>() {
-                    public void onFailure(Throwable throwable) {
-                        Log.error(throwable.toString());
-                    }
-
+                LinkCheckerService.App.getInstance().checkLinks(new BaseAsyncCallback<Boolean>() {
                     public void onSuccess(Boolean o) {
                         if (o != null && o.booleanValue()) {
                             Log.debug("starting polling...");
@@ -214,8 +207,8 @@ public class LinkChecker extends ContentPanel {
     }
 
     private void stopPolling() {
-        LinkCheckerService.App.getInstance().stopCheckingLinks(new AsyncCallback() {
-            public void onFailure(Throwable throwable) {
+        LinkCheckerService.App.getInstance().stopCheckingLinks(new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error(throwable.toString());
                 stop();
             }

@@ -47,6 +47,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import java.util.List;
 import java.util.ArrayList;
+
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.content.ImagePopup;
@@ -112,14 +114,14 @@ public class VersioningPanel extends ContentPanel {
                         MessageBox.alert("Alert", "Selected node is locked.", null);
                     } else {
                         GWTJahiaNodeVersion gwtJahiaNodeVersion = sel.get(0);
-                        JahiaContentManagementService.App.getInstance().restoreNode(gwtJahiaNodeVersion,new AsyncCallback() {
+                        JahiaContentManagementService.App.getInstance().restoreNode(gwtJahiaNodeVersion,new BaseAsyncCallback() {
                             public void onSuccess(Object o) {
                                 // refresh on restore
                                 Info.display("Restore",getSelectedNode().getDisplayName()+ "has been restored sucessfully");
                                 afterRestore();
                             }
 
-                            public void onFailure(Throwable throwable) {
+                            public void onApplicationFailure(Throwable throwable) {
                                 MessageBox.alert("Alert", "Unable to restore selected version", null);
                                 Log.error("Unbale to restore selected version",throwable);
                             }
@@ -155,8 +157,8 @@ public class VersioningPanel extends ContentPanel {
         });
 
         // load all versions of the selected node
-        JahiaContentManagementService.App.getInstance().getVersions(selectedNode.getPath(), new AsyncCallback<List<GWTJahiaNodeVersion>>() {
-            public void onFailure(Throwable caught) {
+        JahiaContentManagementService.App.getInstance().getVersions(selectedNode.getPath(), new BaseAsyncCallback<List<GWTJahiaNodeVersion>>() {
+            public void onApplicationFailure(Throwable caught) {
                  MessageBox.alert("Error", "Unable to load versions of the selected node.", null);
             }
 

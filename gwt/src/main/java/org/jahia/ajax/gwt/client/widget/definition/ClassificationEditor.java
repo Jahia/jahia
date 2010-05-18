@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -180,11 +181,7 @@ public class ClassificationEditor extends ContentPanel {
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (node != null) {
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                    async.getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-                        public void onFailure(Throwable caught) {
-                            //To change body of implemented methods use File | Settings | File Templates.
-                        }
-
+                    async.getProperties(node.getPath(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
                         public void onSuccess(GWTJahiaGetPropertiesResult result) {
                             final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get("j:tags");
                             if (gwtJahiaNodeProperty != null) {
@@ -215,11 +212,7 @@ public class ClassificationEditor extends ContentPanel {
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (node != null) {
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                    async.getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-                        public void onFailure(Throwable caught) {
-                            //To change body of implemented methods use File | Settings | File Templates.
-                        }
-
+                    async.getProperties(node.getPath(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
                         public void onSuccess(GWTJahiaGetPropertiesResult result) {
                             final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get(
                                     "j:defaultCategory");
@@ -315,7 +308,7 @@ public class ClassificationEditor extends ContentPanel {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                async.getTagNode(autoCompleteComboBox.getRawValue(), true, new AsyncCallback<GWTJahiaNode>() {
+                async.getTagNode(autoCompleteComboBox.getRawValue(), true, new BaseAsyncCallback<GWTJahiaNode>() {
                     /**
                      * On success
                      * @param result
@@ -324,14 +317,6 @@ public class ClassificationEditor extends ContentPanel {
                         if (tagStore.findModel(result) == null) {
                             tagStore.add(result, false);
                         }
-                    }
-
-                    /**
-                     * On failure
-                     * @param caught
-                     */
-                    public void onFailure(Throwable caught) {
-                        Log.error(caught.getMessage(), caught);
                     }
 
 

@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -319,11 +320,7 @@ public class UserGroupSelect extends Window {
                 }
             });
             
-            service.getAvailableSites(new AsyncCallback<List<GWTJahiaSite>>() {
-                public void onFailure (Throwable throwable) {
-                    Log.error("Err",throwable);
-                }
-    
+            service.getAvailableSites(new BaseAsyncCallback<List<GWTJahiaSite>>() {
                 public void onSuccess (List<GWTJahiaSite> gwtJahiaSites) {
                     sites.add(gwtJahiaSites);
                     if (gwtJahiaSites.size() > 0) {

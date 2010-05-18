@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -48,8 +49,8 @@ public class NodeUsagesGrid {
                         for (GWTJahiaNode selectedNode : nodes) {
                             String path = selectedNode.getPath();
 
-                            instance.getUsages(path, new AsyncCallback<List<GWTJahiaNodeUsage>>() {
-                                public void onFailure(Throwable throwable) {
+                            instance.getUsages(path, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                                public void onApplicationFailure(Throwable throwable) {
                                     Log.debug("Cannot retrieve usages", throwable);
                                 }
 
@@ -67,7 +68,7 @@ public class NodeUsagesGrid {
                 Object url = tableEvent.getModel().get("url");
                 if (url != null && url instanceof String) {
                     instance.getRenderedContent((String) url, null, JahiaGWTParameters.getUILanguage(), null,
-                            "wrapper.previewwrapper", null, false, null, new AsyncCallback<GWTRenderResult>() {
+                            "wrapper.previewwrapper", null, false, null, new BaseAsyncCallback<GWTRenderResult>() {
                                 public void onSuccess(GWTRenderResult result) {
                                     HTML html = new HTML(result.getResult());
                                     Window w = new Window();
@@ -83,10 +84,6 @@ public class NodeUsagesGrid {
                                     w.show();
                                 }
 
-                                public void onFailure(Throwable caught) {
-                                    Log.error("", caught);
-                                    //                    com.google.gwt.user.client.Window.alert("-update preview pp->" + caught.getMessage());
-                                }
                             });
                 }
             }

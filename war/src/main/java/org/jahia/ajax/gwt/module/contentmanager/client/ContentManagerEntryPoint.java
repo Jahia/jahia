@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -67,7 +68,7 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
             final String config = DOMUtil.getRootAttr(panel, "config");
             final String rootPath = DOMUtil.getRootAttr(panel, "rootPath");
 
-            JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new AsyncCallback<GWTManagerConfiguration>() {
+            JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
                     if (embedded) {
                         panel.add(new ContentManagerEmbedded(rootPath, nodeTypes, filters, mimeTypes, config));
@@ -76,7 +77,7 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
                     }
                 }
 
-                public void onFailure(Throwable throwable) {
+                public void onApplicationFailure(Throwable throwable) {
                     Log.error("Error while loading user permission", throwable);
                 }
             });

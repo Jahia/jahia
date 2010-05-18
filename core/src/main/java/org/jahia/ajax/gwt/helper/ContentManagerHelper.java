@@ -204,31 +204,6 @@ public class ContentManagerHelper {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    /**
-     * Check captcha
-     *
-     * @param context
-     * @param captcha
-     * @return
-     */
-    public boolean checkCaptcha(ParamBean context, String captcha) {
-        final String captchaId = context.getSessionState().getId();
-        if (logger.isDebugEnabled()) {
-            logger.debug("j_captcha_response: " + captcha);
-        }
-        boolean isResponseCorrect = false;
-        try {
-            isResponseCorrect = true;
-            if (logger.isDebugEnabled()) {
-                logger.debug("CAPTCHA - isResponseCorrect: " + isResponseCorrect);
-            }
-        } catch (final Exception e) {
-            //should not happen, may be thrown if the id is not valid
-            logger.debug("Error when calling CaptchaService", e);
-        }
-        return isResponseCorrect;
-    }
-
     public void createFolder(String parentPath, String name, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;

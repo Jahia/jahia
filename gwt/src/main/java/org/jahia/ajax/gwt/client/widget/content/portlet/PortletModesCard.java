@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -72,7 +73,7 @@ public class PortletModesCard extends MashupWizardCard {
         List<String> permissions = acl.getAvailablePermissions().get(JCRClientUtils.MODES_ACL);
         acl.setBreakAllInheritance(true);
         if (permissions != null && permissions.size() > 0) {
-            JahiaContentManagementService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new AsyncCallback<GWTJahiaNodeACE>() {
+            JahiaContentManagementService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new BaseAsyncCallback<GWTJahiaNodeACE>() {
                 public void onSuccess(GWTJahiaNodeACE gwtJahiaNodeACE) {
                     Log.debug("Add group ACE");
                     removeAll();
@@ -84,7 +85,7 @@ public class PortletModesCard extends MashupWizardCard {
                     getPortletWizardWindow().updateWizard();
                 }
 
-                public void onFailure(Throwable throwable) {
+                public void onApplicationFailure(Throwable throwable) {
                     Log.error("Unable to Add group ACE");
                     removeAll();
                     initModeMappingEditor(acl);

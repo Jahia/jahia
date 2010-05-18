@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -111,8 +112,8 @@ public class SeoTabItem extends EditEngineTabItem {
             mappings.addAll(editor.getMappings());
         }
         
-        JahiaContentManagementService.App.getInstance().saveUrlMappings(engine.getNode(), langs, mappings, new AsyncCallback<Object>() {
-            public void onFailure(Throwable throwable) {
+        JahiaContentManagementService.App.getInstance().saveUrlMappings(engine.getNode(), langs, mappings, new BaseAsyncCallback<Object>() {
+            public void onApplicationFailure(Throwable throwable) {
                 com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "URL mapping save failed\n\n") + throwable.getLocalizedMessage());
                 Log.error("failed", throwable);
             }

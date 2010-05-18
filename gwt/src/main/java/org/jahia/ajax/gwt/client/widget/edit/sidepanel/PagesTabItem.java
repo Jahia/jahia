@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
@@ -165,13 +166,13 @@ public class PagesTabItem extends SidePanelTabItem {
         }
 
         public AsyncCallback<Object> getCallback() {
-            AsyncCallback<Object> callback = new AsyncCallback<Object>() {
+            AsyncCallback<Object> callback = new BaseAsyncCallback<Object>() {
                 public void onSuccess(Object o) {
                     editLinker.refresh(Linker.REFRESH_MAIN);
                     refresh(0);
                 }
 
-                public void onFailure(Throwable throwable) {
+                public void onApplicationFailure(Throwable throwable) {
                     Window.alert("Failed : "+throwable);
                 }
             };

@@ -35,6 +35,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -88,12 +89,12 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
             final boolean allowThumbs = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs"));
             final String callback = DOM.getElementAttribute(panel.getElement(), "callback");
 
-            JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, new AsyncCallback<GWTManagerConfiguration>() {
+            JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
                     panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, selectionLabel, rootPath, selectorOptions, selectedNodes, types, filters, mimeTypes, config, multiple, allowThumbs, callback));
                 }
 
-                public void onFailure(Throwable throwable) {
+                public void onApplicationFailure(Throwable throwable) {
                     Log.error("Error while loading user permission", throwable);
                 }
             });

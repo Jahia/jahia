@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
@@ -204,12 +205,12 @@ public class GWTJahiaNodeTreeFactory {
     }
 
     public void savePaths() {
-        JahiaContentManagementService.App.getInstance().saveOpenPathsForRepository(repository, openPath, new AsyncCallback() {
+        JahiaContentManagementService.App.getInstance().saveOpenPathsForRepository(repository, openPath, new BaseAsyncCallback() {
             public void onSuccess(Object o) {
                 // nothing to do
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Could not save expanded paths into user preferences:\n\n" + throwable.getLocalizedMessage(), throwable);
             }
         });

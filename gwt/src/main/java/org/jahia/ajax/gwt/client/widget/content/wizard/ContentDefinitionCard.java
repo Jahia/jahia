@@ -115,7 +115,7 @@ public class ContentDefinitionCard extends ContentWizardCard {
         final ListStore<GWTJahiaNodeType> store = new ListStore<GWTJahiaNodeType>();
         /*JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(
                 baseType, parentNode,
-                new AsyncCallback<List<GWTJahiaNodeType>>() {
+                new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onFailure(Throwable caught) {
                         MessageBox.alert("Alert","Unable to load content definitions for base type '"
                                         + baseType

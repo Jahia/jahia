@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -74,7 +75,7 @@ public class PortletFormCard extends MashupWizardCard {
 
     // laod form asyn
     private void createUIAsync() {
-        JahiaContentDefinitionService.App.getInstance().getNodeType(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType(), new AsyncCallback<GWTJahiaNodeType>() {
+        JahiaContentDefinitionService.App.getInstance().getNodeType(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType(), new BaseAsyncCallback<GWTJahiaNodeType>() {
             public void onSuccess(GWTJahiaNodeType result) {
                 List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
                 list.add(result);
@@ -101,7 +102,7 @@ public class PortletFormCard extends MashupWizardCard {
                 }
             }
 
-            public void onFailure(Throwable caught) {
+            public void onApplicationFailure(Throwable caught) {
                 Log.error("error", caught);
             }
 

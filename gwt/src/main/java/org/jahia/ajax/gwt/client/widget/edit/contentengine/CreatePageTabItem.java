@@ -4,6 +4,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -63,11 +64,7 @@ public class CreatePageTabItem extends PropertiesTabItem {
 
         propertiesEditor.add(fieldSet);
 
-        definitionService.getPageTemplates(new AsyncCallback<List<GWTJahiaNode>>() {
-            public void onFailure(Throwable caught) {
-                Log.error("",caught);
-            }
-
+        definitionService.getPageTemplates(new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 store.add(result);
 

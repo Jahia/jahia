@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -95,9 +96,9 @@ public class ContentImport extends Window {
 
     public void doImport(String path, Object value) {
         Log.debug(path + " " + value);
-        JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), new AsyncCallback() {
+        JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), new BaseAsyncCallback() {
 
-            public void onFailure(Throwable caught) {
+            public void onApplicationFailure(Throwable caught) {
                 com.google.gwt.user.client.Window.alert(Messages.getResource("fm_fail") + "\n" + caught.getLocalizedMessage());
                 Log.error(Messages.getResource("fm_fail"), caught);
             }

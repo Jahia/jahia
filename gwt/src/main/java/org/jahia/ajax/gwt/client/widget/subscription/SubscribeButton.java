@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
@@ -113,8 +114,8 @@ public class SubscribeButton extends HTML {
             return;
         }
         getService().getStatus(source, event,
-                new AsyncCallback<SubscriptionStatus>() {
-                    public void onFailure(Throwable caught) {
+                new BaseAsyncCallback<SubscriptionStatus>() {
+                    public void onApplicationFailure(Throwable caught) {
                         StringBuffer ex = new StringBuffer();
                         for (StackTraceElement element : caught.getStackTrace()) {
                             ex.append("\n").append(element);
@@ -232,8 +233,8 @@ public class SubscribeButton extends HTML {
 
     private void subscribe(Map<String, String> properties) {
         getService().subscribe(source, event, confirmationRequired, properties,
-                new AsyncCallback<SubscriptionStatus>() {
-                    public void onFailure(Throwable caught) {
+                new BaseAsyncCallback<SubscriptionStatus>() {
+                    public void onApplicationFailure(Throwable caught) {
                         caught.printStackTrace();
                         Window.alert(i18n.get("operation.failure") + "\n"
                                 + caught);
@@ -261,8 +262,8 @@ public class SubscribeButton extends HTML {
 
     private void unsubscribe() {
         getService().unsubscribe(source, event,
-                new AsyncCallback<SubscriptionStatus>() {
-                    public void onFailure(Throwable caught) {
+                new BaseAsyncCallback<SubscriptionStatus>() {
+                    public void onApplicationFailure(Throwable caught) {
                         caught.printStackTrace();
                         Window.alert(i18n.get("operation.failure") + "\n"
                                 + caught);

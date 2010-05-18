@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -114,14 +115,11 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         }
 
         public AsyncCallback<Object> getCallback() {
-            AsyncCallback<Object> callback = new AsyncCallback<Object>() {
+            AsyncCallback<Object> callback = new BaseAsyncCallback<Object>() {
                 public void onSuccess(Object o) {
                     refresh(0);
                 }
 
-                public void onFailure(Throwable throwable) {
-                    Window.alert("Failed : " + throwable);
-                }
             };
             return callback;
         }

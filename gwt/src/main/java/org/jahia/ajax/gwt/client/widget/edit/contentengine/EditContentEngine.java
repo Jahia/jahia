@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -150,8 +151,8 @@ public class EditContentEngine extends AbstractContentEngine {
      */
     private void loadNode(final boolean updateAvailableLanguages) {
 
-        contentService.getProperties(contentPath, getSelectedLanguageCode(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-            public void onFailure(Throwable throwable) {
+        contentService.getProperties(contentPath, getSelectedLanguageCode(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
             }
 
@@ -172,15 +173,12 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
 
                 //todo : do this in one pass
-                definitionService.getAvailableMixin(node, new AsyncCallback<List<GWTJahiaNodeType>>() {
+                definitionService.getAvailableMixin(node, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onSuccess(List<GWTJahiaNodeType> result) {
                         mixin = result;
                         fillCurrentTab();
                     }
 
-                    public void onFailure(Throwable caught) {
-
-                    }
                 });
 
                 fillCurrentTab();
@@ -286,8 +284,8 @@ public class EditContentEngine extends AbstractContentEngine {
             }
 
             // Ajax call to update values
-            JahiaContentManagementService.App.getInstance().saveNode(node,orderedChildrenNodes, newNodeACL, langCodeProperties, properties, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
+            JahiaContentManagementService.App.getInstance().saveNode(node,orderedChildrenNodes, newNodeACL, langCodeProperties, properties, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") + throwable.getLocalizedMessage());
                     Log.error("failed", throwable);
                 }

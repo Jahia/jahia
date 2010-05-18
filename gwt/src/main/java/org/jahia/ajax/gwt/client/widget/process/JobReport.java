@@ -31,6 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.process;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.widget.ReportGrid;
@@ -52,8 +53,8 @@ public class JobReport extends Viewport {
         super() ;
         setLayout(new FitLayout());
 
-        JahiaService.App.getInstance().getProcessJob(name, groupName, new AsyncCallback<GWTJahiaProcessJob>() {
-            public void onFailure(Throwable caught) {
+        JahiaService.App.getInstance().getProcessJob(name, groupName, new BaseAsyncCallback<GWTJahiaProcessJob>() {
+            public void onApplicationFailure(Throwable caught) {
                 Log.error("Error when loading process", caught);
             }
 

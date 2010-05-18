@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.commons.server;
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.core.SessionExpirationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
@@ -57,6 +58,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Locale;
 
 /**
@@ -92,6 +94,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @throws GWTJahiaServiceException
      */
     protected JCRSessionWrapper retrieveCurrentSession(Locale locale) throws GWTJahiaServiceException {
+        checkSession();
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), locale, null);
         } catch (RepositoryException e) {
@@ -107,6 +110,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @throws GWTJahiaServiceException
      */
     protected JCRSessionWrapper retrieveCurrentSession(String workspace) throws GWTJahiaServiceException {
+        checkSession();
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession(workspace, getLocale());
         } catch (RepositoryException e) {
@@ -158,34 +162,9 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      *
      * @return
      */
-    protected Locale getUILocale() {
-        Locale locale = (Locale) getRequest().getSession().getAttribute(ParamBean.SESSION_UI_LOCALE);
+    protected Locale getUILocale() throws GWTJahiaServiceException {
+        Locale locale = (Locale) getSession().getAttribute(ParamBean.SESSION_UI_LOCALE);
         return locale;
-    }
-
-    protected String getLocaleJahiaAdminResource(String label) {
-        Locale l = getUILocale();
-        try {
-            return JahiaResourceBundle.getJahiaInternalResource(label, l);
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-
-    /**
-     * Get paramBeam from request attribute.
-     *
-     * @return
-     */
-    public ParamBean getParamBeanRequestAttr() {
-        final HttpServletRequest request = getRequest();
-        ParamBean jParams = (ParamBean) request.getAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN);
-        if (jParams == null) {
-            logger.debug("ParamBean is not set.");
-        }
-
-        return jParams;
     }
 
     /**
@@ -260,6 +239,17 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    protected HttpSession getSession() throws SessionExpirationException {
+        checkSession();
+        return getRequest().getSession();
+    }
+
+    private void checkSession() throws SessionExpirationException {
+        if (request.getSession(false) == null) {
+            throw new SessionExpirationException();
+        }
     }
 
 

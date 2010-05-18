@@ -36,6 +36,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPortletOutputBean;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 
@@ -51,7 +52,7 @@ public class PortletRender extends HTML {
 
     public PortletRender(String windowID, String entryPointInstanceID, String pathInfo, String queryString) {
         setHTML("Loading...");
-        JahiaService.App.getInstance().drawPortletInstanceOutput(windowID, entryPointInstanceID, pathInfo, queryString, new AsyncCallback<GWTJahiaPortletOutputBean>() {
+        JahiaService.App.getInstance().drawPortletInstanceOutput(windowID, entryPointInstanceID, pathInfo, queryString, new BaseAsyncCallback<GWTJahiaPortletOutputBean>() {
             public void onSuccess(GWTJahiaPortletOutputBean result) {
                 gwtPortletOutputBean = result;
                 if (gwtPortletOutputBean.isInIFrame()) {
@@ -97,7 +98,7 @@ public class PortletRender extends HTML {
                 onRender();
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 setHTML("Unable to load portlet.");
                 Log.error("Error modifying portlet HTML", throwable);
             }

@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -197,7 +198,7 @@ public class LangPropertiesEditor extends LayoutContainer {
      */
     private void updateNodeInfo(final String locale) {
         Log.debug("update node info ,locale code = " + locale);
-        contentService.getProperties(node.getPath(), locale, new AsyncCallback<GWTJahiaGetPropertiesResult>() {
+        contentService.getProperties(node.getPath(), locale, new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onSuccess(GWTJahiaGetPropertiesResult result) {
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
@@ -214,13 +215,13 @@ public class LangPropertiesEditor extends LayoutContainer {
 
                 //todo : do this in one pass.
                 if (mixin == null) {
-                    definitionService.getAvailableMixin(result.getNode(), new AsyncCallback<List<GWTJahiaNodeType>>() {
+                    definitionService.getAvailableMixin(result.getNode(), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                         public void onSuccess(List<GWTJahiaNodeType> result) {
                             mixin = result;
                             updatePropertiesComponent(locale);
                         }
 
-                        public void onFailure(Throwable caught) {
+                        public void onApplicationFailure(Throwable caught) {
                             Log.error("Cannot get available mixin", caught);
                         }
                     });
@@ -229,7 +230,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                 }
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Cannot get properties", throwable);
             }
         });

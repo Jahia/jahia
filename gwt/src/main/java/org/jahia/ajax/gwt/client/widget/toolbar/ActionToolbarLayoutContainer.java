@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
@@ -50,7 +51,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
      */
     private void loadToolbars() {
         // load toolbars
-        ToolbarService.App.getInstance().getGWTToolbars(toolbarGroup, new AsyncCallback<GWTJahiaToolbarSet>() {
+        ToolbarService.App.getInstance().getGWTToolbars(toolbarGroup, new BaseAsyncCallback<GWTJahiaToolbarSet>() {
             public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
                 long begin = System.currentTimeMillis();
                 if (gwtJahiaToolbarSet != null) {
@@ -62,7 +63,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
                 Log.info("Toolbar loaded in " + (end - begin) + "ms");
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Unable to get toobar due to", throwable);
             }
         });

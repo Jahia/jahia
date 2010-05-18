@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -84,7 +85,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
         getGwtJahiaNewPortletInstance().setInstanceName(saveAs.getValue());
 
         // save
-        JahiaContentManagementService.App.getInstance().createPortletInstance(path, getGwtJahiaNewPortletInstance(), new AsyncCallback<GWTJahiaNode>() {
+        JahiaContentManagementService.App.getInstance().createPortletInstance(path, getGwtJahiaNewPortletInstance(), new BaseAsyncCallback<GWTJahiaNode>() {
             public void onSuccess(GWTJahiaNode result) {
                 if (getLinker() != null) {
                     getLinker().setSelectPathAfterDataUpdate(result.getPath());
@@ -94,7 +95,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
                 getPortletWizardWindow().hide();
             }
 
-            public void onFailure(Throwable caught) {
+            public void onApplicationFailure(Throwable caught) {
                 Log.error("Error", caught);
                 Window.alert(caught.getMessage());
             }

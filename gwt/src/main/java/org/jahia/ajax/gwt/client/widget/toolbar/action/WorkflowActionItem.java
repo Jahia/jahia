@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -72,13 +73,13 @@ public class WorkflowActionItem extends BaseActionItem {
                                     new WorkflowActionDialog(node, wf).show();
                                 } else {
                                     JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                                    async.startWorkflow(node.getPath(), wf,new ArrayList<GWTJahiaNodeProperty>(), new AsyncCallback() {
+                                    async.startWorkflow(node.getPath(), wf,new ArrayList<GWTJahiaNodeProperty>(), new BaseAsyncCallback() {
                                         public void onSuccess(Object result) {
                                             Info.display("Workflow started", "Workflow started");
                                             linker.refresh(Linker.REFRESH_ALL);
                                         }
 
-                                        public void onFailure(Throwable caught) {
+                                        public void onApplicationFailure(Throwable caught) {
                                             Info.display("Workflow not started", "Workflow not started");
                                         }
                                     });

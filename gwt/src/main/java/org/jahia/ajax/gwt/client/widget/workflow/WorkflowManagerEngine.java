@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowNodeTypeConfig;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -56,7 +57,7 @@ public class WorkflowManagerEngine extends Window {
             public void componentSelected(ButtonEvent buttonEvent) {
                 if(mainPanel==null || !mainPanel.isVisible()) {
                 JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                async.getWorkflowNodeTypeConfig(new AsyncCallback<GWTJahiaWorkflowNodeTypeConfig>() {
+                async.getWorkflowNodeTypeConfig(new BaseAsyncCallback<GWTJahiaWorkflowNodeTypeConfig>() {
                     public void onSuccess(final GWTJahiaWorkflowNodeTypeConfig config) {
                         instancesPanel.hide();;
                         mainPanel = new WorkflowContentTypePanel(linker, config.getWorkflowDefinitions(),
@@ -65,10 +66,6 @@ public class WorkflowManagerEngine extends Window {
                         add(mainPanel);
                         layout();
 
-                    }
-
-                    public void onFailure(Throwable throwable) {
-                        Log.error(throwable.getMessage(), throwable);
                     }
                 });
                 } else {
@@ -120,8 +117,8 @@ public class WorkflowManagerEngine extends Window {
         public void componentSelected(ButtonEvent event) {
             if (mainPanel != null) {
                 JahiaContentManagementService.App.getInstance().updateNodeTypeWorkflowRule(
-                        mainPanel.getWorflowNodeType(), mainPanel.getWorflowNodeTypeToRemove(), new AsyncCallback() {
-                            public void onFailure(Throwable throwable) {
+                        mainPanel.getWorflowNodeType(), mainPanel.getWorflowNodeTypeToRemove(), new BaseAsyncCallback() {
+                            public void onApplicationFailure(Throwable throwable) {
                                 com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed",
                                                                                      "Properties save failed\n\n") + throwable.getLocalizedMessage());
                                 Log.error("failed", throwable);

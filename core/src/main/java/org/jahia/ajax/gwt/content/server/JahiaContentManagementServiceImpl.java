@@ -269,7 +269,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException {
-        getRequest().getSession().setAttribute(navigation.SAVED_OPEN_PATHS + repositoryType, paths);
+        getSession().setAttribute(navigation.SAVED_OPEN_PATHS + repositoryType, paths);
     }
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException {
@@ -892,7 +892,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (locale != null) {
             final Locale value = LanguageCodeConverters.languageCodeToLocale(locale);
             if (!getLocale().equals(value)) {
-                getRequest().getSession().setAttribute(ProcessingContext.SESSION_LOCALE, value);
+                getSession().setAttribute(ProcessingContext.SESSION_LOCALE, value);
             }
         }
         return this.template.getRenderedContent(path, template, templateWrapper, contextParams, editMode, configName, getRequest(), getResponse(), retrieveCurrentSession());
@@ -963,7 +963,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     /**
      * Publish the specified uuids.
      *
-     * @param paths the list of node paths to publish, will not auto publish the parents
+     * @param uuids the list of node uuids to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
     public void publish(List<String> uuids, boolean allSubTree, String comments, boolean workflow, boolean reverse) throws GWTJahiaServiceException {
@@ -1206,8 +1206,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-    private List<String> getOpenPathsForRepository(String repositoryType) {
-        return (List<String>) getRequest().getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
+    private List<String> getOpenPathsForRepository(String repositoryType) throws GWTJahiaServiceException {
+        return (List<String>) getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
     }
 
     private JahiaUser getUser() {

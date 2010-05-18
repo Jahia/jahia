@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
@@ -93,13 +94,13 @@ public class AnalyticsTabItem extends EditEngineTabItem {
      */
     private void loadData(GWTJahiaAnalyticsQuery query) {
         // get data
-        service.getAnalyticsData(query, new AsyncCallback<List<GWTJahiaAnalyticsData>>() {
+        service.getAnalyticsData(query, new BaseAsyncCallback<List<GWTJahiaAnalyticsData>>() {
             public void onSuccess(List<GWTJahiaAnalyticsData> dataList) {
                 dataVisualizer.setDataList(dataList);
                 dataVisualizer.refreshUI();
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Error while getting analytics data", throwable);
             }
         });

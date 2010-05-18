@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.process;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
@@ -216,8 +217,8 @@ public class ProcessJobOptionsComponent extends LeftComponent {
         gwtJahiaProcessJobPreferences.setJobsTypeToIgnore(jobsTypeToIgnore);
         gwtJahiaProcessJobPreferences.setOnlyCurrentUser(onlyCurrentUser);
         // make an ajax call to save preferences
-        ProcessDisplayService.App.getInstance().savePreferences(gwtJahiaProcessJobPreferences, new AsyncCallback() {
-            public void onFailure(Throwable throwable) {
+        ProcessDisplayService.App.getInstance().savePreferences(gwtJahiaProcessJobPreferences, new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Error when saving pref.");
             }
 

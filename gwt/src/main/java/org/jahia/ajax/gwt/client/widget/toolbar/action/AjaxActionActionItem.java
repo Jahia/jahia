@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -210,7 +211,7 @@ public class AjaxActionActionItem extends BaseActionItem {
      * @param gwtToolbarItem
      */
     protected void execute(final GWTJahiaToolbarItem gwtToolbarItem) {
-        ToolbarService.App.getInstance().execute(gwtToolbarItem.getProperties(), new AsyncCallback<GWTJahiaAjaxActionResult>() {
+        ToolbarService.App.getInstance().execute(gwtToolbarItem.getProperties(), new BaseAsyncCallback<GWTJahiaAjaxActionResult>() {
             public void onSuccess(GWTJahiaAjaxActionResult result) {
                 // depending on "onSuccess" property , display info, notify, redirect or refresh
                 final Map properties = gwtToolbarItem.getProperties();
@@ -264,7 +265,7 @@ public class AjaxActionActionItem extends BaseActionItem {
                 }
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 // display failure message
                 final Map properties = gwtToolbarItem.getProperties();
                 if (properties != null) {

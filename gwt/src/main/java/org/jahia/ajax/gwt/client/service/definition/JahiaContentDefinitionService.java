@@ -31,24 +31,24 @@
  */
 package org.jahia.ajax.gwt.client.service.definition;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.core.client.GWT;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.List;
 import java.util.Map;
 
 /**
  * GWT remote service for retrieving JCR node type information.
- * 
+ *
  * @author Thomas Draier
- * Date: Aug 25, 2008
- * Time: 6:20:26 PM
+ *         Date: Aug 25, 2008
+ *         Time: 6:20:26 PM
  */
 public interface JahiaContentDefinitionService extends RemoteService {
 
@@ -69,36 +69,35 @@ public interface JahiaContentDefinitionService extends RemoteService {
                         ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
                     }
                 });
-                
+
             }
             return app;
         }
 
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint()+"contentDefinition.gwt?lang="+JahiaGWTParameters.getLanguage() + "&site="+JahiaGWTParameters.getSiteUUID() + "&workspace="+JahiaGWTParameters.getWorkspace();
+            return JahiaGWTParameters.getServiceEntryPoint() + "contentDefinition.gwt?lang=" +
+                    JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID() + "&workspace=" +
+                    JahiaGWTParameters.getWorkspace();
         }
     }
 
-    GWTJahiaNodeType getNodeType(String names);
+    GWTJahiaNodeType getNodeType(String names) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNodeType> getNodeTypes(List<String> names);
+    List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException;
 
     /**
      * Returns a list of node types with name and label populated that are the
      * sub-types of the specified base type.
-     * 
-     * @param baseType
-     *            the node type name to find sub-types
-     * @param parentNode
-     *            the parent node, where the wizard was called
+     *
+     * @param baseType   the node type name to find sub-types
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseType)throws GWTJahiaServiceException ;
+    Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseType) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException;
 
-    List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type);
+    List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) throws GWTJahiaServiceException;
 
     List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node) throws GWTJahiaServiceException;
 

@@ -3,6 +3,7 @@ package org.jahia.ajax.gwt.client.widget.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
@@ -91,14 +92,14 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
      * Refresh data
      */
     public void refresh() {
-        contentService.getRolesAndPermissions(siteKey, new AsyncCallback<GWTRolesPermissions>() {
+        contentService.getRolesAndPermissions(siteKey, new BaseAsyncCallback<GWTRolesPermissions>() {
             public void onSuccess(GWTRolesPermissions gwtRolesPermissions) {
                 roles = gwtRolesPermissions.getRoles();
                 permissions = gwtRolesPermissions.getPermissions();
                 refreshUI();
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("Error while retrieving roles and permissions", throwable);
             }
         });
@@ -184,7 +185,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                 dialog.addListener(Events.Hide, new Listener<WindowEvent>() {
                     public void handleEvent(WindowEvent be) {
                         if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.OK)) {
-                            contentService.createPermission(name.getValue(), groupSelect.getRawValue(), siteKey, new AsyncCallback<GWTJahiaPermission>() {
+                            contentService.createPermission(name.getValue(), groupSelect.getRawValue(), siteKey, new BaseAsyncCallback<GWTJahiaPermission>() {
                                 public void onSuccess(GWTJahiaPermission perm) {
                                     permissions.add(perm);
                                     grid.getStore().add(perm);
@@ -192,7 +193,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                                         updateGrantAllCheckboxState(i);
                                     }
                                 }
-                                public void onFailure(Throwable throwable) {
+                                public void onApplicationFailure(Throwable throwable) {
                                     Log.error("Error while creating permission " + name.getValue(), throwable);
                                 }
                             });
@@ -239,26 +240,26 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
             public void handleEvent(ComponentEvent event) {
                 if (cb.getValue()) {
                     // adding a permission
-                    contentService.addRolePermissions(role, permissions, new AsyncCallback<Object>() {
+                    contentService.addRolePermissions(role, permissions, new BaseAsyncCallback<Object>() {
                         public void onSuccess(Object o) {
                             Log.debug("permissions added to role " + role.getName());
                             role.getPermissions().clear();
                             role.getPermissions().addAll(permissions);
                             updateState();
                         }
-                        public void onFailure(Throwable throwable) {
+                        public void onApplicationFailure(Throwable throwable) {
                             Log.error("Error while adding a permissions to a role " + role.getName(), throwable);
                         }
                     });
                 } else {
                     // removing a permission
-                    contentService.removeRolePermissions(role, permissions, new AsyncCallback<Object>() {
+                    contentService.removeRolePermissions(role, permissions, new BaseAsyncCallback<Object>() {
                         public void onSuccess(Object o) {
                             Log.debug("permissions revoked from role " + role.getName());
                             role.getPermissions().clear();
                             updateState();
                         }
-                        public void onFailure(Throwable throwable) {
+                        public void onApplicationFailure(Throwable throwable) {
                             Log.error("Error revoking permissions from role " + role.getName(), throwable);
                         }
                     });
@@ -312,7 +313,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                         pList.add(currentPermission);
                         if (checkbox.getValue()) {
                             // adding a permission
-                            contentService.addRolePermissions(role, pList, new AsyncCallback() {
+                            contentService.addRolePermissions(role, pList, new BaseAsyncCallback() {
                                 public void onSuccess(Object o) {
                                     Log.debug("permission added to role");
                                     if (!role.getPermissions().contains(currentPermission)) {
@@ -321,20 +322,20 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
                                     updateGrantAllCheckboxState(colIndex - index);
                                 }
 
-                                public void onFailure(Throwable throwable) {
+                                public void onApplicationFailure(Throwable throwable) {
                                     Log.error("Error while adding a permission to a role", throwable);
                                 }
                             });
                         } else {
                             // removing a permission
-                            contentService.removeRolePermissions(role, pList, new AsyncCallback() {
+                            contentService.removeRolePermissions(role, pList, new BaseAsyncCallback() {
                                 public void onSuccess(Object o) {
                                     Log.debug("permission removed to role");
                                     role.getPermissions().remove(currentPermission);
                                     updateGrantAllCheckboxState(colIndex - index);
                                 }
 
-                                public void onFailure(Throwable throwable) {
+                                public void onApplicationFailure(Throwable throwable) {
                                     Log.error("Error removing permission from", throwable);
                                 }
                             });

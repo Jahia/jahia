@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
@@ -133,8 +134,8 @@ public class UrlMappingEditor extends LayoutContainer {
         store = new ListStore<GWTJahiaUrlMapping>();
 
         JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale.getLanguage(),
-                new AsyncCallback<List<GWTJahiaUrlMapping>>() {
-                    public void onFailure(Throwable throwable) {
+                new BaseAsyncCallback<List<GWTJahiaUrlMapping>>() {
+                    public void onApplicationFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert(Messages.get("ece_seo_load_url_mappings_failed",
                                 "Loading URL mapping failed\n\n")
                                 + throwable.getLocalizedMessage());

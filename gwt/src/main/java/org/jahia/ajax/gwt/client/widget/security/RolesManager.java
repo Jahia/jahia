@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -36,7 +37,7 @@ public class RolesManager extends LayoutContainer {
         super.onRender(parent, index);
         setLayout(new FillLayout());
 
-        JahiaContentManagementService.App.getInstance().getManagerConfiguration(ManagerConfigurationFactory.ROLESMANAGER, new AsyncCallback<GWTManagerConfiguration>() {
+        JahiaContentManagementService.App.getInstance().getManagerConfiguration(ManagerConfigurationFactory.ROLESMANAGER, new BaseAsyncCallback<GWTManagerConfiguration>() {
             public void onSuccess(GWTManagerConfiguration config) {
                 final ContentManagerEmbedded cm = new ContentManagerEmbedded(rootPath, null, null, null, config);
                 final PermissionRolePanel pr = new PermissionRolePanel(siteKey);
@@ -58,7 +59,7 @@ public class RolesManager extends LayoutContainer {
                 layout();
             }
 
-            public void onFailure(Throwable throwable) {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error(throwable.getMessage(), throwable);
             }
         });

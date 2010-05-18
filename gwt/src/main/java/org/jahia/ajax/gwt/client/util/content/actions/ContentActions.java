@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
@@ -113,8 +114,8 @@ public class ContentActions {
             }
             if (!actualSelection.isEmpty()) {
                 linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.cutting.label"));
-                JahiaContentManagementService.App.getInstance().checkWriteable(JCRClientUtils.getPathesList(actualSelection), new AsyncCallback() {
-                    public void onFailure(Throwable throwable) {
+                JahiaContentManagementService.App.getInstance().checkWriteable(JCRClientUtils.getPathesList(actualSelection), new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
                         Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.cut.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
@@ -147,8 +148,8 @@ public class ContentActions {
         if (m != null && !m.isFile()) {
             linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.pasting.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, copyPasteEngine.isCut(), new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
+            JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, copyPasteEngine.isCut(), new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable throwable) {
                     Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.paste.label") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
@@ -190,8 +191,8 @@ public class ContentActions {
         if (m != null && !m.isFile()) {
             linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.pastingref.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
+            JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable throwable) {
                     Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.pasteref.label") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
@@ -225,8 +226,8 @@ public class ContentActions {
      * @param target
      */
     public static void move(final Linker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
-        JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(sources), target.getPath(), null, true, new AsyncCallback() {
-            public void onFailure(Throwable throwable) {
+        JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(sources), target.getPath(), null, true, new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable throwable) {
                 Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
                 linker.loaded();
             }
@@ -338,8 +339,8 @@ public class ContentActions {
         }
         if (selection != null && !selection.isFile().booleanValue()) {
             linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.webfoldering.label"));
-            JahiaContentManagementService.App.getInstance().getAbsolutePath(selection.getPath(), new AsyncCallback<String>() {
-                public void onFailure(Throwable t) {
+            JahiaContentManagementService.App.getInstance().getAbsolutePath(selection.getPath(), new BaseAsyncCallback<String>() {
+                public void onApplicationFailure(Throwable t) {
                     Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.webfolder.label") + "\n" + t.getLocalizedMessage());
                     linker.loaded();
                 }
@@ -380,8 +381,8 @@ public class ContentActions {
             String newFolder = Window.prompt(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.newDirName.label"), "untitled");
             if (newFolder != null && newFolder.length() > 0) {
                 linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.newfoldering.label"));
-                JahiaContentManagementService.App.getInstance().createFolder(parent.getPath(), newFolder, new AsyncCallback() {
-                    public void onFailure(Throwable throwable) {
+                JahiaContentManagementService.App.getInstance().createFolder(parent.getPath(), newFolder, new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
                         Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.newDir.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
@@ -414,13 +415,13 @@ public class ContentActions {
             String nodeName = Window.prompt(windowHeaer, "untitled");
             if (nodeName != null && nodeName.length() > 0) {
                 linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.newfoldering.label"));
-                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, new AsyncCallback<GWTJahiaNode>() {
+                JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
                         linker.loaded();
                         linker.refresh(EditLinker.REFRESH_ALL);
                     }
 
-                    public void onFailure(Throwable throwable) {
+                    public void onApplicationFailure(Throwable throwable) {
                         Log.error("Unable to create [" + nodeType + "]", throwable);
                         linker.loaded();
                     }
@@ -507,8 +508,8 @@ public class ContentActions {
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent) {
         if (parent != null && !parent.isFile()) {
             JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(nodeTypes,
-                    new AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
-                        public void onFailure(Throwable caught) {
+                    new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+                        public void onApplicationFailure(Throwable caught) {
                             MessageBox.alert("Alert",
                                     "Unable to load content definitions for base type '" + nodeTypes + "'. Cause: " + caught.getLocalizedMessage(),
                                     null);
@@ -559,8 +560,8 @@ public class ContentActions {
                 linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.unmounting.label"));
                 List<String> selectedPaths = new ArrayList<String>(1);
                 selectedPaths.add(selection.getPath());
-                JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new AsyncCallback() {
-                    public void onFailure(Throwable throwable) {
+                JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
                         Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.unmount.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
@@ -610,8 +611,8 @@ public class ContentActions {
                     for (GWTJahiaNode node : actualSelection) {
                         selectedPaths.add(node.getPath());
                     }
-                    JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new AsyncCallback() {
-                        public void onFailure(Throwable throwable) {
+                    JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new BaseAsyncCallback() {
+                        public void onApplicationFailure(Throwable throwable) {
                             Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.delete.label") + "\n" + throwable.getLocalizedMessage());
                             linker.loaded();
                         }
@@ -643,8 +644,8 @@ public class ContentActions {
                 String newName = Window.prompt(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.newName.label") + " " + selection.getName(), selection.getName());
                 if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                     final boolean folder = !selection.isFile();
-                    JahiaContentManagementService.App.getInstance().rename(selection.getPath(), newName, new AsyncCallback() {
-                        public void onFailure(Throwable throwable) {
+                    JahiaContentManagementService.App.getInstance().rename(selection.getPath(), newName, new BaseAsyncCallback() {
+                        public void onApplicationFailure(Throwable throwable) {
                             Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.rename.label") + "\n" + throwable.getLocalizedMessage());
                             linker.loaded();
                         }
@@ -680,8 +681,8 @@ public class ContentActions {
                 }
                 final String archName = Window.prompt(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.archiveName.label"), defaultArchName);
                 if (archName != null && archName.length() > 0) {
-                    JahiaContentManagementService.App.getInstance().checkExistence(parentItem.getPath() + "/" + archName, new AsyncCallback<Boolean>() {
-                        public void onFailure(Throwable throwable) {
+                    JahiaContentManagementService.App.getInstance().checkExistence(parentItem.getPath() + "/" + archName, new BaseAsyncCallback<Boolean>() {
+                        public void onApplicationFailure(Throwable throwable) {
                             if (throwable instanceof ExistingFileException) {
                                 if (com.google.gwt.user.client.Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
                                     forceZip(selectedItems, archName, linker);
@@ -706,8 +707,8 @@ public class ContentActions {
         for (GWTJahiaNode node : selectedItems) {
             selectedPaths.add(node.getPath());
         }
-        JahiaContentManagementService.App.getInstance().zip(selectedPaths, archName, new AsyncCallback() {
-            public void onFailure(Throwable throwable) {
+        JahiaContentManagementService.App.getInstance().zip(selectedPaths, archName, new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable throwable) {
                 Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.zip.label") + "\n" + throwable.getLocalizedMessage());
                 linker.loaded();
             }
@@ -729,8 +730,8 @@ public class ContentActions {
                     selectedPaths.add(node.getPath());
                 }
             }
-            JahiaContentManagementService.App.getInstance().unzip(selectedPaths, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
+            JahiaContentManagementService.App.getInstance().unzip(selectedPaths, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable throwable) {
                     Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.unzip.label") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
@@ -774,8 +775,8 @@ public class ContentActions {
             }
             if (continueOperation && !selectedPaths.isEmpty()) {
                 linker.loading(lock ? Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.locking.label") : Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.unlocking.label"));
-                JahiaContentManagementService.App.getInstance().setLock(selectedPaths, lock, new AsyncCallback() {
-                    public void onFailure(Throwable throwable) {
+                JahiaContentManagementService.App.getInstance().setLock(selectedPaths, lock, new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
                         MessageBox.alert("Error", throwable.getLocalizedMessage(), null);
                         linker.loaded();
                         linker.refresh(Linker.REFRESH_MAIN);
@@ -843,7 +844,7 @@ public class ContentActions {
 //    public static void saveAsReusableComponent(final Linker linker) {
 //        final GWTJahiaNode target = linker.getSelectedNode();
 //        if (target != null) {
-//            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:reusableComponent", new AsyncCallback<GWTJahiaNodeType>() {
+//            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:reusableComponent", new BaseAsyncCallback<GWTJahiaNodeType>() {
 //                public void onFailure(Throwable caught) {
 //                    MessageBox.alert("Alert",
 //                            "Unable to load node type definitions for type 'jnt:reusableComponent'. Cause: "
@@ -853,7 +854,7 @@ public class ContentActions {
 //
 //                public void onSuccess(final GWTJahiaNodeType nodeType) {
 //
-//                    JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null, true, new AsyncCallback<List<GWTJahiaNode>>() {
+//                    JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null, true, new BaseAsyncCallback<List<GWTJahiaNode>>() {
 //                        public void onFailure(Throwable caught) {
 //                            MessageBox.alert("Alert",
 //                                    "Unable to load reusable component node for current site. Cause: "
@@ -881,8 +882,8 @@ public class ContentActions {
     public static void saveAsPortalComponent(final Linker linker) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
-            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()), "/shared/portalComponents", null, new AsyncCallback() {
-                public void onFailure(Throwable caught) {
+            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()), "/shared/portalComponents", null, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable caught) {
                     Info.display("Portal Components", "Error while making your component available for users in their portal page.");
                 }
 
@@ -906,11 +907,7 @@ public class ContentActions {
                 properties.add(new GWTJahiaNodeProperty("j:templateLocked", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
             }
 
-            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties, new AsyncCallback() {
-                public void onFailure(Throwable caught) {
-                    Log.error("Error", caught);
-                }
-
+            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties, new BaseAsyncCallback() {
                 public void onSuccess(Object result) {
                     if (locked) {
                         Info.display("Component locked", "Component locked.");
@@ -937,11 +934,7 @@ public class ContentActions {
                 properties.add(new GWTJahiaNodeProperty("j:templateShared", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
             }
 
-            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties, new AsyncCallback() {
-                public void onFailure(Throwable caught) {
-                    Log.error("Error", caught);
-                }
-
+            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties, new BaseAsyncCallback() {
                 public void onSuccess(Object result) {
                     if (shared) {
                         Info.display("Component shared", "Component shared.");
@@ -958,8 +951,8 @@ public class ContentActions {
     public static void makeShareableNode(final Linker linker) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
-            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()), "/sites/" + JahiaGWTParameters.getSiteUUID() + "/contents", null, new AsyncCallback() {
-                public void onFailure(Throwable caught) {
+            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()), "/sites/" + JahiaGWTParameters.getSiteUUID() + "/contents", null, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable caught) {
                     Info.display("Shared component", "Error while sharing component");
                 }
 

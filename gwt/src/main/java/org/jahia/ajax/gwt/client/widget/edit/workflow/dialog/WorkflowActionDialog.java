@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -100,11 +101,7 @@ public class WorkflowActionDialog extends Window {
         actionPanel.setScrollMode(Style.Scroll.AUTOY);
         String formResourceName = action.getFormResourceName();
         if (formResourceName!=null && !"".equals(formResourceName)) {
-            definitionsAsync.getWFFormForNodeAndNodeType(node,formResourceName, new AsyncCallback<GWTJahiaNodeType>() {
-                public void onFailure(Throwable caught) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                }
-
+            definitionsAsync.getWFFormForNodeAndNodeType(node,formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onSuccess(GWTJahiaNodeType result) {
                     final PropertiesEditor propertiesEditor = new PropertiesEditor(Arrays.asList(result),
                                                                                    action.getVariables(), false, false,
@@ -150,14 +147,14 @@ public class WorkflowActionDialog extends Window {
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                async.addCommentToTask(action, textArea.getValue(), new AsyncCallback() {
+                async.addCommentToTask(action, textArea.getValue(), new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
                         commentsPanel.removeAll();
                         displayComments(action, dialog, commentsPanel);
                         Info.display("Comment Added", "Comment Added");
                     }
 
-                    public void onFailure(Throwable caught) {
+                    public void onApplicationFailure(Throwable caught) {
                         Info.display("Adding comment failed", "Adding comment failed");
                     }
                 });
@@ -176,11 +173,7 @@ public class WorkflowActionDialog extends Window {
 
     private void displayComments(GWTJahiaWorkflowAction action, final Window dialog,
                                  final LayoutContainer commentsPanel) {
-        async.getTaskComments(action, new AsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
-            public void onFailure(Throwable caught) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
+        async.getTaskComments(action, new BaseAsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
             public void onSuccess(List<GWTJahiaWorkflowTaskComment> result) {
                 int i = 0;
                 for (GWTJahiaWorkflowTaskComment comment : result) {
@@ -224,11 +217,7 @@ public class WorkflowActionDialog extends Window {
         panel.setHeading("Actions");
         String formResourceName = wf.getFormResourceName();
         if (formResourceName!=null && !"".equals(formResourceName)) {
-            definitionsAsync.getNodeType(formResourceName, new AsyncCallback<GWTJahiaNodeType>() {
-                public void onFailure(Throwable caught) {
-                    //To change body of implemented methods use File | Settings | File Templates.
-                }
-
+            definitionsAsync.getNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onSuccess(GWTJahiaNodeType result) {
                     final PropertiesEditor propertiesEditor = new PropertiesEditor(Arrays.asList(result),
                                                                                    null, false, false,
@@ -265,13 +254,13 @@ public class WorkflowActionDialog extends Window {
                     if (propertiesEditor != null) {
                         nodeProperties = propertiesEditor.getProperties();
                     }
-                    async.assignAndCompleteTask(node.getPath(), action, outcome, nodeProperties, new AsyncCallback() {
+                    async.assignAndCompleteTask(node.getPath(), action, outcome, nodeProperties, new BaseAsyncCallback() {
                         public void onSuccess(Object result) {
                             dialog.hide();
                             Info.display("Workflow executed", "Workflow executed");
                         }
 
-                        public void onFailure(Throwable caught) {
+                        public void onApplicationFailure(Throwable caught) {
                             dialog.hide();
                             Info.display("Workflow failed", "Workflow failed");
                         }
@@ -299,13 +288,13 @@ public class WorkflowActionDialog extends Window {
                 if (propertiesEditor != null) {
                     nodeProperties = propertiesEditor.getProperties();
                 }
-                async.startWorkflow(node.getPath(), wf, nodeProperties, new AsyncCallback() {
+                async.startWorkflow(node.getPath(), wf, nodeProperties, new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
                         dialog.hide();
                         Info.display("Workflow executed", "Workflow executed");
                     }
 
-                    public void onFailure(Throwable caught) {
+                    public void onApplicationFailure(Throwable caught) {
                         dialog.hide();
                         Info.display("Workflow failed", "Workflow failed");
                     }

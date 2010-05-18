@@ -64,7 +64,7 @@
 //
 //        save = new EditActionItem(Messages.getResource("org.jahia.jcr.edit.savetemplate.label"), "fm-save") {
 //            public void onSelection() {
-//                    JahiaContentManagementService.App.getInstance().saveNodeTemplate(node.getPath() , template,new AsyncCallback() {
+//                    JahiaContentManagementService.App.getInstance().saveNodeTemplate(node.getPath() , template,new BaseAsyncCallback() {
 //                        public void onFailure(Throwable throwable) {
 //                            Log.error("", throwable);
 //                            com.google.gwt.user.client.Window.alert("Cannot save preview");
@@ -161,7 +161,7 @@
 //     */
 //    private void updatePreview(String template) {
 //        if (node != null) {
-//            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, editLinker.getLocale(), template, "wrapper.previewwrapper", null, false, new AsyncCallback<String>() {
+//            JahiaContentManagementService.App.getInstance().getRenderedContent(node.getPath(), null, editLinker.getLocale(), template, "wrapper.previewwrapper", null, false, new BaseAsyncCallback<String>() {
 //                public void onSuccess(String result) {
 //                    HTML html = new HTML(result);
 //                    setHTML(html);
@@ -190,7 +190,7 @@
 //        templateBox.getStore().removeAll();
 ////        templateBox.getStore().clearFilters();
 //        if (node != null) {
-//            JahiaContentManagementService.App.getInstance().getTemplatesPath(node.getPath(),new AsyncCallback<List<String[]>>() {
+//            JahiaContentManagementService.App.getInstance().getTemplatesPath(node.getPath(),new BaseAsyncCallback<List<String[]>>() {
 //                public void onFailure(Throwable throwable) {
 //                    Log.error("", throwable);
 ////                    com.google.gwt.user.client.Window.alert("-upda tpl box->" + throwable.getMessage());

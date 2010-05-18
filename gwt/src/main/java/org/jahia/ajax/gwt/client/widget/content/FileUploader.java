@@ -47,6 +47,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -263,8 +264,8 @@ public class FileUploader extends Window {
                                 final int operation = ((SimpleComboBox) exist[1]).getSelectedIndex();
                                 final String key = exist[1].getName();
                                 final String newName = (String) exist[2].getValue();
-                                JahiaContentManagementService.App.getInstance().uploadedFile(location.getPath(), tmpName, operation, newName, new AsyncCallback() {
-                                    public void onFailure(Throwable caught) {
+                                JahiaContentManagementService.App.getInstance().uploadedFile(location.getPath(), tmpName, operation, newName, new BaseAsyncCallback() {
+                                    public void onApplicationFailure(Throwable caught) {
                                         addExistingToForm(exists, key, tmpName, newName);
                                         end(exist);
                                     }

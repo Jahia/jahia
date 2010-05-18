@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
@@ -110,8 +111,8 @@ public class ImageRotate extends Window {
     }
 
     private void rotateImage(final String path, final String target, final boolean clockwise, boolean force) {
-         JahiaContentManagementService.App.getInstance().rotateImage(path, target, clockwise, force, new AsyncCallback() {
-             public void onFailure(Throwable throwable) {
+         JahiaContentManagementService.App.getInstance().rotateImage(path, target, clockwise, force, new BaseAsyncCallback() {
+             public void onApplicationFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
                     if (com.google.gwt.user.client.Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n"+ Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
                          rotateImage(path, target, clockwise, true);

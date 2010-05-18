@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -59,12 +60,12 @@ public class DeployTemplatesActionItem extends BaseActionItem {
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
 
-        JahiaService.App.getInstance().getAvailableSites(new AsyncCallback<List<GWTJahiaSite>>() {
+        JahiaService.App.getInstance().getAvailableSites(new BaseAsyncCallback<List<GWTJahiaSite>>() {
             public void onSuccess(List<GWTJahiaSite> result) {
                 sites = result;
             }
 
-            public void onFailure(Throwable caught) {
+            public void onApplicationFailure(Throwable caught) {
 
             }
         });
@@ -101,8 +102,8 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                             pathsToSyncronize.put(nodePath, destinationPath);
 
                             JahiaContentManagementService.App.getInstance()
-                                    .synchro(pathsToSyncronize, new AsyncCallback() {
-                                        public void onFailure(Throwable caught) {
+                                    .synchro(pathsToSyncronize, new BaseAsyncCallback() {
+                                        public void onApplicationFailure(Throwable caught) {
                                             Info.display("Deploy Templates", "Error during your templates deployment");
                                         }
 

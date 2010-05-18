@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -46,8 +47,8 @@ public class EditActions {
      */
     public static void createPage(final Linker linker) {
         if (linker.getMainNode() != null) {
-            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new AsyncCallback<GWTJahiaNodeType>() {
-                public void onFailure(Throwable throwable) {
+            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new BaseAsyncCallback<GWTJahiaNodeType>() {
+                public void onApplicationFailure(Throwable throwable) {
                     Log.error("", throwable);
                     com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
                 }
@@ -66,8 +67,8 @@ public class EditActions {
      * @param linker
      */
     public static void createTemplate(final Linker linker) {
-        JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new AsyncCallback<GWTJahiaNodeType>() {
-            public void onFailure(Throwable throwable) {
+        JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new BaseAsyncCallback<GWTJahiaNodeType>() {
+            public void onApplicationFailure(Throwable throwable) {
                 Log.error("", throwable);
                 com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
             }
@@ -91,14 +92,11 @@ public class EditActions {
         if (linker.getMainNode() != null) {
             String path = linker.getMainNode().getPath();
             String locale = JahiaGWTParameters.getUILanguage();
-            JahiaContentManagementService.App.getInstance().getNodeURL(path,  locale, mode, new AsyncCallback<String>() {
+            JahiaContentManagementService.App.getInstance().getNodeURL(path,  locale, mode, new BaseAsyncCallback<String>() {
                 public void onSuccess(String url) {
                     com.google.gwt.user.client.Window.open(url,"mode"+mode,"");
                 }
 
-                public void onFailure(Throwable throwable) {
-                    Log.error("", throwable);
-                }
             });
         }
 
@@ -172,12 +170,12 @@ public class EditActions {
             }
 
             JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, true,
-                    new AsyncCallback<Map<String,GWTJahiaPublicationInfo>>() {
+                    new BaseAsyncCallback<Map<String,GWTJahiaPublicationInfo>>() {
                         public void onSuccess(Map<String,GWTJahiaPublicationInfo> result) {
                             new PublicationStatusWindow(linker, result).show();
                         }
 
-                        public void onFailure(Throwable caught) {
+                        public void onApplicationFailure(Throwable caught) {
                             com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
                         }
                     }
@@ -198,8 +196,8 @@ public class EditActions {
         if (selectedNode != null) {
             final GWTJahiaNode s = selectedNode;
 
-            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), false, "", false, true, new AsyncCallback() {
-                public void onFailure(Throwable caught) {
+            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), false, "", false, true, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
                 }
@@ -238,8 +236,8 @@ public class EditActions {
             selectedNode = linker.getMainNode();
         }
         if (selectedNode != null) {
-            JahiaContentManagementService.App.getInstance().unpublish(Arrays.asList(selectedNode.getPath()), new AsyncCallback() {
-                public void onFailure(Throwable caught) {
+            JahiaContentManagementService.App.getInstance().unpublish(Arrays.asList(selectedNode.getPath()), new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
                 }
@@ -267,8 +265,8 @@ public class EditActions {
                         for (GWTJahiaNode node : linker.getSelectedNodes()) {
                             paths.add(node.getPath());
                         }
-                        JahiaContentManagementService.App.getInstance().deletePaths(paths, new AsyncCallback() {
-                            public void onFailure(Throwable throwable) {
+                        JahiaContentManagementService.App.getInstance().deletePaths(paths, new BaseAsyncCallback() {
+                            public void onApplicationFailure(Throwable throwable) {
                                 Log.error(throwable.getMessage(), throwable);
                                 MessageBox.alert("", throwable.getMessage(), null);
                             }
@@ -320,8 +318,8 @@ public class EditActions {
                     toPublish.add(selectedNode.getUUID());
                     toPublish.addAll(ModuleHelper.getWrappedContentInfo().get(selectedNode.getUUID()));
 
-                    JahiaContentManagementService.App.getInstance().publish(toPublish, true, comments.getValue(), false,  false, new AsyncCallback() {
-                        public void onFailure(Throwable caught) {
+                    JahiaContentManagementService.App.getInstance().publish(toPublish, true, comments.getValue(), false,  false, new BaseAsyncCallback() {
+                        public void onApplicationFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
                             hide();

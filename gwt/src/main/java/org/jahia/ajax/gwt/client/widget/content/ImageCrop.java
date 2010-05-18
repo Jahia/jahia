@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
@@ -151,8 +152,8 @@ public class ImageCrop extends Window {
     }
 
     private void cropImage(final String path, final String targetName, final int top, final int left, final int width, final int height, final boolean force) {
-        JahiaContentManagementService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new AsyncCallback() {
-            public void onFailure(Throwable throwable) {
+        JahiaContentManagementService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable throwable) {
                 if (throwable instanceof ExistingFileException) {
                     if (com.google.gwt.user.client.Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
                         cropImage(path, targetName, top, left, width, height, true);

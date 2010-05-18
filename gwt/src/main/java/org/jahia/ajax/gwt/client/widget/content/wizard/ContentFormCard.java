@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -78,11 +79,7 @@ public class ContentFormCard extends ContentWizardCard {
     @Override
     public void createUI() {
         JahiaContentDefinitionService.App.getInstance()
-                .getNodeType(getWizardData().getNodeType().getName(), new AsyncCallback<GWTJahiaNodeType>() {
-                    public void onFailure(Throwable caught) {
-                        Log.error("error", caught);
-                    }
-
+                .getNodeType(getWizardData().getNodeType().getName(), new BaseAsyncCallback<GWTJahiaNodeType>() {
                     public void onSuccess(GWTJahiaNodeType result) {
                         List<GWTJahiaNodeType> types = new ArrayList<GWTJahiaNodeType>();
                         types.add(result);
@@ -114,8 +111,8 @@ public class ContentFormCard extends ContentWizardCard {
         JahiaContentManagementService.App.getInstance()
                 .createNode(getWizardWindow().getParentNode().getPath(), getWizardData().getNodeName(),
                         getWizardData().getNodeType().getName(), null, null, formEditor.getProperties(),
-                        new AsyncCallback<GWTJahiaNode>() {
-                            public void onFailure(Throwable caught) {
+                        new BaseAsyncCallback<GWTJahiaNode>() {
+                            public void onApplicationFailure(Throwable caught) {
                                 Log.error("Error", caught);
                                 MessageBox.alert(Messages.get("label.error", "Error"),
                                         Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.error.save",

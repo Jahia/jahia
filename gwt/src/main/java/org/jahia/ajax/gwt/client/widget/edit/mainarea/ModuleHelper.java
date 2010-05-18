@@ -5,6 +5,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -98,7 +99,7 @@ public class ModuleHelper {
         if (Log.isDebugEnabled()) {
             Log.debug("all pathes "+list);
         }
-        JahiaContentManagementService.App.getInstance().getNodesWithPublicationInfo(list,new AsyncCallback<List<GWTJahiaNode>>() {
+        JahiaContentManagementService.App.getInstance().getNodesWithPublicationInfo(list,new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 for (GWTJahiaNode gwtJahiaNode : result) {
                     final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
@@ -114,11 +115,11 @@ public class ModuleHelper {
                 m.getEditLinker().handleNewModuleSelection();
             }
 
-            public void onFailure(Throwable caught) {
+            public void onApplicationFailure(Throwable caught) {
                 Log.error("Unable to get node with publication info due to:",caught);
             }
         });
-        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new AsyncCallback<List<GWTJahiaNodeType>>() {
+        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
             public void onSuccess(List<GWTJahiaNodeType> result) {
                 nodeTypes = new HashMap<String, GWTJahiaNodeType>();
                 for (GWTJahiaNodeType type : result) {
@@ -126,7 +127,7 @@ public class ModuleHelper {
                 }
             }
 
-            public void onFailure(Throwable caught) {
+            public void onApplicationFailure(Throwable caught) {
                 Log.error("Unable to get nodetypes :",caught);
             }
         });

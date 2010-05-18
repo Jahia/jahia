@@ -4,6 +4,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -53,11 +54,7 @@ public class LinkerModule extends SimpleModule {
     public void setNode(GWTJahiaNode node) {
         super.setNode(node);
         final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-        async.getProperties(node.getPath(), new AsyncCallback<GWTJahiaGetPropertiesResult>() {
-            public void onFailure(Throwable throwable) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
+        async.getProperties(node.getPath(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onSuccess(GWTJahiaGetPropertiesResult gwtJahiaGetPropertiesResult) {
                 if (gwtJahiaGetPropertiesResult.getProperties().containsKey("j:bindedComponent")) {
                     final GWTJahiaNodeProperty o = gwtJahiaGetPropertiesResult.getProperties().get("j:bindedComponent");

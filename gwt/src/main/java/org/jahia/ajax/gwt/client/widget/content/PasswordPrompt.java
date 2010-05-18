@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
@@ -77,14 +78,14 @@ public class PasswordPrompt extends Window {
         });
         Button submit = new Button(Messages.getResource("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                JahiaContentManagementService.App.getInstance().storePasswordForProvider(providerKey, user.getValue(), pass.getValue(), new AsyncCallback() {
+                JahiaContentManagementService.App.getInstance().storePasswordForProvider(providerKey, user.getValue(), pass.getValue(), new BaseAsyncCallback() {
                     public void onSuccess(Object o) {
                         hide();
                         item.setText(logoutLabel);
                         m_linker.refreshAll();
                     }
 
-                    public void onFailure(Throwable throwable) {
+                    public void onApplicationFailure(Throwable throwable) {
                         Log.error(Messages.getResource("fm_fail"), throwable);
                         hide();
                     }

@@ -39,6 +39,8 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * <p>Title: </p>
  * <p>Description: </p>
@@ -56,7 +58,10 @@ public class SessionAuthValveImpl implements Valve {
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         AuthValveContext authContext = (AuthValveContext) context;
         JahiaUser jahiaUser = null;
-        jahiaUser = (JahiaUser) authContext.getRequest().getSession().getAttribute(ProcessingContext.SESSION_USER);
+        HttpSession session = authContext.getRequest().getSession(false);
+        if (session !=null) {
+            jahiaUser = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
+        }
         if (jahiaUser != null) {
             jahiaUser =
                     ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(jahiaUser.getUserKey());

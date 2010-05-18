@@ -42,6 +42,7 @@ import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>Title: Generic SSO auth valve</p>
@@ -94,7 +95,10 @@ public abstract class SsoValve implements Valve {
         // at first look if the user was previously authenticated
         JahiaUser sessionUser = null;
         final HttpServletRequest servletRequest = authContext.getRequest();
-        sessionUser = (JahiaUser) servletRequest.getSession().getAttribute(ProcessingContext.SESSION_USER);
+        HttpSession session = servletRequest.getSession();
+        if (session != null) {
+            sessionUser = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
+        }
         if (sessionUser != null && !sessionUser.getUsername().equals("guest")) {
             logger.debug("user '" + sessionUser.getUsername() + "' was already authenticated!");
             authContext.getSessionFactory().setCurrentUser(sessionUser);
@@ -131,12 +135,11 @@ public abstract class SsoValve implements Valve {
         if (user == null) {
             throw new PipelineException("user '" + uid + "' was authenticated but not found in database!");
         }
-        if (servletRequest.getSession(false) != null) {
+        if (session != null) {
             servletRequest.getSession().invalidate();
+            // user has been successfully authenticated, note this in the current session.
+            servletRequest.getSession().setAttribute(ProcessingContext.SESSION_USER, user);
         }
-        // user has been successfully authenticated, note this in the current session.
-        servletRequest.getSession().setAttribute(ProcessingContext.SESSION_USER, user);
-
         // eventually set the Jahia user
         authContext.getSessionFactory().setCurrentUser(user);
     }

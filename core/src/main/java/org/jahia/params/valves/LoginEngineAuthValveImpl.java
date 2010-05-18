@@ -120,7 +120,6 @@ public class LoginEngineAuthValveImpl implements Valve {
             if (logger.isDebugEnabled()) {
                 logger.debug("User " + theUser + " logged in.");
             }
-            ParamBean paramBean = null;
             if (httpServletRequest.getSession(false) != null) {
                 httpServletRequest.getSession().invalidate();
             }
@@ -163,13 +162,9 @@ public class LoginEngineAuthValveImpl implements Valve {
                 authCookie.setPath(StringUtils.isNotEmpty(httpServletRequest.getContextPath()) ?
                         httpServletRequest.getContextPath() : "/");
                 authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
-                if (paramBean != null) {
-                    HttpServletResponse realResponse = paramBean.getRealResponse();
-                    realResponse.addCookie(authCookie);
-                }
             }
 
-            enforcePasswordPolicy(theUser, paramBean);
+            enforcePasswordPolicy(theUser);
             theUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE,
                     String.valueOf(System.currentTimeMillis()));
         } else {
@@ -177,7 +172,7 @@ public class LoginEngineAuthValveImpl implements Valve {
         }
     }
 
-    private void enforcePasswordPolicy(JahiaUser theUser, ParamBean paramBean) {
+    private void enforcePasswordPolicy(JahiaUser theUser) {
         PolicyEnforcementResult evalResult = ServicesRegistry.getInstance().getJahiaPasswordPolicyService().
                 enforcePolicyOnLogin(theUser);
         if (!evalResult.isSuccess()) {
@@ -185,16 +180,6 @@ public class LoginEngineAuthValveImpl implements Valve {
             EngineMessages resultMessages = new EngineMessages();
             for (Object o : policyMsgs.getMessages()) {
                 resultMessages.add((EngineMessage) o);
-            }
-            if (paramBean != null) {
-                paramBean.getRequest().getSession().setAttribute(EngineMessages.CONTEXT_KEY, resultMessages);
-                try {
-                    String urlToForward = paramBean.composeEngineUrl(MySettingsEngine.ENGINE_NAME) + "?screen=" +
-                            MySettingsEngine.EDIT_TOKEN;
-                    paramBean.getResponse().sendRedirect(urlToForward);
-                } catch (Exception ex) {
-                    logger.error("Unable to forward to the mysettings engine page", ex);
-                }
             }
         }
     }

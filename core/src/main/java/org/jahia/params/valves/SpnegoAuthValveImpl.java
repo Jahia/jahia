@@ -40,6 +40,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.security.spnego.SpnegoAuthenticator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>Title: SPNEGO auth valve</p>
@@ -71,7 +72,11 @@ public class SpnegoAuthValveImpl extends SsoValve {
     /**
      */
     public Object retrieveCredentials(HttpServletRequest request) throws Exception {
-        SpnegoAuthenticator auth = (SpnegoAuthenticator) request.getSession().getAttribute(SpnegoHttpFilter.SSOAUTHENTICATOR_KEY);
+        SpnegoAuthenticator auth = null;
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            auth = (SpnegoAuthenticator) session.getAttribute(SpnegoHttpFilter.SSOAUTHENTICATOR_KEY);
+        }
         return auth == null ? null : auth.getPrincipal();
     }
 

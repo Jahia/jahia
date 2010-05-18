@@ -50,6 +50,7 @@ import org.jahia.utils.JahiaString;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Iterator;
 import java.util.Locale;
@@ -103,8 +104,10 @@ public class CookieAuthValveImpl implements Valve {
                     getJahiaUserManagerService().searchUsers(searchCriterias);
             if (foundUsers.size() == 1) {
                 jahiaUser = (JahiaUser) foundUsers.iterator().next();
-                authContext.getRequest().getSession().setAttribute(ProcessingContext.
-                        SESSION_USER, jahiaUser);
+                HttpSession session = authContext.getRequest().getSession(false);
+                if (session !=null) {
+                    session.setAttribute(ProcessingContext.SESSION_USER, jahiaUser);
+                }
 
                 if (cookieAuthConfig.isRenewalActivated()) {
                     // we can now renew the cookie.

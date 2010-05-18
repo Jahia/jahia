@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<langpack>
+    <str id="common.requiredField" txt="This field is required"/>
+    <str id="common.requiredFieldHint" txt="(*) - this field is required"/>
+    
+    <str id="superUser.title" txt="SuperUser (administrator) settings"/>
+    <str id="superUser.username" txt="Administrator username (*)"/>
+    <str id="superUser.username.mandatory" txt="Username is a mandatory field."/>
+    <str id="superUser.password" txt="Administrator password (*)"/>
+    <str id="superUser.passwordConfirm" txt="Confirm administrator password (*)"/>
+    <str id="superUser.password.mandatory" txt="Password is a mandatory field"/>
+    <str id="superUser.password.match" txt="Both passwords must match"/>
+    <str id="superUser.firstname" txt="First name"/>
+    <str id="superUser.lastname" txt="Last name"/>
+    <str id="superUser.email" txt="E-mail address"/>
+
+    <str id="dbSettings.title" txt="Database connection settings"/>
+    <str id="dbSettings.chooseType" txt="Choose your preferred database connection type"/>
+    <str id="dbSettings.type.embedded" txt="Use an embedded Apache Derby database engine"/>
+    <str id="dbSettings.type.standalone" txt="Use a standalone DBMS (configured on the next step)"/>
+    
+    <str id="dbSettings.dbms.title" txt="Database connection settings"/>
+    <str id="dbSettings.dbms.type" txt="Choose your DBMS type"/>
+    <str id="dbSettings.dbms.type.mssql" txt="Microsoft SQL Server"/>
+    <str id="dbSettings.dbms.type.mysql.innodb" txt="MySQL 5.x InnoDB"/>
+    <str id="dbSettings.dbms.type.mysql" txt="MySQL 5.x"/>
+    <str id="dbSettings.dbms.type.oracle" txt="Oracle 10.2.1.0 / Oracle 11.x"/>
+    <str id="dbSettings.dbms.type.oracle.legacy" txt="Oracle 9.x / Oracle 10.1.x"/>
+    <str id="dbSettings.dbms.type.postgresql" txt="PostgreSQL 7.4.x / 8.x"/>
+    <str id="dbSettings.dbms.type.derby" txt="Sun JavaDB / Apache Derby (standalone)"/>
+    <str id="dbSettings.dbms.connection" txt="Provide your database connection options"/>
+    <str id="dbSettings.dbms.connection.manual" txt="Specify connection URL, username and password"/>
+    <str id="dbSettings.dbms.connection.jndi" txt="Use existing database connection pool via JNDI"/>
+    <str id="dbSettings.dbms.createTables" txt="Create required database tables?"/>
+    
+    <str id="mailSettings.title" txt="Mail settings (optional)"/>
+    <str id="mailSettings.description" txt="The settings below are optional. Leave them empty to disable E-Mail notification. Specifying them will enable the E-Mail notification feature."/>
+</langpack>

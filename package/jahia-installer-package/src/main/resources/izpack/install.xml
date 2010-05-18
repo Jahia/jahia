@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<installation version="1.0">
+    <info>
+        <appname>Jahia</appname>
+        <appversion>6.5</appversion>
+        <authors>
+            <author email="info@jahia.org" name="Jahia Solutions Group SA"/>
+        </authors>
+        <url>http://www.jahia.org</url>
+        <uninstaller name="uninstaller.jar" write="yes"/>
+        <javaversion>1.5</javaversion>
+        <requiresjdk>no</requiresjdk>
+        <writeinstallationinformation>no</writeinstallationinformation>
+        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+    </info>
+    <variables>
+    </variables>
+    <dynamicvariables>
+        <variable name="var.db.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" condition="cnd.db.dbms.mssql" />
+        <variable name="var.db.driver" value="com.mysql.jdbc.Driver" condition="cnd.db.dbms.mysql_innodb" />
+        <variable name="var.db.driver" value="com.mysql.jdbc.Driver" condition="cnd.db.dbms.mysql" />
+        <variable name="var.db.driver" value="oracle.jdbc.OracleDriver" condition="cnd.db.dbms.oracle" />
+        <variable name="var.db.driver" value="oracle.jdbc.OracleDriver" condition="cnd.db.dbms.oracle_legacy" />
+        <variable name="var.db.driver" value="org.postgresql.Driver" condition="cnd.db.dbms.postgresql" />
+        <variable name="var.db.driver" value="org.apache.derby.jdbc.ClientDriver" condition="cnd.db.dbms.derby" />
+
+        <variable name="var.db.url" value="jdbc:sqlserver://localhost;databaseName=jahia" condition="cnd.db.dbms.mssql" />
+        <variable name="var.db.url" value="jdbc:mysql://localhost/jahia?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false" condition="cnd.db.dbms.mysql_innodb" />
+        <variable name="var.db.url" value="jdbc:mysql://localhost/jahia?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false" condition="cnd.db.dbms.mysql" />
+        <variable name="var.db.url" value="jdbc:oracle:thin:@localhost:1521:jahia" condition="cnd.db.dbms.oracle" />
+        <variable name="var.db.url" value="jdbc:oracle:thin:@localhost:1521:jahia" condition="cnd.db.dbms.oracle_legacy" />
+        <variable name="var.db.url" value="jdbc:postgresql://localhost:5432/jahia" condition="cnd.db.dbms.postgresql" />
+        <variable name="var.db.url" value="jdbc:derby://localhost:1527/jahia;create=true" condition="cnd.db.dbms.derby" />
+    </dynamicvariables>
+    
+    <conditions>
+        <condition type="variable" id="cnd.db.type.standalone">
+            <name>dbSettings.type</name>
+            <value>standalone</value>
+        </condition>
+        <condition type="variable" id="cnd.db.connection.manual">
+            <name>dbSettings.dbms.connection.type</name>
+            <value>manual</value>
+        </condition>
+        <condition type="variable" id="cnd.db.dbms.mssql">
+            <name>dbSettings.dbms.type</name>
+            <value>mssql</value>
+        </condition>
+        <condition type="variable" id="cnd.db.dbms.mysql_innodb">
+            <name>dbSettings.dbms.type</name>
+            <value>mysql_innodb</value>
+        </condition>
+        <condition type="variable" id="cnd.db.dbms.mysql">
+            <name>dbSettings.dbms.type</name>
+            <value>mysql</value>
+        </condition>
+        <condition type="variable" id="cnd.db.dbms.oracle">
+            <name>dbSettings.dbms.type</name>
+            <value>oracle</value>
+        </condition>
+        <condition type="variable" id="cnd.db.dbms.oracle_legacy">
+            <name>dbSettings.dbms.type</name>
+            <value>oracle_legacy</value>
+        </condition>
+        <condition type="variable" id="cnd.db.dbms.postgresql">
+            <name>dbSettings.dbms.type</name>
+            <value>postgresql</value>
+        </condition>
+        <condition type="variable" id="cnd.db.dbms.derby">
+            <name>dbSettings.dbms.type</name>
+            <value>derby</value>
+        </condition>
+    </conditions>
+    <guiprefs height="480" resizable="no" width="640">
+        <modifier key="useFlags" value="yes"/>
+        <modifier key="langDisplayType" value="native"/>
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="headingImageOnLeft" value="yes"/>
+        <modifier key="headingFontSize" value="2"/>
+        <modifier key="headingBackgroundColor" value="-65794"/>
+        <modifier key="headingForegroundColor" value="-1"/>
+        <modifier key="headingPanelCounter" value="progressbar"/>
+        <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+        <langpack iso3="fra"/>
+        <langpack iso3="deu"/>
+        <langpack iso3="ita"/>
+        <langpack iso3="por"/>
+        <langpack iso3="spa"/>
+    </locale>
+    <resources>
+        <res id="LicencePanel.licence" parse="no" src="../license.txt"/>
+        <res id="installer.langsel.img" src="../images/jahia-community.png"/>
+        <res id="Heading.image" src="../images/top-logo.gif.png"/>
+        <res id="userInputSpec.xml" src="userInputSpec.xml"/>
+        <res id="userInputLang.xml_eng" src="i18n/userInputLang.xml_eng" />
+        <res id="userInputLang.xml_fra" src="i18n/userInputLang.xml_eng" />
+        <res id="userInputLang.xml_deu" src="i18n/userInputLang.xml_eng" />
+        <res id="userInputLang.xml_ita" src="i18n/userInputLang.xml_eng" />
+        <res id="userInputLang.xml_por" src="i18n/userInputLang.xml_eng" />
+        <res id="userInputLang.xml_spa" src="i18n/userInputLang.xml_eng" />
+        <res id="packsLang.xml_eng" src="i18n/packsLang.xml_eng"/>
+        <res id="packsLang.xml_fra" src="i18n/packsLang.xml_eng"/>
+        <res id="packsLang.xml_deu" src="i18n/packsLang.xml_eng"/>
+        <res id="packsLang.xml_ita" src="i18n/packsLang.xml_eng"/>
+        <res id="packsLang.xml_por" src="i18n/packsLang.xml_eng"/>
+        <res id="packsLang.xml_spa" src="i18n/packsLang.xml_eng"/>
+        <res id="shortcutSpec.xml" src="windows-shortcuts.xml"/>
+        <!-- 
+        <res id="Unix_shortcutSpec.xml" src="unix-shortcuts.xml"/>
+         -->
+    </resources>
+    <panels>
+        <panel classname="CheckedHelloPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="PacksPanel" id="packsPanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="UserInputPanel"/>
+        <panel classname="UserInputPanel"/>
+        <panel classname="UserInputPanel" condition="cnd.db.type.standalone"/>
+        <panel classname="UserInputPanel" condition="cnd.db.type.standalone+cnd.db.connection.manual"/>
+        <panel classname="UserInputPanel" condition="cnd.db.type.standalone+!cnd.db.connection.manual"/>
+        <panel classname="UserInputPanel"/>
+        <panel classname="ShortcutPanel" id="shortcutPanel"/>
+        <panel classname="SummaryPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+    <native type="izpack" name="ShellLink.dll" />
+    <native type="izpack" name="ShellLink_x64.dll" />
+    <packs>
+        <pack name="Jahia Core" id="core" preselected="yes" required="yes">
+            <description/>
+            <file override="update" src="../license.txt" targetdir="$INSTALL_PATH"/>
+        </pack>
+        <pack name="Tomcat 6.0.24" id="tomcat" preselected="yes" required="no">
+            <description/>
+            <fileset dir="../artifacts/apache-tomcat-6.0.24" targetdir="$INSTALL_PATH/tomcat" />
+            <fileset dir="../tomcat" targetdir="$INSTALL_PATH/tomcat" override="update" />
+            <fileset dir="../scripts" targetdir="$INSTALL_PATH" override="update" condition="izpack.windowsinstall">
+                <include name="*.bat"/>
+            </fileset>
+            <fileset dir="../scripts" targetdir="$INSTALL_PATH" override="update" condition="!izpack.windowsinstall">
+                <include name="*.sh"/>
+            </fileset>
+            <fileset dir="../images" targetdir="$INSTALL_PATH/tomcat/bin" override="update">
+                <include name="st*.ico"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/tomcat/bin/catalina.sh" />
+            <executable targetfile="$INSTALL_PATH/tomcat/bin/digest.sh" />
+            <executable targetfile="$INSTALL_PATH/tomcat/bin/setclasspath.sh" />
+            <executable targetfile="$INSTALL_PATH/tomcat/bin/shutdown.sh" />
+            <executable targetfile="$INSTALL_PATH/tomcat/bin/startup.sh" />
+            <executable targetfile="$INSTALL_PATH/tomcat/bin/tool-wrapper.sh" />
+            <executable targetfile="$INSTALL_PATH/tomcat/bin/version.sh" />
+            <executable targetfile="$INSTALL_PATH/startJahia.sh" />
+            <executable targetfile="$INSTALL_PATH/stopJahia.sh" />
+        </pack>
+        <pack name="Jahia Unified Content Hub" id="uch" preselected="no" required="no">
+            <description/>
+            <file override="update" src="../license.txt" targetdir="$INSTALL_PATH/uch"/>
+        </pack>
+    </packs>
+</installation>

@@ -116,6 +116,8 @@ public class Render extends HttpServlet implements Controller,
     private JahiaTemplateManagerService templateService;
     private Action defaultPostAction;
 
+    private Integer sessionExpiryTime = null;
+
     static {
         reservedParameters = new HashSet<String>();
         reservedParameters.add(NODE_TYPE);
@@ -543,10 +545,11 @@ public class Render extends HttpServlet implements Controller,
         ProcessingContext paramBean = null;
 
         try {
-            Object old = req.getSession(true).getAttribute(
+            final HttpSession session = req.getSession();
+            Object old = session.getAttribute(
                     ParamBean.SESSION_SITE);
-            paramBean = Jahia.createParamBean(req, resp, req.getSession());
-            req.getSession(true).setAttribute(ParamBean.SESSION_SITE, old);
+            paramBean = Jahia.createParamBean(req, resp, session);
+            session.setAttribute(ParamBean.SESSION_SITE, old);
 
             URLResolver urlResolver = new URLResolver(req.getPathInfo());
 
@@ -559,9 +562,13 @@ public class Render extends HttpServlet implements Controller,
                 }
             }
 
-            req.getSession().setAttribute("workspace",
+            session.setAttribute("workspace",
                     urlResolver.getWorkspace());
 
+            if (sessionExpiryTime != null && session.getMaxInactiveInterval() != sessionExpiryTime * 60) {
+                session.setMaxInactiveInterval(sessionExpiryTime * 60);
+            }
+            
             RenderContext renderContext = createRenderContext(req, resp,
                     paramBean.getUser());
             renderContext.setLiveMode(Constants.LIVE_WORKSPACE
@@ -712,6 +719,10 @@ public class Render extends HttpServlet implements Controller,
 
     public void setTemplateService(JahiaTemplateManagerService templateService) {
         this.templateService = templateService;
+    }
+
+    public void setSessionExpiryTime(int sessionExpiryTime) {
+        this.sessionExpiryTime = sessionExpiryTime;
     }
 
     public void setDefaultPostAction(Action defaultPostActionResult) {

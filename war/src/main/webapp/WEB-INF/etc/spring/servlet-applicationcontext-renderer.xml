@@ -35,10 +35,14 @@
                     <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Contribute"/>
                 </entry>
                 <entry key="/edit/**">
-                    <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit"/>
+                    <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">
+                        <property name="sessionExpiryTime" value="60" />
+                    </bean>
                 </entry>
                 <entry key="/studio/**">
-                    <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Studio"/>
+                    <bean name="org.jahia.bin.Studio" parent="abstractRender" class="org.jahia.bin.Studio">
+                        <property name="sessionExpiryTime" value="60" />
+                    </bean>
                 </entry>
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find"/>

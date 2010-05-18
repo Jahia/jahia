@@ -43,121 +43,84 @@
 	text-decoration:underline;
 }
 
-/* ------- File types  (start) ------- */
-
-#bodywrapper li.file {
-    background: url(../icons/jnt_file_file.png ) no-repeat scroll 0.5em 0.5em;
+/* ------- Icon 16px 16px ------- */
+#bodywrapper span.icon {
+	display:inline-block;
+	width:16px;
+	height:16px;
+	background: url(../icons/jnt_file_file.png ) no-repeat top left;
+	margin-right:5px;
+	vertical-align:text-bottom;
 }
-#bodywrapper li.video {
-    background: url(../icons/jnt_file_video.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.file {
+    background: url(../icons/jnt_file_file.png ) no-repeat top left;
 }
-#bodywrapper li.ppt, #bodywrapper li.pptx {
-    background: url(../icons/jnt_file_ppt.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.video {
+    background: url(../icons/jnt_file_video.png ) no-repeat top left;
 }
-#bodywrapper li.exe {
-    background: url(../icons/jnt_file_exe.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.ppt, #bodywrapper span.pptx {
+    background: url(../icons/jnt_file_ppt.png ) no-repeat top left;
 }
-#bodywrapper li.msword, #bodywrapper li.doc, #bodywrapper li.docx {
-    background: url(../icons/jnt_file_doc.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.exe {
+    background: url(../icons/jnt_file_exe.png ) no-repeat top left;
 }
-#bodywrapper li.dir {
-    background: url(../icons/jnt_folder.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.msword, #bodywrapper span.doc, #bodywrapper span.docx {
+    background: url(../icons/jnt_file_doc.png ) no-repeat top left;
 }
-#bodywrapper li.html, #bodywrapper li.htm {
-    background: url(../icons/jnt_file_html.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.html, #bodywrapper span.htm {
+    background: url(../icons/jnt_file_html.png ) no-repeat top left;
 }
-#bodywrapper li.img,  #bodywrapper li.gif, #bodywrapper li.jpeg, #bodywrapper li.jpg, #bodywrapper li.png {
-    background: url(../icons/jnt_file_img.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.img,  #bodywrapper span.gif, #bodywrapper span.jpeg, #bodywrapper span.jpg, #bodywrapper span.png {
+    background: url(../icons/jnt_file_img.png ) no-repeat top left;
 }
-#bodywrapper li.pdf {
-    background: url(../icons/jnt_file_pdf.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.pdf {
+    background: url(../icons/jnt_file_pdf.png ) no-repeat top left;
 }
-#bodywrapper li.sound, #bodywrapper li.wav {
-    background: url(../icons/jnt_file_sound.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.sound, #bodywrapper a.wav, #bodywrapper span.mp3, #bodywrapper span.mpeg, #bodywrapper span.mpg {
+    background: url(../icons/jnt_file_sound.png ) no-repeat top left;
 }
-#bodywrapper li.txt {
-    background: url(../icons/jnt_file_txt.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.txt {
+    background: url(../icons/jnt_file_txt.png ) no-repeat top left;
 }
-#bodywrapper li.xls, #bodywrapper li.xlsx, #bodywrapper li.csv {
-    background: url(../icons/jnt_file_xls.png ) no-repeat  scroll 0.5em 0.5em;
+#bodywrapper span.xls, #bodywrapper span.xlsx, #bodywrapper span.csv {
+    background: url(../icons/jnt_file_xls.png ) no-repeat top left;
 }
-#bodywrapper li.zip, #bodywrapper li.sit  {
-    background: url(../icons/jnt_file_zip.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.zip, #bodywrapper a.sit, #bodywrapper span.rar,  #bodywrapper span.tar, #bodywrapper span.gz, #bodywrapper span.jar {
+    background: url(../icons/jnt_file_zip.png ) no-repeat top left;
 }
-#bodywrapper li.rar,  #bodywrapper li.tar, #bodywrapper li.gz    {
-    background: url(../icons/jnt_file_rar.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.swf {
+    background: url(../icons/jnt_flash.png ) no-repeat top left;
 }
-#bodywrapper li.swf    {
-    background: url(../icons/jnt_flash.png ) no-repeat scroll 0.5em 0.5em;
+#bodywrapper span.odg {
+    background: url(../icons/jnt_file_odg.png ) no-repeat top left;
 }
-
-/* ------- Special treatment for serach results when result hit is a file ------- */
-
-#bodywrapper a.file {
-    background: url(../icons/jnt_file_file.png ) no-repeat scroll 0.2em 0em;
-    padding-left:24px;
+#bodywrapper span.odp {
+    background: url(../icons/jnt_file_odp.png ) no-repeat top left;
 }
-#bodywrapper a.video {
-    background: url(../icons/jnt_file_video.png ) no-repeat scroll 0.2em 0em;
-	padding-left:24px;
+#bodywrapper span.ods {
+    background: url(../icons/jnt_file_ods.png ) no-repeat top left;
 }
-#bodywrapper a.ppt, #bodywrapper a.pptx {
-    background: url(../icons/jnt_file_ppt.png ) no-repeat scroll 0.2em 0em;
-    padding-left:24px;
+#bodywrapper span.odt {
+    background: url(../icons/jnt_file_odt.png ) no-repeat top left;
 }
-#bodywrapper a.exe {
-    background: url(../icons/jnt_file_exe.png ) no-repeat scroll 0.2em 0em;
-	padding-left:24px;
+#bodywrapper span.rtf {
+    background: url(../icons/jnt_file_rtf.png ) no-repeat top left;
 }
-#bodywrapper a.msword, #bodywrapper a.doc, #bodywrapper a.docx {
-    background: url(../icons/jnt_file_doc.png ) no-repeat scroll 0.2em 0em;
-    padding-left:24px;
+#bodywrapper span.svg {
+    background: url(../icons/jnt_file_svg.png ) no-repeat top left;
 }
-#bodywrapper a.dir {
-    background: url(../icons/jnt_folder.png ) no-repeat scroll 0.2em 0em;
-	padding-left:24px;
+#bodywrapper span.sxc {
+    background: url(../icons/jnt_file_sxc.png ) no-repeat top left;
 }
-#bodywrapper a.html, #bodywrapper a.htm {
-    background: url(../icons/jnt_file_html.png ) no-repeat scroll 0.2em 0em;
-    padding-left:24px;
+#bodywrapper span.sxi {
+    background: url(../icons/jnt_file_sxi.png ) no-repeat top left;
 }
-#bodywrapper a.img,  #bodywrapper a.gif, #bodywrapper a.jpeg, #bodywrapper a.jpg, #bodywrapper a.png {
-    background: url(../icons/jnt_file_img.png ) no-repeat scroll 0.2em 0em;
-	padding-left:24px;
+#bodywrapper span.sxw {
+    background: url(../icons/jnt_file_sxc.png ) no-repeat top left;
 }
-#bodywrapper a.pdf {
-    background: url(../icons/jnt_file_pdf.png ) no-repeat scroll 0.2em 0em;
-    padding-left:24px;
+#bodywrapper span.tsv {
+    background: url(../icons/jnt_file_tsv.png ) no-repeat top left;
 }
-#bodywrapper a.sound, #bodywrapper a.wav {
-    background: url(../icons/jnt_file_sound.png ) no-repeat scroll 0.2em 0em;
-	padding-left:24px;
-}
-#bodywrapper a.txt {
-    background: url(../icons/jnt_file_txt.png ) no-repeat scroll 0.2em 0em;
-    padding-left:24px;
-}
-#bodywrapper a.xls, #bodywrapper a.xlsx, #bodywrapper a.csv {
-    background: url(../icons/jnt_file_xls.png ) no-repeat  scroll 0.2em 0em;
-    padding-left:24px;
-}
-#bodywrapper a.zip, #bodywrapper a.sit  {
-    background: url(../icons/jnt_file_zip.png ) no-repeat scroll 0.2em 0em;
-    padding-left:24px;
-}
-#bodywrapper a.rar,  #bodywrapper a.tar, #bodywrapper a.gz    {
-    background: url(../icons/jnt_file_rar.png ) no-repeat scroll 0.2em 0em;
-    padding-left:24px;
-}
-#bodywrapper a.swf    {
-    background: url(../icons/jnt_flash.png ) no-repeat scroll 0.2em 0em;
-	padding-left:24px;
-}
-#bodywrapper a.jahiapage    {
-    background: url(../icons/jnt_file_html.png ) no-repeat scroll 0.2em 0em;
-    padding-left:24px;
-}
-
 /* ------- File types (end) ------- */
 
 /* ------- Icon 48px 48px ------- */
@@ -165,7 +128,8 @@
 	display:block;
 	width:48px;
 	height:48px;
-	margin:5px
+	margin:10px;
+	background: url(../icons/jnt_file_file_large.png ) no-repeat top left;
 }
 #bodywrapper span.file_large {
     background: url(../icons/jnt_file_file_large.png ) no-repeat top left;
@@ -200,13 +164,10 @@
 #bodywrapper span.xls_large, #bodywrapper span.xlsx_large, #bodywrapper span.csv_large {
     background: url(../icons/jnt_file_xls_large.png ) no-repeat top left;
 }
-#bodywrapper span.txt {
-    background: url(../icons/jnt_file_txt_large.png ) no-repeat top left;
-}
+
 #bodywrapper span.zip_large, #bodywrapper a.sit_large, #bodywrapper span.rar_large,  #bodywrapper span.tar_large, #bodywrapper span.gz_large, #bodywrapper span.jar_large {
     background: url(../icons/jnt_file_zip_large.png ) no-repeat top left;
 }
-
 #bodywrapper span.swf_large {
     background: url(../icons/jnt_flash_large.png ) no-repeat top left;
 }

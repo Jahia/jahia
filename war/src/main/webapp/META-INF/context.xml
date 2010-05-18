@@ -15,20 +15,4 @@
             driverClassName="@DRIVER@" url="@URL@" defaultAutoCommit="true" 
             maxActive="20" maxIdle="30" maxWait="10000" accessToUnderlyingConnectionAllowed="true" />
 
-<!--
-    <ResourceLink name="jcr/repository"
-              global="jcr/repository"
-              type="javax.jcr.Repository"/>
-
-    <ResourceLink name="jahia/users"
-              global="jahia/users"
-              type="org.jahia.api.user.JahiaUserService" />
--->
-
-  <!-- Resource configuration for UserTransaction use JOTM -->
-  <!--
-  <ResourceLink name="UserTransaction"
-        global="UserTransaction"
-        type="javax.transaction.UserTransaction"/>
-  -->
 </Context>

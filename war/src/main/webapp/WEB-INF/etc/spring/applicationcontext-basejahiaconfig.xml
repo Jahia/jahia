@@ -181,9 +181,9 @@
                 <entry key="pptx" value="ppt"/>
                 <entry key="ppz" value="ppt"/>
                 <entry key="rar" value="rar"/>
-                <entry key="rtf" value="doc"/>
-                <entry key="svg" value="img"/>
-                <entry key="svgz" value="img"/>
+                <entry key="rtf" value="rtf"/>
+                <entry key="svg" value="svg"/>
+                <entry key="svgz" value="svg"/>
                 <entry key="text" value="txt"/>
                 <entry key="tgz" value="zip"/>
                 <entry key="tif" value="img"/>
@@ -205,6 +205,15 @@
                 <entry key="zip" value="zip"/>
                 <entry key="kml" value="gearth"/>
                 <entry key="kmz" value="gearth"/>
+				<entry key="swf" value="swf"/>
+				<entry key="odg" value="odg"/>
+				<entry key="odp" value="odp"/>
+				<entry key="ods" value="ods"/>
+				<entry key="odt" value="odt"/>
+				<entry key="sxc" value="sxc"/>
+				<entry key="sxi" value="sxi"/>
+				<entry key="sxw" value="sxw"/>
+				<entry key="tsv" value="tsv"/>
             </map>
         </property>
     </bean>

@@ -476,7 +476,7 @@ public class JCRPublicationService extends JahiaService {
                         JCRNodeWrapper oldParent = snode.getParent();
                         oldParent.checkout();
                         snode.remove();
-                        snode.getRealNode().getSession().save();
+                        snode.getSession().save();
                     } catch (PathNotFoundException e) {
                         // already removed
                     } catch (RepositoryException e) {
@@ -530,7 +530,7 @@ public class JCRPublicationService extends JahiaService {
             NodeIterator it = sourceNode.getNodes();
             while (it.hasNext()) {
                 JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
-                if (nodeWrapper.isVersioned() && !nodeWrapper.getDefinition().isAutoCreated()) {
+                if (nodeWrapper.isVersioned()) {
                     denied.add(nodeWrapper.getPath());
                 }
             }
@@ -563,7 +563,7 @@ public class JCRPublicationService extends JahiaService {
                             JCRNodeWrapper oldParent = node.getParent();
                             oldParent.checkout();
                             node.remove();
-                            node.getRealNode().getSession().save();
+                            node.getSession().save();
                         } catch (RepositoryException e) {
                             e.printStackTrace();
                         }
@@ -608,7 +608,7 @@ public class JCRPublicationService extends JahiaService {
             NodeIterator it = sourceNode.getNodes();
             while (it.hasNext()) {
                 JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
-                if (!pruneNodes.contains(nodeWrapper.getIdentifier()) && nodeWrapper.isVersioned() && !nodeWrapper.getDefinition().isAutoCreated()) {
+                if (!pruneNodes.contains(nodeWrapper.getIdentifier()) && nodeWrapper.isVersioned()) {
                     try {
                         // Check if the child has a corresponding path - if not, clone it
                         nodeWrapper.getCorrespondingNodePath(destinationWorkspaceName);

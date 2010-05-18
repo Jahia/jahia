@@ -744,7 +744,58 @@ public class ExtendedNodeType implements NodeType {
         }
 
         public NodeDefinition[] getDeclaredChildNodeDefinitions() {
-            return ExtendedNodeType.this.getDeclaredChildNodeDefinitions();
+            ExtendedNodeDefinition[] defs = ExtendedNodeType.this.getDeclaredChildNodeDefinitions();
+
+
+            List<NodeDefinition> r = new ArrayList<NodeDefinition>();
+            for (final ExtendedNodeDefinition def : defs) {
+                    r.add(new NodeDefinition() {
+                        public NodeType[] getRequiredPrimaryTypes() {
+                            return def.getRequiredPrimaryTypes();
+                        }
+
+                        public String[] getRequiredPrimaryTypeNames() {
+                            return def.getRequiredPrimaryTypeNames();
+                        }
+
+                        public NodeType getDefaultPrimaryType() {
+                            return def.getDefaultPrimaryType();
+                        }
+
+                        public String getDefaultPrimaryTypeName() {
+                            return def.getDefaultPrimaryTypeName();
+                        }
+
+                        public boolean allowsSameNameSiblings() {
+                            return def.allowsSameNameSiblings();
+                        }
+
+                        public NodeType getDeclaringNodeType() {
+                            return def.getDeclaringNodeType();
+                        }
+
+                        public String getName() {
+                            return def.getName();
+                        }
+
+                        public boolean isAutoCreated() {
+                            return false;
+                        }
+
+                        public boolean isMandatory() {
+                            return !def.isAutoCreated() && def.isMandatory();
+                        }
+
+                        public int getOnParentVersion() {
+                            return def.getOnParentVersion();
+                        }
+
+                        public boolean isProtected() {
+                            return false;
+                        }
+                    });
+            }
+            return r.toArray(new NodeDefinition[r.size()]);
         }
     }
 

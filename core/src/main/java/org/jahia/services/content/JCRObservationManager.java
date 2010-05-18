@@ -1,5 +1,7 @@
 package org.jahia.services.content;
 
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
@@ -227,6 +229,44 @@ public class JCRObservationManager implements ObservationManager {
          */
         public EventListener nextEventListener() {
             return ((EventConsumer) next()).listener;
+        }
+    }
+
+    private static class WeakReferenceUpdateEvent implements Event {
+        private final Property property;
+        private final Event event;
+
+        public WeakReferenceUpdateEvent(Property property, Event event) {
+            this.property = property;
+            this.event = event;
+        }
+
+        public int getType() {
+            return Event.PROPERTY_CHANGED;
+        }
+
+        public String getPath() throws RepositoryException {
+            return property.getPath();
+        }
+
+        public String getUserID() {
+            return event.getUserID();
+        }
+
+        public String getIdentifier() throws RepositoryException {
+            return property.getParent().getIdentifier();
+        }
+
+        public Map getInfo() throws RepositoryException {
+            return new HashMap<String, String>();
+        }
+
+        public String getUserData() throws RepositoryException {
+            return event.getUserData();
+        }
+
+        public long getDate() throws RepositoryException {
+            return event.getDate();
         }
     }
 }

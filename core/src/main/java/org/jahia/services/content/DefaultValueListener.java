@@ -32,10 +32,7 @@
 package org.jahia.services.content;
 
 import org.jahia.api.Constants;
-import org.jahia.services.content.nodetypes.DynamicValueImpl;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.*;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -119,6 +116,12 @@ public class DefaultValueListener extends DefaultEventListener {
                                                         n.setProperty(pd.getName(), value.getString());
                                                     }
                                                 }
+                                            }
+                                        }
+                                        ExtendedNodeDefinition[] nodes = ent.getChildNodeDefinitions();
+                                        for (ExtendedNodeDefinition definition : nodes) {
+                                            if (definition.isAutoCreated() && !n.hasNode(definition.getName())) {
+                                                n.addNode(definition.getName(), definition.getDefaultPrimaryTypeName());
                                             }
                                         }
                                     }

@@ -298,14 +298,14 @@ public class JRCndWriter {
         writeRequiredTypes(nd.getRequiredPrimaryTypes());
         writeDefaultType(nd.getDefaultPrimaryType());
         out.write(ntd.getPrimaryItemName() != null && ntd.getPrimaryItemName().equals(nd.getName()) ? " primary" : "");
-        if (nd.isMandatory()) {
+        if (nd.isMandatory() && !nd.isAutoCreated()) {
             out.write(" mandatory");
         }
         if (nd.isProtected()) {
             out.write(" protected");
         }
         if (nd.isAutoCreated()) {
-            out.write(" autocreated");
+//            out.write(" autocreated");
         }
         if (nd.allowsSameNameSiblings()) {
             out.write(" multiple");

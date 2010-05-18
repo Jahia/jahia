@@ -379,7 +379,7 @@ public class ConflictResolver {
             if (prunedSourcePath.contains(targetNode.getPath() + "/" + newName)) {
                 return true;
             }
-            targetNode.getRealNode().getSession().save();
+            targetNode.getSession().save();
             JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), prunedSourcePath, sourceNode.getSession(), targetNode.getSession());
             return true;
         }

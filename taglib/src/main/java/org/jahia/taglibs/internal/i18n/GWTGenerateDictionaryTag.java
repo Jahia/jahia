@@ -61,12 +61,7 @@ public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
                 addMandatoryGwtMessages(renderContext.getUILocale(), currentLocale);
             } else {
                 // we fall back to JahiaData for the administration interface, where this tag is also used.
-                JahiaData jahiaData = (JahiaData) pageContext.findAttribute("org.jahia.data.JahiaData");
-                if (jahiaData != null) {
-                    addMandatoryGwtMessages(jahiaData.getProcessingContext().getUILocale(), currentLocale);
-                } else {
-                    addMandatoryGwtMessages(null, currentLocale);
-                }
+                addMandatoryGwtMessages(currentLocale, currentLocale);
             }
             out.append("<script type='text/javascript'>\n");
             out.append(generateJahiaGwtDictionary());

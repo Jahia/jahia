@@ -41,6 +41,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.LanguageCodeConverters;
 
 /**
  * Base tag for the JCR related tags.
@@ -64,7 +65,7 @@ public class AbstractJCRTag extends AbstractJahiaTag {
                 workspace = resource.getWorkspace();
                 locale = resource.getLocale();
             } else {
-                locale = Jahia.getThreadParamBean().getCurrentLocale();
+                locale = LanguageCodeConverters.languageCodeToLocale(getLanguageCode());
             }
             session = ctx != null ? JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale,
                     ctx.getFallbackLocale()) : JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);

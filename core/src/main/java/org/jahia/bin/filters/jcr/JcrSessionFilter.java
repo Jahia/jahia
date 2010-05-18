@@ -33,6 +33,7 @@ package org.jahia.bin.filters.jcr;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
+import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.AuthValveContext;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
@@ -78,12 +79,15 @@ public class JcrSessionFilter implements Filter {
                 final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
                 sessionFactory
                         .setCurrentUser(userMgr.lookupUser(JahiaUserManagerService.GUEST_USERNAME));
+            } else {
+                ((HttpServletRequest)servletRequest).getSession().setAttribute(ProcessingContext.SESSION_USER, sessionFactory.getCurrentUser());
             }
 
             filterChain.doFilter (servletRequest, servletResponse );
         } finally {
             if (Jahia.isInitiated()) {
                 sessionFactory.setCurrentUser(null);
+                sessionFactory.setCurrentLocale(null);
                 sessionFactory.closeAllSessions();
             }
         }

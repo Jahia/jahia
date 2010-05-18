@@ -86,7 +86,6 @@ public class JCRCategoryProvider {
      */
     public Node getCategoriesRoot() {
         JCRNodeWrapper rootNodeWrapper = null;
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getCurrentUserSession();
@@ -130,7 +129,6 @@ public class JCRCategoryProvider {
      * @throws JahiaException
      */
     public Category createCategory(String key, Category parentCategory) throws JahiaException {
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         Category newCategory = null;
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
@@ -162,7 +160,6 @@ public class JCRCategoryProvider {
      */
     public Category getCategoryByUUID(String categoryUUID) {
         Category categoryByUUID = null;
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
             JCRSessionWrapper session = sessionFactory
                     .getCurrentUserSession();
@@ -185,7 +182,6 @@ public class JCRCategoryProvider {
      */
     public Category getCategoryByPath(String categoryPath) {
         Category categoryByUUID = null;
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
             JCRSessionWrapper session = sessionFactory
                     .getCurrentUserSession();
@@ -207,7 +203,6 @@ public class JCRCategoryProvider {
      * @return the category matching the key
      */
     public Category getCategoryByKey(String categoryKey, Category parentCategory) {
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         Category newCategory = null;
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
@@ -238,7 +233,6 @@ public class JCRCategoryProvider {
     public List<Category> findCategoryByKey(String categoryKey) {
         final List<Category> result = new ArrayList<Category>();
         try {
-            ProcessingContext paramBean = Jahia.getThreadParamBean();
             Session session = sessionFactory.getCurrentUserSession();
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuffer query = new StringBuffer("SELECT * FROM ["
@@ -272,7 +266,6 @@ public class JCRCategoryProvider {
      */    
     public List<Category> findCategoriesStartingByKey(String categoryKey) {
         final List<Category> result = new ArrayList<Category>();
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
             Session session = sessionFactory.getCurrentUserSession();
             if (session.getWorkspace().getQueryManager() != null) {
@@ -332,7 +325,6 @@ public class JCRCategoryProvider {
     public Map<String, String> getTitlesForCategory(Category category)
             throws JahiaException {
         Map<String, String> result = new HashMap<String, String>();
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
             Session session = sessionFactory.getCurrentUserSession();
             Node categoryNode = session.getNodeByUUID(category
@@ -368,7 +360,6 @@ public class JCRCategoryProvider {
     public String getTitleForCategory(Category category, Locale locale)
             throws JahiaException {
         String title = null;
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
             Session session = sessionFactory.getCurrentUserSession(null, locale);
             Node categoryNode = session.getNodeByUUID(category
@@ -395,7 +386,6 @@ public class JCRCategoryProvider {
      */
     public void setTitleForCategory(Category category, Locale locale,
             String title) throws JahiaException {
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
             Session session = sessionFactory.getCurrentUserSession(null, locale);
             Node categoryNode = session.getNodeByUUID(category
@@ -418,7 +408,6 @@ public class JCRCategoryProvider {
      */
     public void removeTitleForCategory(Category category, Locale locale)
             throws JahiaException {
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
             Session session = sessionFactory.getCurrentUserSession(null, locale);
             Node categoryNode = session.getNodeByUUID(category
@@ -438,7 +427,6 @@ public class JCRCategoryProvider {
      * @throws JahiaException
      */
     public void removeCategory(CategoryBean categoryBean) throws JahiaException {
-        ProcessingContext paramBean = Jahia.getThreadParamBean();
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getCurrentUserSession();

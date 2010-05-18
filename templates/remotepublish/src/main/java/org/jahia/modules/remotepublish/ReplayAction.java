@@ -51,8 +51,7 @@ public class ReplayAction implements Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
-        final ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
-        final FileUpload fileUpload = paramBean.getFileUpload();
+        final FileUpload fileUpload = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
         if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().containsKey("log")) {
             DiskFileItem file = fileUpload.getFileItems().get("log");
             try {

@@ -31,7 +31,6 @@
  */
 package org.jahia.taglibs.template.category;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -173,8 +172,7 @@ public class CategoriesByPropertiesTag extends AbstractJahiaTag {
             propertyName, propertyValue, p);
 
         for (Category curCategory : foundCategories) {
-            CategoryBean curCategoryBean = new CategoryBean(curCategory,
-                jData.getProcessingContext());
+            CategoryBean curCategoryBean = new CategoryBean(curCategory);
             foundCategoryBeans.add(curCategoryBean);
         }
 

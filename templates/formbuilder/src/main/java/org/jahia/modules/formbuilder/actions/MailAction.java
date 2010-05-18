@@ -154,8 +154,7 @@ public class MailAction implements Action {
                 }
             };
             
-            final ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
-            final FileUpload fileUpload = paramBean.getFileUpload();
+            final FileUpload fileUpload = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
             if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
                 for (DiskFileItem file : fileUpload.getFileItems().values()) {
                     message.getAttachments().add(new Attachment(file.getName(), new ByteArrayDataSource(file.getInputStream(), file.getContentType())));

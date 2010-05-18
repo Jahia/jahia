@@ -1,16 +1,16 @@
 package org.jahia.bin;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.CookieAuthConfig;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Cookie;
+import javax.servlet.http.*;
 
 /**
  * Logout controller.
@@ -42,21 +42,26 @@ public class Logout extends HttpServlet implements Controller {
      * @throws Exception in case of errors
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        ParamBean jParams = Jahia.createParamBean(request, response, request.getSession());
 
         // now let's destroy the cookie authentication if there was one
         // set for this user.
-        JahiaUser curUser = jParams.getUser();
+        JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
         String cookieAuthKey = curUser.getProperty(cookieAuthConfig.getUserPropertyName());
         if (cookieAuthKey != null) {
             Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
-            authCookie.setPath(StringUtils.isNotEmpty(jParams.getContextPath()) ? jParams.getContextPath() : "/");
+            authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
             authCookie.setMaxAge(0); // means we want it deleted now !
-            jParams.getRealResponse().addCookie(authCookie);
+            response.addCookie(authCookie);
             curUser.removeProperty(cookieAuthConfig.getUserPropertyName());
         }
 
-        jParams.setUserGuest();
+        final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
+        final JahiaUser guest = userMgr.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
+        JCRSessionFactory.getInstance().setCurrentUser(guest);
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.removeAttribute(ProcessingContext.SESSION_USER);            
+        }
 
         String redirectActiveStr = request.getParameter("redirectActive");
         boolean redirectActive = true;

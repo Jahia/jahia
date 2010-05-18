@@ -39,6 +39,7 @@ import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
 import java.util.Date;
@@ -100,7 +101,9 @@ public abstract class BackgroundJob implements StatefulJob {
         jobDetail.setDescription(desc);
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.putAsString(JOB_CREATED, now); //creation
-        jobDataMap.put(JOB_USERKEY, JCRSessionFactory.getInstance().getCurrentUser().getUserKey());
+        final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+        jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getUserKey());
+        jobDataMap.put(JOB_CURRENT_LOCALE, sessionFactory.getCurrentLocale());
 
         jobDetail.setJobDataMap(jobDataMap);
         return jobDetail;
@@ -121,9 +124,11 @@ public abstract class BackgroundJob implements StatefulJob {
         long now = System.currentTimeMillis();
         logger.info("execute Background job " + jobDetail.getName() + "\n started @ " + new Date(now));
         String status = STATUS_FAILED;
+        final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {
             JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY));
-            JCRSessionFactory.getInstance().setCurrentUser(user);
+            sessionFactory.setCurrentUser(user);
+            sessionFactory.setCurrentLocale(LanguageCodeConverters.languageCodeToLocale((String) data.get(JOB_CURRENT_LOCALE)));
             executeJahiaJob(jobExecutionContext);
             status = data.getString(BackgroundJob.JOB_STATUS);
             if ( !(BackgroundJob.STATUS_ABORTED.equals(status) ||
@@ -177,7 +182,9 @@ public abstract class BackgroundJob implements StatefulJob {
             }
             data.put(JOB_STATUS, status);
             this.postExecution(jobExecutionContext);
-            JCRSessionFactory.getInstance().closeAllSessions();
+            sessionFactory.setCurrentUser(null);
+            sessionFactory.setCurrentLocale(null);
+            sessionFactory.closeAllSessions();
         }
     }
 

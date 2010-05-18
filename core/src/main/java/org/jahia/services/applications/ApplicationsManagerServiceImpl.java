@@ -678,7 +678,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 return entryPointInstanceByID[0];
             } catch (javax.jcr.ItemNotFoundException e) {
                 // user can't not access to portlet instance: intance doen't exist or user has no reqs ACL
-                logger.debug("User " + Jahia.getThreadParamBean().getUser().getName() + " could not load the portlet instance :" + epInstanceID);
+                logger.debug("User " + JCRSessionFactory.getInstance().getCurrentUser().getName() + " could not load the portlet instance :" + epInstanceID);
                 return null;
             } catch (RepositoryException e) {
                 logger.error(e, e);

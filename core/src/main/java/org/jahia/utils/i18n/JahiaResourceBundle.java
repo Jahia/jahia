@@ -136,11 +136,7 @@ public class JahiaResourceBundle extends ResourceBundle {
      */
     private JahiaTemplatesRBLoader getClassLoader() {
         String templatesPackageName = templatesPackage != null ? templatesPackage
-                .getName()
-                : (Jahia.getThreadParamBean() != null
-                && Jahia.getThreadParamBean().getSite() != null ? Jahia
-                .getThreadParamBean().getSite()
-                .getTemplatePackageName() : null);
+                .getName() : null;
         return templatesPackageName != null ? JahiaTemplatesRBLoader
                 .getInstance(Thread.currentThread().getContextClassLoader(),
                         templatesPackageName) : null;

@@ -1464,45 +1464,6 @@ public class JahiaTools {
         }
         return sb.toString();
     } // getMultivalues
-    
-    public static String getExpandedValue(String val, Object args, ProcessingContext context, Locale locale) {
-        ResourceBundleMarker resMarker = ResourceBundleMarker
-                .parseMarkerValue(val);
-        if (resMarker == null) {
-            // expression marker
-            ExpressionMarker exprMarker = ExpressionMarker.parseMarkerValue(
-                    val, context);
-            if (exprMarker != null) {
-                try {
-                    val = exprMarker.getValue();
-                } catch (Exception t) {
-                }
-            }
-
-            if (val == null) {
-                val = "";
-            }
-        } else {
-            try {
-                val = resMarker.getValue(locale);
-            } catch (JahiaException e) {
-                val = resMarker.getDefaultValue();
-            }
-
-            if (val == null) {
-                val = "";
-            }
-        }
-        if (args != null) {
-            MessageFormat formatter = new MessageFormat(""); // empty pattern, default Locale
-            if (locale != null) {
-                formatter.setLocale(locale);
-            } 
-            formatter.applyPattern(val);
-            val = formatter.format(args);
-        }
-        return val;        
-    }
 
     /**
      * Remove all html tags

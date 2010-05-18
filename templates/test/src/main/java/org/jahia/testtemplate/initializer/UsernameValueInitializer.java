@@ -31,7 +31,7 @@
  */
 package org.jahia.testtemplate.initializer;
 
-import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -50,12 +50,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class UsernameValueInitializer implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
-        if (jParams != null) {
-            return new Value[] { new ValueImpl(jParams.getUser().getUsername() + new SimpleDateFormat("hh:mm:ss").format(new Date()),
+    public Value[] getValues(ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+        return new Value[] { new ValueImpl(JCRSessionFactory.getInstance().getCurrentUser().getUsername() + new SimpleDateFormat("hh:mm:ss").format(new Date()),
                 PropertyType.STRING,false) };
-        } else {
-            return new Value[] { new ValueImpl("Username not available" + new SimpleDateFormat("hh:mm:ss").format(new Date()), PropertyType.STRING, false) };
-        }
     }
 }

@@ -42,7 +42,6 @@ import javax.jcr.Binary;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
 import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
 
 /**
@@ -146,7 +145,7 @@ public class DynamicValueImpl implements Value {
         }
         try {
             ValueInitializer init = (ValueInitializer) Class.forName(classname).newInstance();
-            v = init.getValues(Jahia.getThreadParamBean(), declaringPropertyDefinition, getParams());
+            v = init.getValues(declaringPropertyDefinition, getParams());
         } catch (InstantiationException e) {
             logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {

@@ -39,6 +39,7 @@ import org.jahia.content.ContentObjectKey;
 import org.jahia.content.JahiaObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.Node;
@@ -98,7 +99,7 @@ public class Category extends JahiaObject {
 
     static public Node getCategoriesRoot ()
             throws JahiaException {
-        return getCategoriesRoot(Jahia.getThreadParamBean().getUser());
+        return getCategoriesRoot(JCRSessionFactory.getInstance().getCurrentUser());
     }
 
     /**
@@ -166,7 +167,7 @@ public class Category extends JahiaObject {
 
     public static Category getCategory (String key)
             throws JahiaException {
-        return getCategory(key,Jahia.getThreadParamBean().getUser());
+        return getCategory(key,JCRSessionFactory.getInstance().getCurrentUser());
     }
 
     public static List<Category> getCategoriesWithKeyPrefix(final String keyPrefix,
@@ -285,7 +286,7 @@ public class Category extends JahiaObject {
      */
     static public Category getCategoryByUUID (String categoryUUID)
             throws JahiaException {
-        return getCategoryByUUID(categoryUUID,Jahia.getThreadParamBean().getUser());
+        return getCategoryByUUID(categoryUUID,JCRSessionFactory.getInstance().getCurrentUser());
     }
 
     /**
@@ -308,23 +309,6 @@ public class Category extends JahiaObject {
         }
         return category;
     }
-
-    /**
-     * @param categoryPath the category Ipath for the category to retrieve for the current principal for which to retrieve the category, checking rights
-     * to make sure he has access to it. If this object is null, then no rights
-     * check will be performed.
-     *
-     * @return the category corresponding to the key if it exists in the
-     *         database
-     *
-     * @throws JahiaException thrown if there was a problem communicating with
-     *                        the database
-     */
-    static public Category getCategoryByPath (String categoryPath)
-            throws JahiaException {
-        return getCategoryByPath(categoryPath,Jahia.getThreadParamBean().getUser());
-    }
-
 
 
     /**
@@ -353,7 +337,7 @@ public class Category extends JahiaObject {
     }
 
     static public JahiaObject getChildInstance (ObjectKey objectKey) {
-        return getChildInstance(objectKey,Jahia.getThreadParamBean().getUser());
+        return getChildInstance(objectKey,JCRSessionFactory.getInstance().getCurrentUser());
     }
 
     /**
@@ -398,11 +382,6 @@ public class Category extends JahiaObject {
         return foundCategories;
     }
 
-    static public List<Category> findCategoriesByPropNameAndValue (String propName,
-                                                         String propValue) {
-        return findCategoriesByPropNameAndValue(propName, propValue,Jahia.getThreadParamBean().getUser());
-    }
-
     /**
      * Returns the date of last modification of *any* category. This is useful
      * notably to invalidate trees of categories if any category was modified.
@@ -422,7 +401,7 @@ public class Category extends JahiaObject {
     }
 
     public static Category getChildInstance (String IDInType) {
-        return getChildInstance(IDInType,Jahia.getThreadParamBean().getUser());
+        return getChildInstance(IDInType,JCRSessionFactory.getInstance().getCurrentUser());
     }
 
     /**
@@ -484,7 +463,7 @@ public class Category extends JahiaObject {
      */
     public List<Category> getChildCategories ()
             throws JahiaException {
-        return getChildCategories(Jahia.getThreadParamBean().getUser());
+        return getChildCategories(JCRSessionFactory.getInstance().getCurrentUser());
     }
 
     /**
@@ -518,7 +497,7 @@ public class Category extends JahiaObject {
 
     public List<Category> getParentCategories ()
             throws JahiaException {
-        return getParentCategories(Jahia.getThreadParamBean().getUser());
+        return getParentCategories(JCRSessionFactory.getInstance().getCurrentUser());
     }
 
     /**
@@ -551,7 +530,7 @@ public class Category extends JahiaObject {
     public List<Category> getChildCategories (boolean recursive)
             throws JahiaException {
         List<Category> childs = categoryService.
-                getCategoryChildCategories (this, Jahia.getThreadParamBean().getUser());
+                getCategoryChildCategories (this, JCRSessionFactory.getInstance().getCurrentUser());
         if (!recursive){
             return childs;
         } else {
@@ -683,37 +662,6 @@ public class Category extends JahiaObject {
     public void delete ()
             throws JahiaException {
         categoryService.removeCategory (this);
-    }
-
-    /**
-     * Associates a child object key with this category. This method does
-     * nothing if the child object key already exists
-     *
-     * @param childObjectKey the object key to add as a child of this category
-     *
-     * @throws JahiaException thrown in case there was a problem communicating
-     *                        with the database
-     */
-    public void addChildObjectKey (ObjectKey childObjectKey)
-            throws JahiaException {
-        categoryService.addObjectKeyToCategory (this,
-                childObjectKey);
-    }
-
-    /**
-     * Removes a child object key from this category. This method does nothing
-     * if the object key was not a child of the category.
-     *
-     * @param childObjectKey the object key to remove from the child list of
-     *                       this category.
-     *
-     * @throws JahiaException thrown in case there was a problem communicating
-     *                        with the database
-     */
-    public void removeChildObjectKey (ObjectKey childObjectKey)
-            throws JahiaException {
-        categoryService.removeObjectKeyFromCategory (
-                this, childObjectKey);
     }
 
     /**

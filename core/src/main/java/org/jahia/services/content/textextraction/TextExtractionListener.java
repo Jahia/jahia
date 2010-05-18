@@ -178,13 +178,6 @@ public class TextExtractionListener extends DefaultEventListener {
     }
 
     protected void scheduleBackgroundExtraction(JCRNodeWrapper fileNode, String user) throws JahiaException {
-        ProcessingContext ctx = Jahia.getThreadParamBean();
-        if (ctx == null) {
-            JahiaUser member = userManagerService.lookupUser(user);
-            ctx = new ProcessingContext(settingsBean, System.currentTimeMillis(), null, member, null);
-            ctx.setCurrentLocale(Locale.ENGLISH);
-        }
-
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + fileNode.getName(),
                 TextExtractorJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();

@@ -31,7 +31,7 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.jahia.params.ProcessingContext;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 
@@ -46,10 +46,7 @@ import java.util.List;
  * Time: 5:35:31 PM
  */
 public class CurrentUser implements ValueInitializer {
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
-        if (jParams != null) {
-            return new Value[] { new ValueImpl(jParams.getUser().getUsername(), PropertyType.STRING, false) };
-        }
-        return new Value[0];
+    public Value[] getValues(ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+        return new Value[] { new ValueImpl(JCRSessionFactory.getInstance().getCurrentUser().getUsername(), PropertyType.STRING, false) };
     }
 }

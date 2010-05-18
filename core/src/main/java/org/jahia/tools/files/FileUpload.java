@@ -57,6 +57,7 @@ import java.util.*;
  * @version 1.0
  */
 public class FileUpload {
+    public static final String FILEUPLOAD_ATTRIBUTE = "fileUpload";
 
     private static final org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger (FileUpload.class);

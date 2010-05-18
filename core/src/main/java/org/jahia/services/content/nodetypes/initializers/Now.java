@@ -42,7 +42,6 @@ import org.apache.commons.jexl.ExpressionFactory;
 import org.apache.commons.jexl.JexlHelper;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 
@@ -56,7 +55,7 @@ public class Now implements ValueInitializer {
     
     private static Logger logger = Logger.getLogger(Now.class);
     
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
+    public Value[] getValues(ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
         long offset = 0;
         if (params.size() == 1) {
             try {

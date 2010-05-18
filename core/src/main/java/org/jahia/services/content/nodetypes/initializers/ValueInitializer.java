@@ -46,6 +46,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
  */
 public interface ValueInitializer {
 
-    public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params);
+    public Value[] getValues(ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params);
 
 }

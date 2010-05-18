@@ -1,5 +1,6 @@
 package org.jahia.bin;
 
+import org.jahia.services.sites.JahiaSite;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.context.ServletConfigAware;
@@ -34,10 +35,6 @@ public class Login extends HttpServlet implements Controller {
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Login done by parambean and auth-valve
-        ProcessingContext jParams = Jahia.createParamBean(request, response, request.getSession());
-
-        JahiaData jData = new JahiaData(jParams, false);
-        jParams.setAttribute(JahiaData.JAHIA_DATA, jData);
 
         String redirectActiveStr = request.getParameter("redirectActive");
         boolean redirectActive = true;
@@ -47,11 +44,12 @@ public class Login extends HttpServlet implements Controller {
 
         String redirect = request.getParameter("redirect");
         if (redirect == null || redirect.length() == 0) {
-            redirect = request.getContextPath()+"/cms/render/default/"+ jParams.getLocale() +"/sites/" +
-                    JahiaSitesBaseService.getInstance().getDefaultSite().getSiteKey() + "/home.html";
+            final JahiaSite site = JahiaSitesBaseService.getInstance().getDefaultSite();
+            redirect = request.getContextPath()+"/cms/render/default/"+ site.getDefaultLanguage() +"/sites/" +
+                    site.getSiteKey() + "/home.html";
         }
 
-        String result = (String) jParams.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
+        String result = (String) request.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
         if ("ok".equals(result)) {
             if (redirectActive) {
                 response.sendRedirect(redirect);

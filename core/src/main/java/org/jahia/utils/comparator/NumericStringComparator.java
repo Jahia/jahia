@@ -31,6 +31,7 @@
  */
 package org.jahia.utils.comparator;
 
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.bin.Jahia;
 import org.jahia.services.categories.Category;
@@ -81,7 +82,7 @@ public class NumericStringComparator<T> implements Comparator<T>, Serializable {
                 (idx2 == -1) ||
                 (!s1.substring(0, idx1).equals(s2.substring(0, idx2)))) {
             // System.out.println("Shortcutted. ");
-            return Collator.getInstance(Jahia.getThreadParamBean().getLocale()).compare(s1, s2);
+            return Collator.getInstance(JCRSessionFactory.getInstance().getCurrentLocale()).compare(s1, s2);
         }
 
         // find the last digit
@@ -232,7 +233,7 @@ public class NumericStringComparator<T> implements Comparator<T>, Serializable {
             s1 = ((ResourceBundleMarker) c1).getValue();
         } else if (c1.getClass() == Category.class) {
             final Category cat = (Category) c1;
-            s1 = cat.getTitle(Jahia.getThreadParamBean().getLocale());
+            s1 = cat.getTitle(JCRSessionFactory.getInstance().getCurrentLocale());
             if (s1 == null || s1.length() == 0) {
                 s1 = cat.getKey();
             }

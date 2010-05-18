@@ -41,6 +41,7 @@ import org.jahia.services.render.URLGenerator;
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -303,9 +304,9 @@ public class JahiaPortletUtil {
      * @param jParams
      * @param portalRequest
      */
-    public static void copySharedMapFromPortletToJahia(ProcessingContext jParams, HttpServletRequest portalRequest, PortletWindow window) {
+    public static void copySharedMapFromPortletToJahia(HttpSession session, HttpServletRequest portalRequest, PortletWindow window) {
         Map sharedMap = (Map) portalRequest.getAttribute(getRealAttributeName(window, JAHIA_SHARED_MAP));
-        jParams.getSessionState().setAttribute(JAHIA_SHARED_MAP, sharedMap);
+        session.setAttribute(JAHIA_SHARED_MAP, sharedMap);
     }
 
     /**

@@ -19,6 +19,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.portlet.MimeResponse;
 import javax.portlet.PortletException;
@@ -40,7 +41,6 @@ public class PlutoProcessActionFilter extends AbstractFilter {
     @Override
     protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         try {
-            final ParamBean jParams = (ParamBean) Jahia.getThreadParamBean();
             final JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(renderContext.getUser(), renderContext.getRequest());
             final HttpServletResponse response = renderContext.getResponse();
             final ServletContext servletContext = Jahia.getStaticServletConfig().getServletContext();
@@ -61,7 +61,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
 
             // Action window config will only exist if there is an action request.
             if (actionWindowConfig != null) {
-                flushPortletCache(jParams, actionWindowConfig);
+                flushPortletCache(renderContext.getUser(), actionWindowConfig);
                 PortletWindowImpl portletWindow = new PortletWindowImpl(container, actionWindowConfig, portalURL);
                 //if (logger.isDebugEnabled()) {
                 logger.debug("Processing action request for window: "
@@ -76,12 +76,12 @@ public class PlutoProcessActionFilter extends AbstractFilter {
                 }
 
                 // copy jahia attibutes nested by the portlet
-                JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, jParams.getRequest(), portletWindow, request, true);
+                JahiaPortletUtil.copyJahiaAttributes(entryPointInstance, renderContext.getRequest(), portletWindow, request, true);
 
 
                 try {
-                    container.doAction(portletWindow, request, jParams.getResponse());
-                    JahiaPortletUtil.copySharedMapFromPortletToJahia(jParams, request, portletWindow);
+                    container.doAction(portletWindow, request, renderContext.getResponse());
+                    JahiaPortletUtil.copySharedMapFromPortletToJahia(renderContext.getRequest().getSession(), request, portletWindow);
                 } catch (PortletContainerException ex) {
                     throw new ServletException(ex);
                 } catch (PortletException ex) {
@@ -128,19 +128,17 @@ public class PlutoProcessActionFilter extends AbstractFilter {
 
     /**
      * Flush the portlet Cache
-     *
-     * @param jParams
      * @param actionWindowConfig
      * @throws org.jahia.exceptions.JahiaException
      *
      */
-    private void flushPortletCache(ParamBean jParams, PortletWindowConfig actionWindowConfig) throws JahiaException {
+    private void flushPortletCache(JahiaUser user, PortletWindowConfig actionWindowConfig) throws JahiaException {
         String cacheKey = null;
         // Check if cache is available for this portlet
         cacheKey = "portlet_instance_" + actionWindowConfig.getMetaInfo();
         final EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(actionWindowConfig.getMetaInfo());
         if (entryPointInstance != null && entryPointInstance.getCacheScope() != null && entryPointInstance.getCacheScope().equals(MimeResponse.PRIVATE_SCOPE)) {
-            cacheKey += "_" + jParams.getUser().getUserKey();
+            cacheKey += "_" + user.getUserKey();
         }
     }
 }

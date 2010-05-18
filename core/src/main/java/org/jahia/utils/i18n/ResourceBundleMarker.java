@@ -151,58 +151,6 @@ public class ResourceBundleMarker {
     }
 
     /**
-     * Returns the real value ( from resource bundle ) given internal states info.
-     *
-     * @param locale
-     * @return
-     * @throws JahiaException
-     */
-    public String getValue(Locale locale) throws JahiaException {
-
-        String result = this.getDefaultValue();
-
-        try {
-        	JahiaSite site = Jahia.getThreadParamBean().getSite();
-            final String packageName = site != null ? site.getTemplatePackageName() : null;
-            result = JahiaResourceBundle.getString(this.getResourceBundleID(),
-                    this.getResourceKey(), locale, packageName,
-                    JahiaTemplatesRBLoader.getInstance(Thread.currentThread().getContextClassLoader(), packageName));
-        } catch (MissingResourceException mre) {
-            logger.debug(mre.getMessage(), mre);
-        }
-        if (result == null) {
-            return defaultValue;
-        }
-        return result;
-    }
-
-    /**
-     * Returns the real value ( from resource bundle ) if the value is a valid resource bundle marker tag
-     * <p/>
-     * <jahia-resource id="MySiteResource" key="product.001" default-value="Crew"/>
-     * <p/>
-     * or the original value on any other case ( not a valid resource bundle marker tag ).
-     *
-     * @param resourceKey
-     * @param locale
-     * @return
-     * @throws JahiaException
-     */
-    public String getValueFromResourceKey(String resourceKey, Locale locale)
-            throws JahiaException {
-
-        String result = this.getDefaultValue();
-
-        try {
-            result = JahiaResourceBundle.getString(this.getResourceBundleID(), this.getResourceKey(), locale, Jahia.getThreadParamBean()
-                    .getSite().getTemplatePackageName());
-        } catch (MissingResourceException mre) {
-            logger.debug(mre.getMessage(), mre);
-        }
-        return result;
-    }
-
-    /**
      * Returns the default value
      *
      * @return resource resource key
@@ -237,18 +185,6 @@ public class ResourceBundleMarker {
     }
 
     /**
-     * Set the internal value with the result returned by the resource lookup for a given locale.
-     *
-     * @param locale
-     * @return
-     * @throws JahiaException
-     */
-    public void setValue(Locale locale)
-            throws JahiaException {
-        this.value = this.getValueFromResourceKey(this.getResourceKey(), locale);
-    }
-
-    /**
      * Generates a ResourceBundleMarker Bean from a resource bundle marker value String
      *
      * @param value a valid tag :
@@ -277,77 +213,6 @@ public class ResourceBundleMarker {
         }
 
         return marker;
-    }
-
-    /**
-     * Returns the real value ( from resource bundle ) if the value is a valid resource bundle marker tag
-     * <p/>
-     * <jahia-resource id="MySiteResource" key="product.001" default-value="Crew"/>
-     * <p/>
-     * or the original value on any other case ( not a valid resource bundle marker tag ).
-     *
-     * @param markerStr
-     * @param locale
-     * @return
-     * @throws JahiaException
-     */
-    public static String getValue(String value, Locale locale)
-            throws JahiaException {
-
-        ResourceBundleMarker marker =
-                ResourceBundleMarker.parseMarkerValue(value);
-        if (marker == null) {
-            return value;
-        }
-
-        String result = marker.getDefaultValue();
-
-        try {
-            result = JahiaResourceBundle.getString(marker.getResourceBundleID(), marker.getResourceKey(), locale, Jahia.getThreadParamBean()
-                    .getSite().getTemplatePackageName());
-        } catch (MissingResourceException mre) {
-            logger.debug(mre.getMessage(), mre);
-        }
-        return result;
-    }
-
-    /**
-     * Build a List of resource bundle markers from an Iterator of values
-     * <p/>
-     * val1:val2:val3
-     *
-     * @param enumValues
-     * @param processingLocale
-     * @return
-     * @throws JahiaException
-     */
-    public static List<ResourceBundleMarker> buildResourceBundleMarkers(String enumValues,
-                                                    Locale processingLocale, boolean sorted)
-            throws JahiaException {
-
-        String[] tokens = JahiaTools.getTokens(enumValues, ":");
-        List<ResourceBundleMarker> markers = new ArrayList<ResourceBundleMarker>();
-        for (int i = 0; i < tokens.length; i++) {
-            //System.out.println("smalltext_field.buildResourceBundlemarker : token=" + tokens[i]);
-            ResourceBundleMarker marker =
-                    ResourceBundleMarker.parseMarkerValue(tokens[i]);
-            if (marker == null) {
-                //System.out.println("smalltext_field.buildResourceBundlemarker : marker is null !");
-                // invalid or not a resource bundle marker signature
-                // build a marker that return the value as it.
-                marker = new ResourceBundleMarker("", "", tokens[i]);
-                marker.setValue(tokens[i]);
-            } else {
-                //System.out.println("smalltext_field.buildResourceBundlemarker : marker=[" + marker.getResourceKey() + "," + marker.getValue() + "]");
-                marker.setValue(processingLocale);
-            }
-            markers.add(marker);
-        }
-        // sorts the markers
-        if (sorted)  {
-            Collections.sort(markers,new NumericStringComparator<ResourceBundleMarker>());
-        }
-        return markers;
     }
 
     /**

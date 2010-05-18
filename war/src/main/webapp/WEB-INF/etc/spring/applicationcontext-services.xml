@@ -246,7 +246,6 @@
                             <property name="loggingService" ref="loggingService"/>
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
-                        <ref bean="cacheFilter"/>
                         <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
                             <property name="priority" value="30" />
                         </bean>

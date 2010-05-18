@@ -170,8 +170,7 @@ public class DefaultPostAction implements Action {
                     }
                 }
             }
-            final ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
-            final FileUpload fileUpload = paramBean.getFileUpload();
+            final FileUpload fileUpload = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
             if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
                 final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
                 for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {

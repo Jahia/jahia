@@ -34,7 +34,6 @@ package org.jahia.taglibs;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -44,7 +43,6 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.ResourceBundleMarker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -342,16 +340,6 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
         } else {
             return value;
-        }
-    }
-
-    protected String getValueFromResourceBundleMarker(final String value) {
-        final ResourceBundleMarker marker = ResourceBundleMarker.parseMarkerValue(value);
-        if (marker == null) return value;
-        try {
-            return marker.getValue(getRenderContext().getMainResourceLocale());
-        } catch (JahiaException je) {
-            return marker.getDefaultValue();
         }
     }
 

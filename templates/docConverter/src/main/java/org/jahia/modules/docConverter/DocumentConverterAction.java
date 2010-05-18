@@ -50,8 +50,7 @@ public class DocumentConverterAction implements Action {
 
         if (converterService.isEnabled()) {
         // Get parameters + file
-        final ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
-        final FileUpload fu = paramBean.getFileUpload();
+        final FileUpload fu = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
         DiskFileItem inputFile = fu.getFileItems().get("fileField");
         List<String> mimeTypeList = parameters.get("mimeType");
 

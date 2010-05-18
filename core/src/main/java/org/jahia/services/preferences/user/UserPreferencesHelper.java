@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.preferences.generic.GenericJahiaPreference;
 import org.jahia.services.sites.JahiaSite;
@@ -267,7 +268,7 @@ public final class UserPreferencesHelper {
             }
     
             if (siteLocales == null || siteLocales.size() == 0) {
-                return Jahia.getThreadParamBean().getLocale();
+                return JCRSessionFactory.getInstance().getCurrentLocale();
             }
     
             List<Locale> availableBundleLocales = LanguageCodeConverters.getAvailableBundleLocales();

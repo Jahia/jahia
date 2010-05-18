@@ -40,6 +40,8 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.RoleIdentity;
@@ -91,7 +93,7 @@ public class Functions {
         final String[] groupArray = StringUtils.split(groups, ',');
         for (String aGroupArray : groupArray) {
             final String groupName = aGroupArray.trim();
-            if (jParams.getUser().isMemberOfGroup(jParams.getSiteID(), groupName)) {
+            if (JCRSessionFactory.getInstance().getCurrentUser().isMemberOfGroup(jParams.getSiteID(), groupName)) {
                 return true;
             }
         }
@@ -105,7 +107,7 @@ public class Functions {
         final String[] groupArray = StringUtils.split(groups, ',');
         for (String aGroupArray : groupArray) {
             String groupName = aGroupArray.trim();
-            if (jParams.getUser().isMemberOfGroup(jParams.getSiteID(),
+            if (JCRSessionFactory.getInstance().getCurrentUser().isMemberOfGroup(jParams.getSiteID(),
                     groupName)) {
                 return false;
             }
@@ -199,8 +201,7 @@ public class Functions {
      */
     public static Boolean isUserInRole(String role) {
         boolean hasIt = false;
-        ProcessingContext ctx = Jahia.getThreadParamBean();
-        JahiaUser user = ctx != null ? ctx.getUser() : null;
+        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
             final String[] roles = StringUtils.split(role, ',');
             for (String roleToCheck : roles) {
@@ -227,14 +228,13 @@ public class Functions {
      *         current site or has all specified roles if multiple are specified
      *         (comma-separated)
      */
-    public static Boolean isUserInRoleForSite(String role) {
+    public static Boolean isUserInRoleForSite(String role, String siteKey) {
         boolean hasIt = false;
-        ProcessingContext ctx = Jahia.getThreadParamBean();
-        JahiaUser user = ctx != null ? ctx.getUser() : null;
+        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
             final String[] roles = StringUtils.split(role, ',');
             for (String roleToCheck : roles) {
-                hasIt = user.hasRole(new RoleIdentity(roleToCheck.trim(), ctx.getSiteKey()));
+                hasIt = user.hasRole(new RoleIdentity(roleToCheck.trim(), siteKey));
                 if (!hasIt) {
                     break;
                 }
@@ -257,8 +257,7 @@ public class Functions {
      */
     public static Boolean isUserPermitted(String permission) {
         boolean hasIt = false;
-        ProcessingContext ctx = Jahia.getThreadParamBean();
-        JahiaUser user = ctx != null ? ctx.getUser() : null;
+        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
             final String[] roles = StringUtils.split(permission, ',');
             for (String permissionToCheck : roles) {
@@ -284,14 +283,13 @@ public class Functions {
      * @return if the current user has the specified permission or has all
      *         specified permissions if multiple are specified (comma-separated)
      */
-    public static Boolean isUserPermittedForSite(String permission) {
+    public static Boolean isUserPermittedForSite(String permission, String siteKey) {
         boolean hasIt = false;
-        ProcessingContext ctx = Jahia.getThreadParamBean();
-        JahiaUser user = ctx != null ? ctx.getUser() : null;
+        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
             final String[] roles = StringUtils.split(permission, ',');
             for (String permissionToCheck : roles) {
-                hasIt = user.isPermitted(new PermissionIdentity(permissionToCheck.trim(), ctx.getSiteKey()));
+                hasIt = user.isPermitted(new PermissionIdentity(permissionToCheck.trim(), siteKey));
                 if (!hasIt) {
                     break;
                 }

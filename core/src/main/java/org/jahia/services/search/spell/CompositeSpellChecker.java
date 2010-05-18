@@ -55,10 +55,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSitesBaseService;
 
 import java.io.IOException;
@@ -222,12 +219,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 return null;
             }
             if (!spellcheckInfo.containsKey("language")) {
-                JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
-                JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
-                Locale locale = session.getLocale();
-                if (locale == null) {
-                    locale = Jahia.getThreadParamBean().getLocale();
-                } 
+                Locale locale = JCRSessionFactory.getInstance().getCurrentLocale();
                 if (locale != null) {
                     spellcheckInfo.put("language", locale.toString());
                 }

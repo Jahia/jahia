@@ -39,6 +39,7 @@ import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -312,6 +313,7 @@ public final class JCRContentUtils {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNodeByUUID(nodeUUID);
+                    JCRSiteNode site = node.resolveSite();
                     Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
 
                     Set<Map.Entry<String,List<String[]>>> principalSet = aclEntriesMap.entrySet();
@@ -320,7 +322,7 @@ public final class JCRContentUtils {
                         String principalName = currentPrincipal.getKey().substring(2);
 
                         // test if the principal is the user or if the user belongs to the principal (group)
-                        if ((isUser && principalName.equalsIgnoreCase(user.getUsername())) || user.isMemberOfGroup(Jahia.getThreadParamBean().getSiteID(), principalName)) {
+                        if ((isUser && principalName.equalsIgnoreCase(user.getUsername())) || user.isMemberOfGroup(site != null ? site.getID() : 0, principalName)) {
                             List<String[]> principalPermValues = currentPrincipal.getValue();
                             for (String[] currentPrincipalPerm : principalPermValues) {
                                 String currentPrincipalPermValue = currentPrincipalPerm[1];

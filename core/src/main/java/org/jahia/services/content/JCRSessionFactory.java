@@ -37,7 +37,8 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private static JCRSessionFactory instance;
     private String servletContextAttributeName;
     private ServletContext servletContext;
-    public ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
+    private ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
+    private ThreadLocal<Locale> currentLocale = new ThreadLocal<Locale>();
 
 
     private JCRSessionFactory() {
@@ -358,5 +359,13 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public void setCurrentUser(JahiaUser user) {
         currentUser.set(user);
+    }
+
+    public Locale getCurrentLocale() {
+        return currentLocale.get();
+    }
+
+    public void setCurrentLocale(Locale locale) {
+        currentLocale.set(locale);
     }
 }

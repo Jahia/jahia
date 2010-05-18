@@ -74,11 +74,10 @@ public class JCRPreferenceTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         try {
             final JahiaPreferencesService service = ServicesRegistry.getInstance().getJahiaPreferencesService();
-            JCRNodeWrapper value = service.getGenericPreferenceNode(name,
-                                                                    Jahia.getThreadParamBean().getUser());
-            if (value == null && defaultValue !=null) {
-                service.setGenericPreferenceValue(name, defaultValue, Jahia.getThreadParamBean().getUser());
-                value = service.getGenericPreferenceNode(name, Jahia.getThreadParamBean().getUser());
+            JCRNodeWrapper value = service.getGenericPreferenceNode(name, getUser());
+            if (value == null && defaultValue != null) {
+                service.setGenericPreferenceValue(name, defaultValue, getUser());
+                value = service.getGenericPreferenceNode(name, getUser());
             }
             pageContext.setAttribute(var, value);
         } finally {
@@ -86,7 +85,7 @@ public class JCRPreferenceTag extends AbstractJahiaTag {
         }
         return EVAL_PAGE;
     }
-    
+
     @Override
     protected void resetState() {
         defaultValue = null;

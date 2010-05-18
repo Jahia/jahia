@@ -38,7 +38,6 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.data.beans.CategoryBean;
-import org.jahia.bin.Jahia;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -82,7 +81,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
                 category = Category.getCategoryByUUID(getString());
             }
             if (category == null) throw new ValueFormatException(getString() + " is not a valid Jahia Category");
-            return new CategoryBean(category, Jahia.getThreadParamBean());
+            return new CategoryBean(category);
         } catch (JahiaException e) {
             logger.error("Category not found");
         }

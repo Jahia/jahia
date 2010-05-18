@@ -34,7 +34,6 @@ package org.jahia.taglibs.template.category;
 import java.util.Date;
 import java.util.Enumeration;
 
-import javax.jcr.Node;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -347,7 +346,7 @@ public class CategoryTag extends AbstractJahiaTag {
 
         if (getId() != null) {
             pageContext.setAttribute(getId(),
-                                     new CategoryBean(curCategory, jData.getProcessingContext()));
+                                     new CategoryBean(curCategory));
         }
         return EVAL_BODY_BUFFERED;
     }

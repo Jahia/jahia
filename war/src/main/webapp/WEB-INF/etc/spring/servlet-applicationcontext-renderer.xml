@@ -32,7 +32,9 @@
                     <bean name="org.jahia.bin.Render" parent="abstractRender" />
                 </entry>
                 <entry key="/contribute/**">
-                    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Contribute"/>
+                    <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Contribute">
+                        <property name="sessionExpiryTime" value="60" />
+                    </bean>
                 </entry>
                 <entry key="/edit/**">
                     <bean name="org.jahia.bin.Edit" parent="abstractRender" class="org.jahia.bin.Edit">

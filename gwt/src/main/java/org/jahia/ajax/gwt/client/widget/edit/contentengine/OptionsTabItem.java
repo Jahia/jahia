@@ -12,7 +12,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class OptionsTabItem extends PropertiesTabItem {
     public OptionsTabItem(NodeHolder engine) {
-        super(Messages.get("ece_options", "Options"), engine, GWTJahiaItemDefinition.OPTIONS);
+        super(Messages.get("label.options", "Options"), engine, GWTJahiaItemDefinition.OPTIONS);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabOption());
     }
 

@@ -131,14 +131,14 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public List<GWTColumn> getTableColumns() {
         if (tableColumns.isEmpty()) {
-            addColumn(new GWTColumn("name", Messages.getResource("fm_column_name"),150));
+            addColumn(new GWTColumn("name", Messages.getResource("label.name"),150));
         }
         return tableColumns;
     }
 
     public List<String> getTableColumnKeys() {
         if (tableColumns.isEmpty()) {
-            addColumn(new GWTColumn("name", Messages.getResource("fm_column_name"),150));
+            addColumn(new GWTColumn("name", Messages.getResource("label.name"),150));
         }
         return tableColumnKeys;
     }

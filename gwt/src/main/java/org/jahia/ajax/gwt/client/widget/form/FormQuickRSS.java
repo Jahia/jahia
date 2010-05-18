@@ -83,7 +83,7 @@ public abstract class FormQuickRSS extends FormQuickMashup {
 
 
         // save properties button
-        Button saveButton = new Button(Messages.getResource("fm_save"));
+        Button saveButton = new Button(Messages.getResource("label.save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 JahiaContentManagementService.App.getInstance().createRSSPortletInstance(getFolderPath(),(String) nameField.getValue(), (String) urlField.getValue(), new AsyncCallback<GWTJahiaNode>() {

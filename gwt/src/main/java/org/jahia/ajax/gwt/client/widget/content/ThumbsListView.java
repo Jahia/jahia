@@ -34,9 +34,9 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
     protected GWTJahiaNode prepareData(GWTJahiaNode model) {
         String s = model.getName();
         model.set("shortName", Format.ellipse(s, 14));
-        model.set("nameLabel", Messages.get("fm_column_name", "Name"));
+        model.set("nameLabel", Messages.get("label.name", "Name"));
         model.set("authorLabel", Messages.get("versioning_author", "Auhor"));
-        model.set("tagsLabel", Messages.get("ece_tags", "tags"));
+        model.set("tagsLabel", Messages.get("org.jahia.jcr.edit.tags.tab", "tags"));
         String width = model.get("j:width");
         if (width != null) {
             if (Integer.parseInt(width) < 80) {

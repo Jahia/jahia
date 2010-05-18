@@ -27,7 +27,7 @@ public class ContentTabItem extends PropertiesTabItem {
     }
 
     public ContentTabItem(NodeHolder engine) {
-        super(Messages.get("ece_content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
+        super(Messages.get("label.content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
         setMultiLang(true);
     }

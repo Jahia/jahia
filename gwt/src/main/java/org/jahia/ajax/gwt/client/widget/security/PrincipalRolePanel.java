@@ -70,9 +70,9 @@ public class PrincipalRolePanel extends LayoutContainer {
         cp.setBorders(false);
         cp.setBodyBorder(false);
         ToolBar bar = new ToolBar();
-        Button addUser = new Button(Messages.getResource("um_adduser"));
+        Button addUser = new Button(Messages.getResource("org.jahia.engines.users.SelectUG_Engine.newUsers.label"));
         addUser.setIconStyle("um-adduser");
-        Button addGroup = new Button(Messages.getResource("um_addgroup"));
+        Button addGroup = new Button(Messages.getResource("org.jahia.engines.users.SelectUG_Engine.newGroups.label"));
         addGroup.setIconStyle("um-addgroup");
         bar.add(new FillToolItem());
         bar.add(addUser);
@@ -178,7 +178,7 @@ public class PrincipalRolePanel extends LayoutContainer {
         action.setRenderer(new GridCellRenderer<GWTJahiaPrincipal>() {
             public Object render(GWTJahiaPrincipal modelData, String s, ColumnData columnData, int i, int i1,
                                  ListStore<GWTJahiaPrincipal> listStore, Grid<GWTJahiaPrincipal> grid) {
-                Button button = new Button(Messages.get("fm_remove", "Remove"), new SelectionListener<ButtonEvent>() {
+                Button button = new Button(Messages.get("label.remove", "Remove"), new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
                         final GWTJahiaPrincipal principal = (GWTJahiaPrincipal) buttonEvent.getButton().getData("associatedNode");

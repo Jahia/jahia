@@ -13,7 +13,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class NewCategoryActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        ContentActions.createNode(linker, Messages.get("fm_newcategory", "New category"), "jnt:category");
+        ContentActions.createNode(linker, Messages.get("label.newCategory", "New category"), "jnt:category");
     }
 
     public void handleNewLinkerSelection() {

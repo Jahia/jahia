@@ -56,7 +56,7 @@ public class PortletRoleCard extends MashupWizardCard {
     private AclEditor aclEditor;
 
     public PortletRoleCard() {
-        super(Messages.getNotEmptyResource("mw_roles_perm", "Roles permissions"), Messages.getNotEmptyResource("mw_roles_perm_desc", "Set roles permissions"));
+        super(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.rolesperm.label", "Roles permissions"), Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.rolesperm.description.label", "Set roles permissions"));
     }
 
     public void next() {
@@ -92,15 +92,15 @@ public class PortletRoleCard extends MashupWizardCard {
                 }
             });
         } else {
-            add(new Label(Messages.getNotEmptyResource("mw_no_role", "The selected portlets defines any roles.")));
+            add(new Label(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.roles.any", "The selected portlets defines any roles.")));
         }
     }
 
     private void initAclEditor(GWTJahiaNodeACL acl) {
         aclEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
         aclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
-        aclEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_roles_adduser", "Add rode-user permission"));
-        aclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_roles_addgroup", "Add rode-group permission"));
+        aclEditor.setAddUsersLabel(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.roles.adduser.label", "Add rode-user permission"));
+        aclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.roles.addgroup.label", "Add rode-group permission"));
         Button saveButton = aclEditor.getSaveButton();
         saveButton.setVisible(false);
 

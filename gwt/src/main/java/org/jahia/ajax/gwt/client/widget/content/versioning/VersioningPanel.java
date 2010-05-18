@@ -99,7 +99,7 @@ public class VersioningPanel extends ContentPanel {
         final Grid<GWTJahiaNodeVersion> nodeVersionGrid = new Grid(store, cm);
 
         // main version panel
-        restoreVersion = new Button(Messages.getResource(("ae_restore")));
+        restoreVersion = new Button(Messages.getResource(("label.restore")));
         restoreVersion.setIconStyle("gwt-icons-restore");
         restoreVersion.setEnabled(true);
         restoreVersion.setToolTip("Restore selected version");

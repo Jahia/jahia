@@ -59,7 +59,7 @@ public class ContentImport extends Window {
 
         m_linker = linker;
 
-        setHeading(Messages.getResource("fm_export"));
+        setHeading(Messages.getResource("label.export"));
         setSize(500, 150);
         setResizable(false);
         setModal(true);
@@ -71,16 +71,16 @@ public class ContentImport extends Window {
         form.setBorders(false);
 
         final FileUploadField field = new FileUploadField("import");
-        field.setFieldLabel(Messages.getResource("fm_import"));
+        field.setFieldLabel(Messages.getResource("label.import"));
         form.add(field);
 
-        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ButtonEvent>() {
+        Button submit = new Button(Messages.getResource("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 doImport(n.getPath(), field.getValue());
             }
         });
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }

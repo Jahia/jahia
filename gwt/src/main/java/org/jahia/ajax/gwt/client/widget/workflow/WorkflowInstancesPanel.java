@@ -139,9 +139,9 @@ public class WorkflowInstancesPanel extends ContentPanel {
         });
         displayColumns.add(expander);
 
-        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 150));
+        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("label.name"), 150));
 
-        ColumnConfig config = new ColumnConfig("workflowStatus", Messages.getResource("fm_workflow_status"), 140);
+        ColumnConfig config = new ColumnConfig("workflowStatus", Messages.getResource("label.status"), 140);
         config.setRenderer(new GridCellRenderer() {
             public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
                                  ListStore listStore, Grid grid) {
@@ -173,7 +173,7 @@ public class WorkflowInstancesPanel extends ContentPanel {
         config.setSortable(false);
         displayColumns.add(config);
 
-        config = new ColumnConfig("taskStartTime", Messages.getResource("label_workflow_taskStartTime"), 140);
+        config = new ColumnConfig("taskStartTime", Messages.getResource("label.workflow.taskStartTime"), 140);
         config.setSortable(true);
         config.setRenderer(new GridCellRenderer() {
             public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -185,7 +185,7 @@ public class WorkflowInstancesPanel extends ContentPanel {
         });
         displayColumns.add(config);
 
-        config = new ColumnConfig("titleOfWorkflow", Messages.getResource("label_workflow_titleOfInstance"), 150);
+        config = new ColumnConfig("titleOfWorkflow", Messages.getResource("label.workflow.titleOfInstance"), 150);
         config.setSortable(true);
         config.setRenderer(new GridCellRenderer() {
             public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -204,7 +204,7 @@ public class WorkflowInstancesPanel extends ContentPanel {
         });
         displayColumns.add(config);
 
-        config = new ColumnConfig("dateOfLastComment", Messages.getResource("label_workflow_dateOflastComment"), 150);
+        config = new ColumnConfig("dateOfLastComment", Messages.getResource("label.workflow.dateOfLastComment"), 150);
         config.setSortable(true);
         config.setRenderer(new GridCellRenderer() {
             public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,

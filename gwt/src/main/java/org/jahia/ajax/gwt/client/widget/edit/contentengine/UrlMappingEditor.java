@@ -208,7 +208,7 @@ public class UrlMappingEditor extends LayoutContainer {
         grid.addPlugin(re);
 
         ToolBar toolBar = new ToolBar();
-        Button add = new Button(Messages.get("label_add", "Add"), new SelectionListener<ButtonEvent>() {
+        Button add = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 re.stopEditing(false);

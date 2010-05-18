@@ -205,7 +205,7 @@ public class EditActions {
                 }
 
                 public void onSuccess(Object result) {
-                    Info.display(Messages.getResource("publication_published_title"), Messages.getResource("publication_published_text"));
+                    Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
                     linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });
@@ -245,7 +245,7 @@ public class EditActions {
                 }
 
                 public void onSuccess(Object result) {
-                    Info.display(Messages.getResource("publication_unpublished_title"), Messages.getResource("publication_unpublished_text"));
+                    Info.display(Messages.getResource("label.content.unpublished"), Messages.getResource("label.content.unpublished"));
                     linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });
@@ -260,7 +260,7 @@ public class EditActions {
      */
     public static void delete(final Linker linker) {
         if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
-            MessageBox.confirm("", Messages.get("fm_confRemove", "Do you really want to continue?"), new Listener<MessageBoxEvent>() {
+            MessageBox.confirm("", Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.remove.label", "Do you really want to continue?"), new Listener<MessageBoxEvent>() {
                 public void handleEvent(MessageBoxEvent be) {
                     if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
                         List<String> paths = new ArrayList<String>();
@@ -289,7 +289,7 @@ public class EditActions {
 
         private PublishAllConfirmWindow(final Linker linker, final GWTJahiaNode selectedNode) {
             setScrollMode(Style.Scroll.AUTO);
-            setHeading(Messages.getResource("publication_publish"));
+            setHeading(Messages.getResource("label.publish"));
             setSize(800, 500);
             setResizable(false);
 
@@ -303,15 +303,15 @@ public class EditActions {
 
             final TextArea comments = new TextArea();
             comments.setName("comments");
-            comments.setFieldLabel(Messages.getResource("publication_publicationComments"));
+            comments.setFieldLabel(Messages.getResource("org.jahia.jcr.publication.publicationComments"));
             form.add(comments);
 
-            final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+            final Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                     hide();
                 }
             });
-            final Button ok = new Button(Messages.getResource("publication_publish"));
+            final Button ok = new Button(Messages.getResource("label.publish"));
             SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                     ok.setEnabled(false);
@@ -328,7 +328,7 @@ public class EditActions {
                         }
 
                         public void onSuccess(Object result) {
-                            Info.display(Messages.getResource("publication_published_title"), Messages.getResource("publication_published_text"));
+                            Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
                             linker.refresh(EditLinker.REFRESH_ALL);
                             hide();
                         }

@@ -112,7 +112,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * init buttons
      */
     protected void initFooter() {
-        ok = new Button(Messages.getResource("fm_save"));
+        ok = new Button(Messages.getResource("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
         ok.setEnabled(false);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
@@ -121,7 +121,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
         /* ToDo: activate restore button in the engine
 
-        restore = new Button(Messages.getResource("fm_restore"));
+        restore = new Button(Messages.getResource("label.restore"));
         restore.setIconStyle("gwt-icons-restore");
         restore.setEnabled(false);
 
@@ -133,7 +133,7 @@ public class EditContentEngine extends AbstractContentEngine {
             });
             addButton(this.restore);
         }*/
-        Button cancel = new Button(Messages.getResource("fm_cancel"));
+        Button cancel = new Button(Messages.getResource("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

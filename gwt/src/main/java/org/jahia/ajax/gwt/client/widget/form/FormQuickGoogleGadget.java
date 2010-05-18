@@ -82,7 +82,7 @@ public abstract class FormQuickGoogleGadget extends FormQuickMashup {
 
 
         // save properties button
-        Button saveButton = new Button(Messages.getResource("fm_save"));
+        Button saveButton = new Button(Messages.getResource("label.save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent componentEvent) {
                 JahiaContentManagementService.App.getInstance().createGoogleGadgetPortletInstance(getFolderPath(), (String) nameField.getValue(), (String) scriptField.getValue(),new AsyncCallback<GWTJahiaNode>() {

@@ -164,7 +164,7 @@ public class AddContentWizardWindow extends WizardWindow {
 
     @Override
     public String getHeaderTitle() {
-        return Messages.get("add_content_wizard_title", "Add content");
+        return Messages.get("label.addContent", "Add content");
     }
 
     public Linker getLinker() {

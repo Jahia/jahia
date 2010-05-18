@@ -54,7 +54,7 @@ public class PortletFormCard extends MashupWizardCard {
     private PropertiesEditor pe;
 
     public PortletFormCard() {
-        super(Messages.getNotEmptyResource("mw_params","Parameters"), Messages.getNotEmptyResource("mw_edit_params","Edit parameters"));
+        super(Messages.getNotEmptyResource("label.parameters","Parameters"), Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.parameters.edit.label","Edit parameters"));
     }
 
     public void createUI() {
@@ -97,7 +97,7 @@ public class PortletFormCard extends MashupWizardCard {
                     setFormPanel(pe);
                     layout();
                 } else {
-                    add(new Label(Messages.getNotEmptyResource("mw_prop_load_error","Unable to load properties panel")));
+                    add(new Label(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.props.load.error.label","Unable to load properties panel")));
                 }
             }
 

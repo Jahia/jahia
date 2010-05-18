@@ -58,8 +58,8 @@ public class WorkflowTabItem extends SidePanelTabItem {
         contentContainer.setLayout(new FitLayout());
         contentStore = new ListStore<GWTJahiaNode>();
         List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
-        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("fm_info_name"), 150));
-        ColumnConfig config = new ColumnConfig("workflowStatus", Messages.getResource("fm_workflow_status"), 100);
+        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("label.name"), 150));
+        ColumnConfig config = new ColumnConfig("workflowStatus", Messages.getResource("label.status"), 100);
         config.setRenderer(new GridCellRenderer() {
             public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
                                  ListStore listStore, Grid grid) {

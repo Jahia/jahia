@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 public class MetadataTabItem extends PropertiesTabItem {
     public MetadataTabItem(NodeHolder engine) {
-        super(Messages.get("ece_metadata", "Metadata"), engine, GWTJahiaItemDefinition.METADATA);
+        super(Messages.get("label.metadata", "Metadata"), engine, GWTJahiaItemDefinition.METADATA);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabMetadata());
         excludedTypes = Arrays.asList("jmix:categorized", "jmix:tagged");
     }

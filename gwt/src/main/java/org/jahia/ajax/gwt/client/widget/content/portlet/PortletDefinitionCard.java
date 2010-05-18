@@ -61,7 +61,7 @@ public class PortletDefinitionCard extends MashupWizardCard {
     private Grid<GWTJahiaPortletDefinition> grid;
 
     public PortletDefinitionCard() {
-        super(Messages.getNotEmptyResource("mw_mashups", "Mashup"), Messages.getNotEmptyResource("mw_select_portlet_def", "Select a portlet definition"));
+        super(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.portletdef.label", "Mashup"), Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.portletdef.label", "Select a portlet definition"));
         createUI();
     }
 
@@ -79,8 +79,8 @@ public class PortletDefinitionCard extends MashupWizardCard {
 
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("displayName", Messages.getNotEmptyResource("mw_name", "Name"), 180));
-        columns.add(new ColumnConfig("description", Messages.getNotEmptyResource("mw_description", "Description"), 400));
+        columns.add(new ColumnConfig("displayName", Messages.getNotEmptyResource("label.portletName", "Name"), 180));
+        columns.add(new ColumnConfig("description", Messages.getNotEmptyResource("label.portletDescription", "Description"), 400));
 
         ColumnModel cm = new ColumnModel(columns);
         grid = new Grid<GWTJahiaPortletDefinition>(store, cm);

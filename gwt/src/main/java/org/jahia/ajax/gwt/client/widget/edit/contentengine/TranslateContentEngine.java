@@ -124,13 +124,13 @@ public class TranslateContentEngine extends Window {
      * init buttons
      */
     protected void initFooter() {
-        ok = new Button(Messages.getResource("fm_save"));
+        ok = new Button(Messages.getResource("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SaveSelectionListener());
         buttonBar.add(ok);
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"));
+        Button cancel = new Button(Messages.getResource("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

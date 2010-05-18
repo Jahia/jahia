@@ -88,7 +88,7 @@ public class FileUploader extends Window {
                 }
             });
             remove.setIconStyle("gwt-icons-delete");
-            remove.setToolTip(Messages.getResource("fm_remove"));
+            remove.setToolTip(Messages.getResource("label.remove"));
             if (uploads.size() == 0) {
                 remove.setVisible(false);
             }
@@ -127,7 +127,7 @@ public class FileUploader extends Window {
 
     public FileUploader(final Linker linker, final GWTJahiaNode location) {
         super();
-        setHeading(Messages.getResource("fm_uploadFiles"));
+        setHeading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.uploadFile.label"));
         setSize(500, 200);
         setResizable(false);
 
@@ -157,7 +157,7 @@ public class FileUploader extends Window {
 
         // unzip parameter
         final CheckBox unzip = new CheckBox();
-        unzip.setFieldLabel(Messages.getResource("fm_autoUnzip"));
+        unzip.setFieldLabel(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.autoUnzip.label"));
         unzip.setName("unzip");
 
         String parentPath = location.getPath();
@@ -173,7 +173,7 @@ public class FileUploader extends Window {
         form.add(unzip);
 
         final ToolBar toolBar = new ToolBar();
-        Button add = new Button(Messages.getResource("fm_addFile"));
+        Button add = new Button(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.addFile.label"));
         add.setIconStyle("gwt-toolbar-icon-addFile");
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -185,19 +185,19 @@ public class FileUploader extends Window {
         toolBar.add(new FillToolItem());
         toolBar.add(bar);
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }
         });
-        final Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ButtonEvent>() {
+        final Button submit = new Button(Messages.getResource("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 try {
                     form.submit();
                 } catch (Exception e) {
                     bar.reset();
                     bar.setVisible(false);
-                    com.google.gwt.user.client.Window.alert(Messages.getResource("fm_checkUploads"));
+                    com.google.gwt.user.client.Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.checkUploads.label"));
                 }
             }
         });
@@ -328,11 +328,11 @@ public class FileUploader extends Window {
         choose.setEditable(false);
         choose.setName(key);
         // 0 = rename
-        choose.add(Messages.getResource("fm_rename"));
+        choose.add(Messages.getResource("label.rename"));
         // 1= rename-to
-        choose.add(Messages.getResource("fm_rename") + " auto");
+        choose.add(Messages.getResource("label.rename") + " auto");
         // 2 = overwrite
-        choose.add(Messages.getResource("fm_confOverwrite"));
+        choose.add(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"));
         // 4 = add new version
         choose.add(Messages.getNotEmptyResource("fm_add_new_version","Add a new version"));
         choose.setHideLabel(true);
@@ -350,7 +350,7 @@ public class FileUploader extends Window {
         });
 
         HorizontalPanel p = new HorizontalPanel();
-        final Label w = new Label(Messages.getResource("fm_alreadyExists"));
+        final Label w = new Label(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label"));
         w.setStyleName("x-form-field");
         p.add(w);
         p.add(choose);

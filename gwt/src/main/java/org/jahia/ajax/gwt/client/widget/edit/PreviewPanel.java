@@ -62,7 +62,7 @@
 //
 //        toolbar.add(templateBox);
 //
-//        save = new EditActionItem(Messages.getResource("em_savetemplate"), "fm-save") {
+//        save = new EditActionItem(Messages.getResource("org.jahia.jcr.edit.savetemplate.label"), "fm-save") {
 //            public void onSelection() {
 //                    JahiaContentManagementService.App.getInstance().saveNodeTemplate(node.getPath() , template,new AsyncCallback() {
 //                        public void onFailure(Throwable throwable) {

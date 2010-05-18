@@ -59,7 +59,7 @@ public class ContentExportTemplate extends Window {
         super() ;
 
         m_linker = linker ;
-        setHeading(Messages.getResource("fm_export"));
+        setHeading(Messages.getResource("label.export"));
         setSize(500, 150);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
@@ -83,7 +83,7 @@ public class ContentExportTemplate extends Window {
 
         });
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }

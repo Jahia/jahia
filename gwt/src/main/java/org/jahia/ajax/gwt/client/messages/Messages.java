@@ -59,7 +59,7 @@ public class Messages {
         try {
             //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
             Dictionary jahiaParamDictionary = Dictionary.getDictionary(DICTIONARY_NAME);
-            return jahiaParamDictionary.get(key);
+            return jahiaParamDictionary.get(key.replace('.','_'));
         } catch (Exception e) {
             Log.error("Can't retrieve [" + key + "]", e);
             return key;
@@ -78,7 +78,7 @@ public class Messages {
         String value = defaultValue;
         try {
             Dictionary jahiaParamDictionary = Dictionary.getDictionary(DICTIONARY_NAME);
-            value = jahiaParamDictionary.get(key);
+            value = jahiaParamDictionary.get(key.replace('.','_'));
             if (value == null || "".equals(value.trim())){
                 value = defaultValue;
             }

@@ -70,9 +70,9 @@ public class Hover {
 //
 //            String name = module.getPath();
 //            if (name.contains("/")) {
-//                b.setName(Messages.getResource("em_content")+" : "+ name.substring(name.lastIndexOf('/')+1));
+//                b.setName(Messages.getResource("label.content")+" : "+ name.substring(name.lastIndexOf('/')+1));
 //            } else {
-//                b.setName(Messages.getResource("em_content")+" : "+ name);
+//                b.setName(Messages.getResource("label.content")+" : "+ name);
 //            }
 //        }
 

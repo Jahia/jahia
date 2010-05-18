@@ -64,19 +64,19 @@ public class WorkflowContentTypePanel extends ContentPanel {
         columnConfigList.add(column);
 
         // path
-        column = new ColumnConfig("path", Messages.get("fm_info_path", "Path"), 150);
+        column = new ColumnConfig("path", Messages.get("label.path", "Path"), 150);
         column.setEditor(new CellEditor(createTextField()));
         columnConfigList.add(column);
 
         // contentType
-        column = new ColumnConfig("nodeType", Messages.get("label_nodeType", "Node Type"), 150);
+        column = new ColumnConfig("nodeType", Messages.get("org.jahia.engines.contentmanager.addContentWizard.nameCard.nodeType", "Node Type"), 150);
         column.setEditor(new CellEditor(createContentNodeTypeField()));
         columnConfigList.add(column);
 
         // workflow type
         final ToolBar toolBar = new ToolBar();
 
-        final Button add = new Button(Messages.get("label_add", "Add"), new SelectionListener<ButtonEvent>() {
+        final Button add = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 GWTJahiaWorflowNodeType gwnt = new GWTJahiaWorflowNodeType();

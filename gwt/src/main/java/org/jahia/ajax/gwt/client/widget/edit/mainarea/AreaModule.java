@@ -20,9 +20,9 @@ public class AreaModule extends SimpleModule {
         add(head);
 
         if (path.contains("/")) {
-            head.setText(Messages.getResource("em_area") + " : " + path.substring(path.lastIndexOf('/') + 1));
+            head.setText(Messages.getResource("org.jahia.jcr.edit.area.label") + " : " + path.substring(path.lastIndexOf('/') + 1));
         } else {
-            head.setText(Messages.getResource("em_area")+" : "+ path);
+            head.setText(Messages.getResource("org.jahia.jcr.edit.area.label")+" : "+ path);
         }
         setBorders(false);
 //        setBodyBorder(false);

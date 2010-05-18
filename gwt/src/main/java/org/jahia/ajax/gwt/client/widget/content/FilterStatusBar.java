@@ -44,19 +44,19 @@ public class FilterStatusBar extends MyStatusBar {
         // display filters to inform user
         StringBuilder disp = new StringBuilder() ;
         if (filters != null && filters.length()>0) {
-            disp.append(Messages.getResource("fm_filters")).append(" : ").append(filters) ;
+            disp.append(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.filters.label")).append(" : ").append(filters) ;
         }
         if (mimeTypes != null && mimeTypes.length()>0) {
             if (disp.length() > 0) {
                 disp.append(" - ") ;
             }
-            disp.append(Messages.getResource("fm_mimes")).append(" : ").append(mimeTypes) ;
+            disp.append(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.mimes.label")).append(" : ").append(mimeTypes) ;
         }
         if (nodeTypes != null && nodeTypes.length()>0) {
             if (disp.length() > 0) {
                 disp.append(" - ") ;
             }
-            disp.append(Messages.getResource("fm_nodes")).append(" : ").append(nodeTypes) ;
+            disp.append(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.nodes.label")).append(" : ").append(nodeTypes) ;
         }
         setMessage(disp.toString());
     }

@@ -95,9 +95,9 @@ public class ContentDefinitionCard extends ContentWizardCard {
      *            the parent node, where the wizard was called
      */
     public ContentDefinitionCard(String baseType, GWTJahiaNode parentNode) {
-        super(Messages.get("add_content_wizard_card_defs_title",
+        super(Messages.get("org.jahia.engines.contentmanager.addContentWizard.defsCard.title",
                 "Content definitions"), Messages.get(
-                "add_content_wizard_card_defs_text",
+                "org.jahia.engines.contentmanager.addContentWizard.defsCard.text",
                 "Select a definition to create your content:"));
         this.baseType = baseType;
         this.parentNode = parentNode;
@@ -132,9 +132,9 @@ public class ContentDefinitionCard extends ContentWizardCard {
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columns.add(new ColumnConfig("name", Messages.get(
-                "add_content_wizard_column_name", "Name"), 180));
+                "label.user", "Name"), 180));
         columns.add(new ColumnConfig("label", Messages.get(
-                "add_content_wizard_column_label", "Label"), 400));
+                "org.jahia.engines.contentmanager.addContentWizard.column.label", "Label"), 400));
 
         ColumnModel cm = new ColumnModel(columns);
         grid = new Grid<GWTJahiaNodeType>(store, cm);

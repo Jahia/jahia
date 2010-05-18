@@ -131,7 +131,7 @@ public class ClassificationEditor extends ContentPanel {
                 GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) modelData;
                 Button button = null;
                 if (gwtJahiaNode.getNodeTypes().contains("jnt:category")) {
-                    button = new Button(Messages.get("label_add", "Add"), new SelectionListener<ButtonEvent>() {
+                    button = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent buttonEvent) {
                             final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
@@ -311,7 +311,7 @@ public class ClassificationEditor extends ContentPanel {
         autoCompleteComboBox.setName("tagName");
 
         //panel.add(name, data);
-        Button addTag = new Button(Messages.get("label_add", "Add"), new SelectionListener<ButtonEvent>() {
+        Button addTag = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();

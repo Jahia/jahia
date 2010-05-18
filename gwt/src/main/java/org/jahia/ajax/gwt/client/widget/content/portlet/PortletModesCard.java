@@ -55,7 +55,7 @@ public class PortletModesCard extends MashupWizardCard {
 
 
     public PortletModesCard() {
-        super(Messages.getNotEmptyResource("mw_modes_permissions", "Modes permissions"), Messages.getNotEmptyResource("mw_modes_permissions_description", "Set modes permissions"));
+        super(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modesperm.label", "Modes permissions"), Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modesperm.description.label", "Set modes permissions"));
     }
 
     public void next() {
@@ -99,8 +99,8 @@ public class PortletModesCard extends MashupWizardCard {
     private void initModeMappingEditor(GWTJahiaNodeACL acl) {
         modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
         modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
-        modeMappingEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_modes_adduser", "Add mode-user permission"));
-        modeMappingEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_modes_addgroup", "Add mode-group permission"));
+        modeMappingEditor.setAddUsersLabel(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modes.adduser.label", "Add mode-user permission"));
+        modeMappingEditor.setAddGroupsLabel(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modes.addgroup.label", "Add mode-group permission"));
         Button saveButton = modeMappingEditor.getSaveButton();
         saveButton.setVisible(false);
         Button restoreButton = modeMappingEditor.getRestoreButton();

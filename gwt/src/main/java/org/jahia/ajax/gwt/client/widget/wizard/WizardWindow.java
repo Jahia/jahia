@@ -218,7 +218,7 @@ public class WizardWindow extends Window {
      * @return the header title
      */
     public String getHeaderTitle() {
-        return Messages.get("wizard_header_title", "Wizard");
+        return Messages.get("org.jahia.engines.wizard.title", "Wizard");
     }
 
     /**
@@ -295,42 +295,42 @@ public class WizardWindow extends Window {
      * @return the previousButtonText
      */
     public String getPreviousButtonText() {
-        return Messages.get("wizard_button_prev", "< Previous");
+        return Messages.get("org.jahia.engines.wizard.button.prev", "< Previous");
     }
 
     /**
      * @return the nextButtonText
      */
     public String getNextButtonText() {
-        return Messages.get("wizard_button_next", "Next >");
+        return Messages.get("org.jahia.engines.wizard.button.next", "Next >");
     }
 
     /**
      * @return the cancelButtonText
      */
     public String getCancelButtonText() {
-        return Messages.get("wizard_button_cancel", "Cancel");
+        return Messages.get("label.cancel", "Cancel");
     }
 
     /**
      * @return the finishButtonText
      */
     public String getFinishButtonText() {
-        return Messages.get("wizard_button_finish", "Finish");
+        return Messages.get("label.finish", "Finish");
     }
 
     /**
      * @return the indicateStepText
      */
     public String getIndicateStepText() {
-        return Messages.get("wizard_steps_current", "Step");
+        return Messages.get("label.step", "Step");
     }
 
     /**
      * @return the indicateOfText
      */
     public String getIndicateOfText() {
-        return Messages.get("wizard_steps_of", "of");
+        return Messages.get("label.of", "of");
     }
 
     public List<WizardCard> getCards() {

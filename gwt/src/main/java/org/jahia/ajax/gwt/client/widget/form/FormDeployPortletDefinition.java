@@ -80,7 +80,7 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         deployPortlet.setValue(false);
         add(deployPortlet);
 
-        Button prepareButton = new Button(Messages.getNotEmptyResource("fm_portlet_preparewar", "Prepare"));
+        Button prepareButton = new Button(Messages.getNotEmptyResource("label.portletPrepareWar", "Prepare"));
         prepareButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -92,7 +92,7 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         addButton(prepareButton);
 
         final boolean isTomcat = isTomcat();
-        Button deployButton = new Button(Messages.getNotEmptyResource("fm_portlet_deploy", "Deploy"));
+        Button deployButton = new Button(Messages.getNotEmptyResource("label.deployNewPortlet", "Deploy"));
         deployButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -169,7 +169,7 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         try {
             //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
             Dictionary dictionary = Dictionary.getDictionary("portletDeployment");
-            return dictionary.get(key);
+            return dictionary.get(key.replace('.','_'));
         } catch (Exception e) {
             Log.error("Can't retrieve [" + key + "]", e);
             return key;

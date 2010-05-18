@@ -55,8 +55,8 @@ public class ContentNameCard extends ContentWizardCard {
      */
     public ContentNameCard() {
         super(Messages
-                .get("add_content_wizard_card_name_title", "Content name"),
-                Messages.get("add_content_wizard_card_name_text",
+                .get("org.jahia.engines.contentmanager.addContentWizard.nameCard.title", "Content name"),
+                Messages.get("org.jahia.engines.contentmanager.addContentWizard.nameCard.text",
                         "Provide a name for the new content:"));
 
     }
@@ -71,14 +71,14 @@ public class ContentNameCard extends ContentWizardCard {
         simple.setHeaderVisible(false);
         simple.setBorders(false);
         LabelField selectedType = new LabelField();
-        selectedType.setFieldLabel(Messages.get("add_content_wizard_card_name_node_type", "Selected type"));
+        selectedType.setFieldLabel(Messages.get("org.jahia.engines.contentmanager.addContentWizard.nameCard.nodeType", "Selected type"));
         selectedType.setValue(getWizardData().getNodeType().getLabel() + " ("
                 + getWizardData().getNodeType().getName() + ")");
         simple.add(selectedType);
 
         nameField = new TextField<String>();
         nameField.setFieldLabel(Messages.get(
-                "add_content_wizard_card_name_node_name", "Name"));
+                "label.user", "Name"));
         nameField.setAllowBlank(false);
         simple.add(nameField);
         add(simple);

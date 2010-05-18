@@ -45,11 +45,11 @@ public class WorkflowManagerEngine extends Window {
      * init
      */
     private void init() {
-        setHeading(Messages.get("label_workflowPerNodeType", "Workflow per content type set-up"));
+        setHeading(Messages.get("label.workflowPerNodeType", "Workflow per content type set-up"));
         setLayout(new FitLayout());
         setSize(800, 600);
         ToolBar toolBar = new ButtonBar();
-        Button button = new Button(Messages.get("label_workflowPerNodeType", "Workflow per content type set-up"));
+        Button button = new Button(Messages.get("label.workflowPerNodeType", "Workflow per content type set-up"));
         button.setHeight(BUTTON_HEIGHT);
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -92,13 +92,13 @@ public class WorkflowManagerEngine extends Window {
     private void setFooter() {
         buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
-        ok = new Button(Messages.getResource("fm_save"));
+        ok = new Button(Messages.getResource("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SaveSelectionListener());
         buttonBar.add(ok);
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"));
+        Button cancel = new Button(Messages.getResource("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

@@ -62,7 +62,7 @@ public class PortletDefinitionField extends TriggerField<String> {
         w.setModal(true);
         w.setSize(600, 400);
         ButtonBar bar = new ButtonBar();
-        Button ok = new Button(Messages.getNotEmptyResource("mw_ok","OK"), new SelectionListener<ButtonEvent>() {
+        Button ok = new Button(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.ok.label","OK"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 GWTJahiaPortletDefinition def = card.getSelectedPortletDefinition();
                 setRawValue(def.getDefinitionName());

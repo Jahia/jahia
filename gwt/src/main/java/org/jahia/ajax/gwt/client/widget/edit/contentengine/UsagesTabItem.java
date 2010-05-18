@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class UsagesTabItem extends EditEngineTabItem {
 
     public UsagesTabItem(NodeHolder engine) {
-        super(Messages.get("fm_usages", "Usages"), engine);
+        super(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.usages.label", "Usages"), engine);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
     }
 

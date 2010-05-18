@@ -136,7 +136,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         ButtonBar buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
 
-        Button ok = new Button(Messages.getResource("fm_save"));
+        Button ok = new Button(Messages.getResource("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -153,7 +153,7 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         buttonBar.add(ok);
 
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"));
+        Button cancel = new Button(Messages.getResource("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

@@ -89,7 +89,7 @@ public class ContentPickerBrowser extends TopRightComponent {
                 pickContent(gwtJahiaNode);
             }
         };
-        searchTabItem = new TabItem(Messages.getResource("fm_search"));
+        searchTabItem = new TabItem(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.search.label"));
         searchTabItem.setBorders(false);
         searchTabItem.setLayout(new FitLayout());
         searchTabItem.add(m_search);

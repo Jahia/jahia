@@ -80,8 +80,8 @@ public class AclEditor {
     private boolean readOnly = false;
     private List<String> available;
     private boolean displayInheritanceColumn = true;
-    private String addUsersLabel = getResource("um_adduser");
-    private String addGroupsLabel = getResource("um_addgroup");
+    private String addUsersLabel = getResource("org.jahia.engines.users.SelectUG_Engine.newUsers.label");
+    private String addGroupsLabel = getResource("org.jahia.engines.users.SelectUG_Engine.newGroups.label");
 
     public AclEditor(GWTJahiaNodeACL acl, String aclContext) {
         this.originalAcl = acl;
@@ -112,7 +112,7 @@ public class AclEditor {
 
     public String getAddUsersLabel() {
         if (addUsersLabel == null) {
-            return getResource("um_adduser");
+            return getResource("org.jahia.engines.users.SelectUG_Engine.newUsers.label");
         }
         return addUsersLabel;
     }
@@ -123,7 +123,7 @@ public class AclEditor {
 
     public String getAddGroupsLabel() {
         if (addGroupsLabel == null) {
-            return getResource("um_addgroup");
+            return getResource("org.jahia.engines.users.SelectUG_Engine.newGroups.label");
         }
         return addGroupsLabel;
     }
@@ -149,7 +149,7 @@ public class AclEditor {
         }
 
         // name of the princial
-        col = new TableColumn(getResource("ae_principal"), .2f);
+        col = new TableColumn(getResource("label.user"), .2f);
         columns.add(col);
 
         // add a column per available permission
@@ -416,7 +416,7 @@ public class AclEditor {
         Button button = new Button();
         button.setIconStyle("gwt-icons-delete");
         button.setBorders(false);
-        button.setToolTip(getResource("ae_remove"));
+        button.setToolTip(getResource("label.remove"));
         button.setEnabled(!readOnly);
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -446,9 +446,9 @@ public class AclEditor {
     private Text buildInheritanceLabel(GWTJahiaNodeACE ace) {
         String label;
         if (ace.getInheritedFrom() != null) {
-            label = getResource("ae_inherited_from") + " : " + ace.getInheritedFrom();
+            label = getResource("org.jahia.engines.rights.ManageRights.inheritedFrom.label") + " : " + ace.getInheritedFrom();
         } else {
-            label = getResource("ae_inherited");
+            label = getResource("org.jahia.engines.rights.ManageRights.inherited.label");
         }
 
         Text text = new Text(label);
@@ -467,7 +467,7 @@ public class AclEditor {
     private Button buildLocalRestoreButton(final TableItem item, final GWTJahiaNodeACE ace) {
         Button button = new Button();
         button.setIconStyle("gwt-icons-restore");
-        button.setToolTip(getResource("ae_restore_inheritance"));
+        button.setToolTip(getResource("org.jahia.engines.rights.ManageRights.restoreInheritance.label"));
         button.setEnabled(!readOnly);
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -495,9 +495,9 @@ public class AclEditor {
      */
     private void setBreakInheritanceLabel() {
         if (acl.isBreakAllInheritance()) {
-            breakinheritanceItem.setText(getResource("ae_restore_all_inheritance"));
+            breakinheritanceItem.setText(getResource("org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"));
         } else {
-            breakinheritanceItem.setText(getResource("ae_break_all_inheritance"));
+            breakinheritanceItem.setText(getResource("org.jahia.engines.rights.ManageRights.breakAllInheritance.label"));
         }
     }
 
@@ -640,7 +640,7 @@ public class AclEditor {
      */
     private class SaveButton extends Button {
         public SaveButton() {
-            super(getResource("ae_save"));
+            super(getResource("label.save"));
             setIconStyle("gwt-icons-save");
         }
     }
@@ -650,7 +650,7 @@ public class AclEditor {
      */
     private class RestoreButton extends Button {
         public RestoreButton() {
-            super(getResource("ae_restore"));
+            super(getResource("label.restore"));
             setIconStyle("gwt-icons-restore");
         }
     }

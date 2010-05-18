@@ -52,7 +52,7 @@ class PublicationStatusWindow extends Window {
 
         comments = new TextArea();
         comments.setWidth(750);
-        comments.setFieldLabel(Messages.getResource("publication_publicationComments"));
+        comments.setFieldLabel(Messages.getResource("org.jahia.jcr.publication.publicationComments"));
 
         VerticalPanel commentsPanel = new VerticalPanel();
         TableData d = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
@@ -65,7 +65,7 @@ class PublicationStatusWindow extends Window {
 
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("title",Messages.getResource("publication_path"),450);
+        ColumnConfig column = new ColumnConfig("title",Messages.getResource("label.path"),450);
         column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
             @Override
             public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
@@ -74,19 +74,19 @@ class PublicationStatusWindow extends Window {
         });
         configs.add(column);
 
-        column = new ColumnConfig("status",Messages.getResource("publication_currentStatus"),150);
+        column = new ColumnConfig("status",Messages.getResource("org.jahia.jcr.publication.currentStatus"),150);
         column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
             @Override
             public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
                 switch (model.getStatus()) {
                     case GWTJahiaPublicationInfo.NOT_PUBLISHED:
-                        return Messages.getResource("publication_status_notyetpublished");
+                        return Messages.getResource("org.jahia.jcr.publication.status_notyetpublished");
                     case GWTJahiaPublicationInfo.PUBLISHED:
-                        return Messages.getResource("publication_status_published");
+                        return Messages.getResource("label.published");
                     case GWTJahiaPublicationInfo.MODIFIED:
-                        return Messages.getResource("publication_status_modified");
+                        return Messages.getResource("label.modified");
                     case GWTJahiaPublicationInfo.UNPUBLISHABLE:
-                        return Messages.getResource("publication_status_notyetpublished");
+                        return Messages.getResource("org.jahia.jcr.publication.status_notyetpublished");
                     case GWTJahiaPublicationInfo.UNPUBLISHED:
                         return "Unpublished";
                     case GWTJahiaPublicationInfo.CONFLICT:
@@ -97,7 +97,7 @@ class PublicationStatusWindow extends Window {
         });
         configs.add(column);
 
-        column = new ColumnConfig("canPublish",Messages.getResource("publication_publicationAllowed"),150);
+        column = new ColumnConfig("canPublish",Messages.getResource("org.jahia.jcr.publication.publicationAllowed"),150);
         column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
             @Override
             public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
@@ -159,12 +159,12 @@ class PublicationStatusWindow extends Window {
 //        borderData.setMargins(new Margins(5));
         add(commentsPanel, borderData);
 
-        cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+        cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }
         });
-        ok = new Button(Messages.getResource("publication_publish"));
+        ok = new Button(Messages.getResource("label.publish"));
         noWorkflow = new Button("Bypass workflow");
         final ArrayList<String> uuids = new ArrayList<String>(infos.keySet());
 
@@ -199,7 +199,7 @@ class PublicationStatusWindow extends Window {
                 }
 
                 public void onSuccess(Object result) {
-                    Info.display(Messages.getResource("publication_published_title"), Messages.getResource("publication_published_text"));
+                    Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
                     linker.refresh(Linker.REFRESH_ALL);
                     hide();
                 }

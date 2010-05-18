@@ -66,7 +66,7 @@ public class ImageResize extends Window {
         final int w = Integer.parseInt((String) n.get("j:width"));
         final int h = Integer.parseInt((String) n.get("j:height"));
 
-        setHeading(Messages.getResource("fm_resize"));
+        setHeading(Messages.getResource("label.resize"));
         setSize(500, 200);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
@@ -80,19 +80,19 @@ public class ImageResize extends Window {
         final NumberField wf = new NumberField();
         wf.setName("width");
         wf.setValue(new Integer(w));
-        wf.setFieldLabel(Messages.getResource("fm_width"));
+        wf.setFieldLabel(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.width.label"));
         form.add(wf);
 
         final NumberField hf = new NumberField();
         hf.setName("height");
         hf.setValue(new Integer(h));
-        hf.setFieldLabel(Messages.getResource("fm_height"));
+        hf.setFieldLabel(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.height.label"));
         form.add(hf);
 
         final CheckBox keepRatio = new CheckBox();
         keepRatio.setName("ratio");
         keepRatio.setValue(true);
-        keepRatio.setFieldLabel(Messages.getResource("fm_ratio"));
+        keepRatio.setFieldLabel(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.ratio.label"));
         form.add(keepRatio);
 
         hf.addListener(Events.KeyUp, new Listener<ComponentEvent>() {
@@ -121,15 +121,15 @@ public class ImageResize extends Window {
         } else {
             newname.setValue(n.getName() + "_resize");
         }
-        newname.setFieldLabel(Messages.getResource("fm_newname"));
+        newname.setFieldLabel(Messages.getResource("label.rename"));
         form.add(newname);
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ButtonEvent>() {
+        Button submit = new Button(Messages.getResource("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 resizeImage(n.getPath(), newname.getValue(), wf.getValue().intValue(), hf.getValue().intValue(), false) ;
             }
@@ -146,12 +146,12 @@ public class ImageResize extends Window {
          JahiaContentManagementService.App.getInstance().resizeImage(path, targetName, width, height, force, new AsyncCallback() {
              public void onFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
-                     if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n" + Messages.getResource("fm_confOverwrite"))) {
+                     if (com.google.gwt.user.client.Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
                          resizeImage(path, targetName, width, height, true);
                      }
                 } else {
-                    com.google.gwt.user.client.Window.alert(Messages.getResource("fm_failResize") + "\n" + throwable.getLocalizedMessage());
-                    Log.error(Messages.getResource("fm_failResize"), throwable);
+                    com.google.gwt.user.client.Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.resize.label") + "\n" + throwable.getLocalizedMessage());
+                    Log.error(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.resize.label"), throwable);
                 }
              }
 

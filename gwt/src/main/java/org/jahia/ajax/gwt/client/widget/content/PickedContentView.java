@@ -148,7 +148,7 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
         column.setHeader("");
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                final Button pickContentButton = new Button(Messages.getResource("fm_remove"));
+                final Button pickContentButton = new Button(Messages.getResource("label.remove"));
                 pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 pickContentButton.setIconStyle("gwt-icons-delete");
                 pickContentButton.setBorders(false);

@@ -65,8 +65,8 @@ public class ContentFormCard extends ContentWizardCard {
      * Initializes an instance of this class.
      */
     public ContentFormCard() {
-        super(Messages.get("add_content_wizard_card_form_title", "Content add form"),
-                Messages.get("add_content_wizard_card_form_text", "Fill in field values:"));
+        super(Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.title", "Content add form"),
+                Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.text", "Fill in field values:"));
         setLayout(new FitLayout());
     }
 
@@ -95,7 +95,7 @@ public class ContentFormCard extends ContentWizardCard {
                             setFormPanel(formEditor);
                             layout();
                         } else {
-                            add(new Label(Messages.get("add_content_wizard_card_form_error_props",
+                            add(new Label(Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.error.props",
                                     "Unable to load properties panel")));
                         }
                     }
@@ -117,8 +117,8 @@ public class ContentFormCard extends ContentWizardCard {
                         new AsyncCallback<GWTJahiaNode>() {
                             public void onFailure(Throwable caught) {
                                 Log.error("Error", caught);
-                                MessageBox.alert(Messages.get("add_content_wizard_card_form_error_title", "Error"),
-                                        Messages.get("add_content_wizard_card_form_error_save",
+                                MessageBox.alert(Messages.get("label.error", "Error"),
+                                        Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.error.save",
                                                 "Unable to create new content. Cause: ") + caught.getMessage(), null);
                             }
 
@@ -127,8 +127,8 @@ public class ContentFormCard extends ContentWizardCard {
                                     getWizardWindow().getLinker().setSelectPathAfterDataUpdate(result.getPath());
                                     getWizardWindow().getLinker().refresh(Linker.REFRESH_MAIN);
                                 }
-                                MessageBox.info(Messages.get("add_content_wizard_card_form_success_title", "Info"),
-                                        Messages.get("add_content_wizard_card_form_success_save",
+                                MessageBox.info(Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.success", "Info"),
+                                        Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.success.save",
                                                 "Content node created successfully: ") + getWizardData().getNodeName(),
                                         null);
                                 getWizardWindow().hide();

@@ -47,7 +47,7 @@ public class PasswordPrompt extends Window {
 
         m_linker = linker ;
 
-        setHeading(Messages.getResource("fm_password"));
+        setHeading(Messages.getResource("label.password"));
         setSize(500, 200);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
@@ -60,22 +60,22 @@ public class PasswordPrompt extends Window {
 
         final TextField<String> user = new TextField<String>();
         user.setValue(username);
-        user.setName("fm_username");
-        user.setFieldLabel(Messages.getResource("fm_username"));
+        user.setName("label.username");
+        user.setFieldLabel(Messages.getResource("label.username"));
         form.add(user);
 
         final TextField<String> pass = new TextField<String>();
-        pass.setName("fm_password");
-        pass.setFieldLabel(Messages.getResource("fm_password"));
+        pass.setName("label.password");
+        pass.setFieldLabel(Messages.getResource("label.password"));
         pass.setPassword(true);
         form.add(pass);
 
-        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ButtonEvent>() {
+        Button submit = new Button(Messages.getResource("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 JahiaContentManagementService.App.getInstance().storePasswordForProvider(providerKey, user.getValue(), pass.getValue(), new AsyncCallback() {
                     public void onSuccess(Object o) {

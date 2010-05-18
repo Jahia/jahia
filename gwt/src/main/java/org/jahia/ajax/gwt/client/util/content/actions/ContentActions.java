@@ -105,17 +105,17 @@ public class ContentActions {
                 }
             }
             if (!lockedFiles.isEmpty()) {
-                StringBuilder s = new StringBuilder(Messages.getResource("fm_warningLock"));
+                StringBuilder s = new StringBuilder(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.warning.lock.label"));
                 for (GWTJahiaNode node : lockedFiles) {
                     s.append("\n").append(node.getName());
                 }
                 Window.alert(s.toString());
             }
             if (!actualSelection.isEmpty()) {
-                linker.loading(Messages.getResource("fm_cutting"));
+                linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.cutting.label"));
                 JahiaContentManagementService.App.getInstance().checkWriteable(JCRClientUtils.getPathesList(actualSelection), new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
-                        Window.alert(Messages.getResource("fm_failCut") + "\n" + throwable.getLocalizedMessage());
+                        Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.cut.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
 
@@ -145,11 +145,11 @@ public class ContentActions {
             m = linker.getMainNode();
         }
         if (m != null && !m.isFile()) {
-            linker.loading(Messages.getResource("fm_pasting"));
+            linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.pasting.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
             JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, copyPasteEngine.isCut(), new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
-                    Window.alert(Messages.getResource("fm_failPaste") + "\n" + throwable.getLocalizedMessage());
+                    Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.paste.label") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
 
@@ -188,11 +188,11 @@ public class ContentActions {
             m = linker.getMainNode();
         }
         if (m != null && !m.isFile()) {
-            linker.loading(Messages.getResource("fm_pastingref"));
+            linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.pastingref.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
             JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
-                    Window.alert(Messages.getResource("fm_failPasteref") + "\n" + throwable.getLocalizedMessage());
+                    Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.pasteref.label") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
 
@@ -290,19 +290,19 @@ public class ContentActions {
      */
     public static void download(Linker linker, GWTJahiaNode selection, String url) {
         if (selection != null && selection.isFile().booleanValue()) {
-            linker.loading(Messages.getResource("fm_downloading"));
+            linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.downloading.label"));
             if (url != null) {
-                HTML link = new HTML(Messages.getResource("fm_downloadMessage") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
+                HTML link = new HTML(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
                 final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
                 dl.setModal(true);
-                dl.setHeading(Messages.getResource("fm_download"));
+                dl.setHeading(Messages.getResource("label.download"));
                 dl.setLayout(new FlowLayout());
                 dl.setScrollMode(Style.Scroll.AUTO);
                 dl.add(link);
                 dl.setHeight(120);
                 dl.show();
             } else {
-                Window.alert(Messages.getResource("fm_failDownload"));
+                Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.download.label"));
             }
             linker.loaded();
         }
@@ -337,19 +337,19 @@ public class ContentActions {
             selection = selectedItems.get(0);
         }
         if (selection != null && !selection.isFile().booleanValue()) {
-            linker.loading(Messages.getResource("fm_webfoldering"));
+            linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.webfoldering.label"));
             JahiaContentManagementService.App.getInstance().getAbsolutePath(selection.getPath(), new AsyncCallback<String>() {
                 public void onFailure(Throwable t) {
-                    Window.alert(Messages.getResource("fm_failWebfolder") + "\n" + t.getLocalizedMessage());
+                    Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.webfolder.label") + "\n" + t.getLocalizedMessage());
                     linker.loaded();
                 }
 
                 public void onSuccess(String url) {
                     if (url != null) {
-                        HTML link = new HTML(Messages.getResource("fm_webfolderMessage") + "<br /><br /><a target=\"_new\" folder=\"" + url + "\" style=\"behavior:url(#default#AnchorClick)\">" + selection.getName() + "</a>");
+                        HTML link = new HTML(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.webFolderMessage.label") + "<br /><br /><a target=\"_new\" folder=\"" + url + "\" style=\"behavior:url(#default#AnchorClick)\">" + selection.getName() + "</a>");
                         final Dialog dl = new Dialog();
                         dl.setModal(true);
-                        dl.setHeading(Messages.getResource("fm_webfolder"));
+                        dl.setHeading(Messages.getResource("label.openIEFolder"));
                         dl.setHideOnButtonClick(true);
                         dl.setLayout(new FlowLayout());
                         dl.setScrollMode(Style.Scroll.AUTO);
@@ -377,12 +377,12 @@ public class ContentActions {
             }
         }
         if (parent != null && !parent.isFile()) {
-            String newFolder = Window.prompt(Messages.getResource("fm_newdirname"), "untitled");
+            String newFolder = Window.prompt(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.newDirName.label"), "untitled");
             if (newFolder != null && newFolder.length() > 0) {
-                linker.loading(Messages.getResource("fm_newfoldering"));
+                linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createFolder(parent.getPath(), newFolder, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
-                        Window.alert(Messages.getResource("fm_failNewdir") + "\n" + throwable.getLocalizedMessage());
+                        Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.newDir.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
 
@@ -413,7 +413,7 @@ public class ContentActions {
         if (parent != null && !parent.isFile()) {
             String nodeName = Window.prompt(windowHeaer, "untitled");
             if (nodeName != null && nodeName.length() > 0) {
-                linker.loading(Messages.getResource("fm_newfoldering"));
+                linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), nodeName, nodeType, null, null, null, new AsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
                         linker.loaded();
@@ -467,7 +467,7 @@ public class ContentActions {
         }
         if (parent != null && !parent.isFile()) {
             final com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.getNotEmptyResource("fm_portlet_deploy", "New portlets"));
+            w.setHeading(Messages.getNotEmptyResource("label.deployNewPortlet", "New portlets"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);
@@ -554,14 +554,14 @@ public class ContentActions {
         if (selectedItems != null && selectedItems.size() == 1) {
             GWTJahiaNode selection = selectedItems.get(0);
             if (selection.isLocked()) {
-                Window.alert(Messages.getResource("fm_failUnmountLock1") + " " + selection.getName() + Messages.getResource("fm_failUnmountLock2") + " " + selection.getLockOwner());
-            } else if (Window.confirm(Messages.getResource("fm_confUnmount") + " " + selection.getName() + " ?")) {
-                linker.loading(Messages.getResource("fm_unmounting"));
+                Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.unmountLock1.label") + " " + selection.getName() + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.unmountLock2.label") + " " + selection.getLockOwner());
+            } else if (Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.unmount.label") + " " + selection.getName() + " ?")) {
+                linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.unmounting.label"));
                 List<String> selectedPaths = new ArrayList<String>(1);
                 selectedPaths.add(selection.getPath());
                 JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
-                        Window.alert(Messages.getResource("fm_failUnmount") + "\n" + throwable.getLocalizedMessage());
+                        Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.unmount.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
 
@@ -582,9 +582,9 @@ public class ContentActions {
             if (selectedItems.size() == 1) {
                 GWTJahiaNode selection = selectedItems.get(0);
                 containFolder = !selection.isFile();
-                rem = Window.confirm(Messages.getResource("fm_confRemove") + " " + selection.getName() + " ?");
+                rem = Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.remove.label") + " " + selection.getName() + " ?");
             } else {
-                rem = Window.confirm(Messages.getResource("fm_confMultiRemove"));
+                rem = Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.multiRemove.label"));
             }
             final boolean refreshTree = containFolder;
             if (rem) {
@@ -598,21 +598,21 @@ public class ContentActions {
                     }
                 }
                 if (!lockedFiles.isEmpty()) {
-                    StringBuilder s = new StringBuilder(Messages.getResource("fm_warningLock"));
+                    StringBuilder s = new StringBuilder(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.warning.lock.label"));
                     for (GWTJahiaNode node : lockedFiles) {
                         s.append("\n").append(node.getName());
                     }
                     Window.alert(s.toString());
                 }
                 if (!actualSelection.isEmpty()) {
-                    linker.loading(Messages.getResource("fm_removing"));
+                    linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.removing.label"));
                     List<String> selectedPaths = new ArrayList<String>(actualSelection.size());
                     for (GWTJahiaNode node : actualSelection) {
                         selectedPaths.add(node.getPath());
                     }
                     JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new AsyncCallback() {
                         public void onFailure(Throwable throwable) {
-                            Window.alert(Messages.getResource("fm_failDelete") + "\n" + throwable.getLocalizedMessage());
+                            Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.delete.label") + "\n" + throwable.getLocalizedMessage());
                             linker.loaded();
                         }
 
@@ -639,13 +639,13 @@ public class ContentActions {
                     Window.alert(selection.getName() + " is locked");
                     return;
                 }
-                linker.loading(Messages.getResource("fm_renaming"));
-                String newName = Window.prompt(Messages.getResource("fm_confNewName") + " " + selection.getName(), selection.getName());
+                linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.renaming.label"));
+                String newName = Window.prompt(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.newName.label") + " " + selection.getName(), selection.getName());
                 if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                     final boolean folder = !selection.isFile();
                     JahiaContentManagementService.App.getInstance().rename(selection.getPath(), newName, new AsyncCallback() {
                         public void onFailure(Throwable throwable) {
-                            Window.alert(Messages.getResource("fm_failRename") + "\n" + throwable.getLocalizedMessage());
+                            Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.rename.label") + "\n" + throwable.getLocalizedMessage());
                             linker.loaded();
                         }
 
@@ -671,23 +671,23 @@ public class ContentActions {
         if (parentItem != null && selectedItems != null && selectedItems.size() > 0) {
             final GWTJahiaNode selection = selectedItems.get(0);
             if (selection != null) {
-                linker.loading(Messages.getResource("fm_zipping"));
+                linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.zipping.label"));
                 String defaultArchName;
                 if (selectedItems.size() == 1) {
                     defaultArchName = selection.getName() + ".zip";
                 } else {
                     defaultArchName = "archive.zip";
                 }
-                final String archName = Window.prompt(Messages.getResource("fm_confArchiveName"), defaultArchName);
+                final String archName = Window.prompt(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.archiveName.label"), defaultArchName);
                 if (archName != null && archName.length() > 0) {
                     JahiaContentManagementService.App.getInstance().checkExistence(parentItem.getPath() + "/" + archName, new AsyncCallback<Boolean>() {
                         public void onFailure(Throwable throwable) {
                             if (throwable instanceof ExistingFileException) {
-                                if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n" + Messages.getResource("fm_confOverwrite"))) {
+                                if (com.google.gwt.user.client.Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
                                     forceZip(selectedItems, archName, linker);
                                 }
                             } else {
-                                Window.alert(Messages.getResource("fm_failZip") + "\n" + throwable.getLocalizedMessage());
+                                Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.zip.label") + "\n" + throwable.getLocalizedMessage());
                                 linker.loaded();
                             }
                         }
@@ -708,7 +708,7 @@ public class ContentActions {
         }
         JahiaContentManagementService.App.getInstance().zip(selectedPaths, archName, new AsyncCallback() {
             public void onFailure(Throwable throwable) {
-                Window.alert(Messages.getResource("fm_failZip") + "\n" + throwable.getLocalizedMessage());
+                Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.zip.label") + "\n" + throwable.getLocalizedMessage());
                 linker.loaded();
             }
 
@@ -722,7 +722,7 @@ public class ContentActions {
     public static void unzip(final Linker linker) {
         final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
-            linker.loading(Messages.getResource("fm_unzipping"));
+            linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.unzipping.label"));
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
             for (GWTJahiaNode node : selectedItems) {
                 if (node.getName().endsWith(".zip") || node.getName().endsWith(".ZIP")) {
@@ -731,7 +731,7 @@ public class ContentActions {
             }
             JahiaContentManagementService.App.getInstance().unzip(selectedPaths, new AsyncCallback() {
                 public void onFailure(Throwable throwable) {
-                    Window.alert(Messages.getResource("fm_failUnzip") + "\n" + throwable.getLocalizedMessage());
+                    Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.unzip.label") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
 
@@ -768,12 +768,12 @@ public class ContentActions {
                                     .lastIndexOf('/') + 1) : file);
                 }
                 continueOperation = Window
-                        .confirm(Messages.getResource("fm_warningSystemLock") + "\n"
+                        .confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.warning.systemLock.label") + "\n"
                                 + lockedFiles.toString()
-                                + "\n\n" + Messages.getResource("fm_confUnlock"));
+                                + "\n\n" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.unlock.label"));
             }
             if (continueOperation && !selectedPaths.isEmpty()) {
-                linker.loading(lock ? Messages.getResource("fm_locking") : Messages.getResource("fm_unlocking"));
+                linker.loading(lock ? Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.locking.label") : Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.unlocking.label"));
                 JahiaContentManagementService.App.getInstance().setLock(selectedPaths, lock, new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
                         MessageBox.alert("Error", throwable.getLocalizedMessage(), null);

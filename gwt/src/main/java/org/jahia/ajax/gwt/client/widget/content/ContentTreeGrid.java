@@ -230,7 +230,7 @@ public class ContentTreeGrid extends LayoutContainer {
                 picker.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                     public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                         if (gwtJahiaNode.isMatchFilters()) {
-                            final Button pickContentButton = new Button(Messages.get("label_add", "Add"));
+                            final Button pickContentButton = new Button(Messages.get("label.add", "Add"));
                             pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
                             pickContentButton.setEnabled(true);
                             pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {

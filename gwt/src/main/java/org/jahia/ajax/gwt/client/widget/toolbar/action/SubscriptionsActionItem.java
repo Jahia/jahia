@@ -177,7 +177,7 @@ public class SubscriptionsActionItem extends BaseActionItem {
                 "windowTitle",
                 "Subscribe to following events on the current page"));
 
-        save = new Button(getMessage("fm_save", "Save"));
+        save = new Button(getMessage("label.save", "Save"));
         save.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             public void componentSelected(ButtonEvent event) {
@@ -185,7 +185,7 @@ public class SubscriptionsActionItem extends BaseActionItem {
             }
         });
 
-        cancel = new Button(getMessage("fm_cancel",
+        cancel = new Button(getMessage("label.cancel",
                 "Cancel"));
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {

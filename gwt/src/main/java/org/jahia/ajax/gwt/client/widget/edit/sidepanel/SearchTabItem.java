@@ -68,7 +68,7 @@ class SearchTabItem extends SidePanelTabItem {
         searchForm.setBorders(false);
         searchForm.setBodyBorder(false);
         searchField = new TextField<String>();
-        searchField.setFieldLabel(Messages.getResource("fm_search"));
+        searchField.setFieldLabel(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.search.label"));
         searchField.addListener(KeyboardEvents.Enter, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 // grid.mask("Loading", "x-mask-loading");
@@ -76,7 +76,7 @@ class SearchTabItem extends SidePanelTabItem {
                 loader.load(0,nbResults);
             }
         });
-        final Button ok = new Button(Messages.getResource("fm_search"), new SelectionListener<ButtonEvent>() {
+        final Button ok = new Button(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.search.label"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 //  grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
@@ -85,7 +85,7 @@ class SearchTabItem extends SidePanelTabItem {
         });
         ok.setIconStyle("gwt-toolbar-icon-savedSearch");
 
-        final Button drag = new Button(Messages.getResource("em_drag"));
+        final Button drag = new Button(Messages.getResource("org.jahia.jcr.edit.drag.label"));
         EditModeDragSource querySource = new EditModeDragSource(drag) {
             @Override
             protected void onDragStart(DNDEvent e) {
@@ -173,7 +173,7 @@ class SearchTabItem extends SidePanelTabItem {
 
         List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
         columnNames.add(new GWTColumn("icon","icon",40));
-        columnNames.add(new GWTColumn("displayName",Messages.getResource("fm_info_name"),280));
+        columnNames.add(new GWTColumn("displayName",Messages.getResource("label.name"),280));
         final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
         columnConfigList.init();
 

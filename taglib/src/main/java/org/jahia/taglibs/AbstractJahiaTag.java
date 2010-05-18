@@ -34,8 +34,6 @@ package org.jahia.taglibs;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.bin.Jahia;
-import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -302,8 +300,9 @@ public class AbstractJahiaTag extends BodyTagSupport {
      */
     protected void addMandatoryGwtMessages(Locale uiLocale, Locale currentLocale) {
         JahiaResourceBundle jrb = new JahiaResourceBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES,uiLocale);
-        Set<String> set = jrb.keySet();
-        for (String key : set) {
+        Enumeration<String> keys = jrb.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
             addGwtDictionaryMessage(key.replace('.','_'), getJahiaInternalResource(key, uiLocale, currentLocale).replace('"','\''));
         }
     }

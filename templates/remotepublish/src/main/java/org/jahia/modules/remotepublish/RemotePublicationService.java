@@ -195,6 +195,25 @@ public class RemotePublicationService implements InitializingBean {
                         sharedSet.add(sub.getPath());
                     }
                     oos.writeObject(sharedSet);
+
+                    PropertyIterator references = session.getNode(event.getPath()).getWeakReferences();
+                    if (references.hasNext()) {
+                        while (references.hasNext()) {
+                            JCRPropertyWrapper property = (JCRPropertyWrapper) references.next();
+                            try {
+                                if (!property.getDefinition().isProtected() || protectedPropertiesToExport.contains(
+                                        property.getName())) {
+                                    LogEntry weakRefUpdateEntry = new LogEntry(property.getPath(), Event.PROPERTY_CHANGED);
+                                    logger.debug("addEntry - Change property " + property.getPath());
+                                    oos.writeObject(weakRefUpdateEntry);
+                                    serializePropertyValue(oos, property);
+                                }
+                            } catch (PathNotFoundException e) {
+                                logger.debug(e.getMessage(), e);
+                            }
+                        }
+                    }
+
                     eventWritten = true;
                 } catch (PathNotFoundException e) {
                     // not present anymore
@@ -303,7 +322,7 @@ public class RemotePublicationService implements InitializingBean {
                 }
                 break;
             }
-            case ExtendedPropertyType.WEAKREFERENCE:
+            case PropertyType.WEAKREFERENCE:
             case PropertyType.REFERENCE: {
                 try {
                     final JCRNodeWrapper uuid = session.getNodeByUUID(value.getString());

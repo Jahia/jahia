@@ -599,6 +599,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             RenderContext renderContext =
                     createRenderContext(req, resp, sessionFactory.getCurrentUser());
             renderContext.setLiveMode(Constants.LIVE_WORKSPACE.equals(urlResolver.getWorkspace()));
+            renderContext.setPreviewMode(!renderContext.isEditMode() && !renderContext.isContributionMode() && !renderContext.isLiveMode());
 
             req.getSession().setAttribute(ParamBean.SESSION_LOCALE, urlResolver.getLocale());
             sessionFactory.setCurrentLocale(urlResolver.getLocale());

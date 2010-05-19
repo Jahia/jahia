@@ -234,6 +234,16 @@
                             <property name="applyOnNodeTypes" value="jmix:contributeMode"/>
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
+                        <bean class="org.jahia.services.render.filter.UserAgentFilter" >
+                            <property name="priority" value="4" />
+                            <property name="applyOnModes" value="live,preview" />
+                            <property name="userAgentMatchingRules">
+                                <map>
+                                    <entry key=".*iPhone.*" value="iphone" />
+                                    <entry key=".*iPod.*" value="iphone" />
+                                </map>
+                            </property>
+                        </bean>
                         <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
                             <property name="priority" value="5" />
                         </bean>

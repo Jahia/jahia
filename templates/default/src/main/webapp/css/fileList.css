@@ -15,7 +15,7 @@
 	display:block;
 	border-bottom:1px solid #ccc;
 }
-#bodywrapper ul.filesList li.document:hover{
+#bodywrapper ul.filesList li:hover{
 	background-color:#eaeaea
 }
 #bodywrapper ul.filesList li.lastdocument  {

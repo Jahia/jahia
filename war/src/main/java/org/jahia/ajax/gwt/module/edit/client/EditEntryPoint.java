@@ -57,7 +57,7 @@ public class EditEntryPoint extends CommonEntryPoint {
                 try {
                     async.isValidSession(new AsyncCallback<Integer>() {
                         public void onFailure(Throwable throwable) {
-                            Window.alert("an error occur");
+                            Log.error("Error checking active session", throwable);
                         }
 
                         public void onSuccess(Integer val) {
@@ -65,7 +65,6 @@ public class EditEntryPoint extends CommonEntryPoint {
                                 scheduleRepeating(val);
                                 //Window.alert("your session awake");
                             } else if (val == 0) {
-                                // todo: do the display
                                Window.Location.reload();
                             }
                         }

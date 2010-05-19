@@ -19,7 +19,14 @@
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/tomcat/webapps/ROOT" condition="cnd.pack.tomcat"/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/ROOT.war" condition="!cnd.pack.tomcat"/>
     
-        <variable name="dbSettings.dbms.type" value="derby_embedded" condition="cnd.cnd.db.dbms.derby_embedded"/>
+        <!-- embedded Derby defaults -->
+        <variable name="dbSettings.dbms.type" value="derby_embedded" condition="cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.dbms.createTables" value="true" condition="cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.connection.driver" value="org.apache.derby.jdbc.EmbeddedDriver" condition="cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.connection.url" value="jdbc:derby:directory:$context/WEB-INF/var/dbdata/jahia;create=true" condition="cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.connection.username" value="" condition="cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.connection.password" value="" condition="cnd.db.dbms.derby_embedded"/>
+        
         <variable name="dbSettings.dbms.connection.useJndi" value="false" condition="cnd.db.connection.manual"/>
         <variable name="dbSettings.dbms.connection.useJndi" value="true" condition="!cnd.db.connection.manual"/>
         
@@ -53,8 +60,8 @@
             <name>dbSettings.dbms.connection.type</name>
             <value>manual</value>
         </condition>
-        <condition type="variable" id="cnd.cnd.db.dbms.derby_embedded">
-            <name>derby_embedded</name>
+        <condition type="variable" id="cnd.db.dbms.derby_embedded">
+            <name>dbSettings.mode</name>
             <value>embedded</value>
         </condition>
         <condition type="variable" id="cnd.db.dbms.mssql">
@@ -86,7 +93,7 @@
             <value>derby</value>
         </condition>
     </conditions>
-    <guiprefs height="480" resizable="no" width="640">
+    <guiprefs height="480" resizable="yes" width="640">
         <modifier key="useFlags" value="yes"/>
         <modifier key="langDisplayType" value="native"/>
         <modifier key="useHeadingPanel" value="yes"/>
@@ -140,7 +147,9 @@
         <panel classname="UserInputPanel" condition="cnd.db.mode.standalone+cnd.db.connection.manual" id="connectionManual"/>
         <panel classname="UserInputPanel" condition="cnd.db.mode.standalone+!cnd.db.connection.manual" id="connectionJndi"/>
         <panel classname="UserInputPanel" id="superUser"/>
+        <!-- 
         <panel classname="UserInputPanel" id="mailSettings"/>
+         -->
         <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>

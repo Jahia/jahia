@@ -17,10 +17,8 @@
         <field type="radio" variable="dbSettings.mode">
             <description align="left" txt="Choose your preferred database connection type" id="dbSettings.chooseMode"/>
             <spec>
-                <!-- 
                 <choice txt="Use an embedded Apache Derby database engine" id="dbSettings.mode.embedded" value="embedded" set="true"/>
-                 -->
-                <choice txt="Use a standalone DBMS (configured on the next step)" id="dbSettings.mode.standalone" value="standalone" set="true"/>
+                <choice txt="Use a standalone DBMS (configured on the next step)" id="dbSettings.mode.standalone" value="standalone"/>
             </spec>
         </field>
     </panel>

@@ -21,6 +21,13 @@
             <artifactId>izpack-standalone-compiler</artifactId>
             <version>${izpack.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>configurators</artifactId>
+            <version>1.3</version>
+            <classifier>standalone</classifier>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -62,7 +69,7 @@
                 <version>2.1</version>
                 <executions>
                     <execution>
-                        <id>unpack</id>
+                        <id>unpack-tomcat</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -81,6 +88,46 @@
                                     </excludes>
                                 </artifactItem>
                             </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-jahia-artifacts</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-war</artifactId>
+                                    <version>${jahia.package.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/artifacts</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>shared-libraries</artifactId>
+                                    <version>${jahia.package.version}</version>
+                                    <classifier>all</classifier>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/artifacts</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-configurators</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeTransitive>true</excludeTransitive>
+                            <excludeGroupIds>org.codehaus.izpack</excludeGroupIds>
                         </configuration>
                     </execution>
                 </executions>
@@ -115,11 +162,13 @@
     <profiles>            
         <profile>
             <id>windows-package</id>
+            <!-- 
             <activation>
                 <os>
                     <family>Windows</family>
                 </os>
             </activation>
+             -->
             <repositories>
                 <repository>
                     <id>akathist-repository</id>

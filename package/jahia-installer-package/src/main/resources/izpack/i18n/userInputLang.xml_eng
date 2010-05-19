@@ -3,6 +3,13 @@
     <str id="common.requiredField" txt="This field is required"/>
     <str id="common.requiredFieldHint" txt="(*) - this field is required"/>
     
+    <str id="server.title" txt="Server type"/>
+    <str id="server.type" txt="Choose target application server type"/>
+    <str id="server.type.tomcat" txt="Apache Tomcat 6.0.x"/>
+    <str id="server.type.was" txt="IBM WebSphere 6.1"/>
+    <str id="server.type.weblogic" txt="Oracle WebLogic 10.x/11g"/>
+    <str id="server.type.jboss" txt="Red Hat JBoss 4.2.x"/>
+    
     <str id="superUser.title" txt="SuperUser (administrator) settings"/>
     <str id="superUser.username" txt="Administrator username (*)"/>
     <str id="superUser.username.mandatory" txt="Username is a mandatory field."/>

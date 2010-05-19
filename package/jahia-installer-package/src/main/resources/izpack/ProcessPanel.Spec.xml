@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<processing>
+    <logfiledir>$INSTALL_PATH/build</logfiledir>
+    <job name="Configure Jahia">
+        <os family="windows" />
+        <executefile name="$INSTALL_PATH/build/configure.bat">
+            <arg>$INSTALL_PATH/build/install.properties"</arg>
+        </executefile>
+    </job>
+    <job name="Configure Jahia">
+        <os family="unix" />
+        <executefile name="$INSTALL_PATH/build/configure.sh">
+            <arg>$INSTALL_PATH/build/install.properties"</arg>
+        </executefile>
+    </job>
+    <job name="Configure Jahia">
+        <os family="mac" />
+        <executefile name="$INSTALL_PATH/build/configure.sh">
+            <arg>$INSTALL_PATH/build/install.properties"</arg>
+        </executefile>
+    </job>
+<!-- 
+    <job name="Start Jahia">
+        <os family="windows" />
+        <executefile name="$INSTALL_PATH/startJahia.bat" />
+    </job>
+    <job name="Start Jahia">
+        <os family="unix" />
+        <executefile name="$INSTALL_PATH/startJahia.sh" />
+    </job>
+    <job name="Start Jahia">
+        <os family="mac" />
+        <executefile name="$INSTALL_PATH/startJahia.sh" />
+    </job>
+ -->    
+    <onFail previous="false" next="false" />
+    <onSuccess previous="false" next="true" />
+</processing>

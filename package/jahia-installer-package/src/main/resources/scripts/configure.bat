@@ -1,8 +1,7 @@
 @echo off
 if "%OS%" == "Windows_NT" setlocal
 echo ---------------------------------------------------------------------------
-echo Starting Jahia Server
+echo Configuring Jahia
 echo ---------------------------------------------------------------------------
 
-cd %{INSTALL_PATH}\tomcat\bin
-startup.bat
+java -jar %{INSTALL_PATH}\build\configurators.jar %1

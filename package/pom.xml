@@ -47,6 +47,12 @@
                 <module>jahia-websphere-package</module>
             </modules>
         </profile>
+        <profile>
+            <id>installer</id>
+            <modules>
+                <module>jahia-installer-package</module>
+            </modules>
+        </profile>
     </profiles>
 
     <modules>

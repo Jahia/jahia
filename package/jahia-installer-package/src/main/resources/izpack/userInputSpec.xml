@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <userInput>
     <panel order="0">
+        <field type="title" txt="Server type" id="server.title"/>
+        <field type="radio" variable="server.type" alight="left">
+            <description align="left" txt="Choose target application server type" id="server.type"/>
+            <spec>
+                <choice txt="Apache Tomcat 6.0.x" id="server.type.tomcat" value="tomcat" set="true"/>
+                <choice txt="IBM WebSphere 6.1" id="server.type.was" value="was"/>
+                <choice txt="Oracle WebLogic 10.x/11g" id="server.type.weblogic" value="weblogic"/>
+                <choice txt="Red Hat JBoss 4.2.x" id="server.type.jboss" value="jboss"/>
+            </spec>
+        </field>
+    </panel>
+    <panel order="1">
         <field type="title" txt="SuperUser (administrator) settings" id="superUser.title"/>
         <field type="text" align="left" variable="superUser.username">
             <spec txt="Administrator username" id="superUser.username" size="25" set="root"/>
@@ -11,9 +23,7 @@
                 <pwd set="" size="25" txt="Administrator password" id="superUser.password"/>
                 <pwd set="" size="25" txt="Confirm administrator password" id="superUser.passwordConfirm"/>
             </spec>
-            <!-- 
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator password is a mandatory field" id="superUser.password.mandatory"/>
-             -->
             <validator
                 class="com.izforge.izpack.util.PasswordEqualityValidator" txt="Both passwords must match" id="superUser.password.match"/>
         </field>
@@ -32,23 +42,25 @@
         <field type="divider" align="bottom"/>
         <field type="staticText" align="left" txt="(*) - this field is is required" id="common.requiredFieldHint"/>
     </panel>
-    <panel order="1">
+    <panel order="2">
         <field type="title" txt="Database connection settings" id="dbSettings.title"/>
         <field type="radio" variable="dbSettings.type">
             <description align="left" txt="Choose your preferred database connection type" id="dbSettings.chooseType"/>
             <spec>
+                <!-- 
                 <choice txt="Use an embedded Apache Derby database engine" id="dbSettings.type.embedded" value="embedded" set="true"/>
-                <choice txt="Use a standalone DBMS (configured on the next step)" id="dbSettings.type.standalone" value="standalone"/>
+                 -->
+                <choice txt="Use a standalone DBMS (configured on the next step)" id="dbSettings.type.standalone" value="standalone" set="true"/>
             </spec>
         </field>
     </panel>
-    <panel order="2">
+    <panel order="3">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
         <field type="combo" variable="dbSettings.dbms.type" alight="left">
             <description align="left" txt="Choose your DBMS type" id="dbSettings.dbms.type"/>
             <spec>
                 <choice txt="Microsoft SQL Server" id="dbSettings.dbms.type.mssql" value="mssql"/>
-                <choice txt="MySQL 5.x InnoDB" id="dbSettings.dbms.type.mysql.innodb" value="mysql_innodb"/>
+                <choice txt="MySQL 5.x InnoDB" id="dbSettings.dbms.type.mysql.innodb" value="mysql_innodb" set="true"/>
                 <choice txt="MySQL 5.x" id="dbSettings.dbms.type.mysql" value="mysql"/>
                 <choice txt="Oracle 10.2.1.0 / Oracle 11.x" id="dbSettings.dbms.type.oracle" value="oracle"/>
                 <choice txt="Oracle 9.x / Oracle 10.1.x" id="dbSettings.dbms.type.oracle.legacy" value="oracle_legacy"/>
@@ -61,11 +73,13 @@
             <description align="left" txt="Provide your database connection options" id="dbSettings.dbms.connection"/>
             <spec>
                 <choice txt="Specify connection URL, username and password" id="dbSettings.dbms.connection.manual" value="manual" set="true"/>
+                <!-- 
                 <choice txt="Use existing database connection pool via JNDI" id="dbSettings.dbms.connection.jndi" value="jndi"/>
+                 -->
             </spec>
         </field>
     </panel>
-    <panel order="3">
+    <panel order="4">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
         <field type="text" align="left" variable="dbSettings.connection.driver">
             <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${var.db.driver}"/>
@@ -92,10 +106,10 @@
             <spec txt="Create required database tables?" id="dbSettings.dbms.createTables" true="true" false="false" set="true"/>
         </field>
     </panel>
-    <panel order="4">
+    <panel order="5">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
     </panel>
-    <panel order="5">
+    <panel order="6">
         <field type="title" txt="Mail settings (optional)" id="mailSettings.title"/>
         <field type="staticText" txt="The settings below are optional. Leave them empty to disable E-Mail notification. Specifying them will enable the E-Mail notification feature." id="mailSettings.description"/>
         <field type="text" align="left" variable="mailSettings.host">

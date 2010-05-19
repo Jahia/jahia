@@ -682,7 +682,7 @@ public class JahiaAdministration extends HttpServlet {
                             dspMsg += JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator2.label",
                                     request.getLocale());
                             request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                            logger.error("Login Error: User " + jahiaLoginUsername + " is not an system administrator.");
+                            logger.error("Login Error: User " + jahiaLoginUsername + " is not a system administrator.");
                         }
                     }
                 } else {

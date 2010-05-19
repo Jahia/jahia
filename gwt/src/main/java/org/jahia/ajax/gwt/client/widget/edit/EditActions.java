@@ -13,7 +13,6 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -26,7 +25,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowManagerEngine;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -141,9 +140,9 @@ public class EditActions {
      *
      * @param linker
      */
-    public static void showWorkflowManager(Linker linker) {
+    public static void showWorkflowDashboard(Linker linker) {
         if (linker.getMainNode() != null) {
-            new WorkflowManagerEngine(linker).show();
+            new WorkflowDashboardEngine(linker).show();
         }
     }
 

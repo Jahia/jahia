@@ -9,7 +9,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowNodeTypeConfig;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -25,7 +24,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  * Time: 4:32:33 PM
  * To change this template use File | Settings | File Templates.
  */
-public class WorkflowManagerEngine extends Window {
+public class WorkflowDashboardEngine extends Window {
     private Linker linker;
     private Button ok;
     protected ButtonBar buttonBar;
@@ -36,7 +35,7 @@ public class WorkflowManagerEngine extends Window {
 
     private WorkflowInstancesPanel instancesPanel;
 
-    public WorkflowManagerEngine(Linker linker) {
+    public WorkflowDashboardEngine(Linker linker) {
         super();
         this.linker = linker;
         init();
@@ -101,7 +100,7 @@ public class WorkflowManagerEngine extends Window {
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                WorkflowManagerEngine.this.hide();
+                WorkflowDashboardEngine.this.hide();
             }
         });
         buttonBar.add(cancel);
@@ -125,7 +124,7 @@ public class WorkflowManagerEngine extends Window {
                             }
 
                             public void onSuccess(Object o) {
-                                WorkflowManagerEngine.this.hide();
+                                WorkflowDashboardEngine.this.hide();
                                 Log.debug("finish updating nodeType Workflow Rule");
                             }
                         });

@@ -28,8 +28,6 @@
     <bean name="contentLegacyServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaContentLegacyService"/>
     </bean>
-    <bean name="gwtJahiaContentLegacyService" class="org.jahia.ajax.gwt.commons.server.rpc.JahiaContentLegacyServiceImpl" scope="prototype"/>
-
     <bean name="contentDefinitionServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtJahiaContentDefinitionService"/>
     </bean>
@@ -80,8 +78,6 @@
     <bean name="sessionManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtSessionManagerService"/>
     </bean>
-    <bean name="gwtSessionManagerService" class="org.jahia.ajax.gwt.commons.server.rpc.SessionManagerServiceImpl" scope="prototype"/>
-    
     <bean name="subscriptionServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
         <property name="remoteServiceName" value="gwtSubscriptionService"/>
     </bean>

@@ -458,6 +458,97 @@
 
     </bean>
 
+    <bean id="workflowmanager"
+          class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="jnt:workflowRules"/>
+        <property name="folderTypes" value="jnt:workflowRule"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="button"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="Toolbar.Item.Rename"/>
+                                                <ref bean="Toolbar.Item.Delete"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/workflow-shortcuts"/>
+                                </bean>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="menu"/>
+                                        <property name="titleKey"
+                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="Toolbar.Item.Rename"/>
+                                                <ref bean="Toolbar.Item.Delete"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="siteActionPermission" value="toolbar/workflow-menu"/>
+                                </bean>
+                            </property>
+                            <property name="contextMenu" value="true"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="hideLeftPanel" value="true"/>
+        <property name="enableTextMenu" value="true"/>
+        <property name="displayExt" value="false"/>
+        <property name="displaySize" value="false"/>
+        <property name="displayDate" value="false"/>
+        <property name="displaySearch" value="false"/>
+        <property name="expandRoot" value="true"/>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="false"/>
+        <property name="defaultView" value="1"/>
+
+        <!-- accordion panels-->
+        <property name="accordionPanels">
+            <list>
+                <ref bean="repository.workflow"/>
+            </list>
+        </property>
+        <!-- tabs -->
+        <property name="tabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>content</value>
+                <value>rights</value>
+            </list>
+        </property>
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,200</value>
+                <value>remoteUrl,200</value>
+                <value>remotePath,200</value>
+            </list>
+        </property>
+
+    </bean>
 
     <!-- portlet definition manager -->
     <bean id="portletdefinitionmanager"
@@ -1335,9 +1426,12 @@
         <property name="key" value="portletDefinitionRepository"/>
     </bean>
 
-    <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+   <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedMashupRepository"/>
     </bean>
 
+    <bean id="repository.workflow" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="workflowRepository"/>
+    </bean>
 
 </beans>

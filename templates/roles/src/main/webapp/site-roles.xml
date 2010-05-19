@@ -48,7 +48,8 @@
    		    <roles-shortcuts jcr:primaryType="jnt:permission"/>   		    
             <remotepublication-menu jcr:primaryType="jnt:permission" />
             <remotepublication-shortcuts jcr:primaryType="jnt:permission" />
-
+            <workflow-menu jcr:primaryType="jnt:permission" />
+            <workflow-shortcuts jcr:primaryType="jnt:permission" />
    	    </toolbar>
    	    <integrity jcr:primaryType="jnt:permissionGroup">
    		    <link-integrity jcr:primaryType="jnt:permission"/> 	    

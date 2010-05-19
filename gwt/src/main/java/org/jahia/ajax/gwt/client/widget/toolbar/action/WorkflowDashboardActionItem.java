@@ -10,7 +10,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
  * Time: 9:41:53 AM
  * To change this template use File | Settings | File Templates.
  */
-public class WorkflowManagerActionItem extends BaseActionItem{
+public class WorkflowDashboardActionItem extends BaseActionItem{
 
     public void onComponentSelection() {
         EditActions.showWorkflowDashboard(linker);

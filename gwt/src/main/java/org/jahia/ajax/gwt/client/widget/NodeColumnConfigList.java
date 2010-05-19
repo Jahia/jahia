@@ -174,6 +174,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(VERSION_RENDERER);
             } else if ("index".equals(column.getKey())) {
+                col.setHeader("");
                 col.setResizable(false);
                 col.setFixed(true);
                 col.setId("numberer");

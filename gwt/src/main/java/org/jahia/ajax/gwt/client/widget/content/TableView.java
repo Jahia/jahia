@@ -120,22 +120,6 @@ public class TableView extends TopRightComponent {
             checkboxSelectionModel = new CheckBoxSelectionModel<GWTJahiaNode>();
             columns.add(0, checkboxSelectionModel.getColumn());
         }
-//        columns.add(0,new RowNumberer());
-        final ColumnConfig columnindex = new ColumnConfig("index", 20);
-        columns.add(1, columnindex);
-
-        columnindex.setId("numberer");
-        columnindex.setDataIndex("index");
-//
-//        columnindex.setRenderer(new GridCellRenderer<ModelData>() {
-//
-//          public String render(ModelData model, String property, ColumnData d, int rowIndex, int colIndex,
-//              ListStore<ModelData> store, Grid<ModelData> grid) {
-//            d.cellAttr = "rowspan='2'";
-//            return String.valueOf(property);
-//          }
-//        });
-
 
         m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
         m_grid.setBorders(true);

@@ -66,7 +66,7 @@ public class EditEntryPoint extends CommonEntryPoint {
                                 //Window.alert("your session awake");
                             } else if (val == 0) {
                                 // todo: do the display
-                               Window.alert("your session reset");
+                               Window.Location.reload();
                             }
                         }
                     });

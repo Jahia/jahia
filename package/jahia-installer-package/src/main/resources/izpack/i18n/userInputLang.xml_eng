@@ -22,9 +22,9 @@
     <str id="superUser.email" txt="E-mail address"/>
 
     <str id="dbSettings.title" txt="Database connection settings"/>
-    <str id="dbSettings.chooseType" txt="Choose your preferred database connection type"/>
-    <str id="dbSettings.type.embedded" txt="Use an embedded Apache Derby database engine"/>
-    <str id="dbSettings.type.standalone" txt="Use a standalone DBMS (configured on the next step)"/>
+    <str id="dbSettings.chooseMode" txt="Choose your preferred database mode"/>
+    <str id="dbSettings.mode.embedded" txt="Use an embedded Apache Derby database engine"/>
+    <str id="dbSettings.mode.standalone" txt="Use a standalone DBMS (configured on the next step)"/>
     
     <str id="dbSettings.dbms.title" txt="Database connection settings"/>
     <str id="dbSettings.dbms.type" txt="Choose your DBMS type"/>

@@ -45,8 +45,8 @@
             <packid>tomcat</packid>
         </condition>
         
-        <condition type="variable" id="cnd.db.type.standalone">
-            <name>dbSettings.type</name>
+        <condition type="variable" id="cnd.db.mode.standalone">
+            <name>dbSettings.mode</name>
             <value>standalone</value>
         </condition>
         <condition type="variable" id="cnd.db.connection.manual">
@@ -134,15 +134,13 @@
         <panel classname="LicencePanel"/>
         <panel classname="PacksPanel" id="packsPanel"/>
         <panel classname="TargetPanel"/>
-        <panel classname="UserInputPanel" condition="!cnd.pack.tomcat"/>
-        <panel classname="UserInputPanel"/>
-        <panel classname="UserInputPanel"/>
-        <panel classname="UserInputPanel" condition="cnd.db.type.standalone"/>
-        <panel classname="UserInputPanel" condition="cnd.db.type.standalone+cnd.db.connection.manual"/>
-        <!-- 
-        <panel classname="UserInputPanel" condition="cnd.db.type.standalone+!cnd.db.connection.manual"/>
-        <panel classname="UserInputPanel"/>
-        -->
+        <panel classname="UserInputPanel" condition="!cnd.pack.tomcat" id="serverType"/>
+        <panel classname="UserInputPanel" id="dbMode"/>
+        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbmsType"/>
+        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone+cnd.db.connection.manual" id="connectionManual"/>
+        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone+!cnd.db.connection.manual" id="connectionJndi"/>
+        <panel classname="UserInputPanel" id="superUser"/>
+        <panel classname="UserInputPanel" id="mailSettings"/>
         <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
@@ -157,6 +155,15 @@
     <native name="COIOSHelper.dll" stage="both" type="3rdparty">
         <os family="windows" />
     </native>
+    <!--
+        Use these DLLs for building x64 executable 
+    <native name="ShellLink_x64.dll" type="izpack">
+        <os family="windows" />
+    </native>
+    <native name="COIOSHelper_x64.dll" stage="both" type="3rdparty">
+        <os family="windows" />
+    </native>
+     -->
     
     <listeners>
         <listener installer="RegistryInstallerListener" uninstaller="RegistryUninstallerListener">

@@ -13,48 +13,18 @@
         </field>
     </panel>
     <panel order="1">
-        <field type="title" txt="SuperUser (administrator) settings" id="superUser.title"/>
-        <field type="text" align="left" variable="superUser.username">
-            <spec txt="Administrator username" id="superUser.username" size="25" set="root"/>
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator username is a mandatory field" id="superUser.username.mandatory"/>
-        </field>
-        <field type="password" align="left" variable="superUser.password">
-            <spec>
-                <pwd set="" size="25" txt="Administrator password" id="superUser.password"/>
-                <pwd set="" size="25" txt="Confirm administrator password" id="superUser.passwordConfirm"/>
-            </spec>
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator password is a mandatory field" id="superUser.password.mandatory"/>
-            <validator
-                class="com.izforge.izpack.util.PasswordEqualityValidator" txt="Both passwords must match" id="superUser.password.match"/>
-        </field>
-        <field type="text" align="left" variable="superUser.firstname">
-            <spec txt="First name" id="superUser.firstname" size="25" set="Jahia"/>
-        </field>
-        <field type="text" align="left" variable="superUser.lastnamename">
-            <spec txt="Last name" id="superUser.lastname" size="25" set="Super Administrator"/>
-        </field>
-        <field type="text" align="left" variable="superUser.email">
-            <spec txt="E-mail address" id="superUser.email" size="25" set=""/>
-        </field>
-        <field type="space"/>
-        <field type="space"/>
-        <field type="space"/>
-        <field type="divider" align="bottom"/>
-        <field type="staticText" align="left" txt="(*) - this field is is required" id="common.requiredFieldHint"/>
-    </panel>
-    <panel order="2">
         <field type="title" txt="Database connection settings" id="dbSettings.title"/>
-        <field type="radio" variable="dbSettings.type">
-            <description align="left" txt="Choose your preferred database connection type" id="dbSettings.chooseType"/>
+        <field type="radio" variable="dbSettings.mode">
+            <description align="left" txt="Choose your preferred database connection type" id="dbSettings.chooseMode"/>
             <spec>
                 <!-- 
-                <choice txt="Use an embedded Apache Derby database engine" id="dbSettings.type.embedded" value="embedded" set="true"/>
+                <choice txt="Use an embedded Apache Derby database engine" id="dbSettings.mode.embedded" value="embedded" set="true"/>
                  -->
-                <choice txt="Use a standalone DBMS (configured on the next step)" id="dbSettings.type.standalone" value="standalone" set="true"/>
+                <choice txt="Use a standalone DBMS (configured on the next step)" id="dbSettings.mode.standalone" value="standalone" set="true"/>
             </spec>
         </field>
     </panel>
-    <panel order="3">
+    <panel order="2">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
         <field type="combo" variable="dbSettings.dbms.type" alight="left">
             <description align="left" txt="Choose your DBMS type" id="dbSettings.dbms.type"/>
@@ -79,7 +49,7 @@
             </spec>
         </field>
     </panel>
-    <panel order="4">
+    <panel order="3">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
         <field type="text" align="left" variable="dbSettings.connection.driver">
             <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${var.db.driver}"/>
@@ -97,17 +67,44 @@
             <spec>
                 <pwd set="jahia" size="25" txt="Database password" id="dbSettings.connection.password"/>
             </spec>
-            <!-- 
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database password is a mandatory field" id="dbSettings.connection.password.mandatory"/>
-             -->
         </field>
         <field type="space"/>
         <field type="check" variable="dbSettings.dbms.createTables" alight="left">
             <spec txt="Create required database tables?" id="dbSettings.dbms.createTables" true="true" false="false" set="true"/>
         </field>
     </panel>
-    <panel order="5">
+    <panel order="4">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
+    </panel>
+    <panel order="5">
+        <field type="title" txt="SuperUser (administrator) settings" id="superUser.title"/>
+        <field type="text" align="left" variable="superUser.username">
+            <spec txt="Administrator username" id="superUser.username" size="25" set="root"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator username is a mandatory field" id="superUser.username.mandatory"/>
+        </field>
+        <field type="password" align="left" variable="superUser.password">
+            <spec>
+                <pwd set="" size="25" txt="Administrator password" id="superUser.password"/>
+                <pwd set="" size="25" txt="Confirm administrator password" id="superUser.passwordConfirm"/>
+            </spec>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator password is a mandatory field" id="superUser.password.mandatory"/>
+            <validator
+                class="com.izforge.izpack.util.PasswordEqualityValidator" txt="Both passwords must match" id="superUser.password.match"/>
+        </field>
+        <field type="text" align="left" variable="superUser.firstname">
+            <spec txt="First name" id="superUser.firstname" size="25" set="Jahia"/>
+        </field>
+        <field type="text" align="left" variable="superUser.lastname">
+            <spec txt="Last name" id="superUser.lastname" size="25" set="Super Administrator"/>
+        </field>
+        <field type="text" align="left" variable="superUser.email">
+            <spec txt="E-mail address" id="superUser.email" size="25" set=""/>
+        </field>
+        <field type="space"/>
+        <field type="space"/>
+        <field type="space"/>
+        <field type="divider" align="bottom"/>
+        <field type="staticText" align="left" txt="(*) - this field is is required" id="common.requiredFieldHint"/>
     </panel>
     <panel order="6">
         <field type="title" txt="Mail settings (optional)" id="mailSettings.title"/>

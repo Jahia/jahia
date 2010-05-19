@@ -159,7 +159,7 @@
         </plugins>
     </build>
 
-    <profiles>            
+    <profiles>
         <profile>
             <id>windows-package</id>
             <!-- 

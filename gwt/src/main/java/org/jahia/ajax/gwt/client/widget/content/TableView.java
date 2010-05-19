@@ -33,25 +33,29 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.dnd.DragSource;
-import com.extjs.gxt.ui.client.dnd.GridDragSource;
-import com.extjs.gxt.ui.client.dnd.GridDropTarget;
+import com.extjs.gxt.ui.client.dnd.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.FileStoreSorter;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
@@ -175,43 +179,13 @@ public class TableView extends TopRightComponent {
     @Override
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
-        DragSource source = new GridDragSource(m_grid);
-        source.addDNDListener(linker.getDndListener());
-
-        GridDropTarget target = new GridDropTarget(m_grid) {
-            @Override
-            protected void showFeedback(DNDEvent event) {
-                event.getStatus().setStatus(true);
-                Element row = grid.getView().findRow(event.getTarget()).cast();
-
-                if (row != null) {
-                    int height = row.getOffsetHeight();
-                    int mid = height / 2;
-                    mid += row.getAbsoluteTop();
-                    int y = event.getClientY();
-                    // Todo fix this for migration 2.0.2 
-//                    before = y < mid;
-                    int idx = grid.getView().findRowIndex(row);
-                    activeItem = grid.getStore().getAt(idx);
-                    if (((List) event.getData()).contains(activeItem)) {
-                        event.getStatus().setStatus(false);
-                    } else {
-                        event.getStatus().setStatus(true);
-                    }
-                } else {
-                    activeItem = getLinker().getMainNode();
-                    event.getStatus().setStatus(false);
-                }
-            }
-
-            @Override
-            protected void onDragDrop(DNDEvent dndEvent) {
-                if (dndEvent.getStatus().getStatus()) {
-                    ContentActions
-                            .move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) activeItem);
-                }
+        GridDragSource source = new GridDragSource(m_grid) {
+            @Override protected void onDragDrop(DNDEvent e) {
             }
         };
+        source.addDNDListener(linker.getDndListener());
+
+        GridDropTarget target = new MyGridDropTarget(m_grid);
         target.setAllowSelfAsSource(true);
         target.addDNDListener(linker.getDndListener());
     }
@@ -262,4 +236,104 @@ public class TableView extends TopRightComponent {
         return m_component;
     }
 
- }
+    private class MyGridDropTarget extends GridDropTarget {
+        private boolean before;
+
+        public MyGridDropTarget(Grid grid) {
+            super(grid);
+        }
+
+        @Override
+        protected void showFeedback(DNDEvent event) {
+            if (store.getSortField().equals("index")) {
+                feedback = DND.Feedback.INSERT;
+            } else {
+                feedback = DND.Feedback.APPEND;
+            }
+            event.getStatus().setStatus(true);
+            if (feedback == DND.Feedback.INSERT) {
+                Element row = grid.getView().findRow(event.getTarget()).cast();
+
+                if (row != null) {
+                    int height = row.getOffsetHeight();
+                    int quarter = height / 4;
+                    int top = row.getAbsoluteTop();
+                    int y = event.getClientY();
+
+                    before = y < (top + quarter);
+                    boolean after = y > (top + 3 * quarter);
+
+                    if (before || after) {
+                        int idx = grid.getView().findRowIndex(row);
+
+                        if (after) {
+                            activeItem = grid.getStore().getAt(idx+1);
+                            row = (Element) grid.getView().getRow(idx+1);
+                            before = true;
+                        } else {
+                            activeItem = grid.getStore().getAt(idx);
+                        }
+
+                        insertIndex = adjustIndex(event, idx);
+
+                        showInsert(event, row);
+                    } else {
+                        Insert.get().hide();
+                    }
+                } else {
+                    insertIndex = 0;
+                }
+            }
+        }
+
+        @Override
+        protected void onDragDrop(DNDEvent dndEvent) {
+            if (dndEvent.getStatus().getStatus()) {
+
+                final BaseAsyncCallback callback = new BaseAsyncCallback() {
+                    public void onSuccess(Object o) {
+                        getLinker().loaded();
+                        getLinker().refresh(EditLinker.REFRESH_ALL);
+                    }
+                };
+
+                final List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) dndEvent.getData();
+                final String source = gwtJahiaNodes.get(0).getPath();
+
+                if (activeItem != null) {
+                    if (before) {
+                        Window.alert("move before -> "+before+ " / "+ ((GWTJahiaNode) activeItem).getPath());
+                        JahiaContentManagementService.App.getInstance().moveOnTopOf(source, ((GWTJahiaNode) activeItem).getPath(), callback);
+                    } else {
+                        Window.alert("move at end2 -> "+((GWTJahiaNode) activeItem).getPath());
+                        JahiaContentManagementService.App.getInstance().moveAtEnd(source, ((GWTJahiaNode) activeItem).getPath(), callback);
+                    }
+                } else {
+                    Window.alert("move at end -> "+((GWTJahiaNode) store.getLoadConfig()).getPath());
+                    JahiaContentManagementService.App.getInstance().moveAtEnd(source, ((GWTJahiaNode) store.getLoadConfig()).getPath(), callback);
+                }
+            }
+        }
+
+        private int adjustIndex(DNDEvent event, int index) {
+            Object data = event.getData();
+            List<ModelData> models = prepareDropData(data, true);
+            for (ModelData m : models) {
+                int idx = grid.getStore().indexOf(m);
+                if (idx > -1 && (before ? idx < index : idx <= index)) {
+                    index--;
+                }
+            }
+            return before ? index : index + 1;
+        }
+
+        private void showInsert(DNDEvent event, Element row) {
+            Insert insert = Insert.get();
+            insert.show(row);
+            Rectangle rect = El.fly(row).getBounds();
+            int y = !before ? (rect.y + rect.height - 4) : rect.y - 2;
+            insert.el().setBounds(rect.x, y, rect.width, 6);
+        }
+
+    }
+}

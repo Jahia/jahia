@@ -14,4 +14,6 @@ Jahia Default Module
 
     * {{{./profile.html} User Profile}} - general instructions on how to develop in line editable pages is available in user profile page
 
+    * {{{./userAgent.html} User Agent}} - how to create specific templates per user agent
+
 	[]

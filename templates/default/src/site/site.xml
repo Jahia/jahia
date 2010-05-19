@@ -22,6 +22,7 @@
                 <item name="Edit DropDown" href="profile.html#DropDown"/>
                 <item name="Ajax Upload" href="profile.html#Upload"/>
             </item>
+            <item name="User Agent" href="userAgent.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

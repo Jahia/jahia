@@ -33,7 +33,8 @@ body {
 	font-family: Georgia,Times,'Times New Roman',serif;
 	line-height:normal;
 	font-size:80%;
-	line-height:160%
+	line-height:160%;
+	overflow:scroll
 }
 #bodywrapper {
 }

@@ -31,10 +31,15 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../../common/declarations.jspf" %>
-<template:addResources type="css" resources="960.css,01web.css,02mod.css"/>
+<template:addResources type="css" resources="960.css,01web.css,02mod.css" />
+<c:if test="${renderContext.editMode}">
+    <template:addResources type="css" resources="edit.css" />
+</c:if>
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 
 <div id="bodywrapper"><!--start bodywrapper-->

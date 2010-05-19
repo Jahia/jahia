@@ -34,7 +34,7 @@ body {
 	line-height:normal;
 	font-size:80%;
 	line-height:160%;
-	overflow:scroll
+	overflow-y : scroll;
 }
 #bodywrapper {
 }

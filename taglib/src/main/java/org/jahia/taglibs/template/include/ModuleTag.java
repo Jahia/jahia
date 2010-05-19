@@ -252,9 +252,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 //                    } catch (RepositoryException e) {
 //                        logger.error(e, e);
 //                    }
-                    if (!found) {
-                        return EVAL_PAGE;
-                    }
+                    // Remove test until we find a better solution to avoid displaying unecessary nodes
+                    // todo : find a way to filter nodes
+                    //if (!found) {
+                    //    return EVAL_PAGE;
+                    //}
                 }
 
                 if (templateType == null) {

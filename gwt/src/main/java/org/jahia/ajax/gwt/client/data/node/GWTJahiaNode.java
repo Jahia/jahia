@@ -91,7 +91,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private boolean portlet = false;
     private String normalizedName = null;
     private boolean versioned = false;
-    private SortInfo sortInfo = new SortInfo(NAME, Style.SortDir.ASC);
+    private SortInfo sortInfo = new SortInfo(null, Style.SortDir.ASC);
     private List<GWTJahiaNodeVersion> versions;
     private String selectedVersion;
     private String languageCode;

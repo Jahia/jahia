@@ -173,6 +173,11 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             } else if ("version".equals(column.getKey())) {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(VERSION_RENDERER);
+            } else if ("index".equals(column.getKey())) {
+                col.setResizable(false);
+                col.setFixed(true);
+                col.setId("numberer");
+                col.setDataIndex("index");
             }
             add(col);
         }

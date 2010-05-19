@@ -132,6 +132,8 @@ public class NavigationHelper {
         try {
             final NodeIterator nodesIterator = node.getNodes();
 
+            boolean hasOrderableChildren = node.getPrimaryNodeType().hasOrderableChildNodes();
+
             if (nodesIterator == null) {
                 throw new GWTJahiaServiceException("Children list is null");
             }
@@ -144,6 +146,7 @@ public class NavigationHelper {
 
             final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
 
+            int i = 1;
             while (nodesIterator.hasNext()) {
                 JCRNodeWrapper childNode = (JCRNodeWrapper) nodesIterator.nextNode();
                 if (logger.isDebugEnabled()) {
@@ -174,6 +177,9 @@ public class NavigationHelper {
                 if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
                     GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode, fields);
                     gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
+                    if (hasOrderableChildren) {
+                        gwtChildNode.set("index", new Integer(i++));
+                    }
                     gwtNodeChildren.add(gwtChildNode);
                 }
             }
@@ -927,6 +933,12 @@ public class NavigationHelper {
         try {
             if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
                 n.setReferencedNode(getGWTJahiaNode((JCRNodeWrapper) node.getProperty("j:node").getNode()));
+            }
+
+            if (node.getPrimaryNodeType().hasOrderableChildNodes()) {
+                n.setSortField("index");
+            } else {
+                n.setSortField(GWTJahiaNode.NAME);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

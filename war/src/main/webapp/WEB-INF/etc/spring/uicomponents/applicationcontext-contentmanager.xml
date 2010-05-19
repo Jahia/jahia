@@ -542,6 +542,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>index,23</value>
                 <value>name,200</value>
                 <value>remoteUrl,200</value>
                 <value>remotePath,200</value>
@@ -719,17 +720,13 @@
                         </bean>
                     </property>
                 </bean>
+                <value>index,23</value>
                 <value>icon,40</value>
                 <value>name,240</value>
                 <value>locked,60</value>
                 <value>size,140</value>
-                <value>publicationInfo,30</value>
                 <value>mix:created.jcr:created,100</value>
                 <value>mix:created.jcr:createdBy,100</value>
-                <value>mix:lastModified.jcr:lastModified,100</value>
-                <value>mix:lastModified.jcr:lastModifiedBy,100</value>
-                <value>jmix:lastPublished.j:lastPublished,100</value>
-                <value>jmix:lastPublished.j:lastPublishedBy,100</value>
             </list>
         </property>
 
@@ -829,6 +826,7 @@
         <!-- columns -->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>index,23</value>
                 <value>icon,40</value>
                 <value>name,240</value>
                 <value>locked,60</value>

@@ -41,9 +41,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.user.client.Element;
@@ -111,10 +109,10 @@ public class TableView extends TopRightComponent {
             @Override
             protected void onLoadException(LoadEvent loadEvent) {
                 super.onLoadException(loadEvent);
-                Log.error("Error listing directory content " + loadEvent.exception.toString());
+                Log.error("Error listing directory content ", loadEvent.exception);
             }
         };
-        store.setStoreSorter(new FileStoreSorter());
+//        store.setStoreSorter(new FileStoreSorter());
         NodeColumnConfigList columns = new NodeColumnConfigList(configuration.getTableColumns());
         columns.init();
         CheckBoxSelectionModel<GWTJahiaNode> checkboxSelectionModel = null;
@@ -122,6 +120,23 @@ public class TableView extends TopRightComponent {
             checkboxSelectionModel = new CheckBoxSelectionModel<GWTJahiaNode>();
             columns.add(0, checkboxSelectionModel.getColumn());
         }
+//        columns.add(0,new RowNumberer());
+        final ColumnConfig columnindex = new ColumnConfig("index", 20);
+        columns.add(1, columnindex);
+
+        columnindex.setId("numberer");
+        columnindex.setDataIndex("index");
+//
+//        columnindex.setRenderer(new GridCellRenderer<ModelData>() {
+//
+//          public String render(ModelData model, String property, ColumnData d, int rowIndex, int colIndex,
+//              ListStore<ModelData> store, Grid<ModelData> grid) {
+//            d.cellAttr = "rowspan='2'";
+//            return String.valueOf(property);
+//          }
+//        });
+
+
         m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
         m_grid.setBorders(true);
         if (configuration.getTableColumnKeys().contains("displayName")) {
@@ -234,11 +249,11 @@ public class TableView extends TopRightComponent {
             List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
             store.add(gwtJahiaNodes);
             getLinker().onTableItemSelected();
-            if (store.getSortState().getSortField() != null && store.getSortState().getSortDir() != null) {
-                store.sort(store.getSortState().getSortField(), store.getSortState().getSortDir());
-            } else {
-                store.sort("date", Style.SortDir.DESC);
-            }
+//            if (store.getSortState().getSortField() != null && store.getSortState().getSortDir() != null) {
+//                store.sort(store.getSortState().getSortField(), store.getSortState().getSortDir());
+//            } else {
+//                store.sort("date", Style.SortDir.DESC);
+//            }
         }
     }
 

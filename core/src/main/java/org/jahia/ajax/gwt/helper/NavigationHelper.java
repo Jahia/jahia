@@ -934,7 +934,12 @@ public class NavigationHelper {
             if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
                 n.setReferencedNode(getGWTJahiaNode((JCRNodeWrapper) node.getProperty("j:node").getNode()));
             }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
 
+        // sort
+        try {
             if (node.getPrimaryNodeType().hasOrderableChildNodes()) {
                 n.setSortField("index");
             } else {
@@ -943,6 +948,16 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+
+        // constraints
+        try {
+            Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
+            n.setChildConstraints(new HashSet<String>(cons));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+
         return n;
     }
 

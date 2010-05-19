@@ -437,6 +437,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return referencedNode;
     }
 
+    public void setChildConstraints(Set<String> constraints) {
+        set("constraints", constraints);
+    }
+
+    public Set<String> getChildConstraints() {
+        return get("constraints");
+    }
+
     public void setExpandOnLoad(boolean expandOnLoad) {
         this.expandOnLoad = expandOnLoad;
     }

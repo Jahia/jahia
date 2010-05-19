@@ -59,7 +59,9 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Table view component for the content manager widget.
@@ -251,10 +253,11 @@ public class TableView extends TopRightComponent {
                 feedback = DND.Feedback.APPEND;
             }
             event.getStatus().setStatus(true);
-            if (feedback == DND.Feedback.INSERT) {
-                Element row = grid.getView().findRow(event.getTarget()).cast();
 
-                if (row != null) {
+            Element row = grid.getView().findRow(event.getTarget()).cast();
+
+            if (row != null) {
+                if (feedback == DND.Feedback.INSERT) {
                     int height = row.getOffsetHeight();
                     int quarter = height / 4;
                     int top = row.getAbsoluteTop();
@@ -281,8 +284,21 @@ public class TableView extends TopRightComponent {
                         Insert.get().hide();
                     }
                 } else {
-                    insertIndex = 0;
+                    activeItem = grid.getStore().getAt(grid.getView().findRowIndex(row));
                 }
+            } else {
+                activeItem = null;
+                before = false;
+                insertIndex = 0;
+            }
+            if (!before) {
+                GWTJahiaNode target;
+                if (activeItem != null) {
+                    target = (GWTJahiaNode) activeItem;
+                } else {
+                    target = (GWTJahiaNode) store.getLoadConfig();
+                }
+                event.getStatus().setStatus(checkTarget(((List<GWTJahiaNode>) event.getData()).get(0), target));
             }
         }
 
@@ -298,21 +314,35 @@ public class TableView extends TopRightComponent {
                 };
 
                 final List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) dndEvent.getData();
-                final String source = gwtJahiaNodes.get(0).getPath();
+                final GWTJahiaNode source = gwtJahiaNodes.get(0);
 
                 if (activeItem != null) {
-                    if (before) {
-                        Window.alert("move before -> "+before+ " / "+ ((GWTJahiaNode) activeItem).getPath());
-                        JahiaContentManagementService.App.getInstance().moveOnTopOf(source, ((GWTJahiaNode) activeItem).getPath(), callback);
+                    final GWTJahiaNode target = (GWTJahiaNode) activeItem;
+                    if (checkTarget(source, target)) {
+                        if (before) {
+                            JahiaContentManagementService.App.getInstance().moveOnTopOf(source.getPath(), target.getPath(), callback);
+                        } else {
+                            JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
+                        }
                     } else {
-                        Window.alert("move at end2 -> "+((GWTJahiaNode) activeItem).getPath());
-                        JahiaContentManagementService.App.getInstance().moveAtEnd(source, ((GWTJahiaNode) activeItem).getPath(), callback);
+                        Window.alert("no");
                     }
+
                 } else {
-                    Window.alert("move at end -> "+((GWTJahiaNode) store.getLoadConfig()).getPath());
-                    JahiaContentManagementService.App.getInstance().moveAtEnd(source, ((GWTJahiaNode) store.getLoadConfig()).getPath(), callback);
+                    final GWTJahiaNode target = (GWTJahiaNode) store.getLoadConfig();
+                    if (checkTarget(source, target)) {
+                        JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
+                    } else {
+                        Window.alert("no");
+                    }
                 }
             }
+        }
+
+        private boolean checkTarget(GWTJahiaNode source, GWTJahiaNode target) {
+            final Set<String> constraints = new HashSet(target.getChildConstraints());
+            constraints.retainAll(source.getInheritedNodeTypes());
+            return !constraints.isEmpty();
         }
 
         private int adjustIndex(DNDEvent event, int index) {

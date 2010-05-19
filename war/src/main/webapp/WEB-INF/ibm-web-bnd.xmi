@@ -5,8 +5,4 @@
     <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_JahiaNormalDBConnection"/>
     <properties xmi:id="Property_1254303754648" name="com.ibm.mapping.authDataAlias" value="${jahia.deploy.websphere.server.authDataAlias}" description="description"/>
   </resRefBindings>
-  <resRefBindings xmi:id="ResourceRefBinding_1254303754648" jndiName="jdbc/jahiaNonTx" loginConfigurationName="DefaultPrincipalMapping">
-    <bindingResourceRef href="WEB-INF/web.xml#ResourceRef_JahiaNonTxDBConnection"/>
-    <properties xmi:id="Property_1254303754649" name="com.ibm.mapping.authDataAlias" value="${jahia.deploy.websphere.server.authDataAlias}" description="description"/>
-  </resRefBindings>
 </com.ibm.ejs.models.base.bindings.webappbnd:WebAppBinding>

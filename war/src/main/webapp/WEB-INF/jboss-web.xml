@@ -13,9 +13,5 @@
         <res-ref-name>jdbc/jahia</res-ref-name>
         <jndi-name>java:jahiaDS</jndi-name>
     </resource-ref>
-    <resource-ref>
-        <res-ref-name>jdbc/jahiaNonTx</res-ref-name>
-        <jndi-name>java:jahiaDS</jndi-name>
-    </resource-ref>    
     
 </jboss-web>

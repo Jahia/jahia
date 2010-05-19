@@ -8,10 +8,6 @@
         <res-ref-name>jdbc/jahia</res-ref-name>
         <jndi-name>jdbc/jahia</jndi-name>
     </resource-description>
-    <resource-description>
-        <res-ref-name>jdbc/jahiaNonTx</res-ref-name>
-        <jndi-name>jdbc/jahiaNonTx</jndi-name>
-    </resource-description>
     <jsp-descriptor>
         <keepgenerated>true</keepgenerated>
         <!-- Change this value on to higher level on production to avoid too many recompilations of jsps-->

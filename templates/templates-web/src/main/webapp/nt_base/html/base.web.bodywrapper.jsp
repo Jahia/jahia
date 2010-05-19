@@ -1,5 +1,9 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <template:addResources type="css" resources="960.css,01web.css,02mod.css" />
+<c:if test="${renderContext.editMode}">
+    <template:addResources type="css" resources="edit.css" />
+</c:if>
 
 
 <div id="bodywrapper"><!--start bodywrapper-->

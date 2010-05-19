@@ -44,11 +44,11 @@
  sharedSmallText smallTextWithDefaultAsResource = defaultValue internationalized
  sharedSmallText smallTextWithDefaultAsFunction = useClass('org.jahia.testtemplate.initializer.UsernameValueInitializer')
  sharedSmallText smallTextWithDefaultAsFunctionReadOnly = useClass('org.jahia.testtemplate.initializer.UsernameValueInitializer') protected
- sharedSmallText smallTextWithDefaultAsExpression = eval(currentUser.username)
+ sharedSmallText smallTextWithDefaultAsExpression
  sharedSmallText mandatorySmallText mandatory
  sharedSmallText alphanumericSmallText < '[a-zA-Z1-9]*'
  smallText smallTextMultiLang
- sharedSmallText smallTextMultiLangWithDefaultAsExpression = eval(currentUser.username)
+ sharedSmallText smallTextMultiLangWithDefaultAsExpression
  sharedSmallText smallTextMultiline (text[multiline])
  sharedSmallText smallTextMultilineWithDefault (text[multiline]) = 'multiline default value'
  smallText smallTextMultilineMultiLang (text[multiline])
@@ -65,7 +65,7 @@
  color color
  color colorWithBlueDefault = '#3333FF'
  boolean booleanWithDefault = 'true'
- boolean booleanWithDefaultAsExpression = eval(currentRequest.windows)
+ boolean booleanWithDefaultAsExpression
 
 [test_templates:pageFields] > jnt:content
  page page (page)
@@ -81,14 +81,14 @@
 [test_templates:numberFields] > jnt:content
  integer long
  integer longWithDefault = 10
- integer longWithDefaultAsExpression = eval(currentPage.ID)
+ integer longWithDefaultAsExpression
  integer longBetween1and10 < '[1,10]'
  integer longDropdown (choicelist) = 3 < '[1,10]', '[21,30]'
  float double
  float doubleWithDefault = 0.1
  /* float doubleWithDefaultAsResource = resourceBundle(defaultValue) deactivated temporarily */
  float doubleWithDefaultAsResource = 33.3
- float doubleWithDefaultAsExpression = eval(currentSite.id * 10 + 2.5)
+ float doubleWithDefaultAsExpression
  float doubleBetween1and10 < '[1,10]'
  float doubleDropdown (choicelist) = '2.5' < '1.5','2','2.5','3','3.5'
 
@@ -114,11 +114,11 @@
  date date
  date dateWithDefault = '2008-01-01T12:12:12.000+00:00'
  date dateWithDefaultAsNow = now()
- date dateWithDefaultAsExpression = eval(currentRequest.paramBean.cacheExpirationDate)
+ date dateWithDefaultAsExpression
  date formattedDate (datetimepicker[format='YYYYMMdd'])
  date timeWithDefaultAsNow (datetimepicker[format='HH:mm:ss,SSS']) = now()
  date hourWithDefaultAsNow (datetimepicker[format='hh \'o\'\'clock\' a, zzzz']) = now()
- date tommorrowSameTime (datetimepicker[format='yyyyy.MMMMM.dd GGG hh:mm aaa']) = eval(now+1000*60*60*24)
+ date tommorrowSameTime (datetimepicker[format='yyyyy.MMMMM.dd GGG hh:mm aaa'])
  date maximumDate (datetimepicker[format='dd.MM.yyyy / HH:mm']) = '9999-12-31T23:59:59.999+00:00'
  
 [test_templates:fieldsWithIndexOptions] > jnt:content, jmix:sandboxContent

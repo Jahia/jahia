@@ -51,7 +51,10 @@ import java.util.List;
  */
 public class UsernameValueInitializer implements ValueInitializer {
     public Value[] getValues(ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
-        return new Value[] { new ValueImpl(JCRSessionFactory.getInstance().getCurrentUser().getUsername() + new SimpleDateFormat("hh:mm:ss").format(new Date()),
-                PropertyType.STRING,false) };
+        if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+            return new Value[] { new ValueImpl(JCRSessionFactory.getInstance().getCurrentUser().getUsername() + new SimpleDateFormat("hh:mm:ss").format(new Date()),
+                    PropertyType.STRING,false) };
+        }
+        return new Value[0];
     }
 }

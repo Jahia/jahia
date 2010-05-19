@@ -35,69 +35,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <internal:gwtInit standalone="true"/>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.linkchecker.LinkChecker" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.checkLinks.label"
-    aliasResourceName="lc_checkLinks" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.exportcsv.label"
-    aliasResourceName="lc_exportcsv" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.link.label"
-    aliasResourceName="lc_link" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.stop.label"
-    aliasResourceName="lc_stop" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.pageTitle.label"
-    aliasResourceName="lc_pageTitle" />
-<internal:gwtResourceBundle
-    resourceName="label.language"
-    aliasResourceName="lc_language" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.code.label"
-    aliasResourceName="lc_code" />
-<internal:gwtResourceBundle
-    resourceName="label.edit"
-    aliasResourceName="lc_edit" />
-<internal:gwtResourceBundle
-    resourceName="label.page"
-    aliasResourceName="lc_page" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.field.label"
-    aliasResourceName="lc_field" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.details.label"
-    aliasResourceName="lc_details" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.processed.label"
-    aliasResourceName="lc_processed" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.checking.label"
-    aliasResourceName="lc_checking" />
-<internal:gwtResourceBundle
-    resourceName="label.of"
-    aliasResourceName="lc_of" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.linksfound.label"
-    aliasResourceName="lc_linksfound" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.admin.linkChecker.invalid.label"
-    aliasResourceName="lc_invalid" />
-<internal:gwtResourceBundle
-    resourceName="label.workflowState"
-    aliasResourceName="lc_workflow" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.versioned.label"
-    aliasResourceName="lc_versioned" />
-<internal:gwtResourceBundle
-    resourceName="label.live"
-    aliasResourceName="lc_live" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.staging.label"
-    aliasResourceName="lc_staging" />
-<internal:gwtResourceBundle
-    resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.notify.label"
-    aliasResourceName="lc_notify" />
 <div id="topTitle">
   <h1>Jahia</h1>
   <h2 class="edit">Jahia Link Checker</h2>

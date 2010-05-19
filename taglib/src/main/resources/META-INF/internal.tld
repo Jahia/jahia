@@ -35,22 +35,6 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-        <description>Generate resource bundle to be used by GWT.</description>
-        <name>gwtResourceBundle</name>
-        <tag-class>org.jahia.taglibs.internal.i18n.GWTResourceBundleTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>resourceName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>aliasResourceName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
 
     <tag>
         <description>Generate GWT a dictionary that represents resource bundle </description>
@@ -228,18 +212,8 @@
         <path>/META-INF/tags/ajax/contentmanager.tag</path>
     </tag-file>
     <tag-file>
-        <description>Displays the workflow manager engine</description>
-        <name>workflowManager</name>
-        <path>/META-INF/tags/ajax/workflow.tag</path>
-    </tag-file>
-    <tag-file>
         <description>Displays a content picker</description>
         <name>contentPicker</name>
         <path>/META-INF/tags/ajax/contentpicker.tag</path>
     </tag-file>
-    <tag-file>
-        <name>aclNameEditor</name>
-        <path>/META-INF/tags/ajax/aclNameEditor.tag</path>
-    </tag-file>
-
 </taglib>

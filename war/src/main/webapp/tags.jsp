@@ -74,5 +74,3 @@
 <internal:categoryManager/>
 <internal:contentPicker/>
 <internal:jobReport/>
-<internal:workflowManager sitekey="test" startpage="1"/>
-<internal:aclNameEditor aclId="0" fieldId="0"/>

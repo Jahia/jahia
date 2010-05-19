@@ -58,13 +58,5 @@
 </c:if>
 <c:if test="${empty requestScope['org.jahia.tags.aclNameEditor.resourcesIncluded']}">
     <c:set var="org.jahia.tags.aclNameEditor.resourcesIncluded" value="true" scope="request"/>
-    <internal:gwtResourceBundle resourceName="label.in"
-                                aliasResourceName="ae_principal"/>
-    <internal:gwtResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newUsers.label"
-                                aliasResourceName="um_adduser"/>
-    <internal:gwtResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"
-                                aliasResourceName="um_addgroup"/>
-    <internal:gwtResourceBundle resourceName="label.remove"
-                                aliasResourceName="ae_remove"/>
 </c:if>
 <span ${functions:attributes(attributes)}></span>

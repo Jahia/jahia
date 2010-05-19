@@ -21,7 +21,7 @@ CKEDITOR.editorConfig = function( config )
     config.toolbar = 'Full';
     config.toolbar_Full = [
         ['Source','-',/*'Save',*/'NewPage','Preview','-','Templates'],
-        ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'SpellChecker', 'Scayt'],
+        ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'SpellChecker', 'Scayt', 'ACheck'],
         ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
         //['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'],
         '/',
@@ -37,7 +37,7 @@ CKEDITOR.editorConfig = function( config )
     ];
     config.toolbar_Basic = [
         ['Source','-',/*'Save',*/'NewPage','Preview','-','Templates'],
-        ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'SpellChecker', 'Scayt'],
+        ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print', 'SpellChecker', 'Scayt', 'ACheck'],
         ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
         //['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'],
         '/',
@@ -55,7 +55,7 @@ CKEDITOR.editorConfig = function( config )
         ['Bold','Italic','Underline','Strike','-','NumberedList','BulletedList']
     ];
     config.toolbar_User = [
-        ['Cut','Copy','Paste','PasteText','PasteFromWord','-', 'SpellChecker', 'Scayt'],
+        ['Cut','Copy','Paste','PasteText','PasteFromWord','-', 'SpellChecker', 'Scayt', 'ACheck'],
         ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
         ['Link','Unlink','Anchor', 'Image','LinkFile'],
         ['HorizontalRule','Smiley','SpecialChar','PageBreak'],
@@ -69,4 +69,5 @@ CKEDITOR.editorConfig = function( config )
         ['Maximize', 'ShowBlocks']
     ];
     
+    config.extraPlugins = 'acheck';
 };

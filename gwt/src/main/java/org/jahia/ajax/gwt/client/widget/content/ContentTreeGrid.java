@@ -35,6 +35,8 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -116,7 +118,7 @@ public class ContentTreeGrid extends LayoutContainer {
 
         // center
         final LayoutContainer contentContainer = new LayoutContainer();
-        ThumbsListView thumbsListView = new ThumbsListView(false);
+        final ThumbsListView thumbsListView = new ThumbsListView(false);
         BaseListLoader<ListLoadResult<GWTJahiaNode>> listLoader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
@@ -128,7 +130,15 @@ public class ContentTreeGrid extends LayoutContainer {
             }
         });
         mainListStore = new ListStore<GWTJahiaNode>(listLoader);
-
+        mainListStore.addStoreListener(new StoreListener<GWTJahiaNode>() {
+            public void storeDataChanged(StoreEvent<GWTJahiaNode> se) {
+                for (GWTJahiaNode selectedNode : selectedNodes) {
+                    if (mainListStore.contains(selectedNode)) {
+                        thumbsListView.getSelectionModel().select(true, selectedNode);
+                    }
+                }
+            }
+        });
         listLoader.addLoadListener(new LoadListener() {
             @Override
             public void loaderLoad(LoadEvent le) {
@@ -215,7 +225,8 @@ public class ContentTreeGrid extends LayoutContainer {
             factory.setFields(GWTJahiaNode.DEFAULT_FIELDS);
             List<String> selectedPath = new ArrayList<String>();
             for (GWTJahiaNode node : selectedNodes) {
-                selectedPath.add(node.getPath());
+                final String s = node.getPath();
+                selectedPath.add(s.substring(0, s.lastIndexOf("/")));
             }
             factory.setSelectedPath(selectedPath);
             loader = factory.getLoader();
@@ -251,8 +262,8 @@ public class ContentTreeGrid extends LayoutContainer {
             }
 
             m_treeGrid = factory.getTreeGrid(new ColumnModel(columnConfigList));
-            m_treeGrid.addListener(Events.RowClick, new Listener<GridEvent>() {
-                public void handleEvent(GridEvent gridEvent) {
+            m_treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+                public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                     if (mainListStore != null) {
                         mainListStore.getLoader().load(m_treeGrid.getSelectionModel().getSelectedItem());
                     }

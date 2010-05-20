@@ -1,12 +1,14 @@
 package org.jahia.ajax.gwt.client.widget.node;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.TreeStoreEvent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.selection.AbstractStoreSelectionModel;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.google.gwt.user.client.Command;
@@ -17,6 +19,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,7 +38,6 @@ public class GWTJahiaNodeTreeFactory {
     protected List<String> selectedPath = new ArrayList<String>();
     protected List<String> openPath = new ArrayList<String>();
     protected boolean saveOpenPath = false;
-    protected boolean autoSelect = true;
     protected GWTJahiaNodeTreeLoader loader;
     protected TreeStore<GWTJahiaNode> store;
 
@@ -69,7 +71,7 @@ public class GWTJahiaNodeTreeFactory {
 
     public GWTJahiaNodeTreeGrid getTreeGrid(ColumnModel cm) {
         GWTJahiaNodeTreeGrid grid = new GWTJahiaNodeTreeGrid(getStore(),cm);
-
+        grid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         initOpenPathSaverTreeGrid(grid);
 
         return grid;
@@ -77,7 +79,8 @@ public class GWTJahiaNodeTreeFactory {
 
     public GWTJahiaNodeTreePanel getTreePanel() {
         GWTJahiaNodeTreePanel panel = new GWTJahiaNodeTreePanel(getStore());
-
+        panel.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        panel.setAutoSelect(false);
         initOpenPathSaverTreePanel(panel);
 
         return panel;
@@ -130,7 +133,7 @@ public class GWTJahiaNodeTreeFactory {
     /**
      * init method()
      */
-    public void initOpenPathSaverTreePanel(final Component widget) {
+    public void initOpenPathSaverTreePanel(final GWTJahiaNodeTreePanel widget) {
         // add listener after rendering
         DeferredCommand.addCommand(new Command() {
             public void execute() {
@@ -163,11 +166,19 @@ public class GWTJahiaNodeTreeFactory {
                         }
                     }
                 });
+
+                widget.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+                    public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> selectionChangedEvent) {
+                        if (selectionChangedEvent.getSelectedItem() != null) {
+                            setSelectedPath(Arrays.asList(selectionChangedEvent.getSelectedItem().getPath()));
+                        }
+                    }
+                });
             }
         });
     }
 
-    public void initOpenPathSaverTreeGrid(final Component widget) {
+    public void initOpenPathSaverTreeGrid(final GWTJahiaNodeTreeGrid widget) {
         // add listener after rendering
         DeferredCommand.addCommand(new Command() {
             public void execute() {
@@ -197,6 +208,14 @@ public class GWTJahiaNodeTreeFactory {
 //                        refresh(gwtJahiaNode);
                         if (saveOpenPath) {
                             savePaths();
+                        }
+                    }
+                });
+
+                widget.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+                    public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> selectionChangedEvent) {
+                        if (selectionChangedEvent.getSelectedItem() != null) {
+                            setSelectedPath(Arrays.asList(selectionChangedEvent.getSelectedItem().getPath()));
                         }
                     }
                 });
@@ -298,7 +317,7 @@ public class GWTJahiaNodeTreeFactory {
     class GWTJahiaNodeTreePanel extends TreePanel<GWTJahiaNode> {
         GWTJahiaNodeTreePanel(TreeStore store) {
             super(store);
-            setAutoSelect(autoSelect);
+            setAutoSelect(false);
         }
 
         protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
@@ -317,19 +336,12 @@ public class GWTJahiaNodeTreeFactory {
                 if (child.isExpandOnLoad()) {
                     setExpanded(child, true);
                 }
-                if (selectedPath.contains(child.getPath())) {
-                    List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-                    l.add(child);
-                    getSelectionModel().setSelection(l);
+                if (child.isSelectedOnLoad()) {
+                    getSelectionModel().select(true,child);
                 }
             }
         }
 
     }
-
-    public void setAutoSelect(boolean autoSelect) {
-        this.autoSelect = autoSelect;
-    }
-
 
 }

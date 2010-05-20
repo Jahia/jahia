@@ -428,6 +428,9 @@ public class NavigationHelper {
                 }
             }
         }
+        if (selectedNodes == null || selectedNodes.isEmpty()) {
+            userNodes.get(0).setSelectedOnLoad(true);
+        }
         return userNodes;
     }
 

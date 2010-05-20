@@ -95,8 +95,6 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     public String processCall(String payload) throws SerializationException {
         RemoteService remoteService = null;
         try {
-            System.out.println("------ gwt "+ this);
-
             remoteService = (RemoteService) applicationContext.getBean(remoteServiceName);
             setServiceData(remoteService, false);
 

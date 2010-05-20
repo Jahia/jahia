@@ -18,7 +18,7 @@
         iconFile="$INSTALL_PATH\tomcat\bin\start.ico"
         iconIndex="0"
         encoding="UTF-8">
-        <createForPack name="Jahia Core"/>
+        <createForPack name="Apache Tomcat"/>
     </shortcut>
 
     <shortcut
@@ -36,7 +36,7 @@
         iconIndex="0"
         startup="no"
         encoding="UTF-8">
-        <createForPack name="Jahia Core"/>
+        <createForPack name="Apache Tomcat"/>
     </shortcut>
 
     <shortcut

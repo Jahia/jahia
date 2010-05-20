@@ -58,8 +58,7 @@
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
         </field>
         <field type="text" align="left" variable="dbSettings.connection.username">
-            <spec txt="Database username (*)" id="dbSettings.connection.username" size="25" set="jahia"/>
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database username is a mandatory field" id="dbSettings.connection.username.mandatory"/>
+            <spec txt="Database username" id="dbSettings.connection.username" size="25" set="jahia"/>
         </field>
         <field type="password" align="left" variable="dbSettings.connection.password">
             <spec>

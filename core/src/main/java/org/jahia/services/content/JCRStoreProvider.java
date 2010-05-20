@@ -374,7 +374,7 @@ public class JCRStoreProvider {
             try {
                 Node rootNode = session.getRootNode();
                 if (!rootNode.hasNode("shared")) {
-//                    rootNode.addMixin("mix:versionable");
+                    rootNode.addMixin("mix:referenceable");
                     initializeAcl(session);
 
                     stream = new FileInputStream(

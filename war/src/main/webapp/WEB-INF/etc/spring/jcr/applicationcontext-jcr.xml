@@ -209,6 +209,10 @@
     <bean id="commponentLinkerInitializer" class="org.jahia.services.content.nodetypes.initializers.ComponentLinkerChoiceListInitializer">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
+    <bean id="workflowInitializer" class="org.jahia.services.content.nodetypes.initializers.WorkflowChoiceListInitializer">
+        <property name="workflowService" ref="workflowService"/>
+    </bean>
+
     <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" factory-method="getInstance">
         <property name="initializers">
             <map>
@@ -226,6 +230,7 @@
                 <entry key="sortableFieldnames" value-ref="sortableFieldnamesInitializer"/>
                 <entry key="moduleImage" value-ref="moduleImageInitializer"/>
                 <entry key="linkerProps" value-ref="commponentLinkerInitializer"/>
+                <entry key="workflow" value-ref="workflowInitializer"/>
             </map>
         </property>
     </bean>

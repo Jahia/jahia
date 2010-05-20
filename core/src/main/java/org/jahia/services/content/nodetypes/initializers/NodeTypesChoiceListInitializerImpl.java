@@ -27,7 +27,7 @@ public class NodeTypesChoiceListInitializerImpl implements ChoiceListInitializer
         }
         try {
             ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(param);
-            NodeTypeIterator nti = nodeType.getDeclaredSubtypes();
+            NodeTypeIterator nti = nodeType.getSubtypes();
             while (nti.hasNext()) {
                 ExtendedNodeType type = (ExtendedNodeType) nti.next();
                 listValues.add(new ChoiceListValue(type.getLabel(locale),new HashMap<String, Object>(), new ValueImpl(

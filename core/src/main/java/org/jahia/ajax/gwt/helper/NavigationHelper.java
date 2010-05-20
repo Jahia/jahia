@@ -762,6 +762,10 @@ public class NavigationHelper {
         n.setUUID(uuid);
         n.setName(node.getName());
         n.setDisplayName(node.getName());
+        if (node.getPath().equals("/")) {
+            n.setDisplayName("root");
+            n.setName("root");
+        }
         n.setDescription(description);
         n.setPath(node.getPath());
         n.setUrl(node.getUrl());

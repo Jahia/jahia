@@ -324,23 +324,14 @@ public class TableView extends TopRightComponent {
 
                 if (activeItem != null) {
                     final GWTJahiaNode target = (GWTJahiaNode) activeItem;
-                    if (checkTarget(source, target)) {
                         if (before) {
                             JahiaContentManagementService.App.getInstance().moveOnTopOf(source.getPath(), target.getPath(), callback);
                         } else {
                             JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
                         }
-                    } else {
-                        Window.alert("no");
-                    }
-
                 } else {
                     final GWTJahiaNode target = (GWTJahiaNode) store.getLoadConfig();
-                    if (checkTarget(source, target)) {
-                        JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
-                    } else {
-                        Window.alert("no");
-                    }
+                    JahiaContentManagementService.App.getInstance().moveAtEnd(source.getPath(), target.getPath(), callback);
                 }
             }
         }

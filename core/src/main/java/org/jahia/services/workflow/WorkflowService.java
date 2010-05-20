@@ -41,6 +41,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.jcr.PermissionImpl;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
@@ -159,12 +160,19 @@ public class WorkflowService {
                 JCRNodeWrapper rule = getApplicableWorkflowRule(node, session);
                 if (rule != null) {
                     Value[] values = rule.getProperty("j:availableWorkflows").getValues();
+                    Set<WorkflowDefinition> possibleWorklow = new HashSet<WorkflowDefinition>();
                     for (Value value : values) {
                         String workflowDefinitionKey = StringUtils.substringAfter(value.getString(), ":");
                         String providerKey = StringUtils.substringBefore(value.getString(), ":");
 
                         WorkflowDefinition definition = lookupProvider(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey);
-                        if (workflowsForAction != null && !workflowsForAction.contains(definition)) {
+                        possibleWorklow.add(definition);
+                    }
+                    if (workflowsForAction == null) {
+                        workflowsForAction = new ArrayList<WorkflowDefinition>(possibleWorklow);
+                    }
+                    for (WorkflowDefinition definition : workflowsForAction) {
+                        if (!possibleWorklow.contains(definition)) {
                             continue;
                         }
                         if (user == null || user.isAdminMember(0)) {
@@ -200,7 +208,7 @@ public class WorkflowService {
         NodeIterator ni = rules.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper rule = (JCRNodeWrapper) ni.next();
-            if (node.getPath().startsWith(rule.getProperty("j:path").getString()) &&
+            if (node.getPath().startsWith(rule.getProperty("j:node").getNode().getPath()) &&
                     node.isNodeType(rule.getProperty("j:nodeType").getString())) {
                 return rule;
             }
@@ -384,6 +392,7 @@ public class WorkflowService {
         // store the rule
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper node = session.getNode(path);
                 JCRNodeWrapper rules = session.getNode("/workflowrules");
                 JCRNodeWrapper n;
                 if (rules.hasNode(key)) {
@@ -391,7 +400,7 @@ public class WorkflowService {
                 } else {
                     n = rules.addNode(key, "jnt:workflowRule");
                 }
-                n.setProperty("j:path", path);
+                n.setProperty("j:node", node);
                 n.setProperty("j:nodeType", nodeTypes);
                 String[] values = new String[workflows.size()];
                 int i = 0;

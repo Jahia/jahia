@@ -151,10 +151,9 @@
  + * (jnt:workflowRule)
 
 [jnt:workflowRule] > nt:base
- - j:path (string) nofulltext
- - j:nodeType (string) nofulltext
- - j:action (string) nofulltext
- - j:availableWorkflows (string) multiple nofulltext
+ - j:node (weakreference) nofulltext
+ - j:nodeType (string,choicelist[nodetypes=nt:base]) nofulltext
+ - j:availableWorkflows (string,choicelist[workflow]) multiple nofulltext
 
 //---------------------------------------------------------
 // Query

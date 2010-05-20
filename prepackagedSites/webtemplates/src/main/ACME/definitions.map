@@ -31,18 +31,6 @@
 [jnt:portletContainer] = jnt:portletReference
  - portlet = j:node
 
-[jnt:page] = jnt:page
- - jahia:template = j:template
-    Home = default
-    simple = simple
-    double = simple
-    events = simple
-    publication = simple
-    news = simple
-    people = simple
-    press = simple    
-    job = simple    
-    
 ### Webtemplates mappings
 
 [web_templates:title] = mix:title
@@ -146,7 +134,18 @@
  - navLink = #navlink
 
 ## Pages
- 
+[jnt:page] = jnt:page
+ - jahia:template = j:template
+    Home = default
+    simple = simple
+    double = simple
+    events = simple
+    publication = simple
+    news = simple
+    people = simple
+    press = simple    
+    job = simple    
+     
 [web_templates:home] = jnt:page
  + banner = pagecontent.row1.col1.banner
  + promo = pagecontent.row1.col1.promo
@@ -168,30 +167,30 @@
 
 [web_templates:events] = jnt:page   
  + introduction = pagecontent.row1.col1
+ + events = pagecontent.row1.col1
  + columnB_box = pagecontent.row1.col1
- + events = pagecontent.row1.col1.events
 
 [web_templates:publication] = jnt:page   
  + introduction = pagecontent.row1.col1
- + publication = pagecontent.row1.col1.publication
+ + publication = pagecontent.row1.col1
  + columnB_box = pagecontent.row1.col1 
 
 [web_templates:news] = jnt:page   
  + introduction = pagecontent.row1.col1
- + news = pagecontent.row1.col1.news
+ + news = pagecontent.row1.col1
  + columnB_box = pagecontent.row1.col1
 
 [web_templates:people] = jnt:page   
  + introduction = pagecontent.row1.col1
- + people = pagecontent.row1.col1.people
+ + people = pagecontent.row1.col1
  + columnB_box = pagecontent.row1.col1
  
 [web_templates:pressRelease] = jnt:page   
  + introduction = pagecontent.row1.col1
- + press = pagecontent.row1.col1.press
+ + press = pagecontent.row1.col1
  + columnB_box = pagecontent.row1.col1
  
 [web_templates:job] = jnt:page   
  + introduction = pagecontent.row1.col1
- + job = pagecontent.row1.col1.job
+ + job = pagecontent.row1.col1
  + columnB_box = pagecontent.row1.col1

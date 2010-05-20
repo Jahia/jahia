@@ -148,6 +148,8 @@ h3 {
  */
 table {
     font-size: 11px;
+	border-bottom: 1px solid #d4d4d4;
+	margin-bottom:5px
 }
 .evenOddTable {
 
@@ -197,4 +199,7 @@ tr.oddLine {
 .evenOddTable .x-panel th, .evenOddTable .x-panel td, .permissions .x-panel th, .permissions .x-panel td {
   padding: 0 !important;
 }
-
+/**
+ * contribute div
+ */
+div.addcontent{padding:10px}

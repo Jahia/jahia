@@ -105,8 +105,7 @@
     </tbody>
 </table>
         <template:include templateType="html" template="hidden.footer"/>
-        <table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">
-        <tr><td colspan="9">
+<div class="addcontent">
     </c:when>
     <c:otherwise>
         <c:set var="inSite" value="true"/>
@@ -162,8 +161,6 @@
 </c:if>
 
 <c:if test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
-    </td> </tr>
-    </tbody>
-</table>
+</div>
 
 </c:if>

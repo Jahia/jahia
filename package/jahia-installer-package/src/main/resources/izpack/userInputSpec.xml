@@ -106,14 +106,14 @@
     <panel order="6">
         <field type="title" txt="Mail settings (optional)" id="mailSettings.title"/>
         <field type="staticText" txt="The settings below are optional. Leave them empty to disable E-Mail notification. Specifying them will enable the E-Mail notification feature." id="mailSettings.description"/>
-        <field type="text" align="left" variable="mailSettings.host">
-            <spec txt="Mail server host (*)" id="mailSettings.host" size="25"/>
-            <!-- 
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Mail server host is a mandatory field" id="mailSettings.host.mandatory"/>
-             -->
+        <field type="text" align="left" variable="mailSettings.server">
+            <spec txt="Mail server" id="mailSettings.server" size="25"/>
         </field>
-        <field type="staticText" align="left" txt="TODO: add other field"/>
-        <field type="divider" align="bottom"/>
-        <field type="staticText" align="left" txt="(*) - this field is is required" id="common.requiredFieldHint"/>
+        <field type="text" align="left" variable="mailSettings.administrator">
+            <spec txt="Mail administrator - recipient" id="mailSettings.administrator" size="25"/>
+        </field>
+        <field type="text" align="left" variable="mailSettings.from">
+            <spec txt="Mail from - sender" id="mailSettings.from" size="25"/>
+        </field>
     </panel>
 </userInput>

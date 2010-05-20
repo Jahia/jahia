@@ -52,4 +52,56 @@
         type="Application"
         encoding="UTF-8">
     </shortcut>
+    
+    <shortcut
+        name="Jahia Community Web Site"
+        programGroup="yes"
+        desktop="no"
+        applications="no"
+        startMenu="yes"
+        startup="no"
+        workingDirectory=""
+        commandLine=""
+        initialState="noShow"
+        iconIndex="0"
+        url="http://www.jahia.org"
+        type="Link"
+        encoding="UTF-8"
+        description="Jahia Community Web Site">
+   </shortcut>
+    
+   <shortcut
+        name="Jahiapedia"
+        programGroup="yes"
+        desktop="no"
+        applications="no"
+        startMenu="yes"
+        startup="no"
+        workingDirectory=""
+        commandLine=""
+        initialState="noShow"
+        iconIndex="0"
+        url="http://www.jahia.org/cms/home/Jahiapedia"
+        type="Link"
+        encoding="UTF-8"
+        description="Jahiapedia">
+   </shortcut>
+    
+    
+   <shortcut
+        name="Issue Tracking"
+        programGroup="yes"
+        desktop="no"
+        applications="no"
+        startMenu="yes"
+        startup="no"
+        workingDirectory=""
+        commandLine=""
+        initialState="noShow"
+        iconIndex="0"
+        url="http://jira.jahia.org/"
+        type="Link"
+        encoding="UTF-8"
+        description="Issue Tracking">
+   </shortcut>
 </shortcuts>

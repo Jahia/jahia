@@ -18,7 +18,7 @@
     <dynamicvariables>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/tomcat/webapps/ROOT" condition="cnd.pack.tomcat"/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/build" condition="!cnd.pack.tomcat"/>
-    
+
         <!-- embedded Derby defaults -->
         <variable name="dbSettings.dbms.type" value="derby_embedded" condition="cnd.db.dbms.derby_embedded"/>
         <variable name="dbSettings.dbms.createTables" value="true" condition="cnd.db.dbms.derby_embedded"/>
@@ -146,9 +146,7 @@
         <panel classname="UserInputPanel" condition="cnd.db.mode.standalone+cnd.db.connection.manual" id="connectionManual"/>
         <panel classname="UserInputPanel" condition="cnd.db.mode.standalone+!cnd.db.connection.manual" id="connectionJndi"/>
         <panel classname="UserInputPanel" id="superUser"/>
-        <!-- 
         <panel classname="UserInputPanel" id="mailSettings"/>
-         -->
         <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
@@ -156,19 +154,10 @@
     </panels>
     
     <native type="izpack" name="ShellLink.dll" />
-    <!--
     <native name="ShellLink.dll" type="izpack">
         <os family="windows" />
     </native>
     <native name="COIOSHelper.dll" stage="both" type="3rdparty">
-        <os family="windows" />
-    </native>
-        Use these DLLs for building x64 executable 
-     -->
-    <native name="ShellLink_x64.dll" type="izpack">
-        <os family="windows" />
-    </native>
-    <native name="COIOSHelper_x64.dll" stage="both" type="3rdparty">
         <os family="windows" />
     </native>
     
@@ -182,7 +171,7 @@
         <pack name="Jahia Core" id="core" preselected="yes" required="yes">
             <description/>
             <file override="update" src="../license.txt" targetdir="$INSTALL_PATH"/>
-            <file override="update" src="../artifacts/jahia-war.war" targetdir="${jahia.war.target.path}" unpack="true"/>
+            <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}" />
             <singlefile override="update" src="install.properties" target="$INSTALL_PATH/install.properties"/>
             <singlefile override="update" src="../dependency/configurators-${configurators.version}-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
             <singlefile override="update" src="../dependency/archivers-${archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>

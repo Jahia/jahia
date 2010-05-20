@@ -13,7 +13,7 @@
         <product.name>Jahia Community Edition</product.name>
         <installer.filename>Jahia_CE_v${jahia.package.version}</installer.filename>
         <archivers.version>1.2</archivers.version>
-        <configurators.version>1.5</configurators.version>
+        <configurators.version>1.6</configurators.version>
         <izpack.version>4.3.2</izpack.version>
         <staging.dir>${project.build.directory}/izpack</staging.dir>
         <launch4j.jahia.version>6.5.0.0</launch4j.jahia.version>
@@ -74,7 +74,7 @@
                 <version>2.1</version>
                 <executions>
                     <execution>
-                        <id>unpack-tomcat</id>
+                        <id>unpack-artifacts</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -91,6 +91,14 @@
                                     <excludes>
                                         **/temp/safeToDelete.tmp,**/webapps/examples/**,**/webapps/docs/**,**/webapps/ROOT/**
                                     </excludes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-war</artifactId>
+                                    <version>${jahia.package.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/artifacts/jahia</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -184,6 +192,33 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.3.1</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>src/main/resources/izpack/install.xml</file>
+                    <outputFile>src/main/resources/izpack/install-x64.xml</outputFile>
+                    <replacements>
+                        <replacement>
+                            <token>ShellLink.dll</token>
+                            <value>ShellLink_x64.dll</value>
+                        </replacement>
+                        <replacement>
+                            <token>COIOSHelper.dll</token>
+                            <value>COIOSHelper_x64.dll</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.izpack</groupId>
                 <artifactId>izpack-maven-plugin</artifactId>
                 <version>1.0-alpha-5</version>
@@ -194,10 +229,6 @@
                         <version>${izpack.version}</version>
                     </dependency>
                 </dependencies>
-                <configuration>
-                    <descriptor>${basedir}/src/main/resources/izpack/install.xml</descriptor>
-                    <installerFile>${project.build.directory}/${installer.filename}.jar</installerFile>
-                </configuration>
                 <executions>
                     <execution>
                         <id>standard-installer</id>
@@ -205,6 +236,23 @@
                         <goals>
                             <goal>izpack</goal>
                         </goals>
+                        <configuration>
+                            <attach>false</attach>
+                            <descriptor>${basedir}/src/main/resources/izpack/install.xml</descriptor>
+                            <installerFile>${project.build.directory}/${installer.filename}.jar</installerFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>standard-installer-x64</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>izpack</goal>
+                        </goals>
+                        <configuration>
+                            <attach>false</attach>
+                            <descriptor>${basedir}/src/main/resources/izpack/install-x64.xml</descriptor>
+                            <installerFile>${project.build.directory}/${installer.filename}_x64.jar</installerFile>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -213,14 +261,7 @@
 
     <profiles>
         <profile>
-            <id>windows-package</id>
-            <!-- 
-            <activation>
-                <os>
-                    <family>Windows</family>
-                </os>
-            </activation>
-             -->
+            <id>windows-installer</id>
             <repositories>
                 <repository>
                     <id>akathist-repository</id>
@@ -240,6 +281,38 @@
                     <plugin>
                         <groupId>com.akathist.maven.plugins.launch4j</groupId>
                         <artifactId>launch4j-maven-plugin</artifactId>
+                        <configuration>
+                            <dontWrapJar>false</dontWrapJar>
+                            <headerType>gui</headerType>
+                            <priority>normal</priority>
+                            <downloadUrl>http://java.com/download</downloadUrl>
+                            <supportUrl>http://www.jahia.org</supportUrl>
+                            <customProcName>false</customProcName>
+                            <stayAlive>false</stayAlive>
+                            <icon>${project.build.directory}/images/jahia.ico</icon>
+                            <jre>
+                                <minVersion>1.5.0_07</minVersion>
+                            </jre>
+                            <splash>
+                                <file>${project.build.directory}/images/jahia-community.bmp</file>
+                                <waitForWindow>true</waitForWindow>
+                                <timeout>60</timeout>
+                                <timeoutErr>true</timeoutErr>
+                            </splash>
+                            <versionInfo>
+                                <fileVersion>${launch4j.jahia.version}</fileVersion>
+                                <txtFileVersion>${jahia.package.version}</txtFileVersion>
+                                <fileDescription>${product.name} Windows Installer
+                                </fileDescription>
+                                <copyright>${jahia.manifest.vendor.name} (${jahia.manifest.vendor.url})</copyright>
+                                <productVersion>${launch4j.jahia.version}</productVersion>
+                                <txtProductVersion>${launch4j.jahia.version}</txtProductVersion>
+                                <productName>${product.name}</productName>
+                                <companyName>${jahia.manifest.vendor.name}</companyName>
+                                <internalName>${installer.filename}.jar</internalName>
+                                <originalFilename>${installer.filename}.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>l4j-ui</id>
@@ -248,37 +321,19 @@
                                     <goal>launch4j</goal>
                                 </goals>
                                 <configuration>
-                                    <dontWrapJar>false</dontWrapJar>
-                                    <headerType>gui</headerType>
                                     <jar>${project.build.directory}/${installer.filename}.jar</jar>
                                     <outfile>${project.build.directory}/${installer.filename}.exe</outfile>
-                                    <priority>normal</priority>
-                                    <downloadUrl>http://java.com/download</downloadUrl>
-                                    <supportUrl>http://www.jahia.org</supportUrl>
-                                    <customProcName>false</customProcName>
-                                    <stayAlive>false</stayAlive>
-                                    <icon>${project.build.directory}/images/jahia.ico</icon>
-                                    <jre>
-                                        <minVersion>1.5.0_07</minVersion>
-                                    </jre>
-                                    <splash>
-                                        <file>${project.build.directory}/images/jahia-community.bmp</file>
-                                        <waitForWindow>true</waitForWindow>
-                                        <timeout>60</timeout>
-                                        <timeoutErr>true</timeoutErr>
-                                    </splash>
-                                    <versionInfo>
-                                        <fileVersion>${launch4j.jahia.version}</fileVersion>
-                                        <txtFileVersion>${jahia.package.version}</txtFileVersion>
-                                        <fileDescription>${product.name} Windows Installer</fileDescription>
-                                        <copyright>${jahia.manifest.vendor.name} (${jahia.manifest.vendor.url})</copyright>
-                                    	<productVersion>${launch4j.jahia.version}</productVersion>
-                                    	<txtProductVersion>${launch4j.jahia.version}</txtProductVersion>
-                                    	<productName>${product.name}</productName>
-                                    	<companyName>${jahia.manifest.vendor.name}</companyName>
-                                        <internalName>${installer.filename}.jar</internalName>
-                                        <originalFilename>${installer.filename}.exe</originalFilename>
-                                    </versionInfo>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>l4j-ui-x64</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>launch4j</goal>
+                                </goals>
+                                <configuration>
+                                    <jar>${project.build.directory}/${installer.filename}_x64.jar</jar>
+                                    <outfile>${project.build.directory}/${installer.filename}_x64.exe</outfile>
                                 </configuration>
                             </execution>
                         </executions>

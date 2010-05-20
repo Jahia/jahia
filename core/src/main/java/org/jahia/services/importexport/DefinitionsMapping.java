@@ -35,17 +35,17 @@ public class DefinitionsMapping {
     }
 
     String WORD = "([\\w:#]+)";
-    String WORD_WITH_DOT = "([\\w:#.]+)";    
-    String WORD_WITH_DOT_AND_BRACKETS = "([\\w:#.\\(\\)]+)";    
+    String WORD_WITH_DOTS_AND_SLASHES = "([\\w:#.//]+)";    
+    String WORD_WITH_DOTS_AND_BRACKETS = "([\\w:#.\\(\\)]+)";    
     String WS = "\\s*";
     String WS_OR_COMMA = "[\\s,]*";
     String NODETYPE = "\\[" + WORD + "\\]";
     String EQ = WS + "=" + WS;
     String NODETYPE_MAPPING = NODETYPE + EQ + WORD;
-    String NODE = WORD_WITH_DOT + WS + "(?:\\(" + WS + WORD + WS + "\\))?";
+    String NODE = WORD_WITH_DOTS_AND_SLASHES + WS + "(?:\\(" + WS + WORD + WS + "\\))?";
     String NODE_MAPPING = WS + "\\+" + WS + WORD + EQ + NODE;
     String PROPERTY_MAPPING = WS + "-" + WS + WORD + EQ + "(" + WORD + "\\." + ")?" + WORD;
-    String VALUE_MAPPING = WS + WORD_WITH_DOT_AND_BRACKETS + EQ + WORD_WITH_DOT_AND_BRACKETS;
+    String VALUE_MAPPING = WS + WORD_WITH_DOTS_AND_BRACKETS + EQ + WORD_WITH_DOTS_AND_BRACKETS;
     String PROPS = "(?:\\[((?:" + WS_OR_COMMA + "(" + WORD + "\\." + ")?" + WORD + EQ + WORD + WS + ")*)\\])";
     String ADD_NODE = "\\{" + WS + "addNode" + WS + NODE + WS + PROPS + "?" + WS + "\\}";
     String ADD_MIXIN = "\\{" + WS + "addMixin" + WS + WORD + WS + "\\}";
@@ -79,7 +79,7 @@ public class DefinitionsMapping {
                     types.put(typeMapping.originalName, typeMapping);
                 } else if ((matcher = NODE_PATTERN.matcher(line)).matches()) {
                     String originalName = matcher.group(1);
-                    String nodeName = StringUtils.replaceChars(matcher.group(2), ".", "/");
+                    String nodeName = matcher.group(2);
                     String nodeType = matcher.group(3);
                     nodeMapping = new NodeMapping(originalName, nodeName, nodeType);
                     typeMapping.addNodeMapping(originalName, nodeMapping);
@@ -95,7 +95,7 @@ public class DefinitionsMapping {
                     ValueMapping vm = new ValueMapping(matcher.group(1), matcher.group(2));
                     propMapping.addValueMapping(vm.originalName, vm);
                 } else if ((matcher = ADD_NODE_PATTERN.matcher(line)).matches()) {
-                    String nodeName = StringUtils.replaceChars(matcher.group(1), ".", "/");
+                    String nodeName = matcher.group(1);
                     String nodeType = matcher.group(2);
                     Map<String, String> properties = createPropertyValueMap(matcher.group(3));
                     currentMapping.addAction(new AddNode(nodeName, nodeType, 

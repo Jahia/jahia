@@ -431,31 +431,27 @@ public class LegacyImportHandler extends DefaultHandler {
 
         JCRNodeWrapper parent = getCurrentContentNode();
         JCRNodeWrapper node;
-        if (parent.hasNode(nodeName)) {
-            node = parent.getNode(nodeName);
-        } else {
-            if (StringUtils.contains(nodeName, "/")) {
-                String parentPath = StringUtils.substringBeforeLast(nodeName, "/");
-                if (parent.hasNode(parentPath)) {
-                    parent = parent.getNode(parentPath);
-                }
-                nodeName = StringUtils.substringAfterLast(nodeName, "/");
+        if (StringUtils.contains(nodeName, "/")) {
+            String parentPath = StringUtils.substringBeforeLast(nodeName, "/");
+            if (parent.hasNode(parentPath)) {
+                parent = parent.getNode(parentPath);
             }
-            if (StringUtils.isEmpty(nodeType) && parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(nodeName) != null) {
-                String[] strings = parent.getPrimaryNodeType()
-                        .getChildNodeDefinitionsAsMap().get(nodeName)
-                        .getRequiredPrimaryTypeNames();
-                nodeType = strings[0];
-            } 
-            List<String> mappedOldNodeNames = mapping.getMappedNodesForType(getCurrentContentType(), true);
-            int indexOfName = mappedOldNodeNames.indexOf(listDefinition.getName());
-            List<String> mappedNewNodeNames = null;
-            if (indexOfName != -1) {
-                mappedNewNodeNames = mapping.getMappedNodesForType(getCurrentContentType(), false)
-                        .subList(indexOfName, mappedOldNodeNames.size());    
-            }
-            node = addOrCheckoutNode(parent, nodeName, nodeType, mappedNewNodeNames);
+            nodeName = StringUtils.substringAfterLast(nodeName, "/");
         }
+        if (StringUtils.isEmpty(nodeType)
+                && parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(nodeName) != null) {
+            String[] strings = parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(nodeName)
+                    .getRequiredPrimaryTypeNames();
+            nodeType = strings[0];
+        }
+        List<String> mappedOldNodeNames = mapping.getMappedNodesForType(getCurrentContentType(), true);
+        int indexOfName = mappedOldNodeNames.indexOf(listDefinition.getName());
+        List<String> mappedNewNodeNames = null;
+        if (indexOfName != -1) {
+            mappedNewNodeNames = mapping.getMappedNodesForType(getCurrentContentType(), false).subList(indexOfName,
+                    mappedOldNodeNames.size());
+        }
+        node = addOrCheckoutNode(parent, nodeName, nodeType, mappedNewNodeNames);
         
         performActions(mapping.getActions(getCurrentContentType(),
                 listDefinition.getName()), node);

@@ -147,50 +147,52 @@
     job = simple    
      
 [web_templates:home] = jnt:page
- + banner = pagecontent.row1.col1.banner
- + promo = pagecontent.row1.col1.promo
+ + logo = ../wrapperContent/logo
+ + banner = pagecontent/row1/col1/banner
+ + promo = pagecontent/row1/col1/promo
    { setProperty [jmix:renderable.j:template=twoColumns] }
- + promoLarge = pagecontent.row1.col1.promoLarge
- + columnA_box = pagecontent.row1.col1
- + columnB_box = pagecontent.row1.col2
- + footerContainerList = footer(jnt:contentList)
-   
+ + promoLarge = pagecontent/row1/col1/promoLarge
+ + columnA_box = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col2
+ + logoFooter = ../wrapperContent/logoFooter 
+ + footerContainerList = ../wrapperContent/footer
+     
 [web_templates:simple] = jnt:page   
- + mainColumn_box = pagecontent.row1.col1
- + maincontent = pagecontent.row1.col1
- + columnB_box = pagecontent.row1.col1
+ + mainColumn_box = pagecontent/row1/col1
+ + maincontent = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col1
 
 [web_templates:double] = jnt:page   
- + mainColumn_box = pagecontent.row1.col1
- + maincontent = pagecontent.row1.col1
- + columnB_box = pagecontent.row1.col1
+ + mainColumn_box = pagecontent/row1/col1
+ + maincontent = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col1
 
 [web_templates:events] = jnt:page   
- + introduction = pagecontent.row1.col1
- + events = pagecontent.row1.col1
- + columnB_box = pagecontent.row1.col1
+ + introduction = pagecontent/row1/col1
+ + events = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col1
 
 [web_templates:publication] = jnt:page   
- + introduction = pagecontent.row1.col1
- + publication = pagecontent.row1.col1
- + columnB_box = pagecontent.row1.col1 
+ + introduction = pagecontent/row1/col1
+ + publication = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col1 
 
 [web_templates:news] = jnt:page   
- + introduction = pagecontent.row1.col1
- + news = pagecontent.row1.col1
- + columnB_box = pagecontent.row1.col1
+ + introduction = pagecontent/row1/col1
+ + news = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col1
 
 [web_templates:people] = jnt:page   
- + introduction = pagecontent.row1.col1
- + people = pagecontent.row1.col1
- + columnB_box = pagecontent.row1.col1
+ + introduction = pagecontent/row1/col1
+ + people = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col1
  
 [web_templates:pressRelease] = jnt:page   
- + introduction = pagecontent.row1.col1
- + press = pagecontent.row1.col1
- + columnB_box = pagecontent.row1.col1
+ + introduction = pagecontent/row1/col1
+ + press = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col1
  
 [web_templates:job] = jnt:page   
- + introduction = pagecontent.row1.col1
- + job = pagecontent.row1.col1
- + columnB_box = pagecontent.row1.col1
+ + introduction = pagecontent/row1/col1
+ + job = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col1

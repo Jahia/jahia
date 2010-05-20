@@ -112,7 +112,6 @@
         <c:set var="inSite" value="true"/>
         <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
             <%@include file="edit.jspf" %>
-            <br/>
             <%@include file="workflow.jspf" %>
             <div id="edit-${child.identifier}">
                 <template:module templateType="html" node="${child}"/>

@@ -1,6 +1,7 @@
+<div class="listEditToolbar">
 <c:if test="${not child.locked}">
 <workflow:workflowsForNode workflowAction="publish" var="workflows" node="${child}"/>
-<br/>
+
 <c:forEach items="${workflows}" var="wf">
     <c:choose>
         <c:when test="${not empty wf.formResourceName}">
@@ -18,7 +19,7 @@
 </c:forEach>
 </c:if>
 <workflow:tasksForNode var="tasks" node="${child}"/>
-<br/>
+
 <c:forEach items="${tasks}" var="task">
     <c:choose>
         <c:when test="${not empty task.formResourceName}">
@@ -72,3 +73,4 @@
             </c:when>
         </c:choose>
     </c:forEach>
+</div>

@@ -115,6 +115,14 @@ h3 {
   width: 100%;
   border: 1px solid #b7cbd8;
 }
+#content div.floatright {
+  float: right;
+  padding:5px 5px 5px 5px
+}
+#content div.floatleft {
+  float: right;
+  padding:5px 5px 5px 5px
+}
 #content p {
   padding: 5px;
 }

@@ -41,7 +41,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <template:addResources type="css" resources="960-fluid-admin-jahia.css"/>
 <template:addResources type="css" resources="jahia-admin.css"/>
-<div id="bodywrapper">
+<div class="bodywrapper-jahia-admin">
 <div class="container container_16">
     <div id="topTitle">
         <div class="grid_16">

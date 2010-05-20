@@ -4,19 +4,19 @@
     <job name="Configure Jahia">
         <os family="windows" />
         <executefile name="$INSTALL_PATH/build/configure.bat">
-            <arg>$INSTALL_PATH/build/install.properties"</arg>
+            <arg>$INSTALL_PATH/build/install.properties</arg>
         </executefile>
     </job>
     <job name="Configure Jahia">
         <os family="unix" />
         <executefile name="$INSTALL_PATH/build/configure.sh">
-            <arg>$INSTALL_PATH/build/install.properties"</arg>
+            <arg>$INSTALL_PATH/build/install.properties</arg>
         </executefile>
     </job>
     <job name="Configure Jahia">
         <os family="mac" />
         <executefile name="$INSTALL_PATH/build/configure.sh">
-            <arg>$INSTALL_PATH/build/install.properties"</arg>
+            <arg>$INSTALL_PATH/build/install.properties</arg>
         </executefile>
     </job>
 <!-- 

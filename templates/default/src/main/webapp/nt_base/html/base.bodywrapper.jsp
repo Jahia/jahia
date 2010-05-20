@@ -39,9 +39,8 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<template:addResources type="css" resources="960-fluid-admin-jahia.css"/>
-<template:addResources type="css" resources="jahia-admin.css"/>
-<div class="bodywrapper-jahia-admin">
+<template:addResources type="css" resources="960-fluid-admin-jahia.css, jahia-admin.css, contentlist.css"/>
+<div id="bodywrapper" >
 <div class="container container_16">
     <div id="topTitle">
         <div class="grid_16">

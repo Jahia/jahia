@@ -51,6 +51,7 @@ function doVote(answers) {
         // statDiv.style.zIndex = 99999;
 	pollVotes = Math.floor(result.totalOfVotes);
 
+
         for (i=0; i<answers.length; i++) {
             var statAnswerLabel = document.createElement("div");
             statAnswerLabel.id = "statContainer_${currentNode.name}_label_a"+[i];
@@ -62,8 +63,8 @@ function doVote(answers) {
             statAnswerValue.innerHTML = answers[i].nbOfVotes;
 	    answerVotes = Math.floor(answers[i].nbOfVotes);
 	    percentage = (answerVotes == 0 || pollVotes == 0)?0:answerVotes/pollVotes*100;
-            statAnswerValue.style.width = (percentage * 5) + "px";
-            statAnswerValue.style.backgroundColor = "#3399CC";
+            statAnswerValue.style.width = (percentage * 1) + "%";
+			statAnswerValue.className  = "barPoll barPollColor"+[i%8];
 
             statDiv.appendChild(statAnswerLabel);
             statDiv.appendChild(statAnswerValue);
@@ -104,7 +105,7 @@ function doVote(answers) {
 
     <c:if test="${not renderContext.editMode}">
         <div class="validation"></div>
-        <input type="button" value="Vote" onclick="doVote($('${currentNode.name}_voteAnswer').value);" />
+        <input class="button" type="button" value="Vote" onclick="doVote($('${currentNode.name}_voteAnswer').value);" />
         </form>
         </div>
     </c:if>

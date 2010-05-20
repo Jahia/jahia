@@ -377,8 +377,8 @@
                                         <property name="layout" value="button"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
                                                 <ref bean="Toolbar.Item.NewRemotePublication"/>
+                                                <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
                                                 <ref bean="Toolbar.Item.Rename"/>
                                                 <ref bean="Toolbar.Item.Delete"/>
                                             </list>
@@ -401,8 +401,8 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
                                                 <ref bean="Toolbar.Item.NewRemotePublication"/>
+                                                <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
                                                 <ref bean="Toolbar.Item.Rename"/>
                                                 <ref bean="Toolbar.Item.Delete"/>
                                             </list>
@@ -460,8 +460,8 @@
 
     <bean id="workflowmanager"
           class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="jnt:workflowRules"/>
-        <property name="folderTypes" value="jnt:workflowRule"/>
+        <property name="nodeTypes" value="jnt:workflowRule"/>
+        <property name="folderTypes" value="jnt:workflowRules"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -473,6 +473,7 @@
                                         <property name="layout" value="button"/>
                                         <property name="items">
                                             <list>
+                                                <ref bean="Toolbar.Item.NewWorkflowRule"/>
                                                 <ref bean="Toolbar.Item.Rename"/>
                                                 <ref bean="Toolbar.Item.Delete"/>
                                             </list>
@@ -495,6 +496,7 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
+                                                <ref bean="Toolbar.Item.NewWorkflowRule"/>
                                                 <ref bean="Toolbar.Item.Rename"/>
                                                 <ref bean="Toolbar.Item.Delete"/>
                                             </list>
@@ -544,8 +546,9 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
                 <value>name,200</value>
-                <value>remoteUrl,200</value>
-                <value>remotePath,200</value>
+                <value>j:path,200</value>
+                <value>j:nodeType,200</value>
+                <value>j:availableWorkflows,200</value>
             </list>
         </property>
 

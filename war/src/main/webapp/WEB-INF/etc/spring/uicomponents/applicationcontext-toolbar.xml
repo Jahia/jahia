@@ -1069,6 +1069,14 @@
         <property name="icon" value="executeRemotePublication"/>
     </bean>
 
+    <bean id="Toolbar.Item.NewWorkflowRule" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewWorkflowRule"/>
+        </property>
+        <property name="titleKey" value="label.newworkflowrule"/>
+        <property name="icon" value="newworkflowrule"/>
+    </bean>
+
 
     <bean id="Toolbar.Item.NewRole" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">

@@ -35,6 +35,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gwt.user.server.rpc.SerializationPolicy;
+import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
 import org.jahia.registries.ServicesRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -93,6 +95,8 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     public String processCall(String payload) throws SerializationException {
         RemoteService remoteService = null;
         try {
+            System.out.println("------ gwt "+ this);
+
             remoteService = (RemoteService) applicationContext.getBean(remoteServiceName);
             setServiceData(remoteService, false);
 
@@ -111,6 +115,16 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             }
             
         }
+    }
+
+    @Override protected SerializationPolicy doGetSerializationPolicy(HttpServletRequest request, String moduleBaseURL,
+                                                                     String strongName) {
+        SerializationPolicy policy = super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
+        if (policy == null) {
+            // NEVER use or cache a legacy serializer
+            throw new UnsupportedOperationException("Bad id, javascript is probably not uptodate - flush your browser cache");
+        }
+        return policy;
     }
 
     /**

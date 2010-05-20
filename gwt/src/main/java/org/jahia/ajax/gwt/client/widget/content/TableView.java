@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -247,7 +248,9 @@ public class TableView extends TopRightComponent {
 
         @Override
         protected void showFeedback(DNDEvent event) {
-            if (store.getSortField().equals("index")) {
+            final GWTJahiaNode node = (GWTJahiaNode) store.getLoadConfig();
+            if (store.getSortField().equals("index") && store.getSortDir() == Style.SortDir.ASC &&
+                    Boolean.TRUE.equals(node.get("hasOrderableChildNodes"))) {
                 feedback = DND.Feedback.INSERT;
             } else {
                 feedback = DND.Feedback.APPEND;
@@ -269,17 +272,16 @@ public class TableView extends TopRightComponent {
                     if (before || after) {
                         int idx = grid.getView().findRowIndex(row);
 
+                        showInsert(event, row);
+
                         if (after) {
                             activeItem = grid.getStore().getAt(idx+1);
-                            row = (Element) grid.getView().getRow(idx+1);
                             before = true;
                         } else {
                             activeItem = grid.getStore().getAt(idx);
                         }
 
                         insertIndex = adjustIndex(event, idx);
-
-                        showInsert(event, row);
                     } else {
                         activeItem = grid.getStore().getAt(grid.getView().findRowIndex(row));
                         Insert.get().hide();
@@ -291,15 +293,17 @@ public class TableView extends TopRightComponent {
                 activeItem = null;
                 before = false;
                 insertIndex = 0;
+                if (feedback == DND.Feedback.INSERT) {
+                    showInsert(event, (Element) grid.getView().getRow(grid.getStore().getCount()-1));
+                }
             }
             if (!before) {
                 GWTJahiaNode target;
                 if (activeItem != null) {
                     target = (GWTJahiaNode) activeItem;
                 } else {
-                    target = (GWTJahiaNode) store.getLoadConfig();
+                    target = node;
                 }
-                Log.info(target.getPath());
                 event.getStatus().setStatus(checkTarget(((List<GWTJahiaNode>) event.getData()).get(0), target));
             }
         }

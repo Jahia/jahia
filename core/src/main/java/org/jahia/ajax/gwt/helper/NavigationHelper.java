@@ -944,6 +944,7 @@ public class NavigationHelper {
         // sort
         try {
             if (node.getPrimaryNodeType().hasOrderableChildNodes()) {
+                n.set("hasOrderableChildNodes", Boolean.TRUE);
                 n.setSortField("index");
             } else {
                 n.setSortField(GWTJahiaNode.NAME);

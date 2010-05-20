@@ -1,6 +1,6 @@
 CKEDITOR.plugins.add('acheck',
 {
-    lang:['en'],
+    lang:['en', 'de', 'fr'],
     init: function(editor)
     {
         var pluginName = 'acheck',

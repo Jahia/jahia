@@ -52,7 +52,8 @@
         type="Application"
         encoding="UTF-8">
     </shortcut>
-    
+
+<!--     
     <shortcut
         name="Jahia Community Web Site"
         programGroup="yes"
@@ -104,4 +105,5 @@
         encoding="UTF-8"
         description="Issue Tracking">
    </shortcut>
+ -->
 </shortcuts>

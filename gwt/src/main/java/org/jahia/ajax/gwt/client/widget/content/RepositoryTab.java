@@ -51,8 +51,10 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * User: rfelden
@@ -144,8 +146,18 @@ public class RepositoryTab extends ContentPanel {
             @Override
             protected void handleAppend(DNDEvent event, TreePanel.TreeNode item) {
                 super.handleAppend(event, item);
-                if (((List) event.getData()).contains(activeItem.getModel())) {
-                    event.getStatus().setStatus(false);
+                final List<GWTJahiaNode> list = (List<GWTJahiaNode>) event.getData();
+                for (GWTJahiaNode source : list) {
+                    final GWTJahiaNode target = (GWTJahiaNode) activeItem.getModel();
+                    if (target.getPath().startsWith(source.getPath())) {
+                        event.getStatus().setStatus(false);
+                    } else {
+                        final Set<String> constraints = new HashSet(target.getChildConstraints());
+                        constraints.retainAll(source.getInheritedNodeTypes());
+                        if (constraints.isEmpty()) {
+                            event.getStatus().setStatus(false);
+                        }
+                    }
                 }
             }
 

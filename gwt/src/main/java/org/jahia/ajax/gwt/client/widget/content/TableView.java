@@ -281,6 +281,7 @@ public class TableView extends TopRightComponent {
 
                         showInsert(event, row);
                     } else {
+                        activeItem = grid.getStore().getAt(grid.getView().findRowIndex(row));
                         Insert.get().hide();
                     }
                 } else {
@@ -298,6 +299,7 @@ public class TableView extends TopRightComponent {
                 } else {
                     target = (GWTJahiaNode) store.getLoadConfig();
                 }
+                Log.info(target.getPath());
                 event.getStatus().setStatus(checkTarget(((List<GWTJahiaNode>) event.getData()).get(0), target));
             }
         }

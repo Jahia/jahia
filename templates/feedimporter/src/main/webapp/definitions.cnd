@@ -1,0 +1,14 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+
+[jnt:feed] > jnt:content, mix:title, jmix:editorialContent
+ - url (string)
+ - user (string)
+ - password (string)
+ - type (string) < newsml
+ + * (jnt:feedContent)
+
+[jnt:feedContent] > jnt:content
+ - * (undefined)
+
+

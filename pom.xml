@@ -37,6 +37,7 @@
     <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>
     <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
     <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
+    <jahia.manifest.vendor.email>info@jahia.org</jahia.manifest.vendor.email>
   </properties>
 
   <scm>
@@ -269,7 +270,6 @@
         <profile>
             <id>qa-build</id>
             <modules>
-                <module>configwizard-webapp</module>
                 <module>package</module>
             </modules>
         </profile>

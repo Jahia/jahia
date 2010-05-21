@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<processing>
+    <job name="Start Apache Tomcat">
+        <executeForPack name="Apache Tomcat"/>
+        <os family="windows" />
+        <executefile name="$INSTALL_PATH/tomcat/startup.bat" />
+    </job>
+    <job name="Launch Jahia">
+        <executeForPack name="Apache Tomcat"/>
+        <os family="windows" />
+        <executefile name="$INSTALL_PATH/bin/StartJahia.URL" />
+    </job>
+</processing>

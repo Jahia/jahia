@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shortcuts>
     <skipIfNotSupported/>
-    <programGroup defaultName="Jahia 6.5 Community Edition" location="applications"/>
+    <programGroup defaultName="${product.name} ${product.version}" location="applications"/>
     
     <shortcut
         name="Start Jahia"
@@ -11,11 +11,11 @@
         description="This starts the Jahia Community Edition Server"
         initialState="normal"
         programGroup="yes"
-        desktop="yes"
-        applications="yes"
+        desktop="no"
+        applications="no"
         startMenu="no"
         startup="no"
-        iconFile="$INSTALL_PATH\tomcat\bin\start.ico"
+        iconFile="$INSTALL_PATH\bin\start.ico"
         iconIndex="0"
         encoding="UTF-8">
         <createForPack name="Apache Tomcat"/>
@@ -29,10 +29,10 @@
         description="This stops the Jahia Community Edition Server"
         initialState="normal"
         programGroup="yes"
-        desktop="yes"
-        applications="yes"
+        desktop="no"
+        applications="no"
         startMenu="no"
-        iconFile="$INSTALL_PATH\tomcat\bin\stop.ico"
+        iconFile="$INSTALL_PATH\bin\stop.ico"
         iconIndex="0"
         startup="no"
         encoding="UTF-8">
@@ -47,15 +47,17 @@
         initialState="noShow"
         programGroup="yes"
         desktop="no"
+        applications="no"
+        startMenu="no"
         iconFile="%SystemRoot%\system32\shell32.dll"
         iconIndex="31"
         type="Application"
         encoding="UTF-8">
     </shortcut>
-
-<!--     
+<!-- 
     <shortcut
         name="Jahia Community Web Site"
+        target="$INSTALL_PATH\bin\JahiaCommunity.URL"
         programGroup="yes"
         desktop="no"
         applications="no"
@@ -73,6 +75,7 @@
     
    <shortcut
         name="Jahiapedia"
+        target="$INSTALL_PATH\bin\Jahiapedia.URL"
         programGroup="yes"
         desktop="no"
         applications="no"
@@ -91,6 +94,7 @@
     
    <shortcut
         name="Issue Tracking"
+        target="$INSTALL_PATH\bin\IssueTrackingCommunity.URL"
         programGroup="yes"
         desktop="no"
         applications="no"

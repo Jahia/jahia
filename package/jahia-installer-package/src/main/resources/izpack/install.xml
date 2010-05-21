@@ -14,6 +14,8 @@
         <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
     </info>
     <variables>
+        <variable name="product.name" value="${product.name}"/>
+        <variable name="product.version" value="${jahia.package.version}"/>
     </variables>
     <dynamicvariables>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/tomcat/webapps/ROOT" condition="cnd.pack.tomcat"/>
@@ -109,7 +111,14 @@
         <res id="TargetPanel.dir.windows" src="windows-path.txt" />
         <res id="installer.langsel.img" src="../images/jahia-community.png"/>
         <res id="Heading.image" src="../images/top-logo.gif.png"/>
-        <res id="LicencePanel.licence" parse="no" src="../license.txt"/>
+        <res id="LicencePanel.licence" parse="no" src="../licenses/license.txt"/>
+
+        <res id="ProcessPanel.Spec.xml" src="ProcessPanel.Spec.xml"/>
+
+        <res id="shortcutSpec.xml" src="windows-shortcuts.xml"/>
+        <!-- 
+        <res id="Unix_shortcutSpec.xml" src="unix-shortcuts.xml"/>
+         -->
         <res id="userInputSpec.xml" src="userInputSpec.xml"/>
         <res id="userInputLang.xml_eng" src="i18n/userInputLang.eng.xml" />
         <res id="userInputLang.xml_fra" src="i18n/userInputLang.fra.xml" />
@@ -117,23 +126,20 @@
         <res id="userInputLang.xml_ita" src="i18n/userInputLang.ita.xml" />
         <res id="userInputLang.xml_por" src="i18n/userInputLang.por.xml" />
         <res id="userInputLang.xml_spa" src="i18n/userInputLang.spa.xml" />
+
         <res id="packsLang.xml_eng" src="i18n/packsLang.eng.xml"/>
         <res id="packsLang.xml_fra" src="i18n/packsLang.fra.xml"/>
         <res id="packsLang.xml_deu" src="i18n/packsLang.deu.xml"/>
         <res id="packsLang.xml_ita" src="i18n/packsLang.ita.xml"/>
         <res id="packsLang.xml_por" src="i18n/packsLang.por.xml"/>
         <res id="packsLang.xml_spa" src="i18n/packsLang.spa.xml"/>
+
         <res id="CustomLangpack.xml_eng" src="i18n/customLang.eng.xml"/>
         <res id="CustomLangpack.xml_fra" src="i18n/customLang.fra.xml"/>
         <res id="CustomLangpack.xml_deu" src="i18n/customLang.deu.xml"/>
         <res id="CustomLangpack.xml_ita" src="i18n/customLang.ita.xml"/>
         <res id="CustomLangpack.xml_por" src="i18n/customLang.por.xml"/>
         <res id="CustomLangpack.xml_spa" src="i18n/customLang.spa.xml"/>
-        
-        <res id="shortcutSpec.xml" src="windows-shortcuts.xml"/>
-        <!-- 
-        <res id="Unix_shortcutSpec.xml" src="unix-shortcuts.xml"/>
-         -->
     </resources>
     <panels>
         <panel classname="CheckedHelloPanel"/>
@@ -149,6 +155,9 @@
         <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
+        <!-- 
+        <panel classname="ProcessPanel"/>
+        -->
         <panel classname="SimpleFinishPanel"/>
     </panels>
     
@@ -165,11 +174,12 @@
             <os family="windows" />
         </listener>
     </listeners>
-    
+     
     <packs>
         <pack name="Jahia Core" id="core" preselected="yes" required="yes">
             <description/>
-            <file override="update" src="../license.txt" targetdir="$INSTALL_PATH"/>
+            <fileset dir="../licenses" targetdir="$INSTALL_PATH/licenses" />
+            <fileset dir="../links" targetdir="$INSTALL_PATH/bin" />
             <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}" />
             <singlefile override="update" src="install.properties" target="$INSTALL_PATH/install.properties"/>
             <singlefile override="update" src="../dependency/configurators-${configurators.version}-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
@@ -201,7 +211,7 @@
             <fileset dir="../scripts" targetdir="$INSTALL_PATH" override="update" condition="!izpack.windowsinstall">
                 <include name="st*.sh"/>
             </fileset>
-            <fileset dir="../images" targetdir="$INSTALL_PATH/tomcat/bin" override="update">
+            <fileset dir="../images" targetdir="$INSTALL_PATH/bin" override="update">
                 <include name="st*.ico"/>
             </fileset>
             <parsable targetfile="$INSTALL_PATH/startJahia.bat" type="shell" os="windows"/>
@@ -220,7 +230,10 @@
             <executable targetfile="$INSTALL_PATH/startJahia.sh" />
             <executable targetfile="$INSTALL_PATH/stopJahia.sh" />
         </pack>
-        <pack name="Jahia Unified Content Hub" id="uch" preselected="no" required="no">
+        <pack name="TODO: Jahia Unified Content Hub" id="juch" preselected="no" required="no">
+            <description/>
+        </pack>
+        <pack name="TODO: Jahia Documentation" id="docs" preselected="no" required="no">
             <description/>
         </pack>
     </packs>

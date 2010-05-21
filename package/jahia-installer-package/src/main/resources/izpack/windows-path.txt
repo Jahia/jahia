@@ -1,1 +1,1 @@
-C:\Jahia_CE_v6.5
+C:\Jahia_CE_v${product.version}

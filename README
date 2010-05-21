@@ -86,28 +86,6 @@
 
     8. Create your first virtual site and enjoy.
 
-    9.Alternatively if you want to test Jahia's configuration from scratch, simply add the
-       configwizard-webapp module in your root pom.xml, in order to have something like
-
-			 <module>configwizard-webapp</module>
-
-			 and then simply do
-			 mvn install jahia:deploy
-
-			 in this case you will have to point your browser to http://localhost:8080/config
-			 the first time then afterwards just head to  http://localhost:8080/cms as usual
-
-       Change to the tomcat/bin & run the servlet container (launch
-       startup.bat or startup.sh depending on your platform).
-
-
-       Follow the instructions on-screen to configure Jahia. Note that at some
-       point it will ask for database settings. Your should have an existing
-       database already setup. We recommend under Linux either PostgreSQL
-       or MySQL. Under Windows the best solution is MySQL.
-
-       Create your first virtual site and enjoy.
-
  Deploying to other application servers
 ------------------------------------------------------------------------------
  In order to deploy to other application servers, you will want to configure
@@ -406,18 +384,15 @@ try the following:
 /** Jahia server release number */
     private static double RELEASE_NUMBER = x.x;
 
-2. Change the following variable in \config\src\main\java\org\jahia\bin\JahiaConfigurationWizard.java
-
-    public static final String VERSION = "x.x";
-    private static double RELEASE_NUMBER = x.x;
-
-3. Change the following attributes in ALL pom.xml files
+2. Change the following attributes in ALL pom.xml files
 
 <version>x.x-SNAPSHOT</version>
+
+3. In the /jahia-installer-package/pom.xml file also change the launch4j.jahia.version
+   property value
 
 4. In the pom.xml located at the root level also change the jahia.package.version
 
 <jahia.package.version>x.x-SNAPSHOT</jahia.package.version>
-
 
 5. Create the adequate license.xml files

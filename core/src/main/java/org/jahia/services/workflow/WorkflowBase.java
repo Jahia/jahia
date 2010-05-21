@@ -47,6 +47,7 @@ class WorkflowBase implements Serializable {
 
     private final String provider;
 
+    private WorkflowDefinition definition;
     /**
      * Initializes an instance of this class.
      * 
@@ -75,6 +76,14 @@ class WorkflowBase implements Serializable {
      */
     public String getProvider() {
         return provider;
+    }
+
+    public WorkflowDefinition getDefinition() {
+        return definition;
+    }
+
+    public void setDefinition(WorkflowDefinition definition) {
+        this.definition = definition;
     }
 
     @Override

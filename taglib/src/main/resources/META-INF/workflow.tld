@@ -83,4 +83,13 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <function>
+        <description>Returns true if node has already a publication workflow started on it.</description>
+        <name>hasActivePublicationWorkflow</name>
+        <function-class>org.jahia.taglibs.workflow.WorkflowFunctions</function-class>
+        <function-signature>boolean hasActivePublicationWorkflow(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>
+            ${jcr:hasActivePublicationWorkflow(currentNode)}
+        </example>
+    </function>
 </taglib>

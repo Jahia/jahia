@@ -200,12 +200,37 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         return wf;
     }
 
+    public WorkflowDefinition getWorkflowDefinitionById(String id) {
+        ProcessDefinition value = getProcessDefinitionById(id);
+        WorkflowDefinition wf = new WorkflowDefinition(value.getName(), value.getKey(), this.key);
+        wf.setFormResourceName(repositoryService.getStartFormResourceName(value.getId(),repositoryService.getStartActivityNames(value.getId()).get(0)));
+        return wf;
+    }
+
     private ProcessDefinition getProcessDefinitionByKey(String key) {
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("List of all available process ({0}) : ",
                                               repositoryService.createProcessDefinitionQuery().count()));
         }
         final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key).list();
+
+        ProcessDefinition value = null;
+
+        for (ProcessDefinition definition : definitionList) {
+            if (value != null && value.getVersion() > definition.getVersion()) {
+                continue;
+            }
+            value = definition;
+        }
+        return value;
+    }
+
+    private ProcessDefinition getProcessDefinitionById(String id) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(MessageFormat.format("List of all available process ({0}) : ",
+                                              repositoryService.createProcessDefinitionQuery().count()));
+        }
+        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).list();
 
         ProcessDefinition value = null;
 
@@ -225,6 +250,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             if (instance != null) {
                 final Workflow workflow = new Workflow(instance.getName(), instance.getId(), key);
                 workflow.setAvailableActions(getAvailableActions(instance.getId()));
+                final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
+                workflow.setDefinition(definition);
                 workflows.add(workflow);
             }
         }

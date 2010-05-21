@@ -198,7 +198,9 @@ public class WorkflowService {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper rule = getApplicableWorkflowRule(node, session);
-                return rbacService.getPrincipalsInPermission(new PermissionIdentity(getPermissionKey(rule.getName(), definition, role), "workflow", JCRContentUtils.getSiteKey(rule.getProperty("j:path").toString())));
+                final String site = JCRContentUtils.getSiteKey(rule.getProperty("j:node").getNode().getPath());
+                return rbacService.getPrincipalsInPermission(new PermissionIdentity(getPermissionKey(rule.getName(), definition, role),
+                                                                                    "workflow", site));
             }
         });
     }
@@ -522,5 +524,29 @@ public class WorkflowService {
         }
         
         return provider;
+    }
+
+    /**
+     * This method list all currently active workflow for the specified node.
+     *
+     * @param node
+     * @return A list of active workflows per provider
+     */
+    public boolean hasActivePublishWorkflow(JCRNodeWrapper node) {
+        List<Workflow> workflows = new ArrayList<Workflow>();
+        try {
+            final List<WorkflowDefinition> forAction = getWorkflowsForAction("publish");
+            if (node.isNodeType("jmix:workflow") && node.hasProperty(Constants.PROCESSID)) {
+                addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID));
+            }
+            for (Workflow workflow : workflows) {
+                if(forAction.contains(workflow.getDefinition())) {
+                    return true;
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return false;
     }
 }

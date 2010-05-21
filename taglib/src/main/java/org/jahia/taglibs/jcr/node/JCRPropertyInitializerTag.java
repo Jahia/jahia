@@ -120,7 +120,7 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                                 if (initializers.containsKey(entry.getKey())) {
                                     listValues = initializers.get(entry.getKey()).getChoiceListValues(
                                             (ExtendedPropertyDefinition) definition, type, entry.getValue(), listValues,
-                                            LanguageCodeConverters.languageCodeToLocale(getLanguageCode()), context
+                                            getRenderContext().getMainResourceLocale(), context
                                     );
                                 }
                             }

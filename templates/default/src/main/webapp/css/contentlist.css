@@ -36,7 +36,8 @@
 #bodywrapper h3.titleaddnewcontent {
 	color:#333333;
 	font-size:1.8em;
-	padding:0 0 15px 0;
+	padding:5px 0 5px 0;
+	margin:0px;
 }
 #bodywrapper h3.titleaddnewcontent img {
 	vertical-align: text-bottom;

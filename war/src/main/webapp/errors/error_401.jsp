@@ -66,7 +66,7 @@ function keyDown(e) {
 <center>
     <div id="adminLogin">
         <ui:loginArea action="${pageContext.request.contextPath}/cms/login">
-            <h3 class="loginIcon"><fmt:message key="label.administration"/></h3>
+            <h3 class="loginIcon"><fmt:message key="label.login"/></h3>
             <br class="clearFloat" />
         <ui:isLoginError>
           <span class="error"><fmt:message key="message.invalidUsernamePassword"/></span>

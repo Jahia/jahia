@@ -27,9 +27,6 @@
         <variable name="dbSettings.connection.username" value="" condition="cnd.db.dbms.derby_embedded"/>
         <variable name="dbSettings.connection.password" value="" condition="cnd.db.dbms.derby_embedded"/>
         
-        <variable name="dbSettings.dbms.connection.useJndi" value="false" condition="cnd.db.connection.manual"/>
-        <variable name="dbSettings.dbms.connection.useJndi" value="true" condition="!cnd.db.connection.manual"/>
-        
         <variable name="var.db.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" condition="cnd.db.dbms.mssql" />
         <variable name="var.db.driver" value="com.mysql.jdbc.Driver" condition="cnd.db.dbms.mysql_innodb" />
         <variable name="var.db.driver" value="com.mysql.jdbc.Driver" condition="cnd.db.dbms.mysql" />
@@ -55,10 +52,6 @@
         <condition type="variable" id="cnd.db.mode.standalone">
             <name>dbSettings.mode</name>
             <value>standalone</value>
-        </condition>
-        <condition type="variable" id="cnd.db.connection.manual">
-            <name>dbSettings.dbms.connection.type</name>
-            <value>manual</value>
         </condition>
         <condition type="variable" id="cnd.db.dbms.derby_embedded">
             <name>dbSettings.mode</name>
@@ -118,18 +111,25 @@
         <res id="Heading.image" src="../images/top-logo.gif.png"/>
         <res id="LicencePanel.licence" parse="no" src="../license.txt"/>
         <res id="userInputSpec.xml" src="userInputSpec.xml"/>
-        <res id="userInputLang.xml_eng" src="i18n/userInputLang.xml_eng" />
-        <res id="userInputLang.xml_fra" src="i18n/userInputLang.xml_eng" />
-        <res id="userInputLang.xml_deu" src="i18n/userInputLang.xml_eng" />
-        <res id="userInputLang.xml_ita" src="i18n/userInputLang.xml_eng" />
-        <res id="userInputLang.xml_por" src="i18n/userInputLang.xml_eng" />
-        <res id="userInputLang.xml_spa" src="i18n/userInputLang.xml_eng" />
-        <res id="packsLang.xml_eng" src="i18n/packsLang.xml_eng"/>
-        <res id="packsLang.xml_fra" src="i18n/packsLang.xml_eng"/>
-        <res id="packsLang.xml_deu" src="i18n/packsLang.xml_eng"/>
-        <res id="packsLang.xml_ita" src="i18n/packsLang.xml_eng"/>
-        <res id="packsLang.xml_por" src="i18n/packsLang.xml_eng"/>
-        <res id="packsLang.xml_spa" src="i18n/packsLang.xml_eng"/>
+        <res id="userInputLang.xml_eng" src="i18n/userInputLang.eng.xml" />
+        <res id="userInputLang.xml_fra" src="i18n/userInputLang.fra.xml" />
+        <res id="userInputLang.xml_deu" src="i18n/userInputLang.deu.xml" />
+        <res id="userInputLang.xml_ita" src="i18n/userInputLang.ita.xml" />
+        <res id="userInputLang.xml_por" src="i18n/userInputLang.por.xml" />
+        <res id="userInputLang.xml_spa" src="i18n/userInputLang.spa.xml" />
+        <res id="packsLang.xml_eng" src="i18n/packsLang.eng.xml"/>
+        <res id="packsLang.xml_fra" src="i18n/packsLang.fra.xml"/>
+        <res id="packsLang.xml_deu" src="i18n/packsLang.deu.xml"/>
+        <res id="packsLang.xml_ita" src="i18n/packsLang.ita.xml"/>
+        <res id="packsLang.xml_por" src="i18n/packsLang.por.xml"/>
+        <res id="packsLang.xml_spa" src="i18n/packsLang.spa.xml"/>
+        <res id="CustomLangpack.xml_eng" src="i18n/customLang.eng.xml"/>
+        <res id="CustomLangpack.xml_fra" src="i18n/customLang.fra.xml"/>
+        <res id="CustomLangpack.xml_deu" src="i18n/customLang.deu.xml"/>
+        <res id="CustomLangpack.xml_ita" src="i18n/customLang.ita.xml"/>
+        <res id="CustomLangpack.xml_por" src="i18n/customLang.por.xml"/>
+        <res id="CustomLangpack.xml_spa" src="i18n/customLang.spa.xml"/>
+        
         <res id="shortcutSpec.xml" src="windows-shortcuts.xml"/>
         <!-- 
         <res id="Unix_shortcutSpec.xml" src="unix-shortcuts.xml"/>
@@ -143,8 +143,7 @@
         <panel classname="UserInputPanel" condition="!cnd.pack.tomcat" id="serverType"/>
         <panel classname="UserInputPanel" id="dbMode"/>
         <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbmsType"/>
-        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone+cnd.db.connection.manual" id="connectionManual"/>
-        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone+!cnd.db.connection.manual" id="connectionJndi"/>
+        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="connectionManual"/>
         <panel classname="UserInputPanel" id="superUser"/>
         <panel classname="UserInputPanel" id="mailSettings"/>
         <panel classname="ShortcutPanel" id="shortcutPanel"/>
@@ -187,6 +186,7 @@
                     <arg value="${server.type}"/>
                     <arg value="$INSTALL_PATH/ROOT.war"/>
                     <arg value="$INSTALL_PATH/build"/>
+                    <arg value="true"/><!-- delete the build folder after archiving -->
                 </args>
             </executable>
         </pack>

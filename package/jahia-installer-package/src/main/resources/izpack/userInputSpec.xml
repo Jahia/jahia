@@ -24,7 +24,7 @@
     </panel>
     <panel order="2">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
-        <field type="combo" variable="dbSettings.dbms.type" alight="left">
+        <field type="radio" variable="dbSettings.dbms.type" alight="left">
             <description align="left" txt="Choose your DBMS type" id="dbSettings.dbms.type"/>
             <spec>
                 <choice txt="Microsoft SQL Server" id="dbSettings.dbms.type.mssql" value="mssql"/>
@@ -34,16 +34,6 @@
                 <choice txt="Oracle 9.x / Oracle 10.1.x" id="dbSettings.dbms.type.oracle.legacy" value="oracle_legacy"/>
                 <choice txt="PostgreSQL 7.4.x / 8.x" id="dbSettings.dbms.type.postgresql" value="postgresql"/>
                 <choice txt="Sun JavaDB / Apache Derby (standalone)" id="dbSettings.dbms.type.derby" value="derby"/>
-            </spec>
-        </field>
-        <field type="space"/>
-        <field type="radio" variable="dbSettings.dbms.connection.type" alight="left">
-            <description align="left" txt="Provide your database connection options" id="dbSettings.dbms.connection"/>
-            <spec>
-                <choice txt="Specify connection URL, username and password" id="dbSettings.dbms.connection.manual" value="manual" set="true"/>
-                <!-- 
-                <choice txt="Use existing database connection pool via JNDI" id="dbSettings.dbms.connection.jndi" value="jndi"/>
-                 -->
             </spec>
         </field>
     </panel>
@@ -71,9 +61,6 @@
         </field>
     </panel>
     <panel order="4">
-        <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
-    </panel>
-    <panel order="5">
         <field type="title" txt="SuperUser (administrator) settings" id="superUser.title"/>
         <field type="text" align="left" variable="superUser.username">
             <spec txt="Administrator username" id="superUser.username" size="25" set="root"/>
@@ -103,7 +90,7 @@
         <field type="divider" align="bottom"/>
         <field type="staticText" align="left" txt="(*) - this field is is required" id="common.requiredFieldHint"/>
     </panel>
-    <panel order="6">
+    <panel order="5">
         <field type="title" txt="Mail settings (optional)" id="mailSettings.title"/>
         <field type="staticText" txt="The settings below are optional. Leave them empty to disable E-Mail notification. Specifying them will enable the E-Mail notification feature." id="mailSettings.description"/>
         <field type="text" align="left" variable="mailSettings.server">

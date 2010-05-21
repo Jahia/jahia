@@ -88,8 +88,8 @@ public class ResourcesConverter {
         } catch (MissingResourceException e) {
             bundle = enBundle;
         }
-        PrintWriter out = new PrintWriter(new File(targetFolder, StringUtils.substringAfterLast(bundleName, ".")
-                + ".xml_" + locale.getISO3Language()));
+        PrintWriter out = new PrintWriter(new File(targetFolder, StringUtils.substringAfterLast(bundleName, ".") + "."
+                + locale.getISO3Language() + ".xml"));
         Enumeration<String> keyEnum = enBundle.getKeys();
         List<String> keys = new LinkedList<String>();
         while (keyEnum.hasMoreElements()) {

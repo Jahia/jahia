@@ -12,7 +12,7 @@
     <properties>
         <product.name>Jahia Community Edition</product.name>
         <installer.filename>Jahia_CE_v${jahia.package.version}</installer.filename>
-        <archivers.version>1.2</archivers.version>
+        <archivers.version>1.3</archivers.version>
         <configurators.version>1.6</configurators.version>
         <izpack.version>4.3.2</izpack.version>
         <staging.dir>${project.build.directory}/izpack</staging.dir>
@@ -177,6 +177,14 @@
                                 </java>
                                 <java classname="org.jahia.izpack.ResourcesConverter">
                                     <arg value="izpack.i18n.userInputLang"/>
+                                    <arg value="en,fr,de,it,pt,es"/>
+                                    <arg value="${project.build.directory}/izpack/i18n"/>
+                                    <classpath>
+                                        <path refid="maven.dependency.classpath"/>
+                                    </classpath>
+                                </java>
+                                <java classname="org.jahia.izpack.ResourcesConverter">
+                                    <arg value="izpack.i18n.customLang"/>
                                     <arg value="en,fr,de,it,pt,es"/>
                                     <arg value="${project.build.directory}/izpack/i18n"/>
                                     <classpath>

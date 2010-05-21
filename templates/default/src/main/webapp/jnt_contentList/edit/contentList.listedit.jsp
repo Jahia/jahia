@@ -42,12 +42,12 @@
         </th>
         <th width="5%"><fmt:message key="label.type"/> </th>
         <th width="35%"><fmt:message key="label.title"/> </th>
-        <th width="10%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_creationDate"/> </th>
-        <th width="10%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastModificationDate"/></th>
-        <th width="5%"><fmt:message key="jmix_contentmetadata.j_lastPublishingDate"/></th>
-        <th width="5%" style="white-space: nowrap;"><fmt:message key="label.workflow"/></th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_creationDate"/> </th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastModificationDate"/></th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastPublishingDate"/></th>
+        <th width="20%" style="white-space: nowrap;"><fmt:message key="label.workflow"/></th>
         <th width="5%"><fmt:message key="label.lock"/></th>
-        <th width="10%" class="lastCol"><fmt:message key="label.action"/> </th>
+        <th width="20%" class="lastCol"><fmt:message key="label.action"/> </th>
     </tr>
     </thead>
     <tbody>

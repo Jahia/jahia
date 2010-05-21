@@ -11,10 +11,17 @@ import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
 import org.json.JSONObject;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
@@ -51,6 +58,7 @@ public class GetFeed implements Action {
             remotePassword = node.getProperty("password").getString();
         }
 
+        /*
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);
 
@@ -72,9 +80,10 @@ public class GetFeed implements Action {
         }
 
         InputStream feed = get.getResponseBodyAsStream();
-
-        // handle feed
-
+        */
+        
+        NewsMLImporter newsMLImporter = new NewsMLImporter();
+        newsMLImporter.importFeed(remoteUrl, remoteUser, remotePassword, node);
 
         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     }

@@ -9,6 +9,19 @@
 /*fix jahia-gxt , with:5000px ---> with:100%*/
 ul.x-tab-strip{display:block;width:100%;zoom:1;}
 
+/*Studio Mode*/
+div[config="studiomode"] .x-toolbar{
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/panel/studiomode-bg.png) repeat-x top left !important;
+	border-color:#333333!important;
+}
+div[config="studiomode"] .x-toolbar button {
+	color:#fff !important;
+}
+div[config="studiomode"] .x-toolbar button:hover{
+	color:#000 !important;
+}
+
 /****************************************************************************/
 
 .x-panel {

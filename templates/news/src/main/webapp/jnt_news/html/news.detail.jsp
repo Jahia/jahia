@@ -25,7 +25,7 @@
     <!-- display categories applied on this news -->
     <c:if test="${!empty newsCategories }">
         <div class="newsMeta">
-            <span class="categoryLabel"><fmt:message key='categories'/> :</span>
+            <span class="categoryLabel"><fmt:message key='label.categories'/> :</span>
                     <c:forEach items="${newsCategories}" var="category">
                        <span class="categorytitle">${category.node.properties['jcr:title'].string}</span>
                     </c:forEach>

@@ -1,5 +1,5 @@
+<div class="listEditToolbar">
 <workflow:workflowsForNode workflowAction="publish" var="workflows" node="${child}"/>
-<br/>
 <c:forEach items="${workflows}" var="wf">
     <c:choose>
         <c:when test="${not empty wf.formResourceName}">
@@ -17,7 +17,6 @@
 </c:forEach>
 
 <workflow:tasksForNode var="tasks" node="${child}"/>
-<br/>
 <c:forEach items="${tasks}" var="task">
     <c:choose>
         <c:when test="${not empty task.formResourceName}">
@@ -53,7 +52,7 @@
             </c:when>
         </c:choose>
     </c:forEach>
-    <c:forEach items="${tasks}" var="task">
+    <c:forEach items="${tasks}" var="task">	
         <c:choose>
             <c:when test="${not empty task.formResourceName}">
                 <div style="display:none;" id="task${child.identifier}-${task.id}" class="taskformdiv">
@@ -70,3 +69,4 @@
             </c:when>
         </c:choose>
     </c:forEach>
+</div>

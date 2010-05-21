@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.extjs.gxt.ui.client.widget.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
@@ -49,7 +50,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
 
 import java.util.List;
@@ -94,8 +94,8 @@ public class ContentRepositoryTabs extends LeftComponent {
         browseTabITem = new TabItem("Browse");
         searchTabITem = new TabItem("Search");
 
-        for (String repoId : config.getAccordionPanels()) {
-            repositories.add(new RepositoryTab(this, service, repoId, Messages.getResource("fm_repository_" + repoId), config));
+        for (GWTRepository repo : config.getRepositories()) {
+            repositories.add(new RepositoryTab(this, repo, config));
         }
 
         ////////////////////////////
@@ -178,7 +178,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         browseComponent.setBorders(true);
         for (RepositoryTab tab : repositories) {
             browseComponent.add(tab);
-            if (tab.getRepositoryType().equals(config.getSelectedAccordion())) {
+            if (tab.getRepository().getKey().equals(config.getSelectedAccordion())) {
                 tab.setExpanded(true);
             }
             tab.addListener(Events.Expand, accordionListener);

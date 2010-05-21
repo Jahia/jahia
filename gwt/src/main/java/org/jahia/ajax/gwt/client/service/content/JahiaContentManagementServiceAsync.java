@@ -65,12 +65,12 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getEditConfiguration(String name, AsyncCallback<GWTEditConfiguration> async);
 
-    void ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
+    void ls(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> fields,
+    void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields,
                 AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
 
-    void getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, AsyncCallback<List<GWTJahiaNode>> async);
+    void getRoot(String repositoryType, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, AsyncCallback<List<GWTJahiaNode>> async);
 
     /**
      * Get a node by its path if existing.
@@ -88,7 +88,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void search(GWTJahiaSearchQuery search,int limit,int offset, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);    
 
-    void search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, AsyncCallback<List<GWTJahiaNode>> async);
+    void search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, AsyncCallback<List<GWTJahiaNode>> async);
 
     void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
 

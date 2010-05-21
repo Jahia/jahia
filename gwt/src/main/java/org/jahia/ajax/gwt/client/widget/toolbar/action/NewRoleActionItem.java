@@ -13,7 +13,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
  */
 public class NewRoleActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        ContentActions.createNode(linker, Messages.get("fm_newrole", "New role"), "jnt:role");
+        ContentActions.createNode(linker, getGwtToolbarItem().getTitle(), "jnt:role");
     }
 
     public void handleNewLinkerSelection() {

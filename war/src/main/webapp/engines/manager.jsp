@@ -37,15 +37,12 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 <head>
-    <title><internal:message key="label.workflowmanager"/></title>
+    <title><internal:message key="label.${param.conf}"/></title>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
 </head>
 <body>
-<internal:contentManager enginemode="true"
-                      rootPath='/workflowrules'
-                      nodeTypes="jnt:workflowRule"
-                      conf="workflowmanager"/>
+<internal:contentManager conf="${param.conf}"/>
 <internal:gwtGenerateDictionary/>
 </body>
 </html>

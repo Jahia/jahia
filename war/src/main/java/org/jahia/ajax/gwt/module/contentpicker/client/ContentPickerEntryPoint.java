@@ -45,6 +45,7 @@ import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -81,17 +82,18 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
             final String rootPath = DOM.getElementAttribute(panel.getElement(), "rootPath");
             final Map<String, String> selectorOptions = new HashMap<String, String>();
             final List<GWTJahiaNode> selectedNodes = ContentHelper.getSelectedContentNodesFromHTML();
-            final String types = DOM.getElementAttribute(panel.getElement(), "nodeTypes");
-            final String filters = DOM.getElementAttribute(panel.getElement(), "filters");
-            final String mimeTypes = DOM.getElementAttribute(panel.getElement(), "mimeTypes");
+            final String filtersString = DOM.getElementAttribute(panel.getElement(), "filters");
+            final List<String> filters = filtersString.length() > 0 ? Arrays.asList(filtersString.split(",")) : null;
+            final String mimeTypesString = DOM.getElementAttribute(panel.getElement(), "mimeTypes");
+            final List<String> mimeTypes = mimeTypesString.length() > 0 ? Arrays.asList(mimeTypesString.split(",")) : null;
             final String conf = DOM.getElementAttribute(panel.getElement(), "config");
             final boolean multiple = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "multiple"));
-            final boolean allowThumbs = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs"));
             final String callback = DOM.getElementAttribute(panel.getElement(), "callback");
+
 
             JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
-                    panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, selectionLabel, rootPath, selectorOptions, selectedNodes, types, filters, mimeTypes, config, multiple, allowThumbs, callback));
+                    panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, selectionLabel, rootPath, selectorOptions, selectedNodes, filters, mimeTypes, config, multiple, callback));
                 }
 
                 public void onApplicationFailure(Throwable throwable) {

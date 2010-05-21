@@ -13,7 +13,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class NewTagActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        ContentActions.createNode(linker, Messages.get("fm_newtag", "New tag"), "jnt:tag");
+        ContentActions.createNode(linker, getGwtToolbarItem().getTitle(), "jnt:tag");
     }
 
     public void handleNewLinkerSelection() {

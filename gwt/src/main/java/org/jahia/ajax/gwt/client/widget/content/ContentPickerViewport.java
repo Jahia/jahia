@@ -63,26 +63,23 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
     public static final int BUTTON_HEIGHT = 24;
 
 
-    public ContentPickerViewport(final String jahiaContextPath,final String jahiaServletPath,final  String selectionLabel, final String rootPath,final  Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,final  String types,final  String filters,final  String mimeTypes,final GWTManagerConfiguration managerConfiguration,final  boolean multiple,final  boolean allowThumbs, String callback) {
+    public ContentPickerViewport(final String jahiaContextPath,final String jahiaServletPath,final  String selectionLabel, final String rootPath,final  Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,final List<String> filters,final  List<String> mimeTypes,final GWTManagerConfiguration managerConfiguration,final  boolean multiple, String callback) {
         super(managerConfiguration);
 
-        if (types != null && types.length() > 0) {
-            managerConfiguration.setNodeTypes(types);
+        if (mimeTypes != null && mimeTypes.size() > 0) {
+            managerConfiguration.getMimeTypes().addAll(mimeTypes);
         }
-        if (mimeTypes != null && mimeTypes.length() > 0) {
-            managerConfiguration.setMimeTypes(mimeTypes);
-        }
-        if (filters != null && filters.length() > 0) {
-            managerConfiguration.setFilters(filters);
+        if (filters != null && filters.size() > 0) {
+            managerConfiguration.getFilters().addAll(filters);
         }
 
         // construction of the UI components
         boolean linkPicker = managerConfiguration.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER);
         final BottomRightComponent bottomComponents;
         if (linkPicker) {
-            bottomComponents = new PickedPageView(managerConfiguration.getName(), false, true, selectedNodes, multiple, managerConfiguration, true);
+            bottomComponents = new PickedPageView(false, true, selectedNodes, multiple, managerConfiguration, true);
         } else {
-            bottomComponents = new PickedContentView(selectionLabel, managerConfiguration.getName(), selectedNodes, multiple, managerConfiguration);
+            bottomComponents = new PickedContentView(selectionLabel, selectedNodes, multiple, managerConfiguration);
         }
 
         // top right componet

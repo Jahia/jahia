@@ -120,6 +120,8 @@ public class URLResolver {
                     if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
                         setRedirectUrl(defaultVanityUrl.getUrl());
                     }
+                } catch (PathNotFoundException e) {
+                    logger.debug("Path not found : " + urlPathInfo);
                 } catch (AccessDeniedException e) {
                     logger.debug("User has no access to the resource, so there will not be a redirection");
                 } catch (RepositoryException e) {

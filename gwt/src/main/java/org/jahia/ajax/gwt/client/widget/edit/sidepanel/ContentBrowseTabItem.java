@@ -38,7 +38,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
     protected DisplayGridDragSource displayGridSource;
 
     public ContentBrowseTabItem(GWTSidePanelTab config) {
-        super(JCRClientUtils.ALL_CONTENT, JCRClientUtils.FOLDER_NODETYPES, config);
+        super(JCRClientUtils.ALL_CONTENT, JCRClientUtils.CONTENTLIST_NODETYPES, config);
         setIcon(StandardIconsProvider.STANDARD_ICONS.tabBrowseContent());
 
         contentContainer = new LayoutContainer();
@@ -52,7 +52,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                 JahiaContentManagementService.App.getInstance()
-                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, "jnt:content", null, null, Arrays.asList(GWTJahiaNode.ICON), listAsyncCallback);
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON), listAsyncCallback);
             }
         };
 

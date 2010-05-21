@@ -1,6 +1,5 @@
 package org.jahia.services.uicomponents.bean.contentmanager;
 
-import org.jahia.services.uicomponents.bean.contentmanager.Item;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.toolbar.ToolbarSet;
 import org.springframework.beans.factory.BeanNameAware;
@@ -22,16 +21,15 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     private boolean enableTextMenu;
 
     private List<Column> tableColumns;
-    private List<Repository> accordionPanels;
+    private List<Repository> repositories;
     private List<EngineTab> tabs;
 
-    private String selectedAccordion = null;
     private boolean hideLeftPanel = false;
 
-    private String folderTypes;
-    private String nodeTypes;
-    private String filters;
-    private String mimeTypes;
+    private List<String> folderTypes = new ArrayList<String>();
+    private List<String> nodeTypes = new ArrayList<String>();
+    private List<String> filters = new ArrayList<String>();
+    private List<String> mimeTypes = new ArrayList<String>();
 
     private short defaultView;
     private boolean enableFileDoubleClick = true;
@@ -60,12 +58,8 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
-        accordionPanels = new ArrayList<Repository>();
+        repositories = new ArrayList<Repository>();
         tabs = new ArrayList<EngineTab>();
-    }
-
-    public void setSelectedAccordion(String accordion) {
-        selectedAccordion = accordion;
     }
 
     public List<EngineTab> getTabs() {
@@ -88,16 +82,12 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.tableColumns = tableColumns;
     }
 
-    public List<Repository> getAccordionPanels() {
-        return accordionPanels;
+    public List<Repository> getRepositories() {
+        return repositories;
     }
 
-    public void setAccordionPanels(List<Repository> accordionPanels) {
-        this.accordionPanels = accordionPanels;
-    }
-
-    public String getSelectedAccordion() {
-        return selectedAccordion;
+    public void setRepositories(List<Repository> repositories) {
+        this.repositories = repositories;
     }
 
     public boolean isHideLeftPanel() {
@@ -112,35 +102,35 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.enableTextMenu = enableTextMenu;
     }
 
-    public String getFolderTypes() {
+    public List<String> getFolderTypes() {
         return folderTypes;
     }
 
-    public void setFolderTypes(String folderTypes) {
+    public void setFolderTypes(List<String> folderTypes) {
         this.folderTypes = folderTypes;
     }
 
-    public String getNodeTypes() {
+    public List<String> getNodeTypes() {
         return nodeTypes;
     }
 
-    public void setNodeTypes(String nodeTypes) {
+    public void setNodeTypes(List<String> nodeTypes) {
         this.nodeTypes = nodeTypes;
     }
 
-    public String getFilters() {
+    public List<String> getFilters() {
         return filters;
     }
 
-    public void setFilters(String filters) {
+    public void setFilters(List<String> filters) {
         this.filters = filters;
     }
 
-    public String getMimeTypes() {
+    public List<String> getMimeTypes() {
         return mimeTypes;
     }
 
-    public void setMimeTypes(String mimeTypes) {
+    public void setMimeTypes(List<String> mimeTypes) {
         this.mimeTypes = mimeTypes;
     }
 

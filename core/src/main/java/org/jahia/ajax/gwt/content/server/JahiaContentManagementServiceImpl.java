@@ -219,11 +219,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> ls(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters, List<String> fields) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> ls(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields) throws GWTJahiaServiceException {
         return navigation.ls(parentNode, nodeTypes, mimeTypes, filters, fields, retrieveCurrentSession());
     }
 
-    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, String nodeTypes, String mimeTypes, String filters, List<String> fields) throws GWTJahiaServiceException {
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields) throws GWTJahiaServiceException {
         List<GWTJahiaNode> filteredList = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : ls(parentNode, nodeTypes, mimeTypes, filters, fields)) {
             if (n.isMatchFilters()) {
@@ -233,7 +233,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return new BaseListLoadResult<GWTJahiaNode>(filteredList);
     }
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> fields, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> getRoot(String repositoryType, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(repositoryType);
         }
@@ -290,7 +290,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-    public List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters) throws GWTJahiaServiceException {
         return search.search(searchString, limit, nodeTypes, mimeTypes, filters, retrieveCurrentSession());
     }
 

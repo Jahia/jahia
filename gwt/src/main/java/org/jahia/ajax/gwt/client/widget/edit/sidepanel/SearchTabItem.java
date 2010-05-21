@@ -10,7 +10,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -22,7 +21,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
@@ -219,8 +217,8 @@ class SearchTabItem extends SidePanelTabItem {
      */
     private ContentPickerField createPageSelectorField() {
         ContentPickerField field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"),
-                Messages.get("picker_link_selection", "Selected page"), null, "/", "", null, "",
-                ManagerConfigurationFactory.LINKPICKER, false, false);
+                Messages.get("picker_link_selection", "Selected page"), null, "/", null, null,
+                ManagerConfigurationFactory.LINKPICKER, false);
         field.setFieldLabel(Messages.get("picker_link_header", "Pages"));
         return field;
     }

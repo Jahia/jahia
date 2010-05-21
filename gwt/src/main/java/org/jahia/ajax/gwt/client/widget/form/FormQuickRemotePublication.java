@@ -42,7 +42,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.http.client.*;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
@@ -111,10 +110,11 @@ public abstract class FormQuickRemotePublication extends FormPanel {
         remotePath.setEmptyText("/sites/targetSite");
         remotePath.setValidator(new Validator() {
             public String validate(Field<?> field, String s) {
-                if(s.startsWith("/"))
+                if (s.startsWith("/")) {
                     return null;
-                else
+                } else {
                     return "Remote Path should be an absolut path to a node on the distant server";
+                }
             }
         });
         remotePath.setFieldLabel(Messages.getNotEmptyResource("remotePath", "Remote Path"));
@@ -135,10 +135,8 @@ public abstract class FormQuickRemotePublication extends FormPanel {
         add(remotePassword);
 
         final ContentPickerField localPath = new ContentPickerField(Messages.get("picker_link_header", "Page picker"),
-                                                                    Messages.get("picker_link_selection",
-                                                                                 "Selected page"), null, "/", "", null,
-                                                                    "", ManagerConfigurationFactory.CONTENTPICKER,
-                                                                    false, false);
+                Messages.get("picker_link_selection", "Selected page"), null, "/", null, null,
+                ManagerConfigurationFactory.CONTENTPICKER, false);
         localPath.setName("node");
         localPath.setFieldLabel(Messages.getNotEmptyResource("node", "Node"));
         add(localPath);
@@ -149,7 +147,8 @@ public abstract class FormQuickRemotePublication extends FormPanel {
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent componentEvent) {
 
-                String url = remoteUrlField.getValue().toString() + "/render/live/" + localPath.getValue().get(0).getLanguageCode() + remotePath.getValue().toString();
+                String url = remoteUrlField.getValue().toString() + "/render/live/" +
+                        localPath.getValue().get(0).getLanguageCode() + remotePath.getValue().toString();
                 RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url + ".preparereplay.do");
                 builder.setUser(remoteUser.getValue().toString());
                 builder.setPassword(remotePassword.getValue().toString());
@@ -161,38 +160,48 @@ public abstract class FormQuickRemotePublication extends FormPanel {
 
                         public void onResponseReceived(Request request, Response response) {
                             if (response.getStatusCode() == 200) {
-                            final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
-                            List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = new ArrayList<GWTJahiaNodeProperty>();
-                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remoteUrl", new GWTJahiaNodePropertyValue(
-                                    remoteUrlField.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
-                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remotePath", new GWTJahiaNodePropertyValue(
-                                    remotePath.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
-                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remoteUser", new GWTJahiaNodePropertyValue(
-                                    remoteUser.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
-                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remotePassword", new GWTJahiaNodePropertyValue(
-                                    remotePassword.getValue().toString(), GWTJahiaNodePropertyType.STRING)));
-                            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("node", new GWTJahiaNodePropertyValue(
-                                    localPath.getValue().get(0).getUUID(), GWTJahiaNodePropertyType.STRING)));
+                                final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties =
+                                        new HashMap<String, List<GWTJahiaNodeProperty>>();
+                                List<GWTJahiaNodeProperty> gwtJahiaNodeProperties =
+                                        new ArrayList<GWTJahiaNodeProperty>();
+                                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remoteUrl",
+                                        new GWTJahiaNodePropertyValue(remoteUrlField.getValue().toString(),
+                                                GWTJahiaNodePropertyType.STRING)));
+                                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remotePath",
+                                        new GWTJahiaNodePropertyValue(remotePath.getValue().toString(),
+                                                GWTJahiaNodePropertyType.STRING)));
+                                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remoteUser",
+                                        new GWTJahiaNodePropertyValue(remoteUser.getValue().toString(),
+                                                GWTJahiaNodePropertyType.STRING)));
+                                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("remotePassword",
+                                        new GWTJahiaNodePropertyValue(remotePassword.getValue().toString(),
+                                                GWTJahiaNodePropertyType.STRING)));
+                                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("node",
+                                        new GWTJahiaNodePropertyValue(localPath.getValue().get(0).getUUID(),
+                                                GWTJahiaNodePropertyType.STRING)));
 
-                            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-                            service.createNode("/remotePublications", nameField.getValue().toString(), "jnt:remotePublication", null,
-                                             null, gwtJahiaNodeProperties, langCodeProperties, new BaseAsyncCallback<GWTJahiaNode>() {
-                                        public void onSuccess(GWTJahiaNode gwtJahiaNode) {
-                                            if (getParent() instanceof Window) {
-                                                ((Window) getParent()).close();
+                                final JahiaContentManagementServiceAsync service =
+                                        JahiaContentManagementService.App.getInstance();
+                                service.createNode("/remotePublications", nameField.getValue().toString(),
+                                        "jnt:remotePublication", null, null, gwtJahiaNodeProperties, langCodeProperties,
+                                        new BaseAsyncCallback<GWTJahiaNode>() {
+                                            public void onSuccess(GWTJahiaNode gwtJahiaNode) {
+                                                if (getParent() instanceof Window) {
+                                                    ((Window) getParent()).close();
+                                                }
+                                                onRemotePublicationCreated();
                                             }
-                                            onRemotePublicationCreated();
-                                        }
 
-                                        public void onApplicationFailure(Throwable throwable) {
-                                            Log.error("Unable to create a remote publication", throwable);
-                                            if (getParent() instanceof Window) {
-                                                ((Window) getParent()).hide();
+                                            public void onApplicationFailure(Throwable throwable) {
+                                                Log.error("Unable to create a remote publication", throwable);
+                                                if (getParent() instanceof Window) {
+                                                    ((Window) getParent()).hide();
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
                             } else {
-                                com.google.gwt.user.client.Window.alert("Cannot contact remote server : error "+response.getStatusCode());
+                                com.google.gwt.user.client.Window
+                                        .alert("Cannot contact remote server : error " + response.getStatusCode());
                             }
                         }
                     });

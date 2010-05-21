@@ -31,10 +31,10 @@ import java.util.List;
 public class GWTJahiaNodeTreeFactory {
     private boolean init = true;
     protected String repository;
-    protected String nodeTypes;
-    protected String filters;
+    protected List<String> nodeTypes;
+    protected List<String> filters;
     protected List<String> fields = GWTJahiaNode.DEFAULT_FIELDS;
-    protected String mimeTypes;
+    protected List<String> mimeTypes;
     protected List<String> selectedPath = new ArrayList<String>();
     protected List<String> openPath = new ArrayList<String>();
     protected boolean saveOpenPath = false;
@@ -47,9 +47,6 @@ public class GWTJahiaNodeTreeFactory {
 
     public GWTJahiaNodeTreeFactory(final String repositoryType, List<String> fields) {
         repository = repositoryType;
-        nodeTypes = "";
-        filters = "";
-        mimeTypes = "";
         this.fields = fields;
     }
 
@@ -90,11 +87,11 @@ public class GWTJahiaNodeTreeFactory {
         this.repository = repository;
     }
 
-    public void setNodeTypes(String nodeTypes) {
+    public void setNodeTypes(List<String> nodeTypes) {
         this.nodeTypes = nodeTypes;
     }
 
-    public void setFilters(String filters) {
+    public void setFilters(List<String> filters) {
         this.filters = filters;
     }
 
@@ -104,7 +101,7 @@ public class GWTJahiaNodeTreeFactory {
         this.fields.add(GWTJahiaNode.ICON);
     }
 
-    public void setMimeTypes(String mimeTypes) {
+    public void setMimeTypes(List<String> mimeTypes) {
         this.mimeTypes = mimeTypes;
     }
 

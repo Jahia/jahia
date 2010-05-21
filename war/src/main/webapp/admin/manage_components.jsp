@@ -74,7 +74,7 @@
                                 </div>
                             </div>
                             <div class="content-item-noborder">
-                                <internal:contentManager embedded="true" nodeTypes="jnt:portletDefinition" conf="portletdefinitionmanager"/>
+                                <internal:contentManager embedded="true" conf="portletdefinitionmanager"/>
                             </div>
                         </div>
                     </div>

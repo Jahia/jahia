@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
@@ -65,8 +66,8 @@ public class ContentPickerBrowser extends TopRightComponent {
         tabs.setBorders(false);
 
         // add repositories
-        for (String repoId : config.getAccordionPanels()) {
-            final ContentTreeGrid treeGrid = new ContentTreeGrid(repoId, selectedNodes, multiple, config) {
+        for (GWTRepository repo : config.getRepositories()) {
+            final ContentTreeGrid treeGrid = new ContentTreeGrid(repo, selectedNodes, multiple, config) {
                 @Override
                 public void onContentPicked(GWTJahiaNode gwtJahiaNode) {
                     super.onContentPicked(gwtJahiaNode);
@@ -74,7 +75,7 @@ public class ContentPickerBrowser extends TopRightComponent {
                 }
             };
 
-            final TabItem treeTable = new TabItem(Messages.getResource("fm_repository_" + treeGrid.getRepoType()));
+            final TabItem treeTable = new TabItem(treeGrid.getRepository().getTitle());
             treeTable.setBorders(false);
             treeTable.setLayout(new FitLayout());
             treeTable.add(treeGrid);

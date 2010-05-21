@@ -48,9 +48,7 @@
 <%@ attribute name="jahiaContextPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="rootPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="startPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
-<%@ attribute name="enginemode" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
 <%@ attribute name="filters" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
-<%@ attribute name="nodeTypes" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="mimeTypes" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="conf" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="embedded" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
@@ -124,7 +122,7 @@ while (selectedNodeIter.hasNext()) {
 </script>
 <template:gwtJahiaModule id="contentpicker" jahiaType="contentpicker"  jahiaServletPath="${fn:escapeXml(jahiaServletPath)}" jahiaContextPath="${fn:escapeXml(jahiaContextPath)}" rootPath="<%=rootPath%>"
                          startPath="<%=startPath%>"
-                         nodeTypes="<%=nodeTypes%>" filters="<%=filters%>"
+                         filters="<%=filters%>"
                          mimeTypes="${fn:escapeXml(mimeTypes)}" callback="${fn:escapeXml(callback)}" config="${fn:escapeXml(conf)}"
                          embedded="<%=embedded%>" multiple="<%=multiple%>"/>
 

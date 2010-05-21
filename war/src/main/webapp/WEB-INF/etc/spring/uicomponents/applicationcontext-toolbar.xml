@@ -609,7 +609,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/gwtfilemanager/filemanager.jsp?site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=filemanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -639,7 +639,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/contentmanager/contentmanager.jsp?site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=contentmanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -670,7 +670,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/gwtmashupmanager/mashup.jsp?site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=mashupmanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -700,7 +700,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/gwtcategorymanager/category.jsp?site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=categorymanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -730,7 +730,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/gwttagmanager/tag.jsp?site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=tagmanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -759,7 +759,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/remotepublicationmanager/remotepublication.jsp"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=remotepublicationmanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -789,7 +789,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/gwtsitemanager/site.jsp?site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=sitemanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -1360,7 +1360,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/workflowmanager/workflowmanager.jsp"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=workflowmanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>

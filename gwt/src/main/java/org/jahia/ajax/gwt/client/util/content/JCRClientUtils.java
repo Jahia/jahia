@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.util.content;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,16 +43,16 @@ import java.util.List;
  */
 public final class JCRClientUtils {
 
-    public static final String FOLDER_NODETYPES = "nt:folder,jnt:mountPoint";
-    public static final String PORTLETLIST_NODETYPES = "jnt:portletList";
-    public static final String FILE_NODETYPES = "nt:file,nt:folder,jnt:mountPoint,jnt:portlet";
-    public static final String PORTLET_NODETYPES = "nt:folder,jnt:mountPoint,jnt:portlet";
-    public static final String CATEGORY_NODETYPES = "jnt:category";
-    public static final String PORTLET_DEFINITIONS_NODETYPES = "jnt:portletDefinitions";    
-    public static final String SITE_NODETYPES = "jnt:virtualsite,jnt:page";
-    public static final String PAGE_NODETYPES = "jnt:page";
-    public static final String TAG_NODETYPES = "jnt:tag";
-    public static final String ROLE_NODETYPES = "jnt:role";
+    public static final List<String> FOLDER_NODETYPES =  Arrays.asList("nt:folder","jnt:mountPoint");
+    public static final List<String> CONTENTLIST_NODETYPES =  Arrays.asList("jnt:contentList");
+    public static final List<String> PORTLETLIST_NODETYPES =  Arrays.asList("jnt:portletList");
+    public static final List<String> FILE_NODETYPES = Arrays.asList("nt:file");
+    public static final List<String> PORTLET_NODETYPES = Arrays.asList("jnt:portlet");
+    public static final List<String> CATEGORY_NODETYPES =  Arrays.asList("jnt:category");
+    public static final List<String> SITE_NODETYPES = Arrays.asList( "jnt:virtualsite","jnt:page");
+    public static final List<String> PAGE_NODETYPES =  Arrays.asList("jnt:page");
+    public static final List<String> TAG_NODETYPES =  Arrays.asList("jnt:tag");
+    public static final List<String> CONTENT_NODETYPES =  Arrays.asList("jnt:content");
 
     public final static String MY_REPOSITORY = "myRepository";
     public final static String USERS_REPOSITORY = "usersRepository";

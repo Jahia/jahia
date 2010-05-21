@@ -44,7 +44,6 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionIte
 import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.bin.Jahia;
-import org.jahia.data.JahiaData;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -534,7 +533,6 @@ public class UIConfigHelper {
                 gwtConfig.setNodeTypes(config.getNodeTypes());
                 gwtConfig.setFolderTypes(config.getFolderTypes());
                 gwtConfig.setEnableTextMenu(config.isEnableTextMenu());
-                gwtConfig.setSelectedAccordion(config.getSelectedAccordion());
                 gwtConfig.setHideLeftPanel(config.isHideLeftPanel());
                 gwtConfig.setFolderTypes(config.getFolderTypes());
                 gwtConfig.setNodeTypes(config.getNodeTypes());
@@ -592,12 +590,21 @@ public class UIConfigHelper {
                 }
 
                 // add accordion panels
-                for (Repository item : config.getAccordionPanels()) {
+                for (Repository item : config.getRepositories()) {
                     if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
-                        gwtConfig.addAccordion(item.getKey());
+                        GWTRepository repository  = new GWTRepository();
+                        repository.setKey(item.getKey());
+                        if (item.getTitleKey() != null) {
+                            repository.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+                        } else if (item.getTitle() != null) {
+                            repository.setTitle(item.getTitle());
+                        } else {
+                            repository.setTitle(item.getKey());
+                        }
+                        repository.setPathes(repository.getPathes());
+                        gwtConfig.addRepository(repository);
                     }
                 }
-
 
                 return gwtConfig;
             } else {

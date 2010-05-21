@@ -42,7 +42,6 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -67,16 +66,14 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
     private String selectionLabel;
     private String header;
     private String rootPath;
-    private String types;
-    private String filters;
-    private String mimeTypes;
+    private List<String> filters;
+    private List<String> mimeTypes;
     private String configuration;
     private boolean multiple;
-    private boolean allowThumbs;
-    private boolean pagePicker;
     private Map<String, String> selectorOptions;
 
-    public ContentPickerField(String header, String selectionLabel, Map<String, String> selectorOptions, String rootPath, String types, String filters, String mimeTypes, String configuration, boolean multiple, boolean allowThumbs) {
+    public ContentPickerField(String header, String selectionLabel, Map<String, String> selectorOptions, String rootPath,
+                              List<String> filters, List<String> mimeTypes, String configuration, boolean multiple) {
         super();
         this.header = header;
         this.selectionLabel = selectionLabel;
@@ -103,14 +100,11 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
             }
         });
         this.rootPath = rootPath;
-        this.types = types;
         this.filters = filters;
         this.mimeTypes = mimeTypes;
         this.configuration = configuration;
         this.multiple = multiple;
-        this.allowThumbs = allowThumbs;
         this.selectorOptions = selectorOptions;
-        this.pagePicker = configuration.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER);
         setValue(new ArrayList<GWTJahiaNode>());
     }
 
@@ -124,7 +118,8 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
             public void onSuccess(GWTManagerConfiguration config) {
                 final Window w = new Window();
                 w.setLayout(new FitLayout());
-                final ContentPicker contentPicker = new ContentPicker(selectionLabel, rootPath, selectorOptions, getValue(), types, filters, mimeTypes,config, multiple);
+                final ContentPicker contentPicker = new ContentPicker(selectionLabel, rootPath, selectorOptions, getValue(),
+                        filters, mimeTypes,config, multiple);
 
                 w.setHeading(header);
                 w.setModal(true);

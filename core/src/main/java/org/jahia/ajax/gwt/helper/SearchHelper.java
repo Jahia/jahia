@@ -18,6 +18,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,7 +62,7 @@ public class SearchHelper {
     public List<GWTJahiaNode> search(String searchString, int limit, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(formatQuery(searchString), currentUserSession);
-            return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
+            return navigation.executeQuery(q, null,null,null);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -80,13 +82,10 @@ public class SearchHelper {
     public List<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(search, limit, offset, currentUserSession);
-            String[] nodeTypesToApply = navigation.getFiltersToApply(search.getNodeTypes());
-            String[] mimeTypesToMatch = navigation.getFiltersToApply(search.getMimeTypes());
-            String[] filtersToApply = navigation.getFiltersToApply(search.getFilters());
             if (logger.isDebugEnabled()) {
                 logger.debug("Executing query: " + q.getStatement());
             }
-            return navigation.executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply);
+            return navigation.executeQuery(q, search.getNodeTypes(), search.getMimeTypes(), search.getFilters());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -105,16 +104,10 @@ public class SearchHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
-        if (nodeTypes == null) {
-            nodeTypes = JCRClientUtils.FILE_NODETYPES;
-        }
-        String[] nodeTypesToApply = navigation.getFiltersToApply(nodeTypes);
-        String[] mimeTypesToMatch = navigation.getFiltersToApply(mimeTypes);
-        String[] filtersToApply = navigation.getFiltersToApply(filters);
+    public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = createQuery(formatQuery(searchString), currentUserSession);
-            return navigation.executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply);
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -132,7 +125,7 @@ public class SearchHelper {
         try {
             String s = "select * from [nt:query]";
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
-            return navigation.executeQuery(q, new String[0], new String[0], new String[0]);
+            return navigation.executeQuery(q, null,null,null);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

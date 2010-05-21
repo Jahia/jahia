@@ -13,19 +13,12 @@ import java.util.List;
  * Time: 3:03:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Repository implements Serializable, BeanNameAware {
-    private String name;
+public class Repository implements Serializable {
     private String key;
+    private String title;
+    private String titleKey;
     private Visibility visibility;
     private List<String> pathes;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Visibility getVisibility() {
         return visibility;
@@ -43,8 +36,27 @@ public class Repository implements Serializable, BeanNameAware {
         this.key = key;
     }
 
-    public void setBeanName(String name) {
-        this.name = name;
+    public String getTitle() {
+        return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitleKey() {
+        return titleKey;
+    }
+
+    public void setTitleKey(String titleKey) {
+        this.titleKey = titleKey;
+    }
+
+    public List<String> getPathes() {
+        return pathes;
+    }
+
+    public void setPathes(List<String> pathes) {
+        this.pathes = pathes;
+    }
 }

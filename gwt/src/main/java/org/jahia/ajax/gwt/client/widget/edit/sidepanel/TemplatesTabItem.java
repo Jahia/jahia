@@ -66,7 +66,7 @@ public class TemplatesTabItem extends SidePanelTabItem {
         ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
 
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(JCRClientUtils.TEMPLATES_REPOSITORY);
-        factory.setNodeTypes("jnt:virtualsite,jnt:page,jnt:templatesFolder,jnt:templatesSetFolder");
+        factory.setNodeTypes(Arrays.asList("jnt:virtualsite","jnt:page","jnt:templatesFolder","jnt:templatesSetFolder"));
         this.factory = factory;
         this.factory.setSelectedPath(path);
 

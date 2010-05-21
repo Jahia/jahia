@@ -211,7 +211,7 @@ public class ThumbView extends TopRightComponent {
             if (getLinker() != null) {
                 getLinker().loading("listing directory content...");
             }
-            service.ls((GWTJahiaNode) root, configuration.getNodeTypes()+","+configuration.getFolderTypes(), configuration.getMimeTypes(), configuration.getFilters(),
+            service.ls((GWTJahiaNode) root, configuration.getAllNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(),
                     GWTJahiaNode.DEFAULT_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
                 public void onApplicationFailure(Throwable throwable) {
                     Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());

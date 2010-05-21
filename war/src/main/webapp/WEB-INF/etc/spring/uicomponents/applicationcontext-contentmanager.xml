@@ -19,8 +19,19 @@
 
     <!-- file manager -->
     <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint"/>
-        <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
+        <property name="nodeTypes">
+            <list>
+                <value>nt:file</value>
+                <value>nt:folder</value>
+                <value>jnt:mountPoint</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>nt:folder</value>
+                <value>jnt:mountPoint</value>
+            </list>
+        </property>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -72,7 +83,7 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.website"/>
                 <ref bean="repository.shared"/>
@@ -162,7 +173,7 @@
         <property name="defaultView" value="3"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.websitemahsup"/>
                 <ref bean="repository.shared"/>
@@ -237,7 +248,7 @@
         <property name="defaultView" value="1"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.category"/>
             </list>
@@ -337,9 +348,12 @@
         <property name="defaultView" value="1"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
-                <ref bean="repository.tag"/>
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <property name="key" value="tagRepository"/>
+                    <property name="pathes" value="$site/tags"/>
+                </bean>
             </list>
         </property>
         <!-- tabs -->
@@ -365,7 +379,6 @@
     <bean id="remotepublicationmanager"
           class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:remotePublication"/>
-        <property name="folderTypes" value="jnt:remotePublications"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -435,9 +448,12 @@
         <property name="defaultView" value="1"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
-                <ref bean="repository.remotePublication"/>
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <property name="key" value="remotePublicationsRepository"/>
+                    <property name="pathes" value="/remotePublications"/>
+                </bean>
             </list>
         </property>
         <!-- tabs -->
@@ -461,7 +477,6 @@
     <bean id="workflowmanager"
           class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:workflowRule"/>
-        <property name="folderTypes" value="jnt:workflowRules"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -529,9 +544,12 @@
         <property name="defaultView" value="1"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
-                <ref bean="repository.workflow"/>
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <property name="key" value="workflowRepository"/>
+                    <property name="pathes" value="/workflowRules"/>
+                </bean>
             </list>
         </property>
         <!-- tabs -->
@@ -546,7 +564,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
                 <value>name,200</value>
-                <value>j:path,200</value>
+                <value>j:node,200</value>
                 <value>j:nodeType,200</value>
                 <value>j:availableWorkflows,200</value>
             </list>
@@ -559,7 +577,6 @@
           class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
 
         <property name="nodeTypes" value="jnt:portletDefinitions"/>
-        <property name="folderTypes" value="nt:folder"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -602,9 +619,12 @@
         <property name="defaultView" value="1"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
-                <ref bean="repository.portletdefinition"/>
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <property name="key" value="portletDefinitionRepository"/>
+                    <property name="pathes" value="/remotePublications"/>
+                </bean>
             </list>
         </property>
         <!-- tabs -->
@@ -687,7 +707,7 @@
         <property name="displaySearchInFile" value="true"/>
         <property name="displaySearchInTag" value="true"/>
         <!-- accordion -->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.global"/>
             </list>
@@ -807,7 +827,7 @@
 
 
         <!-- accordion -->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.site"/>
             </list>
@@ -843,7 +863,6 @@
     <!-- file manager -->
     <bean id="rolesmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:role"/>
-        <property name="folderTypes" value="jnt:role"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -869,9 +888,12 @@
         <property name="defaultView" value="1"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
-                <ref bean="repository.role"/>
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <property name="key" value="roleRepository"/>
+                    <property name="pathes" value="/roles"/>
+                </bean>
             </list>
         </property>
         <!-- tabs -->
@@ -892,7 +914,6 @@
     <!-- file manager -->
     <bean id="siterolesmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:role"/>
-        <property name="folderTypes" value="jnt:role"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -918,9 +939,12 @@
         <property name="defaultView" value="1"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
-                <ref bean="repository.siteRole"/>
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+                    <property name="key" value="siteRoleRepository"/>
+                    <property name="pathes" value="$site/roles"/>
+                </bean>
             </list>
         </property>
         <!-- tabs -->
@@ -940,8 +964,19 @@
 
     <!-- filepicker -->
     <bean id="filepicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
-        <property name="nodeTypes" value="nt:file,nt:folder,jnt:mountPoint"/>
-        <property name="folderTypes" value="nt:folder,jnt:mountPoint"/>
+        <property name="nodeTypes" >
+            <list>
+                <value>nt:file</value>
+                <value>nt:folder</value>
+                <value>jnt:mountPoint</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>nt:folder</value>
+                <value>jnt:mountPoint</value>
+            </list>
+        </property>
         <property name="enableTextMenu" value="false"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
@@ -959,7 +994,7 @@
         <property name="displaySearchInTag" value="true"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.website"/>
                 <ref bean="repository.shared"/>
@@ -1006,7 +1041,7 @@
         <property name="displaySearchInTag" value="true"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.global"/>
                 <ref bean="repository.website"/>
@@ -1055,7 +1090,7 @@
         <property name="displaySearchInFile" value="false"/>
         <property name="displaySearchInTag" value="true"/>
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.site"/>
             </list>
@@ -1106,7 +1141,7 @@
         <property name="defaultView" value="3"/>
 
         <!-- accordion panels-->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.websitemahsup"/>
                 <ref bean="repository.sharedmashup"/>
@@ -1157,7 +1192,7 @@
         <property name="defaultView" value="3"/>
 
         <!-- accordion -->
-        <property name="accordionPanels">
+        <property name="repositories">
             <list>
                 <ref bean="repository.category"/>
             </list>
@@ -1369,70 +1404,57 @@
     <!-- accordion -->
     <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="globalRepository"/>
-    </bean>
-
-    <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="websiteRepository"/>
-    </bean>
-
-    <bean id="repository.websitemahsup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="websiteMashupRepository"/>
+        <property name="pathes" value="/"/>
     </bean>
 
     <bean id="repository.shared" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedRepository"/>
-    </bean>
-
-    <bean id="repository.myexternal" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="myExternalRepository"/>
-    </bean>
-
-    <bean id="repository.mymashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="myMashupRepository"/>
+        <property name="pathes" value="/shared/files"/>
     </bean>
 
     <bean id="repository.my" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myRepository"/>
+        <property name="pathes" value="$user/files"/>
+    </bean>
+
+    <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="websiteRepository"/>
+        <property name="pathes" value="$site/files"/>
+    </bean>
+
+    <bean id="repository.myexternal" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="myExternalRepository"/>
+        <property name="pathes" value="/mounts"/>
+    </bean>
+
+    <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="sharedMashupRepository"/>
+        <property name="pathes" value="/shared/mashups"/>
+    </bean>
+
+    <bean id="repository.websitemahsup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="websiteMashupRepository"/>
+        <property name="pathes" value="$site/mashups"/>
+    </bean>
+
+    <bean id="repository.mymashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="myMashupRepository"/>
+        <property name="pathes" value="$user/mashups"/>
     </bean>
 
     <bean id="repository.users" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="usersRepository"/>
+        <property name="pathes" value="/users"/>
     </bean>
 
     <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="categoryRepository"/>
-    </bean>
-
-    <bean id="repository.tag" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="tagRepository"/>
-    </bean>
-
-    <bean id="repository.remotePublication" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="remotePublicationsRepository"/>
-    </bean>
-
-    <bean id="repository.role" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="roleRepository"/>
-    </bean>
-
-    <bean id="repository.siteRole" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="siteRoleRepository"/>
+        <property name="pathes" value="/categories"/>
     </bean>
 
     <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRepository"/>
-    </bean>
-
-    <bean id="repository.portletdefinition" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="portletDefinitionRepository"/>
-    </bean>
-
-   <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="sharedMashupRepository"/>
-    </bean>
-
-    <bean id="repository.workflow" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="workflowRepository"/>
+        <property name="pathes" value="/sites"/>
     </bean>
 
 </beans>

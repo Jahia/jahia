@@ -13,7 +13,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
@@ -174,7 +173,8 @@ public class ContentSearchForm extends ContentPanel {
      * @return
      */
     private ContentPickerField createPageSelectorField() {
-        ContentPickerField field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"), Messages.get("picker_link_selection", "Selected page"), null, "/", "", null, "", ManagerConfigurationFactory.LINKPICKER, false, false);
+        ContentPickerField field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"), Messages.get("picker_link_selection", "Selected page"), null, "/",
+                null, null, ManagerConfigurationFactory.LINKPICKER, false);
         field.setFieldLabel(Messages.get("picker_link_header", "Pages"));
         return field;
     }

@@ -78,7 +78,8 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
     public static String INTERNAL_PICKER = "internalPicker";
 
 
-    public PickedPageView(String pickerType, boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config, boolean htmlEditor) {
+    public PickedPageView(boolean externalAllowed, boolean internalAllowed, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config,
+                          boolean htmlEditor) {
 
         m_component = new LayoutContainer(new FitLayout());
         //m_component.setBodyBorder(false);
@@ -93,7 +94,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
             defaultLinkType = "internal";
         }
 
-        boolean isInternalPicker = pickerType != null && pickerType.equalsIgnoreCase(INTERNAL_PICKER);
+        boolean isInternalPicker = config.getName() != null && config.getName().equalsIgnoreCase(INTERNAL_PICKER);
 
 
         // form panel

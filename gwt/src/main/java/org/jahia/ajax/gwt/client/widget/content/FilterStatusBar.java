@@ -34,25 +34,27 @@ package org.jahia.ajax.gwt.client.widget.content;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.MyStatusBar;
 
+import java.util.List;
+
 /**
  * User: rfelden
  * Date: 16 janv. 2009 - 15:54:26
  */
 public class FilterStatusBar extends MyStatusBar {
 
-    public FilterStatusBar(String filters, String mimeTypes, String nodeTypes) {
+    public FilterStatusBar(List<String> filters, List<String> mimeTypes, List<String> nodeTypes) {
         // display filters to inform user
         StringBuilder disp = new StringBuilder() ;
-        if (filters != null && filters.length()>0) {
+        if (filters != null && filters.size()>0) {
             disp.append(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.filters.label")).append(" : ").append(filters) ;
         }
-        if (mimeTypes != null && mimeTypes.length()>0) {
+        if (mimeTypes != null && mimeTypes.size()>0) {
             if (disp.length() > 0) {
                 disp.append(" - ") ;
             }
             disp.append(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.mimes.label")).append(" : ").append(mimeTypes) ;
         }
-        if (nodeTypes != null && nodeTypes.length()>0) {
+        if (nodeTypes != null && nodeTypes.size()>0) {
             if (disp.length() > 0) {
                 disp.append(" - ") ;
             }

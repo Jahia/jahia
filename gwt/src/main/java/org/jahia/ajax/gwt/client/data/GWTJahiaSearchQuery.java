@@ -23,10 +23,10 @@ public class GWTJahiaSearchQuery implements Serializable {
     private boolean inContents;
     private boolean inFiles;
     private boolean inMetadatas;
-    private String folderTypes;
-    private String nodeTypes;
-    private String filters;
-    private String mimeTypes;
+    private List<String> folderTypes;
+    private List<String> nodeTypes;
+    private List<String> filters;
+    private List<String> mimeTypes;
     
     public int getLimit() {
         return limit;
@@ -100,35 +100,35 @@ public class GWTJahiaSearchQuery implements Serializable {
         this.inMetadatas = inMetadatas;
     }
 
-    public String getFolderTypes() {
+    public List<String> getFolderTypes() {
         return folderTypes;
     }
 
-    public void setFolderTypes(String folderTypes) {
+    public void setFolderTypes(List<String> folderTypes) {
         this.folderTypes = folderTypes;
     }
 
-    public String getNodeTypes() {
+    public List<String> getNodeTypes() {
         return nodeTypes;
     }
 
-    public void setNodeTypes(String nodeTypes) {
+    public void setNodeTypes(List<String> nodeTypes) {
         this.nodeTypes = nodeTypes;
     }
 
-    public String getFilters() {
+    public List<String> getFilters() {
         return filters;
     }
 
-    public void setFilters(String filters) {
+    public void setFilters(List<String> filters) {
         this.filters = filters;
     }
 
-    public String getMimeTypes() {
+    public List<String> getMimeTypes() {
         return mimeTypes;
     }
 
-    public void setMimeTypes(String mimeTypes) {
+    public void setMimeTypes(List<String> mimeTypes) {
         this.mimeTypes = mimeTypes;
     }
 }

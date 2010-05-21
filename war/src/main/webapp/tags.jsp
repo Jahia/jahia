@@ -70,7 +70,6 @@
 <s:termMatch/>
 <s:term/>
 <internal:processDisplay/>
-<internal:contentManager/>
 <internal:categoryManager/>
 <internal:contentPicker/>
 <internal:jobReport/>

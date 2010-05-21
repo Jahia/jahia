@@ -75,11 +75,11 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTEditConfiguration getEditConfiguration(String name) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> fields) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> ls(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields) throws GWTJahiaServiceException;
 
-    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, List<String> fields) throws GWTJahiaServiceException;
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, List<String> fields, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> getRoot(String repositoryType, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException;
 
     /**
      * Get a node by its path if existing.
@@ -98,7 +98,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public PagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery search, int limit, int offset) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters) throws GWTJahiaServiceException;
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException;
 

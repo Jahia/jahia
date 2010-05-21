@@ -33,27 +33,29 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import com.extjs.gxt.ui.client.data.TreeLoader;
+import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
 import com.extjs.gxt.ui.client.dnd.TreePanelDropTarget;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -61,34 +63,30 @@ import java.util.Set;
  * Date: 28 nov. 2008 - 10:09:32
  */
 public class RepositoryTab extends ContentPanel {
-    private String repositoryType;
+    private GWTRepository repository;
     private TreeLoader<GWTJahiaNode> loader;
     private TreeStore<GWTJahiaNode> store;
     private ContentRepositoryTabs folderTreeContainer;
     private TreePanel<GWTJahiaNode> m_tree;
-    private JahiaContentManagementServiceAsync contentManagementService;
 
     /**
      * Constructor
      *
      * @param container the parent container
-     * @param service   the repository rpc service
-     * @param type      the repository type (see constants)
-     * @param label     the repository label
+     * @param repo      the repository type (see constants)
      * @param config    the configuration to use
      */
-    public RepositoryTab(ContentRepositoryTabs container, final JahiaContentManagementServiceAsync service, String type, String label, final GWTManagerConfiguration config) {
+    public RepositoryTab(ContentRepositoryTabs container, GWTRepository repo, final GWTManagerConfiguration config) {
         super(new FitLayout());
         setBorders(false);
         setBodyBorder(false);
         getHeader().setBorders(false);
         folderTreeContainer = container;
-        contentManagementService = service;
-        repositoryType = type;
-        getHeader().setIconStyle("fm-" + repositoryType);
+        repository = repo;
+        getHeader().setIcon(ToolbarIconProvider.getInstance().getIcon(repo.getKey()));
 
         // tree component
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repositoryType);
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getKey());
         factory.setNodeTypes(config.getFolderTypes());
         factory.setMimeTypes(config.getMimeTypes());
         factory.setFilters(config.getFilters());
@@ -108,7 +106,7 @@ public class RepositoryTab extends ContentPanel {
 //        m_tree.init();
 
         setScrollMode(Style.Scroll.AUTO);
-        setHeading(label);
+        setHeading(repo.getTitle());
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 refresh();
@@ -207,8 +205,8 @@ public class RepositoryTab extends ContentPanel {
      *
      * @return
      */
-    public String getRepositoryType() {
-        return repositoryType;
+    public GWTRepository getRepository() {
+        return repository;
     }
 
 

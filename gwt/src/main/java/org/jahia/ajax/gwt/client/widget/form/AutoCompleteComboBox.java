@@ -20,11 +20,11 @@ import java.util.List;
  */
 public class AutoCompleteComboBox extends ComboBox<GWTJahiaNode> {
 
-    public AutoCompleteComboBox(final String nodeType, final int maxResult) {
+    public AutoCompleteComboBox(final List<String> nodeType, final int maxResult) {
         this(nodeType, maxResult, "name");
     }
 
-    public AutoCompleteComboBox(final String nodeType, final int maxResult, final String field) {
+    public AutoCompleteComboBox(final List<String> nodeType, final int maxResult, final String field) {
         setDisplayField(field);
         final ListStore<GWTJahiaNode> store = new ListStore<GWTJahiaNode>(new BaseListLoader(
                 new RpcProxy<List<GWTJahiaNode>>() {

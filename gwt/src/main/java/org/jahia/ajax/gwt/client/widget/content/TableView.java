@@ -90,7 +90,7 @@ public class TableView extends TopRightComponent {
                 Log.debug("retrieving children with type " + configuration.getNodeTypes() + " of " +
                         ((GWTJahiaNode) gwtJahiaFolder).getPath());
                 JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder,
-                        configuration.getNodeTypes() + "," + configuration.getFolderTypes(),
+                        configuration.getAllNodeTypes(),
                         configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
                         listAsyncCallback);
             }

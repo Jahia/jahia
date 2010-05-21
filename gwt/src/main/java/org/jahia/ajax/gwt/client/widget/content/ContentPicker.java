@@ -52,19 +52,17 @@ import com.extjs.gxt.ui.client.Style;
 public class ContentPicker extends TriPanelBrowserLayout {
     private PickedContent pickedContent;
 
-    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, String types, String filters, String mimeTypes, GWTManagerConfiguration config, boolean multiple) {
+    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,
+                         List<String> filters, List<String> mimeTypes, GWTManagerConfiguration config, boolean multiple) {
         super(config);
         //setWidth("714px");
         setHeight("700px");
 
-        if (types != null && types.length() > 0) {
-            config.setNodeTypes(types);
+        if (mimeTypes != null && mimeTypes.size() > 0) {
+            config.getMimeTypes().addAll(mimeTypes);
         }
-        if (mimeTypes != null && mimeTypes.length() > 0) {
-            config.setMimeTypes(mimeTypes);
-        }
-        if (filters != null && filters.length() > 0) {
-            config.setFilters(filters);
+        if (filters != null && filters.size() > 0) {
+            config.getFilters().addAll(filters);
         }
 
         // construction of the UI components
@@ -83,9 +81,9 @@ public class ContentPicker extends TriPanelBrowserLayout {
                 externalAllowed = false;
                 internalAllowed = true;
             }
-            bottomComponents = new PickedPageView(config.getName(), externalAllowed, internalAllowed, selectedNodes, multiple, config, false);
+            bottomComponents = new PickedPageView(externalAllowed, internalAllowed, selectedNodes, multiple, config, false);
         } else {
-            bottomComponents = new PickedContentView(selectionLabel, config.getName(), selectedNodes, multiple, config);
+            bottomComponents = new PickedContentView(selectionLabel, selectedNodes, multiple, config);
         }
         TopRightComponent contentPicker = new ContentPickerBrowser(config.getName(), rootPath, selectedNodes, config, multiple);
 

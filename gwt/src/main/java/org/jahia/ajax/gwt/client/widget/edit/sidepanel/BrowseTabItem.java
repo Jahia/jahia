@@ -36,9 +36,9 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     protected TreeGrid<GWTJahiaNode> tree;
     protected TreeGridDropTarget treeDropTarget;
     protected String repositoryType;
-    protected String folderTypes;
+    protected List<String> folderTypes;
 
-    public BrowseTabItem(final String repositoryType, final String folderTypes, GWTSidePanelTab config) {
+    public BrowseTabItem(final String repositoryType, final List<String> folderTypes, GWTSidePanelTab config) {
         super(config);
         this.repositoryType = repositoryType;
         this.folderTypes = folderTypes;

@@ -52,6 +52,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
@@ -74,20 +75,20 @@ public class ContentTreeGrid extends LayoutContainer {
     private final GWTManagerConfiguration configuration;
     private List<GWTJahiaNode> selectedNodes;
     private boolean multiple;
-    private String repositoryType;
+    private GWTRepository repository;
 
     /**
      * Content tree table
      *
-     * @param repositoryType
+     * @param repository
      * @param selectedNodes
      * @param multiple
      * @param configuration
      */
-    public ContentTreeGrid(String repositoryType, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration configuration) {
+    public ContentTreeGrid(GWTRepository repository, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration configuration) {
         this.multiple = multiple;
         this.linker = new ManagerLinker(configuration);
-        this.repositoryType = repositoryType;
+        this.repository = repository;
         this.configuration = configuration;
         this.selectedNodes = selectedNodes;
 
@@ -105,7 +106,7 @@ public class ContentTreeGrid extends LayoutContainer {
 
         // add toolbar
         final ContentToolbar contentToolbar = new ContentToolbar(configuration, linker);
-        final TreeGridTopRightComponent treeGridTopRightComponent = new TreeGridTopRightComponent(repositoryType, configuration, selectedNodes);
+        final TreeGridTopRightComponent treeGridTopRightComponent = new TreeGridTopRightComponent(repository, configuration, selectedNodes);
 
 
         // register component linker
@@ -190,8 +191,8 @@ public class ContentTreeGrid extends LayoutContainer {
      *
      * @return String
      */
-    protected String getRepoType() {
-        return repositoryType;
+    protected GWTRepository getRepository() {
+        return repository;
     }
 
 
@@ -199,15 +200,15 @@ public class ContentTreeGrid extends LayoutContainer {
      * Tree Grid TopRightComponent wrapper
      */
     private class TreeGridTopRightComponent extends TopRightComponent {
-        private String repositoryType;
+        private GWTRepository repository;
         private GWTManagerConfiguration configuration;
         private boolean init = true;
         private TreeGrid<GWTJahiaNode> m_treeGrid;
         private TreeLoader<GWTJahiaNode> loader;
         private List<GWTJahiaNode> selectedNodes;
 
-        private TreeGridTopRightComponent(String repositoryType, GWTManagerConfiguration configuration, List<GWTJahiaNode> selectedNodes) {
-            this.repositoryType = repositoryType;
+        private TreeGridTopRightComponent(GWTRepository repository, GWTManagerConfiguration configuration, List<GWTJahiaNode> selectedNodes) {
+            this.repository = repository;
             this.configuration = configuration;
             this.selectedNodes = selectedNodes;
             init();
@@ -218,7 +219,7 @@ public class ContentTreeGrid extends LayoutContainer {
          */
         private void init() {
 
-            GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repositoryType != null ? repositoryType : JCRClientUtils.GLOBAL_REPOSITORY);
+            GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getKey());
             factory.setNodeTypes(configuration.getFolderTypes());
             factory.setMimeTypes(configuration.getMimeTypes());
             factory.setFilters(configuration.getFilters());
@@ -264,8 +265,13 @@ public class ContentTreeGrid extends LayoutContainer {
             m_treeGrid = factory.getTreeGrid(new ColumnModel(columnConfigList));
             m_treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
                 public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+                    final GWTJahiaNode selectedNode = m_treeGrid.getSelectionModel().getSelectedItem();
+                    if (selectedNode != null) {
+                        onContentPicked(selectedNode);
+                    }
+
                     if (mainListStore != null) {
-                        mainListStore.getLoader().load(m_treeGrid.getSelectionModel().getSelectedItem());
+                        mainListStore.getLoader().load(selectedNode);
                     }
                 }
             });

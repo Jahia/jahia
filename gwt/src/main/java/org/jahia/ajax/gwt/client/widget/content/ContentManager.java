@@ -34,12 +34,13 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
+
+import java.util.List;
 
 
 /**
@@ -50,22 +51,19 @@ import org.jahia.ajax.gwt.client.widget.tripanel.*;
  */
 public class ContentManager extends TriPanelBrowserViewport {
 
-    public ContentManager(final String rootPath, final String types, final String filters, final String mimeTypes, final GWTManagerConfiguration config) {
+    public ContentManager(final List<String> filters, List<String> mimeTypes, final GWTManagerConfiguration config) {
         // superclass constructor (define linker)
         super(config);
-        init(rootPath, types, filters, mimeTypes, config);
+        init(filters, mimeTypes, config);
 
     }
 
-    private void init(final String rootPath, String types, String filters, String mimeTypes, final GWTManagerConfiguration config) {
-        if (types != null && types.length() > 0) {
-            config.setNodeTypes(types);
+    private void init(List<String> filters, List<String> mimeTypes, final GWTManagerConfiguration config) {
+        if (mimeTypes != null && mimeTypes.size() > 0) {
+            config.getMimeTypes().addAll(mimeTypes);
         }
-        if (mimeTypes != null && mimeTypes.length() > 0) {
-            config.setMimeTypes(mimeTypes);
-        }
-        if (filters != null && filters.length() > 0) {
-            config.setFilters(filters);
+        if (filters != null && filters.size() > 0) {
+            config.getFilters().addAll(filters);
         }
 
         // construction of the UI components
@@ -74,6 +72,20 @@ public class ContentManager extends TriPanelBrowserViewport {
             tree = new ContentRepositoryTabs(config);
         } else {
             tree = null;
+            DeferredCommand.addCommand(new Command() {
+                public void execute() {
+                    JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getKey(), null,null,null,null,null,null,new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                        public void onSuccess(List<GWTJahiaNode> gwtJahiaNode) {
+                            linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode.get(0));
+                            linker.refresh();
+                        }
+
+                        public void onApplicationFailure(Throwable throwable) {
+                            Log.error("Unable to load node with path", throwable);
+                        }
+                    });
+                }
+            });
         }
         final ContentViews contentViews = new ContentViews(config);
         final BottomRightComponent tabs = new ContentDetails(config);
@@ -116,20 +128,6 @@ public class ContentManager extends TriPanelBrowserViewport {
         contentViews.initContextMenu();
         linker.handleNewSelection();
         if (config.isExpandRoot()) {
-            DeferredCommand.addCommand(new Command() {
-                public void execute() {
-                    JahiaContentManagementService.App.getInstance().getNode(rootPath, new BaseAsyncCallback<GWTJahiaNode>() {
-                        public void onSuccess(GWTJahiaNode gwtJahiaNode) {
-                            linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode);
-                            linker.refresh();
-                        }
-
-                        public void onApplicationFailure(Throwable throwable) {
-                            Log.error("Unable to load node with path " + rootPath, throwable);
-                        }
-                    });
-                }
-            });
         } else {
             linker.handleNewSelection();
         }

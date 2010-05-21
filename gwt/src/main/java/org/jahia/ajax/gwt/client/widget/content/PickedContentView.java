@@ -60,8 +60,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class PickedContentView extends BottomRightComponent implements PickedContent {
-    private String pickerType;
-    // private TabPanel m_component;
     private GroupingStore<GWTJahiaNode> store;
     private Grid<GWTJahiaNode> m_grid;
     private GWTManagerConfiguration config;
@@ -72,10 +70,9 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
     private String selectionHeaderMessage = "Image selected: ";
     private TabItem itemPreview = new TabItem("Preview");
 
-    public PickedContentView(String selectionLabel, String pickerType, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config) {
+    public PickedContentView(String selectionLabel, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config) {
         this.selectionHeaderMessage = selectionLabel;
         this.config = config;
-        this.pickerType = pickerType;
         this.selectedNodes = selectedNodes;
         this.multiple = multiple;
         createUI();
@@ -261,7 +258,7 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
                 setSelection(list);
             }
 
-            if (!multiple && pickerType.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
+            if (!multiple && config.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
                 itemPreview.setUrl(((GWTJahiaNode) root).getPath());
             }
         }
@@ -286,11 +283,10 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
         if (readOnly) {
             return;
         }
-        String[] nt = config.getNodeTypes().split(",");
         if (selection != null && selection.size() > 0) {
             boolean found = false;
-            for (String s : nt) {
-                if (config.getNodeTypes().length() == 0 || selection.get(0).getNodeTypes().contains(s) || selection.get(0).getInheritedNodeTypes().contains(s)) {
+            for (String s : config.getNodeTypes()) {
+                if (selection.get(0).getNodeTypes().contains(s) || selection.get(0).getInheritedNodeTypes().contains(s)) {
                     found = true;
                     break;
                 }

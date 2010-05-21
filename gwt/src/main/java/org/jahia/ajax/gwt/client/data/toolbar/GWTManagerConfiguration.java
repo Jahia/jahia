@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.client.data.toolbar;
 
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.io.Serializable;
@@ -51,15 +50,16 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private List<GWTColumn> tableColumns;
     private List<String> tableColumnKeys;
 
-    private List<String> accordionPanels;
+    private List<GWTRepository> repositories;
     private List<String> tabs;
     private String selectedAccordion = null;
     private boolean hideLeftPanel = false;
 
-    private String folderTypes;
-    private String nodeTypes;
-    private String filters;
-    private String mimeTypes;
+    private List<String> folderTypes;
+    private List<String> nodeTypes;
+    private List<String> allTypes;
+    private List<String> filters;
+    private List<String> mimeTypes;
 
     private short defaultView;
     private boolean enableFileDoubleClick = true;
@@ -88,7 +88,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     public GWTManagerConfiguration() {
         tableColumns = new ArrayList<GWTColumn>();
         tableColumnKeys = new ArrayList<String>();
-        accordionPanels = new ArrayList<String>();
+        repositories = new ArrayList<GWTRepository>();
         tabs = new ArrayList<String>();
     }
 
@@ -105,8 +105,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         tableColumnKeys.add(col.getKey());
     }
 
-    public void addAccordion(String accordion) {
-        accordionPanels.add(accordion);
+    public void addRepository(GWTRepository repository) {
+        repositories.add(repository);
     }
 
     public void setSelectedAccordion(String accordion) {
@@ -143,8 +143,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         return tableColumnKeys;
     }
 
-    public List<String> getAccordionPanels() {
-        return accordionPanels;
+    public List<GWTRepository> getRepositories() {
+        return repositories;
     }
 
     public String getSelectedAccordion() {
@@ -163,35 +163,43 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         this.enableTextMenu = enableTextMenu;
     }
 
-    public String getFolderTypes() {
+    public List<String> getFolderTypes() {
         return folderTypes;
     }
 
-    public void setFolderTypes(String folderTypes) {
+    public void setFolderTypes(List<String> folderTypes) {
         this.folderTypes = folderTypes;
     }
 
-    public String getNodeTypes() {
+    public List<String> getNodeTypes() {
         return nodeTypes;
     }
 
-    public void setNodeTypes(String nodeTypes) {
+    public void setNodeTypes(List<String> nodeTypes) {
         this.nodeTypes = nodeTypes;
     }
 
-    public String getFilters() {
+    public List<String> getAllNodeTypes() {
+        if (allTypes == null) {
+            allTypes = new ArrayList<String>(nodeTypes);
+            allTypes.addAll(folderTypes);
+        }
+        return allTypes;
+    }
+
+    public List<String> getFilters() {
         return filters;
     }
 
-    public void setFilters(String filters) {
+    public void setFilters(List<String> filters) {
         this.filters = filters;
     }
 
-    public String getMimeTypes() {
+    public List<String> getMimeTypes() {
         return mimeTypes;
     }
 
-    public void setMimeTypes(String mimeTypes) {
+    public void setMimeTypes(List<String> mimeTypes) {
         this.mimeTypes = mimeTypes;
     }
 

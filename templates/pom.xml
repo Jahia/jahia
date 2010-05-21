@@ -74,6 +74,7 @@
         <module>location</module>
         <module>metrics</module>
         <module>news</module>
+        <module>feedimporter</module>
         <module>grid</module>
         <module>people</module>
         <module>poll</module>

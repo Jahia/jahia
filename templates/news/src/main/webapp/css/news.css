@@ -97,14 +97,14 @@
 #bodywrapper .newsMeta {
     clear: both;
     font-size: 80%;
-    color: #999999;
+    color: #333;
     margin: 0.5em 0;
 }
 
 #bodywrapper .newsMeta a,
     #bodywrapper .newsMeta a:link,
     #bodywrapper .newsMeta a:visited {
-    color: #999999;
+    color: #333;
     text-decoration: none;
 }
 
@@ -224,7 +224,7 @@
 }
 
 #bodywrapper .newsItem .newsInfo {
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 }
 
 #bodywrapper .relatedNews {
@@ -236,4 +236,10 @@
 #bodywrapper .relatedNews h3 {
     line-height: 2em;
     color: #333333;
+}
+#bodywrapper span.categorytitle {
+	background:transparent url(img/categorytitle.png) no-repeat scroll 0 50%;
+	display:inline;
+	margin-right:8px;
+	padding:5px 0 5px 18px;
 }

@@ -24,16 +24,12 @@
     </p>
     <!-- display categories applied on this news -->
     <c:if test="${!empty newsCategories }">
-        <p class="newsMeta">
+        <div class="newsMeta">
             <span class="categoryLabel"><fmt:message key='categories'/> :</span>
-            <a href="#">
-                <ul>
                     <c:forEach items="${newsCategories}" var="category">
-                        <li>${category.node.properties['jcr:title'].string}</li>
+                       <span class="categorytitle">${category.node.properties['jcr:title'].string}</span>
                     </c:forEach>
-                </ul>
-            </a>
-        </p>
+        </div>
     </c:if>
     <!-- image and news body -->
     <div class="newsImg"><img src="${newsImage.node.url}"/></div>

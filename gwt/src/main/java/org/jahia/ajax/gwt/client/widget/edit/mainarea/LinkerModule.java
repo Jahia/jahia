@@ -30,9 +30,6 @@ public class LinkerModule extends SimpleModule {
         this.mainModule = m;
         this.nodeTypes = nodeTypes;
         setBorders(false);
-
-        setHeight(55);
-
         panel = new HorizontalPanel();
         panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
         panel.addStyleName("x-small-editor");
@@ -40,7 +37,7 @@ public class LinkerModule extends SimpleModule {
         panel.addStyleName("x-panel-linker");
 
 //        html = new HTML("<img src=\""+JahiaGWTParameters.getContextPath() + "/templates/default/images/add.png"+"\" /> Add new content here");
-        html = new HTML("<br/>Drop this to be linked<br/><br/>");
+        html = new HTML("<p class=\"linkAction\">Drop this to be linked<br/></p>");
         panel.add(html);
         add(panel);
     }
@@ -59,8 +56,8 @@ public class LinkerModule extends SimpleModule {
                 if (gwtJahiaGetPropertiesResult.getProperties().containsKey("j:bindedComponent")) {
                     final GWTJahiaNodeProperty o = gwtJahiaGetPropertiesResult.getProperties().get("j:bindedComponent");
                     panel.removeAll();
-                    html = new HTML("Linked to: " + o.getValues().get(
-                            0).getNode().getPath() + ".<br/>Drop this to be linked<br/><br/>");
+                    html = new HTML("<p class=\"linkPath\">Linked to: " + o.getValues().get(
+                            0).getNode().getPath() + "</p><p class=\"linkAction\">Drop this to be linked</p>");
                     panel.add(html);
                     panel.layout();
                 }

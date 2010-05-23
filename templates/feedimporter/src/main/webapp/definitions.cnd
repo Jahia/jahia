@@ -10,5 +10,6 @@
 
 [jnt:feedContent] > jnt:content
  - * (undefined)
+ + * (jnt:feedContent)
 
 

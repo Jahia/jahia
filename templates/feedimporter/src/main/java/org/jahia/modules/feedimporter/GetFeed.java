@@ -83,7 +83,7 @@ public class GetFeed implements Action {
         */
         
         NewsMLImporter newsMLImporter = new NewsMLImporter();
-        newsMLImporter.importFeed(remoteUrl, remoteUser, remotePassword, node);
+        newsMLImporter.importFeed(remoteUrl, remoteUser, remotePassword, node, jcrSessionWrapper);
 
         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     }

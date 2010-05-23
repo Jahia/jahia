@@ -5,6 +5,7 @@ import org.apache.commons.vfs.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -55,7 +56,7 @@ public class NewsMLImporter {
         processElement(rootElement, newsMLNode);
     }
 
-    public void importFeed (String feedURL, String userName, String password, JCRNodeWrapper node) throws IOException, JDOMException, RepositoryException {
+    public void importFeed (String feedURL, String userName, String password, JCRNodeWrapper node, JCRSessionWrapper session) throws IOException, JDOMException, RepositoryException {
 
         if ((userName != null) && (password != null)) {
             StaticUserAuthenticator auth = new StaticUserAuthenticator(userName, password, null);
@@ -67,15 +68,19 @@ public class NewsMLImporter {
         FileSystemManager fsManager = VFS.getManager();
         FileObject jarFile = fsManager.resolveFile( feedURL );
 
+        session.checkout(node);
+
         // List the children of the Jar file
         FileObject[] children = jarFile.getChildren();
         logger.debug( "Children of " + jarFile.getName().getURI() );
         for ( int i = 0; i < children.length; i++ ) {
-            System.out.println( children[ i ].getName().getBaseName() );
-            InputStream currentNewsItemInputStream = children[i].getContent().getInputStream();
-            Document document = new SAXBuilder().build(currentNewsItemInputStream);
+            logger.debug( children[ i ].getName().getBaseName() );
+            if ("xml".equals(children[i].getName().getExtension().toLowerCase())) {
+                InputStream currentNewsItemInputStream = children[i].getContent().getInputStream();
+                Document document = new SAXBuilder().build(currentNewsItemInputStream);
 
-            processDocument(document, node);    
+                processDocument(document, node);
+            }
         }
 
     }

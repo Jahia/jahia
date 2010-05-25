@@ -12,7 +12,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Studio Mode*/
 div[config="studiomode"] .x-toolbar{
 	background:none !important;
-	background : #333333 url(../images/xtheme-jahia-andromeda/studiomode/toolbar/bg.png) repeat-x top left !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/studiomode/toolbar/bg.png) no-repeat top right !important;
 	border-color:#333333!important;
 }
 div[config="studiomode"] .x-toolbar button {

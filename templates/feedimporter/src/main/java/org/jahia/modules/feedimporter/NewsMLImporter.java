@@ -12,12 +12,9 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -37,7 +34,7 @@ public class NewsMLImporter {
 
     public void processElement(Element element, JCRNodeWrapper node) throws RepositoryException {
         if (element.getAttributeValue("Href") != null) {
-            logger.info("Found reference to external resource " + element.getAttributeValue("Href"));
+            logger.info("Found reference to external resource " + element.getAttributeValue("Href") + " on tag " + element.getName());
         }
         for (Element childElement : (List<Element>) element.getChildren()) {
             JCRNodeWrapper childNode = node.addNode(childElement.getName(), "jnt:feedContent");
@@ -48,16 +45,19 @@ public class NewsMLImporter {
         }
     }
 
-    public void processDocument(Document document, JCRNodeWrapper node) throws RepositoryException {
+    public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName) throws RepositoryException {
+
+        JCRNodeWrapper feedEntryNode = node.addNode(entryBaseName, "jnt:feedEntry");
+
         Element rootElement = document.getRootElement();
-        JCRNodeWrapper newsMLNode = node.addNode(rootElement.getName(), "jnt:feedContent");
+        JCRNodeWrapper newsMLNode = feedEntryNode.addNode(rootElement.getName(), "jnt:feedContent");
         for (Attribute childElementAttribute : (List<Attribute>) rootElement.getAttributes()) {
             newsMLNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());
         }
         processElement(rootElement, newsMLNode);
     }
 
-    public void importFeed (String feedURL, String userName, String password, JCRNodeWrapper node, JCRSessionWrapper session) throws IOException, JDOMException, RepositoryException {
+    public void importFeed (String feedURL, String userName, String password, JCRNodeWrapper parentNode, JCRSessionWrapper session) throws IOException, JDOMException, RepositoryException {
 
         if ((userName != null) && (password != null)) {
             StaticUserAuthenticator auth = new StaticUserAuthenticator(userName, password, null);
@@ -69,7 +69,7 @@ public class NewsMLImporter {
         FileSystemManager fsManager = VFS.getManager();
         FileObject jarFile = fsManager.resolveFile( feedURL );
 
-        session.checkout(node);
+        session.checkout(parentNode);
 
 
         // List the children of the Jar file
@@ -83,7 +83,7 @@ public class NewsMLImporter {
                 // session.importXML(node.getPath(), currentNewsItemInputStream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
                 Document document = new SAXBuilder().build(currentNewsItemInputStream);
 
-                processDocument(document, node);
+                processDocument(document, parentNode, children[i].getName().getBaseName());
             }
         }
 

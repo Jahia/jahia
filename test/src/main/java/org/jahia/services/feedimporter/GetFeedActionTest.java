@@ -53,7 +53,7 @@ public class GetFeedActionTest extends TestCase {
         }
     }
 
-    public void testRemotePublishAction() throws Exception {
+    public void testGetFeedAction() throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));

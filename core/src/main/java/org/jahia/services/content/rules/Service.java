@@ -45,10 +45,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapperImpl;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
@@ -60,6 +57,7 @@ import org.jahia.services.tags.TaggingService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.CronTrigger;
@@ -566,6 +564,21 @@ public class Service extends JahiaService {
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    public void publishNode(NodeWrapper node,KnowledgeHelper drools) throws RepositoryException {
+        JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
+        final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
+        JCRPublicationService.getInstance().publish(nodeWrapper.getPath(), jcrSessionWrapper.getWorkspace().getName(),
+                                                    Constants.LIVE_WORKSPACE,
+                                                    Collections.singleton(jcrSessionWrapper.getLocale().toString()),
+                                                    true, false);
+    }
+
+    public void startWorkflowOnNode(NodeWrapper node,String processKey, String provider,KnowledgeHelper drools) throws RepositoryException {
+        JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
+        final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
+        WorkflowService.getInstance().startProcess(nodeWrapper, processKey, provider, new HashMap<String, Object>());
     }
 
     public void setTaggingService(TaggingService taggingService) {

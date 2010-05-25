@@ -330,6 +330,10 @@ public class WorkflowService {
         args.put("locale", stageNode.getSession().getLocale());
         args.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey));
         final String processId = lookupProvider(provider).startProcess(processKey, args);
+        if(logger.isDebugEnabled()) {
+            logger.debug("A workflow "+processKey+" from "+provider+" has been started on node: "+stageNode.getPath()+
+                         " from workspace "+args.get("workspace")+" in locale "+args.get("locale")+ " with id "+processId);
+        }
         return processId;
     }
 

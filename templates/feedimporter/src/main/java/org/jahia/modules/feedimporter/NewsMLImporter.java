@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -61,6 +62,7 @@ public class NewsMLImporter {
         String newsUrgency = getElement(document.getRootElement(), "NewsItem/NewsManagement/Urgency").getAttributeValue("FormalName");
         String newsStatus = getElement(document.getRootElement(), "NewsItem/NewsManagement/Status").getAttributeValue("FormalName");
         Element newsInstruction = getElement(document.getRootElement(), "NewsItem/NewsManagement/Instruction");
+        String newsHeadline = getElement(document.getRootElement(), "NewsItem/NewsComponent/NewsLines/HeadLine").getText();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         Date newsDate = null;
         try {
@@ -78,7 +80,15 @@ public class NewsMLImporter {
         JCRNodeWrapper languageNode = languageSession.getNode(node.getPath());
         languageSession.checkout(languageNode);
 
-        JCRNodeWrapper feedEntryNode = languageNode.addNode(entryBaseName, "jnt:feedEntry");
+        JCRNodeWrapper feedEntryNode = languageNode.addNode(entryBaseName, "jnt:newsMLItem");
+        feedEntryNode.setProperty("jcr:title", newsHeadline);
+        Calendar newsCalendar=Calendar.getInstance();
+        newsCalendar.setTime(newsDate);
+        feedEntryNode.setProperty("date", newsCalendar);
+        feedEntryNode.setProperty("itemID", newsItemID);
+        feedEntryNode.setProperty("publicIdentifier", newsPublicIdentifier);
+        feedEntryNode.setProperty("urgency", Long.parseLong(newsUrgency));
+        feedEntryNode.setProperty("status", newsStatus);
 
         Element rootElement = document.getRootElement();
         JCRNodeWrapper newsMLNode = feedEntryNode.addNode(rootElement.getName(), "jnt:feedContent");

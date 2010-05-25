@@ -6,15 +6,15 @@
  - password (string)
  - type (string) < newsml
  - syncro (string)
- + * (jnt:feedEntry)
+ + * (jnt:newsMLItem)
 
-[jnt:newsMLItem] > [jnt:news]
+[jnt:newsMLItem] > jnt:news
  - itemID (string)
  - status (string)
  - publicIdentifier (string)
-
-[jnt:feedEntry] > jnt:content, mix:title
+ - subjectCode (string)
+ - urgency (long)
+ - contentUpdated (date) hidden
  + * (jnt:feedContent)
 
 [jnt:feedContent] > nt:unstructured
-- contentUpdated (date) hidden

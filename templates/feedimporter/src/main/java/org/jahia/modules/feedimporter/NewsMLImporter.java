@@ -61,7 +61,29 @@ public class NewsMLImporter {
         String newsDateStr = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/DateId").getText();
         String newsUrgency = getElement(document.getRootElement(), "NewsItem/NewsManagement/Urgency").getAttributeValue("FormalName");
         String newsStatus = getElement(document.getRootElement(), "NewsItem/NewsManagement/Status").getAttributeValue("FormalName");
+        if ("Embargoed".equals(newsStatus)) {
+            Element statusWillChange = getElement(document.getRootElement(), "NewsItem/NewsManagement/StatusWillChange");
+            if (statusWillChange != null) {
+                Element dateAndTime = getElement(document.getRootElement(), "NewsItem/NewsManagement/StatusWillChange/DateAndTime");
+                if (dateAndTime != null) {
+                    // date and time is set, let's integrate with time-based publishing.
+                    String dateAndTimeStr = dateAndTime.getText();
+                }
+            }
+        }
         Element newsInstruction = getElement(document.getRootElement(), "NewsItem/NewsManagement/Instruction");
+        if (newsInstruction != null) {
+            String instructionName = newsInstruction.getAttributeValue("FormalName");
+            if ("LiftEmbargo".equals(instructionName)) {
+
+            } else if ("Rectify".equals(instructionName)) {
+
+            } else if ("Update".equals(instructionName)) {
+
+            } else if ("Delete".equals(instructionName)) {
+                
+            }
+        }
         String newsHeadline = getElement(document.getRootElement(), "NewsItem/NewsComponent/NewsLines/HeadLine").getText();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         Date newsDate = null;

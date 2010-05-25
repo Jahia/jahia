@@ -77,3 +77,5 @@
 [consequence][]Execute the action {actionName} with {property} on the {node}=service.executeActionLater(node, "{property}",{actionName}, drools);
 [consequence][]Publish the {node}=service.publishNode(node, drools);
 [consequence][]Start the workflow {processKey} from {provider} on the {node}=service.startWorkflowOnNode(node,{processKey},{provider}, drools);
+[consequence][]Move to split folder {node}=service.moveToSplitFolder(node, drools);
+[consequence][]Move subnodes of {node} to split folder=service.moveSubnodesToSplitFolder(node, drools);

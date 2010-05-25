@@ -34,10 +34,7 @@ package org.jahia.services.content;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.*;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
@@ -89,7 +86,11 @@ public class DefaultValueListener extends DefaultEventListener {
                         try {
                             Node n = null;
                             if (event.getType() == Event.NODE_ADDED) {
-                                n = (Node) s.getItem(event.getPath());
+                                try {
+                                    n = (Node) s.getItem(event.getPath());
+                                } catch (PathNotFoundException e) {
+                                    continue;
+                                }
                             }
                             if (event.getPath().endsWith(Constants.JCR_MIXINTYPES)) {
                                 String path = event.getPath().substring(0, event.getPath().lastIndexOf('/'));

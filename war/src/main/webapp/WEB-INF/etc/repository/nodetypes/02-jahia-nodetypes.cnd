@@ -474,6 +474,9 @@
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:page)
 
+[jmix:autoSplitFolders] mixin extends = jnt:contentList
+ - j:splitConfig (string) mandatory
+
 //---------------------------------------------------------
 // Template studio
 //---------------------------------------------------------

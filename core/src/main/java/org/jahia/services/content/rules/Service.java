@@ -69,6 +69,7 @@ import javax.jcr.*;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -563,6 +564,69 @@ public class Service extends JahiaService {
             schedulerService.scheduleJob(jobDetail, new CronTrigger(jobName + "TRIGGER", "ACTIONS_JOBS", node.getNode().getProperty(propertyName).getString()));
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void moveSubnodesToSplitFolder(NodeWrapper n, KnowledgeHelper drools) throws RepositoryException {
+        NodeIterator ni = n.getNode().getNodes();
+        while (ni.hasNext()) {
+            Node node = (Node) ni.next();
+            moveToSplitFolder((JCRNodeWrapper) node);
+        }
+    }
+
+    public void moveToSplitFolder(NodeWrapper n, KnowledgeHelper drools) throws RepositoryException  {
+        moveToSplitFolder((JCRNodeWrapper) n.getNode());
+    }
+
+    private void moveToSplitFolder(JCRNodeWrapper node) throws RepositoryException  {
+        try {
+            Node parent = node.getParent();
+            String splitConfig = parent.getProperty("j:splitConfig").getString();
+            String[] config = splitConfig.split(",");
+            for (int i = 0; i < config.length; i++) {
+                String type = config[i++];
+                String propertyName = config[i++];
+                String details = config[i];
+
+                String key = null;
+
+                try {
+                    if (type.equals("firstChars")) {
+                        if (propertyName.equals("j:nodename")) {
+                            key = node.getName();
+                            key = StringUtils.substringAfter(key,":");
+                        } else if (node.hasProperty(propertyName)) {
+                            key = node.getProperty(propertyName).getString();
+                        }
+                        if (key != null && key.length() > Integer.parseInt(details)) {
+                            key = key.substring(0, Integer.parseInt(details));
+                        }
+                    } else if (type.equals("date")) {
+                        if (node.hasProperty(propertyName)) {
+                            Calendar calendar = node.getProperty(propertyName).getDate();
+                            SimpleDateFormat sdf = new SimpleDateFormat(details);
+                            key = sdf.format(calendar.getTime());
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("Cannot split folder",e);
+                    key = null;
+                }
+
+                if (key != null) {
+                    if (!parent.hasNode(key)) {
+                        parent = parent.addNode(key, parent.getPrimaryNodeType().getName());
+                    } else {
+                        parent = parent.getNode(key);
+                    }
+                }
+            }
+            if (!parent.getPath().equals(node.getParent().getPath())) {
+                node.getSession().move(node.getPath(), parent.getPath() + "/"+ node.getName());
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();
         }
     }
 

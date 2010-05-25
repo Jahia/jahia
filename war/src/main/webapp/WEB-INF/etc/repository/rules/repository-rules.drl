@@ -116,3 +116,18 @@ rule "Profile Image update"
         Create a square thumbnail on reference "avatar_120" of size 120
         Create a square thumbnail on reference "avatar_60" of size 60
 end
+
+rule "Move subnodes to split folder"
+    when
+        The type jmix:autoSplitFolders has been assigned to a node
+    then
+        Move subnodes of node to split folder
+end
+
+rule "Move to split folder"
+    when
+        A new node is created
+            - the parent has the type jmix:autoSplitFolders
+    then
+        Move to split folder node
+end

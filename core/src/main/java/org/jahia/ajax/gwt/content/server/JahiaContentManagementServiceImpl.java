@@ -521,6 +521,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChildrenNode, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException {
         Iterator<String> langCode = langCodeProperties.keySet().iterator();
+
+        // save shared properties
+        saveProperties(Arrays.asList(node), sharedProperties);
+
         // save properties per lang
         while (langCode.hasNext()) {
             String currentLangCode = langCode.next();
@@ -532,8 +536,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.updateChildren(node, orderedChildrenNode, retrieveCurrentSession());
 
 
-        // save shared properties
-        saveProperties(Arrays.asList(node), sharedProperties);
 
         // save acl
         if (acl != null) {

@@ -12,14 +12,20 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*Studio Mode*/
 div[config="studiomode"] .x-toolbar{
 	background:none !important;
-	background : #333333 url(../images/xtheme-jahia-andromeda/panel/studiomode-bg.png) repeat-x top left !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/studiomode/toolbar/bg.png) repeat-x top left !important;
 	border-color:#333333!important;
 }
 div[config="studiomode"] .x-toolbar button {
 	color:#fff !important;
 }
-div[config="studiomode"] .x-toolbar button:hover{
-	color:#000 !important;
+div[config="studiomode"] .x-btn-tl, div[config="studiomode"] .x-btn-tr, div[config="studiomode"] .x-btn-tc, div[config="studiomode"] .x-btn-ml, div[config="studiomode"] .x-btn-mr, div[config="studiomode"] .x-btn-mc, div[config="studiomode"] .x-btn-bl, div[config="studiomode"] .x-btn-br, div[config="studiomode"] .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/studiomode/button/btn.png)!important;
+}
+div[config="studiomode"] .x-toolbar .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/studiomode/grid/grid-split.gif) !important;
+}
+div[config="studiomode"] .x-toolbar .x-btn-over button {
+    color:#000 !important;
 }
 
 /****************************************************************************/

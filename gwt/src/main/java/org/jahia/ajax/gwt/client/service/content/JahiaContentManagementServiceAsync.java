@@ -241,28 +241,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getPublicationInfo(List<String> uuids, boolean includeReferences, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
 
     /**
-     * Get all deployed workflow in the system
-     * @param async
-     * @throws GWTJahiaServiceException
-     */
-    void getWorkflowDefinitions(AsyncCallback<List<GWTJahiaWorkflowDefinition>> async);
-
-
-    /**
-     * Update node type workflow rule
-     * @param async
-     */
-    void updateNodeTypeWorkflowRule(List<GWTJahiaWorflowNodeType> toAdd,List<GWTJahiaWorflowNodeType> toRemove, AsyncCallback async);
-
-    /**
-     * Get node type workflow
-     * @param async
-     */
-    void getNodeTypeWorkflowRule(AsyncCallback<List<GWTJahiaWorflowNodeType>> async);
-
-    void getWorkflowNodeTypeConfig(AsyncCallback<GWTJahiaWorkflowNodeTypeConfig> async);
-
-    /**
      * Get higthligthed
      * @param original
      * @param amendment

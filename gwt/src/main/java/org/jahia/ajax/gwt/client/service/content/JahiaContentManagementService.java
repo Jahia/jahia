@@ -248,21 +248,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      */
     public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean includeReferences) throws GWTJahiaServiceException;
 
-    /**
-     * Get all deployed workflow in the system
-     *
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public List<GWTJahiaWorkflowDefinition> getWorkflowDefinitions() throws GWTJahiaServiceException;
-
-
-    public void updateNodeTypeWorkflowRule(List<GWTJahiaWorflowNodeType> toAdd,List<GWTJahiaWorflowNodeType> toRemove) throws GWTJahiaServiceException;
-
-    public List<GWTJahiaWorflowNodeType> getNodeTypeWorkflowRule() throws GWTJahiaServiceException;
-
-    public GWTJahiaWorkflowNodeTypeConfig getWorkflowNodeTypeConfig() throws GWTJahiaServiceException;
-
 
     public String getHighlighted(String original, String amendment) throws GWTJahiaServiceException;
 

@@ -1035,55 +1035,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-     * Get all deployed workflow
-     *
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public List<GWTJahiaWorkflowDefinition> getWorkflowDefinitions() throws GWTJahiaServiceException {
-        return workflow.getWorkflowDefinitions();
-    }
-
-    /**
-     * Update node type workflow rule
-     */
-    public void updateNodeTypeWorkflowRule(List<GWTJahiaWorflowNodeType> toAdd, List<GWTJahiaWorflowNodeType> toRemove) throws GWTJahiaServiceException {
-        for (GWTJahiaWorflowNodeType g : toRemove) {
-            workflow.removeNodeTypeWorkflowRule(g);
-        }
-
-        for (GWTJahiaWorflowNodeType g : toAdd) {
-            workflow.updateNodeTypeWorkflowRule(g);
-        }
-    }
-
-    public List<GWTJahiaWorflowNodeType> getNodeTypeWorkflowRule() throws GWTJahiaServiceException {
-        return workflow.getNodeTypeWorkflowRule(retrieveCurrentSession(), getUILocale());
-    }
-
-    public GWTJahiaWorkflowNodeTypeConfig getWorkflowNodeTypeConfig() throws GWTJahiaServiceException {
-        final GWTJahiaWorkflowNodeTypeConfig config = new GWTJahiaWorkflowNodeTypeConfig();
-
-        // content type list
-        final List<GWTJahiaNodeType> contentTypeList = new ArrayList<GWTJahiaNodeType>();
-        Iterator<List<GWTJahiaNodeType>> it = contentDefinition.getNodeSubtypes(null, new HashMap<String, Object>(), getUILocale()).values().iterator();
-        while (it.hasNext()) {
-            contentTypeList.addAll(it.next());
-        }
-        config.setContentTypeList(contentTypeList);
-
-        // workflow definitons
-        config.setWorkflowDefinitions(getWorkflowDefinitions());
-
-        // content node type
-        config.setWorflowNodeTypes(getNodeTypeWorkflowRule());
-
-        return config;
-
-    }
-
-
-    /**
      * Get site languages
      *
      * @return

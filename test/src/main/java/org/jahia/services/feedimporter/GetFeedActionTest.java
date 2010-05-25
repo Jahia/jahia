@@ -22,7 +22,7 @@ import org.json.JSONObject;
 import java.net.URL;
 
 /**
- * TODO Comment me
+ * Unit test for feed importer action.
  *
  * @author loom
  *         Date: May 21, 2010
@@ -65,9 +65,8 @@ public class GetFeedActionTest extends TestCase {
 
         JCRNodeWrapper feedNode = node.addNode("testFeed", "jnt:feed");
 
-        feedNode.setProperty("url", "res:feedimporter/newsml/koreanpictures_iptc");
-        //feedNode.setProperty("user", "root");
-        //feedNode.setProperty("password", "root1234");
+        //feedNode.setProperty("url", "res:feedimporter/newsml/koreanpictures_iptc");
+        feedNode.setProperty("url", "res:feedimporter/newsml/newsml_1_2");
 
         session.save();
 
@@ -96,7 +95,8 @@ public class GetFeedActionTest extends TestCase {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.LIVE_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-        target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/home/testFeed/2002-09-23T000051Z_01_BER04D_RTRIDSP_0_GERMANY.XML");
+        // target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/home/testFeed/2002-09-23T000051Z_01_BER04D_RTRIDSP_0_GERMANY.XML");
+        target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/home/testFeed/textwithphotoreference.xml");
         assertNotNull("Feed should have some childs", target);
 
     }

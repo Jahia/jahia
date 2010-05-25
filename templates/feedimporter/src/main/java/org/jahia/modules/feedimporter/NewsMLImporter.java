@@ -5,17 +5,20 @@ import org.apache.commons.vfs.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.xpath.XPath;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * NewsML feed importer. This class copies the content of a NewsML feed into a sub-tree in the JCR.
@@ -45,9 +48,20 @@ public class NewsMLImporter {
         }
     }
 
-    public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName) throws RepositoryException {
+    public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName) throws RepositoryException, JDOMException {
 
-        JCRNodeWrapper feedEntryNode = node.addNode(entryBaseName, "jnt:feedEntry");
+        String newsItemID = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/NewsItemId").getText();
+        String newsLanguage = getElement(document.getRootElement(), "NewsItem/NewsComponent/DescriptiveMetadata/Language").getAttributeValue("FormalName");
+        logger.info("Importing news item with ID " + newsItemID + " in language " + newsLanguage);
+
+        // todo : we need to check if the language has been configured in the site, otherwise we use the current language.
+        JCRSessionWrapper languageSession = JCRSessionFactory.getInstance().getCurrentUserSession(
+                node.getSession().getWorkspace().getName(), new Locale(newsLanguage.toLowerCase()));
+
+        JCRNodeWrapper languageNode = languageSession.getNode(node.getPath());
+        languageSession.checkout(languageNode);
+
+        JCRNodeWrapper feedEntryNode = languageNode.addNode(entryBaseName, "jnt:feedEntry");
 
         Element rootElement = document.getRootElement();
         JCRNodeWrapper newsMLNode = feedEntryNode.addNode(rootElement.getName(), "jnt:feedContent");
@@ -55,6 +69,8 @@ public class NewsMLImporter {
             newsMLNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());
         }
         processElement(rootElement, newsMLNode);
+
+        languageSession.save();
     }
 
     public void importFeed (String feedURL, String userName, String password, JCRNodeWrapper parentNode, JCRSessionWrapper session) throws IOException, JDOMException, RepositoryException {
@@ -69,9 +85,6 @@ public class NewsMLImporter {
         FileSystemManager fsManager = VFS.getManager();
         FileObject jarFile = fsManager.resolveFile( feedURL );
 
-        session.checkout(parentNode);
-
-
         // List the children of the Jar file
         FileObject[] children = jarFile.getChildren();
         logger.debug( "Children of " + jarFile.getName().getURI() );
@@ -81,7 +94,11 @@ public class NewsMLImporter {
                 InputStream currentNewsItemInputStream = children[i].getContent().getInputStream();
                 
                 // session.importXML(node.getPath(), currentNewsItemInputStream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
-                Document document = new SAXBuilder().build(currentNewsItemInputStream);
+                SAXBuilder saxBuilder = new SAXBuilder();
+                saxBuilder.setFeature(
+                        "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+                Document document = saxBuilder.build(currentNewsItemInputStream);
 
                 processDocument(document, parentNode, children[i].getName().getBaseName());
             }
@@ -89,4 +106,26 @@ public class NewsMLImporter {
          session.save();
 
     }
+
+    /**
+     * Utility method to retrieve an XML element using an XPath expression. Note that this method is
+     * namespace aware and will require you to use the "xp" prefix in your XPath queries. For example, an XPath query
+     * for a Spring XML configuration will look like this :
+     * /xp:beans/xp:bean[@id="FileListSync"]/xp:property[@name="syncUrl"]
+     * Currently there is no way to rename the prefix.
+     * @param scopeElement the scope in which to execute the XPath query
+     * @param xPathExpression the XPath query to select the element we wish to retrieve. In the case where multiple
+     * elements match, only the first one will be returned.
+     * @return the first element that matches the XPath expression, or null if no element matches.
+     * @throws JDOMException raised if there was a problem navigating the JDOM structure.
+     */
+    public Element getElement(Element scopeElement, String xPathExpression) throws JDOMException {
+        XPath xPath = XPath.newInstance(xPathExpression);
+        String namespaceURI = scopeElement.getDocument().getRootElement().getNamespaceURI();
+        if ((namespaceURI != null) && (!"".equals(namespaceURI))) {
+            xPath.addNamespace("xp", namespaceURI);
+        }
+        return (Element) xPath.selectSingleNode(scopeElement);
+    }
+
 }

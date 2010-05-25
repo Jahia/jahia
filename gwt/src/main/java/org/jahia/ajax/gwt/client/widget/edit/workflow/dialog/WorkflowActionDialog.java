@@ -43,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -58,7 +57,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowInstancesPanel;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,13 +71,13 @@ import java.util.List;
  *        Created : 28 avr. 2010
  */
 public class WorkflowActionDialog extends Window {
-    private JahiaContentManagementServiceAsync async;
-    private JahiaContentDefinitionServiceAsync definitionsAsync;
-    private WorkflowInstancesPanel workflowInstancesPanel;
+    private JahiaContentManagementServiceAsync contentManagement;
+    private JahiaContentDefinitionServiceAsync contentDefinition;
+    private WorkflowDashboardEngine workflowDashboard;
 
     public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowAction action) {
-        async = JahiaContentManagementService.App.getInstance();
-        definitionsAsync = JahiaContentDefinitionService.App.getInstance();
+        contentManagement = JahiaContentManagementService.App.getInstance();
+        contentDefinition = JahiaContentDefinitionService.App.getInstance();
         setModal(true);
         setHeading("Workflow action [" + action.getName() + "] for node: " + node.getDisplayName());
         setWidth(800);
@@ -88,46 +87,18 @@ public class WorkflowActionDialog extends Window {
         final ContentPanel commentPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
         commentPanel.setHeading("Comments");
         commentPanel.setBorders(false);
-        commentPanel.setCollapsible(true);
-        commentPanel.setTitleCollapse(true);
+        commentPanel.setCollapsible(false);
+        commentPanel.setTitleCollapse(false);
+        commentPanel.setScrollMode(Style.Scroll.NONE);
         final Window dialog = this;
 
-        createCommentsPanel(action, commentPanel, dialog);
+        final LayoutContainer commentsContainer = new LayoutContainer(new RowLayout(Style.Orientation.VERTICAL));
+        commentsContainer.setHeight(260);
+        commentsContainer.setScrollMode(Style.Scroll.AUTOY);
+        commentsContainer.setBorders(false);
+        displayComments(action, dialog, commentsContainer);
 
-        final ContentPanel actionPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
-        actionPanel.setHeading("Actions");
-        actionPanel.setCollapsible(true);
-        actionPanel.setTitleCollapse(true);
-        actionPanel.setScrollMode(Style.Scroll.AUTOY);
-        String formResourceName = action.getFormResourceName();
-        if (formResourceName!=null && !"".equals(formResourceName)) {
-            definitionsAsync.getWFFormForNodeAndNodeType(node,formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                public void onSuccess(GWTJahiaNodeType result) {
-                    final PropertiesEditor propertiesEditor = new PropertiesEditor(Arrays.asList(result),
-                                                                                   action.getVariables(), false, false,
-                                                                                   GWTJahiaItemDefinition.CONTENT, null,
-                                                                                   null);
-                    actionPanel.add(propertiesEditor);
-                    generateActionButtons(propertiesEditor, action, node, dialog, actionPanel);
-                    dialog.layout();
-                }
-            });
-        } else {
-            generateActionButtons(null, action, node, dialog, actionPanel);
-        }
-
-        add(actionPanel,new RowData(1, -1, new Margins(5,0,0,0)));
-    }
-
-    private void createCommentsPanel(final GWTJahiaWorkflowAction action, ContentPanel contentPanel,
-                                     final Window dialog) {
-        final LayoutContainer commentsPanel = new LayoutContainer(new RowLayout(Style.Orientation.VERTICAL));
-        commentsPanel.setHeight(260);
-        commentsPanel.setScrollMode(Style.Scroll.AUTOY);
-        commentsPanel.setBorders(false);
-        displayComments(action, dialog, commentsPanel);
-
-        contentPanel.add(commentsPanel);
+        commentPanel.add(commentsContainer);
         // Display add a comment
         FormPanel formPanel = new FormPanel();
         formPanel.setHeaderVisible(false);
@@ -147,10 +118,10 @@ public class WorkflowActionDialog extends Window {
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                async.addCommentToTask(action, textArea.getValue(), new BaseAsyncCallback() {
+                contentManagement.addCommentToTask(action, textArea.getValue(), new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
-                        commentsPanel.removeAll();
-                        displayComments(action, dialog, commentsPanel);
+                        commentsContainer.removeAll();
+                        displayComments(action, dialog, commentsContainer);
                         Info.display("Comment Added", "Comment Added");
                     }
 
@@ -164,16 +135,40 @@ public class WorkflowActionDialog extends Window {
         formPanel.add(button,data);
         FormButtonBinding buttonBinding = new FormButtonBinding(formPanel);
         buttonBinding.addButton(button);
-        contentPanel.add(formPanel);
-        contentPanel.setScrollMode(Style.Scroll.AUTOY);
-        contentPanel.setWidth("100%");
+        commentPanel.add(formPanel);
+        commentPanel.setWidth("100%");
 
-        add(contentPanel,new RowData(1, 0.75, new Margins(4)));
+        add(commentPanel,new RowData(1, 0.75, new Margins(0)));
+
+        final ContentPanel actionPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
+        actionPanel.setHeading("Actions");
+        actionPanel.setBorders(false);
+        actionPanel.setCollapsible(false);
+        actionPanel.setTitleCollapse(false);
+        actionPanel.setScrollMode(Style.Scroll.NONE);
+        String formResourceName = action.getFormResourceName();
+        if (formResourceName!=null && !"".equals(formResourceName)) {
+            contentDefinition.getWFFormForNodeAndNodeType(node,formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
+                public void onSuccess(GWTJahiaNodeType result) {
+                    final PropertiesEditor propertiesEditor = new PropertiesEditor(Arrays.asList(result),
+                                                                                   action.getVariables(), false, false,
+                                                                                   GWTJahiaItemDefinition.CONTENT, null,
+                                                                                   null);
+                    actionPanel.add(propertiesEditor);
+                    generateActionButtons(propertiesEditor, action, node, dialog, actionPanel);
+                    dialog.layout();
+                }
+            });
+        } else {
+            generateActionButtons(null, action, node, dialog, actionPanel);
+        }
+
+        add(actionPanel,new RowData(1, -1, new Margins(0)));
     }
 
     private void displayComments(GWTJahiaWorkflowAction action, final Window dialog,
                                  final LayoutContainer commentsPanel) {
-        async.getTaskComments(action, new BaseAsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
+        contentManagement.getTaskComments(action, new BaseAsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
             public void onSuccess(List<GWTJahiaWorkflowTaskComment> result) {
                 int i = 0;
                 for (GWTJahiaWorkflowTaskComment comment : result) {
@@ -204,8 +199,8 @@ public class WorkflowActionDialog extends Window {
     }
 
     public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowDefinition wf) {
-        async = JahiaContentManagementService.App.getInstance();
-        definitionsAsync = JahiaContentDefinitionService.App.getInstance();
+        contentManagement = JahiaContentManagementService.App.getInstance();
+        contentDefinition = JahiaContentDefinitionService.App.getInstance();
         setModal(true);
         setHeading("Start workflow [" + wf.getName() + "] for node: " + node.getDisplayName());
         setWidth(800);
@@ -217,7 +212,7 @@ public class WorkflowActionDialog extends Window {
         panel.setHeading("Actions");
         String formResourceName = wf.getFormResourceName();
         if (formResourceName!=null && !"".equals(formResourceName)) {
-            definitionsAsync.getNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
+            contentDefinition.getNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onSuccess(GWTJahiaNodeType result) {
                     final PropertiesEditor propertiesEditor = new PropertiesEditor(Arrays.asList(result),
                                                                                    null, false, false,
@@ -254,7 +249,7 @@ public class WorkflowActionDialog extends Window {
                     if (propertiesEditor != null) {
                         nodeProperties = propertiesEditor.getProperties();
                     }
-                    async.assignAndCompleteTask(node.getPath(), action, outcome, nodeProperties, new BaseAsyncCallback() {
+                    contentManagement.assignAndCompleteTask(node.getPath(), action, outcome, nodeProperties, new BaseAsyncCallback() {
                         public void onSuccess(Object result) {
                             dialog.hide();
                             Info.display("Workflow executed", "Workflow executed");
@@ -288,7 +283,7 @@ public class WorkflowActionDialog extends Window {
                 if (propertiesEditor != null) {
                     nodeProperties = propertiesEditor.getProperties();
                 }
-                async.startWorkflow(node.getPath(), wf, nodeProperties, new BaseAsyncCallback() {
+                contentManagement.startWorkflow(node.getPath(), wf, nodeProperties, new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
                         dialog.hide();
                         Info.display("Workflow executed", "Workflow executed");
@@ -305,15 +300,15 @@ public class WorkflowActionDialog extends Window {
         panel.add(horizontalPanel, new VBoxLayoutData(new Margins(5, 0, 0, 0)));
     }
 
-    public void setWorkflowInstancesPanel(WorkflowInstancesPanel workflowInstancesPanel) {
-        this.workflowInstancesPanel = workflowInstancesPanel;
+    public void setWorkflowDashboard(WorkflowDashboardEngine workflowDashboard) {
+        this.workflowDashboard = workflowDashboard;
     }
 
     @Override
     protected void onHide() {
         super.onHide();
-        if(workflowInstancesPanel!=null) {
-            workflowInstancesPanel.refreshData();
+        if(workflowDashboard !=null) {
+            workflowDashboard.refreshData();
         }
     }
 }

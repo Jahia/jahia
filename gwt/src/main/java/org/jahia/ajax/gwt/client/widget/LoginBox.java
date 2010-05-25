@@ -32,29 +32,25 @@
 
 package org.jahia.ajax.gwt.client.widget;
 
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.messages.Messages;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FormEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.user.client.Element;
+import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * Displays the login form.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class LoginBox extends Window {
@@ -68,7 +64,7 @@ public class LoginBox extends Window {
         //this.setPlain(true);
         this.setModal(true);
         this.setBlinkModal(true);
-        this.setHeading(Messages.get("label_login", "Login"));
+        this.setHeading(Messages.get("label.login", "Login"));
         this.setLayout(new FitLayout());
 
         final FormPanel form = new FormPanel();
@@ -78,44 +74,41 @@ public class LoginBox extends Window {
         form.setMethod(Method.POST);
         
         VerticalPanel vpLabels = new VerticalPanel();
-        vpLabels
-                .add(new Label(
-                        Messages
-                                .get(
-                                        "message_sessionExpired",
-                                        "You have been performed no actions for some time. Due to security concerns we have ended your session. Please log in again.")));
+        vpLabels.add(new Label(Messages.get("message.sessionExpired",
+                "You have been performed no actions for some time. Due to security concerns we have ended your session. Please log in again.")));
 
-        final Label lbWrongCredentials = new Label(Messages.get("message_invalidUsernamePassword", "Invalid username/password"));
+        final Label lbWrongCredentials =
+                new Label(Messages.get("message_invalidUsernamePassword", "Invalid username/password"));
         lbWrongCredentials.setVisible(false);
         lbWrongCredentials.setStyleName(".x-form-invalid-msg");
         vpLabels.add(lbWrongCredentials);
-        
+
         form.add(vpLabels);
 
         TextField<String> username = new TextField<String>();
         username.setName("username");
-        username.setFieldLabel(Messages.get("label_username", "Username"));
+        username.setFieldLabel(Messages.get("label.username", "Username"));
         username.setAllowBlank(false);
         form.add(username, formData);
 
         TextField<String> password = new TextField<String>();
         password.setPassword(true);
         password.setName("password");
-        password.setFieldLabel(Messages.get("label_password", "Password"));
+        password.setFieldLabel(Messages.get("label.password", "Password"));
         password.setAllowBlank(false);
         form.add(password, formData);
 
 
-        Button btnSubmit = new Button(Messages.get("label_login", "Login"), new SelectionListener<ButtonEvent>() {
+        Button btnSubmit = new Button(Messages.get("label.login", "Login"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 lbWrongCredentials.setVisible(false);
                 form.submit();
             }
         });
         form.addButton(btnSubmit);
-        
-        
-        Button btnCancel = new Button(Messages.get("label_cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
+
+
+        Button btnCancel = new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
                 com.google.gwt.user.client.Window.Location.reload();
@@ -123,16 +116,20 @@ public class LoginBox extends Window {
         });
         form.addButton(btnCancel);
         form.setButtonAlign(HorizontalAlignment.CENTER);
-        
+
         form.addListener(Events.Submit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
-                if (formEvent.getResultHtml().length() > 20) {
+                if (!formEvent.getResultHtml().contains("OK")) {
                     // login information was incorrect
                     lbWrongCredentials.setVisible(true);
                 } else {
+                    if (CommonEntryPoint.getSessionCheckTimer() != null) {
+                        CommonEntryPoint.getSessionCheckTimer().run();
+                    }
                     hide();
                 }
-        }});        
+            }
+        });
 
 //        FormButtonBinding binding = new FormButtonBinding(form);
 //        binding.addButton(b);

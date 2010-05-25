@@ -3,6 +3,7 @@ package org.jahia.ajax.gwt.client.core;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.widget.LoginBox;
 
 /**
  * Base AsyncCallback class that handles default errors.
@@ -24,7 +25,7 @@ public abstract class BaseAsyncCallback<T> implements AsyncCallback<T> {
     }
 
     public void onSessionExpired() {
-        Window.Location.reload();
+        new LoginBox().show();
     }
 
 }

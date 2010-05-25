@@ -39,10 +39,5 @@ public class EditEntryPoint extends CommonEntryPoint {
             });
         }
     }
-    
-    @Override
-    protected void handleSessionExpired(BaseAsyncCallback<?> callback) {
-        new LoginBox().show();
-    }
 
 }

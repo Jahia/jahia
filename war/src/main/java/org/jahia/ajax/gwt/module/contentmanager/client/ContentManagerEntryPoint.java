@@ -61,7 +61,7 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
          */
         @SuppressWarnings("unused")
         Layout junk = new AnchorLayout();
-
+        checkSession();
         final RootPanel panel = RootPanel.get("contentmanager");
         if (panel != null) {
             final boolean embedded = DOMUtil.getRootAttrAsBoolean(panel, "embedded");

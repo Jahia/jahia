@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.core;
 
+import com.google.gwt.xhr.client.XMLHttpRequest;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -8,7 +9,7 @@ import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Timer;
-
+import org.jahia.ajax.gwt.client.widget.LoginBox;
 
 
 /**
@@ -20,7 +21,9 @@ import com.google.gwt.user.client.Timer;
  * Time: 10:39:39 AM
  */
 public class CommonEntryPoint implements EntryPoint {
-    
+
+    private static Timer sessionCheckTimer;
+
     JahiaContentManagementServiceAsync contentManagementService;
 
     public void onModuleLoad() {
@@ -33,13 +36,13 @@ public class CommonEntryPoint implements EntryPoint {
     }
     
     protected void checkSession() {
-        Timer t = new Timer() {
+        sessionCheckTimer = new Timer() {
             public void run() {
                 try {
                     getContentManagementService().isValidSession(new BaseAsyncCallback<Integer>() {
                         public void onSuccess(Integer val) {
                             if (val > 0) {
-                                scheduleRepeating(val);
+                               scheduleRepeating(val);
                             } else if (val == 0) {
                                cancel();
                                handleSessionExpired(this);
@@ -51,7 +54,7 @@ public class CommonEntryPoint implements EntryPoint {
                 }
             }
         };
-        t.run();
+        sessionCheckTimer.run();
     }
 
     protected JahiaContentManagementServiceAsync getContentManagementService() {
@@ -65,5 +68,10 @@ public class CommonEntryPoint implements EntryPoint {
     protected void handleSessionExpired(BaseAsyncCallback<?> callback) {
         callback.onSessionExpired();
     }
+
+    public static Timer getSessionCheckTimer() {
+        return sessionCheckTimer;
+    }
+
 }
 

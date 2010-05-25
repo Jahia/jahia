@@ -48,6 +48,7 @@ public class EditPanelViewport extends Viewport {
         public EditPanelViewport(String html, String path, String template, String locale, GWTEditConfiguration config) {
             super() ;
             setLayout(new FitLayout());
+            setStyleName("x-viewport-"+config.getName());
             createUI(html, path,template,locale, config);
         }
 

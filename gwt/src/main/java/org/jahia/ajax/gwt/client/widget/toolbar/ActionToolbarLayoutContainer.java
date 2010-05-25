@@ -82,7 +82,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
                 GWTJahiaToolbar gwtToolbar = toolbarList.get(i);
                 List<GWTJahiaToolbarItemsGroup> toolbarItemsGroups = gwtToolbar.getGwtToolbarItemsGroups();
                 if (toolbarItemsGroups != null && !toolbarItemsGroups.isEmpty()) {
-                    addActionToolbar(gwtToolbar);
+                    addActionToolbar(gwtToolbar, i==0);
                 }
             }
 
@@ -100,10 +100,12 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
      *
      * @param gwtToolbar
      */
-    public void addActionToolbar(GWTJahiaToolbar gwtToolbar) {
+    public void addActionToolbar(GWTJahiaToolbar gwtToolbar, boolean first) {
         ActionToolbar actionToolbar = new ActionToolbar(gwtToolbar, linker);
         actionToolbar.createToolBar();
-
+        if (first) {
+            actionToolbar.addStyleName("x-toolbar-first");
+        }
         // add to widget
         add(actionToolbar);
 
@@ -137,7 +139,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
     public void initWithLinker(Linker linker) {
         this.linker = linker;
         if (toolbar != null) {
-            addActionToolbar(toolbar);
+            addActionToolbar(toolbar, true);
         } else if (toolbarSet != null) {
             createToolbarUI(toolbarSet);
         } else if (toolbarGroup != null) {

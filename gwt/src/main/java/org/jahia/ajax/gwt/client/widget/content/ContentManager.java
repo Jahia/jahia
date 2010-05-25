@@ -131,5 +131,6 @@ public class ContentManager extends TriPanelBrowserViewport {
         } else {
             linker.handleNewSelection();
         }
+        addStyleName("x-viewport-"+config.getName());
     }
 }

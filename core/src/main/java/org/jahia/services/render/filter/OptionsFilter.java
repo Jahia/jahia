@@ -33,11 +33,8 @@ public class OptionsFilter extends AbstractFilter {
             mixinNodeTypes = node.getMixinNodeTypes();
             if (mixinNodeTypes != null && mixinNodeTypes.length > 0) {
                 for (ExtendedNodeType mixinNodeType : mixinNodeTypes) {
-                    final String[] supertypeNames = mixinNodeType.getDeclaredSupertypeNames();
-                    for (String supertypeName : supertypeNames) {
-                        if(supertypeName.equals("jmix:option") && service.hasTemplate(mixinNodeType, "hidden.options.wrapper"))  {
-                            resource.addOption("hidden.options.wrapper",mixinNodeType);
-                        }
+                    if (service.hasTemplate(mixinNodeType, "hidden.options.wrapper")) {
+                        resource.addOption("hidden.options.wrapper", mixinNodeType);
                     }
                 }
             }

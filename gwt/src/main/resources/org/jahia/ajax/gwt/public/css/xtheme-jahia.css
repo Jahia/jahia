@@ -174,7 +174,7 @@ div[config="studiomode"] .x-toolbar .x-btn-over button {
 
 .x-toolbar{
 	border-color:#b7cbd8;
-    background:#f0f4f5 url(../images/xtheme-jahia-andromeda/toolbar/bg.gif) repeat-x top left;
+    background:#f0f4f5 url(../images/xtheme-jahia-andromeda/toolbar/bg.png) no-repeat top right;
 }
 .x-toolbar button {
     color:#444;

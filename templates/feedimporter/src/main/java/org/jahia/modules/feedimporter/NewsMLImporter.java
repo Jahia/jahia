@@ -17,6 +17,9 @@ import org.jdom.xpath.XPath;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -51,8 +54,22 @@ public class NewsMLImporter {
     public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName) throws RepositoryException, JDOMException {
 
         String newsItemID = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/NewsItemId").getText();
+        String newsPublicIdentifier = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/PublicIdentifier").getText();
         String newsLanguage = getElement(document.getRootElement(), "NewsItem/NewsComponent/DescriptiveMetadata/Language").getAttributeValue("FormalName");
-        logger.info("Importing news item with ID " + newsItemID + " in language " + newsLanguage);
+        String newsSubjectCode = getElement(document.getRootElement(), "NewsItem/NewsComponent/DescriptiveMetadata/SubjectCode/Subject").getAttributeValue("FormalName");
+        String newsDateStr = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/DateId").getText();
+        String newsUrgency = getElement(document.getRootElement(), "NewsItem/NewsManagement/Urgency").getAttributeValue("FormalName");
+        String newsStatus = getElement(document.getRootElement(), "NewsItem/NewsManagement/Status").getAttributeValue("FormalName");
+        Element newsInstruction = getElement(document.getRootElement(), "NewsItem/NewsManagement/Instruction");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        Date newsDate = null;
+        try {
+            newsDate = dateFormat.parse(newsDateStr);
+        } catch (ParseException e) {
+            logger.error("Error parsing date " + newsDateStr + ", defaulting to now...", e);
+            newsDate = new Date();
+        }
+        logger.info("Importing news item with date " + newsDate.toString() + " and ID " + newsItemID + " in language " + newsLanguage + " in subject " + newsSubjectCode);
 
         // todo : we need to check if the language has been configured in the site, otherwise we use the current language.
         JCRSessionWrapper languageSession = JCRSessionFactory.getInstance().getCurrentUserSession(

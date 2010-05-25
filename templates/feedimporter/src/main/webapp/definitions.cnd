@@ -8,6 +8,11 @@
  - syncro (string)
  + * (jnt:feedEntry)
 
+[jnt:newsMLItem] > [jnt:news]
+ - itemID (string)
+ - status (string)
+ - publicIdentifier (string)
+
 [jnt:feedEntry] > jnt:content, mix:title
  + * (jnt:feedContent)
 

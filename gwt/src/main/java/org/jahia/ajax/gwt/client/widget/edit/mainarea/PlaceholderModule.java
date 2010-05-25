@@ -50,7 +50,7 @@ public class PlaceholderModule extends Module {
         panel.addStyleName("x-panel-placeholder");
 
 //        html = new HTML("<img src=\""+JahiaGWTParameters.getContextPath() + "/templates/default/images/add.png"+"\" /> Add new content here");
-        html = new HTML("Add new content here : &nbsp;");
+        html = new HTML("Add : &nbsp;");
         panel.add(html);
         add(panel);
     }

@@ -60,10 +60,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
-import org.quartz.CronTrigger;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.SimpleTrigger;
+import org.quartz.*;
 
 import javax.jcr.*;
 import javax.servlet.ServletException;
@@ -71,6 +68,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Calendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -547,7 +545,11 @@ public class Service extends JahiaService {
         map.put("user", ((User) drools.getWorkingMemory().getGlobal("user")).getName());
         map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
         schedulerService.deleteJob(jobName, "RULES_JOBS");
-        schedulerService.scheduleJob(jobDetail, new SimpleTrigger(jobName + "TRIGGER", "RULES_JOBS", node.getNode().getProperty(propertyName).getDate().getTime()));
+        try {
+            schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName));
+        } catch (ParseException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     public void executeActionLater(NodeWrapper node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
@@ -561,9 +563,19 @@ public class Service extends JahiaService {
         map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
         schedulerService.deleteJob(jobName, "ACTIONS_JOBS");
         try {
-            schedulerService.scheduleJob(jobDetail, new CronTrigger(jobName + "TRIGGER", "ACTIONS_JOBS", node.getNode().getProperty(propertyName).getString()));
+            schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName));
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
+        }
+    }
+
+    private Trigger getTrigger(NodeWrapper node, String propertyName, String jobName)
+            throws ParseException, RepositoryException {
+        final Property property = node.getNode().getProperty(propertyName);
+        if (property.getType() == PropertyType.DATE) {
+            return new SimpleTrigger(jobName + "TRIGGER", "RULES_JOBS", property.getDate().getTime());
+        } else {
+            return new CronTrigger(jobName + "TRIGGER", "ACTIONS_JOBS", property.getString());
         }
     }
 

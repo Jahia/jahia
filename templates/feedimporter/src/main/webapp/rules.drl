@@ -23,7 +23,7 @@ rule "Synchronize feed"
        A property syncro has been set on a node
         - the node has the type jnt:feed
    then
-       Execute the action "getfeed" with syncro on the node
+       Execute the action "getfeed" at syncro on the node
 end
 
 rule "Auto Publish News Nodes"

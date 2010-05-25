@@ -16,8 +16,8 @@
 <template:addResources type="css" resources="forum.css"/>
 <jcr:node var="comments" path="${currentNode.path}/comments"/>
 <c:choose>
-    <c:when test="${not empty currentResource.moduleParams.subTemplate}">
-        <template:module node="${comments}" forcedTemplate="${currentResource.moduleParams.subTemplate}"/>
+    <c:when test="${not empty wrappedResource.moduleParams.subTemplate}">
+        <template:module node="${comments}" forcedTemplate="${wrappedResource.moduleParams.subTemplate}"/>
     </c:when>
     <c:when test="${currentNode.properties.shortView.boolean == true}">
         <template:module node="${comments}" forcedTemplate="summary"/>

@@ -15,3 +15,12 @@
 + * (jnt:docspace)
 + * (jnt:file)
 
+[jnt:docspaceTree] > jnt:content, jmix:siteComponentContent
+
+[jnt:docspaceFormCreation] > jnt:content, jmix:siteComponentContent
+
+[jnt:lastDocspaceDoc] > jnt:content, jmix:queryContent
+ - startNode (weakreference) mandatory
+
+[jnt:lastDocspace] > jnt:content, jmix:queryContent
+ - startNode (weakreference) mandatory 

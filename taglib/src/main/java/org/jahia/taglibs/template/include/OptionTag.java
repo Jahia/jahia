@@ -98,8 +98,10 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                 final Script script = RenderService.getInstance().resolveScript(wrappedResource, renderContext);
                 Object attribute = pageContext.getRequest().getAttribute("currentNode");
                 pageContext.getRequest().setAttribute("currentNode",node);
+                pageContext.getRequest().setAttribute("currentResource",wrappedResource);
                 pageContext.getOut().write(script.execute(wrappedResource, renderContext));
                 pageContext.getRequest().setAttribute("currentNode",attribute);
+                pageContext.getRequest().setAttribute("currentResource",currentResource);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

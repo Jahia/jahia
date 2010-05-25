@@ -46,7 +46,7 @@
   <c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
   <form ${functions:attributes(attributes)}>
     <input type="hidden" name="redirect" value="${requestScope['javax.servlet.error.request_uri']}"/>
-    <input type="hidden" name="<%=LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER%>" value="1"/>
+    <input type="hidden" name="<%=LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER%>" value="true"/>
     <c:if test="${doRedirect}">
         <input type="hidden" name="<%=LoginEngineAuthValveImpl.DO_REDIRECT%>" value="true"/>
     </c:if>

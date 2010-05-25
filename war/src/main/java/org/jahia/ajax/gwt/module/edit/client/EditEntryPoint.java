@@ -4,31 +4,21 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.LoginBox;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
 
-import java.util.Arrays;
-
 /**
- * Created by IntelliJ IDEA.
+ * Edit mode GWT entry point.
  * User: toto
  * Date: Aug 18, 2009
  * Time: 5:53:34 PM
- * To change this template use File | Settings | File Templates.
  */
 public class EditEntryPoint extends CommonEntryPoint {
-    private JahiaContentManagementServiceAsync async;
     public void onModuleLoad() {
         @SuppressWarnings("unused")
         Layout junk = new AnchorLayout();
@@ -49,32 +39,10 @@ public class EditEntryPoint extends CommonEntryPoint {
             });
         }
     }
-
-    public void checkSession() {
-        Timer t = new Timer() {
-            public void run() {
-                async = JahiaContentManagementService.App.getInstance();
-                try {
-                    async.isValidSession(new AsyncCallback<Integer>() {
-                        public void onFailure(Throwable throwable) {
-                            Log.error("Error checking active session", throwable);
-                        }
-
-                        public void onSuccess(Integer val) {
-                            if (val > 0) {
-                                scheduleRepeating(val);
-                                //Window.alert("your session awake");
-                            } else if (val == 0) {
-                               Window.Location.reload();
-                            }
-                        }
-                    });
-                } catch (GWTJahiaServiceException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-
-            }
-        };
-        t.run();
+    
+    @Override
+    protected void handleSessionExpired(BaseAsyncCallback<?> callback) {
+        new LoginBox().show();
     }
+
 }

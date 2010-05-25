@@ -3,23 +3,18 @@ package org.jahia.bin;
 import org.jahia.services.sites.JahiaSite;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.context.ServletConfigAware;
-import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
-import org.jahia.data.JahiaData;
 import org.jahia.services.sites.JahiaSitesBaseService;
-import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by IntelliJ IDEA.
+ * Login action controller.
  * User: toto
  * Date: Nov 17, 2009
  * Time: 1:47:38 PM
- * To change this template use File | Settings | File Templates.
  */
 public class Login extends HttpServlet implements Controller {
     /**
@@ -36,27 +31,39 @@ public class Login extends HttpServlet implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Login done by parambean and auth-valve
 
-        String redirectActiveStr = request.getParameter("redirectActive");
-        boolean redirectActive = true;
-        if (redirectActiveStr != null) {
-            redirectActive = Boolean.parseBoolean(redirectActiveStr);    
+        boolean restMode = Boolean.valueOf(request.getParameter("restMode"));
+        boolean redirectActive = !restMode;
+        if (redirectActive) {
+            String redirectActiveStr = request.getParameter("redirectActive");
+            if (redirectActiveStr != null) {
+                redirectActive = Boolean.parseBoolean(redirectActiveStr);    
+            }
         }
 
-        String redirect = request.getParameter("redirect");
-        if (redirect == null || redirect.length() == 0) {
-            final JahiaSite site = JahiaSitesBaseService.getInstance().getDefaultSite();
-            redirect = request.getContextPath()+"/cms/render/default/"+ site.getDefaultLanguage() +"/sites/" +
-                    site.getSiteKey() + "/home.html";
+        String redirect = null;
+        if (redirectActive) {
+            redirect = request.getParameter("redirect");
+            if (redirect == null || redirect.length() == 0) {
+                final JahiaSite site = JahiaSitesBaseService.getInstance().getDefaultSite();
+                redirect = request.getContextPath()+"/cms/render/default/"+ site.getDefaultLanguage() +"/sites/" +
+                        site.getSiteKey() + "/home.html";
+            }
         }
 
         String result = (String) request.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
         if ("ok".equals(result)) {
             if (redirectActive) {
                 response.sendRedirect(redirect);
+            } else {
+                response.getWriter().append("OK");
             }
         } else {
-            request.setAttribute("javax.servlet.error.request_uri", redirect);
-            request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);
+            if (!restMode) {
+                request.setAttribute("javax.servlet.error.request_uri", redirect);
+                request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);
+            } else {
+                response.getWriter().append("unauthorized");
+            }
         }
         return null;
     }

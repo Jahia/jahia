@@ -13,7 +13,7 @@ public abstract class BaseAsyncCallback<T> implements AsyncCallback<T> {
 
     public void onFailure(Throwable caught) {
         if (caught instanceof SessionExpirationException) {
-            Window.Location.reload();
+            onSessionExpired();
         } else {
             onApplicationFailure(caught);
         }
@@ -21,6 +21,10 @@ public abstract class BaseAsyncCallback<T> implements AsyncCallback<T> {
 
     public void onApplicationFailure(Throwable caught) {
         Log.error("Error", caught);
+    }
+
+    public void onSessionExpired() {
+        Window.Location.reload();
     }
 
 }

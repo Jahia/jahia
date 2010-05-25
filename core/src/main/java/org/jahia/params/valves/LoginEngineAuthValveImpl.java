@@ -35,8 +35,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
-import org.jahia.engines.mysettings.MySettingsEngine;
-import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
@@ -52,7 +50,6 @@ import org.jahia.utils.JahiaString;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
@@ -69,7 +66,7 @@ public class LoginEngineAuthValveImpl implements Valve {
     public static final String UNKNOWN_USER = "unknown_user";
     public static final String OK = "ok";
     public static final String USE_COOKIE = "useCookie";
-    public static final String LOGIN_TAG_PARAMETER = "loginFromTag";
+    public static final String LOGIN_TAG_PARAMETER = "doLogin";
     public static final String LOGIN_CHOICE_PARAMETER = "loginChoice";
     public static final String DO_REDIRECT = "loginDoRedirect";
 
@@ -84,12 +81,12 @@ public class LoginEngineAuthValveImpl implements Valve {
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         final AuthValveContext authContext = (AuthValveContext) context;
         final HttpServletRequest httpServletRequest = authContext.getRequest();
-        final String theScreen = httpServletRequest.getParameter("screen");
 
         JahiaUser theUser = null;
         boolean ok = false;
 
-        if ("1".equals(httpServletRequest.getParameter(LOGIN_TAG_PARAMETER))) {
+        String doLogin = httpServletRequest.getParameter(LOGIN_TAG_PARAMETER);
+        if (Boolean.valueOf(doLogin) || "1".equals(doLogin)) {
 
             final String username = httpServletRequest.getParameter("username");
             final String password = httpServletRequest.getParameter("password");

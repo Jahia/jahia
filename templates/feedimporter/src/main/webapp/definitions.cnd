@@ -12,3 +12,4 @@
  + * (jnt:feedContent)
 
 [jnt:feedContent] > nt:unstructured
+- contentUpdated (date) hidden

@@ -96,8 +96,8 @@ public class GetFeedActionTest extends TestCase {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.LIVE_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-        target = liveSession.getNodeByUUID(target.getIdentifier());
-        assertTrue("Node not added", target.hasNode("page1"));
+        target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/home/testFeed/2002-09-23T000051Z_01_BER04D_RTRIDSP_0_GERMANY.XML");
+        assertNotNull("Feed should have some childs", target);
 
     }
 

@@ -86,6 +86,7 @@ public class NewsMLImporter {
                 processDocument(document, parentNode, children[i].getName().getBaseName());
             }
         }
+         session.save();
 
     }
 }

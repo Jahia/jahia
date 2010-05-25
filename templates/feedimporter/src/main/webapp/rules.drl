@@ -25,3 +25,19 @@ rule "Synchronize feed"
    then
        Execute the action "getfeed" with syncro on the node
 end
+
+rule "Auto Publish News Nodes"
+   when
+       A new node is created
+        - the node has the type jnt:feedEntry
+   then
+       Publish the node
+end
+
+rule "Auto Start Workflow On News Nodes"
+   when
+       A property contentUpdated has been set on a node
+        - the node has the type jnt:feedEntry
+   then
+       Start the workflow "2-step-publication" from "jBPM" on the node
+end

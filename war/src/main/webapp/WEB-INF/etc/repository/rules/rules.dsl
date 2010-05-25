@@ -75,3 +75,5 @@
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);
 [consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeRuleLater(node, "{property}",{ruleName}, drools);
 [consequence][]Execute the action {actionName} with {property} on the {node}=service.executeActionLater(node, "{property}",{actionName}, drools);
+[consequence][]Publish the {node}=service.publishNode(node, drools);
+[consequence][]Start the workflow {processKey} from {provider} on the {node}=service.startWorkflowOnNode(node,{processKey},{provider}, drools);

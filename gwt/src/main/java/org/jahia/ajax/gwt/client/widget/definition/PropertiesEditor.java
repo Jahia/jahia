@@ -457,7 +457,7 @@ public class PropertiesEditor extends FormPanel {
      * @param itemDef the definition of the corresponding node/property
      * @return a list with property values, populated from the field value depending on its type
      */
-    private List<GWTJahiaNodePropertyValue> getPropertyValues(Field fld, GWTJahiaItemDefinition itemDef) {
+    public static List<GWTJahiaNodePropertyValue> getPropertyValues(Field fld, GWTJahiaItemDefinition itemDef) {
         List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>();
         if (itemDef.isNode()) {
             // case of a new link node
@@ -509,7 +509,7 @@ public class PropertiesEditor extends FormPanel {
      * @return string representation of the field value, converted based on its
      *         type
      */
-    private GWTJahiaNodePropertyValue getPropertyValue(Object fieldValue, int requiredType) {
+    private static GWTJahiaNodePropertyValue getPropertyValue(Object fieldValue, int requiredType) {
         String propValueString = null;
         if (fieldValue != null) {
             if (fieldValue instanceof Date) {

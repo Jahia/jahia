@@ -6,8 +6,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.form.FormQuickRemotePublication;
-import org.jahia.ajax.gwt.client.widget.form.FormQuickWorkflowRule;
+import org.jahia.ajax.gwt.client.widget.form.FormQuick;
 
 import java.util.List;
 
@@ -34,8 +33,9 @@ public class NewWorkflowRule  extends BaseActionItem {
             w.setResizable(false);
             w.setBodyBorder(false);
             w.setLayout(new FillLayout());
-            w.setWidth(350);
-            w.add(new FormQuickWorkflowRule() {
+            w.setWidth(400);
+            w.setHeight(350);
+            w.add(new FormQuick("jnt:workflowRule","/workflowrules") {
                 public void onWorkflowRuleCreated() {
                     linker.refresh(EditLinker.REFRESH_ALL);
                 }

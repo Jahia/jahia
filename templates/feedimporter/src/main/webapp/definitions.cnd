@@ -8,7 +8,7 @@
  - type (string) < newsml
  + * (jnt:feedContent)
 
-[jnt:feedContent] > jnt:content
+[jnt:feedContent] > nt:unstructured
  - * (undefined)
  + * (jnt:feedContent)
 

@@ -12,6 +12,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -70,6 +71,7 @@ public class NewsMLImporter {
 
         session.checkout(node);
 
+
         // List the children of the Jar file
         FileObject[] children = jarFile.getChildren();
         logger.debug( "Children of " + jarFile.getName().getURI() );
@@ -77,6 +79,8 @@ public class NewsMLImporter {
             logger.debug( children[ i ].getName().getBaseName() );
             if ("xml".equals(children[i].getName().getExtension().toLowerCase())) {
                 InputStream currentNewsItemInputStream = children[i].getContent().getInputStream();
+                
+                // session.importXML(node.getPath(), currentNewsItemInputStream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
                 Document document = new SAXBuilder().build(currentNewsItemInputStream);
 
                 processDocument(document, node);

@@ -62,6 +62,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SimpleTrigger;
@@ -69,6 +70,7 @@ import org.quartz.SimpleTrigger;
 import javax.jcr.*;
 import javax.servlet.ServletException;
 import java.io.*;
+import java.text.ParseException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -535,11 +537,11 @@ public class Service extends JahiaService {
         taggingService.tag(node.getNode(), value, siteKey, true);
     }
 
-    public void executeLater(NodeWrapper node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)
+    public void executeRuleLater(NodeWrapper node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
-        final String jobName = "RULES_JOB_" + uuid + ruleToExecute;
-        final JobDetail jobDetail = new JobDetail(jobName, "RULES_JOBS", RuleJob.class, false, true, false);
+        final String jobName = "RULE_JOB_" + uuid + ruleToExecute;
+        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, RuleJob.class);
         final JobDataMap map = jobDetail.getJobDataMap();
         map.put("ruleToExecute", ruleToExecute);
         map.put("node", uuid);
@@ -547,6 +549,23 @@ public class Service extends JahiaService {
         map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
         schedulerService.deleteJob(jobName, "RULES_JOBS");
         schedulerService.scheduleJob(jobDetail, new SimpleTrigger(jobName + "TRIGGER", "RULES_JOBS", node.getNode().getProperty(propertyName).getDate().getTime()));
+    }
+
+    public void executeActionLater(NodeWrapper node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
+            throws JahiaException, RepositoryException {
+        final String uuid = node.getNode().getIdentifier();
+        final String jobName = "ACTION_JOB_" + uuid + actionToExecute;
+        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, ActionJob.class);
+        final JobDataMap map = jobDetail.getJobDataMap();
+        map.put("actionToExecute", actionToExecute);
+        map.put("node", uuid);
+        map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
+        schedulerService.deleteJob(jobName, "ACTIONS_JOBS");
+        try {
+            schedulerService.scheduleJob(jobDetail, new CronTrigger(jobName + "TRIGGER", "ACTIONS_JOBS", node.getNode().getProperty(propertyName).getString()));
+        } catch (ParseException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     public void setTaggingService(TaggingService taggingService) {

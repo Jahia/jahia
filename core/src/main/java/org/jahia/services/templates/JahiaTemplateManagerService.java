@@ -43,6 +43,7 @@ import org.jahia.exceptions.JahiaTemplateServiceException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.cache.Cache;
@@ -112,6 +113,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return templatePackageRegistry.getActions();
     }
 
+    public Map<String, BackgroundAction> getBackgroundActions() {
+        return templatePackageRegistry.getBackgroundActions();
+    }
     /**
      * Returns a sorted list of all available template packages having templates for a module.
      *

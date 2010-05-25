@@ -37,6 +37,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
+import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.content.rules.ModuleGlobalObject;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.render.StaticAssetMapping;
@@ -92,6 +93,13 @@ class TemplatePackageRegistry {
                     logger.debug("Registering Action '" + action.getName() + "' (" + beanName + ")");
                 }
                 templatePackageRegistry.actions.put(action.getName(), action);
+                if(bean instanceof BackgroundAction) {
+                    BackgroundAction backgroundAction = (BackgroundAction) action;
+                    if (logger.isDebugEnabled()) {
+                    logger.debug("Registering Background Action '" + action.getName() + "' (" + beanName + ")");
+                }
+                templatePackageRegistry.backgroundActions.put(backgroundAction.getName(), backgroundAction);
+                }
             } else if (bean instanceof ModuleChoiceListInitializer) {
                 ModuleChoiceListInitializer moduleChoiceListInitializer = (ModuleChoiceListInitializer) bean;
                 if (logger.isDebugEnabled()) {
@@ -140,6 +148,13 @@ class TemplatePackageRegistry {
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
+            } else if (bean instanceof BackgroundAction) {
+                BackgroundAction backgroundAction = (BackgroundAction) bean;
+                if (logger.isDebugEnabled()) {
+                    logger.debug(
+                            "Registering Background Action '" + backgroundAction.getName() + "' (" + beanName + ")");
+                }
+                templatePackageRegistry.backgroundActions.put(backgroundAction.getName(), backgroundAction);
             }
             return bean;
         }
@@ -180,6 +195,7 @@ class TemplatePackageRegistry {
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String,Action> actions = new HashMap<String,Action>();
+    private Map<String, BackgroundAction> backgroundActions = new HashMap<String,BackgroundAction>();
     private SettingsBean settingsBean;
 
     private List<JahiaTemplatesPackage> templatePackages;
@@ -407,6 +423,7 @@ class TemplatePackageRegistry {
         filters.clear();
         errorHandlers.clear();
         actions.clear();
+        backgroundActions.clear();
     }
 
     public void setSettingsBean(SettingsBean settingsBean) {
@@ -422,6 +439,10 @@ class TemplatePackageRegistry {
                     + " That will prevent creation of a virtual site.");
         }
         // TODO implement dependency validation for template sets
+    }
+
+    public Map<String, BackgroundAction> getBackgroundActions() {
+        return backgroundActions;
     }
 
     private void computeDependencies(Set<JahiaTemplatesPackage> dependencies,  JahiaTemplatesPackage pack) {

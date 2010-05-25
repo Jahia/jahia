@@ -6,6 +6,7 @@
  - user (string)
  - password (string)
  - type (string) < newsml
+ - syncro (string)
  + * (jnt:feedContent)
 
 [jnt:feedContent] > nt:unstructured

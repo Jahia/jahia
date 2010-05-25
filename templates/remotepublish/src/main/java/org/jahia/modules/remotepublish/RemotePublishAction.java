@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -18,7 +19,7 @@ import java.util.*;
  * Time: 2:16:46 PM
  * To change this template use File | Settings | File Templates.
  */
-public class RemotePublishAction implements Action {
+public class RemotePublishAction implements Action, BackgroundAction {
     private static Logger logger = Logger.getLogger(RemotePublishAction.class);
     private RemotePublicationService service;
     private String name;
@@ -41,4 +42,11 @@ public class RemotePublishAction implements Action {
         return service.executeRemotePublication(node);
     }
 
+    public void executeBackgroundAction(JCRNodeWrapper node) {
+        try {
+            service.executeRemotePublication(node);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 }

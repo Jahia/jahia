@@ -31,10 +31,10 @@
         <template:param name="callback" value="initCuteTime();"/>
     </template:option>
     <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
-        <template:module node="${subchild}" template="default"/>
+        <template:module node="${subchild}" template="docspace"/>
     </c:forEach>
     <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
 </ul>
-<template:include template="newPostForm"/>
+<template:include template="newDocspacePostForm"/>
 <template:removePager id="${currentNode.identifier}"/>
 

@@ -151,7 +151,9 @@
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border"><!--start boxdocspace -->
 
-                    <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}"/>
+                    <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}">
+                        <template:param name="subTemplate" value="docspace"/>
+                    </template:option>
 
                 </div>
             </div>

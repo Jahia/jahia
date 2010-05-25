@@ -51,7 +51,7 @@
 </div>
 <jcr:sql var="numberOfPostsQuery"
          sql="select [jcr:uuid] from [jnt:post] as p  where p.[jcr:createdBy] = '${createdBy.string}'"/>
-<c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
+<c:set var="numberOfPosts" value="${functions:length(numberOfPostsQuery.rows)}"/>
 <dl class="forum-postprofile">
     <dt>
         <jcr:node var="userNode" path="/users/${createdBy.string}"/>

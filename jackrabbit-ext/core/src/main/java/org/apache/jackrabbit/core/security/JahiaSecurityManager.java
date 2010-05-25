@@ -115,9 +115,9 @@ public class JahiaSecurityManager implements JackrabbitSecurityManager {
     }
 
     public String getUserID(Subject subject, String workspace) throws RepositoryException {
-        if (!subject.getPrincipals(AdminPrincipal.class).isEmpty()) {
+        /*if (!subject.getPrincipals(SystemPrincipal.class).isEmpty()) {
             return " system ";
-        }
+        }*/
 
         Set<JahiaPrincipal> s =  subject.getPrincipals(JahiaPrincipal.class);
         for (JahiaPrincipal jahiaPrincipal : s) {

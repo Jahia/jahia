@@ -3,12 +3,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="forum.css"/>
 <jcr:sql var="numberOfPostsQuery"
          sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${currentNode.path}']) order by post.[jcr:lastModified] desc"/>
-<c:set var="numberOfPosts" value="${numberOfPostsQuery.nodes.size}"/>
-<c:forEach items="${numberOfPostsQuery.nodes}" var="node" varStatus="status" end="2">
+<c:set var="numberOfPosts" value="${functions:length(numberOfPostsQuery.nodes)}"/>
+<c:forEach items="${numberOfPostsQuery.nodes}" var="node" varStatus="status" end="1">
     <c:if test="${status.first}">
         <c:set value="${node}" var="lastModifiedNode"/>
         <jcr:nodeProperty node="${node}" name="jcr:lastModified" var="lastModified"/>

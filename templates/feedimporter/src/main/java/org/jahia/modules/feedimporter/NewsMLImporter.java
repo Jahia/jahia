@@ -56,6 +56,10 @@ public class NewsMLImporter {
         }
     }
 
+    public void processNewsComponent(Element newsComponent, JCRNodeWrapper node) {
+
+    }
+
     public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName) throws RepositoryException, JDOMException {
 
         String newsItemID = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/NewsItemId").getText();
@@ -81,20 +85,30 @@ public class NewsMLImporter {
         // todo : we need to check if the language has been configured in the site, otherwise we use the current language.
         JCRSessionWrapper languageSession = JCRSessionFactory.getInstance().getCurrentUserSession(
                 node.getSession().getWorkspace().getName(), new Locale(newsLanguage.toLowerCase()));
-        JCRNodeWrapper updateExistingNode = null;
+
+        Query existingNodeQuery = languageSession.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:newsMLItem] as news WHERE news.[itemID]='" + newsItemID + "'", Query.JCR_SQL2);
+        QueryResult existingNodeQueryResult = existingNodeQuery.execute();
+        JCRNodeWrapper existingNode = (JCRNodeWrapper) existingNodeQueryResult.getNodes().nextNode();
+        boolean mustUpdate = false;
         if (newsInstruction != null) {
             String instructionName = newsInstruction.getAttributeValue("FormalName");
             if ("LiftEmbargo".equals(instructionName)) {
+                mustUpdate = true;
             } else if ("Rectify".equals(instructionName)) {
+                mustUpdate = true;
 
             } else if ("Update".equals(instructionName)) {
+                mustUpdate = true;
 
             } else if ("Delete".equals(instructionName)) {
-                
+                mustUpdate = true;
             }
-            Query existingNodeQuery = languageSession.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:newsMLItem] as news WHERE news.[itemID]='" + newsItemID + "'", Query.JCR_SQL2);
-            QueryResult existingNodeQueryResult = existingNodeQuery.execute();
-            updateExistingNode = (JCRNodeWrapper) existingNodeQueryResult.getNodes().nextNode();  
+        }
+
+        if ((!mustUpdate) && (existingNode != null)) {
+            // this shouldn't happen, it means we are trying to import the same node twice !
+            logger.error("Error: trying to import as a new node the existing node with ID" + newsItemID + " aborting import !");
+            return;
         }
         String newsHeadline = getElement(document.getRootElement(), "NewsItem/NewsComponent/NewsLines/HeadLine").getText();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -107,13 +121,12 @@ public class NewsMLImporter {
         }
         logger.info("Importing news item with date " + newsDate.toString() + " and ID " + newsItemID + " in language " + newsLanguage + " in subject " + newsSubjectCode);
 
-
         JCRNodeWrapper languageNode = languageSession.getNode(node.getPath());
         languageSession.checkout(languageNode);
 
         JCRNodeWrapper feedEntryNode = null;
-        if (updateExistingNode != null) {
-            feedEntryNode = updateExistingNode;
+        if (mustUpdate && (existingNode != null)) {
+            feedEntryNode = existingNode;
             DateTimeFormatter iso8601DateTimeFormatter = ISODateTimeFormat.basicDateTimeNoMillis();
             DateTime thisRevisionCreatedDateTime = iso8601DateTimeFormatter.parseDateTime(newsThisRevisionCreatedDateStr);
             Calendar newsUpdateCalendar = Calendar.getInstance();

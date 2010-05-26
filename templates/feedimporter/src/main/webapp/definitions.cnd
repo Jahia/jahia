@@ -17,4 +17,12 @@
  - contentUpdated (date) hidden
  + * (jnt:feedContent)
 
+[jnt:newsMLContentItem] > jnt:content, mix:title, jmix:editorialContent
+ - comment (string)
+ - format (string)
+ - href (string)
+ - mediatype (string)
+ - datacontent (string)
+ - role (string)
+
 [jnt:feedContent] > nt:unstructured

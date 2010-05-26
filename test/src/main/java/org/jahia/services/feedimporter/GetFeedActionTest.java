@@ -17,8 +17,11 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.jcr.RepositoryException;
+import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -63,10 +66,24 @@ public class GetFeedActionTest extends TestCase {
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
         JCRNodeWrapper target = node.addNode("target", "jnt:page");
 
-        JCRNodeWrapper feedNode = node.addNode("testFeed", "jnt:feed");
+        testFeed("testSDAFeed", "res:feedimporter/newsml/newsml_1_2_sda", "2_textwithphotoreference.xml", session, node);
+        session.checkout(node);
+        testFeed("testKoreanPicturesFeed", "res:feedimporter/newsml/koreanpictures_iptc", "2002-09-23T000051Z_01_BER04D_RTRIDSP_0_GERMANY.XML", session, node);
+        session.checkout(node);
+        testFeed("testAFPBasicFeed", "res:feedimporter/newsml/newsml_1_2_afp_basicsample", "NewsML-AFP-mmd-sample.xml", session, node);
+        session.checkout(node);
+        testFeed("testAFPLongFeed", "res:feedimporter/newsml/newsml_1_2_afp_longsample", "index.xml", session, node);
+        session.checkout(node);
+        testFeed("testReutersFeed", "res:feedimporter/newsml/reuters_256_samples", "2002-09-23T100332Z_01_LA391519_RTRIDST_0_SPORT-CRICKET-CHAMPIONS-UPDATE-2.XML", session, node);
 
-        //feedNode.setProperty("url", "res:feedimporter/newsml/koreanpictures_iptc");
-        feedNode.setProperty("url", "res:feedimporter/newsml/newsml_1_2");
+        session.save();
+    }
+
+    private void testFeed(String nodeName, String feedURL, String testNodeName, JCRSessionWrapper session, JCRNodeWrapper node) throws RepositoryException, IOException, JSONException {
+        JCRNodeWrapper target;
+        JCRNodeWrapper sdaFeedNode = node.addNode(nodeName, "jnt:feed");
+
+        sdaFeedNode.setProperty("url", feedURL);
 
         session.save();
 
@@ -76,7 +93,7 @@ public class GetFeedActionTest extends TestCase {
         client.getParams().setAuthenticationPreemptive(true);
 
         String baseurl = "http://localhost:8080" + Jahia.getContextPath() + "/cms";
-        final URL url = new URL(baseurl + "/render/default/en" + feedNode.getPath() + ".getfeed.do");
+        final URL url = new URL(baseurl + "/render/default/en" + sdaFeedNode.getPath() + ".getfeed.do");
 
         Credentials defaultcreds = new UsernamePasswordCredentials("root", "root1234");
         client.getState().setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
@@ -96,9 +113,8 @@ public class GetFeedActionTest extends TestCase {
                 .getCurrentUserSession(Constants.LIVE_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
         // target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/home/testFeed/2002-09-23T000051Z_01_BER04D_RTRIDSP_0_GERMANY.XML");
-        target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/home/testFeed/textwithphotoreference.xml");
+        target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/home/"+nodeName+"/" + testNodeName);
         assertNotNull("Feed should have some childs", target);
-
     }
 
 

@@ -148,7 +148,7 @@ public class ClassificationEditor extends ContentPanel {
             }
         });
         action.setFixed(true);
-        TreeGrid<GWTJahiaNode> treeGrid = treeGridFactory.getTreeGrid(new ColumnModel(Arrays.asList(name, new ColumnConfig("count", "count", 50), action)));
+        TreeGrid<GWTJahiaNode> treeGrid = treeGridFactory.getTreeGrid(new ColumnModel(Arrays.asList(name, action)));
 
         treeGrid.setIconProvider(ContentModelIconProvider.getInstance());
 

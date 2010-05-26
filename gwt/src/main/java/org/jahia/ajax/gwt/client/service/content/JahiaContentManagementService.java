@@ -295,7 +295,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     List<GWTJahiaNode> getTasksForUser() throws GWTJahiaServiceException;
 
     public Integer isValidSession()  throws GWTJahiaServiceException;
-    
+
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

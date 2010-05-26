@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.commons.server;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
@@ -64,10 +65,16 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     private String remoteServiceName;
 
+    private Integer sessionExpiryTime = null;
+
     private ServletContext servletContext;
     
     private ApplicationContext applicationContext;
-    
+
+    public void setSessionExpiryTime(int sessionExpiryTime) {
+        this.sessionExpiryTime = sessionExpiryTime;
+    }
+
     @Override
     public ServletContext getServletContext() {
         return servletContext;
@@ -82,6 +89,12 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     public ModelAndView handleRequest(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         long startTime = System.currentTimeMillis();
+        final HttpSession session = request.getSession(false);
+        if (session != null) {
+            if (sessionExpiryTime != null && session.getMaxInactiveInterval() != sessionExpiryTime * 60) {
+                session.setMaxInactiveInterval(sessionExpiryTime * 60);
+            }
+        }
         doPost(request, response);
         if (logger.isDebugEnabled()) {
             logger.debug("Handled request to GWT service '" + remoteServiceName
@@ -120,7 +133,22 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         SerializationPolicy policy = super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
         if (policy == null) {
             // NEVER use or cache a legacy serializer
-            throw new UnsupportedOperationException("Bad id, javascript is probably not uptodate - flush your browser cache");
+            return new SerializationPolicy() {
+                @Override public boolean shouldDeserializeFields(Class<?> clazz) {
+                    return true;
+                }
+
+                @Override public boolean shouldSerializeFields(Class<?> clazz) {
+                    return true;
+                }
+
+                @Override public void validateDeserialize(Class<?> clazz) throws SerializationException {
+                }
+
+                @Override public void validateSerialize(Class<?> clazz) throws SerializationException {
+                }
+            };
+//            throw new UnsupportedOperationException("Bad id, javascript is probably not uptodate - flush your browser cache");
         }
         return policy;
     }

@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.core;
 
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;

@@ -8,7 +8,6 @@
         <property name="mappings">
             <value>
                 /**/base.gwt=baseServiceController
-                /**/contentLegacy.gwt=contentLegacyServiceController
                 /**/contentDefinition.gwt=contentDefinitionServiceController
                 /**/contentManager.gwt=contentManagerServiceController
                 /**/pdisplay.gwt=pdisplayServiceController
@@ -20,22 +19,23 @@
         </property>
     </bean>
     
-    <bean name="baseServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="abstractServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController"  abstract="true">
+        <property name="sessionExpiryTime" value="30" />
+    </bean>
+
+    <bean name="baseServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtJahiaService"/>
     </bean>
     <bean name="gwtJahiaService" class="org.jahia.ajax.gwt.commons.server.rpc.JahiaServiceImpl" scope="prototype"/>
 
-    <bean name="contentLegacyServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
-        <property name="remoteServiceName" value="gwtJahiaContentLegacyService"/>
-    </bean>
-    <bean name="contentDefinitionServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="contentDefinitionServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtJahiaContentDefinitionService"/>
     </bean>
     <bean name="gwtJahiaContentDefinitionService" class="org.jahia.ajax.gwt.definitions.server.JahiaContentDefinitionServiceImpl" scope="prototype">
         <property name="contentDefinition" ref="ContentDefinitionHelper"/>
     </bean>
 
-    <bean name="contentManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="contentManagerServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtJahiaContentManagenentService"/>
     </bean>
     <bean name="gwtJahiaContentManagenentService" class="org.jahia.ajax.gwt.content.server.JahiaContentManagementServiceImpl" scope="prototype">
@@ -58,34 +58,34 @@
         <property name="seo" ref="SeoHelper"/>
         <property name="uiConfig" ref="UiConfigHelper"/>
         <property name="analytics" ref="AnalyticsHelper"/>
-        <property name="expiration" value="300000"/>
+        <property name="sessionPollingFrequency" value="300000"/>
     </bean>
 
-    <bean name="pdisplayServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="pdisplayServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtProcessDisplayService"/>
     </bean>
     <bean name="gwtProcessDisplayService" class="org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl" scope="prototype">
         <property name="preferencesService" ref="JahiaPreferencesService"/>
     </bean>
     
-    <bean name="toolbarServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="toolbarServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtToolbarService"/>
     </bean>
     <bean name="gwtToolbarService" class="org.jahia.ajax.gwt.templates.components.toolbar.server.ToolbarServiceImpl" scope="prototype">
         <property name="uiConfigHelper" ref="UiConfigHelper"/>
     </bean>
     
-    <bean name="sessionManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="sessionManagerServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtSessionManagerService"/>
     </bean>
-    <bean name="subscriptionServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="subscriptionServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtSubscriptionService"/>
     </bean>
     <bean name="gwtSubscriptionService" class="org.jahia.ajax.gwt.templates.components.subscription.server.SubscriptionServiceImpl" scope="prototype">
         <property name="subscriptionService" ref="SubscriptionService"/>
     </bean>
     
-    <bean name="userManagerServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController">
+    <bean name="userManagerServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtUserManagerService"/>
     </bean>
     <bean name="gwtUserManagerService" class="org.jahia.ajax.gwt.commons.server.rpc.UserManagerServiceImpl" scope="prototype">

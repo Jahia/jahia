@@ -1115,6 +1115,47 @@
 
     </bean>
 
+    <!-- Page picker -->
+    <bean id="pagepicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+        <property name="nodeTypes" value="jnt:page"/>
+        <property name="folderTypes" value="jnt:page"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <list>
+                        <ref bean="org.jahia.toolbar.manager.documents.shortcuts"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="enableTextMenu" value="false"/>
+        <property name="hideLeftPanel" value="true"/>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.site"/>
+            </list>
+        </property>
+
+        <!-- tabs -->
+        <property name="tabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <value>info</value>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name,300</value>
+            </list>
+        </property>
+    </bean>
+
     <!-- file manager -->
     <bean id="mashuppicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
         <property name="nodeTypes" value="jnt:portlet"/>

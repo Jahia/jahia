@@ -44,12 +44,6 @@ class SearchTabItem extends SidePanelTabItem {
     private TextField<String> searchField;
     private ContentPickerField pagePickerField;
     private ComboBox<GWTJahiaLanguage> langPickerField;
-    private CheckBox inNameField;
-    private CheckBox inTagField;
-    private CheckBox inContentField;
-    private CheckBox inFileField;
-    private CheckBox inMetadataField;
-    private Grid<GWTJahiaNode> grid;
     final PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
 
     public SearchTabItem(GWTSidePanelTab config) {
@@ -66,8 +60,9 @@ class SearchTabItem extends SidePanelTabItem {
         searchForm.setHeaderVisible(false);
         searchForm.setBorders(false);
         searchForm.setBodyBorder(false);
+        searchForm.setPadding(4);
         searchField = new TextField<String>();
-        searchField.setFieldLabel(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.search.label"));
+        searchField.setFieldLabel(Messages.getResource("label.search"));
         searchField.addListener(KeyboardEvents.Enter, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 // grid.mask("Loading", "x-mask-loading");
@@ -75,7 +70,7 @@ class SearchTabItem extends SidePanelTabItem {
                 loader.load(0,nbResults);
             }
         });
-        final Button ok = new Button(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.search.label"), new SelectionListener<ButtonEvent>() {
+        final Button ok = new Button(Messages.getResource("label.search"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 //  grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
@@ -99,48 +94,14 @@ class SearchTabItem extends SidePanelTabItem {
         };
 
         searchForm.add(searchField);
-        FieldSet fieldSet = new FieldSet();
-        fieldSet.setHeading(Messages.get("label_advanced", "Advanced"));
-        FormLayout layout = new FormLayout();
-        layout.setLabelWidth(70);
-        fieldSet.setLayout(layout);
-        fieldSet.setCollapsible(false);
 
         // page picker field
         pagePickerField = createPageSelectorField();
-        fieldSet.add(pagePickerField);
+        searchForm.add(pagePickerField);
 
         // lang picker
         langPickerField = createLanguageSelectorField();
-        fieldSet.add(langPickerField);
-        searchForm.add(fieldSet);
-
-        final CheckBoxGroup scopeCheckGroup = new CheckBoxGroup();
-        scopeCheckGroup.setOrientation(Style.Orientation.VERTICAL);
-        scopeCheckGroup.setFieldLabel(Messages.get("label_searchScope", "Search scope"));
-        // scope name field
-        inNameField = createNameField();
-        scopeCheckGroup.add(inNameField);
-
-
-        // scope tag field
-        inTagField = createTagField();
-        scopeCheckGroup.add(inTagField);
-
-        // scope metadata field
-        inMetadataField = createMetadataField();
-        scopeCheckGroup.add(inMetadataField);
-
-        // scope content field
-        inContentField = createContentField();
-        scopeCheckGroup.add(inContentField);
-
-        // scope file field
-        inFileField = createFileField();
-        scopeCheckGroup.add(inFileField);
-
-        fieldSet.add(scopeCheckGroup, new FormData("-20"));
-
+        searchForm.add(langPickerField);
 
         searchForm.addButton(ok);
         searchForm.addButton(drag);
@@ -216,85 +177,12 @@ class SearchTabItem extends SidePanelTabItem {
      * @return
      */
     private ContentPickerField createPageSelectorField() {
-        ContentPickerField field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"),
+        ContentPickerField field = new ContentPickerField(Messages.get("label.pagePicker", "Page picker"),
                 Messages.get("picker_link_selection", "Selected page"), null, "/", null, null,
-                ManagerConfigurationFactory.LINKPICKER, false);
-        field.setFieldLabel(Messages.get("picker_link_header", "Pages"));
+                ManagerConfigurationFactory.PAGEPICKER, false);
+        field.setFieldLabel(Messages.get("label.pagePicker", "Pages"));
         return field;
     }
-
-    /**
-     * Create a new scope fields group selector field
-     *
-     * @return
-     */
-    private CheckBox createNameField() {
-        CheckBox field = new CheckBox();
-        field.setValue(true);
-        field.setFieldLabel(Messages.get("label_name", "Name & Metadata"));
-        field.setBoxLabel(field.getFieldLabel());
-        field.setName("name");
-        return field;
-    }
-
-    /**
-     * Create tag field
-     *
-     * @return
-     */
-    private CheckBox createTagField() {
-        CheckBox field = new CheckBox();
-        field.setValue(true);
-        field.setFieldLabel(Messages.get("label_tag", "Tags"));
-        field.setBoxLabel(field.getFieldLabel());
-        field.setName("tag");
-        field.hide();
-        return field;
-    }
-
-    /**
-     * Create metadataFied
-     *
-     * @return
-     */
-    private CheckBox createMetadataField() {
-        CheckBox field = new CheckBox();
-        field.setValue(true);
-        field.setFieldLabel(Messages.get("label_metadata", "Metadata"));
-        field.setBoxLabel(field.getFieldLabel());
-        field.setName("metadata");
-        field.hide();
-        return field;
-    }
-
-    /**
-     * Create content field
-     *
-     * @return
-     */
-    private CheckBox createContentField() {
-        CheckBox field = new CheckBox();
-        field.setValue(true);
-        field.setFieldLabel(Messages.get("label_content", "Content"));
-        field.setBoxLabel(field.getFieldLabel());
-        field.setName("content");
-        return field;
-    }
-
-    /**
-     * Create file field
-     *
-     * @return
-     */
-    private CheckBox createFileField() {
-        CheckBox field = new CheckBox();
-        field.setValue(true);
-        field.setFieldLabel(Messages.get("label_file", "File"));
-        field.setBoxLabel(field.getFieldLabel());
-        field.setName("file");
-        return field;
-    }
-
 
     /**
      * Create language field
@@ -333,8 +221,7 @@ class SearchTabItem extends SidePanelTabItem {
             offset = loadConfig.getOffset();
         }
 
-        Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue() + "," +
-                inNameField.getValue() + "," + inTagField.getValue());
+        Log.debug(searchField.getValue() + "," + pagePickerField.getValue() + "," + langPickerField.getValue());
         JahiaContentManagementService.App.getInstance().search(gwtJahiaSearchQuery, limit, offset, callback);
 
     }
@@ -349,11 +236,6 @@ class SearchTabItem extends SidePanelTabItem {
         gwtJahiaSearchQuery.setQuery(searchField.getValue());
         gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
         gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
-        gwtJahiaSearchQuery.setInName(inNameField.getValue());
-        gwtJahiaSearchQuery.setInTags(inTagField.getValue());
-        gwtJahiaSearchQuery.setInContents(inContentField.getValue());
-        gwtJahiaSearchQuery.setInFiles(inFileField.getValue());
-        gwtJahiaSearchQuery.setInMetadatas(inMetadataField.getValue());
         return gwtJahiaSearchQuery;
     }
 

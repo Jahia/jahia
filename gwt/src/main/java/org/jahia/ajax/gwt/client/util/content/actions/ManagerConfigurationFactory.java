@@ -43,5 +43,7 @@ public class ManagerConfigurationFactory {
     public static final String MASHUPPICKER = "mashuppicker";
     public static final String CATEGORYPICKER = "categorypicker";
     public static final String ROLESMANAGER = "rolesmanager";
+    public static final String PAGEPICKER = "pagepicker";
+
 
 }

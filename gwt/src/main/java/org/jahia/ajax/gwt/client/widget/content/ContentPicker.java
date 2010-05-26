@@ -93,7 +93,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         if (config.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
             setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 300));
-            initWidgets(null, bottomComponents.getComponent(), contentPicker.getComponent(), null, statusBar);
+            initWidgets(null, contentPicker.getComponent(), bottomComponents.getComponent(), null, statusBar);
         } else {
             setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 150));
             initWidgets(null, contentPicker.getComponent(), bottomComponents.getComponent(), null, statusBar);

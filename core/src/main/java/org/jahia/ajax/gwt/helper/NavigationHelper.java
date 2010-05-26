@@ -696,7 +696,7 @@ public class NavigationHelper {
                 } catch (RepositoryException e) {
                     logger.error(e, e);
                 }
-                boolean matchFilter = (filtersToApply.size() == 0 && mimeTypesToMatch.size() == 0) ||
+                boolean matchFilter = (filtersToApply != null && mimeTypesToMatch != null && filtersToApply.size() == 0 && mimeTypesToMatch.size() == 0) ||
                         matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n, mimeTypesToMatch);
                 if (matchFilter || hasNodes) {
                     GWTJahiaNode node = getGWTJahiaNode(n);

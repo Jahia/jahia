@@ -58,6 +58,7 @@ import java.util.List;
  * This class creates fields for a GXT form panel based on available jcr types and a specific mapping.
  */
 public class FormFieldCreator {
+    
 
     public static class Selector {
         public static final int SMALLTEXT = 1;
@@ -238,7 +239,7 @@ public class FormFieldCreator {
 
             // case of page piker
             if (nodeDefinition.getRequiredPrimaryTypes()[0].equals("jmix:link")) {
-                field = new ContentPickerField(Messages.get("picker_link_header", "Page picker"),
+                field = new ContentPickerField(Messages.get("label.pagePicker", "Page picker"),
                         Messages.get("picker_link_selection", "Selected page"), definition.getSelectorOptions(),
                         definition.getSelectorOptions().get("folder") != null ?
                                 definition.getSelectorOptions().get("folder") : "/",

@@ -6,6 +6,7 @@
  - password (string)
  - type (string) < newsml
  - syncro (string)
+ + medias (jnt:folder)
  + * (jnt:newsMLItem)
 
 [jnt:newsMLItem] > jnt:news

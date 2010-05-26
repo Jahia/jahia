@@ -4,6 +4,7 @@ import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
 import org.apache.log4j.Logger;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -44,16 +45,53 @@ public class NewsMLImporter {
 
     }
 
-    public void processElement(Element element, JCRNodeWrapper node) throws RepositoryException {
+    public void processElement(Element element, JCRNodeWrapper node, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, FileSystemException {
         if (element.getAttributeValue("Href") != null) {
             logger.info("Found reference to external resource " + element.getAttributeValue("Href") + " on tag " + element.getName());
+            if ("ContentItem".equals(element.getName())) {
+                // now let's import the resource file.
+                String ref = element.getAttributeValue("Href");
+                if (!ref.startsWith("#")) {
+                    if (ref.startsWith("http://")) {
+                        // todo handle case of external resource.
+                    } else {
+                        FileObject refFile = contextFileObject.getChild(ref);
+                        if (refFile == null) {
+                            logger.warn("Couldn't find file " + ref + " in feed location " + contextFileObject.toString());
+                        } else {
+                            JCRNodeWrapper mediaNode = null;
+                            try {
+                                mediaNode = feedNode.getNode("medias");
+                            } catch (PathNotFoundException pnfe) {
+                            }
+                            if (mediaNode == null) {
+                                mediaNode = feedNode.addNode("medias", "jnt:folder");
+                            }
+                            logger.info("Storing file " + refFile + " into feed media repository");
+                            JCRNodeWrapper existingFileNode = null;
+                            try {
+                                existingFileNode = mediaNode.getNode(refFile.getName().getBaseName());
+                            } catch (PathNotFoundException pnfe) {
+                            }
+                            if (existingFileNode != null) {
+                                // found the node, for the moment we simply keep the old value, but we could create
+                                // a new version in a later update.
+                            } else {
+                                mediaNode.uploadFile(refFile.getName().getBaseName(), refFile.getContent().getInputStream(), JahiaContextLoaderListener.getServletContext().getMimeType(ref));
+                            }
+
+                            // todo : we must still create the node reference to be able to render the image in the template.
+                        }
+                    }
+                }
+            }
         }
         for (Element childElement : (List<Element>) element.getChildren()) {
             JCRNodeWrapper childNode = getOrCreateChildNode(node, childElement.getName(), "jnt:feedContent");
             for (Attribute childElementAttribute : (List<Attribute>) element.getAttributes()) {
                 childNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());
             }
-            processElement(childElement, childNode);
+            processElement(childElement, childNode, contextFileObject, feedNode);
         }
     }
 
@@ -61,7 +99,7 @@ public class NewsMLImporter {
 
     }
 
-    public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName) throws RepositoryException, JDOMException {
+    public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, JDOMException, FileSystemException {
 
         String newsItemID = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/NewsItemId").getText();
         String newsPublicIdentifier = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/PublicIdentifier").getText();
@@ -155,7 +193,7 @@ public class NewsMLImporter {
         for (Attribute childElementAttribute : (List<Attribute>) rootElement.getAttributes()) {
             newsMLNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());
         }
-        processElement(rootElement, newsMLNode);
+        processElement(rootElement, newsMLNode, contextFileObject, feedNode);
 
         languageSession.save();
     }
@@ -197,7 +235,6 @@ public class NewsMLImporter {
         for ( int i = 0; i < children.length; i++ ) {
             logger.debug( children[ i ].getName().getBaseName() );
             if ("xml".equals(children[i].getName().getExtension().toLowerCase())) {
-                logger.info("Importing contents of XML NewsML file " + children[ i ].getName().getBaseName());
                 InputStream currentNewsItemInputStream = children[i].getContent().getInputStream();
                 
                 // session.importXML(node.getPath(), currentNewsItemInputStream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
@@ -207,7 +244,11 @@ public class NewsMLImporter {
 
                 Document document = saxBuilder.build(currentNewsItemInputStream);
 
-                processDocument(document, parentNode, children[i].getName().getBaseName());
+                if ("NewsML".equals(document.getRootElement().getName())) {
+                    logger.info("Importing contents of XML NewsML file " + children[ i ].getName().getBaseName());
+
+                    processDocument(document, parentNode, children[i].getName().getBaseName(), jarFile, parentNode);
+                }
             }
         }
          session.save();

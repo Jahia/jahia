@@ -93,7 +93,7 @@ public class GetFeedActionTest extends TestCase {
         sdaFeedNode.setProperty("url", feedURL);
 
         session.save();
-        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/home/" + nodeName, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
 
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);

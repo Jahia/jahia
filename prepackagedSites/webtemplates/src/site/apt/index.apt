@@ -46,84 +46,204 @@ Jahia Migration - 6.0 to 6.5
 
 ** Mapping
 
-  The mapping file is a simple file that associates 6.0 to 6.5 definitions. Each line is a mapping rule, which can
-  be viewed as two parts separated by the = (equals) sign. The left hand part is the original definition name - the
-  right hand side describes what to do with these definitions.
+  The mapping file is a simple file that associates 6.0 to 6.5 definitions. The format is similar to CND and it is
+  used to map the original definition names to new ones and/or to trigger some predefined actions. 
 
   The file is called definitions.map and is inserted into the site export zip, along with the definitions.cnd file.
+  
+*** Grammar
 
-  * Container definitions mapping
+----------------------------------------------------
+NodeTypeMappingDef ::= '[' NodeTypeName ']' '=' NodeTypeMapping
+                  {ActionDef}
+                  {PropertyMappingDef | ChildNodeMappingDef}
+				  
+NodeTypeMapping ::= NodeTypeName | '#skip' | '#box' | '#navlink' | '#shareable'
 
-  A container definition mapping starts with the original node type name ( for example, <jnt:mainContentContainer> ).
-       
-  The right hand side contains the new node type name to use.
+NodeTypeName ::= String
 
-  * Fields definitions mapping
+ActionDef ::= '{' AddNodeAction | AddMixinAction | SetPropertyAction '}'
 
-  A field mapping rule starts with the original declaring node type name, followed by a . (dot) and the field name.
-  ( for example, <jnt:mainContentContainer.mainContentBody> ). For metadata, the rules starts with 'metadata.'
-  followed by the metadata name. ( for example, <metadata.jahia:keywords> )
+AddNodeAction ::= 'addNode' NodeWithOptionalNodeTypeName [PropertySettingList]
 
-  If the field need to be mapped to a simple property, the right hand side just contains the name of the property :
+NodeWithOptionalNodeTypeName ::= NodeName ['(' NodeTypeName ')']
 
+NodeName ::= String
+
+AddMixinAction ::= 'addMixin' NodeTypeName
+
+SetPropertyAction ::= 'setProperty' PropertySettingList
+
+PropertySettingList ::= '[' PropertySetting {',' PropertySetting} ']'
+
+PropertySetting ::= PropertyNameWithOptionalMixin '=' PropertyValue
+
+PropertyNameWithOptionalMixin ::= [NodeTypeName'.']PropertyName
+
+PropertyName ::= String
+
+PropertyValue ::= String
+
+PropertyMappingDef ::= '-' PropertyName '=' PropertyMapping
+                  {ValueMappingDef}                
+
+PropertyMapping ::= PropertyNameWithOptionalMixin | '#skip' | '#navlink'
+				  
+ValueMappingDef ::= String '=' String				  
+
+ChildNodeMappingDef ::=  '+' NodeName '=' ChildNodeMapping
+                  {ActionDef}
+				  
+ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'		
+----------------------------------------------------
+  
+*** Container definition mapping
+
+  A container definition mapping starts with the original node type name on the left side, whereas the right hand side
+  contains the new node type name to use.
+  
+  For example:
+  
+------------------------------------------------------  
+[jnt:mainContentContainer] = jnt:mainContent
 ------------------------------------------------------
-jnt:mainContentContainer.mainContentBody = body
+  
+  This line may then be followed by actions and/or field or container list definition mappings (see next sections for
+  more infos). 
+  
+  Example with actions:
+ 
+------------------------------------------------------  
+[web_templates:introductionContainer] = jnt:bigText
+ { addMixin jmix:renderable }
+ { setProperty [j:template=introduction] }
 ------------------------------------------------------
+  
+  This definition does not only map to the new standard definition name, but it also automatically on the target
+  object adds a mixin node type (jmix:renderable) and sets the property j:template to the value 'introduction'. 
+  What was previously solved with a distinct container definition in Jahia 6.5 is now mapped to a standard Jahia 
+  node definition, but now having a distinct template.
+
+*** Page definition mapping
+
+  Similar to the container definition mapping, page definitions should now be mapped to the standard jnt:page
+  node type: 
+  
+------------------------------------------------------
+[web_templates:home] = jnt:page  
+------------------------------------------------------
+
+  and then followed by the container list definition mappings like described below.
+
+  You can either set the new template name, like this:
+  
+------------------------------------------------------
+[web_templates:home] = jnt:page  
+ { setProperty [j:template=Home] }
+------------------------------------------------------
+  
+  Alternatively you can make all template mappings at one place in the definition mapping for jnt:page, like this:
+  
+------------------------------------------------------  
+[jnt:page] = jnt:page
+ - jahia:template = j:template
+    Home = default
+    simple = simple
+    double = simple
+    events = simple
+    publication = simple
+    news = simple
+    people = simple
+    press = simple    
+    job = simple
+------------------------------------------------------
+
+  This example shows that when the node type name is unchanged, the left and the right side of the node type definition
+  can be the same. What changed is the property field name (from jahia:template to j:template) and the possible values,
+  where you can make the mapping from the previous template name to the new template name. You can see that in Jahia 6.5
+  you can use fewer templates to achieve the same as before. This is because container lists are no longer strongly 
+  typed and can contain containers of different types.  
+  
+*** Container list definition mapping
+
+  A container list will be mapped to a standard content list if no specific definition is present in the parent node
+  type's mapping (page or container definition mapping).
+  
+  If you want to map to a new node type or move the list to a different position then you have to add a mapping definition
+  in the parent node type's mapping. The container list definition starts with a + and the container list name. The list 
+  name should not contain the "List" suffix.
+  
+  For instance:
+  
+------------------------------------------------------  
+[web_templates:home] = jnt:page
+ + logo = ../wrapperContent/logo
+ + banner = pagecontent/row1/col1/banner
+------------------------------------------------------
+
+  The list previously named logo is now no longer underneath the page, but as you can define relative paths, the mapping 
+  shows that it is moved to a different place in the content hierarchy. Concretely we go to the parent node of the homepage and
+  then to its subnode called 'wrapperContent' and again another subnode called 'logo'. These nodes may already exist or
+  they will be created using the jnt:contentList node type. You can also specify an alternative nodeType in brackets, e.g.
+
+------------------------------------------------------  
++ mainColumn_box = maincontent(jnt:row)  
+------------------------------------------------------  
+  
+*** Field definition mapping
+
+  A field mapping rule is placed below its original declaring node type mapping (container or page). It starts with a -  
+  followed by the field name.
+  
+  For example:
+  
+------------------------------------------------------  
+[jnt:mainContentContainer] = jnt:mainContent
+ - mainContentBody = body
+ - mainContentTitle = mix:title.jcr:title
+------------------------------------------------------
+ 
+  For standard Jahia metadata fields the mapping rules are already internally hardcoded so they do not need to be extra 
+  specified.
+
+  If the field need to be mapped to a simple property, the right hand side just contains the new property name, like 'body'
+  in the above example.
 
   A field can be associated to an optional mixin type - the right hand side is then the mixin node type name,
   followed by . (dot) and the property name. When mapping the field, the mixin type will be automatically added to
-  the node. For example, the following rules will add jmix:categorized type to every node which has a
-  <jahia:defaultCategory> metadata, and associates the value to the <j:defaultCategory> property :
+  the node. In the above example the previous field mainContentTitle is now mapped to the standard property jcr:title after
+  also adding the mixin type mix:title.    
 
-------------------------------------------------------
-metadata.jahia:defaultCategory = jmix:categorized.j:defaultCategory
-------------------------------------------------------
-
-  * Container list definitions mapping
-
-  A container list definition mapping is similar to a field mapping - it starts with the original declaring node type
-  name, followed by a . (dot) and the container list name. The list name should not contain the "List" suffix.
-
-  The container list will be mapped to a standard content list if no specific definition is present in the parent node
-  type, otherwise the nodetype will match the required type of the definition.
-
-  If no specific definition is present, it is still possible to specify a node type - in the right hand side you can
-  prefix the name of the required node type, followed by a dot. For example :
-
-------------------------------------------------------
-web_templates:home.navLink = jnt:navBar.topMenu
-------------------------------------------------------
-
-  will map the navLink list to a topMenu node of type jnt:navBar.
-
-
-  * Field value mapping
+*** Field value mapping
 
   It is also possible to tranform field values during migration. It is especially useful when using constrained fields
-  ( like simple text coming from a drop down menu ). The rule starts like a field mapping rule, followed with a dot and
-  the field value to transform. For example the following rule will transform the "Spain" value from
-  web_templates:jobContainer.country to "ES" value :
+  ( like simple text coming from a drop down menu ). The field value mappings must be directly underneath a field definition
+  mapping. They have no special character to start with, but are simple mappings with the old value on the left side and the 
+  new value on the right side.
+  
+  For example the following rule will transform the "Spain" value from web_templates:jobContainer.country to "ES" value :
 
 ------------------------------------------------------
-web_templates:jobContainer.country.Spain = ES
+[web_templates:jobContainer] = jnt:job
+ - country = country
+   Spain = ES
 ------------------------------------------------------
 
   Combined the field mapping, it allows to do some complex stuff, like assigning a specific template to a node based on
   a field value :
   
 ------------------------------------------------------
-web_templates:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
-web_templates:fileContainer.fileDisplayDetails.true = details
-web_templates:fileContainer.fileDisplayDetails.false = link
+[web_templates:fileContainer] = jnt:fileReference
+ - file = j:node 
+ - fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+   true = details
+   false = link
 ------------------------------------------------------
 
   Here the value fileDisplayDetails, which was defining the way the file is rendered, is replaced by the template
   property, and the values true and false are mapped to the template name to assign.
 
-  * 
-
-
-  * Box mapping - merging containers lists
+*** Box mapping - merging containers lists
 
   Jahia boxes are handled in a specific way - they were usually used to make heterogeneous containers list, containing
   different types of boxes. The mechanism was to create typed sub-container lists, which is not needed anymore with the
@@ -152,7 +272,7 @@ web_templates:fileContainer.fileDisplayDetails.false = link
        -textB
 -------------------------------------------------------
 
-  Will be mapped by default by :
+  Will be mapped by default to :
 
 -------------------------------------------------------
 +boxList
@@ -178,51 +298,83 @@ web_templates:fileContainer.fileDisplayDetails.false = link
   If a different behaviour is required for a specific box, the type can be mapped as any other standard type.
 
 
+*** Shared nodes mapping
 
+*** Actions
 
-  []
+*** Skip
 
+*** Other special mappings
 
+*** Example
 
   All mappings provided in this package can be used for any export coming from a 6.0 site.
 
   Here is some standard mapping that can be used for any site using these standard types :
 
-------------------------------------------------------
++----------------------------------------------------+
 ## Box
 
-jnt:box = #box
-*.boxTitle = mix:title.jcr:title
-*.skin = jmix:skinnable.j:skin
+[jnt:box] = jnt:box
+ - boxTitle = mix:title.jcr:title
+ - skin = jmix:skinnable.j:skin
+   resourceKey(skins.box2) = skins.box2
 
 ## Menu
-jnt:navLink.navLink = navLink
-web_templates:home.navLink = jnt:navBar.topMenu, setProperty j:startLevel=0, setProperty j:maxDepth=1
-*.navLink = jnt:navBar.sideMenu, setProperty j:startLevel=2, setProperty j:maxDepth=3, setProperty jmix:renderable.j:template=sideMenu
+
+[jnt:navLink] = #navlink
+ - navLink = #navlink
 
 ## Main content
 
-jnt:mainContentContainer = jnt:mainContent
-jnt:mainContentContainer.mainContentBody = body
-jnt:mainContentContainer.mainContentAlign = align
-jnt:mainContentContainer.mainContentTitle = mix:title.jcr:title
-jnt:mainContentContainer.mainContentImage = image
+[jnt:mainContentContainer] = jnt:mainContent
+ - mainContentBody = body
+ - mainContentAlign = align
+ - mainContentTitle = mix:title.jcr:title
+ - mainContentImage = image
 
 ## Text container
 
-jnt:textContainer = jnt:bigText
-jnt:textContainer.bigText = jnt:bigText.text
+[jnt:textContainer] = jnt:bigText
+ - bigText = jnt:bigText.text
 
 ## File container
 
-jnt:fileContainer = jnt:nodeReference
-jnt:fileContainer.file = j:node
-jnt:fileContainer.fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
-jnt:fileContainer.fileDisplayDetails.true = details
-jnt:fileContainer.fileDisplayDetails.false = link
+[jnt:fileContainer] = jnt:fileReference
+ - file = j:node
+ - fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+   true = details
+   false = link
 
 ## Portlet containers
 
-jnt:portletContainer = jnt:nodeReference
-jnt:portletContainer.portlet = j:node
-------------------------------------------------------
+[jnt:portletContainer] = jnt:portletReference
+ - portlet = j:node
+
+## Pages
+
+[jnt:page] = jnt:page
+ - jahia:template = j:template
+    Home = default
+    simple = simple
+    double = simple
+    events = simple
+    publication = simple
+    news = simple
+    people = simple
+    press = simple    
+    job = simple    
+     
+[web_templates:home] = jnt:page
+ + logo = ../wrapperContent/logo
+ + banner = pagecontent/row1/col1/banner
+ + promo = pagecontent/row1/col1/promo
+   { setProperty [jmix:renderable.j:template=twoColumns] }
+ + promoLarge = #skip
+ + columnA_box = pagecontent/row1/col1
+ + columnB_box = pagecontent/row1/col2
+ + logoFooter = ../wrapperContent/logoFooter 
+ + footerContainerList = ../wrapperContent/footer 
+ 
++----------------------------------------------------+
+

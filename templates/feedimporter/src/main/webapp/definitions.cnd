@@ -17,6 +17,10 @@
  - contentUpdated (date) hidden
  + * (jnt:feedContent)
 
+[jnt:newsMLComponent] > jnt:content
+ - Duid (string)
+ + * (jnt:newsMLContentItem)
+
 [jnt:newsMLContentItem] > jnt:content, mix:title, jmix:editorialContent
  - comment (string)
  - format (string)

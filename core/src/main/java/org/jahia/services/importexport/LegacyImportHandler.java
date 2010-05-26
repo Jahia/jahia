@@ -428,43 +428,54 @@ public class LegacyImportHandler extends DefaultHandler {
             nodeType = StringUtils.substringBefore(nodeName, ".");
             nodeName = StringUtils.substringAfter(nodeName, ".");
         }
-
-        JCRNodeWrapper parent = getCurrentContentNode();
-        JCRNodeWrapper node;
-        if (StringUtils.contains(nodeName, "/")) {
-            String parentPath = StringUtils.substringBeforeLast(nodeName, "/");
-            if (parent.hasNode(parentPath)) {
-                parent = parent.getNode(parentPath);
+        ExtendedNodeType primaryNodeType = listDefinition.getRequiredPrimaryTypes()[0];
+        try {
+            primaryNodeType = registry.getNodeType(StringUtils.substringBeforeLast(listDefinition
+                    .getRequiredPrimaryTypes()[0].getName(), "List"));
+        } catch (NoSuchNodeTypeException ex) {
+        }
+        String mappedNodeType = mapping.getMappedType(primaryNodeType);
+        if ("#skip".equals(mappedNodeType)) {
+            currentCtx.peek().pushSkip();
+        } else if ("#navlink".equals(mappedNodeType)) {
+            currentCtx.peek().pushNavLink(listDefinition.getRequiredPrimaryTypes()[0]);
+        } else {
+            JCRNodeWrapper parent = getCurrentContentNode();
+            if (StringUtils.contains(nodeName, "/")) {
+                String parentPath = StringUtils.substringBeforeLast(nodeName, "/");
+                if (parent.hasNode(parentPath)) {
+                    parent = parent.getNode(parentPath);
+                }
+                nodeName = StringUtils.substringAfterLast(nodeName, "/");
             }
-            nodeName = StringUtils.substringAfterLast(nodeName, "/");
-        }
-        if (StringUtils.isEmpty(nodeType)
-                && parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(nodeName) != null) {
-            String[] strings = parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(nodeName)
-                    .getRequiredPrimaryTypeNames();
-            nodeType = strings[0];
-        }
-        List<String> mappedOldNodeNames = mapping.getMappedNodesForType(getCurrentContentType(), true);
-        int indexOfName = mappedOldNodeNames.indexOf(listDefinition.getName());
-        List<String> mappedNewNodeNames = null;
-        if (indexOfName != -1) {
-            mappedNewNodeNames = mapping.getMappedNodesForType(getCurrentContentType(), false).subList(indexOfName,
-                    mappedOldNodeNames.size());
-        }
-        node = addOrCheckoutNode(parent, nodeName, nodeType, mappedNewNodeNames);
-        
-        performActions(mapping.getActions(getCurrentContentType(),
-                listDefinition.getName()), node);
-        uuidMapping.put(uuid, node.getIdentifier());
-        
-        ExtendedNodeType listType = listDefinition.getRequiredPrimaryTypes()[0];
-        currentCtx.peek().pushList(node, listType);
-        
-        if (currentCtx.peek().boxProperties.peek() != null) {
-            for (Map.Entry<String, String> entry : currentCtx.peek().boxProperties
-                    .peek().entrySet()) {
-                setPropertyField(getCurrentContentType(), entry.getKey(),
-                        entry.getValue());
+            if (StringUtils.isEmpty(nodeType)
+                    && parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(nodeName) != null) {
+                String[] strings = parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(
+                        nodeName).getRequiredPrimaryTypeNames();
+                nodeType = strings[0];
+            }
+            List<String> mappedOldNodeNames = mapping.getMappedNodesForType(
+                    getCurrentContentType(), true);
+            int indexOfName = mappedOldNodeNames.indexOf(listDefinition.getName());
+            List<String> mappedNewNodeNames = null;
+            if (indexOfName != -1) {
+                mappedNewNodeNames = mapping.getMappedNodesForType(getCurrentContentType(), false)
+                        .subList(indexOfName, mappedOldNodeNames.size());
+            }
+            JCRNodeWrapper node = addOrCheckoutNode(parent, nodeName, nodeType, mappedNewNodeNames);
+
+            performActions(mapping.getActions(getCurrentContentType(), listDefinition.getName()),
+                    node);
+            uuidMapping.put(uuid, node.getIdentifier());
+
+            ExtendedNodeType listType = listDefinition.getRequiredPrimaryTypes()[0];
+            currentCtx.peek().pushList(node, listType);
+
+            if (currentCtx.peek().boxProperties.peek() != null) {
+                for (Map.Entry<String, String> entry : currentCtx.peek().boxProperties.peek()
+                        .entrySet()) {
+                    setPropertyField(getCurrentContentType(), entry.getKey(), entry.getValue());
+                }
             }
         }
     }

@@ -130,10 +130,12 @@
    resourceKey(skins.box2) = skins.box2
     
 ## Menu
+
 [jnt:navLink] = #navlink
  - navLink = #navlink
 
 ## Pages
+
 [jnt:page] = jnt:page
  - jahia:template = j:template
     Home = default
@@ -151,7 +153,7 @@
  + banner = pagecontent/row1/col1/banner
  + promo = pagecontent/row1/col1/promo
    { setProperty [jmix:renderable.j:template=twoColumns] }
- + promoLarge = pagecontent/row1/col1/promoLarge
+ + promoLarge = #skip
  + columnA_box = pagecontent/row1/col1
  + columnB_box = pagecontent/row1/col2
  + logoFooter = ../wrapperContent/logoFooter 
@@ -169,12 +171,12 @@
 
 [web_templates:events] = jnt:page   
  + introduction = pagecontent/row1/col1
- + events = pagecontent/row1/col1
+ + events = pagecontent/row1/col1/events
  + columnB_box = pagecontent/row1/col1
 
 [web_templates:publication] = jnt:page   
  + introduction = pagecontent/row1/col1
- + publication = pagecontent/row1/col1
+ + publication = pagecontent/row1/col1/publications
  + columnB_box = pagecontent/row1/col1 
 
 [web_templates:news] = jnt:page   

@@ -29,7 +29,7 @@ end
 rule "Auto Publish News Nodes"
    when
        A new node is created
-        - the node has the type jnt:feedEntry
+        - the node has the type jnt:newsMLItem
    then
        Publish the node
 end
@@ -37,7 +37,7 @@ end
 rule "Auto Start Workflow On News Nodes"
    when
        A property contentUpdated has been set on a node
-        - the node has the type jnt:feedEntry
+        - the node has the type jnt:newsMLItem
    then
        Start the workflow "2-step-publication" from "jBPM" on the node
 end

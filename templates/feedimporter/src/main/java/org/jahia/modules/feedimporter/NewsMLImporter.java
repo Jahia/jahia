@@ -13,16 +13,20 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
+import javax.jcr.ItemExistsException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * NewsML feed importer. This class copies the content of a NewsML feed into a sub-tree in the JCR.
@@ -44,7 +48,7 @@ public class NewsMLImporter {
             logger.info("Found reference to external resource " + element.getAttributeValue("Href") + " on tag " + element.getName());
         }
         for (Element childElement : (List<Element>) element.getChildren()) {
-            JCRNodeWrapper childNode = node.addNode(childElement.getName(), "jnt:feedContent");
+            JCRNodeWrapper childNode = getOrCreateChildNode(node, childElement.getName(), "jnt:feedContent");
             for (Attribute childElementAttribute : (List<Attribute>) element.getAttributes()) {
                 childNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());
             }
@@ -59,6 +63,8 @@ public class NewsMLImporter {
         String newsLanguage = getElement(document.getRootElement(), "NewsItem/NewsComponent/DescriptiveMetadata/Language").getAttributeValue("FormalName");
         String newsSubjectCode = getElement(document.getRootElement(), "NewsItem/NewsComponent/DescriptiveMetadata/SubjectCode/Subject").getAttributeValue("FormalName");
         String newsDateStr = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/DateId").getText();
+        String newsFirstCreatedDateStr = getElement(document.getRootElement(), "NewsItem/NewsManagement/FirstCreated").getText();
+        String newsThisRevisionCreatedDateStr = getElement(document.getRootElement(), "NewsItem/NewsManagement/ThisRevisionCreated").getText();
         String newsUrgency = getElement(document.getRootElement(), "NewsItem/NewsManagement/Urgency").getAttributeValue("FormalName");
         String newsStatus = getElement(document.getRootElement(), "NewsItem/NewsManagement/Status").getAttributeValue("FormalName");
         if ("Embargoed".equals(newsStatus)) {
@@ -72,10 +78,13 @@ public class NewsMLImporter {
             }
         }
         Element newsInstruction = getElement(document.getRootElement(), "NewsItem/NewsManagement/Instruction");
+        // todo : we need to check if the language has been configured in the site, otherwise we use the current language.
+        JCRSessionWrapper languageSession = JCRSessionFactory.getInstance().getCurrentUserSession(
+                node.getSession().getWorkspace().getName(), new Locale(newsLanguage.toLowerCase()));
+        JCRNodeWrapper updateExistingNode = null;
         if (newsInstruction != null) {
             String instructionName = newsInstruction.getAttributeValue("FormalName");
             if ("LiftEmbargo".equals(instructionName)) {
-
             } else if ("Rectify".equals(instructionName)) {
 
             } else if ("Update".equals(instructionName)) {
@@ -83,6 +92,9 @@ public class NewsMLImporter {
             } else if ("Delete".equals(instructionName)) {
                 
             }
+            Query existingNodeQuery = languageSession.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:newsMLItem] as news WHERE news.[itemID]='" + newsItemID + "'", Query.JCR_SQL2);
+            QueryResult existingNodeQueryResult = existingNodeQuery.execute();
+            updateExistingNode = (JCRNodeWrapper) existingNodeQueryResult.getNodes().nextNode();  
         }
         String newsHeadline = getElement(document.getRootElement(), "NewsItem/NewsComponent/NewsLines/HeadLine").getText();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -95,14 +107,21 @@ public class NewsMLImporter {
         }
         logger.info("Importing news item with date " + newsDate.toString() + " and ID " + newsItemID + " in language " + newsLanguage + " in subject " + newsSubjectCode);
 
-        // todo : we need to check if the language has been configured in the site, otherwise we use the current language.
-        JCRSessionWrapper languageSession = JCRSessionFactory.getInstance().getCurrentUserSession(
-                node.getSession().getWorkspace().getName(), new Locale(newsLanguage.toLowerCase()));
 
         JCRNodeWrapper languageNode = languageSession.getNode(node.getPath());
         languageSession.checkout(languageNode);
 
-        JCRNodeWrapper feedEntryNode = languageNode.addNode(entryBaseName, "jnt:newsMLItem");
+        JCRNodeWrapper feedEntryNode = null;
+        if (updateExistingNode != null) {
+            feedEntryNode = updateExistingNode;
+            DateTimeFormatter iso8601DateTimeFormatter = ISODateTimeFormat.basicDateTimeNoMillis();
+            DateTime thisRevisionCreatedDateTime = iso8601DateTimeFormatter.parseDateTime(newsThisRevisionCreatedDateStr);
+            Calendar newsUpdateCalendar = Calendar.getInstance();
+            newsUpdateCalendar.setTime(thisRevisionCreatedDateTime.toDate());
+            feedEntryNode.setProperty("contentUpdated", newsUpdateCalendar);
+        } else {
+            feedEntryNode = languageNode.addNode(entryBaseName, "jnt:newsMLItem");
+        }
         feedEntryNode.setProperty("jcr:title", newsHeadline);
         Calendar newsCalendar=Calendar.getInstance();
         newsCalendar.setTime(newsDate);
@@ -113,13 +132,31 @@ public class NewsMLImporter {
         feedEntryNode.setProperty("status", newsStatus);
 
         Element rootElement = document.getRootElement();
-        JCRNodeWrapper newsMLNode = feedEntryNode.addNode(rootElement.getName(), "jnt:feedContent");
+        JCRNodeWrapper newsMLNode = getOrCreateChildNode(feedEntryNode, rootElement.getName(), "jnt:feedContent");
         for (Attribute childElementAttribute : (List<Attribute>) rootElement.getAttributes()) {
             newsMLNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());
         }
         processElement(rootElement, newsMLNode);
 
         languageSession.save();
+    }
+
+    public JCRNodeWrapper getOrCreateChildNode(JCRNodeWrapper parentNode, String childName, String nodeTypeName) throws RepositoryException {
+        JCRNodeWrapper result = null;
+        try {
+            result = parentNode.getNode(childName);
+        } catch (PathNotFoundException pnfe) {
+            // This is expected. It means we have to create the node.
+            result = parentNode.addNode(childName, nodeTypeName);
+        }
+        return result;
+    }
+
+    public class FileObjectComparator implements Comparator<FileObject> {
+
+        public int compare(FileObject o1, FileObject o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
     }
 
     public void importFeed (String feedURL, String userName, String password, JCRNodeWrapper parentNode, JCRSessionWrapper session) throws IOException, JDOMException, RepositoryException {
@@ -134,12 +171,14 @@ public class NewsMLImporter {
         FileSystemManager fsManager = VFS.getManager();
         FileObject jarFile = fsManager.resolveFile( feedURL );
 
-        // List the children of the Jar file
+        // List the children of the Jar file and sort them by file name.
         FileObject[] children = jarFile.getChildren();
+        Arrays.sort(children, new FileObjectComparator());
         logger.debug( "Children of " + jarFile.getName().getURI() );
         for ( int i = 0; i < children.length; i++ ) {
             logger.debug( children[ i ].getName().getBaseName() );
             if ("xml".equals(children[i].getName().getExtension().toLowerCase())) {
+                logger.info("Importing contents of XML NewsML file " + children[ i ].getName().getBaseName());
                 InputStream currentNewsItemInputStream = children[i].getContent().getInputStream();
                 
                 // session.importXML(node.getPath(), currentNewsItemInputStream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);

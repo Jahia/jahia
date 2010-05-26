@@ -18,6 +18,7 @@ global JCRContentUtils jcrUtils
 ###############################################################################
 
 rule "Add generated URL mapping for news item"
+    salience 25
     when
         A property jcr:title has been set on a node
         The node has a parent

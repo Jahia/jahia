@@ -53,6 +53,7 @@ end
 // Second rule propagates a property change to all children
 
 rule "Copy status parent value by new type"
+    salience 25
     when
         The type jmix:categorizedDocument has been assigned to a node
         The property j:status is not defined for the node
@@ -64,6 +65,7 @@ rule "Copy status parent value by new type"
 end
 
 rule "Propagate status value to children"
+    salience 25
     when
         A property j:status has been set on a node
         The node has a child
@@ -74,6 +76,7 @@ rule "Propagate status value to children"
 end
 
 rule "Import file"
+    salience 50
     when
         A new node is created
         The node has a parent
@@ -96,6 +99,7 @@ rule "Image type"
 end
 
 rule "Image update"
+    salience 25
 #Rebuild thumbnail for an updated image and update height/width 
     when
         A file content has been modified
@@ -109,6 +113,7 @@ rule "Image update"
 end        
 
 rule "Profile Image update"
+    salience 25
     when
         A property j:picture has been set on a node
              - the node has the type jnt:user
@@ -118,6 +123,7 @@ rule "Profile Image update"
 end
 
 rule "Move subnodes to split folder"
+    salience 100
     when
         The type jmix:autoSplitFolders has been assigned to a node
     then
@@ -125,6 +131,7 @@ rule "Move subnodes to split folder"
 end
 
 rule "Move to split folder"
+    salience 100
     when
         A new node is created
             - the parent has the type jmix:autoSplitFolders

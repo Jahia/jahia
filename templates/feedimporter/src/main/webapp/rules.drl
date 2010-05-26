@@ -19,6 +19,7 @@ global JCRStoreProvider provider
 ###############################################################################
 
 rule "Synchronize feed"
+   salience 25
    when
        A property syncro has been set on a node
         - the node has the type jnt:feed
@@ -27,6 +28,7 @@ rule "Synchronize feed"
 end
 
 rule "Auto Publish News Nodes"
+   salience -50
    when
        A new node is created
         - the node has the type jnt:newsMLItem
@@ -35,6 +37,7 @@ rule "Auto Publish News Nodes"
 end
 
 rule "Auto Start Workflow On News Nodes"
+   salience -50
    when
        A property contentUpdated has been set on a node
         - the node has the type jnt:newsMLItem

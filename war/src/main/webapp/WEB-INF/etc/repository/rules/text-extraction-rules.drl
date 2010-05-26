@@ -18,6 +18,7 @@ global JCRStoreProvider provider
 
 rule "Properties extraction"
 #Extract all possible data from a file when it's uploaded
+    salience 10
     when
         A file content has been modified
     then
@@ -26,6 +27,7 @@ rule "Properties extraction"
 end
 
 rule "Set corresponding property with the value of the extracted metadata"
+    salience 10
   when
     A new node is created
     A well known metadata field has been extracted

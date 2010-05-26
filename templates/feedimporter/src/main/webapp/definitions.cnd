@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:feed] > jnt:content, mix:title, jmix:editorialContent
+[jnt:feed] > jnt:content, mix:title, jmix:editorialContent, jmix:list
  - url (string)
  - user (string)
  - password (string)

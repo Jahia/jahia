@@ -10,10 +10,9 @@ function replace(id, url, callback) {
         var result;
         if (http.readyState == 4) {
             result = http.responseText;
-            result = result.replace('<div id="' + id + '">', '<div id="replaced' + id + '">');
-            document.getElementById(id).innerHTML = result;
+            $("#" + id).html(result);
             eval(callback);
         }
-    }
+    };
     http.send(null);
 }

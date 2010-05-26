@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH92062_2002-09-23_09-29-03_T88093_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T092903+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH92062_2002-09-23_09-29-03_T88093_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH92062_2002-09-23_09-29-03_T88093</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH92062_2002-09-23_09-29-03_T88093:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 09:29:03 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T092903+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T092903+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92062_2002-09-23_09-29-03_T88093_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">JP</FormalName>  <Description xml:lang="en">Japan</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T092903Z_01_T88093_RTRIDST_0_JAPAN-POLITICS-DEMOCRATS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92062_2002-09-23_09-29-03_T88093_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Japan's frail opposition party opts for status quo</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>JAPAN-POLITICS-DEMOCRATS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>JAPAN-POLITICS-DEMOCRATS:Japan's frail opposition party opts for status quo</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH92062_2002-09-23_09-29-03_T88093_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH92062_2002-09-23_09-29-03_T88093_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T092903+0000"/>
+                        <Property FormalName="USN" Value="T88093"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Isabel Reynolds</p>
+                                <p> TOKYO, Sept 23 (Reuters) - Japan's faltering main  opposition party voted for more of the same on Monday,  re-electing a leader criticised by many for failing to provide  a convincing alternative to Prime Minister Junichiro Koizumi.</p>
+                                <p> Political blueblood Yukio Hatoyama scraped back as leader  of the Democratic Party of Japan (DPJ) after a close run-off  with arch-rival Naoto Kan.</p>
+                                <p> "The result was almost a dead heat with Mr Kan. That means  you are telling me I must not simply carry on as before. I must  become a new Hatoyama," a solemn Hatoyama told party members  after hearing the results of the election at a Tokyo hotel.</p>
+                                <p> A fourth generation politician from a wealthy family, the  55-year-old Hatoyama has yet to live up to a pedigree that  includes a prime minister grandfather.</p>
+                                <p> Despite repeated pledges to oust the long-ruling Liberal  Democratic Party to which he once belonged, Hatoyama -- once  dubbed "soft cream" for his wishy-washy image -- presides over  a party bereft of a distinctive agenda after Koizumi swept to  power on a reform ticket last year.</p>
+                                <p> With Koizumi riding high in the polls following his  historic summit with North Korean leader Kim Jong-Il, public  support for the Democrats fell to eight percent in a Kyodo news  agency poll last week.</p>
+                                <p> Critics say Hatoyama lacks the punch to stand up to ruling  party politicians in parliamentary debates and his policies  amount to little more than sniping at government decisions.</p>
+                                <p> KAN COULDN'T</p>
+                                <p> An engineering graduate of Japan's elite Tokyo University  and holder of a Stanford University doctorate, Hatoyama had  threatened to quit politics if he lost the leadership election.</p>
+                                <p> The election result was a disappointment for his more  charismatic rival, former party leader Naoto Kan, once the most  popular politician in Japan.</p>
+                                <p> Kan's support among the general public soared when he  fought for an investigation into a government cover-up of  HIV-tainted blood imports in 1996. He was once regularly voted  the man most people wanted to see as prime minister.</p>
+                                <p> But Kan fell from grace after reports of an extra-marital  affair, losing the party leadership to Hatoyama in 1999.</p>
+                                <p> "I would like to work with Mr Hatoyama's Democratic Party  for a change in government," Kan said after the result was  announced.</p>
+                                <p> With only around a quarter of the seats in parliament's  lower house, the Democrats are a long way from being able to  realise Kan's dream.</p>
+                                <p> The Democrats also suffer from their image as an uneasy  amalgam of former Socialists, one-time LDP members and a hefty  sprinkling of younger lawmakers.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

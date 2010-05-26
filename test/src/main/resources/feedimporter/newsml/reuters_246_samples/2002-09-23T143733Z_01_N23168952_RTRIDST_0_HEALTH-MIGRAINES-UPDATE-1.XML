@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH98638_2002-09-23_14-37-33_N23168952_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T143733+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH98638_2002-09-23_14-37-33_N23168952_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH98638_2002-09-23_14-37-33_N23168952</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH98638_2002-09-23_14-37-33_N23168952:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:37:33 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T143733+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T143733+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98638_2002-09-23_14-37-33_N23168952_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T143733Z_01_N23168952_RTRIDST_0_HEALTH-MIGRAINES-UPDATE-1.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98638_2002-09-23_14-37-33_N23168952_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE1-Epilepsy drug may help migraine, U.S. doctor says</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>HEALTH-MIGRAINES (UPDATE 1)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>HEALTH-MIGRAINES (UPDATE 1):UPDATE1-Epilepsy drug may help migraine, U.S. doctor says</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="ABX"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH98638_2002-09-23_14-37-33_N23168952_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH98638_2002-09-23_14-37-33_N23168952_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T143733+0000"/>
+                        <Property FormalName="USN" Value="N23168952"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (Adds background on side-effects of drug paragraphs 14,17-18)</p>
+                                <p> By Maggie Fox, Health and Science Correspondent</p>
+                                <p> WASHINGTON, Sept 23 (Reuters) - An epilepsy drug may help  many patients with migraine by preventing nerves on the brain  from becoming over-excited, a headache specialist said on  Monday.</p>
+                                <p> The drug, called topiramate, may help patients who do not  respond to more traditional migraine drugs, said Dr. Stephen  Silberstein, director of the Jefferson Headache Center at  Thomas Jefferson University in Philadelphia.</p>
+                                <p> "Migraine is due to a more sensitive brain," said  Silberstein, who was scheduled to present his findings to a  meeting in Britain on Monday of the Migraine Trust.</p>
+                                <p> Several migraine experts have described a process known as  sensitization, during which pain starts in the nerves on the  outside of the brain. If the pain is not stopped right away,  the effect moves to nerves that normally do not perceive pain.</p>
+                                <p> Non-painful stimuli are perceived as painful by the patient,  who may say things like "my hair hurts". This strange sensation is  called cutaneous allodynia.</p>
+                                <p> Triptan drugs used to treat migraines can prevent this from  happening, but cannot reverse it once it starts. Beta-blockers,  narcotics and ergot derivatives, each with a different  mechanism of action, are also used to treat migraine.</p>
+                                <p> "Different types of migraine respond to different types of  medication," Silberstein told a seminar organized by the  American Medical Association.</p>
+                                <p> Migraine patients often know they can stop a migraine if  they take drugs right away, but the specialized drugs are  expensive and can have severe side-effects. Sometimes a simple  aspirin will work in very early migraine in some patients, but  there is the risk of overuse.</p>
+                                <p> A FINE LINE</p>
+                                <p> People who take analgesics such as aspirin, ibuprofen or other  drugs can develop chronic daily headaches caused by the drugs  themselves.</p>
+                                <p> "If something hurts, you don't want to wait until it's so bad  to treat it," Silberstein said. Patients often walk a fine line  and may wait until it is too late to take a painkiller.</p>
+                                <p> Silberstein hoped topiramate might help prevent the  sensitization process from starting in the first place. He tested  around 500 migraine patients, who got either a placebo or  topiramate in one of three different doses.</p>
+                                <p> Of the patients who took dummy pills, 23 percent said their  migraines got better. Thirty-six percent on the lowest dose of  topiramate, 50 mg, reported an improvement, as did just over half  of those who got 100 mg or 200 mg of the drug.</p>
+                                <p> He noticed some of the same memory side-effects that  topiramate has had in other trials. These include "language  problems (primarily articulation or 'word-finding')," said the  makers of the drug, Ortho-McNeil Pharmaceutical Inc., a subsidiary  of Johnson &amp; Johnson.</p>
+                                <p>Topiramate is sold under the name Topamax by Ortho-McNeil.  Johnson &amp; Johnson helped sponsor the AMA seminar where  Silberstein spoke.</p>
+                                <p> "What was amazing in this trial was the effect on weight,"  said Silberstein. The patients who got topiramine lost, on  average, 3.8 percent of their body weight.</p>
+                                <p>In February Ortho-McNeil said it was halting clinical trials  testing Topamax to treat obesity while it reformulated the drug  because of its side-effects, including memory problems,  fatigue, sleepiness, difficulty in concentration and tingling  in the fingers and toes.</p>
+                                <p> Earlier this month it stopped a test of the drug against  bipolar disorder because it did not work well enough.      </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

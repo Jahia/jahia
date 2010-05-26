@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<NewsML>
+  <Catalog Href="http://www.afp.com/dtd/AFPCatalog.xml"/>
+  <NewsEnvelope>
+    <DateAndTime>20040729T125654Z</DateAndTime>
+  </NewsEnvelope>
+  <NewsItem>
+    <Identification>
+      <NewsIdentifier>
+        <ProviderId>afp.com</ProviderId>
+        <DateId>20040729</DateId>
+        <NewsItemId>040729125648.kkodyxq3</NewsItemId>
+        <RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+        <PublicIdentifier>urn:newsml:afp.com:20040729:040729125648.kkodyxq3:1</PublicIdentifier>
+      </NewsIdentifier>
+      <NameLabel>Amfoot-NFL-Beuerlein</NameLabel>
+    </Identification>
+    <NewsManagement>
+      <NewsItemType FormalName="News"/>
+      <FirstCreated>20040729T125648Z</FirstCreated>
+      <ThisRevisionCreated>20040729T125648Z</ThisRevisionCreated>
+      <Status FormalName="Usable"/>
+    </NewsManagement>
+    <NewsComponent>
+      <NewsLines>
+        <HeadLine>Quarterback Beuerlein retires after 17 NFL seasons</HeadLine>
+        
+        <DateLine>CHARLOTTE, United States (AFP)</DateLine>
+        <CopyrightLine>© 2004 AFP</CopyrightLine>
+      </NewsLines>
+      <AdministrativeMetadata>
+        <Provider>
+          <Party FormalName="AFP"/>
+        </Provider>
+      </AdministrativeMetadata>
+      <DescriptiveMetadata>
+        <Language FormalName="en"/> 
+	
+        <OfInterestTo FormalName="mmd--english--webwires--america--top"/>
+      </DescriptiveMetadata>
+      <NewsComponent>
+        <ContentItem>
+          <MediaType FormalName="Text"/>
+          <Format FormalName="bcNITF2.5"/>
+          <DataContent>
+            <media media-type="image" style="leftSide">
+<media-reference mime-type="" data-location="#photo0" />
+</media>
+<p>Steve Beuerlein, who holds records for passing yards and touchdowns in the nine-year history of the Carolina Panthers, has retired.</p>
+
+            <p>Beuerlein, 39, spent his last three seasons with the Denver Broncos before he was released last May.</p>
+            <p>A 17-year veteran, Beuerlein played for the Panthers from 1996-2000 and set club records with 12,690 passing yards and 86 touchdowns.</p>
+            <p>"This was the way it was meant to be," Beuerlein said of his decision to sign and then retire as a Panther. "My heart has always been with this organization."</p>
+            <p>Beuerlein went to the Pro Bowl for the first time in 1999, when he threw for 4,436 yards and 36 touchdowns.</p>
+            <p>He was released before the 2001 season in an extremely unpopular move by then-coach George Seifert. The Panthers started rookie Chris Weinke at quarterback and finished 1-15. Seifert was fired after the season.</p>
+            <p>Beuerlein began his playing carer with the Los Angeles Raiders in 1987 and also played for Dallas, Arizona and Jacksonville.</p>
+          </DataContent>
+        </ContentItem>
+      </NewsComponent>
+      <NewsComponent Duid="photo0">
+        <NewsLines> 
+          <HeadLine>Steve Beuerlein</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP/File"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Scott Rovak"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Steve Beuerlein, a 17-year veteran who played for the Panthers from 1996-2000 and holds records for passing yards and touchdowns in the nine-year history of Carolina, has announced his retirement</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RBO41.290704125637.photo00.default-80x100.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="80"/>
+              <Property FormalName="Height" Value="100"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RBO41.290704125637.photo00.default-198x245.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="198"/>
+              <Property FormalName="Height" Value="245"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RBO41.290704125637.photo00.default-211x261.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="211"/>
+              <Property FormalName="Height" Value="261"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+    </NewsComponent>
+  </NewsItem>
+</NewsML>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93603_2002-09-23_11-04-45_L23227528_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T110445+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93603_2002-09-23_11-04-45_L23227528_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93603_2002-09-23_11-04-45_L23227528</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93603_2002-09-23_11-04-45_L23227528:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:04:45 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T110445+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T110445+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93603_2002-09-23_11-04-45_L23227528_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ES</FormalName>  <Description xml:lang="en">Spain</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">TR</FormalName>  <Description xml:lang="en">Turkey</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Soccer"/>  <FormalName Scheme="N2000">SOCC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15054000</FormalName>  <Description xml:lang="en">Soccer</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T110445Z_01_L23227528_RTRIDST_0_SPORT-SOCCER-CHAMPIONS-BARCELONA.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93603_2002-09-23_11-04-45_L23227528_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Soccer-Barcelona forwards aim to continue winning form</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-SOCCER-CHAMPIONS-BARCELONA</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-SOCCER-CHAMPIONS-BARCELONA:Soccer-Barcelona forwards aim to continue winning form</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93603_2002-09-23_11-04-45_L23227528_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93603_2002-09-23_11-04-45_L23227528_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T110445+0000"/>
+                        <Property FormalName="USN" Value="L23227528"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> BARCELONA, Sept 23 (Reuters) - Barcelona forwards Luis  Enrique and Patrick Kluivert say they are unconcerned who scores  the goals as long as their team continue their winning run when  they face Galatasaray in the Champions League on Tuesday.</p>
+                                <p> Former Spanish international Enrique struck his fifth goal  in four matches in the 2-0 win over city rivals Espanyol at the  weekend while the Dutch centre-forward opened his account for  the season when he grabbed his team's opener with a spectacular  diving header.</p>
+                                <p> "The most important thing is winning," Luis Enrique told the  Barcelona daily Sport on Monday. "If I score then that is great,  but above all I want to win each game."</p>
+                                <p> Fellow forward Kluivert admitted that he had been a little  worried at taking so long to score this season, but said that  his team's recent performances more than compensated for his  failure to hit the net.</p>
+                                <p> "The important thing is that we keep winning and that the  team plays well," he said. "Of course I was relieved to score  (against Espanyol) and I hope to do it again in Turkey, but our  main aim is to win."</p>
+                                <p> With young Argentine striker Javier Saviola also playing up  front Kluivert is confident the Catalan side now have the  ability to break their three-year title drought by winning a  trophy this season.</p>
+                                <p> "This year I am convinced we will win a title and personally  I hope it is the Champions League," he said.</p>
+                                <p> Barcelona inflicted a rare home defeat on the Turkish side  when they met in the competition's second phase at the Ali Sami  Yen last March, Luis Enrique scoring the only goal of the game.</p>
+                                <p> Both teams got their European campaigns off to winning  starts last week with Barca claiming an exciting 3-2 win against  Belgian side Bruges and Galatasaray chalking up a valuable 2-0  win away to Lokomotiv Moscow.</p>
+                                <p> This time Dutch midfielder Philip Cocu believes that  although his side will be setting out to repeat their win in  Istanbul he would be prepared to settle for a draw against the  highly-rated Turkish side.</p>
+                                <p> "Barcelona are always obliged to go for the win," he said.  "But Galatasaray are our main rivals in the group and I think a  draw at their stadium would be a good result."</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

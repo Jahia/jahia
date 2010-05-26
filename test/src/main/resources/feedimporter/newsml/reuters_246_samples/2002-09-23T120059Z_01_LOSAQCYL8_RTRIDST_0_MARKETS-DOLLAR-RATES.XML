@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH94857_2002-09-23_12-00-59_LOSAQCYL8_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T120059+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH94857_2002-09-23_12-00-59_LOSAQCYL8_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH94857_2002-09-23_12-00-59_LOSAQCYL8</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH94857_2002-09-23_12-00-59_LOSAQCYL8:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 12:00:59 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T120059+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T120059+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94857_2002-09-23_12-00-59_LOSAQCYL8_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OEC</FormalName>  <Description xml:lang="en">Economic news, EC, business/financial pages</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T120059Z_01_LOSAQCYL8_RTRIDST_0_MARKETS-DOLLAR-RATES.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94857_2002-09-23_12-00-59_LOSAQCYL8_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Market Dollar Rates at 1200 GMT - Sept 23</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MARKETS-DOLLAR-RATES</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MARKETS-DOLLAR-RATES:Market Dollar Rates at 1200 GMT - Sept 23</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <Genre FormalName="Table"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH94857_2002-09-23_12-00-59_LOSAQCYL8_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH94857_2002-09-23_12-00-59_LOSAQCYL8_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T120059+0000"/>
+                        <Property FormalName="USN" Value="LOSAQCYL8"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> LONDON, Sept 23 (Reuters) - Following are the middle  exchange rates for leading currencies against the dollar:</p>
+                                <p>                           CURRENT    HIGH      LOW   Euro                         0.9836     0.986   0.9792   Japanese Yen                 123.12    123.58   122.86   British Pound                 1.556     1.559   1.5516   Swiss Franc                  1.4879    1.4954   1.4846   Austrian Schilling          15.5836   15.5889  15.5906   Belgian Franc                45.685    45.701   45.706   Danish Crown                 7.5511    7.5888   7.5385   Dutch Guilder                2.4957    2.4966   2.4968   Finnish Markka               6.7336    6.7358   6.7366   French Franc                 7.4287    7.4313   7.4321   German Mark                   2.215    2.2157    2.216   Greek Drachma                 385.9    386.03   386.08   Irish Punt                   1.1199    1.1207   1.1208   Italian Lire                2192.83   2193.58  2193.83   Norwegian Crown              7.4789    7.5284   7.4674   Portuguese Escudo            227.05    227.12   227.15   Spanish Peseta               188.43     188.5   188.52   Swedish Crown                 9.215    9.2285    9.152   Australian Dollar            0.5471     0.548   0.5456   Brazilian Real                3.395     3.395    3.405   Canadian Dollar               1.574    1.5751   1.5721   Hong Kong Dollar             7.7998    7.7999   7.7997   Mexican Peso                  10.31     10.31     10.3   Russian Rouble              31.6425    31.665    31.65   Singapore Dollar             1.7753    1.7796    1.775   South African Rand           10.606   10.6275     10.6   </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

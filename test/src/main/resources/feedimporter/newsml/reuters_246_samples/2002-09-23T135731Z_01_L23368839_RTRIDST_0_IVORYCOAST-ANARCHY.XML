@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH97776_2002-09-23_13-57-31_L23368839_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T135731+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH97776_2002-09-23_13-57-31_L23368839_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH97776_2002-09-23_13-57-31_L23368839</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH97776_2002-09-23_13-57-31_L23368839:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:57:31 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T135731+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T135731+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97776_2002-09-23_13-57-31_L23368839_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CI</FormalName>  <Description xml:lang="en">Ivory Coast</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AFE</FormalName>  <Description xml:lang="en">Africa</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LR</FormalName>  <Description xml:lang="en">Liberia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">SL</FormalName>  <Description xml:lang="en">Sierra Leone</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">FR</FormalName>  <Description xml:lang="en">France</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Cocoa"/>  <FormalName Scheme="N2000">COC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04009004</FormalName>  <Description xml:lang="en">Cocoa</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="Coffee"/>  <FormalName Scheme="N2000">COF</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04009004</FormalName>  <Description xml:lang="en">Coffee</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_14">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T135731Z_01_L23368839_RTRIDST_0_IVORYCOAST-ANARCHY.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97776_2002-09-23_13-57-31_L23368839_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Ivory Coast turmoil sets region on precipice</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>IVORYCOAST-ANARCHY</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>IVORYCOAST-ANARCHY:Ivory Coast turmoil sets region on precipice</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_14"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH97776_2002-09-23_13-57-31_L23368839_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH97776_2002-09-23_13-57-31_L23368839_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T135731+0000"/>
+                        <Property FormalName="USN" Value="L23368839"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Matthew Tostevin</p>
+                                <p> ABIDJAN, Sept 23 (Reuters) - "Ivory Coast faces a  possibility worse than a coup: an anarchic implosion of criminal  violence... Or it may become an African Yugoslavia, but one  without mini-states to replace the whole."</p>
+                                <p> So wrote Robert D. Kaplan in 1994, warning of "The Coming  Anarchy" in West Africa and other poverty-blighted corners of  the world in an influential article attacked by critics at the  time as overly gloomy and simplistic.</p>
+                                <p> But Kaplan's fears caught up with Ivory Coast last week.</p>
+                                <p> Ivory Coast's eruption of violence between dissident troops  and President Laurent Gbagbo's loyalists has pushed the region  closer to an edge beyond which the world could find it near  impossible to rescue.</p>
+                                <p> "The time to intervene is now. If you leave it any longer  then it could be too late. Nobody can win this kind of war,"  said one Liberian exile who fled a dozen years of repression and  conflict in his own country for refuge in Abidjan.</p>
+                                <p> So far the only intervention is by troops from former  colonial power France and strictly with the aim of protecting --  and if need be pulling out -- foreigners rather than saving  another crumbling African state from itself.</p>
+                                <p> The decline of West Africa's former jewel has been steady,  through personal political power games, xenophobia, growing  ethnic tension, a 1999 coup and clashes around 2000 elections in  which hundreds died.</p>
+                                <p> </p>
+                                <p> HUGE THREAT TO REGION</p>
+                                <p> The regional consequences of it slipping deeper could be  much more serious than the wars that ripped apart nearby Liberia  and Sierra Leone with the loss of some 250,000 lives.</p>
+                                <p> "If it does escalate further, it is going to be extremely  bad news because of Ivory Coast's port, because of its cocoa,"  said Rachel Codd of London-based consultancy Control Risks  Group. "I am hoping things will calm down for negotiation."</p>
+                                <p> Ivory Coast is not only the world's top cocoa grower, it is  Africa's third biggest economy, the engine of the French-backed  West African CFA franc currency zone and a vital port for  landlocked countries to the north.</p>
+                                <p> The country's more than 16 million people could create a  refugee crisis spreading contagion to its neighbours and hugely  inflating the number seeking to escape to the West.</p>
+                                <p> Its past security made it a regional base for multinational  firms, U.N. bodies and the huge offices of the African  Development Bank, while its relative prosperity tugged in  millions of immigrants supporting families abroad.</p>
+                                <p> The presence of the immigrants binds Ivory Coast more  closely to its neighbours and them more tightly to it, making  serious repercussions of any prolonged crisis inevitable.</p>
+                                <p> Fears the conflict will spread have already been raised by  Ivory Coast's suggestion foreign hands are behind the turmoil  and by attacks by loyalist security forces on immigrant workers.</p>
+                                <p> As in many other African crises, "security forces" appears  to have become a cynical misnomer for the biggest purveyors of  instability -- one group of soldiers creating the problem and  another inflaming it with a heavy-handed response.</p>
+                                <p> </p>
+                                <p> HARD TO STAMP OUT</p>
+                                <p> The experience of Ivory Coast's neighbours is that once that  kind of turmoil starts it is very hard to stamp out.</p>
+                                <p> The Liberian army's murderous reaction when a small group of  dissidents attacked a border post in late 1989 helped turn it  into a seven-year war. Liberia's respite from bloodshed lasted  only three years before another war began.</p>
+                                <p> Sierra Leone thought in the early 1990s it had wiped out a  brutal rebel movement, but the fighters had simply melted into  the bush and struck again when they saw a chance.</p>
+                                <p> Behind both wars were armies of disaffected youths, without  jobs, without hope, bitter at tribal favouritism and exclusion  by corrupt elites. Once they join up, their own atrocities make  them outcasts with nothing to lose by carrying on.</p>
+                                <p> Those were exactly the kind of youths being pressed into  service and handed guns by Ivory Coast's rebels in the cities of  Bouake and Korhogo after what the dissident troops said was  simply a protest about being kicked out of the army.</p>
+                                <p> When the world eventually stepped in to end Sierra Leone's  cycle of murder, rape and amputation, it took the biggest United  Nations peacekeeping force and $700 million a year to bring  peace to a country the size of Scotland.</p>
+                                <p> The argument of those who favour intervention is that failed  African states become nests of crime and terrorism.</p>
+                                <p> But Ivory Coast has more than three times as many people as  Sierra Leone and is more than four and a half times as big.</p>
+                                <p> "This country is central to the region and if it goes the  consequences will be awful," said one African diplomat.</p>
+                                <p> "It is already becoming a regional crisis with the attacks  on foreigners and if it goes that far, then I am not sure how it  would be possible for anyone to rescue a whole region."    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

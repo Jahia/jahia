@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH94739_2002-09-23_11-56-53_L23399637_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T115653+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH94739_2002-09-23_11-56-53_L23399637_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH94739_2002-09-23_11-56-53_L23399637</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH94739_2002-09-23_11-56-53_L23399637:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:56:53 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T115653+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T115653+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94739_2002-09-23_11-56-53_L23399637_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Soccer"/>  <FormalName Scheme="N2000">SOCC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15054000</FormalName>  <Description xml:lang="en">Soccer</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NL</FormalName>  <Description xml:lang="en">Netherlands</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GR</FormalName>  <Description xml:lang="en">Greece</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IL</FormalName>  <Description xml:lang="en">Israel</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IT</FormalName>  <Description xml:lang="en">Italy</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">UA</FormalName>  <Description xml:lang="en">Ukraine</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T115653Z_01_L23399637_RTRIDST_0_SPORT-SOCCER-CHAMPIONS-GROUPS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94739_2002-09-23_11-56-53_L23399637_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Soccer-Champions League matches in groups E and F, Sept 24</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-SOCCER-CHAMPIONS-GROUPS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-SOCCER-CHAMPIONS-GROUPS:Soccer-Champions League matches in groups E and F, Sept 24</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH94739_2002-09-23_11-56-53_L23399637_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH94739_2002-09-23_11-56-53_L23399637_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T115653+0000"/>
+                        <Property FormalName="USN" Value="L23399637"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> LONDON, Sept 23 (Reuters) - Newcastle United entertain Dutch  UEFA Cup holders Feyenoord and Ukraine's Dynamo Kiev tackle  Italian side Juventus in Turin in Tuesday's group E Champions  League action.</p>
+                                <p> In group F Manchester United travel to Germany to face Bayer  Leverkusen, while Greek side Olympiakos Piraeus play Maccabi  Haifa of Israel in Cyprus.</p>
+                                <p> Following are brief previews with probable teams for  Tuesday's matches (kickoff 1845 GMT):</p>
+                                <p> Group E</p>
+                                <p> NEWCASTLE UNITED v FEYENOORD</p>
+                                <p> Newcastle manager Bobby Robson will seek to secure his  club's first Champions League group E points with the same side  that overcame local rivals Sunderland 2-0 on Saturday. </p>
+                                <p> That means wingers Laurent Robert and Nolberto Solano will  be in the team, having both started on the substitutes' bench  when Newcastle began their campaign with a 2-0 defeat at Dynamo  Kiev.</p>
+                                <p> There is no place for French left back Olivier Bernard, who  was omitted from the squad at the weekend, and Hugo Viana will  have to be content with a place on the bench. Northern Ireland  defender Aaron Hughes will operate on the left with Andy Griffin  at right back. </p>
+                                <p> Newcastle: 1-Shay Given; 12-Andrew Griffin, 34-Nikos  Dabizas, 5-Andy O'Brien, 18-Aaron Hughes; 4-Nolberto Solano,  8-Kieron Dyer, 11-Gary Speed, 32-Laurent Robert; 10-Craig  Bellamy, 9-Alan Shearer.</p>
+                                <p> Feyenoord coach Bert van Marwijk has to do without left back  Ramon van Haaren, who sustained a hamstring injury in Saturday's  league match against Graafschap Doetinchem, which the UEFA Cup  winners won 2-0.</p>
+                                <p> Van Haaren is expected to be out for up to four weeks and is  likely to be replaced by Poland international Thomasz Rzasa.</p>
+                                <p> Youngster Robin van Persie, who was banished temporarily to  the reserves after the coach said he had behaved  unprofessionally, returned last week and travels with the team  to Newcastle. Captain Paul Bosvelt, who missed their opening 1-1  group E draw against Juventus after his father died, is also  back.</p>
+                                <p> Feyenoord: 1-Edwin Zoetebier; 23-Brett Emerton, 8-Kees van  Wonderen, 17-Patrick Paauwe, 3-Thomasz Rzasa; 24-Chong-gug Song;  6-Paul Bosvelt, 14-Shinji Ono, 25-Sebastian Pardo; 9-Pierre van  Hooijdonk, 19-Thomas Buffel.</p>
+                                <p> Referee: Claude Colombo (France)</p>
+                                <p> </p>
+                                <p> JUVENTUS v DYNAMO KIEV</p>
+                                <p> Juventus midfielder Alessio Tacchinardi is doubtful after  suffering soreness in his left hamstring following Saturday's  Serie A match against Empoli.</p>
+                                <p> In attack, though, the team is reaching full strength with  Alessandro Del Piero and Marco Di Vaio starting up front and  last season's top scorer David Trezeguet expected to start from  the bench after recovering from injury.</p>
+                                <p> Juventus: 1-Gianluigi Buffon; 21-Lilian Thuram, 13-Mark  Iuliano, 4-Paolo Montero, 24-Emiliano Moretti; 16-Mauro  Camoranesi, 26-Edgar Davids, 3-Alessio Tacchinardi (or 20-Davide  Baiocco); 11-Pavel Nedved; 10-Alessandro Del Piero, 18-Marco Di  Vaio.</p>
+                                <p> Dynamo team officials say one change is likely to the squad  after last week's impressive victory over Newcastle, with Laszlo  Bodnar replacing Leandro. Bodnar performed well in Dynamo's  otherwise disappointing 1-1 weekend draw against outsiders  Obolon Kiev in the Ukrainian premier league.</p>
+                                <p> Also a doubtful starter is Florin Cernat, who is recovering  from a groin injury. He may be replaced by Goran Gavrancic.</p>
+                                <p> "We must not allow ourselves to be lulled into a euphoric  state after the Newcastle victory -- that was only the first  match in the whole tournament," Dynamo Kiev vice-president Josef  Sabo, the team's former coach, told Kommanda newspaper.</p>
+                                <p> Dynamo: 12-Vitaly Reva, 2-Alexander Khatskevich, 26-Andriy  Nesmachniy, 35-Goran Sablic, 36-Jerko Leko, 10-Florin Cernat (or  32-Goran Gavrancic), 11-Georgy Peev, 14-Andriy Husin, 16-Maxim  Shatskikh, 17-Tiberiu Ghioane, 24-Laszlo Bodnar.</p>
+                                <p> Referee: Wolfgang Stark (Germany)</p>
+                                <p> </p>
+                                <p> Group F</p>
+                                <p> BAYER LEVERKUSEN v MANCHESTER UNITED</p>
+                                <p> Leverkusen lost 3-2 at Werder Bremen on Saturday on the back  of their embarrassing 6-2 thrashing by Olympiakos Piraeus in  their group F opener last Wednesday in Athens.</p>
+                                <p> Last season's Bundesliga runners-up and Champions League  finalists are now fourth from bottom in the German league  standings with three defeats from six games.</p>
+                                <p> Coach Klaus Toppmoeller, whose team knocked out Manchester  United in the semi-finals last season, has to make do without  defenders Jens Nowotny and Diego Placente, both sidelined with  long-term injuries.</p>
+                                <p> "United are clearly the favourites and that's an advantage  for us," said Toppmoeller, who dropped first choice goalkeeper  Hans-Joerg Butt for his team's last two games. Australian Frank  Juric, who stepped in for Butt, is expected to play again on  Tuesday.</p>
+                                <p> Leverkusen: 20-Frank Juric; 6-Boris Zivkovic, 3-Lucio,  28-Carsten Ramelow, 17-Pascal Ojigwe; 14-Hanno Balitsch,  15-Jurica Vrantjes, 25-Bernd Schneider, 10-Yildiray Basturk;  23-Thomas Brdaric, 27-Oliver Neuville.</p>
+                                <p> United are still beset by injury problems for their trip to  Germany. Midfielders Roy Keane (hip) and Paul Scholes (knee)  both miss out along with Wes Brown (broken ankle).</p>
+                                <p> Right back Gary Neville (foot) is fit to return after making  a 15-minute appearance during last Saturday's 1-0 premier league  win over Tottenham Hotspur.</p>
+                                <p> Manchester United: 1-Fabien Barthez; 2-Gary Neville,  5-Laurent Blanc, 6-Rio Ferdinand, 27-Mikael Silvestre; 7-David  Beckham, 8-Nicky Butt, 4-Juan Sebastian Veron, 11-Ryan Giggs;  20-Ole Gunnar Solskjaer, 10-Ruud van Nistelrooy.</p>
+                                <p> Referee: Jan Wegereef (Netherlands)</p>
+                                <p> </p>
+                                <p> MACCABI HAIFA v OLYMPIAKOS PIRAEUS</p>
+                                <p> Maccabi suffered a fright on Sunday when central midfielder  Walid Badir hurt his foot in a training session in Israel before  the squad flew to Cyprus, where Tuesday's game is taking place.</p>
+                                <p> Defensive midfielder Raimondas Zautautas, who missed last  week's 5-2 loss to Manchester United, is still nursing a knee  injury and may sit out the start of the match.</p>
+                                <p> Nigerian striker Ayegbeni Yakubu makes a welcome return from  suspension.</p>
+                                <p> Maccabi: 44-Dudu Awate; 3-Alon Harazi, 4-Arik Benado,  14-Eric Ejiafor, 6-Adoram Keise; 5-Walid Badir, 11-Giovanni  Rosso, 28-Nenad Pralija, 2-Raimondas Zautautas or 13-Michael  Zandberg; 19-Ayegbeni Yakoubu, 20-Yaniv Katan.</p>
+                                <p> Olympiakos have doubts over the fitness of goalkeeper  Dimitris Eleftheropoulos (back) and winger Stelios  Giannakopoulos (thigh). Eleftheropoulos has not trained with the  squad since their 6-2 win over Bayer Leverkusen, while  Giannakopoulos missed their 4-0 win on Saturday over Akratitos.</p>
+                                <p> Greece striker Lambros Houtos returns to the squad after a  two-week absence with a calf injury. </p>
+                                <p> Olympiakos: 22-Fanis Kateryiannakis, 2-Christos  Patsatzoglou, 3-Stelios Venetidis, 18-Paraskevas Antzas,  32-Giorgos Anatolakis, 7-Stelios Giannakopoulos, 8-Christian  Karembeu, 11-Predrag Djordjevic, 13-Ze Elias, 20-Par Zetterberg,  10-Giovanni.</p>
+                                <p> Referee: Massimo De Santis (Italy)    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

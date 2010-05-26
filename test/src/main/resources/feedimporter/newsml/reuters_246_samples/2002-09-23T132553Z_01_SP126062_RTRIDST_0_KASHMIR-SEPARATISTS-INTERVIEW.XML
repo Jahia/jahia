@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH96876_2002-09-23_13-25-53_SP126062_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T132553+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH96876_2002-09-23_13-25-53_SP126062_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH96876_2002-09-23_13-25-53_SP126062</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH96876_2002-09-23_13-25-53_SP126062:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:25:53 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T132553+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T132553+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96876_2002-09-23_13-25-53_SP126062_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IN</FormalName>  <Description xml:lang="en">India</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PK</FormalName>  <Description xml:lang="en">Pakistan</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T132553Z_01_SP126062_RTRIDST_0_KASHMIR-SEPARATISTS-INTERVIEW.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96876_2002-09-23_13-25-53_SP126062_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>INTERVIEW-Separatists challenge India over Kashmir poll</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>KASHMIR-SEPARATISTS (INTERVIEW)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>KASHMIR-SEPARATISTS (INTERVIEW):INTERVIEW-Separatists challenge India over Kashmir poll</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="SNS"/>
+                    <OfInterestTo FormalName="SNI"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH96876_2002-09-23_13-25-53_SP126062_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH96876_2002-09-23_13-25-53_SP126062_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T132553+0000"/>
+                        <Property FormalName="USN" Value="SP126062"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Terry Friel</p>
+                                <p> SRINAGAR, India, Sept 23 (Reuters) - India hails state  elections in Kashmir as a victory of the ballot over the  bullet, but the main separatist political leader dismisses them  as a sham that will further alienate already jaded Kashmiris.</p>
+                                <p> Abdul Gani Bhat said the relatively strong 47 percent  turnout in last week's first round of voting had been rigged to  show enthusiasm for an election India hopes will strengthen its  rule in the Himalayan region at the heart of a decades-old  dispute with Pakistan.</p>
+                                <p> "Many polling booths were empty, not even ghosts visited,"  Bhat said on Monday, the eve of the second of four rounds of  voting for a new state assembly in Indian Kashmir.</p>
+                                <p> "The strong turnout and fair election is as far as India is  concerned. For us Kashmiris, the whole process is a sham,  irregular and manipulated."</p>
+                                <p> "Maybe the figure will reach 110 percent. Machines are not  perfect, you can tamper with machines very easily," he said,  referring to the keyboard-style voting machines being used for  the first time. "You can have whatever percentage you want."</p>
+                                <p> Bhat's estimate of last week's turnout is 15 percent.</p>
+                                <p> Bhat, a thin, wiry man with sharp eyes and close-cropped  grey hair and beard, heads the All Parties Hurriyat (Freedom)  Conference, a separatist alliance of almost two dozen parties  and organisations pushing for a political solution to the  Kashmir dispute.</p>
+                                <p> The Hurriyat is not running in the poll and has called for  a boycott.</p>
+                                <p> Islamic guerrillas have threatened to derail the election  by killing candidates and others involved in it. The number of  people prepared to defy the dangers and vote is seen as an  indicator of India's support.</p>
+                                <p> With Prime Minister Atal Behari Vajpayee predicting an even  higher turnout over the next three rounds of voting to October  8, Bhat challenged New Delhi to test its popularity with a  referendum for Kashmiris to determine their own future.</p>
+                                <p> "If India takes this (turnout) in their favour, let them  hold a referendum," he said. "This is a simple test. If they  don't agree, the election pales into insignificance.</p>
+                                <p> "If the turnout is genuine, they have nothing to fear."</p>
+                                <p> DIPLOMATS SAY POLL FAIR</p>
+                                <p> Diplomats who watched the first round of voting last  Monday, but were not official monitors, declared it free and  fair and the Election Commission denies any irregularities and  rejects charges by some villagers that soldiers and police  forced them to vote.</p>
+                                <p> But most of the diplomats were taken on official trips to  particular polling stations.</p>
+                                <p> "The observers were toothless, and probably wearing  coloured glasses," Bhat said. "The people of Kashmir's  alienation has irretrievable deepened because of this  election."</p>
+                                <p> India's credibility -- in Kashmir and with the world  community -- is at stake. It was a heavily rigged election in  1987 that turned simmering resentment against New Delhi's rule  into outright rebellion within two years.</p>
+                                <p> The 1996 poll was better, but still widely seen as rigged.</p>
+                                <p> As it did on the first day of voting, the Hurriyat has  called a statewide strike for Tuesday, likely to be widely  observed as much out of fear of violence as support for the  Hurriyat.</p>
+                                <p> MILITARY STANDOFF</p>
+                                <p> Critics, however, say the moderate separatists are too  scared to run in the election and are staying out because they  don't have enough support and would be revealed as paper  tigers, a charge Bhat denies.</p>
+                                <p> "If we participate, we'll go down in the annals of the  history of the freedom movement in Kashmir as traitors."</p>
+                                <p> The poll has been marred by violence and there are fears of  more as volatile areas vote over the next two weeks.</p>
+                                <p> More than 470 people, including the state law minister,  have been killed since the election was called on August 2 and  the main Hizbul-Mujahideen rebels have threatened to attack  polling booths.</p>
+                                <p> India and Pakistan have fought two of their three wars  since independence in 1947 over Kashmir and are locked in a  tense confrontation that brought them close to another war in  May-June.</p>
+                                <p> They massed a million men along their border after an  attack on India's parliament in December that India blamed on  Pakistan-based Kashmiri separatists.</p>
+                                <p> The standoff has given separatists new heart that the  international community might step up pressure on India and  Pakistan to resolve the Kashmir dispute once and for all.</p>
+                                <p> "Two belligerently hostile nuclear countries are involved  in Kashmir," Bhat said. "The very survival of the South Asian  region will depend on the outcome of the Kashmir problem.</p>
+                                <p> "Iraq and Palestine put together, and Chechnya as well,  cannot match the dangers inherent in Kashmir."  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

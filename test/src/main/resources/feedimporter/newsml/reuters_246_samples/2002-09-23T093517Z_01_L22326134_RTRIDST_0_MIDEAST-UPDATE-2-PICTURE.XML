@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH92141_2002-09-23_09-35-17_L22326134_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T093517+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH92141_2002-09-23_09-35-17_L22326134_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH92141_2002-09-23_09-35-17_L22326134</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH92141_2002-09-23_09-35-17_L22326134:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 09:35:17 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T093517+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T093517+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92141_2002-09-23_09-35-17_L22326134_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IL</FormalName>  <Description xml:lang="en">Israel</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PS</FormalName>  <Description xml:lang="en">Palestine</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T093517Z_01_L22326134_RTRIDST_0_MIDEAST-UPDATE-2-PICTURE.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92141_2002-09-23_09-35-17_L22326134_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 2-Israel presses on with Arafat siege, stops demolition</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MIDEAST (UPDATE 2, PICTURE)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MIDEAST (UPDATE 2, PICTURE):UPDATE 2-Israel presses on with Arafat siege, stops demolition</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="C"/>
+                    <OfInterestTo FormalName="D"/>
+                    <OfInterestTo FormalName="E"/>
+                    <OfInterestTo FormalName="M"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="U"/>
+                    <OfInterestTo FormalName="MTL"/>
+                    <OfInterestTo FormalName="GRO"/>
+                    <OfInterestTo FormalName="SOF"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="MD"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH92141_2002-09-23_09-35-17_L22326134_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH92141_2002-09-23_09-35-17_L22326134_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T093517+0000"/>
+                        <Property FormalName="USN" Value="L22326134"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (Adds Security Council, paragraph 6, newspaper comment, 8-10)</p>
+                                <p> By Wafa Amr</p>
+                                <p> RAMALLAH, West Bank, Sept 23 (Reuters) - Israeli troops  pressed on with their siege of Yasser Arafat's West Bank  headquarters on Monday after halting demolition of his  presidential complex following U.S. criticism.</p>
+                                <p> Troops stood guard in the levelled compound on Monday  morning where only one main building remains standing,  sheltering the Palestinian president and up to 250 others.</p>
+                                <p> Two tanks pointed their barrels at the building but the  bulldozers which reduced most of the compound to rubble were  pulled back on Sunday and barbed wire now surrounds the complex.</p>
+                                <p> Israel besieged the compound in the West Bank city of  Ramallah on Thursday after suicide bombings killed seven people.  It says it wants 50 suspected militants inside to surrender but  the Palestinians say the real aim is to oust Arafat from power.</p>
+                                <p> Washington said on Sunday the siege was "not helpful" to  peacemaking. It hopes to avoid a surge in violence that could  complicate its plans for possible war on Iraq and would again  dent hopes of ending two years of Israeli-Palestinian conflict.</p>
+                                <p> The United Nations Security Council was due to meet in New  York later on Monday to discuss the siege. European and Arab  states have criticised the siege and said it must end.</p>
+                                <p> In the hope of finding a way to ease the standoff, European  Union special representative Miguel Angel Moratinos was due in  Ramallah to meet Mahmoud Abbas, otherwise known as Abu Mazen, a  senior Palestinian leader who is not in the complex.</p>
+                                <p> Some Israeli newspapers are also questioning Israeli Prime  Minister Ariel Sharon's decision to besiege Arafat's compound  rather than try to rein in the Islamic militant group Hamas  which has led the suicide bombing campaign.</p>
+                                <p> Haaretz newspaper said the government's explanations for the  siege were unconvincing. The Maariv newspaper said Arafat had  been under more pressure from his own people last week, but the  siege had won him a new wave of popular sympathy.</p>
+                                <p> "The rebellion against Arafat which was gathering momentum  over the past few weeks was suppressed and put down, at least  temporarily, by Israel's bulldozers," Maariv commentator Ben  Caspit said.</p>
+                                <p> </p>
+                                <p> ARMY'S PLANS UNCLEAR </p>
+                                <p> It was not clear whether the demolition work had halted  entirely. Asked on Sunday evening if they had left for good, a  senior army commander said: "No".</p>
+                                <p> "I will be here until all the wanted people leave," he said,  making clear the siege was far from over. Israel has said it  means Arafat no harm in the army operation which it calls "A  Matter of Time".</p>
+                                <p> Arafat looks more isolated politically than at any time  since he returned to the region from exile in 1994. </p>
+                                <p> But he was buoyed by support on Sunday from thousands of  Palestinians, some of them armed, who poured into the streets of  cities and towns across the West Bank and Gaza Strip to show  solidarity with him.</p>
+                                <p> Troops shot dead four Palestinians during the protests.</p>
+                                <p> In a sign the standoff could be protracted, the army  delivered provisions to the shattered compound, where those  inside have been hardened by previous assaults.</p>
+                                <p> Palestinian officials complained they had not received  enough food and that they had little water.</p>
+                                <p> The rise in tensions has further dimmed hopes of ending  violence that has killed at least 1,555 Palestinians and 599  Israelis since the Palestinians rose up against Israeli  occupation in September 2000 after peace talks stalled.</p>
+                                <p> The United States on Sunday repeated its misgivings over  Israel's actions in Ramallah.</p>
+                                <p> "Israeli actions in and around the Muqata (headquarters) are  not helpful in reducing terrorist violence or promoting  Palestinian reforms," a White House spokeswoman said.</p>
+                                <p> Israel's Haaretz newspaper reported on its Website that the  Israeli military halted the demolition of buildings inside the  compound after U.S. pressure to calm the situation. </p>
+                                <p> U.S. officials declined comment on the report and U.S.  President George W. Bush ignored a reporter's question about it.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

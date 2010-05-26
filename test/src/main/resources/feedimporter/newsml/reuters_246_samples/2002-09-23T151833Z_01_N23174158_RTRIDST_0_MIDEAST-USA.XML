@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH00226_2002-09-23_15-18-33_N23174158_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T151833+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH00226_2002-09-23_15-18-33_N23174158_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH00226_2002-09-23_15-18-33_N23174158</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH00226_2002-09-23_15-18-33_N23174158:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:18:33 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T151833+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T151833+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00226_2002-09-23_15-18-33_N23174158_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Government Body"/>  <FormalName Scheme="N2000">WASH</FormalName>  <Description xml:lang="en">Washington / US Government News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IL</FormalName>  <Description xml:lang="en">Israel</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PS</FormalName>  <Description xml:lang="en">Palestine</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EG</FormalName>  <Description xml:lang="en">Egypt</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LB</FormalName>  <Description xml:lang="en">Lebanon</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">SY</FormalName>  <Description xml:lang="en">Syria</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">JO</FormalName>  <Description xml:lang="en">Jordan</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_14">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T151833Z_01_N23174158_RTRIDST_0_MIDEAST-USA.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00226_2002-09-23_15-18-33_N23174158_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>White House said Sharon told siege is 'unhelpful'</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MIDEAST-USA</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MIDEAST-USA:White House said Sharon told siege is 'unhelpful'</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_14"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH00226_2002-09-23_15-18-33_N23174158_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH00226_2002-09-23_15-18-33_N23174158_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T151833+0000"/>
+                        <Property FormalName="USN" Value="N23174158"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> TRENTON, N.J., Sept 23 (Reuters) - The United States has  told Israeli Prime Minister Ariel Sharon that the siege of  Palestinian leader Yasser Arafat's compound hampers peace and  Palestinian reforms, the White House said on Monday.</p>
+                                <p> "The president views what Israel is doing now as unhelpful  to the cause of bringing about reform in Palestinian  institutions," said White House spokesman Ari Fleischer, with  President George W. Bush on a day trip to New Jersey.</p>
+                                <p> He said senior U.S. officials have communicated this  message to Sharon, bolstering Sunday's public criticism of the  Israeli crackdown.</p>
+                                <p> Fleischer said reform of Palestinian institutions, which  Bush has said should include a new Palestinian leadership, is a  key to resolution of the Middle East conflict.</p>
+                                <p> "The president's priority is peace. Peace is best secured  by new Palestinian institutions, and what Israel is doing is  running contrary to that cause and is not helpful," Fleischer  said.</p>
+                                <p> Israeli and Palestinian officials held their first talks on  Monday since the army imposed a siege on Arafat's West Bank  headquarters in Ramallah, but failed to end the four-day-old  standoff.</p>
+                                <p> Israeli and Palestinian officials remained entrenched in  the positions they have taken since Israeli tanks began the  siege last Thursday in response to two suicide bombings that  killed seven people in Israel, ending a six-week lull in such  attacks.      </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

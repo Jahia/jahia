@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH99406_2002-09-23_15-07-09_L23268903_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T150709+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="2"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH99406_2002-09-23_15-07-09_L23268903_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH99406_2002-09-23_15-07-09_L23268903</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH99406_2002-09-23_15-07-09_L23268903:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:07:09 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T150709+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T150709+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="2"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH99406_2002-09-23_15-07-09_L23268903_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="EQUITIES MARKETS"/>  <FormalName Scheme="N2000">STX</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04009003</FormalName>  <Description xml:lang="en">Equities</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">.EU</FormalName>  <Description xml:lang="en">European stocks reports</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OEC</FormalName>  <Description xml:lang="en">Economic news, EC, business/financial pages</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T150709Z_01_L23268903_RTRIDST_0_MARKETS-EUROPE-STOCKS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <Metadata>
+                <MetadataType FormalName="NTM Data"/>
+                <Property FormalName="Sign Off" Value="MORE"/>
+            </Metadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH99406_2002-09-23_15-07-09_L23268903_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Eurostocks sink to 5-year lows as gloom deepens</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MARKETS-EUROPE-STOCKS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MARKETS-EUROPE-STOCKS:Eurostocks sink to 5-year lows as gloom deepens</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="ABX"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="FUN"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH99406_2002-09-23_15-07-09_L23268903_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH99406_2002-09-23_15-07-09_L23268903_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T150709+0000"/>
+                        <Property FormalName="USN" Value="L23268903"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> LONDON, Sept 23 (Reuters) - Pan-European benchmarks slumped  to five-year lows on Tuesday afternoon as fears of political  instability in Germany added to economic and corporate earnings  concerns, while oil prices surged as the war drums beat louder.</p>
+                                <p> Beleaguered French telecoms equipment group Alcatel led the  rout, losing 16 percent after Canada's JDS Uniphase Corp, the  world's No.1 maker of fibre-optic components, lowered its  first-quarter sales guidance.</p>
+                                <p> Insurers were also pummelled, with Germany's Munich Re down  10.4 percent after its price target was cut by Morgan Stanley  amid concerns about the falling value of its large equity  portfolio.</p>
+                                <p> "Insurance companies currently  have little going for them,"  said analysts at SG Securities.</p>
+                                <p> "They lack pricing power in life assurance and their  prudential ratios have been hit by a fall in unrealised capital  gains and higher premium rates. We recommend waiting for the  forthcoming wave of rights issues before...moving back into the  sector."</p>
+                                <p> By 1450 GMT, the FTSE Eurotop 300 index of pan-European blue  chips was down 3.9 percent at 816 points.</p>
+                                <p> That marked the benchmark's weakest intraday level in more  than five years and left it on course for its weakest close  since the spring of 1997.</p>
+                                <p> Falling stocks outnumbered gainers by more than 13-to-one.</p>
+                                <p> The narrower DJ Euro Stoxx 50 index was also at five year  lows, down 4.5 percent at 2,204 points.</p>
+                                <p> Analysts said investors had been disheartened by the result  of Sunday's elections in Germany, which returned the incumbent  government to power with a sharply reduced majority.</p>
+                                <p> With Europe's biggest economy stalled, unemployment stuck at  around 10 percent and stock markets mired at their lowest level  in over five years, investors had hoped a conservative-liberal  coalition would initiate structural reforms.</p>
+                                <p> In New York, the Dow Jones industrial average was down 2.4  percent, while the Nasdaq Composite shed 2.7 percent to hit yet  another five-year low.</p>
+                                <p> On the data front, U.S. leading indicators fell for the  third straight month in August, by a slightly  worse-than-expected 0.2 percent, confirming economists fears of  a slowdown in the world's largest economy.</p>
+                                <p> "The fourth quarter is shaping up to be weaker in the U.S.  than the third quarter, but we already knew many of the  components before today," said Mark Wall, economist at Deutsche  Bank, on leading indicators data.</p>
+                                <p> The oil and gas sector outperformed the rest of the market,  as a spike in crude oil prices due to the threat of a U.S.-led  attack on the United States helped counter concerns over easing  demand.      </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

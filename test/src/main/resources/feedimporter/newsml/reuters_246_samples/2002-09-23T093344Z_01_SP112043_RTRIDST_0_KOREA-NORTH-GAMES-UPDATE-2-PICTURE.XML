@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH92127_2002-09-23_09-33-44_SP112043_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T093344+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH92127_2002-09-23_09-33-44_SP112043_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH92127_2002-09-23_09-33-44_SP112043</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH92127_2002-09-23_09-33-44_SP112043:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 09:33:44 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T093344+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T093344+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92127_2002-09-23_09-33-44_SP112043_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">KR</FormalName>  <Description xml:lang="en">Korean Republic (south)</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">KP</FormalName>  <Description xml:lang="en">Korean Democratic Republic (north)</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="SPORTS"/>  <FormalName Scheme="N2000">SPOR</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15000000</FormalName>  <Description xml:lang="en">Non-English language Sports (drop - qualify by non-English language code)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T093344Z_01_SP112043_RTRIDST_0_KOREA-NORTH-GAMES-UPDATE-2-PICTURE.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92127_2002-09-23_09-33-44_SP112043_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>RPT-UPDATE 2-N.Korean athletes arrive in South for Asian Games</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>KOREA-NORTH-GAMES (UPDATE 2, PICTURE)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>KOREA-NORTH-GAMES (UPDATE 2, PICTURE):RPT-UPDATE 2-N.Korean athletes arrive in South for Asian Games</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH92127_2002-09-23_09-33-44_SP112043_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH92127_2002-09-23_09-33-44_SP112043_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T093344+0000"/>
+                        <Property FormalName="USN" Value="SP112043"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (Repeats to fix typo in lead)</p>
+                                <p> By Lee Jae-won</p>
+                                <p> PUSAN, South Korea, Sept 23 (Reuters) - North Korean  athletes and officials arrived in South Korea's second city  Pusan on Monday to compete in the Asian Games, the latest in an  unprecedented flurry of contacts between the rival states.</p>
+                                <p> In the first part of the largest delegation North Korea has  sent to the South, 159 athletes and team staff, as well as 14  doctors and journalists, arrived on a chartered flight in  Pusan, the venue of the September 29-October 14 games.</p>
+                                <p> "We have arrived here in the southernmost part of the  peninsula to join the 14th Asian Games amid upheavals from a  new phase in the North-South relationship," a statement from  the North Korea delegation said.</p>
+                                <p> "We (the North Korean squad) will make our very best effort  with South Korea to show Korea's will to reunify," it said.</p>
+                                <p> Dressed in black jackets with red and blue North Korean  flags stitched on their chests, the North Koreans were greeted  by South Koreans who were dressed in traditional costume and  waving "unification flags" -- a light blue outline of the whole  peninsula on a white background -- instead of the North Korean  flag.</p>
+                                <p> The North Korean flag is usually banned in the South but  will be allowed at the athletes' village and medal ceremonies.</p>
+                                <p> Woman judoka Kye Sun-hui, a 1996 Olympic medallist, and  giant basketball player Ri Myung-hun, once a candidate to reach  the NBA, were among the athletes from seven sports -- soccer,  basketball, judo, rowing, gymnastics, shooting and table tennis  -- who arrived on Monday.</p>
+                                <p> The North asked Pusan Asian Games organisers to provide an  extra-long bed and a special bus for Ri, who is 2.35 metres  (seven feet seven inches) tall.</p>
+                                <p> BIDDING FOR GOLD</p>
+                                <p> Another 152 athletes and officials will reach Pusan on  Friday, two days before the start of Asia's largest sporting  event. The North Korean squad will be staying at the athletes'  village with counterparts from 43 participating Asian  countries.</p>
+                                <p> Supporters -- about 355 people -- from North Korea will  sail down the east coast of the Korean peninsula and arrive in  Pusan on Saturday. They will be staying on the ferry, an  organising committee official said.</p>
+                                <p> North Korea is expected to win about 10 gold medals among  the 419 titles up for grabs. It ranked eighth, getting seven  golds, in the last Asian Games in Bangkok four years ago.</p>
+                                <p> North Korea has hitherto shunned all big sporting events  hosted by the rival South, including the 1986 Asian Games, the  1988 Olympic Games and the 2002 World Cup finals, which South  Korea co-hosted with Japan.</p>
+                                <p> North and South Korea are technically still at war after  their 1950-53 conflict ended in a truce rather than a peace  treaty.</p>
+                                <p> Recent weeks have seen a hectic pace of diplomacy on the  Korean peninsula, with the two Koreas beginning work on a  cross-border railway, holding reunions of families divided  since the Korean War and playing a friendly North-South soccer  game at Seoul's World Cup stadium.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

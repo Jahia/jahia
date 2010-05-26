@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH96858_2002-09-23_13-25-01_L23465190_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T132501+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH96858_2002-09-23_13-25-01_L23465190_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH96858_2002-09-23_13-25-01_L23465190</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH96858_2002-09-23_13-25-01_L23465190:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:25:01 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T132501+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T132501+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96858_2002-09-23_13-25-01_L23465190_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Government Body"/>  <FormalName Scheme="N2000">EU</FormalName>  <Description xml:lang="en">European Union</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IQ</FormalName>  <Description xml:lang="en">Iraq</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CN</FormalName>  <Description xml:lang="en">China</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DK</FormalName>  <Description xml:lang="en">Denmark</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NORD</FormalName>  <Description xml:lang="en">Nordic Countries</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T132501Z_01_L23465190_RTRIDST_0_IRAQ-EU-ASIA-UPDATE-1.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96858_2002-09-23_13-25-01_L23465190_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 1-EU,Asia heads back quick return of Iraq inspectors</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>IRAQ-EU-ASIA (UPDATE 1)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>IRAQ-EU-ASIA (UPDATE 1):UPDATE 1-EU,Asia heads back quick return of Iraq inspectors</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="Z"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="MD"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="PEN"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH96858_2002-09-23_13-25-01_L23465190_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH96858_2002-09-23_13-25-01_L23465190_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T132501+0000"/>
+                        <Property FormalName="USN" Value="L23465190"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p>(Writes through with comment from diplomats, Chirac spokeswoman)</p>
+                                <p> By Gareth Jones</p>
+                                <p> COPENHAGEN, Sept 23 (Reuters) - EU president Denmark said on  Monday 25 Asian and European Union leaders had agreed that Iraq  must re-admit arms inspectors as speedily as possible and allow  them full and free access to its facilities.</p>
+                                <p> Speaking to Reuters after the first working session of a  two-day EU-Asia (ASEM) summit, host Danish Prime Minister Anders  Fogh Rasmussen said: "(We agreed) Iraq must take every possible  step so that the inspectors can resume their work as soon as  possible without any conditions or restrictions."</p>
+                                <p> "Iraq must fully cooperate with the U.N. for implementation  of the requirements imposed on it by the international community  in the field of disarmament," he said.</p>
+                                <p> Rasmussen described the discussion as "frank and fruitful"  -- code, EU diplomats said, for some lively disagreements  despite the broad agreement on arms inspectors and the primacy  of the United Nations Security Council in the dispute.</p>
+                                <p> Spain and Italy as well as Washington's staunchest ally  Britain gave strong support for U.S. President George W. Bush's  push for a new U.N. resolution which would authorise military  action if Iraq tried to block or drag out the inspections.</p>
+                                <p> France and China, both permanent members of the U.N.  Security Council along with Britain, Russia and the United  States, stressed the need for the United States to avoid taking  unilateral action, the diplomats said.</p>
+                                <p> "The United States must not bypass the United Nations," one  diplomat quoted Chinese Premier Zhu Rongji as saying.</p>
+                                <p> </p>
+                                <p> FRENCH CAUTION</p>
+                                <p> French President Jacques Chirac said it was important to  maintain the unity of the international coalition against  terrorism, which many fear would collapse if Washington launched  unilateral military strikes against Baghdad.</p>
+                                <p> "France is opposed to all unilateral actions," his  spokeswoman Catherine Colonna told reporters.</p>
+                                <p> "It is for the U.N. Security Council alone to assume  responsibility, if necessary, for a decision after having  debated and voted (on a new Iraq resolution) according to the  rules," she said.</p>
+                                <p> British Deputy Prime Minister John Prescott, representing   Prime Minister Tony Blair at the ASEM meeting, struck a  relatively mild tone, diplomats said.</p>
+                                <p> "It would be preferable to have recourse to the United  Nations rather than to military action," a diplomat quoted  Prescott as saying. Blair faces strong opposition from within  his Labour Party to any war against Iraq.</p>
+                                <p> Rasmussen said the leaders would not issue a political  statement on Iraq during their two-day summit.</p>
+                                <p> "But I think it is a common line among the participants of  the meeting that we stress the need for a multilateral approach  to the Iraqi problem," he added.  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

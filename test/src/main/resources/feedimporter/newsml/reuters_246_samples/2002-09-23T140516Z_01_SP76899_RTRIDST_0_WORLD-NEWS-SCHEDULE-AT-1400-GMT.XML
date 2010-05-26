@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH97942_2002-09-23_14-05-16_SP76899_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T140516+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="2"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH97942_2002-09-23_14-05-16_SP76899_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH97942_2002-09-23_14-05-16_SP76899</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH97942_2002-09-23_14-05-16_SP76899:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:05:16 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T140516+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T140516+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="2"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97942_2002-09-23_14-05-16_SP76899_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">SCHEDULEW</FormalName>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">DED</FormalName>  <Description xml:lang="en">Advisories, schedules, diaries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T140516Z_01_SP76899_RTRIDST_0_WORLD-NEWS-SCHEDULE-AT-1400-GMT.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97942_2002-09-23_14-05-16_SP76899_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>SCHEDULE-World News at 1400 GMT</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>WORLD NEWS SCHEDULE AT 1400 GMT</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>WORLD NEWS SCHEDULE AT 1400 GMT:SCHEDULE-World News at 1400 GMT</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH97942_2002-09-23_14-05-16_SP76899_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH97942_2002-09-23_14-05-16_SP76899_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T140516+0000"/>
+                        <Property FormalName="USN" Value="SP76899"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> Following are the main news stories due in the next few  hours or moved earlier (all times GMT):</p>
+                                <p> - - - -</p>
+                                <p> GERMAN ELECTION</p>
+                                <p> BERLIN - Germany faces continued economic stagnation after  Chancellor Gerhard Schroeder wins re-election with a reduced  majority that narrows his scope to implement painful reforms.</p>
+                                <p> (GERMANY (UPDATE 4), BY DAVID CROSSLAND, EXPECT BY 1500,  PICTURE, GRAPHIC)</p>
+                                <p> SEE ALSO:</p>
+                                <p> GERMANY-RELATIONS, BY EMMA THOMASSON, MOVING SHORTLY</p>
+                                <p> GERMANY-ELECTION-MINISTER (UPDATE 1), BY NICK TATTERSALL,  MOVED</p>
+                                <p> ECONOMY-GERMANY-ELECTION (WRAPUP 1) BY NICK ANTONOVICS,  MOVING SHORTLY</p>
+                                <p> GERMANY-SCHROEDER (NEWSMAKER), BY ERIK KIRSCHBAUM, EXPECT BY  1500</p>
+                                <p> - - - -</p>
+                                <p> ISRAELI-PALESTINIAN CONFLICT</p>
+                                <p> RAMALLAH - Israeli and Palestinian officials hold their  first talks since army imposed siege of Yasser Arafat's West  Bank headquarters, but fail to end four-day-old standoff.</p>
+                                <p> (MIDEAST (UPDATE 4), BY WAFA AMR, EXPECT BY 1800, PICTURE,  GRAPHIC)</p>
+                                <p> </p>
+                                <p> UNITED NATIONS - U.N. Security Council holds emergency  debate on Middle East crisis as Israeli forces keep Palestinian  President Arafat penned up in sole building still standing in  his shattered Ramallah headquarters compound.</p>
+                                <p> (MIDEAST-UN, BY IRWIN ARIEFF, EXPECT BY 1700)  </p>
+                                <p> SEE ALSO:</p>
+                                <p> MIDEAST-PROTESTS, BY NIDAL AL-MUGHRABI, MOVING SHORTLY,  PICTURE</p>
+                                <p> MIDEAST-BULLDOZER, BY CHRISTINE HAUSER, EXPECT BY 1800,  PICTURE</p>
+                                <p> MIDEAST-TURKEY (UPDATE 1), BY AYLA JEAN YACKLEY, MOVED  Iraq.</p>
+                                <p> MIDEAST-SYRIA-OMRAN (INTERVIEW), BY SAMIA NAKHOUL, MOVED</p>
+                                <p> - - - -</p>
+                                <p> IVORY COAST TURMOIL</p>
+                                <p> YAMOUSSOUKRO - French troops sent to help Westerners trapped  by bloody military uprising set up camp on road to Ivory Coast's  second city, where dozens of American children are among  foreigners in hiding.</p>
+                                <p> (IVORYCOAST (UPDATE 3), BY EMMANUEL BRAUN, EXPECT BY 1800)</p>
+                                <p> - - - -</p>
+                                <p> EUROPE</p>
+                                <p> MOSCOW - Rescuers evacuate residents of Caucasus valley from  floodwaters rising dramatically after weekend Caucasus mudslide  in which more than 100 people are missing and feared dead.</p>
+                                <p> (RUSSIA-MUDSLIDE, BY OLIVER BULLOUGH, MOVED)</p>
+                                <p> </p>
+                                <p> ROME - Italy appeals for European help to tackle a wave of  illegal immigrants after another boating tragedy brings death to  the country's shores.</p>
+                                <p> (ITALY-IMMIGRATION, BY CRISPIAN BALMER, MOVING SHORTLY)  </p>
+                                <p> MADRID - Row between Spain and Morocco over a deserted  Mediterranean islet flares anew after Rabat cancels talks at  last minute, alleging Madrid landed a military helicopter on the  disputed island</p>
+                                <p> (SPAIN-MOROCCO (UPDATE 1), BY DANIEL FLYNN, MOVED)</p>
+                                <p> - - - -</p>
+                                <p> INDIA</p>
+                                <p> SRINAGAR, India, - Militants launch string of attacks on  security forces and political workers in Indian Kashmir as  violence flares on eve of second round of state assembly  elections.</p>
+                                <p> (KASHMIR (UPDATE 5), BY SANJEEV MIGLANI AND SHEIKH MUSHTAQ,  MOVING SHORTLY, PICTURE)</p>
+                                <p> SEE ALSO KASHMIR-SEPARATISTS (INTERVIEW), BY TERRY FRIEL,  MOVED</p>
+                                <p> - - - -</p>
+                                <p> AFGHANISTAN</p>
+                                <p> KABUL - Afghanistan's Northern Alliance, backbone of the  U.S.-backed government of Hamid Karzai, has issued a strongly  worded criticism of the president and warned he was running  risks if he did not change his policies.</p>
+                                <p> (AFGHAN-ALLIANCE-WARNING, BY SAYED SALAHUDDIN, MOVED)</p>
+                                <p> </p>
+                                <p> HERAT, Afghanistan - Senior U.S. Treasury official visits  the strategic western Afghan city of Herat near the Iranian  border as part of a trip aimed at urging donor countries to come  up with cash they pledged to the war-torn state after the  Taliban's fall.</p>
+                                <p> (AFGHAN-USA-RECONSTRUCTION, BY MIKE COLLETT-WHITE, EXPECT BY  1430</p>
+                                <p> SEE ALSO AFGHAN-ALQAEDA-HERAT, BY MIKE COLLETT-WHITE, MOVED</p>
+                                <p> - - - -</p>
+                                <p> IRAN</p>
+                                <p> TEHRAN - Iran says it accepts nomination of new British  ambassador, ending seven-month diplomatic rift after Tehran's  rejection of Britain's former candidate for the job earlier this  year.</p>
+                                <p> (IRAN-BRITAIN (UPDATE 2), BY PARISA HAFEZI, EXPECT BY 1630)</p>
+                                <p> - - - -</p>
+                                <p> UNITED NATIONS</p>
+                                <p> UNITED NATIONS - Acknowledging the U.N. is bogged down in  endless meetings and too many reports, Secretary-General Annan  unveils plan to make world body more efficient.</p>
+                                <p> (UN-REFORM (UPDATE 1), BY IRWIN ARIEFF, EMBARGOED FOR  RELEASE AT 1500)     </p>
+                                <p> - - - -</p>
+                                <p> AFRICA</p>
+                                <p> GOMA, Congo - Rwanda's pull-out from Congo risks enflaming  an already desperate humanitarian crisis as armed groups battle  for control in the resulting power vacuum, aid workers say.</p>
+                                <p> (CONGO-DEMOCRATIC-HUNGER, BY MATTHEW GREEN, EXPECT BY 1500,  PICTURE)</p>
+                                <p>     </p>
+                                <p> ABUJA - Special Commonwealth talks on Zimbabwe open with  prospects of tougher sanctions on the southern African nation  increasing as President Robert Mugabe shunned the meeting in  Abuja. </p>
+                                <p> (ZIMBABWE-TALKS-MUGABE (UPDATE 1), BY JOHN CHIAHEMEN, MOVING  SHORTLY, PICTURE)</p>
+                                <p> - - - -</p>
+                                <p> FASHION</p>
+                                <p> MILAN - The fashion shows spotlight moves gently to Milan  with dreamy designs reminding the raincoated audience of  romantic evenings on a hot beachfront.</p>
+                                <p> (LIFE-FASHION-MILAN, BY JANE BARRETT, EXPECT BY 1500,  PICTURE)</p>
+                                <p> - - - -</p>
+                                <p> LONDON NEWSDESK:       +44 20-7542-7925</p>
+                                <p> WASHINGTON NEWSDESK:   +1 202-898-8465</p>
+                                <p> ASIA DESK SINGAPORE:   +65 6870-3815 </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

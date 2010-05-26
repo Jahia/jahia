@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93845_2002-09-23_11-17-42_PEK93878_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T111742+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93845_2002-09-23_11-17-42_PEK93878_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93845_2002-09-23_11-17-42_PEK93878</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93845_2002-09-23_11-17-42_PEK93878:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:17:42 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T111742+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T111742+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93845_2002-09-23_11-17-42_PEK93878_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CN</FormalName>  <Description xml:lang="en">China</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="HEALTH AND MEDICINE"/>  <FormalName Scheme="N2000">HEA</FormalName>  <FormalName Scheme="IPTCSubjectCodes">07000000</FormalName>  <Description xml:lang="en">Health and medicine</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Pharmaceuticals; Health; Personal Care"/>  <FormalName Scheme="N2000">DRU</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04002006</FormalName>  <Description xml:lang="en">Pharmaceuticals (sub-industry)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T111742Z_01_PEK93878_RTRIDST_0_HEALTH-CHINA-AIDS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93845_2002-09-23_11-17-42_PEK93878_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>China hospitals demand waivers for blood - staff</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>HEALTH-CHINA-AIDS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>HEALTH-CHINA-AIDS:China hospitals demand waivers for blood - staff</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="Z"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93845_2002-09-23_11-17-42_PEK93878_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93845_2002-09-23_11-17-42_PEK93878_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T111742+0000"/>
+                        <Property FormalName="USN" Value="PEK93878"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> BEIJING, Sept 23 (Reuters) - Some Chinese hospitals are  demanding waivers from patients needing blood transfusions to  prevent lawsuits over infection with HIV and other viruses,  hospital staff said on Monday.</p>
+                                <p> A Ministry of Health official told Reuters patients had to  sign waivers for special or experimental procedures under new  regulations issued on September 1, but not for normal blood  transfusions.</p>
+                                <p> However, staff at two hospitals in Beijing said waivers for  blood transfusions were common practice since the regulations  put the burden of proof on hospitals to establish they were not  responsible for medical accidents.</p>
+                                <p> The risk of infection from tainted blood in China was  highlighted last year by a scandal in which thousands of people  in the central province of Henan were infected with HIV when  they sold plasma to illegal blood banks.</p>
+                                <p> The blood banks mixed up the samples, extracted the  valuable plasma and then pumped the mixed residue back into the  donors.</p>
+                                <p> At the Peking University First Hospital, patients had to  sign a waiver explaining that blood had been screened twice but  there was still a slight risk of infection from HIV and other  viruses which had an incubation period, a member of staff said.</p>
+                                <p> "If they do not sign, we do not give them a blood  transfusion," said the official from the hospital's blood  disease department.</p>
+                                <p> "Generally, every hospital has this practice and it happens  not just in Beijing but in other cities," she said. "It is  required by health authorities."</p>
+                                <p> The hospital would also test the recipient for HIV and  other viruses before a blood transfusion and keep a sample of  the blood given to protect itself against claims, she said.</p>
+                                <p> At the Tongren hospital in Beijing, a doctor in the blood  disease ward said patients had to sign similar documents.</p>
+                                <p> "There are different kinds of waivers," she said. "Patients  are required to sign a waiver for blood transfusions and it  includes items like HIV and hepatitis."</p>
+                                <p> However the Health Ministry official, in the medical  service department that oversees hospitals, denied waivers  existed.</p>
+                                <p> "We have not heard reports of waivers for HIV and hepatitis  infection from blood transfusions," she said. "This could never  happen."</p>
+                                <p> "The new regulations require patients to sign waivers that  exempt hospitals from responsibility for special checks and  treatment, operations and experimental medical treatment."</p>
+                                <p> This month, Chinese government health officials revised  their official estimate of the size of the HIV-positive  population from 850,000 to nearly one million. HIV cases rose  16.7 percent on the year in the first half of 2002.</p>
+                                <p> The United Nations has said the number of Chinese HIV  infections could rise to 10 million if no effective  countermeasures are taken.</p>
+                                <p> The sensitivity of the issue was illustrated this month by  the detention of prominent AIDS activists Wan Yanhai for  several weeks for leaking an official report on the Henan  scandal.</p>
+                                <p> China said on Friday it had released Wan after he confessed  to leaking state secrets.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

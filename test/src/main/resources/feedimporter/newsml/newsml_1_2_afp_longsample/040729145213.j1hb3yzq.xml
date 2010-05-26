@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<NewsML>
+  <Catalog Href="http://www.afp.com/dtd/AFPCatalog.xml"/>
+  <NewsEnvelope>
+    <DateAndTime>20040729T145219Z</DateAndTime>
+  </NewsEnvelope>
+  <NewsItem>
+    <Identification>
+      <NewsIdentifier>
+        <ProviderId>afp.com</ProviderId>
+        <DateId>20040729</DateId>
+        <NewsItemId>040729145213.j1hb3yzq</NewsItemId>
+        <RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+        <PublicIdentifier>urn:newsml:afp.com:20040729:040729145213.j1hb3yzq:1</PublicIdentifier>
+      </NewsIdentifier>
+      <NameLabel>US-vote-Democrats-blacks</NameLabel>
+    </Identification>
+    <NewsManagement>
+      <NewsItemType FormalName="News"/>
+      <FirstCreated>20040729T145213Z</FirstCreated>
+      <ThisRevisionCreated>20040729T145213Z</ThisRevisionCreated>
+      <Status FormalName="Usable"/>
+    </NewsManagement>
+    <NewsComponent>
+      <NewsLines>
+        <HeadLine>Jackson, Sharpton rally US blacks for Kerry</HeadLine>
+        
+        <DateLine>BOSTON (AFP)</DateLine>
+        <CopyrightLine>© 2004 AFP</CopyrightLine>
+      </NewsLines>
+      <AdministrativeMetadata>
+        <Provider>
+          <Party FormalName="AFP"/>
+        </Provider>
+      </AdministrativeMetadata>
+      <DescriptiveMetadata>
+        <Language FormalName="en"/> 
+	
+        <OfInterestTo FormalName="mmd--english--webwires--america--top"/>
+      </DescriptiveMetadata>
+      <NewsComponent>
+        <ContentItem>
+          <MediaType FormalName="Text"/>
+          <Format FormalName="bcNITF2.5"/>
+          <DataContent>
+            <media media-type="image" style="rightSide">
+<media-reference mime-type="" data-location="#photo0" />
+</media>
+<p>Two of America's most famous preachers vowed Wednesday that US blacks would rebuff George W. Bush and keep their traditional alliance to the Democratic party of John Kerry.</p>
+
+            <p>In speeches at the Democratic national convention, Jesse Jackson and Al Sharpton drew ovations with fiery speeches that dimmed Bush's hopes of cutting into African-American support for the party.</p>
+            <p>Jackson repeatedly invoked the "darkness" of Bush's four years in office, saying "dark clouds will roll away" when voters go to the polls in the November 2 presidential election.</p>
+            <p>"In the dark, a president chooses tax cuts for millionaires but job cuts for steel and auto workers," he said, using the church-honed rhetorical skill that has made him a Democratic fixture for decades.</p>
+            <p>"In the dark, our nation's record budget surplus turned into a 500 billion dollar deficit," Jackson said. He said it was time to send US troops home from Iraq -- and send Bush back to his home state of Texas.</p>
+            <p>The president has bluntly questioned whether the Democrats have been taking minorities for granted, and said they could benefit by having their votes spread more widely between the two main US political parties.</p>
+            <p>If Jackson stirred the crowd, the 49-year-old Sharpton set it alight with a rousing speech that lampooned Bush's appeal to blacks and was interrupted by cheers more than a dozen times.</p>
+            <p>Sharpton recalled blacks favoured Republicans after Abraham Lincoln freed the slaves, and then spent years hoping Washington would honour a pledge to give freed men 40 acres of land and a mule.</p>
+            <p>"We never got the 40 acres. We didn't get that mule. So we decided we'd ride this donkey as far as it would take us," he said, referring to the Democratic party mascot. The line brought down the house.</p>
+            <p>Sharpton then heaped scorn on the gamut of Bush administration policies, including the war in Iraq, tax cuts and opposition to same-sex marriages.</p>
+            <p>"The promise of America is that government does not seek to regulate your behavior in the bedroom but to guarantee your right to provide food in the kitchen," he said.</p>
+          </DataContent>
+        </ContentItem>
+      </NewsComponent>
+      <NewsComponent Duid="photo0">
+        <NewsLines> 
+          <HeadLine>Reverend Al Sharpton</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP/File"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Paul J.  Richards"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Former 2004 Democratic presidential hopeful the Reverend Al Sharpton speaks to the Democratic National Convention 28 July in Boston, Massachusetts. </p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RCP30.290704145206.photo00.default-67x100.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="67"/>
+              <Property FormalName="Height" Value="100"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RCP30.290704145206.photo00.default-165x245.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="165"/>
+              <Property FormalName="Height" Value="245"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RCP30.290704145206.photo00.default-345x304.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="345"/>
+              <Property FormalName="Height" Value="304"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+    </NewsComponent>
+  </NewsItem>
+</NewsML>

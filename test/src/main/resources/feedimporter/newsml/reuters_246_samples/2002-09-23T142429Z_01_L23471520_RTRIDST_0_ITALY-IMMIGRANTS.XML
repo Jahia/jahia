@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH98355_2002-09-23_14-24-29_L23471520_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T142429+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH98355_2002-09-23_14-24-29_L23471520_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH98355_2002-09-23_14-24-29_L23471520</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH98355_2002-09-23_14-24-29_L23471520:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:24:29 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T142429+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T142429+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98355_2002-09-23_14-24-29_L23471520_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IT</FormalName>  <Description xml:lang="en">Italy</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Government Body"/>  <FormalName Scheme="N2000">EU</FormalName>  <Description xml:lang="en">European Union</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">TN</FormalName>  <Description xml:lang="en">Tunisia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AFE</FormalName>  <Description xml:lang="en">Africa</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LY</FormalName>  <Description xml:lang="en">Libya</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T142429Z_01_L23471520_RTRIDST_0_ITALY-IMMIGRANTS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98355_2002-09-23_14-24-29_L23471520_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Boat deaths don't stop immigrants heading to Italy</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>ITALY-IMMIGRANTS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>ITALY-IMMIGRANTS:Boat deaths don't stop immigrants heading to Italy</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="MD"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH98355_2002-09-23_14-24-29_L23471520_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH98355_2002-09-23_14-24-29_L23471520_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T142429+0000"/>
+                        <Property FormalName="USN" Value="L23471520"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Crispian Balmer</p>
+                                <p> ROME, Sept 23 (Reuters) - Italy appealed on Monday for  European help to tackle a wave of illegal immigrants after  another boat tragedy brought death to the country's shores.</p>
+                                <p> Coastguards in Sicily believe up to 14 people drowned on  Sunday in a vain attempt to swim to land after their small boat  hit a sandbank. Last weekend 37 African immigrants died off the  Mediterranean island when their boat sank.</p>
+                                <p> "It serves no purpose to offer words of sympathy for these  poor victims if we don't provide concrete action to go with the  words," Interior Minister Giuseppe Pisanu said.</p>
+                                <p> "Italy is already doing all it can, but the resources our  country has are not enough. It is a European problem and all of  Europe has to face up to it," he told reporters.</p>
+                                <p> Neither the many deaths, nor recent legislation aimed at  cracking down on illegal immigration has stemmed the flow of new  arrivals along Italy's porous coastline.</p>
+                                <p> Some 105 men seeking a better life in the West landed on the  southern island of Lampedusa overnight and a further 70 on  Saturday night. In the first six months of 2002 some 12,124  illegal immigrants reached Lampedusa and Sicily against just  2,759 in the same period last year.</p>
+                                <p> At the same time, the number of immigrants caught arriving  directly on mainland Italy has declined notably and officials  believe the profitable trade in human trafficking is operating  primarily out of nearby Libya and Tunisia.</p>
+                                <p> At its nearest point, Tunisia lies just 100 miles (160 km)  from Sicily, and is closer still to Lampedusa.</p>
+                                <p> One of the survivors of last week's disaster said he left  Tunisia on a large freighter and was then transferred in  international waters to a small craft that headed for Italy.</p>
+                                <p> </p>
+                                <p> HEADING NORTH</p>
+                                <p> Most such vessels sneak on to Italian shores without mishap  and the immigrants swiftly vanish -- the majority moving to  large African and Kurdish communities in northern Europe and the  minority staying in Italy to try to scrape together a living.</p>
+                                <p> But a few trips end in tragedy.</p>
+                                <p> Coastguards said around 60 people were aboard Sunday's boat  when it ran aground in choppy seas close to Sicily. The men  jumped into the fast-moving water, but not everyone made it  ashore. Nine bodies were later recovered and a further five  people are believed to be missing.</p>
+                                <p> The captain of the boat, named as 27-year-old Mohammed  Sabbi, was later arrested and faces possible murder charges.</p>
+                                <p> The deaths came the same month as Italy's centre-right  government introduced controversial new legislation giving the  navy extra powers to patrol Italy's shores and to board boats  suspected of carrying illegal immigrants.</p>
+                                <p> The law includes fines and jail sentences for any Italians  found harbouring or providing work for illegal immigrants, and  measures to speed up the expulsion of paperless foreigners.</p>
+                                <p> When the law was approved, government parties plastered Rome  billboards with posters showing a deserted beach above the  slogan "No more illegal immigrants". </p>
+                                <p> However, the immigrants have continued to arrive in the  hundreds and the posters have rapidly been covered up.</p>
+                                <p> Government officials said Rome would seek Europe-wide action  to try to put pressure on Libya and Tunisia to crack down on the  human cargos. EU pressure has already helped stem the flow of  illegal immigrants entering the West via the Balkans.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH92492_2002-09-23_09-58-22_L23520041_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T095822+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH92492_2002-09-23_09-58-22_L23520041_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH92492_2002-09-23_09-58-22_L23520041</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH92492_2002-09-23_09-58-22_L23520041:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 09:58:22 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T095822+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T095822+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92492_2002-09-23_09-58-22_L23520041_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Cricket"/>  <FormalName Scheme="N2000">CRIC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15017000</FormalName>  <Description xml:lang="en">Cricket</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IN</FormalName>  <Description xml:lang="en">India</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NZ</FormalName>  <Description xml:lang="en">New Zealand</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">BD</FormalName>  <Description xml:lang="en">Bangladesh</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T095822Z_01_L23520041_RTRIDST_0_SPORT-CRICKET-CHAMPIONS-SCOREBOARD-UPDATE-1.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92492_2002-09-23_09-58-22_L23520041_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 1-Cricket-New Zealand v Bangladesh - scoreboard</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-CRICKET-CHAMPIONS-SCOREBOARD (UPDATE 1)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-CRICKET-CHAMPIONS-SCOREBOARD (UPDATE 1):UPDATE 1-Cricket-New Zealand v Bangladesh - scoreboard</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <Genre FormalName="Table"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="OUKSA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH92492_2002-09-23_09-58-22_L23520041_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH92492_2002-09-23_09-58-22_L23520041_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T095822+0000"/>
+                        <Property FormalName="USN" Value="L23520041"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (Adds Bangladesh innings)</p>
+                                <p> COLOMBO, Sept 23 (Reuters) - Scoreboard in the ICC Champions  Trophy pool one match between New Zealand and Bangladesh on  Monday:</p>
+                                <p> New Zealand   S.Fleming c Jubair b Mahmud          31   N.Astle c Kapali b Islam              5   M.Sinclair c Rafique b Ashraful      70   L.Vincent c Mashud b Mahmud           1   S.Styris run out                     26   C.Harris c Mashud b Ashraful         26   J.Oram c Imran b Ashraful            30   D.Vettori c Muntasir b Islam         16   K.Mills not out                       3   S.Bond st Mashud b Rafique            8   P.Hitchcock not out                   2   Extras (b-1 lb-9 w-14 nb-2)          26   Total (for nine wickets, 50 overs)  244</p>
+                                <p> Fall of wickets: 1-11 2-77 3-79 4-119 5-167 6-198 7-216  8-232 9-242</p>
+                                <p> Bowling: Islam 8-1-30-2 (1-nb, 4-w), Jubair 5-0-46-0 (9-w),  Mahmud 10-0-41-2 (1-nb, 1-w), Rafique 10-0-39-1, Muntasir  10-0-40-0, Kapali 2-0-12-0, Ashraful 5-1-26-3</p>
+                                <p> Bangladesh   J.Omar c Astle b Oram                 1   A.Sahariar lbw b Bond                 0   M.Ashraful c Styris b Bond            1   T.Imran c Astle b Oram               20   A.Kapali c Fleming b Bond             2   K.Mashud c Vincent b Bond             1   K.Mahmud c Fleming b Mills           11   M.Rafique c Harris b Vettori         17   F.Muntasir c Vincent b Mills          5   M.Islam b Vettori                    10   T.Jubair not out                      1   Extras (lb-1 w-4 nb-3)                8   Total (all out, 19.3 overs)          77</p>
+                                <p> Fall of wickets: 1-2 2-8 3-8 4-16 5-19 6-37 7-46 8-56 9-70  10-77</p>
+                                <p> Bowling: Bond 5-0-21-4 (1-nb, 3-w), Oram 6-1-32-2 (2-nb),  Mills 5-0-13-2 (1-w), Vettori 3.3-1-10-2   </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

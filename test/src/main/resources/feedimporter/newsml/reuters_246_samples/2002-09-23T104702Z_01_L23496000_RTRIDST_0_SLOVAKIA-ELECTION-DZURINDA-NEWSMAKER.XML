@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93235_2002-09-23_10-47-02_L23496000_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T104702+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93235_2002-09-23_10-47-02_L23496000_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93235_2002-09-23_10-47-02_L23496000</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93235_2002-09-23_10-47-02_L23496000:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 10:47:02 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T104702+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T104702+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93235_2002-09-23_10-47-02_L23496000_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">SK</FormalName>  <Description xml:lang="en">Slovakia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">CZE</FormalName>  <Description xml:lang="en">Czech News in English</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T104702Z_01_L23496000_RTRIDST_0_SLOVAKIA-ELECTION-DZURINDA-NEWSMAKER.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93235_2002-09-23_10-47-02_L23496000_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>NEWSMAKER-Marathon-running Slovak PM wins election race</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SLOVAKIA-ELECTION-DZURINDA (NEWSMAKER)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SLOVAKIA-ELECTION-DZURINDA (NEWSMAKER):NEWSMAKER-Marathon-running Slovak PM wins election race</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="M"/>
+                    <OfInterestTo FormalName="E"/>
+                    <OfInterestTo FormalName="D"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93235_2002-09-23_10-47-02_L23496000_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93235_2002-09-23_10-47-02_L23496000_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T104702+0000"/>
+                        <Property FormalName="USN" Value="L23496000"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Michael Winfrey</p>
+                                <p> BRATISLAVA, Sept 23 (Reuters) - Slovak Prime Minister  Mikulas Dzurinda, a marathon runner, ran the race of his life to  pull off a surprise victory at weekend elections, removing a  major hurdle for the country's EU and NATO aspirations.</p>
+                                <p> The diminutive 47-year-old put Slovakia back on the map over  the last four years after the country was pushed into the  political wilderness by autocratic ex-Prime Minister Vladimir  Meciar during the previous decade.</p>
+                                <p> But voter discontent at his harsh economic measures, while  warmly applauded in the West, had threatened Dzurinda with  election defeat. Anger over persistent corruption had also hit  support for his rightist SDKU party.</p>
+                                <p> Apparently fearing the West would again shun Slovakia if  Meciar returned to power, Slovaks handed the SDKU 15.1 percent  of the vote. The party nearly doubled its results from opinion  polls just a month earlier.</p>
+                                <p> "Dzurinda is clearly the personal victor of these  elections," said Geoffrey Pridham, a Slovakia expert from  Bristol University.</p>
+                                <p> Although SDKU was second to Meciar's HZDS party, which  garnered 20 percent, the surprisingly strong showing was enough  to block the strongman Meciar and put Dzurinda at the head of a  new centre-right coalition.</p>
+                                <p> He is now expected to move quickly to form a government with  his current ruling partners the ethnic Hungarians and Christian  Democrats and the business-friendly ANO party, which together  hold 78 seats in the 150-member parliament.</p>
+                                <p> </p>
+                                <p> HEAVY PRICE FOR REFORMS</p>
+                                <p> Dzurinda first ousted Meciar in 1998 elections after graft,  mismanagement and undemocratic policies brought the economy to  the brink of collapse and led Slovakia into political isolation.</p>
+                                <p> He then led a team of technocrats to mend ties with the West  and push reforms needed to prepare the country for Western  integration with steps such as selling stakes in Slovakia's  state-run firms and attracting investment from abroad.</p>
+                                <p> Some of the reforms have come at a heavy price for the  average Slovak. Layoffs at firms once propped up by the populist  Meciar and other steps mean unemployment is around 18 percent.</p>
+                                <p> Dzurinda also came under fire for what critics called  hawking the family silver through privatisation, while his moral  message suffered as graft downed members of his cabinet.</p>
+                                <p> But observers have hailed the election results as the best  possible outcome saying that the next government could be the  most pro-reform in the region, especially after a return to the  left in recent votes in the Czech Republic, Hungary and Poland.</p>
+                                <p> "All these barriers to these reforms in the last government  are now gone," said Deutsche Bank analyst Jeff Gable.</p>
+                                <p> The new government is expected to tackle further key  reforms, including continuing privatisation, reforming the tax  laws and the judiciary, and restructuring Slovakia's ailing  pension and healthcare systems.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

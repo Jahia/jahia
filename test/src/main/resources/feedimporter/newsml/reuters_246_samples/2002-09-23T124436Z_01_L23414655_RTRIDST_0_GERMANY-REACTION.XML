@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH95973_2002-09-23_12-44-36_L23414655_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T124436+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH95973_2002-09-23_12-44-36_L23414655_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH95973_2002-09-23_12-44-36_L23414655</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH95973_2002-09-23_12-44-36_L23414655:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 12:44:36 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T124436+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T124436+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95973_2002-09-23_12-44-36_L23414655_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T124436Z_01_L23414655_RTRIDST_0_GERMANY-REACTION.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95973_2002-09-23_12-44-36_L23414655_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Europe grapples with re-elected Schroeder on Iraq</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>GERMANY-REACTION</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>GERMANY-REACTION:Europe grapples with re-elected Schroeder on Iraq</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="C"/>
+                    <OfInterestTo FormalName="D"/>
+                    <OfInterestTo FormalName="E"/>
+                    <OfInterestTo FormalName="M"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="U"/>
+                    <OfInterestTo FormalName="MTL"/>
+                    <OfInterestTo FormalName="GRO"/>
+                    <OfInterestTo FormalName="SOF"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH95973_2002-09-23_12-44-36_L23414655_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH95973_2002-09-23_12-44-36_L23414655_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T124436+0000"/>
+                        <Property FormalName="USN" Value="L23414655"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Howard Goller</p>
+                                <p> LONDON, Sept 23 (Reuters) - Europeans came to grips on  Monday with Gerhard Schroeder's re-election victory, accusing  the German chancellor of trying to score political points while  fraying ties with Washington over Iraq.</p>
+                                <p> Caught in a tight campaign, the German leader had voiced  virulent opposition to any U.S. military action against Iraq,  even with United Nations backing, in his quest for re-election.</p>
+                                <p> "It will have a bad effect on the (European Union's)  security policy," Italian European Union Affairs Minister Rocco  Buttiglione insisted in an interview published on Monday.</p>
+                                <p> "We will have to split on this point because it is important  that there are no divisions between the United States, the  United Nations and Europe over Iraq," he told the Corriere della  Sera newspaper.</p>
+                                <p> A columnist in Britain's Times newspaper said it took "a  certain talent" for Schroeder to make an issue of Iraq even  though "the chances of the U.S. army requesting that a regiment  of panzers be sent to the Middle East were always nil".</p>
+                                <p> "While George W. Bush deliberately seeks to inspire 'regime  change' in Baghdad, Saddam has accidentally prevented one from  occurring in Berlin," wrote the columnist, Tim Hames.</p>
+                                <p> But British Prime Minister Tony Blair, who is U.S. President  George W. Bush's most outspoken ally in the campaign against  Iraqi President Saddam Hussein, tried to play down differences  with Germany on Monday.</p>
+                                <p> Asked if Blair had been concerned by the anti-American  rhetoric from Schroeder's side, a spokesman for the British  leader said: "The British government has its position and the  German government has its own position."</p>
+                                <p> "In terms of his (Blair's) own dealings with Chancellor  Schroeder on important international matters, he has always  valued that relationship and will continue to engage with the  German government in the months to come," he told reporters.</p>
+                                <p> The spokesman said the two leaders were keen to meet soon.</p>
+                                <p> In a first step toward repairing the damage with Washington,  Schroeder said on Monday his justice minister, who was embroiled  in a row last week over alleged remarks linking U.S. President  George W. Bush to Adolf Hitler, would step down.</p>
+                                <p> </p>
+                                <p> EU ENLARGEMENT</p>
+                                <p> Some Europeans hailed the end of the German election  campaign as a boost to the eastward enlargement of the 15-nation  European Union.</p>
+                                <p> But some voiced doubts whether the German leader, his  majority cut sharply in Sunday's election, would have enough  power to ensure that Germany, the world's third largest economy,  remained what they called "the engine" of Europe.</p>
+                                <p> They feared Schroeder would find it hard to enact painful  reforms because his centre-left government of Social Democrats  and Greens got a majority of just nine over the combined  opposition parties, down from 21 at the last election.</p>
+                                <p> "It is hard to imagine that after such a result Germany can  continue to be a role model for its neighbours and a motor for  Europe," former Italian diplomat Sergio Romano wrote in Corriere  della Sera.</p>
+                                <p> The accession talks have been on hold for months on the  crucial issues of agricultural support and regional aid for the  10 leading candidates, awaiting a new German government able to  take decisions on financing enlargement.</p>
+                                <p> Both candidates backed enlargement, differing only slightly  on the pace of agricultural reform.</p>
+                                <p> Now that the election was over, Dutch Prime Minister Jan  Peter Balkenende said: "Congratulations to Mr Schroeder. It has  been a good campaign...Enlargement will continue."</p>
+                                <p> </p>
+                                <p> FRANCE, RUSSIA, TURKEY</p>
+                                <p> French President Jacques Chirac, who only a few months ago  won re-election himself, tried to put aside chilly relations.</p>
+                                <p> The two formerly close allies have repeatedly clashed over  various subjects, including plans for EU enlargement, since   Schroeder first came to power in 1998.</p>
+                                <p> "In this decisive period for the European Union, on the eve  of a big enlargement and a profound reform of its institutions,  our two countries must continue to be engines in the  construction of Europe," Chirac said.</p>
+                                <p> Russian President Vladimir Putin congratulated Schroeder.  The Kremlin issued a statement saying: "Both sides expressed a  commitment to further steady development of Russian-German  relations".</p>
+                                <p> But perhaps no country rejoiced more in Schroeder's victory  than Turkey did.</p>
+                                <p> Relieved that Schroeder came from behind to defeat  conservative Edmund Stoiber, newspapers published headlines  reading: "Thank you, Germany" and "Turkey got what it wanted."</p>
+                                <p> Stoiber had opposed distant EU candidate Turkey's eventual  membership in the bloc. Half a million Turks won German  passports recently after citizenship laws were eased during  Schroeder's administration.</p>
+                                <p> (Reuters World Desk +44 207 542 7917)</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

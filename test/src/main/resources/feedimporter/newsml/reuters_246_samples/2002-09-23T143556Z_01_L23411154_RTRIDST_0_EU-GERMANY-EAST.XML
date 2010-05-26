@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH98589_2002-09-23_14-35-56_L23411154_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T143556+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH98589_2002-09-23_14-35-56_L23411154_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH98589_2002-09-23_14-35-56_L23411154</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH98589_2002-09-23_14-35-56_L23411154:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:35:56 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T143556+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T143556+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98589_2002-09-23_14-35-56_L23411154_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PL</FormalName>  <Description xml:lang="en">Poland</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CZ</FormalName>  <Description xml:lang="en">Czech Republic</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">SK</FormalName>  <Description xml:lang="en">Slovakia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">HU</FormalName>  <Description xml:lang="en">Hungary</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">SQ</FormalName>  <FormalName Scheme="ISO3166-alpha2">SI</FormalName>  <Description xml:lang="en">Slovenia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EE</FormalName>  <Description xml:lang="en">Estonia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LV</FormalName>  <Description xml:lang="en">Latvia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LT</FormalName>  <Description xml:lang="en">Lithuania</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_14">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_15">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_16">  <TopicType FormalName="Government Body"/>  <FormalName Scheme="N2000">EU</FormalName>  <Description xml:lang="en">European Union</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_17">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CY</FormalName>  <Description xml:lang="en">Cyprus</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_18">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T143556Z_01_L23411154_RTRIDST_0_EU-GERMANY-EAST.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98589_2002-09-23_14-35-56_L23411154_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>EU candidates welcome Schroeder win in Germany</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>EU-GERMANY-EAST</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>EU-GERMANY-EAST:EU candidates welcome Schroeder win in Germany</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="CZS"/>
+                    <OfInterestTo FormalName="PX"/>
+                    <OfInterestTo FormalName="HX"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_14"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_15"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_16"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_17"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_18"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH98589_2002-09-23_14-35-56_L23411154_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH98589_2002-09-23_14-35-56_L23411154_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T143556+0000"/>
+                        <Property FormalName="USN" Value="L23411154"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Douglas Busvine</p>
+                                <p> WARSAW, Sept 23 (Reuters) - European Union candidate  countries on Monday welcomed German Chancellor Gerhard  Schroeder's election victory but fretted that its narrow margin  may complicate entry talks now nearing their decisive stage.</p>
+                                <p> Schroeder's Social Democrats and his Greens allies, led by  Foreign Minister Joschka Fischer, won a reduced nine-seat  majority, returning leaders known and trusted by candidates as  firm advocates of the EU's eastward enlargement.</p>
+                                <p> But, with entry talks set to move into top gear next month  and wrap up at an EU summit in December, keeping enlargement on  track will require talks on forming a new "Red-Green" alliance  in Berlin to be smooth and quick, analysts said.</p>
+                                <p> Eight ex-communist states and two Mediterranean islands hope  to join the EU by 2004. Governments in the largest -- Poland,  Hungary and the Czech Republic -- share Schroeder's centre-left  politics.</p>
+                                <p> "In politics personal contact, sympathy and familiarity are  very important," said Polish Premier Leszek Miller. "We know  Gerhard Schroeder and Joschka Fischer very well."</p>
+                                <p> The German vote, and the victory of a pro-EU coalition in  Slovakia's weekend election, cleared two potential obstacles to  enlargement. But risk persists as member Ireland prepares for a  second referendum on the EU's Nice Treaty next month.</p>
+                                <p> Irish rejection of the treaty enabling the EU to function  with more members would delay enlargement by several months at  least as lawyers struggle to work around the obstacle.</p>
+                                <p> Agreement on the most ambitious expansion of the EU yet is  due at the Copenhagen summit in December.</p>
+                                <p> </p>
+                                <p> TIGHT SCHEDULE</p>
+                                <p> While there is a political consensus in Germany in favour of  EU enlargement, there were widespread perceptions in candidate  states that conservative challenger Edmund Stoiber was less keen  than Schroeder on the project.</p>
+                                <p> Prague, in particular, was concerned that a Stoiber victory  might revive a row over the post-World War Two expulsion of  ethnic Germans from the then Czechoslovakia.</p>
+                                <p> "This (German) government was unambiguously an engine of EU  expansion," said Czech Foreign Minister Cyril Svoboda. "We have  good relations with Germany and we will continue to have them."</p>
+                                <p> The SPD hopes to sign a coalition pact with the Greens in  three weeks, enabling a new government to be in place well  before the EU picks candidates for final entry talks at a summit  in Brussels on October 24-25.</p>
+                                <p> Drawn-out coalition haggling would complicate a decision on  financing enlargement, the key remaining question to be settled  among current member states.</p>
+                                <p> "It all depends on whether EU enlargement becomes a domestic  issue in Germany. It wasn't during the campaign, so that seems  unlikely," said Janusz Reiter, head of the Centre for  International Affairs in Warsaw.</p>
+                                <p> The relatively strong showing by the ecologist Greens, who  held the agriculture portfolio in the last German government,  may also lead them to press for early reforms to EU farm policy,  setting Berlin at odds with Paris.</p>
+                                <p> Germany, the biggest contributor to the EU budget, is keen  to shake up the 40 billion euro Common Agricultural Policy, but  conservative French President Jacques Chirac opposes any changes  before the current EU budget runs out in 2006.</p>
+                                <p> The candidates are irked that the European Commission, the  EU's executive, has offered them less farm aid than received by  current members. But even that level is disputed by some states  and Germany's position on farm subsidies will be crucial.</p>
+                                <p> "The key question is: What does this mean for the  Franco-German alliance?" said Heather Grabbe of the Centre for  European Reform in London.</p>
+                                <p> "It's good for enlargement that there is no Stoiber-Chirac  alliance. But the French and the Germans will have more to argue  about now."</p>
+                                <p> (Additional reporting from Prague and Budapest)  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93740_2002-09-23_11-12-09_3107615_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T111209+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93740_2002-09-23_11-12-09_3107615_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93740_2002-09-23_11-12-09_3107615</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93740_2002-09-23_11-12-09_3107615:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:12:09 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T111209+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T111209+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93740_2002-09-23_11-12-09_3107615_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Soccer"/>  <FormalName Scheme="N2000">SOCC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15054000</FormalName>  <Description xml:lang="en">Soccer</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MX</FormalName>  <Description xml:lang="en">Mexico</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LATAM</FormalName>  <Description xml:lang="en">South and Central America</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T111209Z_01_3107615_RTRIDST_0_SPORT-SOCCER-MEXICO.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93740_2002-09-23_11-12-09_3107615_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Soccer-Zamorano scores twice as America dominate in Mexico</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-SOCCER-MEXICO</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-SOCCER-MEXICO:Soccer-Zamorano scores twice as America dominate in Mexico</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93740_2002-09-23_11-12-09_3107615_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93740_2002-09-23_11-12-09_3107615_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T111209+0000"/>
+                        <Property FormalName="USN" Value="3107615"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> MEXICO CITY, Sept 23 (Reuters) - Chilean Ivan Zamorano  scored twice as champions America underlined their dominance of  Mexico's Apertura championship at the weekend with a 5-1  thrashing of Veracruz.</p>
+                                <p> Zamorano's goals came from chances set up by Mexican  international Cuauhtemoc Blanco, who polished off his own  performance by converting an 88th-minute penalty.</p>
+                                <p> Hugo Castillo and Christian Patino scored the other goals  for America, who have seven wins and a draw in their eight games  and lead group one.</p>
+                                <p> Uruguayan Martin Rodriguez scored the consolation goal for  the Red Sharks, who have not won at the Azteca stadium since  1978.</p>
+                                <p> Cruz Azul's unhappy season continued when they had three  players -- Sebastian Abreu, Flavio Davino and Miguel Zepeda --  sent off in the last five minutes of their 3-1 defeat by  Morelia.</p>
+                                <p> The Cement Mixers, runners-up in the South American  Libertadores Cup last year, went ahead in the eighth minute  through Zepeda but group four leaders Morelia hit back with two  goals from Brazilian Alex Fernandes and one from Mexican  international Javier Saavedra.</p>
+                                <p> Guadalajara, who field only Mexican players, produced their  sixth 1-1 draw in nine games, this time at home to San Luis but  it was enough to keep them top of group three.</p>
+                                <p> Ricardo Lavolpe and Hugo Sanchez, the two locally-based  candidates to become Mexico's next coach, both enjoyed wins.  Lavolpe's Toluca beat Queretero 2-0 and Sanchez's UNAM won by  the same score away to Chiapas.</p>
+                                <p> Brazil's Luiz Felipe Scolari and Argentina's Carlos Bianchi  are also in the race to replace Javier Aguirre, who resigned  after the World Cup.</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

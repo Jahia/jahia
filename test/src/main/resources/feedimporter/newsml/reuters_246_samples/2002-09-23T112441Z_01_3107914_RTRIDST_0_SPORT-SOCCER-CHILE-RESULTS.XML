@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93997_2002-09-23_11-24-41_3107914_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T112441+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93997_2002-09-23_11-24-41_3107914_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93997_2002-09-23_11-24-41_3107914</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93997_2002-09-23_11-24-41_3107914:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:24:41 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T112441+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T112441+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93997_2002-09-23_11-24-41_3107914_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Soccer"/>  <FormalName Scheme="N2000">SOCC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15054000</FormalName>  <Description xml:lang="en">Soccer</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CL</FormalName>  <Description xml:lang="en">Chile</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LATAM</FormalName>  <Description xml:lang="en">South and Central America</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Genre"/>  <FormalName Scheme="N2000">RSLT</FormalName>  <Description xml:lang="en">Results, Listings and Statistics (Sports)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T112441Z_01_3107914_RTRIDST_0_SPORT-SOCCER-CHILE-RESULTS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93997_2002-09-23_11-24-41_3107914_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Soccer-Chilean championship results/standings</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-SOCCER-CHILE-RESULTS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-SOCCER-CHILE-RESULTS:Soccer-Chilean championship results/standings</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <Genre FormalName="Table"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="OUKSA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93997_2002-09-23_11-24-41_3107914_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93997_2002-09-23_11-24-41_3107914_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T112441+0000"/>
+                        <Property FormalName="USN" Value="3107914"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> SANTIAGO, Sept 23 (Reuters) - Results of Chilean  championship matches at the weekend.   Audax Italiano        1   Colo Colo             2   San Felipe            1   Universidad Catolica  2   Wanderers             2   Deportes Concepcion   2   Santiago Morning      0   Cobreloa              4   Huachipato            1   Union Espanola        3   Rangers               3   Palestino             2   Temuco                1   Coquimbo              1   Universidad de Chile  1   Cobresal              1</p>
+                                <p> Standings</p>
+                                <p> Group A    1. Huachipato             6  2  2  2 11  8  8    2. Colo Colo              6  2  2  2  5  6  8    3. Deportes Concepcion    6  1  3  2  8  8  6    4. Temuco                 6  1  1  4  6 11  4</p>
+                                <p> Group B    1. Cobreloa               6  6  0  0 14  3 18    2. Universidad Catolica   6  4  2  0 12  6 14    3. Cobresal               6  3  3  0 11  8 12       4. Audax Italiano         6  1  3  2  9 10  6</p>
+                                <p> Group C    1. Coquimbo               5  2  1  2  6  5  7    2. Santiago Morning       6  1  2  3  6 10  5    3. Rangers                5  1  0  4  4 13  3    4. Palestino              6  0  2  4  5 12  2</p>
+                                <p> Group D    1. Union Espanola         6  4  1  1 11  5 13    2. Universidad de Chile   6  2  3  1 11  7  9    3. Wanderers              6  2  2  2  9 10  8    4. San Felipe             6  1  1  4  6 12  4  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

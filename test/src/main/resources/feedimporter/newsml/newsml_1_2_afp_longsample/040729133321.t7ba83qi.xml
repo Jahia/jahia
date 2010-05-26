@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<NewsML>
+  <Catalog Href="http://www.afp.com/dtd/AFPCatalog.xml"/>
+  <NewsEnvelope>
+    <DateAndTime>20040729T133332Z</DateAndTime>
+  </NewsEnvelope>
+  <NewsItem>
+    <Identification>
+      <NewsIdentifier>
+        <ProviderId>afp.com</ProviderId>
+        <DateId>20040729</DateId>
+        <NewsItemId>040729133321.t7ba83qi</NewsItemId>
+        <RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+        <PublicIdentifier>urn:newsml:afp.com:20040729:040729133321.t7ba83qi:1</PublicIdentifier>
+      </NewsIdentifier>
+      <NameLabel>US-vote-Democrats</NameLabel>
+    </Identification>
+    <NewsManagement>
+      <NewsItemType FormalName="News"/>
+      <FirstCreated>20040729T133321Z</FirstCreated>
+      <ThisRevisionCreated>20040729T133321Z</ThisRevisionCreated>
+      <Status FormalName="Usable"/>
+    </NewsManagement>
+    <NewsComponent>
+      <NewsLines>
+        <HeadLine>Kerry faces the night of his political career</HeadLine>
+        
+        <DateLine>BOSTON (AFP)</DateLine>
+        <CopyrightLine>© 2004 AFP</CopyrightLine>
+      </NewsLines>
+      <AdministrativeMetadata>
+        <Provider>
+          <Party FormalName="AFP"/>
+        </Provider>
+      </AdministrativeMetadata>
+      <DescriptiveMetadata>
+        <Language FormalName="en"/> 
+	<Genre FormalName="sched-lead"/>
+        <OfInterestTo FormalName="mmd--english--webwires--america--top"/>
+      </DescriptiveMetadata>
+      <NewsComponent>
+        <ContentItem>
+          <MediaType FormalName="Text"/>
+          <Format FormalName="bcNITF2.5"/>
+          <DataContent>
+            <media media-type="image" style="leftSide">
+<media-reference mime-type="" data-location="#photo0" />
+</media>
+<p>John Kerry was to make the biggest speech of his political life on Thursday, hoping to fire up voters and convince Americans he has the right stuff to oust George W. Bush from the White House.</p>
+
+            <p>Kerry will close the four-day Democratic national convention by accepting the nomination for president, setting the stage for a bruising three-month election showdown with the eyes of the world watching for the outcome.</p>
+            <p>Polls say the two men are in a virtual dead heat but give Bush the edge when it comes to national security, a vital question for the United States in the wake of the September 11, 2001 terror attacks and the war in Iraq.</p>
+            <p>For the first time since the Cold War, opinion surveys show foreign policy is a vital issue for nearly half of US voters, and Democrats have used the spotlight this week to paint Bush as a misguided, dangerous world leader.</p>
+            <p>The leading US dailies on Thursday urged Kerry to make clear once and for all how he stands on defense and, above all, on Iraq.</p>
+            <media media-type="image" style="rightSide">
+<media-reference mime-type="" data-location="#photo1" />
+</media>
+<p>"The doubts about Mr. Kerry concern not his courage, but his judgement and conviction," said The Wall Street Journal. The New York Times went one step further in exhorting Kerry to tell Americans what he would have done in Iraq, a question on which he has been "impossibly opaque."</p>
+
+            <p>Kerry's vice-presidential running-mate John Edwards on Wednesday denounced Bush's "hateful, negative politics" and promised a different United States that would repair US relations abroad, damaged by the unpopular Iraq war.</p>
+            <p>"We have to restore our respect in the world to bring our allies to us and with us," Edwards said. "It's how we won the World Wars and the Cold War, and it is how we will build a stable Iraq."</p>
+            <p>Kerry's acceptance speech Thursday caps a nearly year-long drive to win his party's endorsement, after a gruelling season of state primary elections in which Edwards, a newcomer to national politics, emerged as his toughest rival.</p>
+            <p>Despite two decades of service in the US Senate and his decorated service in the Vietnam war, however, Kerry has struggled to carve an identity in the minds of voters and polls show most are unsure what he stands for.</p>
+            <media media-type="image" style="leftSide">
+<media-reference mime-type="" data-location="#photo2" />
+</media>
+<p>The Democrats told journalists they would use the convention, which began Monday, to introduce Kerry to the American people rather than pummel Bush with attacks. But they did not keep that pledge.</p>
+
+            <p>With broadsides from two former presidents and a third who almost was, the party has hammered Bush mercilessly and portrayed the November 2 election as the most important in living memory.</p>
+            <p>In an electrifying address dripping with sarcasm, Bill Clinton questioned Bush's wisdom. Jimmy Carter said he had squandered the goodwill of the world after September 11. And Al Gore said America had lost respect.</p>
+            <p>Gathering revered former generals and fire-breathing preachers, school children and veterans -- even bringing out the son of late Republican icon Ronald Reagan -- the Democrats have bashed Bush from almost every angle.</p>
+            <p>But while the lines of attack have been drawn, Kerry on Thursday will still be under pressure to begin defining his own national political identity as something more than the anti-Bush.</p>
+            <media media-type="image" style="rightSide">
+<media-reference mime-type="" data-location="#photo3" />
+</media>
+<p>The aristocratic 60-year-old, son of privilege and husband of fortune, has been dogged by his image as a dour and charm-shy figure lacking the common touch so crucial in US politics.</p>
+
+            <p>Perhaps his shrewdest move thus far was his choice as running-mate, with the boyish charm and up-from-poverty background of Edwards providing the energy and appeal that Kerry's lacklustre campaign had lacked.</p>
+            <p>"Hope is on the way!" Edwards exhorted the thousands of delegates on Wednesday evening, after delivering a well-honed populist stump speech blaming the Republicans for the "Two Americas" -- one wealthy and one poor.</p>
+            <p>"You, the American people, you can reject the tired, old, hateful, negative, politics of the past. Instead you can embrace the politics of hope, the politics of what's possible because this is America," Edwards said.</p>
+            <media media-type="image" style="leftSide">
+<media-reference mime-type="" data-location="#photo4" />
+</media>
+<p>The 51-year-old, who made his fortune as a trial lawyer, also played up Kerry's courage in Vietnam, his long years of public service and his dedication to a vision of America which Edwards said Bush did not share.</p>
+
+            <p>Alluding to Bush's non-combat service stateside during the Vietnam war, Edwards said: "When a man volunteers to serve his country, and puts his life on the line for others -- that's a man who represents real American values."</p>
+            <p>He called Kerry decisive and strong. "Aren't these the traits you want in a commander in chief?" he said, drawing cheers from the crowd.</p>
+            <p>Delegates at the convention in Boston, Kerry's hometown and the cradle of American independence, praised the speech.</p>
+            <p>"He's bringing a new energy, a vitality and a hope for change for the better," said Sheila Franklin, 62, a retired entrepreneur from Florida.</p>
+            <p>Kerry was due to take the stage late Thursday (0200 GMT Friday), kicking off the last stage of the election battle. The Republican convention will be held in New York in late August.</p>
+          </DataContent>
+        </ContentItem>
+      </NewsComponent>
+      <NewsComponent Duid="photo0">
+        <NewsLines> 
+          <HeadLine>Democratic Presidential candidate John Kerry waves as he arrives at Logan Airport in Boston</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Stan Honda"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Democratic Presidential candidate John Kerry waves as he arrives at Logan Airport in Boston. Kerry was to make the biggest speech of his political life, hoping to fire up voters and convince Americans he has the right stuff to oust George W. Bush from the White House.</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo00.default-110x80.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="110"/>
+              <Property FormalName="Height" Value="80"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo00.default-245x165.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="245"/>
+              <Property FormalName="Height" Value="165"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo00.default-245x230.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="245"/>
+              <Property FormalName="Height" Value="230"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+      <NewsComponent Duid="photo1">
+        <NewsLines> 
+          <HeadLine>Democratic vice presidential candidate John Edwards holds his daughter Emma Claire</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Paul J. Richards"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Democratic vice presidential candidate John Edwards holds his daughter Emma Claire. John Kerry's running-mate denounced US President George W. Bush's "hateful, negative politics" and promised a different United States that would repair US relations abroad, damaged by the unpopular Iraq war.</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo01.default-70x100.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="70"/>
+              <Property FormalName="Height" Value="100"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo01.default-191x245.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="191"/>
+              <Property FormalName="Height" Value="245"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo01.default-256x384.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="256"/>
+              <Property FormalName="Height" Value="384"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+      <NewsComponent Duid="photo2">
+        <NewsLines> 
+          <HeadLine>Democratic vice presidential candidate John Edwards greets the Democratic National Convention</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Timothy A. Clary"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Democratic vice presidential candidate John Edwards greets the Democratic National Convention. John Kerry's running-mate denounced US President George W. Bush's "hateful, negative politics" and promised a different United States that would repair US relations abroad, damaged by the unpopular Iraq war.</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo02.default-110x83.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="110"/>
+              <Property FormalName="Height" Value="83"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo02.default-245x163.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="245"/>
+              <Property FormalName="Height" Value="163"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo02.default-384x256.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="384"/>
+              <Property FormalName="Height" Value="256"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+      <NewsComponent Duid="photo3">
+        <NewsLines> 
+          <HeadLine>General Wesley Clark (R) with other retired former armed forces officers in Boston</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Stan Honda"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>General Wesley Clark (R) joins other retired armed forces officers at the Democratic National Convention in Boston. John Kerry was to make the biggest speech of his political life, hoping to fire up voters and convince Americans he has the right stuff to oust George W. Bush from the White House.</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo03.default-70x100.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="70"/>
+              <Property FormalName="Height" Value="100"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo03.default-245x165.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="245"/>
+              <Property FormalName="Height" Value="165"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo03.default-384x232.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="384"/>
+              <Property FormalName="Height" Value="232"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+      <NewsComponent Duid="photo4">
+        <NewsLines> 
+          <HeadLine>Republican National Committee members work in their "war room" near the Democratic convention</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP/Getty Images"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Mario Tama"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Republican National Committee members work in their "war room" near the Democratic convention. John Kerry was to make the biggest speech of his political life, hoping to fire up voters and convince Americans he has the right stuff to oust George W. Bush from the White House.</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo04.default-128x76.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="128"/>
+              <Property FormalName="Height" Value="76"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo04.default-245x145.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="245"/>
+              <Property FormalName="Height" Value="145"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RBW26.290704133313.photo04.default-384x228.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="384"/>
+              <Property FormalName="Height" Value="228"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+    </NewsComponent>
+  </NewsItem>
+</NewsML>

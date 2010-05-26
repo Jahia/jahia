@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH94846_2002-09-23_12-00-48_L23438078_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T120048+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH94846_2002-09-23_12-00-48_L23438078_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH94846_2002-09-23_12-00-48_L23438078</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH94846_2002-09-23_12-00-48_L23438078:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 12:00:48 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T120048+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T120048+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94846_2002-09-23_12-00-48_L23438078_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Golf"/>  <FormalName Scheme="N2000">GOLF</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15027000</FormalName>  <Description xml:lang="en">Golf</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IE</FormalName>  <Description xml:lang="en">Ireland</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ES</FormalName>  <Description xml:lang="en">Spain</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">SE</FormalName>  <Description xml:lang="en">Sweden</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NORD</FormalName>  <Description xml:lang="en">Nordic Countries</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DK</FormalName>  <Description xml:lang="en">Denmark</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T120048Z_01_L23438078_RTRIDST_0_SPORT-GOLF-RYDER-PREVIEW.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94846_2002-09-23_12-00-48_L23438078_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Golf-Ryder-Europe and U.S. set to resume rivalry after long wait</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-GOLF-RYDER-PREVIEW</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-GOLF-RYDER-PREVIEW:Golf-Ryder-Europe and U.S. set to resume rivalry after long wait</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH94846_2002-09-23_12-00-48_L23438078_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH94846_2002-09-23_12-00-48_L23438078_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T120048+0000"/>
+                        <Property FormalName="USN" Value="L23438078"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> SUTTON COLDFIELD, England, Sept 23 (Reuters) - One of the  fiercest rivalries and great occasions in global sport resumes  this week when Europe host the United States in the Ryder Cup  team competition at The Belfry after a protracted three-year  break.</p>
+                                <p> The 34th edition of the biennial contest should have been  held at the same venue last year, but the event was postponed  for 12 months following the September 11 attacks on the U.S.</p>
+                                <p> At the time, though, it was agreed by the PGA of America and  the European Ryder Cup board that the same 12-man teams would  line up at The Belfry one year on.</p>
+                                <p> Ever since, players on both sides have been forced to wait  it out with their uniforms safely tucked away in cupboards.</p>
+                                <p> But, all the while, they have focused on their individual  playing schedules while their form has been subject to close  Ryder Cup scrutiny, many of them feeling as though they have had  to keep on justifying their initial selection.</p>
+                                <p> Hardly surprisingly, several players have struggled for  consistency for much of this year and very few of the European  team are performing better now than 12 months ago.</p>
+                                <p> Main concerns for European captain Sam Torrance before the  Ryder Cup starts on Friday morning with the fourball matches are  Sweden's Pierre Fulke, Englishman Lee Westwood, Irishman Paul  McGinley, Phillip Price of Wales and Ulsterman Darren Clarke,  who finished 63rd out of 64 in the WGC-American Express  Championship on Sunday.</p>
+                                <p> To a lesser extent, the U.S. also have their own worries and  team captain Curtis Strange will hope that Ryder Cup veteran Hal  Sutton and debutant Stewart Cink can rediscover some form at The  Belfry after respective seasons of struggle.</p>
+                                <p> Both Sutton and Cink failed to qualify for the elite World  Golf Championship (WGC) field in Ireland last week.</p>
+                                <p> The Ryder Cup, though, is a matchplay event and players on  both sides readily accept it is possible for someone who has  struggled in individual strokeplay tournaments to rise to the  occasion in a team atmosphere.</p>
+                                <p/>
+                                <p> 'EVERYTHING CHANGES'</p>
+                                <p> "The atmosphere and the energy and everything inside of you  changes for a Ryder Cup," said Spaniard Sergio Garcia, after  giving his European colleagues a boost for The Belfry with a  course-record 10-under-par 62 in the final round in Ireland on  Sunday.</p>
+                                <p> "And I think that's the case even for players who are not  playing that great. In the Ryder Cup, you try extra hard to play  well. It shows on every Ryder Cup."</p>
+                                <p> U.S. captain Strange readily accepts that some players will  go into a Ryder Cup desperately searching for form.</p>
+                                <p> "When has the Ryder Cup ever been played with 24 of the best  players at that time?" he asked. "Probably never. But will it  take away from the matches? Absolutely not."</p>
+                                <p> As far as both collective form and team quality are  concerned, the U.S. will go into this week's Ryder Cup as firm  favourites to retain the title they won by 14-1/2 points to  13-1/2 at Brookline in 1999.</p>
+                                <p> Their line-up includes seven winners of at least one major  tournament while Europe have only one in twice U.S. Masters  champion Bernhard Langer.</p>
+                                <p> The U.S. team also includes five players in the world's  current top 10, Europe only have two -- in fifth-ranked Garcia  and number nine Padraig Harrington.</p>
+                                <p> In world number one Tiger Woods, the Americans have a player  who is close to his very best form, having clinched his sixth  title of the year on Sunday with a clinical one-shot victory in  the American Express Championship and a remarkable 72-hole total  of 25 under par.</p>
+                                <p> It is worth remembering, though, that Woods has not thrived  in the Ryder Cup, winning only 3-1/2 points in 10 games since  making his debut at Valderrama in 1997. The Ryder Cup, as Woods  himself put it last week, is "a different animal".</p>
+                                <p/>
+                                <p> NO DIFFERENCE</p>
+                                <p> "On paper, as we've seen in the Ryder Cup, it doesn't make  any difference at all how guys are playing coming in," added  Strange.</p>
+                                <p> "It's who's motivated, who can adjust to the long week, the  social atmosphere as well as the golf. I don't care who it is  but, when the Ryder Cup begins, anything is possible."</p>
+                                <p> The biennial clash between the top 12 professionals in  Europe and the United States could hardly have been closer  fought since 1981. Europe and the U.S. have won four matches  apiece with one encounter -- at The Belfry in 1989 -- tied.</p>
+                                <p> In those nine contests, only one was decided by a margin of  more than two points and the event has often transcended golf to  become sporting theatre of the most dramatic kind.</p>
+                                <p> "I don't see a blow-out (a one-sided result) this week,"  said left-hander Mickelson, who gave himself a confidence boost  for The Belfry with a closing round of eight-under-par 64 at  Mount Juliet on Sunday.</p>
+                                <p> "The format is more conducive to levelling the playing field  and, in the past 20 years, it's been pretty obvious that the  competition is even on both sides of the Atlantic."</p>
+                                <p> The U.S., who have won 24 Ryder Cups to the seven claimed by  Britain or (since 1979) Europe, produced a dramatic last-day  fightback at Brookline in 1999, winning eight of the 12 singles  matches to regain the cup by 14-1/2 points to 13-1/2.</p>
+                                <p> They may, once again, be firm favourites for this week's  showdown but, if the last 20 years are anything to go by, expect  a nail-biting result -- whoever wins. </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

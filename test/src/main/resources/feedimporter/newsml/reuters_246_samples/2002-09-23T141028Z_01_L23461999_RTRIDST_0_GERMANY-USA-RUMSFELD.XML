@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH98037_2002-09-23_14-10-28_L23461999_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T141028+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH98037_2002-09-23_14-10-28_L23461999_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH98037_2002-09-23_14-10-28_L23461999</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH98037_2002-09-23_14-10-28_L23461999:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:10:28 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T141028+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T141028+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98037_2002-09-23_14-10-28_L23461999_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PL</FormalName>  <Description xml:lang="en">Poland</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IQ</FormalName>  <Description xml:lang="en">Iraq</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T141028Z_01_L23461999_RTRIDST_0_GERMANY-USA-RUMSFELD.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98037_2002-09-23_14-10-28_L23461999_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Rumsfeld snubs German minister after election rows</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>GERMANY-USA-RUMSFELD</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>GERMANY-USA-RUMSFELD:Rumsfeld snubs German minister after election rows</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="M"/>
+                    <OfInterestTo FormalName="E"/>
+                    <OfInterestTo FormalName="D"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="PEN"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH98037_2002-09-23_14-10-28_L23461999_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH98037_2002-09-23_14-10-28_L23461999_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T141028+0000"/>
+                        <Property FormalName="USN" Value="L23461999"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Charles Aldinger</p>
+                                <p> WARSAW, Sept 23 (Reuters) - U.S. defence secretary Donald  Rumsfeld said on Monday he would not be meeting his German  colleague at a NATO meeting, adopting an icy tone towards Berlin  after election criticism of Washington's policy on Iraq.</p>
+                                <p> Speaking to reporters before an informal meeting of NATO  defence ministers in the Polish capital, Rumsfeld expressed  displeasure at how criticism of U.S. foreign policy had become a  core issue in Germany's election.</p>
+                                <p> "I would have to say that the way it was conducted was  definitely unhelpful, and as the White House indicated, has had  the effect of poisoning the relationship," said Rumsfeld.</p>
+                                <p> In an apparent snub to Berlin, Rumsfeld said he had no plans  to get together with German defence minister Peter Struck, who  has expressed a desire for a meeting.</p>
+                                <p> Rumsfeld spoke before the resignation of German Justice  Minister Herta Daeubler-Gmelin, who enraged Washington by  allegedly linking U.S. President George W. Bush to Hitler.</p>
+                                <p> Daeubler-Gmelin, who denies the allegation, was reported as  saying Bush's sabre-rattling on Iraq was a ploy that Hitler has  also used to divert attention from domestic issues.</p>
+                                <p> The comments soured a relationship already strained by  German Chancellor Gerhard Schroeder's outspoken opposition to  war against Iraq, which was hugely popular with German voters.</p>
+                                <p> Rumsfeld refused to comment on the result of the election,  which was won by Schroeder. Analysts say he faces a tough task  repairing ties with Washington which were previously the bedrock  of Europe's post-World War Two security system.</p>
+                                <p> Schroeder on Monday emphatically rejected any suggestion  that he would change his position on Iraq now that he had won  re-election.</p>
+                                <p> "We have nothing to change from what we said before the  election," he said. "Between friends, there can be factual  differences but they should not be personalised, particularly  between close allies."</p>
+                                <p> </p>
+                                <p> IRAQ ON AGENDA</p>
+                                <p> Rumsfeld said he had discussed the U.S. drive to push Iraq  to give up its weapons of mass destruction with Polish President  Aleksander Kwasniewski and other Polish officials.</p>
+                                <p> He sharply contested the suggestion that U.S. President  George W. Bush was determined to attack Iraq, even without the  backing of a new United Nations resolution to stiffen a weapons  inspection regime which Washington is now seeking.</p>
+                                <p> "I think trying to promote and perpetuate the concept of  unilateralism is not on the mark," said Rumsfeld.</p>
+                                <p> He insisted that the U.S. did have backers in its campaign  to pressure Iraqi President Saddam Hussein, despite public  misgivings by many European and Middle Eastern states and only  Britain among major allies standing up for Washington's view.</p>
+                                <p> Polish National Security Adviser Marek Siwiec, asked if  Warsaw would back the U.S. if it decided to attack Iraq without  UN authorisation, said Poland was a "very steadfast ally" of the  United States.</p>
+                                <p> Poland is keen to position itself alongside Britain as one  of the most loyal U.S. allies in Europe.</p>
+                                <p> The two-day NATO meeting will hear a confidential briefing  by the U.S. on the threat posed by Iraq and face calls from  Washington to prepare their militaries better for the security  risks posed by terrorism in the post-September 11 world.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

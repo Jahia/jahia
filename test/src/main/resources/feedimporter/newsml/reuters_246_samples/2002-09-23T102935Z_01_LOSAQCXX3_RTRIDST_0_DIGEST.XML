@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93002_2002-09-23_10-29-35_LOSAQCXX3_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T102935+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93002_2002-09-23_10-29-35_LOSAQCXX3_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93002_2002-09-23_10-29-35_LOSAQCXX3</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93002_2002-09-23_10-29-35_LOSAQCXX3:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 10:29:35 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T102935+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T102935+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93002_2002-09-23_10-29-35_LOSAQCXX3_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">DED</FormalName>  <Description xml:lang="en">Advisories, schedules, diaries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T102935Z_01_LOSAQCXX3_RTRIDST_0_DIGEST.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93002_2002-09-23_10-29-35_LOSAQCXX3_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Reuters World News Digest at 1000 GMT, Sep 23</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>DIGEST</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>DIGEST:Reuters World News Digest at 1000 GMT, Sep 23</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93002_2002-09-23_10-29-35_LOSAQCXX3_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93002_2002-09-23_10-29-35_LOSAQCXX3_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T102935+0000"/>
+                        <Property FormalName="USN" Value="LOSAQCXX3"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p/>
+                                <p> TOP STORIES</p>
+                                <p> -----------</p>
+                                <p> BERLIN - German Chancellor Gerhard Schroeder faces the task  of reforming Europe's largest economy with a sharply reduced  majority after he and his Greens coalition partners narrowly  won Sunday's general election.</p>
+                                <p> - - - -</p>
+                                <p> RAMALLAH - Israeli troops pressed on with their siege of  Yasser Arafat's West Bank headquarters on Monday after halting  demolition of his presidential complex following U.S.  criticism.</p>
+                                <p> - - - -</p>
+                                <p> BOUAKE - French troops rumbled north to evacuate Westerners  trapped by fighting in Ivory Coast as skirmishes flared on  Monday on the outskirts of a city where dozens of American  children are hiding.</p>
+                                <p> - - - -</p>
+                                <p> MERIDA, Mexico - Hurricane Isidore plowed across Mexico's  Yucatan peninsula on Monday, forcing thousands from their homes  as it flooded streets, toppled trees and power lines and shut  down offshore oil rigs.</p>
+                                <p> - - - -</p>
+                                <p> BAGHDAD - Iraq denounced on Monday as "wicked" U.S.  attempts at the United Nations to adopt a tough resolution on  Iraq's disarmament, saying Washington was seeking U.N. cover  for any military action.</p>
+                                <p> - - - -</p>
+                                <p> JAKARTA - A grenade exploded in a car outside a U.S.  embassy warehouse in the centre of Indonesia's capital Jakarta  on Monday in a botched attack that killed one of the vehicle's  occupants, police said.</p>
+                                <p> - - - -</p>
+                                <p> MADRID - Spain denied Moroccan claims that a Spanish  military helicopter had landed on a disputed Mediterranean  islet and said it regretted Rabat's cancellation of talks  planned for Monday to smooth troubled relations.</p>
+                                <p> - - - -</p>
+                                <p> SRINAGAR, India - Violence flared on Monday ahead of the  second round of Indian Kashmir's state elections that Islamic  militants have vowed to sabotage, as security forces gunned  down four rebels, police said.</p>
+                                <p> ANALYSES/FEATURES</p>
+                                <p> -----------------</p>
+                                <p> BRUSSELS - Germany emerged weakened from Sunday's general  election and will need to move fast to salvage relations with  the United States damaged by Chancellor Gerhard Schroeder's  broadsides over Iraq, international analysts said.</p>
+                                <p> - - - -</p>
+                                <p> KREMENSKAYA, Russia - Father Gennadi's mission is to save  souls and shepherd strays back to God's flock.</p>
+                                <p> PEOPLE/LIFESTYLE</p>
+                                <p> ----------------</p>
+                                <p> LOS ANGELES - The Emmy awards played it safe on Sunday  night, honoring an array of veteran shows, including "Friends"  and "The West Wing," and effectively snubbing the season's hot  new contender, "Six Feet Under."</p>
+                                <p> - - - -</p>
+                                <p> TEHRAN - Iran has banned frog hunting after hundreds of  locals in the north of the country rushed to trap the slippery  amphibians spurred on by dealers from Turkey offering cash  rewards, the Abrar daily said on Monday.   </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

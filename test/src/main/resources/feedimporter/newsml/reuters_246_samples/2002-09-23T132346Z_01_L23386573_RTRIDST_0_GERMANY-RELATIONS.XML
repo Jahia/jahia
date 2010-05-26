@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH96825_2002-09-23_13-23-46_L23386573_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T132346+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH96825_2002-09-23_13-23-46_L23386573_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH96825_2002-09-23_13-23-46_L23386573</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH96825_2002-09-23_13-23-46_L23386573:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:23:46 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T132346+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T132346+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96825_2002-09-23_13-23-46_L23386573_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IQ</FormalName>  <Description xml:lang="en">Iraq</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">FR</FormalName>  <Description xml:lang="en">France</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Government Body"/>  <FormalName Scheme="N2000">EU</FormalName>  <Description xml:lang="en">European Union</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AF</FormalName>  <Description xml:lang="en">Afghanistan</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_14">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NL</FormalName>  <Description xml:lang="en">Netherlands</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_15">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">DUI</FormalName>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_16">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T132346Z_01_L23386573_RTRIDST_0_GERMANY-RELATIONS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96825_2002-09-23_13-23-46_L23386573_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Germany starts repairing "poisoned" U.S. ties</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>GERMANY-RELATIONS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>GERMANY-RELATIONS:Germany starts repairing "poisoned" U.S. ties</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="MD"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_14"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_15"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_16"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH96825_2002-09-23_13-23-46_L23386573_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH96825_2002-09-23_13-23-46_L23386573_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T132346+0000"/>
+                        <Property FormalName="USN" Value="L23386573"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Emma Thomasson</p>
+                                <p> BERLIN, Sept 23 (Reuters) - German Chancellor Gerhard  Schroeder, whose opposition to a U.S. war with Iraq helped him  win re-election, began mending ties on Monday by announcing the  departure of a controversial minister.</p>
+                                <p> However, he gave no sign that all would now be harmony with  Germany's NATO ally, insisting on his right to differences of  opinion.</p>
+                                <p> Schroeder's first move was to announce that Herta  Daeubler-Gmelin, the justice minister who last week allegedly  said Bush's desire to distract from domestic politics with war  recalled Hitler's methods, would not be in his new cabinet.</p>
+                                <p> Although she denied making the comparison, Schroeder told a  news conference she had asked not to be considered.</p>
+                                <p> But he also said he would not change his stance on Iraq --  which has brought rebukes from Washington -- and rejected  suggestions that his position had damaged transatlantic ties.</p>
+                                <p> "The basis of the relationship between Germany and the  United States is so secure that the fears that were played up  during the election campaign are unfounded," he said.</p>
+                                <p> "Between friends, there can be factual differences but they  should not be personalised, particularly between close allies."</p>
+                                <p> Werner Weidenfeld, head of the Centre for Applied Policy  Research in Munich, said Schroeder could not quickly make a  complete about-turn on Iraq without alienating the large number  of voters he won over with his anti-war rhetoric.</p>
+                                <p> "It will not be easy to repair the badly damaged  relationship with the U.S. government," Weidenfeld said.</p>
+                                <p> </p>
+                                <p> POISONED ATMOSPHERE</p>
+                                <p> Germany will be looking to see whether U.S. President George  W. Bush offers Schroeder anything more than ritual  congratulations, and how long it is before Schroeder gets a  by-now traditional post-election invitation to the White House.</p>
+                                <p> Germany is expected to offer to relieve pressure on U.S. and  British forces -- the likely leaders of any attack on Iraq -- by  offering to take a bigger role in Afghan peacekeeping.</p>
+                                <p> But that may not be enough to quickly improve an atmosphere  that U.S. National Security Adviser Condoleezza Rice said had  been poisoned by Germany's comments on Iraq.</p>
+                                <p> U.S. Defence Secretary Donald Rumsfeld suggested he would  avoid his German counterpart at a NATO meeting on Tuesday.</p>
+                                <p> Germany's DIHK chambers of commerce and industry said Berlin  must mend ties or risk damage to its economic interests.</p>
+                                <p> Schroeder's trump card may be Foreign Minister Joschka  Fischer, believed to have a solid reputation in Washington.</p>
+                                <p> Fischer, of the Greens party, said Germany would never  forget that it had the Americans to thank for freeing them from  Nazi dictatorship and helping bring about German unification  after long years of support through the Cold War.</p>
+                                <p> "America is a guarantor of peace and security," he said.  "The United States is our most important partner and we want to  further develop the traditionally good path of our relations."</p>
+                                <p> Karsten Voigt, Schroeder's adviser on U.S. affairs, told ARD  television the chancellor, too, would have to build bridges.</p>
+                                <p> "He must make clear that we are agreed on the goal that  (Iraqi President) Saddam Hussein cannot be allowed to possess  weapons of mass destruction, and that despite all  differences...it is not the policies of the Americans that is  the problem but the behaviour of Saddam Hussein," he said.</p>
+                                <p> </p>
+                                <p> SOFTER LINE?</p>
+                                <p> German diplomats have suggested Schroeder's opposition to  war against Iraq may ease if Saddam fails to cooperate fully  with U.N.-mandated arms inspections or is proved to have weapons  of mass destruction -- Washington's central grievance.</p>
+                                <p> "The experienced foreign policy experts will hopefully take  over the driving seat again now the election campaign is over,"  said Bernhard May of the German Council on Foreign Relations.</p>
+                                <p> May urged Schroeder to write to Bush explaining his position  said predicted the chancellor would probably fall into line if  the U.N. Security Council agreed a tough new resolution on Iraq.</p>
+                                <p> Voigt said German forces were likely to free up U.S. and  British forces for Iraq by taking on more responsibility in the  Balkans and Afghanistan.</p>
+                                <p> Defence Minister Peter Struck has suggested a German-Dutch  command could take over the leadership of the international  peacekeeping force in Afghanistan when Turkey's mandate expires  at the end of the year, and increase its troop contingent.</p>
+                                <p> He is expected to discuss the plan with his Dutch  counterpart at a meeting of NATO defence ministers in Warsaw on  Tuesday and said he would also speak to his U.S. opposite number  Rumsfeld, even if the American had said he did not know Struck.</p>
+                                <p> "Relations are politically difficult at the moment, but they  will improve," Struck said on Sunday.   (With additional reporting by Markus Krah)     </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

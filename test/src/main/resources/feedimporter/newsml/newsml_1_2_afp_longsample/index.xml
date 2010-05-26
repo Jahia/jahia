@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<NewsML>
+  <Catalog Href="http://www.afp.com/dtd/AFPCatalog.xml"/>
+  <NewsEnvelope>
+    <DateAndTime>20040729T155056Z</DateAndTime>
+  </NewsEnvelope>
+  <NewsItem>
+    <Identification>
+      <NewsIdentifier>
+        <ProviderId>afp.com</ProviderId>
+        <DateId>20040729</DateId>
+        <NewsItemId>mmd--english--webwires--america--top</NewsItemId>
+        <RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+        <PublicIdentifier>urn:newsml:afp.com:20040729:mmd--english--webwires--america--top:1</PublicIdentifier>
+      </NewsIdentifier>
+      <NameLabel>US News</NameLabel>
+    </Identification>
+    <NewsManagement>
+      <NewsItemType FormalName="News"/>
+      <FirstCreated>20040729T155056Z</FirstCreated>
+      <ThisRevisionCreated>20040729T155056Z</ThisRevisionCreated>
+      <Status FormalName="Usable"/>
+    </NewsManagement>
+    <NewsComponent>
+      <AdministrativeMetadata>
+        <Provider>
+          <Party FormalName="AFP"/>
+        </Provider>
+      </AdministrativeMetadata>
+      <DescriptiveMetadata>
+        <Language FormalName="en"/> 
+      </DescriptiveMetadata>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Kerry faces the night of his political career</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729133321.t7ba83qi.xml"/>
+      </NewsComponent>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Kerry to keep convention momentum rolling</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729154617.3gr8jue7.xml"/>
+      </NewsComponent>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Democratic faithful hail Edwards speech</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729054956.xm61wen7.xml"/>
+      </NewsComponent>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Jackson, Sharpton rally US blacks for Kerry</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729145213.j1hb3yzq.xml"/>
+      </NewsComponent>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Filmmaker Michael Moore to take his cameras to Florida on Election Day</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729151548.u53ep9tw.xml"/>
+      </NewsComponent>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Merck grants South Africa generic AIDS medication license</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729150432.75u3ydm1.xml"/>
+      </NewsComponent>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Apple accuses RealNetworks of 'hacker' tactics in music war</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729155050.z749c7fh.xml"/>
+      </NewsComponent>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Federer, Roddick reach second round at Toronto tennis event</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729132644.ireg9l7e.xml"/>
+      </NewsComponent>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Quarterback Beuerlein retires after 17 NFL seasons</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729125648.kkodyxq3.xml"/>
+      </NewsComponent>
+      <NewsComponent>
+        <NewsLines>
+          <HeadLine>Michael Douglas, Catherine Zeta-Jones appear in court in stalking case</HeadLine>
+        </NewsLines>
+        <NewsItemRef NewsItem="040729142751.rjltsh1x.xml"/>
+      </NewsComponent>
+    </NewsComponent>
+  </NewsItem>
+</NewsML>

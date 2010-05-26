@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH98925_2002-09-23_14-50-02_L23527431_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T145002+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH98925_2002-09-23_14-50-02_L23527431_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH98925_2002-09-23_14-50-02_L23527431</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH98925_2002-09-23_14-50-02_L23527431:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:50:02 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T145002+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T145002+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98925_2002-09-23_14-50-02_L23527431_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IT</FormalName>  <Description xml:lang="en">Italy</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Lifestyle"/>  <FormalName Scheme="N2000">LIF</FormalName>  <FormalName Scheme="IPTCSubjectCodes">10000000</FormalName>  <Description xml:lang="en">Living and lifestyle</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Tourism and leisure"/>  <FormalName Scheme="N2000">LEI</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04014000</FormalName>  <Description xml:lang="en">Leisure facilities</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="ARTS, CULTURE, ENTERTAINMENT"/>  <FormalName Scheme="N2000">ENT</FormalName>  <FormalName Scheme="IPTCSubjectCodes">01000000</FormalName>  <Description xml:lang="en">Arts, culture, entertainment</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Human Interest"/>  <FormalName Scheme="N2000">ODD</FormalName>  <FormalName Scheme="IPTCSubjectCodes">08000000</FormalName>  <Description xml:lang="en">Human interest</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Textiles and Clothing"/>  <FormalName Scheme="N2000">TEX</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04013007</FormalName>  <Description xml:lang="en">Textiles and apparel</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Retail"/>  <FormalName Scheme="N2000">RET</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04007005</FormalName>  <Description xml:lang="en">Retailing</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">JO</FormalName>  <Description xml:lang="en">Jordan</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_14">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T145002Z_01_L23527431_RTRIDST_0_LIFE-FASHION-MILAN-PICTURE.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98925_2002-09-23_14-50-02_L23527431_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Dreamy designs gently open Milan fashion week</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>LIFE-FASHION-MILAN (PICTURE)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>LIFE-FASHION-MILAN (PICTURE):Dreamy designs gently open Milan fashion week</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_14"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH98925_2002-09-23_14-50-02_L23527431_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH98925_2002-09-23_14-50-02_L23527431_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T145002+0000"/>
+                        <Property FormalName="USN" Value="L23527431"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Jane Barrett</p>
+                                <p> MILAN, Sept 23 (Reuters) - The global fashion show spotlight  moved to Milan on Monday with dreamy designs giving a raincoated  audience a taste of next year's romantic evenings on a hot  beachfront.</p>
+                                <p> As top critics and buyers grabbed a few days rest between  the end of New York fashion week and Italy's top designer shows,  a first flood of fashionistas dashed through the rain to the  start of Milan's spring/summer 2003 collections.</p>
+                                <p> Luciano Soprani, an Italian label better known in Asia than  at home, took its traditional spot as the first of almost 100  Milan shows that will dictate next year's look.</p>
+                                <p> Luxurious silks and smooth cotton jersey were wrapped,  pinned and tied around models' bodies for a sleek, simple but  stylish look that would take you from beach to bar with not a  shower in between.</p>
+                                <p> "I don't come to a collection thinking of any one woman or  style. Any woman should be able to wear anything at any time,"  designer Alessandro Turci told Reuters backstage after the show.</p>
+                                <p> Turci, who took over the label earlier this year, mixed  tight white bandeau bras with drifting cheesecloth skirts or  off-the-shoulder satin crepe tops with microskirts that would  cover little more than your bikini bottoms.</p>
+                                <p> For those with a complex about their curves, strappy  T-shirts had a longer flap down the back while aquamarine silk  organza was wrapped simply around the body into a hide-all  halterneck evening -- or beach -- dress.</p>
+                                <p> And while last year's craze for floaty chiffon had its  place, it was that much neater, cut loose on the body but in  single layers of primrose yellow or russet, just see-through  enough to spy tattoos on the occasional model's bottom.</p>
+                                <p> </p>
+                                <p> ONLY JUST A DRESS</p>
+                                <p> The seaside mood also wafted through Clips' collection,  where pale beige silk and loose-weave lace were simply a canvas  for smatterings of turquoise beads and coral, picked from the  Bay of Naples.</p>
+                                <p> "The beauty of summer is as much what you uncover as what  you cover," designer Daniela Carano cooed backstage, dressed  head-to-toe in black.</p>
+                                <p> Beads and sequins splashed across the body like solid  seaspray, decorating long evening dresses, tiny bum-freezer  shorts or a catsuit The Avengers' star Diana Rigg could happily  wear to a beach party.</p>
+                                <p> See-through lace vests and caramel suede trousers, or ivory  satin pencil skirts worn with a 1980s Madonna-style pointy bra  were all worn over perilous strappy stilettos with American  Indian turquoise or coral brooches at the ankle.</p>
+                                <p> Fashion week runs until October 1 with the heavy hitters  like Armani, Versace and Dolce &amp; Gabbana striding onto the  catwalk from Friday.</p>
+                                <p> Also on the calendar are Christian Lacroix's first show for  the swirly house of Pucci, Missoni's 50th anniversary show and a  visit by Queen Rania of Jordan.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH96402_2002-09-23_13-04-23_L23431984_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T130423+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH96402_2002-09-23_13-04-23_L23431984_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH96402_2002-09-23_13-04-23_L23431984</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH96402_2002-09-23_13-04-23_L23431984:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:04:23 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T130423+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T130423+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96402_2002-09-23_13-04-23_L23431984_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GR</FormalName>  <Description xml:lang="en">Greece</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CY</FormalName>  <Description xml:lang="en">Cyprus</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">TR</FormalName>  <Description xml:lang="en">Turkey</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Government Body"/>  <FormalName Scheme="N2000">EU</FormalName>  <Description xml:lang="en">European Union</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T130423Z_01_L23431984_RTRIDST_0_GREECE-CYPRUS-TURKEY.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96402_2002-09-23_13-04-23_L23431984_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UN envoy says Cyprus deal possible by December</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>GREECE-CYPRUS-TURKEY</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>GREECE-CYPRUS-TURKEY:UN envoy says Cyprus deal possible by December</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH96402_2002-09-23_13-04-23_L23431984_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH96402_2002-09-23_13-04-23_L23431984_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T130423+0000"/>
+                        <Property FormalName="USN" Value="L23431984"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Karolos Grohmann</p>
+                                <p> ATHENS, Sept 23 (Reuters) - The United Nations special envoy  for Cyprus said on Monday a settlement on the divided island was  still possible before the European Union decides in December if  Nicosia will be admitted among the first wave of new members.</p>
+                                <p> Cyprus, a front-runner for EU membership, has been divided  since Turkish forces invaded the northern third of the  Mediterranean island in 1974 in response to an Athens-engineered  coup.</p>
+                                <p> "A settlement is possible and it is possible in the short  time remaining for this opportunity to be seized," Peruvian  diplomat Alvaro de Soto told reporters after meeting Greek  Foreign Minister George Papandreou.</p>
+                                <p> De Soto has led U.N.-brokered talks between Greek Cypriot  President Glafcos Clerides and Turkish Cypriot leader Rauf  Denktash for the past months but the two leaders have failed to  carve out a deal despite an initial June deadline.</p>
+                                <p> The EU will decide in December if Cyprus meets the criteria  to join the bloc, probably in 2004.</p>
+                                <p> While Brussels wants to see the Cyprus problem solved before  the island joins the EU, it has said a solution is not a  precondition for the island's admission.</p>
+                                <p> Ankara in turn has threatened to annex the northern part if  Cyprus is allowed to join the bloc prior to a settlement.</p>
+                                <p> "I think a settlement is still a distinct possibility. There  are some deep gaps still dividing the two sides, but the (U.N.)  Secretary General and I are convinced that it is possible to  bridge them," de Soto said.</p>
+                                <p> De Soto said he will return to Nicosia late on Monday before  travelling to Turkey for further talks at the end of the week.</p>
+                                <p> The U.N. has been trying for years to reunite the island as  a bi-zonal, bi-communal federation, as stipulated in Security  Council resolutions and backed by Greek Cypriots.</p>
+                                <p> But Denktash does not recognise Clerides as the president of  the entire island and seeks legitimacy for the Turkish Cypriot  state that he heads but is only recognised by Ankara.</p>
+                                <p> Clerides and Denktash are due to meet again in New York on  October 3-4 and the United Nations is expected to boost the  talks by submitting a peace plan.</p>
+                                <p> "I do hope we will be successful in the near future. If the  opportunity that is before us is to be seized, that work must be  done rather quickly and intensely," de Soto said.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

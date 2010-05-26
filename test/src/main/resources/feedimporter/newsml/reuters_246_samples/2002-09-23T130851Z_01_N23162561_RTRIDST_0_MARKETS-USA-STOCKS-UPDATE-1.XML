@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH96525_2002-09-23_13-08-51_N23162561_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T130851+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH96525_2002-09-23_13-08-51_N23162561_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH96525_2002-09-23_13-08-51_N23162561</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH96525_2002-09-23_13-08-51_N23162561:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:08:51 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T130851+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T130851+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96525_2002-09-23_13-08-51_N23162561_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">.N</FormalName>  <Description xml:lang="en">NYSE Stocks</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OEC</FormalName>  <Description xml:lang="en">Economic news, EC, business/financial pages</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T130851Z_01_N23162561_RTRIDST_0_MARKETS-USA-STOCKS-UPDATE-1.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96525_2002-09-23_13-08-51_N23162561_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>U.S. stocks seen dropping on war, profit concerns</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MARKETS-USA-STOCKS (UPDATE 1)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MARKETS-USA-STOCKS (UPDATE 1):U.S. stocks seen dropping on war, profit concerns</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="ABX"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH96525_2002-09-23_13-08-51_N23162561_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH96525_2002-09-23_13-08-51_N23162561_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T130851+0000"/>
+                        <Property FormalName="USN" Value="N23162561"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p>(Updates futures, adds comment)</p>
+                                <p> By Denise Duclaux</p>
+                                <p> NEW YORK, Sept 23 (Reuters) - Stocks are set to drop at  Monday's open as fiber-optic gear maker JDS Uniphase Corp.  kicked off a fresh week of warnings in the quarterly  confessional period and oil prices raced to 19-month highs on  growing war fears.</p>
+                                <p> The confessional period, when companies warn results will  miss analysts' targets, heated up last week with dire outlooks  from giants like computer services company Electronic Data  Systems Corp. and financial leader J.P. Morgan Chase &amp; Co..  Former tech darling JDS Uniphase started a new week with  another dim forecast. JDS fell to $2.03 before the bell from  its $2.14 close after cutting its quarterly sales guidance.</p>
+                                <p> "There are too many companies, especially techs, which are  guiding lower and raising the specter of not being able to meet  their lowered guidance," said Paul Cherney, a market analyst at  S&amp;P Marketscope. "That's a real psychological barrier."</p>
+                                <p> The threat of a second Gulf War added to Wall Street's  cloud of worries. Iraq vowed on Saturday to reject any new  Security Council resolution differing from an agreement reached  with the U.N. secretary-general, while President George W. Bush  reviewed detailed military options devised by the Pentagon for  a possible attack on Iraq.</p>
+                                <p> Oil prices surged with dealers pointing to Baghdad's  decision to reject any new U.N. resolution as well as Israel's  siege of Palestinian leader Yasser Arafat's Ramallah  headquarters. Sustained tension in the Middle East, which pumps  a third of the world's crude oil, has already driven oil prices  up 50 percent this year.</p>
+                                <p> "Oil price have shot up," Cherney said. "In this non-growth  economic recovery that we are going through, persistently high  oil prices would not be good."</p>
+                                <p> Equity futures pointed to a drop at the open. December  futures for the Standard &amp; Poor's 500 fell 8.50 points to  833.70. Dow Jones Industrial futures sagged 85 points to 7,860,  while Nasdaq 100 futures lost 7.50 points to 868. The Nasdaq  100 pre-market indicator fell 1.01 percent.</p>
+                                <p> European shares were broadly lower as disappointment about  the result of the German election added to the already gloomy  tone set by worries about the global economy and corporate  profits.</p>
+                                <p> Frankfurt's DAX index was down 3.56 percent. Chancellor  Gerhard Schroeder, who clung to power with a sharply reduced  majority, had made virulent opposition to any U.S. military  action against Iraq a major theme of his re-election campaign.</p>
+                                <p> U.S. National Security Adviser Condoleezza Rice said  Schroeder's comments on Iraq and a comparison attributed to his  justice minister between President George W. Bush and Hitler  had "poisoned the atmosphere" in U.S.-German relations.</p>
+                                <p> With little economic news on the calendar, investors will  be eyeing corporate news throughout the day.</p>
+                                <p> Wal-Mart Stores Inc., the world's largest retailer, on  Monday said it expects September sales at stores open at least  a year, or same-store sales, to come in near the low end of its  growth forecast of 4 percent to 6 percent.</p>
+                                <p> Troubled software maker Peregrine Systems Inc. on Sunday  said it filed for bankruptcy protection and that it plans to  sell its coveted Remedy unit to BMC Software Inc. for $350  million in cash -- less than a third the price Peregrine paid  for it.</p>
+                                <p> R.H. Donnelley Corp., a yellow page marketing company  widely acknowledged to have published the first U.S. telephone  directory, returned to its roots on Sunday by agreeing to  purchase Sprint Corp.'s phone book business for $2.23 billion  in cash.</p>
+                                <p> Qwest Communications International Inc., a local U.S.  telephone company facing federal probes of its accounting  practices, said on Sunday it expected to restate $950 million  in revenues and costs for swaps of optical-network capacity.</p>
+                                <p> On Tuesday, the Federal Reserve's policy-setting will grab  the spotlight. The Fed is expected to keep interest rates  steady after its meeting. Not one of the 22 primary dealers who  trade directly with the Fed think it will alter interest rates  at its Sept. 24 meeting. Still, analysts anticipate the Fed  will keep its risk assessment weighted toward economic  weakness.</p>
+                                <p> Stocks inched out of a three-day losing streak on Friday  after Qualcomm Inc. said it will ship more cellular-phone  chips. But key indexes logged their fourth negative week in a  row after a slew of profit warnings.</p>
+                                <p> The blue-chip Dow Jones industrial average was up 43.63  points, or 0.55 percent, at 7,986.02. The broader Standard &amp;  Poor's 500 Index was up 2.07 points, or 0.25 percent, at  845.39. The technology-laced Nasdaq Composite Index was up 4.64  points, or 0.38 percent, at 1,221.09.</p>
+                                <p> During one of the busiest weeks of the so-called warnings  season, the Dow average slipped 3.9 percent, the Nasdaq slid  5.5 percent and the S&amp;P dropped 5 percent.</p>
+                                <p>  Support -- where buyers are expected to swoop in -- is at  1,192 for the Nasdaq, 7,800 for the Dow and 833 for the S&amp;P  500, according to research firm Schaeffer's Investment  Research. Resistance -- the point where sellers are likely to  emerge -- is at 1,250 for the Nasdaq, 8,200 for the Dow and 870  for the S&amp;P. The levels are key elements of technical analysis,  which studies prices, volume and charts.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

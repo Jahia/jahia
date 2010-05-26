@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH95946_2002-09-23_12-43-17_B157773_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T124317+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH95946_2002-09-23_12-43-17_B157773_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH95946_2002-09-23_12-43-17_B157773</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH95946_2002-09-23_12-43-17_B157773:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 12:43:17 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T124317+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T124317+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95946_2002-09-23_12-43-17_B157773_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Cricket"/>  <FormalName Scheme="N2000">CRIC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15017000</FormalName>  <Description xml:lang="en">Cricket</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NZ</FormalName>  <Description xml:lang="en">New Zealand</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">BD</FormalName>  <Description xml:lang="en">Bangladesh</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LK</FormalName>  <Description xml:lang="en">Sri Lanka</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T124317Z_01_B157773_RTRIDST_0_SPORT-CRICKET-CHAMPIONS-FLEMING.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95946_2002-09-23_12-43-17_B157773_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Cricket-Bangladesh face uphill challenge in S.Africa - Fleming</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-CRICKET-CHAMPIONS-FLEMING</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-CRICKET-CHAMPIONS-FLEMING:Cricket-Bangladesh face uphill challenge in S.Africa - Fleming</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="ND"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH95946_2002-09-23_12-43-17_B157773_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH95946_2002-09-23_12-43-17_B157773_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T124317+0000"/>
+                        <Property FormalName="USN" Value="B157773"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Brian Murgatroyd</p>
+                                <p> COLOMBO, Sept 23 (Reuters) - New Zealand captain Stephen  Fleming believes Bangladesh will face a massive challenge in  coping with their upcoming tour of South Africa.</p>
+                                <p> Khaled Mashud's side, struggling against swing and seam  bowling, were shot out for just 77 in the final pool match of  the International Cricket Council (ICC) Champions Trophy on  Monday as they lost to Fleming's side by 167 runs.</p>
+                                <p> The way the Bangladesh batsmen folded on a slow pitch will  be a major concern for coach Moshin Kamal ahead of their two  tests and three one-day internationals against Shaun Pollock's  pace-reliant side.</p>
+                                <p> "There's work to be done by them," said Fleming as he  assessed Bangladesh's chances.</p>
+                                <p> "I say that also on the evidence of the test series we had  against them as the quicker, bouncier pitches they will get are  not things they have had a lot of exposure to.</p>
+                                <p> "It's not going to be an easy task for them but if they are  going to learn at the top level that will be their greatest  challenge. Mentally their captain and coach will have a lot of  work to do."</p>
+                                <p> Fleming also urged Bangladesh to be positive.</p>
+                                <p> "They have got to look on it as a learning experience and if  they get spooked out they are not going to learn anything, " he  said. "They have got to show steel and be willing to face up to  South Africa."</p>
+                                <p> There was a distinct lack of steel in the Bangladesh batting  on Monday and it gave the result a healthy complexion from a New  Zealand perspective, something a far-from-satisfied Fleming  admitted afterwards.</p>
+                                <p> "It was a convincing win stats-wise but I think we were a  little tentative batting-wise," he said. "What's plaguing our  one-day cricket at the moment, starting with me, is a reluctance  to go on and get a big score.</p>
+                                <p> "That creates pressure for guys down the order as we can't  really push on. That's the fault of the guys getting out in the  30s."</p>
+                                <p> Khaled Mashud could offer no defence of his side's batting  except to say they would look to do better.</p>
+                                <p> "We're having a bad time at the moment," he told reporters,  "but we will try our best in South Africa.</p>
+                                <p> "We've got more matches after this tournament, we go to  South Africa and then play the West Indies at home so in time  the boys will play more matches and that will help for the World  Cup."</p>
+                                <p> Mashud appeared at the post-match media conference after  having an injection in his right shoulder in a bid to cure a  problem that has plagued him for at least three weeks.</p>
+                                <p> Monday's result meant New Zealand finished second in pool  one, ahead of Bangladesh but behind Australia, who play Sri  Lanka in the second semi-final on Friday.</p>
+                                <p> South Africa play India in the first semi-final on  Wednesday.</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH00196_2002-09-23_15-17-10_N23360508_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T151710+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH00196_2002-09-23_15-17-10_N23360508_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH00196_2002-09-23_15-17-10_N23360508</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH00196_2002-09-23_15-17-10_N23360508:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:17:10 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T151710+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T151710+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00196_2002-09-23_15-17-10_N23360508_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">.N</FormalName>  <Description xml:lang="en">NYSE Stocks</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T151710Z_01_N23360508_RTRIDST_0_MARKETS-GLOBAL.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00196_2002-09-23_15-17-10_N23360508_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>GLOBAL MARKETS-Stocks fall, bonds up on war, profit worries</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MARKETS-GLOBAL</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MARKETS-GLOBAL:GLOBAL MARKETS-Stocks fall, bonds up on war, profit worries</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="ABX"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH00196_2002-09-23_15-17-10_N23360508_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH00196_2002-09-23_15-17-10_N23360508_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T151710+0000"/>
+                        <Property FormalName="USN" Value="N23360508"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Richard Chang</p>
+                                <p> NEW YORK, Sept 23 (Reuters) - Stocks and the dollar fell on  Monday as the latest corporate profit warnings and growing  concerns about a possible U.S. war on Iraq pushed oil prices to  19-month highs, extending a bond rally into its sixth week.</p>
+                                <p> The blue-chip Dow Jones industrial average dropped 83  points, or 1.05 percent, to 7,902. The broader Standard &amp;  Poor's 500 Index fell 8 points, or 1 percent, to 837. The  technology-laced Nasdaq Composite Index lost 17 points, or 1.42  percent, to 1,203, nearing its five-year low of 1,192.42 hit in  July.</p>
+                                <p> Fiber-optic gear maker JDS Uniphase Corp., a former tech  darling, started a new week of warnings by cutting its sales  guidance. JDS fell 10 cents, or more than 4 percent, to $2.05.</p>
+                                <p> The confessional period, when companies warn results will  miss analysts' targets, heated up last week with dire outlooks  from giants like computer services company Electronic Data  Systems Corp. and financial leader J.P. Morgan Chase &amp; Co.</p>
+                                <p> Leading European shares fell to two-month intraday lows as  the gloomy outlooks compounded disappointment with the result  of the German election, and the threat of U.S. military action  to remove Iraqi President Saddam Hussein from power added to  Wall Street's cloud of worries.</p>
+                                <p> By 1340 GMT (9:40 a.m. EDT), the FTSE Eurotop 300 index of  pan-European blue chips was down 2.0 percent at 832, as losers  beat gainers by six-to-one.</p>
+                                <p> Iraq vowed on Saturday to reject any new Security Council  resolution differing from an agreement reached with the U.N.  secretary-general, while President George W. Bush reviewed  detailed military options devised by the Pentagon for a  possible attack on Iraq.</p>
+                                <p> Oil prices surged with dealers pointing to Baghdad's  decision to reject any new U.N. resolution as well as Israel's  siege of Palestinian leader Yasser Arafat's Ramallah  headquarters. Sustained tension in the middle east, which pumps  a third of the world's crude oil, has already driven oil prices  up 50 percent this year.</p>
+                                <p> At the New York Mercantile Exchange, crude oil for November  delivery reached a fresh 19-monthh high of $30.48.</p>
+                                <p> "It's mainly down to stocks and jobs," said a trader at  primary dealer in U.S. Treasuries. "Equities are on the slide  and people are nervous about financial market conditions in  general and particularly the health of banks and insurers."</p>
+                                <p> Yields on two-year U.S. Treasuries hit a record low of 1.86  percent in London trading, despite an auction of new paper due  this week. Yields were close enough to the Federal Reserve's  1.75 percent funds rate to suggest some investors were still  betting on a future policy easing.</p>
+                                <p> If the central bank did move, it would be unlikely to do so  at this week's board meeting. The Open Market Committee meets  Tuesday and officials have made it clear recently that they  believe policy is already loose enough.</p>
+                                <p> Benchmark 10-year U.S. Treasury yields fell to 3.74 percent  from 3.78 percent on Friday, which had been the lowest weekly  close since May 1961. Prices, which move in the opposite  direction, were up 13/32 at 105-8/32.</p>
+                                <p> The 30-year bond rose 19/32 to 110-11/32, taking yields to  4.71 percent from 4.75 percent.</p>
+                                <p> Two-year notes added 2/32 to 100-14/32, yielding 1.89  percent from 1.92 percent, while the five-year climbed 6/32 to  102-4/32, taking its yield to the lowest level since 1958 at  2.78 percent against 2.84 on Friday.</p>
+                                <p> Economic data is sparse on Monday, with only leading  indicators for August due to come out. Analysts generally look  for a fall of 0.1 percent after a 0.4 percent drop in July.</p>
+                                <p> Japanese stock markets are closed on Monday for Autumnal  Equinox day and will reopen on Tuesday.  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

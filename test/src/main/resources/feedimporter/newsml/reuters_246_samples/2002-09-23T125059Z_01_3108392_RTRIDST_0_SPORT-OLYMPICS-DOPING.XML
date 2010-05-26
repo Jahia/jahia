@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH96106_2002-09-23_12-50-59_3108392_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T125059+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH96106_2002-09-23_12-50-59_3108392_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH96106_2002-09-23_12-50-59_3108392</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH96106_2002-09-23_12-50-59_3108392:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 12:50:59 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T125059+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T125059+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96106_2002-09-23_12-50-59_3108392_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CN</FormalName>  <Description xml:lang="en">China</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Doping"/>  <FormalName Scheme="N2000">DOP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15000027</FormalName>  <Description xml:lang="en">Doping</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Olympics"/>  <FormalName Scheme="N2000">OLY</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15073000</FormalName>  <Description xml:lang="en">Olympics events</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CH</FormalName>  <Description xml:lang="en">Switzerland</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T125059Z_01_3108392_RTRIDST_0_SPORT-OLYMPICS-DOPING.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96106_2002-09-23_12-50-59_3108392_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Olympics-Chinese say doping clampdown will protect Olympics</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-OLYMPICS-DOPING</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-OLYMPICS-DOPING:Olympics-Chinese say doping clampdown will protect Olympics</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH96106_2002-09-23_12-50-59_3108392_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH96106_2002-09-23_12-50-59_3108392_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T125059+0000"/>
+                        <Property FormalName="USN" Value="3108392"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Timothy Collings</p>
+                                <p> LAUSANNE, Switzerland, Sept 23 (Reuters) - The organisers of  the Beijing Olympic Games are confident that a planned clampdown  on doping throughout Chinese sport will protect the image of the  Games and of China, Games spokesman Sun Weijia, said on Monday.</p>
+                                <p> Speaking at the World Sports Forum held in the Olympic  Museum, he told a packed auditorium that anyone found using any  kind of drugs in any of the Olympic sports would be banned from  taking any part in the Beijing Games.</p>
+                                <p> "It is a special opportunity for Chinese Sport and for  China," Sun, deputy director of media and communications for the  Games, said. "Anyone we find involved with any doping at all  will be eliminated from everything. We are completely against  it. We are going to be very strict in China.</p>
+                                <p> "We don't want China to be accused of allowing any such  practices that may in any way compromise the image of, or the  success of, the Olympic Games."</p>
+                                <p> But Sun was unable to confirm exactly what action was being  taken by the Chinese to prevent doping in domestic Chinese  sport.</p>
+                                <p> "I cannot tell you the details," he said. "There is a  special commission set up for that and they are making a study  to produce the right plans."</p>
+                                <p> He said that doping had been perceived to be a problem in  the past and that China was well aware that it could threaten  the successful development of Chinese sport.</p>
+                                <p> "I can say that China will stage the Olympic Games and that  this will be a very big event for the Chinese people," he said.  "We cannot allow anything to compromise the image of these  Games."</p>
+                                <p> Sun said also that the Chinese had introduced two new laws  to protect the intellectual property rights of all those  organisations and companies involved with the Games.</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH94719_2002-09-23_11-55-47_L23391792_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T115547+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH94719_2002-09-23_11-55-47_L23391792_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH94719_2002-09-23_11-55-47_L23391792</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH94719_2002-09-23_11-55-47_L23391792:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:55:47 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T115547+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T115547+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94719_2002-09-23_11-55-47_L23391792_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Government Body"/>  <FormalName Scheme="N2000">EU</FormalName>  <Description xml:lang="en">European Union</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IQ</FormalName>  <Description xml:lang="en">Iraq</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">FR</FormalName>  <Description xml:lang="en">France</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PL</FormalName>  <Description xml:lang="en">Poland</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_14">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_15">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T115547Z_01_L23391792_RTRIDST_0_GERMANY-ELECTION-FOREIGN-UPDATE-1.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94719_2002-09-23_11-55-47_L23391792_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 1-Germany seen weakened by vote, U.S. ties in doubt</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>GERMANY-ELECTION-FOREIGN (UPDATE 1)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>GERMANY-ELECTION-FOREIGN (UPDATE 1):UPDATE 1-Germany seen weakened by vote, U.S. ties in doubt</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="C"/>
+                    <OfInterestTo FormalName="D"/>
+                    <OfInterestTo FormalName="E"/>
+                    <OfInterestTo FormalName="M"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="U"/>
+                    <OfInterestTo FormalName="MTL"/>
+                    <OfInterestTo FormalName="GRO"/>
+                    <OfInterestTo FormalName="SOF"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_14"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_15"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH94719_2002-09-23_11-55-47_L23391792_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH94719_2002-09-23_11-55-47_L23391792_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T115547+0000"/>
+                        <Property FormalName="USN" Value="L23391792"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (adds defence spending paragraph 5, EU enlargement 6, 18-19,  Benes decrees 22-23)</p>
+                                <p> By Paul Taylor, European Affairs Editor</p>
+                                <p> BRUSSELS, Sept 23 (Reuters) - Germany emerged weakened from  Sunday's general election and will need to move fast to repair  relations with the United States damaged by Chancellor Gerhard  Schroeder's broadsides over Iraq, international analysts said.</p>
+                                <p> Schroeder's coalition of Social Democrats and Greens clung  to power with a sharply reduced majority despite gains for  Edmund Stoiber's opposition conservatives. The government owed  its survival to a strengthened showing by Foreign Minister  Joschka Fischer's environmentalist Greens.</p>
+                                <p> "This is not a good result for Germany, which needs a strong  government to make difficult decisions, nor for Europe because  we need a strong Germany as the engine of Europe," said Janusz  Reiter, a former Polish ambassador to Berlin who is now  president of the Centre for International Affairs in Warsaw.</p>
+                                <p> Analysts said the slim majority would make it hard for the  government to implement sorely needed labour market and welfare  reforms to boost sluggish economic growth, which would involve  taking on its own grassroots activists and trade unions.</p>
+                                <p> It also makes any significant boost in low German military  spending -- just 1.5 percent of gross domestic product -- look  unlikely, sapping Berlin's contribution to efforts to build a  common European defence and potentially reducing its influence.</p>
+                                <p> But diplomats said the result improved the prospects of the  European Union's historic eastward enlargement going ahead on  time in December, since a re-elected German government would not  need to start the crucial financial negotiations from scratch.</p>
+                                <p> Reiter said Schroeder had taken a big risk with Germany's  foreign relations by making virulent opposition to any U.S.  military action against Iraq, even with United Nations backing,  a major theme of his re-election campaign.</p>
+                                <p> "Schroeder has made governing very, very difficult for  himself. He let the genie out of the bottle and now it won't be  easy for him to close the bottle again," Reiter said.</p>
+                                <p> </p>
+                                <p> "POISONED ATMOSPHERE"</p>
+                                <p> U.S. National Security Adviser Condoleezza Rice said   Schroeder's comments on Iraq and a comparison attributed to his  justice minister between President George W. Bush and Hitler had  "poisoned the atmosphere" in U.S.-German relations.</p>
+                                <p> Schroeder announced on Monday that Justice Minister Herta  Daeubler-Gmelin had informed party leaders she would not seek  another term. She has denied having equated Bush's method of  using a foreign threat to distract from domestic problems with  Hitler's.</p>
+                                <p> U.S. analysts said they expected Schroeder to act fast to  limit the damage by announcing that Germany would take over the  lead of the international peacekeeping operation in Afghanistan.</p>
+                                <p> "They will move very quickly to reassure the allies by  declaring as soon as possible their willingness to take over  command in Afghanistan and probably to take on additional  commitments in the Balkans," said William Drozdiak, director of  the Transatlantic Centre in Brussels.</p>
+                                <p> He said the Bush administration would make the chancellor  pay a political price for his Iraq rhetoric. Schroeder would  have to wait some time for an invitation to the White House.</p>
+                                <p> However, Drozdiak said Fischer was trusted in Washington and  would probably play the leading role in gradual reconciliation.</p>
+                                <p> Philip Gordon, a senior fellow at the Brookings Institution  think-tank and former White House aide, said Schroeder had made  Germany the odd man out in Europe with his Iraq stance, setting  back the post-Cold War normalisation of Berlin's world role.</p>
+                                <p> "Germany is a long way from that 'partnership in leadership'  that George Bush Senior offered a decade ago," he said.</p>
+                                <p> </p>
+                                <p> WEAKER IN EUROPE?</p>
+                                <p> The German result, a week after Sweden re-elected a Social  Democratic government, stopped a rightward drift in European  politics that had seen conservatives win power in the last 18  months in Norway, Denmark, Italy, the Netherlands and France.</p>
+                                <p> EU officials in Brussels and Denmark, which holds the bloc's  presidency, expressed relief that there would be no political  paralysis in Berlin or lengthy coalition negotiations, keeping  the EU expansion process on track to conclude in December.</p>
+                                <p> "Throughout this election, Chancellor Schroeder vigorously  defended the enlargement project... We are convinced that by the  necessary deadline, the end of October, Europe will have a  common neogiating position on the financial package," European  Commission spokesman Jean-Christophe Filori told reporters.</p>
+                                <p> Up to 10 candidate countries are due to conclude entry talks  in December, but negotiations on the financial terms have been  on hold until Germany has a new government able to sign cheques.</p>
+                                <p> Some candidates feared Stoiber would be meaner in funding  enlargement and would seek to reopen the sensitive issue of the  Benes decrees which expropriated ethnic Germans expelled from  Czechoslovakia at the end of World War Two.</p>
+                                <p> Czech analyst Rudolf Kucera, a political scientist at  Charles University in Prague, said there might still be trouble.</p>
+                                <p> "The German election result will not be a major boost for  the EU talks because you cannot forget that the opposition,  which raised the Benes decrees in its manifesto, will now have  an even stronger position in the parliament," he told Reuters.</p>
+                                <p> Neither French President Jacques Chirac, whose personal ties  with the German leader are strained, nor British Prime Minister  Tony Blair, at odds with Schroeder over economic liberalisation  and Iraq, seem likely to be delighted with the result.</p>
+                                <p> A revival of the Franco-German axis that used to drive EU  integration seems uncertain, but some experts believe Berlin and  Paris may agree to postpone an EU deadline for balancing their  budgets to allow a less austere fiscal policy to revive growth.  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

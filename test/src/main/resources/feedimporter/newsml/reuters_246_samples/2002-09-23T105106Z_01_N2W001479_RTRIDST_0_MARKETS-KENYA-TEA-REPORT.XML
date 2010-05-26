@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93302_2002-09-23_10-51-06_N2W001479_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T105106+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93302_2002-09-23_10-51-06_N2W001479_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93302_2002-09-23_10-51-06_N2W001479</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93302_2002-09-23_10-51-06_N2W001479:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 10:51:06 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T105106+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T105106+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93302_2002-09-23_10-51-06_N2W001479_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Tea"/>  <FormalName Scheme="N2000">TEA</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04009004</FormalName>  <Description xml:lang="en">Tea</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Beverages and Tobacco"/>  <FormalName Scheme="IPTCSubjectCodes">IPTC04013000</FormalName>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AFE</FormalName>  <Description xml:lang="en">Africa</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">BI</FormalName>  <Description xml:lang="en">Burundi</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ZR</FormalName>  <Description xml:lang="en">Democratic Rep of Congo</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">KE</FormalName>  <Description xml:lang="en">Kenya</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MW</FormalName>  <Description xml:lang="en">Malawi</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">RW</FormalName>  <Description xml:lang="en">Rwanda</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">TZ</FormalName>  <Description xml:lang="en">Tanzania, (United Republic Of)</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">UG</FormalName>  <Description xml:lang="en">Uganda</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EG</FormalName>  <Description xml:lang="en">Egypt</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">CA</FormalName>  <Description xml:lang="en">Canada</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_14">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_15">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_16">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">TEA/</FormalName>  <Description xml:lang="en">Latest Tea</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_17">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">TEA/K</FormalName>  <Description xml:lang="en">Kenya Tea</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_18">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OEC</FormalName>  <Description xml:lang="en">Economic news, EC, business/financial pages</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T105106Z_01_N2W001479_RTRIDST_0_MARKETS-KENYA-TEA-REPORT.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93302_2002-09-23_10-51-06_N2W001479_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Uganda tea exporters look for new markets</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MARKETS-KENYA-TEA-REPORT</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MARKETS-KENYA-TEA-REPORT:Uganda tea exporters look for new markets</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_14"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_15"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_16"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_17"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_18"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93302_2002-09-23_10-51-06_N2W001479_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93302_2002-09-23_10-51-06_N2W001479_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T105106+0000"/>
+                        <Property FormalName="USN" Value="N2W001479"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> KAMPALA, Sept 23 (Reuters)- Uganda's tea exporters are  looking for new export markets to boost their earnings and  reduce their reliance on the traditional Mombasa weekly  auctions in Kenya, officials in Kampala said on Monday.</p>
+                                <p> Executive Secretary of the Uganda Tea Association (UTA)  Isaac Munaabi said dealers have already been to Canada, the  United States and Egypt to search for new buyers.</p>
+                                <p> "The Mombasa auction isn't very favourable to us," Munaabi  told Reuters. "We want to explore direct markets elsewhere to  improve our tea export earnings."</p>
+                                <p> Traditionally, Uganda -- which produces more than 30  million kgs of tea per year -- has sold most of its tea at the  Monday auctions in the Kenyan port of Mombasa, where it  currently fetches an average of less than $1.00 per kg, Munaabi  said.</p>
+                                <p> More than 90 percent of the east African country's annual  tea output is exported.</p>
+                                <p> Munaabi said dealers felt the Mombasa auctions were crowded  with tea from Kenya, Uganda, Rwanda, Burundi, Madagascar,  Tanzania and the Democratic Republic of the Congo, and that  selling directly to consumers could increase profits.</p>
+                                <p> One industry source said that some shipments have already  been sent direct to consumers in Europe, without passing  through auction. Munaabi stressed that Uganda was not looking  to abandon the Mombasa Auction but wanted merely to diversify.</p>
+                                <p> In the late 1960s and early 1970s tea was the leading  foreign exchange earner for Uganda after coffee and cotton, but  by 1984, annual production had fallen to around 4,000 kgs,  largely due to political turbulence.</p>
+                                <p> But new government measures, such as returning expropriated  estates to rightful owners and privatising some estates, have  boosted production, which has now even surpassed the 1972  levels of around 27 million kgs.</p>
+                                <p> Uganda ranks behind Kenya and Malawi among the continent's  largest tea exporters and consumes only about seven percent of  its own production.      </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

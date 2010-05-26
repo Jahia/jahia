@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH94261_2002-09-23_11-35-50_L23432584_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T113550+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH94261_2002-09-23_11-35-50_L23432584_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH94261_2002-09-23_11-35-50_L23432584</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH94261_2002-09-23_11-35-50_L23432584:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:35:50 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T113550+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T113550+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94261_2002-09-23_11-35-50_L23432584_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">BE</FormalName>  <Description xml:lang="en">Belgium</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">RU</FormalName>  <Description xml:lang="en">Russian Federation</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Soccer"/>  <FormalName Scheme="N2000">SOCC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15054000</FormalName>  <Description xml:lang="en">Soccer</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T113550Z_01_L23432584_RTRIDST_0_SPORT-SOCCER-CHAMPIONS-STATBOX-BRUGES.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94261_2002-09-23_11-35-50_L23432584_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Soccer-STATBOX-Club Bruges v Lokomotiv Moscow</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-SOCCER-CHAMPIONS-STATBOX-BRUGES</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-SOCCER-CHAMPIONS-STATBOX-BRUGES:Soccer-STATBOX-Club Bruges v Lokomotiv Moscow</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <Genre FormalName="Table"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH94261_2002-09-23_11-35-50_L23432584_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH94261_2002-09-23_11-35-50_L23432584_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T113550+0000"/>
+                        <Property FormalName="USN" Value="L23432584"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p>  LONDON, Sept 23 (Reuters) - Statbox for Club Bruges  (Belgium) v Lokomotiv Moscow (Russia)</p>
+                                <p> Tuesday, September 24, KO 1845 GMT</p>
+                                <p> Jan Breydel, Bruges</p>
+                                <p> Champions League, first stage, group H</p>
+                                <p> Head-to-head record: none</p>
+                                <p> Club Bruges:</p>
+                                <p> Last six European matches: LWWDDL</p>
+                                <p> Leading European scorer: Gert Verheyen 17</p>
+                                <p> Coach: Trond Sollied</p>
+                                <p> Lokomotiv Moscow:</p>
+                                <p> Last six European matches: WLLWDL</p>
+                                <p> Leading European scorer: Dmitry Loskov 7</p>
+                                <p> Coach: Yuri Syomin</p>
+                                <p> Group H standings:</p>
+                                <p> Galatasaray          1   1   0   0   2   0   3</p>
+                                <p> Barcelona            1   1   0   0   3   2   3</p>
+                                <p> Club Bruges          1   0   0   1   2   3   0</p>
+                                <p> Lokomotiv Moscow     1   0   0   1   0   2   0</p>
+                                <p> Matches played:</p>
+                                <p> Sept 18 Lokomotiv Moscow 0 Galatasaray 2</p>
+                                <p> Sept 18 Barcelona 3 Club Bruges 2</p>
+                                <p> Remaining fixtures:</p>
+                                <p> Sept 24 Club Bruges v Lokomotiv Moscow</p>
+                                <p> Sept 24 Galatasaray v Barcelona</p>
+                                <p> Oct 1 Galatasaray v Club Bruges</p>
+                                <p> Oct 1 Lokomotiv Moscow v Barcelona</p>
+                                <p> Oct 23 Club Bruges v Galatasaray</p>
+                                <p> Oct 23 Barcelona v Lokomotiv Moscow</p>
+                                <p> Oct 29 Galatasaray v  Lokomotiv Moscow</p>
+                                <p> Oct 29 Club Bruges v Barcelona</p>
+                                <p> Nov 13 Lokomotiv Moscow v  Club Bruges</p>
+                                <p> Nov 13 Barcelona v Galatasaray</p>
+                                <p> Notes: A high-scoring match could be expected. Bruges have  scored 24 goals in their last six home games in Europe, winning  five and drawing just once. Lokomotiv have scored nine times in  their last four away matches, including a 5-1 win on their last  trip to Belgium when they beat Anderlecht.</p>
+                                <p> Bruges's record v Russian clubs: P8 W3 D0 L5 F11 A13</p>
+                                <p> Lokomotiv's record v Belgian clubs: P2 W1 D1 L0 F6 A2</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

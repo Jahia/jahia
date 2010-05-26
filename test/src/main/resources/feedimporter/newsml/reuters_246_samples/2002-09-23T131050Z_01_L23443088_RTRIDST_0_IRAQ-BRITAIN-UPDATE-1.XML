@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH96561_2002-09-23_13-10-50_L23443088_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T131050+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH96561_2002-09-23_13-10-50_L23443088_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH96561_2002-09-23_13-10-50_L23443088</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH96561_2002-09-23_13-10-50_L23443088:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:10:50 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T131050+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T131050+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96561_2002-09-23_13-10-50_L23443088_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IQ</FormalName>  <Description xml:lang="en">Iraq</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Crude Oil"/>  <FormalName Scheme="N2000">CRU</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04005004</FormalName>  <Description xml:lang="en">Crude Oil</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Energy"/>  <FormalName Scheme="N2000">ENR</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04005000</FormalName>  <Description xml:lang="en">Energy and Resources</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T131050Z_01_L23443088_RTRIDST_0_IRAQ-BRITAIN-UPDATE-1.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96561_2002-09-23_13-10-50_L23443088_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 1-Britain sees new UN resolution on Iraq within days</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>IRAQ-BRITAIN (UPDATE 1)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>IRAQ-BRITAIN (UPDATE 1):UPDATE 1-Britain sees new UN resolution on Iraq within days</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="UKI"/>
+                    <OfInterestTo FormalName="MD"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="PEN"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH96561_2002-09-23_13-10-50_L23443088_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH96561_2002-09-23_13-10-50_L23443088_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T131050+0000"/>
+                        <Property FormalName="USN" Value="L23443088"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (Recasts throughout after briefing from Blair's spokesman)</p>
+                                <p> By Kate Kelland</p>
+                                <p> LONDON, Sept 23 (Reuters) - Britain said on Monday a draft  U.N. Security Council resolution on Iraq would be tabled within  days and would make it clear to Saddam Hussein that he must  honour previous commitments and disarm.</p>
+                                <p> As Prime Minister Tony Blair prepared to hold a special  cabinet meeting to try to persuade some deeply sceptical members  of his team that Britain should back U.S.-led action against the  Iraqi leader, his spokesman said: "You can expect to see a draft  resolution tabled in days, rather than weeks."</p>
+                                <p> Both Britain and the United States have stepped up pressure  on the Security Council to adopt a tough new resolution before  any resumption of United Nations arms inspections in Iraq.</p>
+                                <p> But the spokesman reiterated Blair's position that pursuing  Saddam through the United Nations should not be a way of letting  the Iraqi president delay action.</p>
+                                <p> "What is clear, as the prime minister has spelled out, is  that the U.N. has to be a means of dealing with this issue," he  said. "It is not a means of endless prevarication."</p>
+                                <p> In his cabinet meeting later on Monday, Blair will reveal to  ministers a dossier setting out what he sees as the case for  action against Saddam. It will be made public on Tuesday ahead  of a full parliamentary debate.</p>
+                                <p> Blair's spokesman described the dossier as "a serious, sober  assessment of the threat from Saddam's weapons of mass  destruction". He said it would contain "intelligence material",  but gave no details.</p>
+                                <p> Blair, Washington's staunchest ally since last year's  September 11 attacks, faces a dilemma -- whether to remain at  President George W. Bush's shoulder wielding some influence, or  ease growing domestic disquiet.</p>
+                                <p> Ministers, who will gather for the cabinet meeting at 5 p.m.  (1600 GMT), have already made it clear that much of the dossier  will rely on weapons reports dating back to the early 1990s.</p>
+                                <p> </p>
+                                <p> DOUBTING COLLEAGUES</p>
+                                <p> The pressure on Blair increased again at the weekend with  two members of his cabinet -- International Development  Secretary Clare Short and Blair's political business manager  Robin Cook -- suggesting they would oppose any military action  against Baghdad which is not sanctioned by the United Nations.</p>
+                                <p> But Blair's spokesman said the dossier "comprehensively  nails the lie which was spread again last week by the Iraqi  foreign minister that they have no weapons of mass destruction."</p>
+                                <p> "They have -- and this document is important because it will  set out as best we can the case about the nature of the threat  -- a threat which has increased, not diminished," he said.</p>
+                                <p> A British official told Reuters the dossier will draw  extensively on intelligence sources to lay out the threat from  Saddam's alleged attempts to retain chemical, biological or  nuclear weapons programmes in defiance of U.N. resolutions.</p>
+                                <p> But the official dismissed recent media reports that it  would seek to link the Iraqi leader to the militant al Qaeda  network blamed for the September 11 attacks.</p>
+                                <p> Blair hopes he can use the dossier, first promised six  months ago, to win over those within his Labour party who oppose  military action against Iraq.</p>
+                                <p> More than 160 members of the 659-strong lower house of  parliament, most of them from Blair's Labour Party, have in the  past few months signed a motion expressing "deep unease" about  Britain backing military strikes on Iraq -- particularly if  there is no explicit U.N. resolution calling for an attack.</p>
+                                <p> Blair's spokesman said the dossier was not seeking to answer  the question of whether or not military action should be  launched against Iraq, but to show whether there was a threat.</p>
+                                <p> "The bottom line is, is there a threat from Saddam Hussein's  weapons of mass destruction and do we have to deal with it? --  and the answer to both those questions is 'yes,'" he said.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

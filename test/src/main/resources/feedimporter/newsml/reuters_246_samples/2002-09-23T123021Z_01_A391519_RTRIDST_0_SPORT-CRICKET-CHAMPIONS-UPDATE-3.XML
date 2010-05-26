@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH95655_2002-09-23_12-30-21_A391519_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T123021+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH95655_2002-09-23_12-30-21_A391519_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH95655_2002-09-23_12-30-21_A391519</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH95655_2002-09-23_12-30-21_A391519:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 12:30:21 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T123021+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T123021+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95655_2002-09-23_12-30-21_A391519_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Cricket"/>  <FormalName Scheme="N2000">CRIC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15017000</FormalName>  <Description xml:lang="en">Cricket</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LK</FormalName>  <Description xml:lang="en">Sri Lanka</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NZ</FormalName>  <Description xml:lang="en">New Zealand</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">BD</FormalName>  <Description xml:lang="en">Bangladesh</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T123021Z_01_A391519_RTRIDST_0_SPORT-CRICKET-CHAMPIONS-UPDATE-3.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95655_2002-09-23_12-30-21_A391519_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 3-Cricket-Woeful Bangladesh humiliated by New Zealand</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-CRICKET-CHAMPIONS (UPDATE 3)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-CRICKET-CHAMPIONS (UPDATE 3):UPDATE 3-Cricket-Woeful Bangladesh humiliated by New Zealand</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="ND"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH95655_2002-09-23_12-30-21_A391519_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH95655_2002-09-23_12-30-21_A391519_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T123021+0000"/>
+                        <Property FormalName="USN" Value="A391519"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (Adds details)</p>
+                                <p> By Brian Murgatroyd</p>
+                                <p> COLOMBO, Sept 23 (Reuters) - Bangladesh produced a woeful  batting display as they were bowled out for 77 by New Zealand to  lose the final pool match of the International Cricket Council  (ICC) Champions Trophy by 167 runs on Monday.</p>
+                                <p> Chasing 245 for victory, Khaled Mashud's side were shot out  in 19.3 overs to record their fifth score of under 100 in 55  one-day internationals.</p>
+                                <p> Only four players reached double figures as Bangladesh  scraped past their lowest one-day score, the 76 they made  against Sri Lanka on the same Sinhalese Sports Club ground in  August.</p>
+                                <p> Fast bowlers Shane Bond (four for 21), Jacob Oram (two for  32) and Kyle Mills (two for 13) took full advantage of some  tentative batting, with seven players either caught by  wicketkeeper Lou Vincent or in the slip cordon alongside him.</p>
+                                <p> The result condemned Bangladesh to bottom place in pool one  behind Australia and New Zealand, and their inability to deal  with aggressive seam and swing bowling will be a major worry for  coach Moshin Kamal as they fly to South Africa for a test and  one-day tour on Tuesday.</p>
+                                <p> Bangladesh had done reasonably well in the first session to  restrict New Zealand to 244 for nine after Mashud had won the  toss.</p>
+                                <p> Several players became established but only Mathew Sinclair  (70) showed the application required to pass fifty on a slow,  turning pitch well-suited to the slower Bangladesh bowlers.</p>
+                                <p> It meant the target was within range if Bangladesh batted  well, but the wheels fell off with almost indecent haste.</p>
+                                <p> Opener Al-Sahariar was lbw playing no shot to Bond in the  very first over, giving him a grand total of three balls faced  and no runs for the tournament, and things got rapidly worse  from them on.</p>
+                                <p> Mohammad Ashraful (1) was snapped up by Scott Styris in an  expectant slip cordon and Bond continued his destruction of the  top-order as he removed Alok Kapali (2), well caught by Fleming  at first slip, and Mashud (1), caught behind driving airily.</p>
+                                <p> </p>
+                                <p> BRILLIANT ASTLE</p>
+                                <p> Oram got in on the action when he had Javed Oram (1)  brilliantly caught one-handed by Nathan Astle above his head at  second slip and, after a few desperate strokes by Tushar Imran  (20), he joined the procession, edging the same bowler also to  Astle.</p>
+                                <p> Khaled Mahmud (11) and Fahim Muntasir (5) both fell to Kyle  Mills when he was introduced into the attack after Bond's  four-over opening burst had yielded four for 15.</p>
+                                <p> And after a few defiant blows by Mohammad Rafique (17) and  Manjural Islam (10), both perished trying to launch Daniel  Vettori's left-arm spin out of the ground.</p>
+                                <p> New Zealand batted carelessly with Fleming (31), Styris (26)  and Harris (26) all getting established before falling before  going on to a major score.</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

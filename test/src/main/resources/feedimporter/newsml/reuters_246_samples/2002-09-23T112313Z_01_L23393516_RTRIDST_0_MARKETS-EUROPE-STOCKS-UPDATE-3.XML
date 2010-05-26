@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93957_2002-09-23_11-23-13_L23393516_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T112313+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93957_2002-09-23_11-23-13_L23393516_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93957_2002-09-23_11-23-13_L23393516</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93957_2002-09-23_11-23-13_L23393516:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:23:13 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T112313+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T112313+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93957_2002-09-23_11-23-13_L23393516_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="EQUITIES MARKETS"/>  <FormalName Scheme="N2000">STX</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04009003</FormalName>  <Description xml:lang="en">Equities</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">.EU</FormalName>  <Description xml:lang="en">European stocks reports</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OEC</FormalName>  <Description xml:lang="en">Economic news, EC, business/financial pages</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T112313Z_01_L23393516_RTRIDST_0_MARKETS-EUROPE-STOCKS-UPDATE-3.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93957_2002-09-23_11-23-13_L23393516_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Eurostocks wither as German election result weighs</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MARKETS-EUROPE-STOCKS (UPDATE 3)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MARKETS-EUROPE-STOCKS (UPDATE 3):Eurostocks wither as German election result weighs</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="ABX"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="FUN"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93957_2002-09-23_11-23-13_L23393516_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93957_2002-09-23_11-23-13_L23393516_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T112313+0000"/>
+                        <Property FormalName="USN" Value="L23393516"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Paul Richardson</p>
+                                <p> LONDON, Sept 23 (Reuters) - European shares were broadly  lower by mid-session on Monday as disappointment about the  result of the German election added to the already gloomy tone  set by worries about the global economy and corporate profits.</p>
+                                <p> Losses were led by German blue-chips like Munich Re, which  sank 9.1 percent, Deutsche Bank,  which lost 5.1 percent and DaimlerChrysler, which fell three  percent.</p>
+                                <p> But Germany also provided the biggest gainer, consumer  brands company Beiersdorf leaping 15 percent on reports that its  larger U.S. rival Procter &amp; Gamble was considering buying a  stake in the firm.</p>
+                                <p> Frankfurt's DAX index was down 3.3 percent by 1045 GMT on  Monday, a day after German voters returned the incumbent  government to power with a sharply reduced majority.</p>
+                                <p> "One is tempted to think the fall is on back of the German  elections given it's not best of outcomes with such a narrow  majority," said Gareth Evans, European equity strategy at ING  Barings.</p>
+                                <p> "Certainly (opposition candidate Edmund) Stoiber would have  been better received by the market because of his plans for  structural reform. The government has not got much of a majority  so we can't expect much on reform going forward," Evans added.</p>
+                                <p> The FTSE Eurotop 300 index of pan-European blue chips was  down 1.7 percent at 835, as losers beat gainers by five-to-one,  while the narrower DJ Euro Stoxx 50 index was off 2.1 percent at  2,260.</p>
+                                <p> U.S. futures added to the gloom, indicating both the Dow  Jones industrial average and the Nasdaq Composite would open  lower.</p>
+                                <p> Fund managers said overall sentiment continued to be  undermined by broader worries.</p>
+                                <p> "The market is dealing with five or six insecurities at the  moment -- political, military, economic, corporate and general  negative sentiment," said Lex Werkheim, fund manager at  Eureffect Asset Management in Amsterdam.</p>
+                                <p> "It's all too much for the market to go up at the moment. We  need some of those insecurities to come out into the open before  the market can recover," Werkheim said.</p>
+                                <p> </p>
+                                <p> CHIPS ARE DOWN</p>
+                                <p> Tech shares were dented after JDS Uniphase Corp, the world's  largest supplier of fibre-optic components and modules, lowered  its first-quarter sales guidance because of continuing weakness  in its telecommunications markets.</p>
+                                <p> The news hit French stocks like IT consultant Cap Gemini and  telecoms equipment group Alcatel, which both sank more than 10  percent. </p>
+                                <p> Dutch semiconductor equipment maker ASML shed 7.9 percent  after several major investment banks cut their recommendations,  target prices and earnings and sales forecasts for the firm. The  tech index fell 3.1 percent.</p>
+                                <p> Insurers were also under the cosh, with Munich Re  particularly hard hit after sources said Schroder Salamon Smith  Barney had downgraded it to "underweight" from "inline".</p>
+                                <p> Elsewhere, Vivendi Environnement fell eight percent on news  a sale of the utilities group is being studied by parent Vivendi  Universal, as the crushed media empire prepares to outline its  new strategy.</p>
+                                <p> The German election result also weighed on the retail  sector.</p>
+                                <p> "Sentiment in retail companies focused on Germany seems to  be suffering the most as the government recently decided to  delay cuts in personal income tax until 2004," said Volker  Borghoff, an equity strategist at HSBC Trinkaus &amp; Burkhardt.</p>
+                                <p> Metro fell 2.5 percent, while Karstadt Quelle lost 5.5  percent.</p>
+                                <p> </p>
+                                <p> U.S. DATA</p>
+                                <p> British Energy soared 84 percent on hopes the embattled  nuclear power generator will be thrown a lifeline by the  government past a looming deadline, given that bondholders have  said they may offer fresh funds.</p>
+                                <p> Later in the session attention will switch to economic data  from the U.S. Lead indicators during August are expected to have  dipped 0.1 percent.</p>
+                                <p> The highlights of this week include the Federal Open Markets  Committee Meeting on Tuesday. Wall Street is unanimous in  expecting no change in policy from the Federal Reserve but  analysts also look for it to warn of economic risks ahead.   (Additional reporting by Alison Tudor)    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

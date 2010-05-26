@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH00954_2002-09-23_15-54-24_L23407410_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T155424+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH00954_2002-09-23_15-54-24_L23407410_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH00954_2002-09-23_15-54-24_L23407410</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH00954_2002-09-23_15-54-24_L23407410:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:54:24 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T155424+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T155424+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00954_2002-09-23_15-54-24_L23407410_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T155424Z_01_L23407410_RTRIDST_0_GERMANY-CONSERVATIVES-PICTURE.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00954_2002-09-23_15-54-24_L23407410_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Merkel regains control of German conservatives</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>GERMANY-CONSERVATIVES (PICTURE)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>GERMANY-CONSERVATIVES (PICTURE):Merkel regains control of German conservatives</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="C"/>
+                    <OfInterestTo FormalName="D"/>
+                    <OfInterestTo FormalName="E"/>
+                    <OfInterestTo FormalName="M"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="U"/>
+                    <OfInterestTo FormalName="MTL"/>
+                    <OfInterestTo FormalName="GRO"/>
+                    <OfInterestTo FormalName="SOF"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH00954_2002-09-23_15-54-24_L23407410_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH00954_2002-09-23_15-54-24_L23407410_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T155424+0000"/>
+                        <Property FormalName="USN" Value="L23407410"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Emma Thomasson and Clifford Coonan</p>
+                                <p> BERLIN/MUNICH, Sept 23 (Reuters) - Germany's Angela Merkel,  elbowed aside as conservative chancellor candidate by Bavaria's  Edmund Stoiber, reclaimed her position as leading light of the  opposition on Monday after the centre-right lost Sunday's vote.</p>
+                                <p> Merkel, the leader of the Christian Democrats (CDU), which  together with their Bavarian Christian Social Union allies chose  Stoiber to lead the conservative election charge, said she also  wanted to take over the parliamentary leadership of the party.</p>
+                                <p> Friedrich Merz, the leader of the CDU in parliament for the  last two years, said he had decided to make way for Merkel to  avoid a power struggle, restoring the most senior women in  German party politics as the main conservative mouthpiece.</p>
+                                <p> Merkel's combined position as national leader and head of  the parliamentary party puts her in a strong position to stand  as a future conservative chancellor candidate, perhaps in the  2006 election, and weakens the hand of her rivals in the party.</p>
+                                <p> "The election was a photo-finish and that shows that the  conservatives are back. We will take on our opposition mandate  with all force and strength," Merkel told a news conference.</p>
+                                <p>"Opposition work will be better handled with a joint  leadership of the parliamentary group and the party."</p>
+                                <p> After Merkel stood aside in January to allow CSU head  Stoiber to lead the conservative challenge to Social Democrat  Chancellor Gerhard Schroeder, party insiders said she would be  rewarded for her loyalty. Stoiber backed her move on Monday.</p>
+                                <p> Her major rival in the party is Roland Koch, premier of the  central state of Hesse, expected to flex his muscles in the  conservatives now that Stoiber's bid failed.</p>
+                                <p> </p>
+                                <p> STOIBER'S FUTURE UNCLEAR</p>
+                                <p> It was not immediately clear whether Stoiber, criticised for  failing to keep the focus of the campaign on Schroeder's  handling of the stagnant economy, would pursue a role on the  national stage or focus again on his role as Bavarian premier.</p>
+                                <p> At a news conference in Munich, Stoiber predicted  Schroeder's Social Democrats-Greens coalition, returned to power  in Sunday's vote but with a much reduced majority, would fail  and said he would wait in the wings to form a new government.</p>
+                                <p> He told a news conference in Berlin later that he would  contribute to parliamentary debates and travel abroad as CSU  leader, starting with a trip to Washington to rebuild ties  damaged by Schroeder's vocal opposition to a war against Iraq.</p>
+                                <p> However, Stoiber stopped short of saying whether he would be  available as chancellor candidate next time round. Helmut Kohl  lost as conservative candidate in the 1976 election, but became  chancellor in 1982 after linking up with the Free Democrats.</p>
+                                <p> "The position of chancellor candidate ends with the  election, of course. The CSU will remain a strong figure in the  conservative alliance," Stoiber said, noting that the CSU's  strong performance in Bavaria, where they won nearly 60 percent,  had helped the right gain in the election.</p>
+                                <p> But at 60, Stoiber might not get another chance, while  Merkel, 48, could be at the peak of her powers in four years.</p>
+                                <p> Merkel became the first woman leader of a major German party  in April 2000 as the party Helmut Kohl led for quarter of a  century tried to make a fresh start after the ex-chancellor  admitted accepting about $1 million in secret party donations.</p>
+                                <p> Then some admirers hailed her as a German Margaret Thatcher,  a fellow scientist who led Britain's Conservatives out of  opposition in the 1970s. </p>
+                                <p> But Merkel, a liberal Protestant from the communist East,  failed to impose discipline on a party dominated by practising  Roman Catholics, most of them men, from west and south Germany,  and saw many CDU rivals back Stoiber as chancellor candidate.</p>
+                                <p> But since then the woman who only entered active politics in  1989, acting as spokeswoman for the short-lived democratic East  German government that approved reunification, has been  gradually building support in the party. The parliamentary  leadership could give her a new springboard for power.</p>
+                                <p> Born Angela Kasner in the northern port of Hamburg on July  17, 1954, her left-wing clergyman father moved his family to the  Communist east soon after her birth. She takes her surname from  her first husband, Ulrich Merkel, whom she divorced in 1982.</p>
+                                <p> Bowing to party pressure, she married long-term partner  Joachim Sauer, a chemistry professor, in 1998, shortly after  becoming CDU general secretary. She has no children.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

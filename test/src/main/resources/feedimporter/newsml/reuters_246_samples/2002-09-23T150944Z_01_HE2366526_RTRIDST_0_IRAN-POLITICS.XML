@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH00002_2002-09-23_15-09-44_HE2366526_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T150944+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH00002_2002-09-23_15-09-44_HE2366526_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH00002_2002-09-23_15-09-44_HE2366526</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH00002_2002-09-23_15-09-44_HE2366526:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:09:44 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T150944+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T150944+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00002_2002-09-23_15-09-44_HE2366526_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IR</FormalName>  <Description xml:lang="en">Iran (Islamic Republic of)</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Religion"/>  <FormalName Scheme="N2000">REL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">12000000</FormalName>  <Description xml:lang="en">Religion and belief (extend definition)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T150944Z_01_HE2366526_RTRIDST_0_IRAN-POLITICS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00002_2002-09-23_15-09-44_HE2366526_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Iran's Khatami to begin struggle for more powers</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>IRAN-POLITICS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>IRAN-POLITICS:Iran's Khatami to begin struggle for more powers</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="MD"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="PEN"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH00002_2002-09-23_15-09-44_HE2366526_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH00002_2002-09-23_15-09-44_HE2366526_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T150944+0000"/>
+                        <Property FormalName="USN" Value="HE2366526"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Parisa Hafezi</p>
+                                <p> TEHRAN, Sept 23 (Reuters) - Iran's moderate President  Mohammad Khatami is to present a bill to parliament on Tuesday  to clarify his constitutional powers in a move that could lead  to confrontation with his conservative rivals.</p>
+                                <p> Khatami said last month he was ready to use all means, even  a referendum if necessary, to assert his authority over  hardliners who have blocked and parried his stabs at reform.</p>
+                                <p> "I am going to present a bill on Khatami's constitutional  powers to parliament on Tuesday," Vice-President Mohammad Ali  Abtahi told Reuters.</p>
+                                <p> Another bill, altering the rules for vetting election  candidates by the conservative-dominated Guardian Council, is  also expected to be introduced to parliament in the next weeks.</p>
+                                <p> Conservatives, who control many key levers of power in Iran  and are answerable only to Supreme Leader Ayatollah Ali  Khamenei, have hitherto hamstrung Khatami's efforts to bring  more democracy to the Islamic Republic.</p>
+                                <p> Analysts say if conservatives reject the bills and a  referendum is also disallowed, the mild-mannered Khatami might  carry out his threat to resign which could lead to political  turmoil in Iran.  </p>
+                                <p> PATIENCE RUNNING THIN</p>
+                                <p> Khatami's seeming inability to overcome conservative  opposition despite two resounding election wins in 1997 and 2001  has meant many people, wanting change and facing dire economic  problems, are growing impatient with him.</p>
+                                <p> "Khatami himself acknowledged his waning support, so he  decided to push forward," reformist parliamentarian Jamileh  Kadivar told Reuters. "Khatami has decided to...show he is  determined to fulfil his promises through legal channels."</p>
+                                <p> While the two bills are expected to be easily passed by the  large pro-reform majority in parliament, they must then be  approved by the Guardian Council.</p>
+                                <p> The 12-man council has used its power to veto legislation it  judges incompatible with Islamic law and the constitution to  block most of parliament's reform efforts.</p>
+                                <p> Khatami's powerful conservative rivals believe the  constitutional powers bill would give too much authority to the  head of executive over the legislative and judicial powers, as  well as interfering in the supreme leader's authority.</p>
+                                <p> "I don't think these bills would be easily passed through  the filter of the Guardian Council," Kadivar said.</p>
+                                <p> Other reformists believe the council may approve the bill to  strengthen the president's powers, but reject the measure to  alter its power to vet election candidates.</p>
+                                <p> "It seems the Guardian Council will be more flexible on the  presidential powers bill because they can control him through  other means," reformist deputy Ali Shakourirad told Reuters.  "But we have three important elections coming up and they don't  want to lose their powerful tool to vet candidates."</p>
+                                <p> Parliamentary and city council elections are due next year  and presidential elections in 2005.</p>
+                                <p> The bills, if rejected by the Guardian Council twice, would  be sent to the Expediency Council, an arbitration body whose  members are appointed by Khamenei.</p>
+                                <p> Influential former President Akbar Hashemi Rafsanjani on  Monday rejected speculation the Expediency Council he heads  would not approve the bill on the president's powers.</p>
+                                <p> "These predictions that the Expediency Council will reject  the bill are based on guess work," the official IRNA news agency  quoted him as saying. "I hope everyone will cooperate to prevent  the creation of any problem."</p>
+                                <p> The Islamic Republic also faces the prospect of conflict on  its borders in Iraq if Baghdad is attacked by the United States.  Both Iran and Iraq, along with North Korea, have been branded  part of an "axis of evil" by U.S. President George W. Bush.  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH99051_2002-09-23_14-55-12_N2W001531_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T145512+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="2"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH99051_2002-09-23_14-55-12_N2W001531_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH99051_2002-09-23_14-55-12_N2W001531</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH99051_2002-09-23_14-55-12_N2W001531:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:55:12 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T145512+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T145512+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="2"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH99051_2002-09-23_14-55-12_N2W001531_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Gold and Precious Metals mining"/>  <FormalName Scheme="N2000">GDM</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04012002</FormalName>  <Description xml:lang="en">Gold and Precious Materials</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Gold"/>  <FormalName Scheme="N2000">GOL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04012002</FormalName>  <Description xml:lang="en">Gold and Precious Metals</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">GOL/</FormalName>  <Description xml:lang="en">Latest Gold</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Recurring Report"/>  <FormalName Scheme="Reuters Recurring Report">GOL/E</FormalName>  <Description xml:lang="en">European Precious Metals</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OEC</FormalName>  <Description xml:lang="en">Economic news, EC, business/financial pages</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T145512Z_01_N2W001531_RTRIDST_0_MARKETS-PRECIOUS-REPORT.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH99051_2002-09-23_14-55-12_N2W001531_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Gold higher in Europe on Iraq jitters, stock losses</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MARKETS-PRECIOUS-REPORT</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MARKETS-PRECIOUS-REPORT:Gold higher in Europe on Iraq jitters, stock losses</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="ABX"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH99051_2002-09-23_14-55-12_N2W001531_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH99051_2002-09-23_14-55-12_N2W001531_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T145512+0000"/>
+                        <Property FormalName="USN" Value="N2W001531"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> LONDON, Sept 23 (Reuters) - Gold briefly touched nine-week  highs in European trade on Monday on the back of Iraqi war  fever and a softer dollar which encouraged investor movement  into the safe-haven asset.</p>
+                                <p> Bullion was set or "fixed" in the London morning session at  $323.45 a troy ounce, up from Friday's last fix of $322.30 an  ounce to reach its highest fix since July 22 and 12 percent up  since this time last year.</p>
+                                <p> Though the metal lost some ground in the second fixing of  the London session, falling to $322.50 an ounce, the market  looked well supported, traders said.</p>
+                                <p> "With crude oil sharply higher today as tensions simmer in  the Middle East, gold's outlook is positive," said Standard  Bank London in a market report.</p>
+                                <p> Gold and oil have been designated "war commodities" by some  traders for their price sensitivity to any military action in  the Middle East.</p>
+                                <p> "We expect further nervous trading this week," said John  Reade, metals analyst at UBS Warburg.</p>
+                                <p> In 1990, gold briefly soared by $40 to over $400 an ounce  after Iraq's invasion of Kuwait as investors sought a bolthole  for their cash in uncertain times away from stocks and  currencies.</p>
+                                <p> Oil prices hit fresh 19-month highs on Monday as dealers  took fright at the growing threat of a U.S. assault on Iraq.</p>
+                                <p> Sustained tension in the Middle East has already helped  force up oil prices some 40 percent this year on fear of a  supply disruption in a region that pumps a third of the world's  crude.</p>
+                                <p> Iraq denounced on Monday as "wicked" U.S. attempts at the  United Nations to adopt a tough resolution on Iraqi  disarmament, saying Washington was seeking U.N. cover for any  military action.</p>
+                                <p> The United States and Britain have stepped up pressure on  the Security Council to adopt a tough new resolution before any  resumption of U.N. arms inspections to search for weapons of  mass destruction.</p>
+                                <p> Iraq's Vice President Taha Yassin Ramadan accused the U.S.  administration of trying to use the expected U.N. resolution as  a cover to launch an attack on Iraq.</p>
+                                <p> "Failure by Iraq to admit the weapons inspectors with  unconditional access to any site in the country would be seen  as a pretext for military action by the U.S," said Lawrence  Eagles, analyst at GNI.  </p>
+                                <p> FURTHER GAINS SEEN</p>
+                                <p> Further gains were seen for the yellow metal, especially  given fresh Israeli-Palestinian violence and dollar weakness   which makes gold more attractive to investors outside the U.S..</p>
+                                <p> Violence ranging from the West Bank to Kashmir to fears of  a repeat attack on the U.S. mainland similar to September 11  have been major factors behind's gold's rally this year to  $330.30 an ounce, a 2-1/2 year high.</p>
+                                <p> "Resistance is still seen around $324-325 but a break  through there would lead to a re-test of the year's high of  around $331," said James Moore, analyst at TheBullionDesk.com.</p>
+                                <p> Spot gold  was quoted at $323.10/323.60 an ounce by 1436  GMT, up from $321.90/322.40 an ounce at the New York close on  Friday.</p>
+                                <p> Traders were also continuing to cut their short positions  on the U.S. COMEX gold futures exchange, trading data for the  week ending September 17 showed.</p>
+                                <p> "Subsequent price action suggests a further increase in the  net long will be reported this coming week as a result of  increasing global tensions over the situation in Iraq," said  Deutsche Bank in a report.</p>
+                                <p> Silver  was quoted at $4.60/4.62 an ounce, down from the  New York close on Friday of $4.63/65 an ounce.</p>
+                                <p> Platinum  was at $562.00/567.00 from $564.00/569.00 and  palladium  at $326.00/338.00 from $331.00/336.00.          </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

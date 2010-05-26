@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH97069_2002-09-23_13-31-58_L1663870_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T133158+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH97069_2002-09-23_13-31-58_L1663870_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH97069_2002-09-23_13-31-58_L1663870</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH97069_2002-09-23_13-31-58_L1663870:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:31:58 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T133158+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T133158+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97069_2002-09-23_13-31-58_L1663870_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OSM</FormalName>  <Description xml:lang="en">Summaries, highlights</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T133158Z_01_L1663870_RTRIDST_0_MIDEAST-HIGHLIGHTS-1330-GMT.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97069_2002-09-23_13-31-58_L1663870_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Reuters Middle East Highlights 1330 GMT Sept 23</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MIDEAST-HIGHLIGHTS 1330 GMT</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MIDEAST-HIGHLIGHTS 1330 GMT:Reuters Middle East Highlights 1330 GMT Sept 23</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="MD"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH97069_2002-09-23_13-31-58_L1663870_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH97069_2002-09-23_13-31-58_L1663870_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T133158+0000"/>
+                        <Property FormalName="USN" Value="L1663870"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> LONDON - Britain said a draft U.N. Security Council  resolution on Iraq would be tabled within days and would make it  clear to Saddam Hussein that he must honour previous commitments  and disarm.</p>
+                                <p/>
+                                <p>COPENHAGEN - EU president Denmark said 25 Asian and European  Union leaders at a summit agreed that Iraq must re-admit arms  inspectors as speedily as possible and allow them full and free  access to its facilities.</p>
+                                <p> - - - -</p>
+                                <p> RAMALLAH, West Bank - Israeli and Palestinian officials held  their first talks since the army imposed a siege on Yasser  Arafat's West Bank headquarters, but failed to end the  four-day-old standoff.</p>
+                                <p> After the talks, the Israeli army briefly opened its tight  security cordon around Arafat's devastated presidential complex  in Ramallah to let chief Palestinian negotiator Saeb Erekat in  to brief the Palestinian leader on the meeting.</p>
+                                <p/>
+                                <p> RAMALLAH, West Bank - Palestinian President Yasser Arafat  rejected Israeli demands to present a list naming all the people  holed up with him in his West Bank headquarters, a senior  Palestinian official said.</p>
+                                <p> - - - -</p>
+                                <p> ANKARA - Turkish Prime Minister Bulent Ecevit renewed his  invitation to Israelis and Palestinians to meet for peace talks  in Turkey, saying he feared escalating violence.</p>
+                                <p> - - - -</p>
+                                <p> TEHRAN - Iran said it had accepted London's nomination of a  new British ambassador, ending a seven-month diplomatic dispute  following Tehran's rejection of Britain's former candidate for  the job earlier this year. The new appointee was not named.</p>
+                                <p> - - - -</p>
+                                <p> BAGHDAD - Iraq denounced as "wicked" U.S. attempts at the  United Nations to adopt a tough resolution on Iraq's  disarmament, saying Washington was seeking U.N. cover for any  military action.</p>
+                                <p> - - - -</p>
+                                <p> DAMASCUS - Syria called on the United Nations to rein in  Israel and its military action against Palestinians, saying that  conflict deserved as much attention as the global body is giving  to Iraq.</p>
+                                <p> - - - -</p>
+                                <p> BAGHDAD - Iraq's Foreign Minister Naji Sabri left Baghdad to  deliver a message from President Saddam Hussein to Egypt's  President Hosni Mubarak in Cairo, the official Iraqi News Agency  said.</p>
+                                <p> - - - -</p>
+                                <p> BEIRUT - A small bomb ripped through the parking lot of a  McDonald's restaurant in an eastern suburb of Beirut, damaging  cars but causing no injuries, court sources said.</p>
+                                <p> - - - -</p>
+                                <p> ATHENS - The United Nations special envoy for Cyprus said a  settlement on the divided island was still possible before the  European Union decides in December if Nicosia will be admitted  among the first wave of new members.</p>
+                                <p> </p>
+                                <p> ATHENS - Greece, which takes over the EU presidency at the  end of the year, welcomed the election win of Germany's Social  Democrats saying it boded well for Turkey's hopes of joining the  European Union.</p>
+                                <p> - - - -</p>
+                                <p> CAIRO - A mysterious door has been found in a previously  unexplored shaft inside Egypt's biggest pyramid, only days after  a similar stone slab was found in another shaft, antiquities  chief Zahi Hawass said.</p>
+                                <p> - - - -</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

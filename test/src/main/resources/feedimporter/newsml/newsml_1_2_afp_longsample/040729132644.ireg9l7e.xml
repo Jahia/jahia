@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<NewsML>
+  <Catalog Href="http://www.afp.com/dtd/AFPCatalog.xml"/>
+  <NewsEnvelope>
+    <DateAndTime>20040729T132653Z</DateAndTime>
+  </NewsEnvelope>
+  <NewsItem>
+    <Identification>
+      <NewsIdentifier>
+        <ProviderId>afp.com</ProviderId>
+        <DateId>20040729</DateId>
+        <NewsItemId>040729132644.ireg9l7e</NewsItemId>
+        <RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+        <PublicIdentifier>urn:newsml:afp.com:20040729:040729132644.ireg9l7e:1</PublicIdentifier>
+      </NewsIdentifier>
+      <NameLabel>Tennis-ATP-CAN</NameLabel>
+    </Identification>
+    <NewsManagement>
+      <NewsItemType FormalName="News"/>
+      <FirstCreated>20040729T132644Z</FirstCreated>
+      <ThisRevisionCreated>20040729T132644Z</ThisRevisionCreated>
+      <Status FormalName="Usable"/>
+    </NewsManagement>
+    <NewsComponent>
+      <NewsLines>
+        <HeadLine>Federer, Roddick reach second round at Toronto tennis event</HeadLine>
+        
+        <DateLine>TORONTO (AFP)</DateLine>
+        <CopyrightLine>© 2004 AFP</CopyrightLine>
+      </NewsLines>
+      <AdministrativeMetadata>
+        <Provider>
+          <Party FormalName="AFP"/>
+        </Provider>
+      </AdministrativeMetadata>
+      <DescriptiveMetadata>
+        <Language FormalName="en"/> 
+	<Genre FormalName="lead"/>
+        <OfInterestTo FormalName="mmd--english--webwires--america--top"/>
+      </DescriptiveMetadata>
+      <NewsComponent>
+        <ContentItem>
+          <MediaType FormalName="Text"/>
+          <Format FormalName="bcNITF2.5"/>
+          <DataContent>
+            <media media-type="image" style="rightSide">
+<media-reference mime-type="" data-location="#photo0" />
+</media>
+<p>Andy Roddick kept pace with top seed Roger Federer, easily advancing to the second round of the 2.5- million-dollar ATP Masters Series as opponent Julien Benneteau suffered a mid-match injury.</p>
+
+            <p>Roddick, the Toronto defending champ and winner of a second straight title at the weekend in Indianapolis, advanced 6-4, 6-2 against the hampered Frenchman.</p>
+            <p>Benneteau, ranked 76th, gave Roddick a battle in the opening set, but strained his neck as he stretched for a return in the fourth game of the second.</p>
+            <p>"It's unfortunate to win this way, but you take what you can get," said the second-seeded American, who won his 50th match of the season. "The first set was high-level.</p>
+            <p>"He has some weapons, but once he hurt his neck he went downhill."</p>
+            <p>World number one Federer completed a match he had begun 18 hours before on the previous evening, ousting Moroccan Hicham Arazi 6-3, 7-5.</p>
+            <p>Federer next faces a second-round contest with Swede Robin Soderling. Like the rest of Thursday's winners, he will play a third-round contest only hours later as the tournament, gets back on schedule after Tuesday's rain delay.</p>
+            <media media-type="image" style="leftSide">
+<media-reference mime-type="" data-location="#photo1" />
+</media>
+<p>"I'm very happy to have played so well, it's never easy with the rain," said the Swiss, winner of 26 of his last 27 matches.</p>
+
+            <p>"I'm ready for the next round, I'm very happy to be through."</p>
+            <p>Federer won his 52nd victory of the season, lifting the first set quickly on Tuesday evening and finishing the job Wednesday.</p>
+            <p>"I was in a good position overnight and that makes it much easier.</p>
+            <p>"I was happy to be up a set. I didn't know if we were going to play last night. But I was glad to get that set in before the rain."</p>
+            <p>Federer is making his summer hardcourt debut, with challenges awaiting next week at a Masters event in Cincinnati followed by the Athens Olympics and US Open beginning in a month.</p>
+            <p>Three Argentine seeds crashed out at the first hurdle, with Peru's Luis Horna going through as number three Guillermo Coria quit trailing 5-1 with a right shoulder problem.</p>
+            <p>Russian Mikhail Youzhny recovered in the final set to overhaul David Nalbandian, seeded sixth, 3-6, 6-3, 6-4.</p>
+            <p>Australian newcomer Todd Reid scalped Roland Garros champion Gaston Gaudio 7-6 (7/2), 5-7, 6-3.</p>
+            <media media-type="image" style="rightSide">
+<media-reference mime-type="" data-location="#photo2" />
+</media>
+<p>Fellow Aussie ninth seed Lleyton Hewitt came good after a torrid first set from Spanish teenager Rafael Nadal, producing a patented 1-6, 6-4, 6-2 fight-back victory.</p>
+
+            <p>Fourth seed Carlos Moya continued his season-long domination of Spanish compatriots as he claimed his 14th victory against a countryman in 2004.</p>
+            <p>His latest victim was Fernando Verdasco, who went down 6-7 (9/11), 6-3, 6-4.</p>
+            <p>Tim Henman put aside a wait of nearly 12 hours on a drizzly Tuesday, taking just 73 minutes Wednesday to tame Argentine Mariano Zabaleta 6-4, 6-1. The victory puts the fifth seed into a second-round clash with crowd-favourite Gustavo Kuerten of Brazil.</p>
+            <p>"It was great to finally get onto court. There were beautiful conditions out there today. Neither of us played our best match, but it was good to get the win."</p>
+          </DataContent>
+        </ContentItem>
+      </NewsComponent>
+      <NewsComponent Duid="photo0">
+        <NewsLines> 
+          <HeadLine>Andy Roddick </HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP/Getty Images"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Elsa"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Andy Roddick tosses his racquet in frustration during the second set against Julien Benneteau during the Tennis Masters Canada  at the Rexall Center in Toronto, Ontario, Canada</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RBU73.290704132635.photo00.default-67x100.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="67"/>
+              <Property FormalName="Height" Value="100"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RBU73.290704132635.photo00.default-165x245.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="165"/>
+              <Property FormalName="Height" Value="245"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RBU73.290704132635.photo00.default-269x384.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="269"/>
+              <Property FormalName="Height" Value="384"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+      <NewsComponent Duid="photo1">
+        <NewsLines> 
+          <HeadLine>Roger Federer</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP/Getty Images"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Elsa"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Roger Federer salutes the crowd after defeating Hicham Arazi of Morocco during the Tennis Masters Canada at the Rexall Center in Toronto, Ontario, Canada</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RBU73.290704132635.photo01.default-60x80.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="60"/>
+              <Property FormalName="Height" Value="80"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RBU73.290704132635.photo01.default-245x165.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="245"/>
+              <Property FormalName="Height" Value="165"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RBU73.290704132635.photo01.default-277x364.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="277"/>
+              <Property FormalName="Height" Value="364"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+      <NewsComponent Duid="photo2">
+        <NewsLines> 
+          <HeadLine>A trainer looks at Fernando Verdasco</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP/Getty Images"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Elsa"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>A trainer looks after Fernando Verdasco in the second set against Carlos Moya of Spain during the Tennis Masters Canada at the Rexall Center in Toronto, Ontario, Canada. Moya won 6-7 (9/11), 6-3, 6-4</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RBU73.290704132635.photo02.default-70x80.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="70"/>
+              <Property FormalName="Height" Value="80"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RBU73.290704132635.photo02.default-215x245.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="215"/>
+              <Property FormalName="Height" Value="245"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.RBU73.290704132635.photo02.default-337x384.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="337"/>
+              <Property FormalName="Height" Value="384"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+    </NewsComponent>
+  </NewsItem>
+</NewsML>

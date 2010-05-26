@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH96911_2002-09-23_13-27-16_MAN123921_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T132716+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH96911_2002-09-23_13-27-16_MAN123921_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH96911_2002-09-23_13-27-16_MAN123921</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH96911_2002-09-23_13-27-16_MAN123921:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:27:16 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T132716+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T132716+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96911_2002-09-23_13-27-16_MAN123921_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PH</FormalName>  <Description xml:lang="en">Philippines</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Crime; Law Enforcement"/>  <FormalName Scheme="N2000">CRIM</FormalName>  <FormalName Scheme="IPTCSubjectCodes">02000000</FormalName>  <Description xml:lang="en">Crime; Law Enforcement</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="LAW"/>  <FormalName Scheme="N2000">LAW</FormalName>  <FormalName Scheme="IPTCSubjectCodes">02000000</FormalName>  <Description xml:lang="en">Legislation</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T132716Z_01_MAN123921_RTRIDST_0_PHILIPPINES-COURT.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96911_2002-09-23_13-27-16_MAN123921_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Philippine court rejects plea to stop executions</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>PHILIPPINES-COURT</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>PHILIPPINES-COURT:Philippine court rejects plea to stop executions</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="PHD"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH96911_2002-09-23_13-27-16_MAN123921_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH96911_2002-09-23_13-27-16_MAN123921_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T132716+0000"/>
+                        <Property FormalName="USN" Value="MAN123921"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> MANILA, Sept 23 (Reuters) - The Philippine Supreme Court  rejected on Monday a petition by 30 convicts to stop their  executions while Congress was debating a proposal to abolish  capital punishment.</p>
+                                <p> But the court threw the fate of the convicts -- including  20 rapists -- into the lap of President Gloria Macapagal  Arroyo, saying she still had the power to pardon them.</p>
+                                <p> A lawyers' group filed the petition for the convicts last  month on the grounds that the legislature was debating a bill  to scrap the death penalty in the largely Roman Catholic  country.</p>
+                                <p> The court, by a 14-0 vote, rejected the argument as  speculative.</p>
+                                <p> "While newspaper reports indicate the supposed acquiescence  of a number of senators and congressmen to the abolition of the  death penalty, such is by no means an assurance that these same  legislators will eventually vote for the modification or repeal  of the law," the court said.</p>
+                                <p> "In the meantime, perhaps the remedy lies not in the  Supreme Court but in the Office of the President, to which any  plea for reprieve (or even pardon) ought to be properly  addressed."     Arroyo, a staunch Catholic, last month ordered  a 90-day reprieve for three rapists facing imminent execution  and drew immediate fire from anti-crime watchdogs, who said  executions would curb growing lawlessness in the country.</p>
+                                <p> The Philippines has executed seven convicts since it  restored the death penalty in 1994. More than 1,000 people are  now on death row, including 29 women.</p>
+                                <p> A group of legislators opposed to capital punishment say  it   does not deter crime and that many of those sentenced to death  are poor, illiterate people who cannot afford a good lawyer.</p>
+                                <p> Under Philippine law, all death sentences imposed by trial  courts must be reviewed by the Supreme Court.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

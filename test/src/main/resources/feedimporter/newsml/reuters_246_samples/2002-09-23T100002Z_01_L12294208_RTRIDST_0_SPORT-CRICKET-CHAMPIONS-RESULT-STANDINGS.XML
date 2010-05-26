@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH92519_2002-09-23_10-00-02_L12294208_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T100002+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH92519_2002-09-23_10-00-02_L12294208_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH92519_2002-09-23_10-00-02_L12294208</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH92519_2002-09-23_10-00-02_L12294208:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 10:00:02 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T100002+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T100002+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92519_2002-09-23_10-00-02_L12294208_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AU</FormalName>  <Description xml:lang="en">Australia</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NZ</FormalName>  <Description xml:lang="en">New Zealand</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">BD</FormalName>  <Description xml:lang="en">Bangladesh</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IN</FormalName>  <Description xml:lang="en">India</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ZW</FormalName>  <Description xml:lang="en">Zimbabwe</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AFE</FormalName>  <Description xml:lang="en">Africa</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ZA</FormalName>  <Description xml:lang="en">South Africa</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">KE</FormalName>  <Description xml:lang="en">Kenya</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LK</FormalName>  <Description xml:lang="en">Sri Lanka</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_14">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NL</FormalName>  <Description xml:lang="en">Netherlands</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_15">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PK</FormalName>  <Description xml:lang="en">Pakistan</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_16">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">JM</FormalName>  <Description xml:lang="en">Jamaica</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_17">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LATAM</FormalName>  <Description xml:lang="en">South and Central America</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_18">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">BB</FormalName>  <Description xml:lang="en">Barbados</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_19">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GY</FormalName>  <Description xml:lang="en">Guyana</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_20">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">TT</FormalName>  <Description xml:lang="en">Trinidad and Tobago</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_21">  <TopicType FormalName="Genre"/>  <FormalName Scheme="N2000">RSLT</FormalName>  <Description xml:lang="en">Results, Listings and Statistics (Sports)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_22">  <TopicType FormalName="Cricket"/>  <FormalName Scheme="N2000">CRIC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15017000</FormalName>  <Description xml:lang="en">Cricket</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_23">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T100002Z_01_L12294208_RTRIDST_0_SPORT-CRICKET-CHAMPIONS-RESULT-STANDINGS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92519_2002-09-23_10-00-02_L12294208_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Cricket-ICC Champions Trophy results/standings</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-CRICKET-CHAMPIONS-RESULT/STANDINGS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-CRICKET-CHAMPIONS-RESULT/STANDINGS:Cricket-ICC Champions Trophy results/standings</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <Genre FormalName="Table"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="OUKSA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_14"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_15"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_16"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_17"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_18"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_19"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_20"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_21"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_22"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_23"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH92519_2002-09-23_10-00-02_L12294208_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH92519_2002-09-23_10-00-02_L12294208_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T100002+0000"/>
+                        <Property FormalName="USN" Value="L12294208"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> LONDON, Sept 23 (Reuters) - Results, standings and remaining  fixtures in the ICC Champions Trophy tournament:</p>
+                                <p> POOL 1</p>
+                                <p> Results:</p>
+                                <p> Sunday, September 15   Australia beat New Zealand by 164 runs.</p>
+                                <p> Thursday, September 19   Australia beat Bangladesh by nine wickets</p>
+                                <p> Monday, September 23   New Zealand beat Bangladesh by 167 runs</p>
+                                <p> Final        P  W  L  T  NR Pts   Australia       2  2  0  0  0   8    New Zealand     2  1  1  0  0   4    Bangladesh      2  0  2  0  0   0 </p>
+                                <p> - -</p>
+                                <p> - - - -</p>
+                                <p> POOL 2</p>
+                                <p> Results:</p>
+                                <p> Saturday, September 14   India beat Zimbabwe by 14 runs.</p>
+                                <p> Wednesday, September 18   England beat Zimbabwe by 108 runs.</p>
+                                <p> Sunday, September 22   India beat England by eight wickets.</p>
+                                <p> Final        P  W  L  T  NR Pts   India           2  2  0  0  0   8    England         2  1  1  0  0   4    Zimbabwe        2  0  2  0  0   0 </p>
+                                <p> - - - -</p>
+                                <p> POOL 3</p>
+                                <p> Results:</p>
+                                <p> Friday, September 13   South Africa beat West Indies by two wickets.</p>
+                                <p> Tuesday, September 17   West Indies beat Kenya by 29 runs.</p>
+                                <p> Friday, September 20   South Africa beat Kenya by 176 runs</p>
+                                <p> Final        P  W  L  T  NR  Pts   South Africa    2  2  0  0  0   8    West Indies     2  1  1  0  0   4    Kenya           2  0  2  0  0   0 </p>
+                                <p> - - - -</p>
+                                <p> POOL 4</p>
+                                <p> Results:</p>
+                                <p> Thursday, September 12   Sri Lanka beat Pakistan by eight wickets.</p>
+                                <p> Monday, September 16   Sri Lanka beat Netherlands by 206 runs.</p>
+                                <p> Saturday, September 21   Pakistan beat Netherlands by nine wickets</p>
+                                <p> Final        P  W  L  T  NR Pts   Sri Lanka       2  2  0  0  0   8   Pakistan        2  1  1  0  0   4   Netherlands     2  0  2  0  0   0</p>
+                                <p> - - - -</p>
+                                <p> Semi-finals</p>
+                                <p> Wednesday, September 25   India     v South Africa (d/n), Premadasa</p>
+                                <p> (reserve day September 26)</p>
+                                <p> Friday, September 27   Australia v Sri Lanka (d/n), Premadasa</p>
+                                <p> (reserve day September 28)</p>
+                                <p> - - - -</p>
+                                <p> Sunday, September 29   Final (d/n), Premadasa</p>
+                                <p> (reserve day September 30)  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

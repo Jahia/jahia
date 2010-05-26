@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH01042_2002-09-23_15-57-32_3109980_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T155732+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH01042_2002-09-23_15-57-32_3109980_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH01042_2002-09-23_15-57-32_3109980</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH01042_2002-09-23_15-57-32_3109980:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:57:32 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T155732+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T155732+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH01042_2002-09-23_15-57-32_3109980_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Cricket"/>  <FormalName Scheme="N2000">CRIC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15017000</FormalName>  <Description xml:lang="en">Cricket</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ZA</FormalName>  <Description xml:lang="en">South Africa</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AFE</FormalName>  <Description xml:lang="en">Africa</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="News Product"/>  <FormalName Scheme="N2000_NewsProduct">AFN</FormalName>  <Description xml:lang="en">African Domestic News Service (Reuters)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Genre"/>  <FormalName Scheme="N2000">RSLT</FormalName>  <Description xml:lang="en">Results, Listings and Statistics (Sports)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T155732Z_01_3109980_RTRIDST_0_SPORT-CRICKET-SAFRICA-RESULTS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH01042_2002-09-23_15-57-32_3109980_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Cricket-SuperSport Series results</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-CRICKET-SAFRICA-RESULTS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-CRICKET-SAFRICA-RESULTS:Cricket-SuperSport Series results</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <Genre FormalName="Table"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="OUKSA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH01042_2002-09-23_15-57-32_3109980_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH01042_2002-09-23_15-57-32_3109980_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T155732+0000"/>
+                        <Property FormalName="USN" Value="3109980"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p>   DURBAN, Sept 23 (Reuters) - Results of the opening round of  four day Supersport Series domestic first class matches in South  Africa on Monday:</p>
+                                <p> In Kimberley: Boland 333 (Steve Palframan 95, Vinod Kambli  61) and 188 (Con de Lange 58, Charl Pietersen 6-43). Griqualand  West 369 (Brett Tucker 182 not out, Wendell Bossenger 50) and  156-2 (Martyn Gidley 68 not out, Pieter Koortzen 67). Griqualand  West won by eight wickets.</p>
+                                <p> In Bloemfontein: Free State 164 (Johan van der Wath 56,  Charl Willoughby 5-49) and 198 (Jimmy Adams 67 not out, Charl  Willoughby 5-54). Western Province 376-9 decl (Ashwell Prince  98, Jonathan Maclean 57, Renier Munnik 87). Western Province won  by an innings and 14 runs.</p>
+                                <p> In Durban: Border 181 (Steven Pope 58, Nixon McLean 4-69)  and 286 (Steven Pope 86, Nixon McLean 4-47). Natal 102 (Monde  Zondeki 4-22, Andrew Pringle 4-40) and 289 (Jon Kent 104, Tyron  Henderson 4-56). Border won by 76 runs.</p>
+                                <p> In Potchefstroom: Eastern Province 442-2 decl (Carl  Bradfield 196, James Bryant 234 not out) and 219-3 decl (James  Bryant 88, Wade Wingfield 51 not out). North West 297 (James  Henderson 77, Arno Jacobs 64) and 271-9 (Arno Jacobs 73, Martin  Venter 72). Match drawn.</p>
+                                <p> In Johannesburg: Gauteng 405-9 decl (Daryll Cullinan 142,  Enoch Nkwe 106 not out, Siraaj Conrad 51 not out, Albie Morkel  6-110) and 145-7 decl. Easterns 380 (Andre Seymore 89, Zander de  Bruyn 68, David Terbrugge 4-59, Grant Elliot 4-56) and 108-5  (Zander de Bruyn 53 not out). Match drawn.</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

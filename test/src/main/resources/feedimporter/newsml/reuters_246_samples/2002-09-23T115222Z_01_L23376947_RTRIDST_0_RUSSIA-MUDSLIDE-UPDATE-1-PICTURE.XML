@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH94631_2002-09-23_11-52-22_L23376947_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T115222+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH94631_2002-09-23_11-52-22_L23376947_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH94631_2002-09-23_11-52-22_L23376947</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH94631_2002-09-23_11-52-22_L23376947:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:52:22 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T115222+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T115222+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94631_2002-09-23_11-52-22_L23376947_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">RU</FormalName>  <Description xml:lang="en">Russian Federation</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GG</FormalName>  <FormalName Scheme="ISO3166-alpha2">GE</FormalName>  <Description xml:lang="en">Georgia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="DISASTERS"/>  <FormalName Scheme="N2000">DIS</FormalName>  <FormalName Scheme="IPTCSubjectCodes">03000000</FormalName>  <Description xml:lang="en">Disasters</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="WEATHER"/>  <FormalName Scheme="N2000">WEA</FormalName>  <FormalName Scheme="IPTCSubjectCodes">17000000</FormalName>  <Description xml:lang="en">Weather</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T115222Z_01_L23376947_RTRIDST_0_RUSSIA-MUDSLIDE-UPDATE-1-PICTURE.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94631_2002-09-23_11-52-22_L23376947_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 1-Russian glacier-slip triggers floods, 100 missing</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>RUSSIA-MUDSLIDE (UPDATE 1, PICTURE)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>RUSSIA-MUDSLIDE (UPDATE 1, PICTURE):UPDATE 1-Russian glacier-slip triggers floods, 100 missing</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH94631_2002-09-23_11-52-22_L23376947_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH94631_2002-09-23_11-52-22_L23376947_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T115222+0000"/>
+                        <Property FormalName="USN" Value="L23376947"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (New story)</p>
+                                <p> By Yana Voitova</p>
+                                <p> VLADIKAVKAZ, Russia, Sept 23 (Reuters) - Rescuers battled to  find about 100 people still missing on Monday after a weekend  glacier-slip in the Caucasus mountains as meltwaters from the  fallen ice poured into villages and drove out residents.</p>
+                                <p> A spokesman for the emergencies ministry in the Russian  region of North Ossetia, on the mountainous border with former  Soviet Georgia, said rescuers had so far recovered six bodies.</p>
+                                <p> "Three of those have been identified -- and 95 people are  reported as missing, but it's impossible to say how many people  were in the area," the ministry spokesman said.</p>
+                                <p> Earlier, local officials said 24 bodies had been recovered.</p>
+                                <p> Around three million tonnes of ice, mud and rock hurtled   down on to rural communities around the village of Karmadon on  the northern edge of the Caucasus on Friday night after a third  of the Maili glacier broke away.</p>
+                                <p> Russian President Vladimir Putin, who on Saturday said a  huge catastrophe had occurred, on Monday urged officials to  determine the full scale of the calamity. "Then we can come up  with a plan for the area's recovery," he said in televised  comments.</p>
+                                <p> Rescue workers trudged up steep banks of grime, past tree  trunks ripped out of the ground by the force of the avalanche,  and hacked away at truck-sized lumps of ice with hand-tools.</p>
+                                <p> Speaking from North Ossetia, an emergencies ministry  spokesman said 20 million cubic metres (700 million cu ft) of  water had welled up to form a new lake after warm weather had  melted the ice.</p>
+                                <p> </p>
+                                <p> COMMUNICATIONS DISRUPTED</p>
+                                <p> In the flooded village of Gornaya Saniba, only the roof-tops  and chimneys of houses were visible above the swelling waters,  while dark brown torrents spewed out onto the surface of the  mudslide.</p>
+                                <p> Communications had been badly disrupted by the calamity  hampering rescue efforts, officials said.</p>
+                                <p> Russian news agencies quoted interior ministry officials as  saying as many as 113 people were missing in the sludge of mud,  debris and ice which stretched 33 km (20 miles) down the valley.</p>
+                                <p> Interfax news agency quoted an interior ministry spokesman  saying many local residents would not have been officially  registered in the area -- including refugees from conflicts  across the border in Georgia.</p>
+                                <p> "It will be hard enough to establish how many people are  missing among permanent residents," he said.</p>
+                                <p> A team of experts were in the region to try to discover the  cause of the disaster. "They say that there may have been slight  movements within the glacier beforehand which could be connected  to global warming," the spokesman said.</p>
+                                <p> Among the missing was 30-year-old Russian screen idol Sergei  Bodrov Junior, a cult figure best known for his action movies  who was filming his latest venture, "The Messenger", in the  area.</p>
+                                <p> Nine of his film crew had been found alive, but the fate of  Bodrov himself remained unknown.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

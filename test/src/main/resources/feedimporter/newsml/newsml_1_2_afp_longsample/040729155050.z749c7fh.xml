@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<NewsML>
+  <Catalog Href="http://www.afp.com/dtd/AFPCatalog.xml"/>
+  <NewsEnvelope>
+    <DateAndTime>20040729T155055Z</DateAndTime>
+  </NewsEnvelope>
+  <NewsItem>
+    <Identification>
+      <NewsIdentifier>
+        <ProviderId>afp.com</ProviderId>
+        <DateId>20040729</DateId>
+        <NewsItemId>040729155050.z749c7fh</NewsItemId>
+        <RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+        <PublicIdentifier>urn:newsml:afp.com:20040729:040729155050.z749c7fh:1</PublicIdentifier>
+      </NewsIdentifier>
+      <NameLabel>US-Internet-music-Apple</NameLabel>
+    </Identification>
+    <NewsManagement>
+      <NewsItemType FormalName="News"/>
+      <FirstCreated>20040729T155050Z</FirstCreated>
+      <ThisRevisionCreated>20040729T155050Z</ThisRevisionCreated>
+      <Status FormalName="Usable"/>
+    </NewsManagement>
+    <NewsComponent>
+      <NewsLines>
+        <HeadLine>Apple accuses RealNetworks of 'hacker' tactics in music war</HeadLine>
+        
+        <DateLine>WASHINGTON (AFP)</DateLine>
+        <CopyrightLine>© 2004 AFP</CopyrightLine>
+      </NewsLines>
+      <AdministrativeMetadata>
+        <Provider>
+          <Party FormalName="AFP"/>
+        </Provider>
+      </AdministrativeMetadata>
+      <DescriptiveMetadata>
+        <Language FormalName="en"/> 
+	<Genre FormalName="sched-lead"/>
+        <OfInterestTo FormalName="mmd--english--webwires--america--top"/>
+      </DescriptiveMetadata>
+      <NewsComponent>
+        <ContentItem>
+          <MediaType FormalName="Text"/>
+          <Format FormalName="bcNITF2.5"/>
+          <DataContent>
+            <media media-type="image" style="leftSide">
+<media-reference mime-type="" data-location="#photo0" />
+</media>
+<p>Apple accused software firm RealNetworks of using "hacker" tactics in developing a program to translate music files from Apple's format, and said it was studying legal action.</p>
+
+            <p>The reaction from Apple, the market leader in online music sales, came days after RealNetworks said it had developed a "Harmony" program that would allow consumers to take music downloaded from Apple's iTunes service and convert the files for transfer to non-Apple portable players.</p>
+            <p>Apple's online music is designed for its popular iPod music player, and the company was troubled by the effort by RealNetworks, which had been rebuffed earlier by Apple in an effort to cooperate on online music.</p>
+            <p>"We are stunned that RealNetworks has adopted the tactics and ethics of a hacker to break into the iPod, and we are investigating the implications of their actions under the DMCA (Digital Millennium Copyright Act) and other laws," Apple said in a statement.</p>
+            <p>"We strongly caution Real and their customers that when we update our iPod software from time to time it is highly likely that Real's Harmony technology will cease to work with current and future iPods."</p>
+            <p>There was no immediate reaction from RealNetworks, based in Seattle, Washington.</p>
+            <p>The moves by the two companies highlight the rising interest in the market for online music as well as the difficulties for consumers in dealing with different technical formats.</p>
+            <p>Competing formats by Real, Microsoft, Sony and Apple can make it complicated for consumers to use different services and music players</p>
+            <p>RealNetworks is known for its media software that competes with Windows Media Player for audio or video files, but also has its own online music service competing with Apple's.</p>
+            <p>The launch of the Harmony program was aimed at allowing consumers to use different online music services and portable music players, even if they are from competing firms.</p>
+            <p>In a statement this week, RealNetworks said that with its program "consumers can build their library of downloads secure in the knowledge that it will play on virtually whatever device they choose."</p>
+            <p>RealNetworks, which operates the RealOne Rhapsody online music service, had asked Apple several months ago for access to its technical data so that the Real and Apple formats could be compatible.</p>
+            <p>A Real-Apple alliance could have posed a strong challenge to the growing use of the Windows Media Audio (WMA) format developed by Microsoft and used by several online services and music players.</p>
+            <p>But Apple has sold some three million of iPod its music players since 2001 and claims about 70 percent of the market for online music downloads.</p>
+            <p>Jupiter Research predicts that online music sales will hit 270 million dollars this year in the US market, up from 100 million in 2003.</p>
+          </DataContent>
+        </ContentItem>
+      </NewsComponent>
+      <NewsComponent Duid="photo0">
+        <NewsLines> 
+          
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName=""/>
+          </Provider>
+          <Creator>
+            <Party FormalName=""/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.RDF62.290704155042.photo00.default-110x110.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="110"/>
+              <Property FormalName="Height" Value="110"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.RDF62.290704155042.photo00.default-245x245.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="245"/>
+              <Property FormalName="Height" Value="245"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+    </NewsComponent>
+  </NewsItem>
+</NewsML>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH92804_2002-09-23_10-15-39_N23134925_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T101539+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH92804_2002-09-23_10-15-39_N23134925_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH92804_2002-09-23_10-15-39_N23134925</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH92804_2002-09-23_10-15-39_N23134925:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 10:15:39 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T101539+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T101539+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92804_2002-09-23_10-15-39_N23134925_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Broadcasting, Publishing, Media"/>  <FormalName Scheme="N2000">PUB</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04010000</FormalName>  <Description xml:lang="en">Media (industry)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="ARTS, CULTURE, ENTERTAINMENT"/>  <FormalName Scheme="N2000">ENT</FormalName>  <FormalName Scheme="IPTCSubjectCodes">01000000</FormalName>  <Description xml:lang="en">Arts, culture, entertainment</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Tourism and leisure"/>  <FormalName Scheme="N2000">LEI</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04014000</FormalName>  <Description xml:lang="en">Leisure facilities</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Lifestyle"/>  <FormalName Scheme="N2000">LIF</FormalName>  <FormalName Scheme="IPTCSubjectCodes">10000000</FormalName>  <Description xml:lang="en">Living and lifestyle</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Advertising"/>  <FormalName Scheme="N2000">ADV</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04010001</FormalName>  <Description xml:lang="en">Advertising</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Company"/>  <FormalName Scheme="reuters_RIC">GE.N</FormalName>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Company"/>  <FormalName Scheme="reuters_RIC">VIAb.N</FormalName>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Company"/>  <FormalName Scheme="reuters_RIC">DIS.N</FormalName>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="Company"/>  <FormalName Scheme="reuters_RIC">AOL.N</FormalName>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_14">  <TopicType FormalName="Company"/>  <FormalName Scheme="reuters_RIC">FOX.N</FormalName>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_15">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T101539Z_01_N23134925_RTRIDST_0_LEISURE-EMMYS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92804_2002-09-23_10-15-39_N23134925_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>"West Wing" shows power of presidency at Emmys</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>LEISURE-EMMYS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>LEISURE-EMMYS:"West Wing" shows power of presidency at Emmys</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="UKI"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_14"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_15"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH92804_2002-09-23_10-15-39_N23134925_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH92804_2002-09-23_10-15-39_N23134925_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T101539+0000"/>
+                        <Property FormalName="USN" Value="N23134925"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Steve Gorman</p>
+                                <p> LOS ANGELES, Sept 23 (Reuters) - The prime-time Emmy Awards  have proved again that no one should ever underestimate the  power of the presidency, at least on television.</p>
+                                <p> NBC's hit political series "The West Wing" was named best  drama series for a third year in a row on Sunday, while earning  acting awards for three of its cast members, burying the  competition posed by HBO's upstart family of undertakers on  "Six Feet Under."</p>
+                                <p> NBC, which received 89 nominations overall for television's  top awards, led its network rivals in total wins during the  Emmy telecast, taking nine awards, followed by seven prizes for  the premium cable channel HBO, which received 93 nominations.</p>
+                                <p> The two networks tied at 24 for total number of awards won  on Sunday and at the Creative Arts Emmys handed out last week,  mostly for technical achievements.</p>
+                                <p> Perhaps capitalizing on prevailing patriotic sentiments a  year after Sept. 11, "West Wing" was part of a bigger trend in  which favorite shows and familiar faces, including "Friends"  and "Everybody Loves Raymond," largely prevailed over edgier  fare on cable networks, such as HBO's "Six Feet Under" and "Sex  and the City."</p>
+                                <p> "Friends," television's top-rated show, which is headed  into its ninth and presumed final season, won its first Emmy as  best comedy series on its fifth time out in that category.  Jennifer Aniston, who plays Rachel Green on the NBC smash  sitcom, claimed the prize for best actress in a comedy.</p>
+                                <p> Another popular comedy, the CBS hit "Everybody Loves  Raymond," garnered acting honors for three of its cast members  -- a first win for star Ray Romano for best actor, a first  victory for Brad Garrett in the supporting role as Ray's older  brother, and a supporting actress prize for Doris Roberts. It  was her third career Emmy and the second for her role as Ray's  meddling mother.</p>
+                                <p> In the evening's biggest surprise, Michael Chiklis was  named best actor in a drama series for his role as a corrupt  cop in the FX cable network's controversial but critically  lauded police series "The Shield." The award, the first ever  for the FX network, took Chiklis by surprise and left him  speechless.</p>
+                                <p> Stockard Channing was one of the night's biggest individual  winners, taking home two supporting-actress prizes -- one for  her role as the first lady on "The West Wing" and another for  playing the mother in "The Matthew Shepard Story," the tale of  the young homosexual college student tortured and murdered for  being gay.</p>
+                                <p> "West Wing" also garnered acting laurels for John Spencer,  named best supporting actor in a drama series for playing the  White House chief of staff, and for Allison Janney as best  actress in a drama series as the presidential press secretary.  Janney previously won two awards as supporting actress for that  role.</p>
+                                <p> HUMOR MIXED WITH SOMBER THEME</p>
+                                <p> The evening mixed irreverent humor from host Conan O'Brien  with a recurrent somber theme as Sept. 11 figured in several of  the evening's big moments.</p>
+                                <p> Last year's all-star concert extravaganza "America: A  Tribute to Heroes," won the prize for best musical and variety  special. The Academy of Television Arts and Sciences also paid  special tribute to the major networks for their unprecedented  simulcast of the telethon, which raised hundreds of millions of  dollars for the survivors of the Sept. 11 attacks with  performances by such recording stars as Bruce Springsteen, Neil  Young and Billy Joel.</p>
+                                <p> Backstage, former New York Mayor Rudolph Giuliani said the  special offered TV viewers comfort at a time when they were  feeling tremendous loss.</p>
+                                <p> "It was a period of time when people felt isolated and  alone ... it said to people, 'You're not alone. There is a lot  of support, a lot of help.'"</p>
+                                <p> World War Two figured prominently in a raft of awards won  by two HBO productions -- the miniseries "Band of Brothers,"  produced by Tom Hanks and Steven Spielberg, and the movie about  Winston Churchill's rise to power to fight Adolf Hitler, "The  Gathering Storm."</p>
+                                <p> Each won a best Emmy in its category and Albert Finney was  named best actor in a TV movie for his role as Churchill.  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

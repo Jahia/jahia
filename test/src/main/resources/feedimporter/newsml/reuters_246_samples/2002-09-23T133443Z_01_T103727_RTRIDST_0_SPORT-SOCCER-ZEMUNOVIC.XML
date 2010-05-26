@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH97142_2002-09-23_13-34-43_T103727_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T133443+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH97142_2002-09-23_13-34-43_T103727_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH97142_2002-09-23_13-34-43_T103727</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH97142_2002-09-23_13-34-43_T103727:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:34:43 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T133443+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T133443+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97142_2002-09-23_13-34-43_T103727_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Soccer"/>  <FormalName Scheme="N2000">SOCC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15054000</FormalName>  <Description xml:lang="en">Soccer</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">JP</FormalName>  <Description xml:lang="en">Japan</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">KR</FormalName>  <Description xml:lang="en">Korean Republic (south)</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">YU</FormalName>  <Description xml:lang="en">Yugoslavia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T133443Z_01_T103727_RTRIDST_0_SPORT-SOCCER-ZEMUNOVIC.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97142_2002-09-23_13-34-43_T103727_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Soccer-Zemunovic hoping Ahn can rescue S-Pulse</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-SOCCER-ZEMUNOVIC</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-SOCCER-ZEMUNOVIC:Soccer-Zemunovic hoping Ahn can rescue S-Pulse</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH97142_2002-09-23_13-34-43_T103727_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH97142_2002-09-23_13-34-43_T103727_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T133443+0000"/>
+                        <Property FormalName="USN" Value="T103727"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Alastair Himmer</p>
+                                <p> TOKYO, Sept 23 (Reuters) - Shimizu S-Pulse manager Zdravko  Zemunovic will be hoping that new signing Ahn Jung-hwan can  provide his team with a quick fix after four defeats in five  matches in the J-League second stage.</p>
+                                <p> The South Korea striker, who helped the co-hosts reach the  semi-finals of the World Cup, is expected to make his debut  against high-flying Urawa Reds at Saitama Stadium on Saturday  and a win could not come soon enough for S-Pulse or Zemunovic.</p>
+                                <p> S-Pulse finished a respectable fourth in total points over  the two stages last season under Zemunovic, who took over from  Briton Steve Perryman in December 2000.</p>
+                                <p> Although they won their second successive Xerox Super Cup --  the traditional season curtain-raiser -- under the Yugoslav  earlier this year, little has gone right for S-Pulse since.</p>
+                                <p> The team finished seventh in the first stage and Zemunovic  has come increased pressure in recent weeks after a string of  poor results, culminating in a 3-1 defeat at Vegalta Sendai at  the weekend.</p>
+                                <p> Press reports of discontent among the players, said to be  unhappy about Zemunovic's tactics, have done little to lift the  sombre mood at Shimizu.</p>
+                                <p> The arrival of Ahn following drawn-out talks between Italian  club Perugia, where he spent the last two years on loan, and  K-League club Pusan I.cons, could not have come a moment too  soon for the under-fire Zemunovic.</p>
+                                <p> S-Pulse, who won the J-League second stage title in 1999 and  the Asian Cup Winners Cup in 2000 under Perryman, have a wealth  of talent at their disposal, making their current position  second from bottom of the first division all the more puzzling.</p>
+                                <p> </p>
+                                <p> GLORY DAYS</p>
+                                <p> In addition to Ahn, Zemunovic can call on the services of  Japan internationals Alex, Kazuyuki Toda, Daisuke Ichikawa and  Ryuzo Morioka, although the central defender has missed most of  the second stage with injury.</p>
+                                <p> Always well balanced and technically sound under Perryman  and his predecessor Osvaldo Ardiles, S-Pulse have been leaking  goals with an alarming regularity this season.</p>
+                                <p> They have already conceded 10 in five second-stage matches,  more than any club in the first division.</p>
+                                <p> "Whoever took over from Ossie and me was facing a tough job  at Shimizu," Perryman told Reuters by telephone. "S-Pulse had  their own identity and style under Ossie and then me. Maybe the  players feel that the team is style-less now."</p>
+                                <p> Ardiles, who managed the club with Perryman as his assistant  from 1996 to 1998, laid the foundation for the success S-Pulse  enjoyed over the next two years, when they were arguably the  most exciting team in Japan.</p>
+                                <p> Whether Ahn, who famously scored the golden goal that  knocked Italy out of the World Cup, can bring the glory days  back to S-Pulse remains to be seen.</p>
+                                <p> For now, Zemunovic will be hoping the 26-year-old can simply  help salvage their season, and perhaps save his job.</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

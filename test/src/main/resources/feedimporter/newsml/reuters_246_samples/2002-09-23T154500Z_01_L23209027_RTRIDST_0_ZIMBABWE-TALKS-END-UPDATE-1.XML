@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH00755_2002-09-23_15-45-00_L23209027_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T154500+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH00755_2002-09-23_15-45-00_L23209027_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH00755_2002-09-23_15-45-00_L23209027</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH00755_2002-09-23_15-45-00_L23209027:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:45:00 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T154500+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T154500+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00755_2002-09-23_15-45-00_L23209027_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AFE</FormalName>  <Description xml:lang="en">Africa</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">NG</FormalName>  <Description xml:lang="en">Nigeria</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ZA</FormalName>  <Description xml:lang="en">South Africa</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ZW</FormalName>  <Description xml:lang="en">Zimbabwe</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="Government and private aid"/>  <FormalName Scheme="N2000">AID</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04008007</FormalName>  <Description xml:lang="en">Private/Government Aid</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_12">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_13">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T154500Z_01_L23209027_RTRIDST_0_ZIMBABWE-TALKS-END-UPDATE-1.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00755_2002-09-23_15-45-00_L23209027_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 1-No agreement at Commonwealth Zimbabwe talks</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>ZIMBABWE-TALKS-END (UPDATE 1)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>ZIMBABWE-TALKS-END (UPDATE 1):UPDATE 1-No agreement at Commonwealth Zimbabwe talks</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="C"/>
+                    <OfInterestTo FormalName="D"/>
+                    <OfInterestTo FormalName="E"/>
+                    <OfInterestTo FormalName="M"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="U"/>
+                    <OfInterestTo FormalName="MTL"/>
+                    <OfInterestTo FormalName="GRO"/>
+                    <OfInterestTo FormalName="SOF"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFN"/>
+                    <OfInterestTo FormalName="SF"/>
+                    <OfInterestTo FormalName="AUF"/>
+                    <OfInterestTo FormalName="UKI"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_12"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_13"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH00755_2002-09-23_15-45-00_L23209027_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH00755_2002-09-23_15-45-00_L23209027_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T154500+0000"/>
+                        <Property FormalName="USN" Value="L23209027"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (Adds quotes from official communique, diplomat)</p>
+                                <p> ABUJA, Sept 23 (Reuters) - A Commonwealth group ended talks  on Monday divided on the issue of new sanctions against Zimbabwe  for its land and political policies, an official communique  said.</p>
+                                <p> The Commonwealth "troika", comprising Nigeria, South Africa  and Australia, failed to agree on toughening limited sanctions  imposed on Zimbabwe in March because of objections from South  Africa and Nigeria, it said.</p>
+                                <p> "Whilst all members of the troika strongly believe that  efforts to engage the government of Zimbabwe should continue,  one member, Australia, supported the full suspension with  immediate effect," said a statement by the committee.</p>
+                                <p> The troika was meeting in the Nigerian capital Abuja to  review what steps Zimbabwe has taken to avert further action  after it was suspended from the Commonwealth in March, following  Mugabe's controversial re-election.     </p>
+                                <p> The statement said that Nigeria and South Africa wish to see  how Zimbabwe responds over the next six months to the measures  imposed in March, "at which point stronger measures might need  to be considered".</p>
+                                <p> Diplomats described the atmosphere at the talks, which had  been overshadowed by a war of words between Zimbabwe and  Australia, as tense.</p>
+                                <p> "It was hot in there. The jackets were off," said one  diplomat.</p>
+                                <p> The statement said the Commonwealth had mandated South  African President Thabo Mbeki and Nigerian President Olusegun  Obasanjo in March to try to reconcile Zimbabwean President  Robert Mugabe and his domestic political opponents, but that  regrettably this process has stalled.</p>
+                                <p> The Commonwealth Secretary-General Don McKinnon told a  meeting that, as a consequence, "the level of suspicion,  division and hostility between the various parties in Zimbabwe  had increased considerably in recent months".</p>
+                                <p> "Reports of harassment of the political opposition, the  press and sections of the judiciary continued," the statement  said, quoting McKinnon.</p>
+                                <p> Mugabe decided at the last minute on Sunday to boycott the  talks.</p>
+                                <p> The committee regretted that despite repeated efforts, the  Commonwealth secretary-general had been unable to establish a  dialogue with the government of Zimbabwe.</p>
+                                <p> "The committee was also deeply disappointed that the  president of Zimbabwe had not taken up their invitation to come  to Abuja to dialogue with them," it said.  </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

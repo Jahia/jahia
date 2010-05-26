@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH00866_2002-09-23_15-49-56_L23415614_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T154956+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH00866_2002-09-23_15-49-56_L23415614_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH00866_2002-09-23_15-49-56_L23415614</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH00866_2002-09-23_15-49-56_L23415614:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:49:56 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T154956+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T154956+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00866_2002-09-23_15-49-56_L23415614_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IL</FormalName>  <Description xml:lang="en">Israel</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PS</FormalName>  <Description xml:lang="en">Palestine</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T154956Z_01_L23415614_RTRIDST_0_MIDEAST-BULLDOZERS-PICTURE.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00866_2002-09-23_15-49-56_L23415614_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>"Bulldozer" Sharon crushes Arafat compound</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>MIDEAST-BULLDOZERS (PICTURE)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>MIDEAST-BULLDOZERS (PICTURE):"Bulldozer" Sharon crushes Arafat compound</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="MD"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH00866_2002-09-23_15-49-56_L23415614_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH00866_2002-09-23_15-49-56_L23415614_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T154956+0000"/>
+                        <Property FormalName="USN" Value="L23415614"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Christine Hauser</p>
+                                <p> JERUSALEM, Sept 23 (Reuters) - Living up to his nickname,  "The Bulldozer", Israeli Prime Minister Ariel Sharon flattened  Yasser Arafat's compound with army earthmovers and excavators --  monster-machines Palestinians hate as symbols of occupation.</p>
+                                <p> In the past few days, the ungainly machines were at the  frontlines of what Israel calls its war on terror. They went  into high-profile action at Arafat's West Bank complex after  Palestinian suicide bombers killed seven people in Israel.</p>
+                                <p> The huge U.S.-made Caterpillar machines, outfitted with  armoured modifications, bit into the stone walls of buildings in  what became a wasteland, shearing off slabs of masonry. Rubble  cascaded around their tracks.</p>
+                                <p> On Monday, the army kept up its siege of the compound but  the heavy machinery fell silent. Washington had questioned the  demolitions, which Israel said were aimed at isolating Arafat.</p>
+                                <p> "Israeli actions in and around the Muqata (headquarters) are  not helpful in reducing terrorist violence or promoting  Palestinian reforms," a White House spokeswoman said.</p>
+                                <p> The ungainly machines had political reach in Ramallah, said  an Israeli Maariv newspaper commentator on Monday, by smothering  domestic pressure on Arafat for security and anti-corruption  reforms. The siege had won him sympathy among Palestinians.</p>
+                                <p> "The rebellion against Arafat which was gathering momentum  over the past few weeks was suppressed and put down, at least  temporarily, by Israel's bulldozers," wrote Ben Caspit.</p>
+                                <p> </p>
+                                <p> HATED SYMBOL FOR PALESTINIANS</p>
+                                <p> The burly Sharon earned his "bulldozer" nickname during a  long military and political career, for ambitious army  operations and for spearheading the planting of Jewish  settlements on land Israel occupied in the 1967 Middle East war.</p>
+                                <p> Since the Palestinian uprising began two years ago, the  armoured bulldozer has been a key weapon in Israel's arsenal.</p>
+                                <p> It has been used to demolish Palestinian houses, clear land  for roads designated for Jewish settlers and destroy olive and  fruit trees Israel says provide cover for gunmen.</p>
+                                <p> "Israel has been using bulldozers since the beginning of the  Intifada, usually in a razing policy," said Lior Yavne of the  Israeli human rights group B'Tselem. "They are an important part  of Israel's weaponry, just like a tank and an F-16."</p>
+                                <p> They are key in implementing a new Israeli policy,  criticised as collective punishment, to destroy houses of  families of militants in hopes it would deter future attacks.</p>
+                                <p> Army bulldozers shovel rubble and dirt to the entrances of  Palestinian villages and cities to make them impassable to  vehicles, in an attempt to stop militants. </p>
+                                <p> "It became a symbol during this Intifada because it seems  the Israeli policy is to destroy Palestinian infrastructure,"  said Palestinian human rights activist Bassam Eid. </p>
+                                <p> </p>
+                                <p> "ZIONIST'S BEST FRIEND"</p>
+                                <p> In the Israeli left-wing daily Ha'aretz on Friday, columnist  Doron Rosenblum called the bulldozer "the Zionist's best  friend".</p>
+                                <p> "Not a day goes by" when the bulldozer is not featured in  the headlines -- destroying a Palestinian militant's home,  vineyards, expanding roads, and building and demolishing borders  in Lebanon or villages and airfields in Sinai, he wrote.</p>
+                                <p> "When did we become a nation for which the bulldozer is the  symbol, the definer of its identity, the seal of its  borderlessness, the pillar of dust that goes before the camp?</p>
+                                <p> "Let it be recorded that from the seventh day of the (1967)  Six-Day War down to our time, the intoxicating allure of the  bulldozer has persisted unabated," Rosenblum wrote. </p>
+                                <p> "Truly, is there a military, tactical, strategic,  demographic, historiographic or even theological problem that  cannot be resolved with the help of our metallic buddy?"    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

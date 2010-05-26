@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH95849_2002-09-23_12-36-54_L23408248_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T123654+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH95849_2002-09-23_12-36-54_L23408248_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH95849_2002-09-23_12-36-54_L23408248</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH95849_2002-09-23_12-36-54_L23408248:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 12:36:54 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T123654+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T123654+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95849_2002-09-23_12-36-54_L23408248_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">YU</FormalName>  <Description xml:lang="en">Yugoslavia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Crime; Law Enforcement"/>  <FormalName Scheme="N2000">CRIM</FormalName>  <FormalName Scheme="IPTCSubjectCodes">02000000</FormalName>  <Description xml:lang="en">Crime; Law Enforcement</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="LAW"/>  <FormalName Scheme="N2000">LAW</FormalName>  <FormalName Scheme="IPTCSubjectCodes">02000000</FormalName>  <Description xml:lang="en">Legislation</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EG</FormalName>  <Description xml:lang="en">Egypt</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T123654Z_01_L23408248_RTRIDST_0_YUGOSLAVIA-KOSOVO-MURDER-PICTURE.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95849_2002-09-23_12-36-54_L23408248_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>U.N. policeman tried for Kosovo love tryst murder</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>YUGOSLAVIA-KOSOVO-MURDER (PICTURE)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>YUGOSLAVIA-KOSOVO-MURDER (PICTURE):U.N. policeman tried for Kosovo love tryst murder</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="MD"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH95849_2002-09-23_12-36-54_L23408248_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH95849_2002-09-23_12-36-54_L23408248_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T123654+0000"/>
+                        <Property FormalName="USN" Value="L23408248"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Shaban Buza</p>
+                                <p> PEC, Yugoslavia, Sept 23 (Reuters) - An Egyptian policeman  with the United Nations in Kosovo stood trial on Monday accused  of shooting dead his local interpreter when their love affair  turned sour.</p>
+                                <p> The murder trial, Kosovo's first involving an international  official, has put the spotlight on the behaviour and  accountability of peace workers in the U.N.-run province.</p>
+                                <p> Prosecutors in the western town of Pec said Sherif Abd  Elaziz, 33, killed his Albanian interpreter Vlora Berbati, 23,  because she either rejected his romantic advances or succumbed  and then nagged him for using her for sex and making false  promises to leave his wife.</p>
+                                <p>  According to the indictment, Elaziz sat brooding in his  office on the morning of January 5, 2002 and then summoned  Berbati to his house. Shots were fired and police found her  dying from three bullet wounds to the chest and abdomen.</p>
+                                <p> Elaziz was also shot, in his left arm, although it is not  clear how this happened. His arm was still immobilised in metal  struts as he listened to the charges against him in court.  Visibly agitated, he gripped a handful of his black shirt hard  with his able fist.</p>
+                                <p> He is also charged with stealing a pistol from the police  station, which was found at the scene. Mystery surrounds what  exactly happened that day, though Elaziz acknowledged in court  that his young translator was among several lovers he had.</p>
+                                <p> Elaziz has pleaded not guilty. He told the court that  Berbati found the gun under his pillow and in a state of anxiety  shot him and then accidentally shot herself three times.</p>
+                                <p> This is the most serious case yet against a U.N. official in  Kosovo, which has been run as a U.N. protectorate since 1999,  when a NATO bombing campaign to halt Serb repression of the  Albanian majority drove out Slobodan Milosevic's forces.</p>
+                                <p> The charges have stoked concerns about the behaviour of some  of the 4,500 international police in the province, along with  more than 30,000 peacekeepers and thousands of other officials.</p>
+                                <p> A scandal erupted in March when an Austrian policeman  accused of beating and threatening a prisoner was whisked out of  the province by his superiors, ostensibly for medical reasons  but effectively avoiding justice in Kosovo.</p>
+                                <p> Three other international police officers are awaiting trial  in the province on various unconnected charges.</p>
+                                <p> The Elaziz case is expected to last until October 7. He  faces between 10 and 40 years in jail if found guilty.</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93763_2002-09-23_11-13-14_N23251068_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T111314+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93763_2002-09-23_11-13-14_N23251068_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93763_2002-09-23_11-13-14_N23251068</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93763_2002-09-23_11-13-14_N23251068:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 11:13:14 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T111314+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T111314+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93763_2002-09-23_11-13-14_N23251068_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T111314Z_01_N23251068_RTRIDST_0_UN-REFORM-UPDATE-1-EMBARGOED.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93763_2002-09-23_11-13-14_N23251068_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 1-Annan calls for more effective United Nations</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>UN-REFORM (UPDATE 1, EMBARGOED)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>UN-REFORM (UPDATE 1, EMBARGOED):UPDATE 1-Annan calls for more effective United Nations</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93763_2002-09-23_11-13-14_N23251068_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93763_2002-09-23_11-13-14_N23251068_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T111314+0000"/>
+                        <Property FormalName="USN" Value="N23251068"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p>  (Embargoed for release at 11 a.m. EDT/1500 GMT)    (Updates throughout with Annan reform plan)</p>
+                                <p> By Irwin Arieff</p>
+                                <p> United Nations, Sept 23 (Reuters) - Acknowledging the  United Nations is bogged down in endless meetings and too many  reports, Secretary-General Kofi Annan unveiled a plan on Monday  to make the world body more efficient and better focused on the  most pressing global problems.</p>
+                                <p> Annan's second blueprint for U.N. reform, issued five years  after his first such plan, and nine months after he began his  second five-year term as secretary-general, aims to streamline  the 190-nation body so its programs better correspond to urgent  needs and can show results, he said.</p>
+                                <p> The revamp is not intended to eliminate staff, cut the  budget or save money.</p>
+                                <p> But if savings result, they will be applied during the next  budget cycle where they can do the most good, with a particular  emphasis on new information technology and job training, Annan  said in a report to the General Assembly, which controls the  U.N. budget and much of its program activity.</p>
+                                <p> With 15,484 meetings held and 5,879 reports issued -- each  in six languages -- during the latest two-year budget cycle,  U.N. officials say their workload has become so heavy it has  left them little time to carry out their required tasks, let  alone reflect on what their organization is doing and how well  it is performing.</p>
+                                <p> "The work program of the organization as a whole should be  better focused -- with fewer but more productive meetings, and  fewer but more useful documents," Annan said.</p>
+                                <p> REGIONAL HUBS</p>
+                                <p> He said his reform package was intended to assure the  greatest emphasis was placed on the economic and social ills --  such as extreme poverty, AIDS and educational shortcomings --  that weigh the heaviest on needy nations.</p>
+                                <p> Other issues, which have acquired new urgency in recent  years, also demanded additional attention and resources, he  said. Those include fighting terrorism, taming globalization  and attempting to prevent conflicts before they become  international crises.</p>
+                                <p> As part of the reform plan, the sprawling Department of  Public Information will be reorganized over the next three  years, with regional hubs replacing the 71 U.N. information  centers now found in major world capitals.</p>
+                                <p> The United Nations' many human rights bodies also will be  better coordinated to eliminate duplication and provide maximum  support for programs at the country level, the report said.</p>
+                                <p> Annan also called for personnel reforms, to rejuvenate the  United Nations' aging work force, improve working conditions  and increase staff mobility within the organization.</p>
+                                <p> The secretary-general issued his first reform plan in 1997  at the start of his first term. It had similar goals and led to  a number of structural changes in the U.N. bureaucracy as well  as some budgetary and personnel shifts.</p>
+                                <p> But the United Nations' 190 member-nations demand more from  the world body while keeping tight reins on its budget.</p>
+                                <p> Despite the reform plans, officials said, some parts of the  organization resisted change, clinging to traditional roles.</p>
+                                <p> Private aid groups continue to complain that in times of  crisis, the various U.N. agencies often compete with one  another for increasingly scarce funding, or work at cross  purposes, rather than agree to divide the work according to  which had the most relevant skills.</p>
+                                <p> The United Nations and its various agencies employ some  52,100 people worldwide, including 4,500 at its New York  headquarters.</p>
+                                <p> Its budget for the two-year period 2002-2003 is about $2.6  billion for regular operations. Peacekeeping missions are  funded separately.      </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

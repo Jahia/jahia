@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH98464_2002-09-23_14-30-52_L23487357_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T143052+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH98464_2002-09-23_14-30-52_L23487357_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH98464_2002-09-23_14-30-52_L23487357</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH98464_2002-09-23_14-30-52_L23487357:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:30:52 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T143052+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T143052+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98464_2002-09-23_14-30-52_L23487357_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">SD</FormalName>  <Description xml:lang="en">Sudan</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AFE</FormalName>  <Description xml:lang="en">Africa</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T143052Z_01_L23487357_RTRIDST_0_SUDAN-BOMBINGS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98464_2002-09-23_14-30-52_L23487357_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Sudan rebels say government blanket bombing south</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SUDAN-BOMBINGS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SUDAN-BOMBINGS:Sudan rebels say government blanket bombing south</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="AFN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH98464_2002-09-23_14-30-52_L23487357_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH98464_2002-09-23_14-30-52_L23487357_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T143052+0000"/>
+                        <Property FormalName="USN" Value="L23487357"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> NAIROBI, Sept 23 (Reuters) - Sudanese rebels accused the  government on Monday of widespread bombing of civilian targets  in the south, saying more than 20 people had been killed in  aerial attacks over the past week.</p>
+                                <p> The Sudan People's Liberation Army (SPLA) said Khartoum had  targeted a church, market place, villages and refugee camps  using newly purchased Russian MiG-29 bombers.</p>
+                                <p> There was no immediate comment from the government.  Swiss-based Christian Solidarity International confirmed in a  statement that several villages in Twic county, northern Bahr el  Ghazal, had been bombarded on Friday and Saturday, killing at  least five people including two boys aged three and 13.</p>
+                                <p> "These attacks are absolutely unjustified, since they are on  non-military targets," SPLA spokesman Samson Kwaje said in a  statement. "The targeted areas are IDP (internally displaced  people) camps, simple villages, cattle camps, churches and  market places.</p>
+                                <p> "The blanket aerial bombardment of civil infrastructure, in  our view, is also meant to further complicate the peace  process...The regime should come to the peace talks at Machakos  (in Kenya) so that a ceasefire can be negotiated, after a  comprehensive resolution of the conflict is achieved."</p>
+                                <p> The government in northern Sudan walked out of peace talks  -- widely seen as the best chance yet for ending 19 years of war  between the government and the SPLA -- earlier this month after  the rebels seized the strategic town of Torit.</p>
+                                <p> Broadly the war pits the rebels, fighting for more autonomy  in the mainly animist and Christian south from the largely  Muslim, Arabised north.</p>
+                                <p> There have been several reports of heavy fighting since the  peace talks broke down.</p>
+                                <p> Kwaje said 17 people were killed in an attack on a camp in  Western Equatoria province on Saturday, along with 200 cattle.  On the same day, at least four people were killed in Twic  county, he said.</p>
+                                <p> He said an Antonov plane dropped 14 bombs in Abyei on  Friday, killing a family while they slept. And on Thursday, five  villages around Bor town were also hit, hurting several people.</p>
+                                <p> Khartoum has said it will not return to the negotiating  table until the SPLA has signed a ceasefire, while the SPLA has  maintained its stance that it will not cease fire until all  other issues are resolved.</p>
+                                <p> Analysts say pressure from observers, especially the United  States, and war fatigue on both sides are likely to bring about  an eventual resumption of talks to end a civil war that has  killed two million people since 1983.</p>
+                                <p> But they say the interruption to talks is dangerous and have  urged mediators to use forceful diplomacy to get the  negotiations back on track.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

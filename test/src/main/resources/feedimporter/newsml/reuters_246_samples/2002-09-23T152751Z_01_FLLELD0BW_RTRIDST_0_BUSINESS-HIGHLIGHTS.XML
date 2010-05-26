@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH00376_2002-09-23_15-27-51_FLLELD0BW_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T152751+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH00376_2002-09-23_15-27-51_FLLELD0BW_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH00376_2002-09-23_15-27-51_FLLELD0BW</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH00376_2002-09-23_15-27-51_FLLELD0BW:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:27:51 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T152751+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T152751+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00376_2002-09-23_15-27-51_FLLELD0BW_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OSM</FormalName>  <Description xml:lang="en">Summaries, highlights</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T152751Z_01_FLLELD0BW_RTRIDST_0_BUSINESS-HIGHLIGHTS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00376_2002-09-23_15-27-51_FLLELD0BW_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Reuters Business News Highlights 1527 GMT Sept 23</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>BUSINESS-HIGHLIGHTS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>BUSINESS-HIGHLIGHTS:Reuters Business News Highlights 1527 GMT Sept 23</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="ABX"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="AFN"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH00376_2002-09-23_15-27-51_FLLELD0BW_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH00376_2002-09-23_15-27-51_FLLELD0BW_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T152751+0000"/>
+                        <Property FormalName="USN" Value="FLLELD0BW"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> Germany faces reform gridlock after election</p>
+                                <p> BERLIN - Germany faced the prospect of continued economic  stagnation on Monday after Chancellor Gerhard Schroeder won  Sunday's election with a reduced majority that narrowed his  scope to implement painful reforms.</p>
+                                <p> Schroeder's centre-left government of Social Democrats and  Greens got a majority of just nine over the combined opposition  parties, down from 21 at the last election.</p>
+                                <p> - - - -</p>
+                                <p> War fever drives oil price up to 19-month peak</p>
+                                <p> LONDON - War fever drove U.S. oil prices to a new 19-month  high on Monday as dealers took fright at the growing threat of a  U.S. assault on Iraq.</p>
+                                <p> Benchmark U.S. crude oil jumped 41 cents to $30.25 a barrel  by late morning in London, after setting a high of $30.48, its  highest level since February last year.</p>
+                                <p> - - - -</p>
+                                <p> Wal-Mart sees muted Sept sales, sector suffers</p>
+                                <p> CHICAGO - Wal-Mart Stores Inc. and other top U.S. retailers  sounded a cautious note on September sales on Monday, sending  shares across the sector lower amid concern that the industry  managed only modest improvement over last year's Sept.  11-weakened sales.</p>
+                                <p> Wal-Mart, the world's biggest retailer, said it expected  September sales at stores open at least a year to come in near  the low end of its growth forecast of 4 percent to 6 percent.</p>
+                                <p> - - - -</p>
+                                <p> Beiersdorf shares fly on P&amp;G bid talk</p>
+                                <p> FRANKFURT - Shares in Beiersdorf AG soared on Monday as  investors flocked back to the maker of Nivea skin products on  renewed prospects of a takeover battle involving U.S. consumer  products giant Procter &amp; Gamble.</p>
+                                <p> - - - -</p>
+                                <p> U.S.'s O'Neill-Worst of corporate scandals is past</p>
+                                <p> LEXINGTON - U.S. Treasury Secretary Paul O'Neill on Monday  said the tide of business accounting scandals that shook Wall  Street over the summer appears to have ebbed.</p>
+                                <p> "I am confident that the worst of the corporate scandals is  behind us - call them what you will, but I can't believe any CEO  still standing would be stupid enough to falsely certify their  books. Not when jail time is the certain consequence," O'Neill  said in prepared remarks to be delivered to the Lexington  Chamber of Commerce and students from the University of  Kentucky's business school.</p>
+                                <p> - - - -</p>
+                                <p> US Aug leading indicators down 3rd straight month</p>
+                                <p> WASHINGTON - A key indicator of U.S. economic activity fell  for a third straight month in August, signaling a threat of  economic slowdown, a private research firm said on Monday.</p>
+                                <p> The Conference Board said the U.S. index of leading economic  indicators fell 0.2 percent in August after a revised 0.1  percent drop in July and a 0.2 percent fall in June.</p>
+                                <p> - - - -</p>
+                                <p> JDS trims first-quarter sales target</p>
+                                <p> OTTAWA - JDS Uniphase Corp. joined the chorus of companies  wounded by a steep slowdown in the telecommunications market on  Monday, trimming its first-quarter sales guidance amid slack  demand for its fibre-optic components.</p>
+                                <p> - - - -</p>
+                                <p> Italian jobless rate dips to near 10-yr low</p>
+                                <p> ROME - Italian unemployment fell unexpectedly in July,  slipping to its lowest level in almost 10 years and providing a  rare ray of light for Prime Minister Silvio Berlusconi in an  otherwise murky economic landscape.</p>
+                                <p> In a quarterly unemployment report released on Monday  national statistics agency ISTAT said the seasonally adjusted  jobless rate in the euro zone's third-largest economy was 9.0  percent in July versus 9.1 percent in April.</p>
+                                <p> - - - -</p>
+                                <p> Dole shares rise 25 pct on management buyout offer</p>
+                                <p> CHICAGO - Shares of Dole Food Co., the world's largest  producer of fresh fruits, rose more than 25 percent on Monday, a  day after the company's chief executive offered to take Dole  private with a $1.26 billion cash bid.</p>
+                                <p> - - - -</p>
+                                <p> U.S. stocks fall; market gauges sink about 2 pct</p>
+                                <p> NEW YORK - Stocks skidded further at mid-morning on Monday,  driving major market gauges down about 2 percent, as dim  outlooks from companies ranging from telecom gear maker JDS  Uniphase Corp. to retailer Wal-Mart Stores Inc. fanned worries  over corporate health.</p>
+                                <p> "We had come to a point where earnings revisions had come  down in terms of magnitude with every quarter, but now they seem  to be accelerating," said Owen Fitzpatrick, head of U.S. equity  group at Deutsche Bank Private Banking, which oversees $7  billion.</p>
+                                <p> - - - -</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH95005_2002-09-23_12-04-46_3107978_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T120446+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH95005_2002-09-23_12-04-46_3107978_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH95005_2002-09-23_12-04-46_3107978</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH95005_2002-09-23_12-04-46_3107978:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 12:04:46 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T120446+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T120446+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95005_2002-09-23_12-04-46_3107978_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ES</FormalName>  <Description xml:lang="en">Spain</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Cycling"/>  <FormalName Scheme="N2000">CYCL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15019000</FormalName>  <Description xml:lang="en">Cycling</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T120446Z_01_3107978_RTRIDST_0_SPORT-CYCLING-SPAIN.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH95005_2002-09-23_12-04-46_3107978_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Cycling-Heras prepares to go on attack again</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-CYCLING-SPAIN</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-CYCLING-SPAIN:Cycling-Heras prepares to go on attack again</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH95005_2002-09-23_12-04-46_3107978_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH95005_2002-09-23_12-04-46_3107978_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T120446+0000"/>
+                        <Property FormalName="USN" Value="3107978"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> AVILES, Spain, Sept 23, (Reuters) - Spaniard Roberto Heras  will go on the attack again on Tuesday after winning his second  Tour of Spain stage on Sunday to take the overall lead.</p>
+                                <p> "The time I took on the Angliru isn't bad," Heras, who leads  the race by 35 seconds over Spaniard Aitor Gonzalez, told  reporters. "But now there is only the Covatilla to put more  distance between us.</p>
+                                <p> "Aitor Gonzalez has the Madrid time trial in his favour, and  he beat me in the Cordoba time trial, but I think the difference  in Madrid (a 41 kms test which concludes the race on Sunday)  will be smaller.</p>
+                                <p> Heras's weak point may be his U.S. Postal team. Three of his  eight team mates have already left the race. Two, Canadian  Michael Barry and Norwegian Steffen Kjaergaard, have dropped out  because of injuries, while Colombian Victor Hugo Peña was  expelled for holding on to a team car on Sunday.</p>
+                                <p> Of Heras's remaining team mates, only American Christian  Vandevelde has shown strongly on the climbs.</p>
+                                <p> "I have been waiting a long time to have such good condition  and now I plan to use it well," said Vandevelde, who so far has  always been by Heras's side on the lower slopes of the mountain  climbs.</p>
+                                <p> </p>
+                                <p> KELME DIVIDED</p>
+                                <p> Heras's domination of the mountains may enable him to pull  ahead on the 9.5 kms climb to the Covatilla ski station,  although neither Gonzalez nor his Kelme-Costa Blanca team mate  and nine-day leader Oscar Sevilla, now third overall, have given  up.</p>
+                                <p> Kelme are currently riven by internal divisions between  Gonzalez and Sevilla, after Gonzalez's acceleration on the  Angliru on Sunday caused his team mate to crack.</p>
+                                <p> "The way he rode wiped me out," Sevilla said. "I suddenly  realised that Gonzalez had gone, I don¹t know why he was in such  a hurry, none of our rivals had begun to attack."</p>
+                                <p> Gonzalez defended himself on Spanish radio by saying that he  had not realised that Sevilla was not able to follow him, and  that if he had done any damage it had been without realising it.</p>
+                                <p> But the team is now split between the two leaders. Kelme  team director Vicente Belda argued that ³Gonzalez would have to  do some explaining to his team mates on Tuesday.</p>
+                                <p> "I was as surprised as anybody by his attack, it wasn't what  we had planned by any means, Belda said.</p>
+                                <p> Nor can Tour runner-up Joseba Beloki be forgotten. While  unable to follow Heras, the Spaniard showed increasing strength  by finishing second behind the U.S. Postal rider on the Angliru  and moving up a spot to fourth overall.</p>
+                                <p> "I am getting better every day, even if I'm not in as good  condition as during the Tour," said Beloki. "I think I can now  get on two podiums in the same year."</p>
+                                <p> Should he do so, Beloki will be the first rider to finish on  a podium in both the Tour de France and the Tour of Spain since  the Vuelta changed dates from April to September seven years  ago.</p>
+                                <p> Heras's challenge is even more ambitious. Victory for the  climber in Madrid, his second in the Tour of Spain, would mean  U.S. Postal have become the first team to win two three-week  races in the same year since Miguel Indurain took the Tours of  Italy and France for Banesto in 1993.</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

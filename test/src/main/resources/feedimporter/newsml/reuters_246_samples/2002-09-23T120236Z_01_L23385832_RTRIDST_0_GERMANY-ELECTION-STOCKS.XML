@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH94921_2002-09-23_12-02-36_L23385832_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T120236+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH94921_2002-09-23_12-02-36_L23385832_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH94921_2002-09-23_12-02-36_L23385832</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH94921_2002-09-23_12-02-36_L23385832:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 12:02:36 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T120236+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T120236+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94921_2002-09-23_12-02-36_L23385832_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Energy"/>  <FormalName Scheme="N2000">ENR</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04005000</FormalName>  <Description xml:lang="en">Energy and Resources</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="ENVIRONMENT"/>  <FormalName Scheme="N2000">ENV</FormalName>  <FormalName Scheme="IPTCSubjectCodes">06000000</FormalName>  <Description xml:lang="en">Environment</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="EQUITIES MARKETS"/>  <FormalName Scheme="N2000">STX</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04009003</FormalName>  <Description xml:lang="en">Equities</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Hot stocks"/>  <FormalName Scheme="N2000">HOT</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04016041</FormalName>  <Description xml:lang="en">Hot stocks</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OEC</FormalName>  <Description xml:lang="en">Economic news, EC, business/financial pages</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T120236Z_01_L23385832_RTRIDST_0_GERMANY-ELECTION-STOCKS.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH94921_2002-09-23_12-02-36_L23385832_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>German election inflates green energy stocks</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>GERMANY-ELECTION-STOCKS</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>GERMANY-ELECTION-STOCKS:German election inflates green energy stocks</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH94921_2002-09-23_12-02-36_L23385832_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH94921_2002-09-23_12-02-36_L23385832_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T120236+0000"/>
+                        <Property FormalName="USN" Value="L23385832"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Marius Bosch</p>
+                                <p> FRANKFURT, Sept 23 (Reuters) - Victory for Germany's ruling  Social Democrat-Green coalition in Sunday's election sent  renewable energy and recycling firms' stocks higher on Monday as  investors banked on a continuation of clean energy policies.</p>
+                                <p> Shares in Nordex, which makes wind power generators, surged  as much as 29 percent and wind park operator Plambeck jumped 22  percent.</p>
+                                <p> Analysts said many investors feared that a change in  government could threaten some of the special incentives enjoyed  by renewable energy groups under the current government.</p>
+                                <p> German renewable energy companies are entitled to higher  rates for feeding power into the national grid than traditional  power generators as part of the government's support for  alternative energy sources.</p>
+                                <p> "Clearly, it looks like it will be business as usual. There  were some worries that there would be a change and that some of  the very high feed-in tariffs could be reduced," said James  Stettler, analyst at Dresdner Kleinwort Wasserstein in London.</p>
+                                <p> Many German wind energy firms are planning giant offshore  wind farms to generate power but sea-based wind farms are  expensive and government support is crucial for their success.</p>
+                                <p> "It is a relief that the Greens have done so well, which  means continued support. Germany today is the biggest wind  market... and they are obviously looking towards building  offshore windparks," Stettler said.</p>
+                                <p> Stettler pointed to Denmark, where a change in government  had thrown doubt over the construction of further offshore wind  parks.</p>
+                                <p> "Denmark has just finished the first offshore wind farm but  the shift to a conservative government has meant that there are  question marks over whether further wind farms will be built."</p>
+                                <p> </p>
+                                <p> RECYCLING GOVERNMENT</p>
+                                <p> In Norway, shares in bottle and can recycling group Tomra  jumped as much as 12 percent on Monday after  Schroeder's election victory boosted hopes of wider recycling in  Germany, dealers said.</p>
+                                <p> Germany is a key market for Tomra's machines that accept  bottles and cans for recycling while repaying a deposit. Its  shares gained on anticipation that Schroeder and his green  allies will carry through plans to mandate recycling of  non-refillable bottles and cans from 2003.</p>
+                                <p> Analysts expect a continuation of the Greens' initiatives,  such as the agreed phasing-out of German nuclear power plants by  the early 2020s, generous subsidies for renewable energy  industries and environmentally friendly combined heat and power  (CHP) plants as well as environmental taxes on energy use.</p>
+                                <p> Nordex and Plambeck are the biggest of the handful of  renewable energy firms listed on Germany's Neuer Markt for  growth stocks.</p>
+                                <p> Shares in other green energy firms such as Umweltkontor AG,  Repower and solar power firm Sunways rose as Schroeder's  coalition remained in power.</p>
+                                <p> "It is a clear goal of Schroeder's coalition that the  importance of renewable energy should increase and this sector  profits most from this election," said Trudbert Merkel, fund  manager at Deka Group in Frankfurt.</p>
+                                <p> Merkel, who saw the value of his 3.5 million Nordex shares  jump by as much as 3.6 million euros ($3.55 million) on Monday,  said renewable energy will become more important as traditional  energy sources dwindle.</p>
+                                <p> "Renewable energy will be the big topic in the long-term for  solving energy problems. It is clear that oil reserves are  running out and you will have to solve this problem."</p>
+                                <p> (Additional reporting by Vera Eckert and Alister Doyle in  Oslo).      </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

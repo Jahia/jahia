@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH92728_2002-09-23_10-10-39_L23360896_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T101039+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH92728_2002-09-23_10-10-39_L23360896_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH92728_2002-09-23_10-10-39_L23360896</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH92728_2002-09-23_10-10-39_L23360896:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 10:10:39 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T101039+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T101039+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92728_2002-09-23_10-10-39_L23360896_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T101039Z_01_L23360896_RTRIDST_0_GERMANY-UPDATE-2.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92728_2002-09-23_10-10-39_L23360896_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 2-Germany faces reform gridlock after election</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>GERMANY (UPDATE 2)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>GERMANY (UPDATE 2):UPDATE 2-Germany faces reform gridlock after election</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="C"/>
+                    <OfInterestTo FormalName="D"/>
+                    <OfInterestTo FormalName="E"/>
+                    <OfInterestTo FormalName="M"/>
+                    <OfInterestTo FormalName="O"/>
+                    <OfInterestTo FormalName="U"/>
+                    <OfInterestTo FormalName="MTL"/>
+                    <OfInterestTo FormalName="GRO"/>
+                    <OfInterestTo FormalName="SOF"/>
+                    <OfInterestTo FormalName="OIL"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH92728_2002-09-23_10-10-39_L23360896_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH92728_2002-09-23_10-10-39_L23360896_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T101039+0000"/>
+                        <Property FormalName="USN" Value="L23360896"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (recasts with analyst comment)</p>
+                                <p> By David Crossland</p>
+                                <p> BERLIN, Sept 23 (Reuters) - Germany faced the prospect of  continued economic stagnation on Monday after Chancellor Gerhard  Schroeder won Sunday's election with a reduced majority that  narrowed his scope to implement painful reforms.</p>
+                                <p> Schroeder's centre-left government of Social Democrats and  Greens got a majority of just nine over the combined opposition  parties, down from 21 at the last election.</p>
+                                <p> Share prices fell as analysts said the new government was  too weak to reform the world's third largest economy -- highly  taxed, highly regulated and seen in danger of becoming as  stagnant as Japan's.</p>
+                                <p> "The country remains ungovernable because it is impossible  to tackle its economic problems," said Karl-Heinz Nassmacher,  political scientist at Oldenburg University. "What we need is a  German Margaret Thatcher but where are we going to find her?"</p>
+                                <p> Schroeder said he would immediately start coalition talks  with the resurgent Greens, who saved his government with their  strong showing in the election while his Social Democrats (SPD)  fell.</p>
+                                <p> "Those who think that there will be large difficulties are  wrong," Schroeder told reporters as he entered SPD party  headquarters for a meeting of party leaders.</p>
+                                <p> The SPD fell 2.4 points to 38.5 percent as voters punished  it for failing to bring down unemployment in its first term.</p>
+                                <p> It was level with Edmund Stoiber's conservatives, who gained  3.4 points, also to 38.5 percent.</p>
+                                <p> The surge by the Greens, who gained 1.9 points to 8.6  percent, rescued the so-called Red-Green coalition's majority.</p>
+                                <p> Meanwhile Stoiber's prospective allies, the liberal Free  Democrats, let him down by gaining just 7.4 percent, far short  of their own expectations.</p>
+                                <p> The election was partly so close because Germans were torn  between liking the telegenic Schroeder and wanting to punish him  for failing to honour a promise to cut unemployment, still stuck  above four million, where it was when he took power in 1998.</p>
+                                <p> "I'm happy the old Chancellor is the new Chancellor. If the  opposition doesn't block reforms out of principle the majority  should be big enough," said Gabriele Forster, an insurance clerk  in Berlin.</p>
+                                <p> </p>
+                                <p> NEED FOR CONSENSUS BLOCKS REFORMS</p>
+                                <p> Germany's consensus-based political system, established  after World War Two to prevent a repeat of Hitler's one-party  rule, put up multiple hurdles to reforms being tackled,  Nassmacher said.</p>
+                                <p> For a policy to be implemented, Schroeder first had to  persuade his own Social Democrats, then the Greens, the vested  interests of trade unions and business, and a Bundesrat upper  house of parliament where he lacks a majority, said Nassmacher.</p>
+                                <p> Red-Green secured 306 of the 603 seats in parliament, ahead  of the conservatives and liberal FDP combined at 295. Including  two seats won by the reform communist Party of Democratic  Socialism, the SPD has a majority of nine seats over the  combined opposition parties.</p>
+                                <p> Schroeder must now move fast to repair relations with the  United States, damaged by his strict opposition to a U.S.-led  war on Iraq and by reports that his justice minister made  comments - which she denied - comparing President George W.  Bush's methods to Hitler's.</p>
+                                <p> Speculation is mounting that Herta Daeubler-Gmelin, whose  reported remarks caused outrage in Washington, will not be  included in Schroeder's next cabinet -- a possible first step  towards mending fences.</p>
+                                <p> </p>
+                                <p> BLEAK WINTER AHEAD</p>
+                                <p> Germany faces a bleak winter of weakening economic growth,  seen below 0.75 percent, and of wrangling with Brussels over a  budget deficit widely expected to exceed the European Union's  ceiling.</p>
+                                <p> "The next government is going to have a very, very slim  majority and that will inhibit any kind of change," CSFB chief  European economist Julian Callow said.</p>
+                                <p> The German DAX share index briefly dropped by as much as 1.4  percent at the open on Monday morning on disappointment about  the election outcome.</p>
+                                <p> Markets had hoped for a conservative-liberal coalition, seen  as more likely to cut taxes and implement business friendly  policies.</p>
+                                <p> Despite its wealth, world-leading infrastructure and mighty  industry, which churns out two billion euros' worth of goods  daily, Germany cannot sustain its way of life because it is  ageing too fast and growing too slowly to pay for its generous  welfare and health care systems, economists say.</p>
+                                <p> Schroeder's weakened government is confronted by powerful  vested interests in the trade unions and industry lobby groups,  and has been elected by a population accustomed to easy  prosperity and unwilling to stomach radical reform.</p>
+                                <p> It also faces an upper house of parliament, the Bundesrat,  dominated by opposition parties intent on thwarting the  government that narrowly robbed them of victory on Sunday.</p>
+                                <p> "The Schroeder government will only be able to govern for a  very, very short time," Stoiber, the Bavarian state premier,  told party faithful in Munich.</p>
+                                <p> "With this Red-Green coalition Germany won't return to  economic health and it won't break out of the isolation from  Europe and America that Schroeder drove it into."    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

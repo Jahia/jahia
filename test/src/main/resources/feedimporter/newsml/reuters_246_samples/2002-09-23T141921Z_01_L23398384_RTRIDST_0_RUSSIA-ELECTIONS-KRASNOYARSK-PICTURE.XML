@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH98206_2002-09-23_14-19-21_L23398384_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T141921+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH98206_2002-09-23_14-19-21_L23398384_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH98206_2002-09-23_14-19-21_L23398384</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH98206_2002-09-23_14-19-21_L23398384:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:19:21 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T141921+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T141921+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98206_2002-09-23_14-19-21_L23398384_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">RU</FormalName>  <Description xml:lang="en">Russian Federation</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Diversified metals and mining"/>  <FormalName Scheme="N2000">MET</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04012004</FormalName>  <Description xml:lang="en">Non Ferrous Metals</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T141921Z_01_L23398384_RTRIDST_0_RUSSIA-ELECTIONS-KRASNOYARSK-PICTURE.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98206_2002-09-23_14-19-21_L23398384_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Siberia poll boosts new type of Russian politician</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>RUSSIA-ELECTIONS-KRASNOYARSK (PICTURE)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>RUSSIA-ELECTIONS-KRASNOYARSK (PICTURE):Siberia poll boosts new type of Russian politician</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="C"/>
+                    <OfInterestTo FormalName="MTL"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH98206_2002-09-23_14-19-21_L23398384_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH98206_2002-09-23_14-19-21_L23398384_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T141921+0000"/>
+                        <Property FormalName="USN" Value="L23398384"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Clara Ferreira-Marques</p>
+                                <p> MOSCOW, Sept 23 (Reuters) - Voters in western Siberia  elected a slick young technocrat to head one of Russia's biggest  regions after the final round of a poll plagued by scandal,  according to results tallied on Monday.</p>
+                                <p> The election was called early after the death in a  helicopter crash of previous governor and pugnacious ex-general  Alexander Lebed, Russia's former security boss.</p>
+                                <p> Analysts said the outcome in the mineral-rich region  highlighted the emergence of a new breed of younger, smoother  politician ahead of parliamentary elections in December 2003.</p>
+                                <p> But the Kremlin, keen in earlier gubernatorial polls to  wield its influence in the provinces, remained noticeably absent  from this campaign. President Vladimir Putin did not back any of  the candidates after Kremlin support backfired in at least two  instances over the past year.</p>
+                                <p> The victory of Alexander Khloponin, 38-year-old former head  of nickel major Norilsk Nickel, the region's top financial  force, could mark a shift in Russian politics.</p>
+                                <p> Khloponin, seen as a well-groomed, efficient manager, could  be the first of a generation of technocrats turned politicians  after a decade of leaders recycled from Soviet bureaucracy,  Communist Party elites and industry magnates, or "oligarchs".</p>
+                                <p> Khloponin, governor of the Taimyr autonomous district in the  far north, scored 48.06 percent of the vote in the region which  stretches from near Mongolia to the Arctic Ocean.</p>
+                                <p> "The Russian political elite over the past 10 years has been  composed of the same faces -- like actors in a bad theatre. The  spectators are fed up with the show," Andrei Ryabov of the  Carnegie Endowment think tank said in Moscow.</p>
+                                <p> "We now see actors of a new genre, giving the elite  something to think about. The next wave of elections could well  see an overhaul of the governing class."</p>
+                                <p> The outcome was also a blow for the political clan still  sheltering under the umbrella of former president Boris Yeltsin,  a group financially backed by Russian Aluminium (RusAl), the  country's top aluminium producer.</p>
+                                <p> RusAl supported Khloponin's defeated rival in the run-off,  Alexander Uss, who won 41.84 percent.</p>
+                                <p> "This is a serious defeat for the Yeltsin clan in one of its  most important regions," Ryabov said. "This could trigger a  critical shift in the country's political balance."</p>
+                                <p> Uss, chairman of Krasnoyarsk's regional assembly, accused  Khloponin of using his Norilsk Nickel links to win a campaign  marked by smear campaigns, fake leaflets and bomb hoaxes.</p>
+                                <p> "The level of financial resources behind Khloponin was not  comparable to what I have. Ideological factors played no role,"  Uss said in televised comments.</p>
+                                <p> Only 46.82 percent of voters took part in the election.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

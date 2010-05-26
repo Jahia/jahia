@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH97825_2002-09-23_13-59-53_L23395558_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T135953+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH97825_2002-09-23_13-59-53_L23395558_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH97825_2002-09-23_13-59-53_L23395558</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH97825_2002-09-23_13-59-53_L23395558:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:59:53 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T135953+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T135953+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97825_2002-09-23_13-59-53_L23395558_MAIN_NC" xml:lang="ru">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GG</FormalName>  <FormalName Scheme="ISO3166-alpha2">GE</FormalName>  <Description xml:lang="en">Georgia</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">RU</FormalName>  <Description xml:lang="en">Russian Federation</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T135953Z_01_L23395558_RTRIDST_0_GEORGIA-RUSSIA.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <Metadata>
+                <MetadataType FormalName="NTM Data"/>
+                <Property FormalName="Sign Off" Value="MORE"/>
+            </Metadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97825_2002-09-23_13-59-53_L23395558_MAIN_TEXT_NC" xml:lang="ru">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Georgia says U.S. backs it in conflicts</HeadLine>
+                    <ByLine/>
+                    <DateLine>23 Сентябрь 2002 г.</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>GEORGIA-RUSSIA</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>GEORGIA-RUSSIA:Georgia says U.S. backs it in conflicts</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="ru"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH97825_2002-09-23_13-59-53_L23395558_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH97825_2002-09-23_13-59-53_L23395558_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T135953+0000"/>
+                        <Property FormalName="USN" Value="L23395558"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Niko Mchedlishvili</p>
+                                <p> TBILISI, Sep 23 (Reuters) - Georgian President Eduard  Shevardnadze, accused by Moscow of failing to deal with Chechen  rebels, welcomed on Monday what he said was U.S. backing in  dealing with his country's many post-Soviet problems.</p>
+                                <p> In his weekly radio address, Shevardnadze also invited  Russian military observers to watch over an operation to oust  the guerrillas from the remote Pankisi Gorge. He said military  action there had already yielded substantial results.</p>
+                                <p> Shevardnadze, a key player in ending the Cold War as Soviet  foreign minister, expressed satisfaction at two letters received  from Bush in the past two weeks as Russia intensified diplomatic  pressure on its much smaller Black Sea neighbour.</p>
+                                <p> "I want to say how much importance we attach to the  attention the U.S. president is paying to our country," he said.</p>
+                                <p> "America's support is important for our aims of building a  free, stable, democratic society."</p>
+                                <p> Russia has grown more insistent that Georgia eliminate  rebels it says move from Pankisi across the border to attack  Russian forces battling separatists in Chechnya. Defence  Minister Sergei Ivanov said last week Moscow could launch  "preventive strikes" inside Georgia if it felt threatened.</p>
+                                <p> Bush's most recent letter, made public on Saturday, urged  Georgia to cooperate with Russia in tackling the rebels and  resolving a standoff with separatists who proclaimed their own  state in Georgia's Abkhazia region a decade ago.</p>
+                                <p> Bush pledged to work with Georgia on both issues and said  Washington would help it achieve energy independence.</p>
+                                <p> Washington has warned Russia against launching any strike on  Georgian territory and repeated its backing for Georgia's  independence and territorial integrity.</p>
+                                <p> Shevardnadze said Bush had supported Tbilisi's proposals to  deal with the problems plaguing Georgia through three-way talks  with U.S. participation.</p>
+                                <p> "He (Bush) welcomes our proposals to hold three-sided talks,  this was noted for the first time. These talks would speed any  political settlement both to the Abkhaz problem and the Pankisi  gorge," Shevardnadze told the radio. "America will always  support us in such a difficult situation."</p>
+                                <p> Shevardnadze, who took power in Georgia months after the  collapse of Soviet rule, said his country would welcome the  dispatch of Russian and other monitors to Pankisi.</p>
+                                <p> "Let them send military observers, and here I mean unarmed  observers, to keep watch on the operation in the Pankisi Gorge  and in the other regions," he said.</p>
+                                <p> He said up to 2,500 troops were currently in the gorge and  that the operations there had resulted in the capture of arms,  equipment and documents.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH93032_2002-09-23_10-31-03_3107279_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T103103+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH93032_2002-09-23_10-31-03_3107279_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH93032_2002-09-23_10-31-03_3107279</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH93032_2002-09-23_10-31-03_3107279:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 10:31:03 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T103103+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T103103+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93032_2002-09-23_10-31-03_3107279_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AR</FormalName>  <Description xml:lang="en">Argentina</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">LATAM</FormalName>  <Description xml:lang="en">South and Central America</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T103103Z_01_3107279_RTRIDST_0_SPORT-SOCCER-ARGENTINA.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH93032_2002-09-23_10-31-03_3107279_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Soccer-Racing Club storm back to stun Boca with 4-3 victory</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-SOCCER-ARGENTINA</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-SOCCER-ARGENTINA:Soccer-Racing Club storm back to stun Boca with 4-3 victory</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH93032_2002-09-23_10-31-03_3107279_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH93032_2002-09-23_10-31-03_3107279_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T103103+0000"/>
+                        <Property FormalName="USN" Value="3107279"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Luis Ampuero</p>
+                                <p> BUENOS AIRES, Sept 23 (Reuters) - Racing Club staged a  remarkable comeback when they overturned a three-goal deficit to  beat Boca Juniors 4-3 on Sunday in the Argentine championship.</p>
+                                <p> Boca, Argentina's most popular club, appeared to be romping  to an easy home win against the team coached by former Tottenham  Hotspur and Argentina midfielder Osvaldo Ardiles with first half  goals from Marcelo Delgado and Carlos Tevez.</p>
+                                <p> Ardiles, who has had a difficult start on his return to  Argentine football after a 20-year absence, seemed to heading  for another miserable afternoon when right-back Hugo Ibarra  added a third shortly after the break.</p>
+                                <p> Racing, who won their first domestic title for 35 years last  year under Reinaldo Merlo, turned the match on its head with  three goals in an eight-minute spell from Adrian Bastia, Nicolas  Pavlovich and Boca's Clemente Rodriguez, who put through his own  net.</p>
+                                <p> Four minutes from time, teenager Mariano Gonzalez scored the  winner to complete a remarkable recovery that moves Racing up to  12th in the Apertura championship. Boca stayed third with 17  points after missing a chance to go level on points with leaders  Independiente, who have 20.</p>
+                                <p> River Plate moved into second place and cut Independiente's  lead to two points after inflicting a first defeat on the  leaders.</p>
+                                <p> Luis Alvarez opened the scoring for River two minutes into  the second half and Andres D'Alessandro scored the second three  minutes from time with his first goal of the championship.</p>
+                                <p> Lucas Pusineri pulled back a 90th minute goal for the Red  Devils.</p>
+                                <p> Rosario Central, under veteran coach Cesar Luis Menotti,  joined Boca on 17 points despite being held to a 0-0 draw at  home by struggling Chacarita Juniors.</p>
+                                <p> Sergio Batista's first game as coach of Talleres inspired  the Cordoba team to a 5-0 thrashing of Huracan. The defeat sent  Huracan to the bottom, below Estudiantes, whose miserable season  continued with a 2-1 home defeat by newly-promoted Arsenal.</p>
+                                <p> Estudiantes' latest reverse came four days after coach Oscar  Craviotto walked out on the La Plata-based club.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

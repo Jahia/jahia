@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH96586_2002-09-23_13-12-27_3108252_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T131227+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH96586_2002-09-23_13-12-27_3108252_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH96586_2002-09-23_13-12-27_3108252</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH96586_2002-09-23_13-12-27_3108252:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 13:12:27 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T131227+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T131227+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96586_2002-09-23_13-12-27_3108252_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ZR</FormalName>  <Description xml:lang="en">Democratic Rep of Congo</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AFE</FormalName>  <Description xml:lang="en">Africa</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T131227Z_01_3108252_RTRIDST_0_CONGO-DEMOCRATIC-HUNGER-PICTURES.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH96586_2002-09-23_13-12-27_3108252_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Rwanda pull-out from Congo may worsen aid problems</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>CONGO-DEMOCRATIC-HUNGER (PICTURES)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>CONGO-DEMOCRATIC-HUNGER (PICTURES):Rwanda pull-out from Congo may worsen aid problems</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNA"/>
+                    <OfInterestTo FormalName="AFN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH96586_2002-09-23_13-12-27_3108252_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH96586_2002-09-23_13-12-27_3108252_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T131227+0000"/>
+                        <Property FormalName="USN" Value="3108252"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Matthew Green</p>
+                                <p> GOMA, Congo, Sept 23 (Reuters) - Rwanda's pull-out from  Congo risks enflaming an already desperate humanitarian crisis  as armed groups battle for control in the resulting power  vacuum, aid workers said on Monday.</p>
+                                <p> Rwanda began withdrawing troops last week under a peace deal  aimed at ending a four-year war that has already killed an  estimated two million people, mainly through starvation and  disease.</p>
+                                <p> Gun battles between rebels and tribal warriors erupted hours  after Rwandans left the town of Kindu, a sign that the retreat  of the war's most disciplined force might disrupt relief work by  unleashing fresh mayhem.</p>
+                                <p> "The situation is already tragic, but it could get even  worse," said Bernard Leflaive, Congo country manager for the  Merlin emergency medical relief charity.</p>
+                                <p> "The sudden withdrawal by the Rwandans creates a vacuum for  instability," he told Reuters in the eastern Congolese city of  Goma, a hub for aid operations.</p>
+                                <p> Rwanda, pursuing a relentless quest for security following  its 1994 genocide, invaded the Democratic Republic of Congo to  neutralise militia who fled there after conducting the  massacres.</p>
+                                <p> Rwandan President Paul Kagame agreed to withdraw under a  July peace deal with Congolese President Joseph Kabila, who has  pledged to disarm the Rwandan rebels in return.</p>
+                                <p> But while Rwanda has surprised many in the region by  apparently beginning to pull out its troops, there has been  virtually no progress in disarming a host of militia groups  murdering, raping and pillaging in eastern Congo.</p>
+                                <p> The war has forced hundreds of thousands to flee their  homes, while many others are too scared to venture into their  fields to farm, crippling agriculture in a one-time tropical  breadbasket.</p>
+                                <p> Fearing an outbreak of violence when the Rwandans left,  Merlin evacuated international staff from Kindu ahead of the  pull-out, removing workers providing the only access to medical  care for most of the 140,000 inhabitants.</p>
+                                <p> </p>
+                                <p> SHOOT OUT IN MAIN STREET </p>
+                                <p> Aid workers are watching to see whether the Kindu scenario  -- where "Mai Mai" tribal fighters traded gunfire in a main  street with Rwandan-backed rebels on Thursday -- will be  repeated in other areas.</p>
+                                <p> "I'm sure that with this security situation we will lose  access to most of our beneficiaries," said Jean-Charles Dei,  eastern Congo coordinator for the World Food Programme, the  emergency food aid arm of the United Nations. "There will be a  humanitarian tragedy soon if something is not done urgently."</p>
+                                <p> The U.N. has only enough resources to feed 200,000 people in  the east of the country out of 800,000 in desperate need, Dei  said.</p>
+                                <p> The threat of ambush makes road travel impossible in many  areas, putting a premium on food drops by a flotilla of ageing  cargo planes criss-crossing the jungle canopy.</p>
+                                <p> If the militia havoc worsens, preventing relief workers from  landing at bush airstrips, then an even smaller proportion of  the needy will receive help.</p>
+                                <p> Rwanda is handing over control to its Congolese allies, the  RCD rebel movement, whose ill-disciplined, unpaid troops are  unlikely to deliver as much security as Rwanda.</p>
+                                <p> Young rebels in camouflage fatigues carrying battered AK-47  rifles are a common sight at remote grass airfields, but they  provide little comfort to pilots.</p>
+                                <p> "We're very worried about the impact this quick withdrawal  could have on the humanitarian situation," said Jean-Charles  Dupin, U.N. humanitarian coordinator for North Kivu, one of the  areas worst affected by the war. </p>
+                                <p> "We're very concerned about whether the RCD's army will be  able to fill the gap, and give guarantees to humanitarian  actors."      </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

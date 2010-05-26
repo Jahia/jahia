@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH00530_2002-09-23_15-34-46_L23420329_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T153446+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH00530_2002-09-23_15-34-46_L23420329_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH00530_2002-09-23_15-34-46_L23420329</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH00530_2002-09-23_15-34-46_L23420329:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:34:46 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T153446+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T153446+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00530_2002-09-23_15-34-46_L23420329_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Tennis"/>  <FormalName Scheme="N2000">TENN</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15065000</FormalName>  <Description xml:lang="en">Tennis</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">GB</FormalName>  <Description xml:lang="en">United Kingdom</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EEU</FormalName>  <Description xml:lang="en">Eastern Europe</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">RU</FormalName>  <Description xml:lang="en">Russian Federation</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">FR</FormalName>  <Description xml:lang="en">France</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T153446Z_01_L23420329_RTRIDST_0_SPORT-TENNIS-DAVIS-KAFELNIKOV.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00530_2002-09-23_15-34-46_L23420329_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Tennis-Kafelnikov get close to final goal</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-TENNIS-DAVIS-KAFELNIKOV</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-TENNIS-DAVIS-KAFELNIKOV:Tennis-Kafelnikov get close to final goal</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="UKI"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH00530_2002-09-23_15-34-46_L23420329_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH00530_2002-09-23_15-34-46_L23420329_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T153446+0000"/>
+                        <Property FormalName="USN" Value="L23420329"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Pritha Sarkar</p>
+                                <p> LONDON, Sept 23 (Reuters) - Yevgeny Kafelnikov has had only  one thing on his mind all year -- to win the Davis Cup for  Russia before hanging up his racket for good.</p>
+                                <p> While the 28-year-old has been chanting his Davis Cup mantra  at every opportunity throughout the year, the trophy is at last  within touching distance after Kafelnikov and Marat Safin  steered Russia into their third final with victory over  Argentina at the weekend.</p>
+                                <p> Hoping to spoil Kafelnikov's farewell party will be the  likes of Sebastien Grosjean, Arnaud Clement, Fabrice Santoro or  any other willing candidate picked by captain Guy Forget, who  will be hoping to lead France to their 10th Davis Cup triumph.</p>
+                                <p> The French will host the final but the venue has yet to be  decided.</p>
+                                <p> "Davis Cup keeps me going as I want to win it badly before I  retire," Kafelnikov said as far back as February during the  Rotterdam ATP tournament.</p>
+                                <p> Having bagged the French and Australian Open crowns, the  often outspoken Russian feels he has little left to prove,  except perhaps in the sport's premier team competition.</p>
+                                <p> Despite guiding Russia into the finals twice during the  1990s, Kafelnikov clearly feels he will have unfinished business  in his career unless he manages to land a first Davis Cup title  for his country this year.</p>
+                                <p> "I want it so badly that it puts pressure on me," admitted  the world number seven. "I have won majors so there is nothing  left to prove there but the Davis Cup remains the main focus."</p>
+                                <p> </p>
+                                <p> SPARED DILEMMA</p>
+                                <p> Kafelnikov's commitment to Russia's Davis Cup cause was  apparent on Friday after he hung on to win a five-set thriller  in his opening singles match against Argentina's Gaston Gaudio.</p>
+                                <p> If that was not enough to test Kafelnikov, he and Marat  Safin were then embroiled in a marathon six hours 20 minutes  doubles clash -- the longest ever doubles match in the  tournament's history -- before losing out to Argentina's Lukas  Arnold and David Nalbandian 19-17 in the final set.</p>
+                                <p> Safin's four-set win over Wimbledon runner-up Nalbandian on  Sunday gave the Russians a winning 3-1 lead in the semi-final  and thankfully spared Kafelnikov the dilemma of whether to test  his reserves in a nerve-jangling deciding rubber.</p>
+                                <p> Kafelnikov's desire to win the event has also put extra  strain on Safin.</p>
+                                <p> "Yevgeny keeps telling me all the time 'I want to retire, I  want to quit, let's go and win the Davis Cup this year,'" Safin  said. "Of course, I want to win it for him, but it gives you so  much extra pressure that can harm you at the last minute."</p>
+                                <p> Although Kafelnikov has geared his whole year towards the  November 29-December 1 final by drastically cutting down on his  ATP schedule to preserve himself for the Cup, his French  counterparts are in buoyant mood to defend their title on home  turf.</p>
+                                <p> Having disposed of the United States without much trouble in  the semifinals, Forget's troops -- who spectacularly upset the  Australians in the final last year -- will be looking to extend  their hold on the event after reaching their third final in four  years.</p>
+                                <p> "It's going to be really tough. The French team can play on  any surface and have many different players they can use," said  Russian number one Safin. </p>
+                                <p> "However, we don't have anything to lose, and if we are  confident, who knows what can happen."</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

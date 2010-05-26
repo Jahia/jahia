@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH97964_2002-09-23_14-06-03_L23510791_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T140603+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH97964_2002-09-23_14-06-03_L23510791_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH97964_2002-09-23_14-06-03_L23510791</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH97964_2002-09-23_14-06-03_L23510791:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:06:03 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T140603+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T140603+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97964_2002-09-23_14-06-03_L23510791_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IL</FormalName>  <Description xml:lang="en">Israel</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">MEAST</FormalName>  <Description xml:lang="en">Middle East</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">US</FormalName>  <Description xml:lang="en">United States of America</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="NEW ISSUES MARKETS"/>  <FormalName Scheme="N2000">ISU</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04000000</FormalName>  <Description xml:lang="en">New issues of shares, bonds and other financial instruments</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Government debt"/>  <FormalName Scheme="N2000">GVD</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04008008</FormalName>  <Description xml:lang="en">Government debt (national)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="DEBT MARKETS"/>  <FormalName Scheme="N2000">DBT</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04008003</FormalName>  <Description xml:lang="en">Debt</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Genre"/>  <FormalName Scheme="N2000">WIN</FormalName>  <Description xml:lang="en">Exclusive</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OEC</FormalName>  <Description xml:lang="en">Economic news, EC, business/financial pages</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T140603Z_01_L23510791_RTRIDST_0_ECONOMY-ISRAEL-FUNDING-RPT.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH97964_2002-09-23_14-06-03_L23510791_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>RPT-INTERVIEW-Overseas Jewish funding boosts Israeli coffers</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>ECONOMY-ISRAEL-FUNDING (RPT)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>ECONOMY-ISRAEL-FUNDING (RPT):RPT-INTERVIEW-Overseas Jewish funding boosts Israeli coffers</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH97964_2002-09-23_14-06-03_L23510791_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH97964_2002-09-23_14-06-03_L23510791_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T140603+0000"/>
+                        <Property FormalName="USN" Value="L23510791"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Steven Scheer</p>
+                                <p> JERUSALEM, Sept 23 (Reuters) - Jews around the world,  backing Israel as it battles a Palestinian insurgency, are set  to buy record amounts of special state bonds at relatively low  interest rates this year to help ease its economic woes.</p>
+                                <p> A Finance Ministry official said on Monday the purchases  could reach a record $1.35 billion and as a result the country  may not have to tap conventional international markets to  finance its debt requirements later this year as planned.</p>
+                                <p> Eldad Fresher, senior deputy accountant-general, said  Israel's plan was to raise $1 billion from private State of  Israel bonds -- typically bought by Jews around the world as a  way of showing support for Israel -- and another $900 million in  two bond offerings to institutional investors.</p>
+                                <p> Moody's Investors Service rates Israel A2, compared with A-  from both Standard &amp; Poor's and Fitch Ratings.</p>
+                                <p> Israel earlier this year sold 400 million euros in bonds and  was set to sell another $500 million in the fourth quarter but  sales of State of Israel bonds have already hit $1.1 billion and  looks to shatter its record high of $1.2 billion in 1991.</p>
+                                <p> "State of Israel bonds are selling much more than expected,"  Fresher told Reuters, noting those bonds bear lower interest  rates than bonds sold on the market.</p>
+                                <p> "This is the cheapest way we can raise money," he said.</p>
+                                <p> Five-year State of Israel bonds, sold in Jewish communities  around the world, sell for 140 basis points above the five-year  U.S. Treasury yield, which is currently at 2.76 percent.  Ten-year Israel bonds sell for 165 basis points above 10-year  Treasuries, currently 3.71 percent.</p>
+                                <p> "The Jewish diaspora is raising more money at more  attractive terms," Fresher said. "Institutional investors tend  to be very sensitive to current events and to the security  situation but the Jewish diaspora is indifferent to the security  situation and even the contrary."</p>
+                                <p> For years, Jewish communities around the world have shown  support for Israel by buying bonds, diminishing the country's  need to tap the open market. With Israel coming under attack  from a wave of Palestinian suicide bombings and a perception  among many Jews of a rise in anti-Semitism and anti-Israel  rhetoric, Jews seemed to open their pockets this year more than  in past years.</p>
+                                <p> </p>
+                                <p> RECESSION, UPRISING </p>
+                                <p> Israel needs the financing more than ever since it is mired  in its worst recession in 50 years due to a global economic  downturn and bloody two-year Palestinian uprising. Government  spending has been slashed numerous times this year as it tries  to keep the budget deficit under control due to a plunge in tax  revenues and jump in defence costs.</p>
+                                <p> "It is the ultimate avenue to use in bad times," Fresher  said of the private funding. "We anticipate State of Israel  bonds will raise at least $1.25 billion and it can easily reach  $1.35 billion."</p>
+                                <p> In 2001, $1.0 billion was raised by State of Israel bonds.  Most of the funds are typically raised in the United States. In  New York, which has the largest overseas Jewish population,  synagogues organise regular bond breakfasts and dinners.</p>
+                                <p> Fresher noted 2002 was shaping up to be the best year since  1991, the year Israel was hit by Iraqi scud missiles during the  Gulf war and when Israel absorbed some 400,000 immigrants --  mostly from the former Soviet Union.</p>
+                                <p> Still, Fresher would not rule out an issue of  dollar-denominated bonds later this year. He said ministry  officials will meet in the next couple of weeks with its lead  managers Lehman Brothers and Salomon Smith Barney in New York.</p>
+                                <p> "We will see what kind of environment we are facing and what  attitude institutional investors have toward an Israeli  offering," Fresher said. "State of Israel bonds are doing better  than expected so that could cover most of our shortfall.</p>
+                                <p> "If we do have a transaction, it can be from a strategic or  tactical point of view because we don't need the money."    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

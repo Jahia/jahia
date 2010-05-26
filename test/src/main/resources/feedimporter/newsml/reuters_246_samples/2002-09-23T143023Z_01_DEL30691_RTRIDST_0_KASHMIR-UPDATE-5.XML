@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH98456_2002-09-23_14-30-23_DEL30691_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T143023+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH98456_2002-09-23_14-30-23_DEL30691_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH98456_2002-09-23_14-30-23_DEL30691</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH98456_2002-09-23_14-30-23_DEL30691:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 14:30:23 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T143023+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T143023+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98456_2002-09-23_14-30-23_DEL30691_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">IN</FormalName>  <Description xml:lang="en">India</Description>  <Property FormalName="CountryGrouping" Value="EMRG"/>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Country Grouping"/>  <FormalName Scheme="N2000">EMRG</FormalName>  <Description xml:lang="en">Emerging countries</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PK</FormalName>  <Description xml:lang="en">Pakistan</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Civil war and war"/>  <FormalName Scheme="N2000">VIO</FormalName>  <FormalName Scheme="IPTCSubjectCodes">16000000</FormalName>  <Description xml:lang="en">War and Civil War</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="INTERNATIONAL RELATIONS"/>  <FormalName Scheme="N2000">DIP</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11002000</FormalName>  <Description xml:lang="en">Diplomacy; International Relations</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OVR</FormalName>  <Description xml:lang="en">General news stories</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T143023Z_01_DEL30691_RTRIDST_0_KASHMIR-UPDATE-5.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH98456_2002-09-23_14-30-23_DEL30691_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>UPDATE 5-Rebels step up attacks in Indian Kashmir on poll eve</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>KASHMIR (UPDATE 5)</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>KASHMIR (UPDATE 5):UPDATE 5-Rebels step up attacks in Indian Kashmir on poll eve</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="SNS"/>
+                    <OfInterestTo FormalName="SNI"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH98456_2002-09-23_14-30-23_DEL30691_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH98456_2002-09-23_14-30-23_DEL30691_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T143023+0000"/>
+                        <Property FormalName="USN" Value="DEL30691"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> (Adds comment from residents, Pakistan president, Indian  deputy prime minister)</p>
+                                <p> By Sanjeev Miglani and Sheikh Mushtaq</p>
+                                <p> SRINAGAR, India, Sept 23 (Reuters) - Militants launched a  string of attacks on security forces and political workers in  Indian Kashmir on Monday as violence flared on the eve of a  second round of a state assembly election, police said.</p>
+                                <p> The attacks wounded 12 people and followed a gun battle  between Indian forces and Muslim militants in which four rebels  were killed, police said.</p>
+                                <p> There was a brief exchange of gunfire between security  forces and suspected militants near a polling booth in the  state's summer capital, Srinagar, at nightfall on Monday but no  injuries were reported.</p>
+                                <p> Earlier, five soldiers guarding a Srinagar polling station  were wounded when militants attacked with grenades, a police  spokesman said. Another security man was hurt in a grenade  blast in another part of the city.</p>
+                                <p> Srinagar, along with the state's winter capital Jammu, will  go to the polls on Tuesday to elect a parliament for Indian  Kashmir, at the heart of a nine-month military standoff between  nuclear-armed India and Pakistan.</p>
+                                <p> Shops shut early as Srinagar, a city of 1.2 million people,  prepared for the vote. Several residents said the election was  no answer to the cycle of bloodshed.</p>
+                                <p> "People are not involved in these elections, we need a  healing touch, not elections," said Sheikh Mushtaq, a doctor.     "There is too much disillusionment. Elections are just a  dodging tactic. The basic issue of Kashmir has to be  addressed," said Yaqub Jan, another resident.</p>
+                                <p> Rebels have threatened to kill anyone involved in the  election and separatist politicians have called for a boycott,  saying the vote was no substitute for a U.N.-supervised  plebiscite to decide if the Muslim-majority region should be  part of India or Pakistan.</p>
+                                <p> More than 35,000 people have been killed in the  13-year-revolt against Indian rule. More than 470 people,  including a state minister and about 30 political workers, have  been killed since the elections were called on August 2.</p>
+                                <p> The first of four rounds of voting was held last week and  the the last round will be on October 8.</p>
+                                <p> TURNOUT DISPUTED</p>
+                                <p> India is hoping the vote, which is being staggered to help  security forces trying to ensure a peaceful vote, will boost  the legitimacy of its rule and weaken the insurgency.</p>
+                                <p> Indian Deputy Prime Minister L.K. Advani said he hoped the  polls would help end separatist violence.</p>
+                                <p> "I look forward eagerly to this election...changing the  situation even further and making it possible for India to  score...victory in this proxy war," Advani said in New Delhi.</p>
+                                <p> India calls the violence by the rebels in Kashmir a "proxy  war" waged by Muslim Pakistan and accuses Islamabad of training  and arming the guerrillas -- charges Pakistan denies.</p>
+                                <p> India sees the elections as a test of Pakistan's pledge to  stop militants crossing into Indian Kashmir. Pakistan rejects  the poll as a farce and says infiltration by militants has  halted.</p>
+                                <p> Indian authorities said turnout in the first round was a  relatively strong 47 percent but separatist political leader  Abdul Gani Bhat said the figure had been rigged.</p>
+                                <p> Pakistani President Pervez Musharraf also dismissed the  Indian turnout figure, saying only about 10 percent of voters,  at most, went to the polls.</p>
+                                <p> Thousands of soldiers have been deployed in Srinagar, Jammu  and Budgam, the three districts that will vote on Tuesday,  officials said. "Even though the threat of intimidation is  unprecedented, our preparedness is also unprecedented," said  chief electoral officer Pramod Jain.</p>
+                                <p> The Greater Kashmir newspaper quoted the Hizbul-Mujahideen  guerrilla group as saying it had ordered attacks on polling  stations. The pro-Pakistan group warned government employees  and voters to stay away from polling stations.</p>
+                                <p> In Monday's violence, militants threw a grenade at a car  carrying workers of a pro-India party in southern Kashmir. The  grenade wounded six bystanders, police said.</p>
+                                <p> Earlier, security forces gunned down four rebels near  Banihal town. The area will vote on October 8. A soldier was  killed and a soldier and a civilian wounded when militants  triggered an explosion in southern Kashmir, police said.</p>
+                                <p> An alliance of Kashmiri separatist political groups has  urged a poll boycott, making victory for the state's ruling  National Conference party, a pro-Delhi party, a virtual  certainty.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

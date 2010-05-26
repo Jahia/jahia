@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<NewsML>
+  <Catalog Href="http://www.afp.com/dtd/AFPCatalog.xml"/>
+  <NewsEnvelope>
+    <DateAndTime>20040729T055004Z</DateAndTime>
+  </NewsEnvelope>
+  <NewsItem>
+    <Identification>
+      <NewsIdentifier>
+        <ProviderId>afp.com</ProviderId>
+        <DateId>20040729</DateId>
+        <NewsItemId>040729054956.xm61wen7</NewsItemId>
+        <RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+        <PublicIdentifier>urn:newsml:afp.com:20040729:040729054956.xm61wen7:1</PublicIdentifier>
+      </NewsIdentifier>
+      <NameLabel>US-vote-Edwards-reax</NameLabel>
+    </Identification>
+    <NewsManagement>
+      <NewsItemType FormalName="News"/>
+      <FirstCreated>20040729T054956Z</FirstCreated>
+      <ThisRevisionCreated>20040729T054956Z</ThisRevisionCreated>
+      <Status FormalName="Usable"/>
+    </NewsManagement>
+    <NewsComponent>
+      <NewsLines>
+        <HeadLine>Democratic faithful hail Edwards speech</HeadLine>
+        
+        <DateLine>BOSTON, United States (AFP)</DateLine>
+        <CopyrightLine>© 2004 AFP</CopyrightLine>
+      </NewsLines>
+      <AdministrativeMetadata>
+        <Provider>
+          <Party FormalName="AFP"/>
+        </Provider>
+      </AdministrativeMetadata>
+      <DescriptiveMetadata>
+        <Language FormalName="en"/> 
+	
+        <OfInterestTo FormalName="mmd--english--webwires--america--top"/>
+      </DescriptiveMetadata>
+      <NewsComponent>
+        <ContentItem>
+          <MediaType FormalName="Text"/>
+          <Format FormalName="bcNITF2.5"/>
+          <DataContent>
+            <media media-type="image" style="rightSide">
+<media-reference mime-type="" data-location="#photo0" />
+</media>
+<p>He may have given the message before, but John Edwards left the party faithful smiling as he took centre stage here and staked his claim to the Democratic nomination for vice president.</p>
+
+            <p>Amid the pomp, piety and patriotism of the Democratic national covention, Edwards delivered a blend of folksy charm and youthful energy in a speech that left many convinced he and John Kerry could win the White House in November.</p>
+            <p>"He was fantastic!" crowed Joanie McGowan, a 48-year-old entertainer from Ashland, Oregon.</p>
+            <p>"John Edwards is a brilliant and beautiful man and he speaks his heart. He knows how to take care of his people and that's what we need in America," she said after the political wunderkind gave the most important speech of his career.</p>
+            <p>"He's bringing a new energy, a vitality and a hope for change for the better," said Sheila Franklin, 62, a retired entrepreneur from Fort Lauderdale, Florida.</p>
+            <p>"John Kerry chose him because he knew they would be a perfect match for each other," she said.</p>
+            <p>Democrats are hoping his easy delivery, southern grace and boyish appeal will boost Kerry, who has battled an image as a stiff aristocrat with trouble connecting to voters, in their bid to oust Republican President George W. Bush on November 2.</p>
+            <p>Turning again to his humble origins as the son of a poor mill worker, Edwards reprised his vision of "Two Americas," one rich and one struggling -- a frankly populist stump speech honed over long months on the campaign trail.</p>
+            <media media-type="image" style="leftSide">
+<media-reference mime-type="" data-location="#photo1" />
+</media>
+<p>"I think the speech was very inspirational," said Erik Wells, a former newscaster and candidate for the US congress in the upcoming election. "I think it's just so true ... there are two Americas."</p>
+
+            <p>"I thought he did an excellent job," said Rick Wallace, a 46-year-old computer programmer from Royal Oak, Michigan. "He really covered all the important things that the people in this country are looking for."</p>
+            <p>Marty Bennett of Ellenton, Florida, an insurance claims manager, said Edwards had lived up to the central messages of this year's Democratic campaign.</p>
+            <p>"He hit all the the high points and really got the party enthusiastic," Bennett said.</p>
+            <p>"The whole theme of this convention is take some leadership and that there are common things to all Americans, whether you are Democrat, Republican or independent."</p>
+            <p>"I'm a Democrat because I believe government needs to help people, not corporations, not business interests but people -- and I think that's what his speech said," said Evelyn Narramore, 58, a nurse from Pensacola, Florida.</p>
+            <p>Bob Baines, the mayor of Manchester, New Hampshire, told AFP that Edwards was an outstanding candidate for the second-highest office in the United States.</p>
+            <p>"He's going to ignite interest all across this great country," Baines said.</p>
+          </DataContent>
+        </ContentItem>
+      </NewsComponent>
+      <NewsComponent Duid="photo0">
+        <NewsLines> 
+          <HeadLine>John Edwards is welcomed by convention delegates</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Timothy A. Clary"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Democratic vice presidential candidate John Edwards is welcomed by the Democratic National Convention in Boston, Massachusetts</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.QXP02.290704054722.photo00.default-110x73.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="110"/>
+              <Property FormalName="Height" Value="73"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.QXP02.290704054722.photo00.default-245x163.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="245"/>
+              <Property FormalName="Height" Value="163"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.QXP02.290704054722.photo00.default-384x256.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="384"/>
+              <Property FormalName="Height" Value="256"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+      <NewsComponent Duid="photo1">
+        <NewsLines> 
+          <HeadLine>Elizabeth Edwards (L), the wife of John Edwards, greets her daughter Catharine on stage at the convention</HeadLine>
+        </NewsLines> 
+        <AdministrativeMetadata>
+          <Provider>
+            <Party FormalName="AFP"/>
+          </Provider>
+          <Creator>
+            <Party FormalName="Paul J. Richards"/>
+          </Creator>
+        </AdministrativeMetadata>
+        <NewsComponent>
+          <Role FormalName="Caption"/>
+          <ContentItem>
+            <MediaType FormalName="Text"/>
+            <Format FormalName="bcNITF2.5"/>
+            <DataContent>
+              <p>Elizabeth Edwards (L), wife of Democratic vice presidential candidate John Edwards, greets her daughter Catharine as she arrives on stage at the Democratic National Convention in Boston, Massachusetts</p>
+            </DataContent>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Thumbnail"/>
+          <ContentItem Href="SGE.QXP02.290704054722.photo01.default-103x80.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="103"/>
+              <Property FormalName="Height" Value="80"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Quicklook"/>
+          <ContentItem Href="SGE.QXP02.290704054722.photo01.default-245x189.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="245"/>
+              <Property FormalName="Height" Value="189"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+        <NewsComponent>
+          <Role FormalName="Preview"/>
+          <ContentItem Href="SGE.QXP02.290704054722.photo01.default-384x297.jpg">
+            <MediaType FormalName="Photo"/>
+            <Characteristics>
+              <Property FormalName="Width" Value="384"/>
+              <Property FormalName="Height" Value="297"/>
+            </Characteristics>
+          </ContentItem>
+        </NewsComponent>
+      </NewsComponent>
+    </NewsComponent>
+  </NewsItem>
+</NewsML>

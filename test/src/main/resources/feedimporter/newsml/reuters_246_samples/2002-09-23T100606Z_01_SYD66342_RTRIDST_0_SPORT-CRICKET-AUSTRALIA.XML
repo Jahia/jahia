@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH92645_2002-09-23_10-06-06_SYD66342_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T100606+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH92645_2002-09-23_10-06-06_SYD66342_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH92645_2002-09-23_10-06-06_SYD66342</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH92645_2002-09-23_10-06-06_SYD66342:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 10:06:06 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T100606+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T100606+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92645_2002-09-23_10-06-06_SYD66342_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">AU</FormalName>  <Description xml:lang="en">Australia</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">ASIA</FormalName>  <Description xml:lang="en">Asia</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">PK</FormalName>  <Description xml:lang="en">Pakistan</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Cricket"/>  <FormalName Scheme="N2000">CRIC</FormalName>  <FormalName Scheme="IPTCSubjectCodes">15017000</FormalName>  <Description xml:lang="en">Cricket</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">SPO</FormalName>  <Description xml:lang="en">Sport</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T100606Z_01_SYD66342_RTRIDST_0_SPORT-CRICKET-AUSTRALIA.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH92645_2002-09-23_10-06-06_SYD66342_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>Cricket-Langer says Australia must be on guard against Pakistan</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>SPORT-CRICKET-AUSTRALIA</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>SPORT-CRICKET-AUSTRALIA:Cricket-Langer says Australia must be on guard against Pakistan</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="RSP"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="DNP"/>
+                    <OfInterestTo FormalName="PSP"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH92645_2002-09-23_10-06-06_SYD66342_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH92645_2002-09-23_10-06-06_SYD66342_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T100606+0000"/>
+                        <Property FormalName="USN" Value="SYD66342"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> PERTH, Australia, Sept 23 (Reuters) - Pakistan are the most  talented team in world cricket apart from Australia and should  be treated with caution, Australia opening batsman Justin Langer  said on Monday.</p>
+                                <p> Langer told reporters the world number one team would have  to be aware of Pakistan's unpredictability in next month's  three-test series.</p>
+                                <p> "They are, besides us, the team with the most naturally  talented cricketers, so you always have to be on your guard,"  Langer said at Perth airport. "What team turns up and what coach  turns up, you are never going to know."</p>
+                                <p> The series is being staged at neutral venues after Australia  refused to tour Pakistan for security reasons.</p>
+                                <p> Langer flew out of Australia on Monday in preparation for  the series which includes a test in Colombo followed by two  matches in Sharjah.</p>
+                                <p> Pakistan are without senior players Wasim Akram and Saeed  Anwar, who are resting, and injured pair Inzamam-ul-Haq and  Yousaf Youhana.</p>
+                                <p> South Africa-based Richard Pybus, 38, returns as Pakistan  coach for a fourth time after the departure of Mudassar Nazar  earlier this month.</p>
+                                <p> "There are a few disappointments, one that it is not in  Pakistan, obviously there are reasons for that, but it is always  good to play a test series in home countries," Langer said.</p>
+                                <p> "And I see Wasim Akram, he's the best fast bowler I have  ever played against in test cricket and he's not playing so that  is disappointing."</p>
+                                <p> Langer, 31, averages 43.95 in his 51 tests including 12  centuries.</p>
+                                <p> The determined left-hander has played only eight one-day  internationals and was overlooked for the ICC Champions Trophy  in Colombo, where Australia will play Sri Lanka in Friday's  semi-final.</p>
+                                <p> Returning to the side for the fifth Ashes test in 2001 after  opener Michael Slater was dropped, Langer made 102 retired hurt  before averaging 80.00, 73.00 and 30.40 in home series against  New Zealand and South Africa followed by one away in South  Africa in 2001-02.</p>
+                                <p> Langer and Matthew Hayden shared double-century partnerships  in each of Australia's three home tests against South Africa to  set the platform for a clean sweep.</p>
+                                <p> They also opened with a double-century stand in the first  test against New Zealand to join West Indian greats Desmond  Haynes and Gordon Greenidge as the only opening pairs in history  to complete four double-hundred partnerships.</p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

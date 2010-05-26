@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NewsML SYSTEM "http://idsdat06.reuters.com/newsml/NewsMLv1.0.dtd" [
+  <!ENTITY % xhtml SYSTEM "http://idsdat06.reuters.com/newsml/xhtml1-strict.dtd">
+  %xhtml;
+]>
+<!--src: rtr2newsml0.991-->
+<NewsML Duid="MTFH00187_2002-09-23_15-16-45_L23379193_NEWSML">
+    <Catalog Href="http://idsdat06.reuters.com/newsml/catalog/catalog-reuters-master_catalog_1.xml"/>
+    <NewsEnvelope>
+        <DateAndTime>20020923T151645+0000</DateAndTime>
+        <NewsService FormalName="RTR_TNS"/>
+        <NewsProduct FormalName="TXT"/>
+        <Priority FormalName="3"/>
+    </NewsEnvelope>
+    <NewsItem Duid="MTFH00187_2002-09-23_15-16-45_L23379193_NEWSITEM">
+        <Identification>
+            <NewsIdentifier>
+                <ProviderId>reuters.com</ProviderId>
+                <DateId>20020923</DateId>
+                <NewsItemId>MTFH00187_2002-09-23_15-16-45_L23379193</NewsItemId>
+                <RevisionId Update="N" PreviousRevision="0">1</RevisionId>
+                <PublicIdentifier>urn:newsml:reuters.com:20020923:MTFH00187_2002-09-23_15-16-45_L23379193:1</PublicIdentifier>
+            </NewsIdentifier>
+            <DateLabel>2002-09-23 15:16:45 GMT (Reuters)</DateLabel>
+        </Identification>
+        <NewsManagement>
+            <NewsItemType FormalName="News"/>
+            <FirstCreated>20020923T151645+0000</FirstCreated>
+            <ThisRevisionCreated>20020923T151645+0000</ThisRevisionCreated>
+            <Status FormalName="Usable"/>
+            <Urgency FormalName="3"/>
+        </NewsManagement>
+        <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00187_2002-09-23_15-16-45_L23379193_MAIN_NC" xml:lang="en">
+            <TopicSet FormalName="HighImportance">  <Topic Duid="ts_1">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">DE</FormalName>  <Description xml:lang="en">Germany</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_2">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">WEU</FormalName>  <Description xml:lang="en">Western Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_3">  <TopicType FormalName="Geography"/>  <FormalName Scheme="N2000">EUROPE</FormalName>  <Description xml:lang="en">Europe</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_4">  <TopicType FormalName="Labour"/>  <FormalName Scheme="N2000">JOB</FormalName>  <FormalName Scheme="IPTCSubjectCodes">09000000</FormalName>  <Description xml:lang="en">Labour; Employment; Unemployment</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_5">  <TopicType FormalName="Government debt"/>  <FormalName Scheme="N2000">GVD</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04008008</FormalName>  <Description xml:lang="en">Government debt (national)</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_6">  <TopicType FormalName="DEBT MARKETS"/>  <FormalName Scheme="N2000">DBT</FormalName>  <FormalName Scheme="IPTCSubjectCodes">04008003</FormalName>  <Description xml:lang="en">Debt</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_7">  <TopicType FormalName="Government Body"/>  <FormalName Scheme="N2000">EU</FormalName>  <Description xml:lang="en">European Union</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_8">  <TopicType FormalName="Elections"/>  <FormalName Scheme="N2000">VOTE</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11003000</FormalName>  <Description xml:lang="en">Elections</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_9">  <TopicType FormalName="POLITICS"/>  <FormalName Scheme="N2000">POL</FormalName>  <FormalName Scheme="IPTCSubjectCodes">11000000</FormalName>  <Description xml:lang="en">Domestic Politics</Description>  <Property FormalName="WhyPresent" Value="Ancestor"/>  </Topic>  <Topic Duid="ts_10">  <TopicType FormalName="Reuters Legacy Code"/>  <FormalName Scheme="N2000">NEWS</FormalName>  <Description xml:lang="en">General News</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  <Topic Duid="ts_11">  <TopicType FormalName="CategoryCode"/>  <FormalName Scheme="MediaCategory">OEC</FormalName>  <Description xml:lang="en">Economic news, EC, business/financial pages</Description>  <Property FormalName="WhyPresent" Value="Classifier"/>  </Topic>  </TopicSet>
+            <Role FormalName="Main"/>
+            <AdministrativeMetadata>
+                <FileName>2002-09-23T151645Z_01_L23379193_RTRIDST_0_ECONOMY-GERMANY-ELECTION.XML</FileName>
+                <Provider>
+                    <Party FormalName="Reuters"/>
+                </Provider>
+                <Source>
+                    <Party FormalName="Reuters"/>
+                </Source>
+                <Property FormalName="SourceFeed" Value="IDS"/>
+                <Property FormalName="IDSPublisher" Value="http://www.reuters.com/ids"/>
+            </AdministrativeMetadata>
+            <!--Single "Main Text" inner NewsComponent-->
+            <NewsComponent EquivalentsList="no" Essential="no" Duid="MTFH00187_2002-09-23_15-16-45_L23379193_MAIN_TEXT_NC" xml:lang="en">
+                <Role FormalName="Main Text"/>
+                <NewsLines>
+                    <HeadLine>German think-tanks, business see govt in a bind</HeadLine>
+                    <ByLine/>
+                    <DateLine>September 23, 2002</DateLine>
+                    <CreditLine>REUTERS</CreditLine>
+                    <CopyrightLine>© Reuters 2002. All rights reserved. Republication or redistribution of Reuters content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Reuters. Reuters and the Reuters sphere logo are registered trademarks and trademarks of the Reuters group of companies around the world.</CopyrightLine>
+                    <SlugLine>ECONOMY-GERMANY-ELECTION</SlugLine>
+                    <NewsLine>
+                        <NewsLineType FormalName="Caption"/>
+                        <NewsLineText>ECONOMY-GERMANY-ELECTION:German think-tanks, business see govt in a bind</NewsLineText>
+                    </NewsLine>
+                </NewsLines>
+                <DescriptiveMetadata>
+                    <Language FormalName="en"/>
+                    <OfInterestTo FormalName="ABN"/>
+                    <OfInterestTo FormalName="M"/>
+                    <OfInterestTo FormalName="D"/>
+                    <OfInterestTo FormalName="E"/>
+                    <OfInterestTo FormalName="RBN"/>
+                    <OfInterestTo FormalName="BNX"/>
+                    <OfInterestTo FormalName="G"/>
+                    <OfInterestTo FormalName="AFA"/>
+                    <OfInterestTo FormalName="CSA"/>
+                    <OfInterestTo FormalName="LBY"/>
+                    <OfInterestTo FormalName="RWSA"/>
+                    <OfInterestTo FormalName="RWS"/>
+                    <OfInterestTo FormalName="REULB"/>
+                    <OfInterestTo FormalName="GNS"/>
+                    <OfInterestTo FormalName="RNP"/>
+                    <OfInterestTo FormalName="PGE"/>
+                    <OfInterestTo FormalName="SXNA"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_1"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_2"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_3"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_4"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_5"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_6"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_7"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_8"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_9"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_10"/>
+                    <TopicOccurrence Importance="High" Topic="#ts_11"/>
+                </DescriptiveMetadata>
+                <ContentItem Duid="MTFH00187_2002-09-23_15-16-45_L23379193_MAIN1_TEXT_CI">
+                    <MediaType FormalName="Text"/>
+                    <Format FormalName="XHTML"/>
+                    <Characteristics>
+                        <Property FormalName="ContentID" Value="urn:newsml:reuters.com:20020923:MTFH00187_2002-09-23_15-16-45_L23379193_TXT:1"/>
+                        <Property FormalName="ContentCreationDateAndTime" Value="20020923T151645+0000"/>
+                        <Property FormalName="USN" Value="L23379193"/>
+                        <Property FormalName="Creator" Value="RTR_JANUS 2.300"/>
+                    </Characteristics>
+                    <DataContent>
+                        <html xmlns="http://www.w3.org/1999/xhtml">
+                            <head>
+                                <title/>
+                            </head>
+                            <body>
+                                <p> By Nick Antonovics</p>
+                                <p> BERLIN, Sept 23 (Reuters) - Germany's re-elected government  of Social Democrats and Greens must quickly flesh out vague  welfare reform promises to win back trust in Europe's largest  economy, economists and business leaders said on Monday.</p>
+                                <p> But with only a slim majority in parliament and no control  of the upper house, the general view was that even if the  government can come up with a bold programme, this may be hard  to deliver.</p>
+                                <p> German Chancellor Gerhard Schroeder's coalition appeared  certain on Monday to scrape back into power with a parliamentary  majority of nine seats. Schroeder said the Social Democrats and  Greens would immediately begin talks to agree a new programme.</p>
+                                <p> In the past the Greens, the clear winners in Sunday's vote,  have been more outspoken in their reform demands and it remains  to be seen if they will have more weight in the new-look Berlin.</p>
+                                <p> Business leaders were quick to offer their own ideas.</p>
+                                <p> "The election is over, now it's time to act," the HDE  retailers federation said in a statement. "Tax cuts, reform of  the social security system and liberalisation of the labour  market are urgently needed."</p>
+                                <p> Forecasting the economy would not even grow by 0.5 percent  this year, Germany's Chambers of Commerce and Industry (DIHK)  called on the government to draw up a "masterplan" of reforms.</p>
+                                <p> "Economic development is in part dependent on psychology.  The government has to give signals that will win back trust  among companies," DIHK head Ludwig Braun said.</p>
+                                <p> Schroeder's government pledged before the election to  implement a series of labour market reform proposals put forward  by a government-appointed panel, but left its intentions in the  equally important area of health care vague.</p>
+                                <p> </p>
+                                <p> SLIM MAJORITY BIG PROBLEM</p>
+                                <p> "The problem is the slim majority, because there are many  different voices within the Social Democrats," said Eckhardt  Wohlers, chief economist of the Hamburg-based HWWA institute.</p>
+                                <p> "Government in Berlin is going to be more difficult," said  DIHK's Braun.</p>
+                                <p> Klaus Zimmermann, head of the DIW economic research  institute, said labour market reform must go beyond proposals  drawn up the government-appointed panel, headed by Volkswagen  executive Peter Hartz.</p>
+                                <p> "What's been proposed up to now is not enough," Zimmermann  said. "The government has to look again at cutting benefits."</p>
+                                <p> The Hartz proposals included encouraging jobless people to  take up full or temporary jobs or training places by threatening  them with loss of benefits. But the benefits themselves remain  attractive and effectively on offer for an unlimited duration.</p>
+                                <p> They also included plans for the state development bank to  offer firms cheap loans if they take on unemployed workers.</p>
+                                <p> The new government is expected to propose draft legislation  to implement the ideas as one of its first moves, although a  number of measures will require approval by the  opposition-controlled upper house to become law.</p>
+                                <p> With two big regional elections pending in February, upper  house approval is far from certain.</p>
+                                <p> </p>
+                                <p> BUDGET WOES</p>
+                                <p> DIHK chief economist Axel Nitschke and others said another  problem for the government was that it had no money in its  pockets to implement any reforms without busting European Union  budget deficit rules.</p>
+                                <p> Joachim Scheide, chief economist of Kiel's IfW institute,  said maintaining a pledge given to its EU partners to get the  deficit "close to balance" by 2004 would require 20 billion  euros ($19.65 billion) of cutbacks over the next two years.  Germany's federal budget is around 250 billion euros a year.</p>
+                                <p> "In no case should this be achieved by raising taxes. That  would be counterproductive for the economy," Scheide said, a  view shared by HWWA's Wohlers.</p>
+                                <p> But DIW's Zimmermann said it would be better for the  government to negotiate a new medium-term budgetary target with  the EU rather than slamming the brakes on spending.</p>
+                                <p> "The goal can't be met by 2004. In the light of the most  recent data I expect this will have to be postponed until 2007,"  Zimmermann said.    </p>
+                            </body>
+                        </html>
+                    </DataContent>
+                </ContentItem>
+            </NewsComponent>
+        </NewsComponent>
+    </NewsItem>
+</NewsML>

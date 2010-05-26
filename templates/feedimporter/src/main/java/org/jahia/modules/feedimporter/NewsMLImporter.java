@@ -103,8 +103,8 @@ public class NewsMLImporter {
 
         String newsItemID = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/NewsItemId").getText();
         String newsPublicIdentifier = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/PublicIdentifier").getText();
-        String newsLanguage = getElement(document.getRootElement(), "NewsItem/NewsComponent/DescriptiveMetadata/Language").getAttributeValue("FormalName");
-        String newsSubjectCode = getElement(document.getRootElement(), "NewsItem/NewsComponent/DescriptiveMetadata/SubjectCode/Subject").getAttributeValue("FormalName");
+        String newsLanguage = getElement(document.getRootElement(), "//DescriptiveMetadata/Language").getAttributeValue("FormalName");
+        String newsSubjectCode = getElement(document.getRootElement(), "//DescriptiveMetadata/SubjectCode/Subject").getAttributeValue("FormalName");
         String newsDateStr = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/DateId").getText();
         String newsFirstCreatedDateStr = getElement(document.getRootElement(), "NewsItem/NewsManagement/FirstCreated").getText();
         String newsThisRevisionCreatedDateStr = getElement(document.getRootElement(), "NewsItem/NewsManagement/ThisRevisionCreated").getText();

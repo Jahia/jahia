@@ -131,7 +131,7 @@
 	                    <Specification-Version>${project.version}</Specification-Version>
 	                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                         <package-name>${project.name}</package-name>
-                        <depends>Jahia News</depends>
+                        <depends>Default Jahia Templates,Jahia News</depends>
                         <root-folder>${artifactId}</root-folder>
                     </manifestEntries>
                 </archive>

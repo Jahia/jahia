@@ -8,8 +8,7 @@
 <jcr:sql var="result"
          sql="select * from [jmix:docspaceElement] as file where ischildnode(file, ['${currentNode.parent.path}']) order by file.[jcr:lastModified] desc"/>
 
-<c:set var="forcedSkin" value="none"/>
-<c:set var="renderOptions" value="none"/>
+<c:set var="renderOptionsOnChild" value="none" scope="request"/>
 <c:set var="currentList" value="${result.nodes}" scope="request"/>
 <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
 <c:set var="listTotalSize" value="${end}" scope="request"/>

@@ -17,11 +17,16 @@
 <c:if test="${children.size > 0}">
     <c:set value="${functions:randomInt(children.size)}" var="itemToDisplay"/>
     <c:forEach items="${children}" var="subchild" begin="${itemToDisplay}" end="${itemToDisplay}">
-        <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="true"/>
+        <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}"
+                         editable="true">
+            <c:if test="${not empty renderOptionsOnChild}">
+                <template:param name="renderOptions" value="${renderOptionsOnChild}"/>
+            </c:if>
+        </template:module>
     </c:forEach>
 </c:if>
 <c:if test="${renderContext.editMode}">
     <c:if test="${children.size <= 0}">
-        <template:module path="*" />
+        <template:module path="*"/>
     </c:if>
 </c:if>

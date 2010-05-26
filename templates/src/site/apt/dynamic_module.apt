@@ -84,7 +84,6 @@ Creation of Dynamic Module
     <c:forEach items="${topStories.nodes}" var="topic" end="${currentNode.properties['j:firstLimit'].long - 1}">
         <template:module node="${topic}" forcedTemplate="large" editable="false">
             <template:param name="renderOptions" value="none" />
-            <template:param name="forcedSkin" value="none" />
         </template:module>
     </c:forEach>
 </c:if>
@@ -93,8 +92,6 @@ Creation of Dynamic Module
   Here we pass some parameters to the <<<\<template:module/\>>>> tag to say that we do not want to display options or skins.
 
     * <<<\<template:param name="renderOptions" value="none" /\>>>> specify that we not want to display options for this module rendering.
-
-    * <<<\<template:param name="forcedSkins" value="none" /\>>>> specify that we not want to display skins for this module rendering.
     
     * <<<\<template:param name="renderOptions" value="before" /\>>>> specify that we want to display options before this module content.
 

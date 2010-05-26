@@ -15,33 +15,36 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 
-	<%-- Get parameters of the module --%>
-	<jcr:nodeProperty node="${currentNode}" name='j:nbOfResult' var="nbOfResult"/>
-	<jcr:nodeProperty node="${currentNode}" name='j:mode' var="mode"/>
-	<jcr:nodeProperty node="${currentNode}" name='j:criteria' var="criteria"/>
+<%-- Get parameters of the module --%>
+<jcr:nodeProperty node="${currentNode}" name='j:nbOfResult' var="nbOfResult"/>
+<jcr:nodeProperty node="${currentNode}" name='j:mode' var="mode"/>
+<jcr:nodeProperty node="${currentNode}" name='j:criteria' var="criteria"/>
 
-	<%-- Display title --%>
-    <h3>
-        <fmt:message key='${criteria.string}' >
-            <fmt:param value="${nbOfResult.long}"/>
-            <fmt:param value="${mode.string}"/>
-        </fmt:message>
-    </h3>
+<%-- Display title --%>
+<h3>
+    <fmt:message key='${criteria.string}'>
+        <fmt:param value="${nbOfResult.long}"/>
+        <fmt:param value="${mode.string}"/>
+    </fmt:message>
+</h3>
 
-	<%-- Execute the query, depending on the selected mode --%>
-	<c:if test="${mode.string eq 'site'}">
-		<jcr:sql var="result" sql="SELECT * FROM [jnt:page] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.site.path}') ORDER BY [jcr:${criteria.string}] DESC" limit="${nbOfResult.long}" />
-	</c:if>
-	<c:if test="${mode.string eq 'platform'}">
-		<jcr:sql var="result" sql="SELECT * FROM [jnt:page] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.site.parent.path}') ORDER BY [jcr:${criteria.string}] DESC" limit="${nbOfResult.long}" />
-	</c:if>
+<%-- Execute the query, depending on the selected mode --%>
+<c:if test="${mode.string eq 'site'}">
+    <jcr:sql var="result"
+             sql="SELECT * FROM [jnt:page] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.site.path}') ORDER BY [jcr:${criteria.string}] DESC"
+             limit="${nbOfResult.long}"/>
+</c:if>
+<c:if test="${mode.string eq 'platform'}">
+    <jcr:sql var="result"
+             sql="SELECT * FROM [jnt:page] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.site.parent.path}') ORDER BY [jcr:${criteria.string}] DESC"
+             limit="${nbOfResult.long}"/>
+</c:if>
 
-	<%-- Debug message --%>
-	<%-- <p>Debug > Nb of result from query (Criteria : ${criteria.string} - Nb of result : ${nbOfResult.long} - Mode : ${mode.string}) : ${fn:length(result.nodes)}</p>  --%>
+<%-- Debug message --%>
+<%-- <p>Debug > Nb of result from query (Criteria : ${criteria.string} - Nb of result : ${nbOfResult.long} - Mode : ${mode.string}) : ${fn:length(result.nodes)}</p>  --%>
 
-	<%-- Set variables to store the result --%>
-	<c:set var="forcedSkin" value="none" />
-    <c:set var="renderOptions" value="none" />
-	<c:set var="currentList" value="${result.nodes}" scope="request"/>
-	<c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
-	<c:set var="listTotalSize" value="${end}" scope="request"/>
+<%-- Set variables to store the result --%>
+<c:set var="renderOptionsOnChild" value="none" scope="request"/>
+<c:set var="currentList" value="${result.nodes}" scope="request"/>
+<c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
+<c:set var="listTotalSize" value="${end}" scope="request"/>

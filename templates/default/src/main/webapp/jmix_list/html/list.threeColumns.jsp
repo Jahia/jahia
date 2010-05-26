@@ -23,11 +23,8 @@
         <div class="column-item">
             <div class="spacer">
                 <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}">
-                    <c:if test="${not empty forcedSkin}">
-                        <template:param name="forcedSkin" value="${forcedSkin}"/>
-                    </c:if>
-                    <c:if test="${not empty renderOptions}">
-                        <template:param name="renderOptions" value="${renderOptions}"/>
+                    <c:if test="${not empty renderOptionsOnChild}">
+                        <template:param name="renderOptions" value="${renderOptionsOnChild}"/>
                     </c:if>
                 </template:module>
             </div>

@@ -9,8 +9,7 @@
     <jcr:sql var="result"
              sql="select * from [jnt:post] as comments  where isdescendantnode(comments, ['${currentNode.parent.path}']) order by comments.[jcr:lastModified] desc"/>
 
-    <c:set var="forcedSkin" value="none" />
-    <c:set var="renderOptions" value="none" />
+    <c:set var="renderOptionsOnChild" value="none" scope="request"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
     <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
     <c:set var="listTotalSize" value="${end}" scope="request"/>

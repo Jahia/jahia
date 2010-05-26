@@ -46,11 +46,8 @@
     <p>
         <c:if test="${empty param.categorykey}">
             <template:module node="${subchild}" template="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}" >
-                <c:if test="${not empty forcedSkin}">
-                    <template:param name="forcedSkin" value="${forcedSkin}"/>
-                </c:if>
-                <c:if test="${not empty renderOptions}">
-                    <template:param name="renderOptions" value="${renderOptions}"/>
+                <c:if test="${not empty renderOptionsOnChild}">
+                    <template:param name="renderOptions" value="${renderOptionsOnChild}"/>
                 </c:if>
             </template:module>
         </c:if>
@@ -66,11 +63,8 @@
             </c:forEach>
             <c:if test="${contains eq true}">
                 <template:module node="${subchild}" template="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}" >
-                    <c:if test="${not empty forcedSkin}">
-                        <template:param name="forcedSkin" value="${forcedSkin}"/>
-                    </c:if>
-                    <c:if test="${not empty renderOptions}">
-                        <template:param name="renderOptions" value="${renderOptions}"/>
+                    <c:if test="${not empty renderOptionsOnChild}">
+                        <template:param name="renderOptions" value="${renderOptionsOnChild}"/>
                     </c:if>
                 </template:module>
             </c:if>

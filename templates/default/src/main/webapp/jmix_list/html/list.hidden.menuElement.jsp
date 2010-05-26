@@ -17,18 +17,20 @@
 <c:set var="firstInLevel" value="${statusNavMenu.first}"/>
 <c:set var="lastInLevel" value="${statusNavMenu.last}"/>
 <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}" varStatus="menuStatus">
-    <c:set var="listItemCssClass" value="${jcr:hasChildrenOfType(subchild,'jnt:navMenu,jmix:navMenuItem') ? 'hasChildren' : 'noChildren'}${(menuStatus.first and firstInLevel) ? ' firstInLevel' : ''}${(menuStatus.last and lastInLevel) ? ' lastInLevel' : ''}" scope="request"/>
+    <c:set var="listItemCssClass"
+           value="${jcr:hasChildrenOfType(subchild,'jnt:navMenu,jmix:navMenuItem') ? 'hasChildren' : 'noChildren'}${(menuStatus.first and firstInLevel) ? ' firstInLevel' : ''}${(menuStatus.last and lastInLevel) ? ' lastInLevel' : ''}"
+           scope="request"/>
     <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
-    <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}">
-        <c:if test="${not empty forcedSkin}">
-            <template:param name="forcedSkin" value="${forcedSkin}"/>
-        </c:if>
-        <c:if test="${not empty renderOptions}">
-            <template:param name="renderOptions" value="${renderOptions}"/>
+    <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}"
+                     editable="${editable}">
+        <c:if test="${not empty renderOptionsOnChild}">
+            <template:param name="renderOptions" value="${renderOptionsOnChild}"/>
         </c:if>
     </template:module>
 </c:forEach>
-<c:if test="${not omitFormatting}"><div class="clear"></div></c:if>
+<c:if test="${not omitFormatting}">
+    <div class="clear"></div>
+</c:if>
 <c:if test="${editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>

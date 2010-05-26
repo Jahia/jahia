@@ -9,28 +9,37 @@
 /*fix jahia-gxt , with:5000px ---> with:100%*/
 ul.x-tab-strip{display:block;width:100%;zoom:1;}
 
+/*fix jahia-gxt sep height*/
+.x-menu-sep{height:1px}
+
 /*Studio Mode*/
-.x-panel-studiomode .x-toolbar{
+.x-viewport-studiomode .x-toolbar-first{
 	background:none !important;
 	background : #333333 url(../images/xtheme-jahia-andromeda/studiomode/toolbar/bg.png) no-repeat top right !important;
 	border-color:#333333!important;
 }
-.x-panel-studiomode .x-toolbar button {
+.x-viewport-studiomode .x-toolbar button {
 	color:#fff !important;
-}
-.x-panel-studiomode .x-btn-tl, .x-panel-studiomode .x-btn-tr, .x-panel-studiomode .x-btn-tc, .x-panel-studiomode .x-btn-ml, .x-panel-studiomode .x-btn-mr, .x-panel-studiomode .x-btn-mc, .x-panel-studiomode .x-btn-bl, .x-panel-studiomode .x-btn-br, .x-panel-studiomode .x-btn-bc{
+}	
+.x-viewport-studiomode .x-btn-tl, .x-viewport-studiomode .x-btn-tr, .x-viewport-studiomode .x-btn-tc, .x-viewport-studiomode .x-btn-ml, .x-viewport-studiomode .x-btn-mr, .x-viewport-studiomode .x-btn-mc, .x-viewport-studiomode .x-btn-bl, .x-viewport-studiomode .x-btn-br, .x-viewport-studiomode .x-btn-bc{
 	background-image:url(../images/xtheme-jahia-andromeda/studiomode/button/btn.png)!important;
 }
-.x-panel-studiomode .x-toolbar .xtb-sep {
+.x-viewport-studiomode .x-toolbar .xtb-sep {
 	background-image:url(../images/xtheme-jahia-andromeda/studiomode/grid/grid-split.gif) !important;
 }
-.x-panel-studiomode .x-toolbar .x-btn-over button {
+.x-viewport-studiomode .x-toolbar .x-btn-over button {
     color:#000 !important;
 }
 /*Edit Mode*/
-.x-panel-editmode .x-toolbar{
+.x-viewport-editmode .x-toolbar-first{
 	background:none !important;
 	background : #f0f4f5 url(../images/xtheme-jahia-andromeda/editmode/panel/editmode-bg.png) no-repeat top right !important;
+	border-color:#b7cbd8!important;
+}
+/*United Content Manager*/
+.x-viewport-contentmanager .x-toolbar-first {
+	background:none !important;
+	background : #f0f4f5 url(../images/xtheme-jahia-andromeda/ucmmode/panel/ucmmode-bg.png) no-repeat top right !important;
 	border-color:#b7cbd8!important;
 }
 

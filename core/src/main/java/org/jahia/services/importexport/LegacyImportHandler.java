@@ -395,6 +395,9 @@ public class LegacyImportHandler extends DefaultHandler {
             if (!parent.isCheckedOut()) {
                 parent.checkout();
             }
+            if (StringUtils.isEmpty(nodeType)) {
+                nodeType = Constants.JAHIANT_CONTENTLIST;
+            }
             node = parent.addNode(nodeName, nodeType);
             if (!CollectionUtils.isEmpty(followingNodeNames)) {
                 boolean takeNextName = false;

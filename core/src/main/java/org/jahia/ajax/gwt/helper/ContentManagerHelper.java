@@ -177,12 +177,6 @@ public class ContentManagerHelper {
         }
 
         JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props);
-        try {
-            jcrSessionWrapper.save();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
-        }
         return navigation.getGWTJahiaNode(childNode);
     }
 
@@ -216,6 +210,8 @@ public class ContentManagerHelper {
             } else {
                 createNode(parentPath, name, "jnt:contentList", null, new ArrayList<GWTJahiaNodeProperty>(), currentUserSession);
             }
+
+            currentUserSession.save();            
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(

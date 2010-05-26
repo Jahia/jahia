@@ -476,6 +476,7 @@
 
 [jmix:autoSplitFolders] mixin extends = jnt:contentList
  - j:splitConfig (string) mandatory
+ - j:splitNodeType (string) mandatory
 
 //---------------------------------------------------------
 // Template studio

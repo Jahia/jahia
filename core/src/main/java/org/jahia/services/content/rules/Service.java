@@ -588,18 +588,24 @@ public class Service extends JahiaService {
     }
 
     public void moveToSplitFolder(NodeWrapper n, KnowledgeHelper drools) throws RepositoryException  {
-        moveToSplitFolder((JCRNodeWrapper) n.getNode());
+        JCRNodeWrapper newNode = moveToSplitFolder((JCRNodeWrapper) n.getNode());
+        if (newNode != null) {
+            drools.retract(n);
+            drools.insert(new NodeWrapper(newNode));
+        }
     }
 
-    private void moveToSplitFolder(JCRNodeWrapper node) throws RepositoryException  {
+    private JCRNodeWrapper moveToSplitFolder(JCRNodeWrapper node) throws RepositoryException  {
         try {
             Node parent = node.getParent();
             String splitConfig = parent.getProperty("j:splitConfig").getString();
-            String[] config = splitConfig.split(",");
-            for (int i = 0; i < config.length; i++) {
-                String type = config[i++];
-                String propertyName = config[i++];
-                String details = config[i];
+            String splitType= parent.getProperty("j:splitNodeType").getString();
+            String[] config = splitConfig.split(";");
+            for (String s : config) {
+                String[] folderConfig = s.split(",");
+
+                String type = folderConfig[0];
+                String propertyName = folderConfig[1];
 
                 String key = null;
 
@@ -611,13 +617,14 @@ public class Service extends JahiaService {
                         } else if (node.hasProperty(propertyName)) {
                             key = node.getProperty(propertyName).getString();
                         }
-                        if (key != null && key.length() > Integer.parseInt(details)) {
-                            key = key.substring(0, Integer.parseInt(details));
+                        final int index = Integer.parseInt(folderConfig[2]);
+                        if (key != null && key.length() > index) {
+                            key = key.substring(0, index);
                         }
                     } else if (type.equals("date")) {
                         if (node.hasProperty(propertyName)) {
                             Calendar calendar = node.getProperty(propertyName).getDate();
-                            SimpleDateFormat sdf = new SimpleDateFormat(details);
+                            SimpleDateFormat sdf = new SimpleDateFormat(folderConfig[2]);
                             key = sdf.format(calendar.getTime());
                         }
                     }
@@ -628,7 +635,7 @@ public class Service extends JahiaService {
 
                 if (key != null) {
                     if (!parent.hasNode(key)) {
-                        parent = parent.addNode(key, parent.getPrimaryNodeType().getName());
+                        parent = parent.addNode(key, splitType);
                     } else {
                         parent = parent.getNode(key);
                     }
@@ -636,9 +643,12 @@ public class Service extends JahiaService {
             }
             if (!parent.getPath().equals(node.getParent().getPath())) {
                 node.getSession().move(node.getPath(), parent.getPath() + "/"+ node.getName());
+                return node.getSession().getNode(parent.getPath() + "/"+ node.getName());
             }
+            return null;
         } catch (RepositoryException e) {
             e.printStackTrace();
+            return null;
         }
     }
 

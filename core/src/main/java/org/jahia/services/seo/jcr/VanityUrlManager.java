@@ -293,6 +293,7 @@ public class VanityUrlManager {
         JCRNodeWrapper vanityUrlNode = null;
         JCRNodeWrapper previousDefaultVanityUrlNode = null;
         if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
+            session.checkout(contentNode);
             contentNode.addMixin(JAHIAMIX_VANITYURLMAPPED);
         } else {
             boolean found = false;

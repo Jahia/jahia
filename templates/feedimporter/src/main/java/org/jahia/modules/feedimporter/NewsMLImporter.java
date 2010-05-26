@@ -18,6 +18,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import javax.jcr.ItemExistsException;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
@@ -88,7 +89,11 @@ public class NewsMLImporter {
 
         Query existingNodeQuery = languageSession.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:newsMLItem] as news WHERE news.[itemID]='" + newsItemID + "'", Query.JCR_SQL2);
         QueryResult existingNodeQueryResult = existingNodeQuery.execute();
-        JCRNodeWrapper existingNode = (JCRNodeWrapper) existingNodeQueryResult.getNodes().nextNode();
+        NodeIterator existingNodeIterator = existingNodeQueryResult.getNodes();
+        JCRNodeWrapper existingNode = null;
+        if (existingNodeIterator.hasNext()) {
+            existingNode = (JCRNodeWrapper) existingNodeIterator.nextNode();
+        }
         boolean mustUpdate = false;
         if (newsInstruction != null) {
             String instructionName = newsInstruction.getAttributeValue("FormalName");
@@ -126,6 +131,7 @@ public class NewsMLImporter {
 
         JCRNodeWrapper feedEntryNode = null;
         if (mustUpdate && (existingNode != null)) {
+            languageSession.checkout(existingNode);
             feedEntryNode = existingNode;
             DateTimeFormatter iso8601DateTimeFormatter = ISODateTimeFormat.basicDateTimeNoMillis();
             DateTime thisRevisionCreatedDateTime = iso8601DateTimeFormatter.parseDateTime(newsThisRevisionCreatedDateStr);

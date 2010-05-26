@@ -10,6 +10,9 @@
           <side-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable" j:template="sideMenu" j:published="true" jcr:primaryType="jnt:navMenu" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
             <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:published="true" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="2" j:allowedTypes="jnt:page" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true" />
           </side-menu>
+          <bottom-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable" j:template="sideMenu" j:published="true" jcr:primaryType="jnt:navMenu" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
+            <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:published="true" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1" j:allowedTypes="jnt:page" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true" />
+          </bottom-menu>          
         </site_components>
       </contents>
       <files jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder" />
@@ -68,9 +71,7 @@
         </top-menu>
       </topMenu>
       <bottomMenu jcr:primaryType="jnt:contentList">
-        <bottom-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable" j:published="true" jcr:primaryType="jnt:navMenu" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
-          <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:published="true" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1" j:allowedTypes="jnt:page" j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true" />
-        </bottom-menu>
+        <bottom-menu j:share="/templatesSet/templates-web/contents/site_components/bottom-menu" />
       </bottomMenu>
       <logoFooter jcr:primaryType="jnt:contentList" />
       <footer jcr:primaryType="jnt:contentList" />

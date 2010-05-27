@@ -576,7 +576,7 @@
     <bean id="portletdefinitionmanager"
           class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
 
-        <property name="nodeTypes" value="jnt:portletDefinitions"/>
+        <property name="nodeTypes" value="jnt:portletDefinition"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">

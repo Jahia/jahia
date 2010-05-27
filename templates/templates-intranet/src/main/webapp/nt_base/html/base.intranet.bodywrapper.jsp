@@ -54,26 +54,17 @@
     <!--stop topheader-->
     <div id="bottomheader"><!--start bottomheader-->
         <div class="container container_16">
-            <div class="grid_16">
-                <div id="search-bar"><!--start search-bar-->
+            <div class="grid_10">
+                <div id="banner"><!--start banner-->
+                    <template:area path="pagetitle"/>
+                </div>
+			<div class="clear"></div></div>
+            <div class="grid_6">
+                <div id="search-bar">
                     <template:area path="simpleSearch"/>
                 </div>
-                <!--stop search-bar-->
-                <div id="breadcrumbs"><!--start breadcrumbs-->
-                    <c:set var="currentPath" value=""/>
-                    <c:forTokens items="${currentNode.path}" delims="/" var="itemPath" varStatus="status">
-                        <c:set var="currentPath" value="${currentPath}/${itemPath}"/>
-                        <jcr:node var="node" path="${currentPath}"/>
-                        <c:if test="${jcr:isNodeType(node, 'jnt:page')}">
-                            <c:if test="${not status.last}"><a href="${url.base}${currentPath}.html"></c:if>${node.propertiesAsString['jcr:title']}
-                            <c:if test="${not status.last}"></a> /</c:if>
-                        </c:if>
-                    </c:forTokens>
-                </div>
-                <!--stop breadcrumbs-->
-                <h2 class="pagetitle">${currentNode.propertiesAsString['jcr:title']}</h2>
-
-                <div class="clear"></div>
+			<div class="clear"></div></div>
+            <div class="grid_16">
                 <div id="navigation">
                     <template:area path="topMenu"/>
                 </div>

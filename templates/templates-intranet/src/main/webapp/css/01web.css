@@ -86,7 +86,21 @@ body {
 	padding-top:10px;
 	position:relative;
 	z-index:900;
-	width:100%
+	width:100%;
+	color:#e7e2de;
+	font-size:85%;
+}
+#bodywrapper #topheader a,
+#bodywrapper #topheader a:link,
+#bodywrapper #topheader a:visited
+{
+	color:#e7e2de;
+	text-decoration:none;
+}
+#bodywrapper #topheader a:hover,
+#bodywrapper #topheader a:active {
+	color:#e7e2de;
+	text-decoration:underline;
 }
 #bodywrapper #search-bar {
 	float:right;
@@ -136,6 +150,30 @@ body {
 #bodywrapper ul.breadcrumb a:active {
 	color:#666;
 	text-decoration:underline;
+}
+/******************************************************************************
+* Languages
+******************************************************************************/
+
+#bodywrapper div#languages {
+	float:right;
+	display:inline;
+}
+#bodywrapper #languages ul  {
+	list-style: none;
+	float:left;
+	display:inline;
+	margin:1em 0;
+	text-transform:uppercase;
+	font-size:80%;
+}
+#bodywrapper #languages li {
+	display:inline;
+	padding:0 5px;
+	background: none;
+}
+#bodywrapper #languages li.selected {
+	text-decoration:underline
 }
 /******************************************************************************
 *  content

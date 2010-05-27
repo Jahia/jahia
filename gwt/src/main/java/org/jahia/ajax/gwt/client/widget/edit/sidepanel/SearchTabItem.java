@@ -134,7 +134,7 @@ class SearchTabItem extends SidePanelTabItem {
         // loader
         loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNode>>(proxy);
         loader.setRemoteSort(true);
-        final PagingToolBar toolBar = new PagingToolBar(10);
+        final PagingToolBar toolBar = new PagingToolBar(nbResults);
         toolBar.bind(loader);
         contentStore = new ListStore<GWTJahiaNode>(loader);
 

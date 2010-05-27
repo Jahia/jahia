@@ -116,3 +116,6 @@
 [jnt:pageTitle] > jnt:content, jmix:siteComponentContent
 
 [jnt:pageBreadcrumb] > jnt:content, jmix:siteComponentContent
+
+[jnt:languageSwitcher] > jnt:content, jmix:siteComponentContent
+ - typeOfDisplay (string,choicelist[resourceBundle]) = isoLocaleCountryCode mandatory indexed=no < isoLocaleCountryCode,languageCode,doubleLetter,letter,nameInLocale,nameCurrentLocale,flag  

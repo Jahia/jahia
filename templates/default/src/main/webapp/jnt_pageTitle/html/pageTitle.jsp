@@ -13,4 +13,14 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:set var="pageNode" value="${jcr:getParentOfType(currentNode, 'jnt:page')}"/>
+<c:if test="${empty pageNode}">
+    <c:choose>
+        <c:when test="${jcr:isNodeType(renderContext.mainResource.node, 'jnt:page')}">
+            <c:set var="pageNode" value="${renderContext.mainResource.node}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="pageNode" value="${jcr:getParentOfType(renderContext.mainResource.node, 'jnt:page')}"/>
+        </c:otherwise>
+    </c:choose>
+</c:if>
 <h2 class="pageTitle">${pageNode.properties['jcr:title'].string}</h2>

@@ -667,4 +667,16 @@
             ${jcr:humanReadableFileLength(document)}
         </example>
     </function>
+    <function>
+        <description>
+        	Returns the parents of the current node that have the specified node type.
+        	If no matching node is found, an empty list is returned.
+		</description>
+        <name>getMeAndParentsOfType</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>java.util.List getMeAndParentsOfType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+        <example>
+            ${jcr:getParentsOfType(currentNode,'jnt:page')}
+        </example>
+    </function>
 </taglib>

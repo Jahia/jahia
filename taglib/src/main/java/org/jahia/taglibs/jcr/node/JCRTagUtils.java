@@ -323,4 +323,35 @@ public class JCRTagUtils {
     public static String humanReadableFileLength(JCRNodeWrapper node) {
         return FileUtils.byteCountToDisplaySize(node.getFileContent().getContentLength());
     }
+
+    /**
+     * Returns all the parents of the current node that have the specified node type. If no matching node is found, an
+     * empty list.
+     *
+     * @param node
+     *            the current node to start the lookup from
+     * @param type
+     *            the required type of the parent node(s)
+     * @return the parents of the current node that have the specified node type. If no matching node is found, an
+     *         empty list is returned
+     */
+    public static List<JCRNodeWrapper> getMeAndParentsOfType(JCRNodeWrapper node,String type) {
+
+        List<JCRNodeWrapper> parents = new ArrayList<JCRNodeWrapper>();
+        try {
+            if(node.isNodeType(type)) {
+                parents.add(node);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        do {
+            node = getParentOfType(node, type);
+            if (node != null) {
+                parents.add(node);
+            }
+        } while (node != null);
+
+        return parents;
+    }
 }

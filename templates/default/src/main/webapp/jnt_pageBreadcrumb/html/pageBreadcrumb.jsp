@@ -13,6 +13,16 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:set var="pageNodes" value="${jcr:getParentsOfType(currentNode, 'jnt:page')}"/>
+<c:if test="${empty pageNodes}">
+    <c:choose>
+        <c:when test="${jcr:isNodeType(renderContext.mainResource.node, 'jnt:page')}">
+            <c:set var="pageNodes" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node,'jnt:page')}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="pageNodes" value="${jcr:getParentsOfType(renderContext.mainResource.node, 'jnt:page')}"/>
+        </c:otherwise>
+    </c:choose>
+</c:if>
 <ul class="breadcrumb">
     <c:forEach items="${functions:reverse(pageNodes)}" var="pageNode" varStatus="status">
         <li>

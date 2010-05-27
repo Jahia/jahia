@@ -46,6 +46,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
@@ -92,10 +93,17 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
         column.setId("preview");
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                if (multiple) {
-                    return "<img heigth='16px' width='32px' src=\"" + gwtJahiaNode.getPreview() + "\">";
+                String url;
+                if (gwtJahiaNode.getPreview() != null) {
+                    url = gwtJahiaNode.getPreview();
                 } else {
-                    return "<img heigth='40px' width='60px' src=\"" + gwtJahiaNode.getPreview() + "\">";
+                    url = ContentModelIconProvider.getInstance().getIcon(gwtJahiaNode, true).createImage().getUrl();
+                }
+
+                if (multiple) {
+                    return "<img heigth='16px' width='32px' src=\"" + url + "\">";
+                } else {
+                    return "<img heigth='40px' width='60px' src=\"" + url + "\">";
                 }
             }
         });

@@ -879,8 +879,7 @@ public class NavigationHelper {
         if (fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
             try {
                 n.setPublicationInfo(publication.getPublicationInfo(node.getIdentifier(),
-                        Collections.singleton(node.getSession().getLocale().toString()), false,
-                        node.getSession()));
+                        Collections.singleton(node.getSession().getLocale().toString()), false, node.getSession()));
             } catch (UnsupportedRepositoryOperationException e) {
                 // do nothing
                 logger.debug(e.getMessage());
@@ -898,10 +897,15 @@ public class NavigationHelper {
                     if (node.hasProperty(field)) {
 //                        n.set(StringUtils.substringAfter(propName, ":"), node.getProperty(propName).getString());
                         final JCRPropertyWrapper property = node.getProperty(field);
-                        if (property.getType() == PropertyType.DATE) {
-                            n.set(field, property.getDate().getTime());
+                        if (property.isMultiple()) {
+                            Value[] values = property.getValues();
+                            for (Value value : values) {
+                                setPropertyValue(n, value, field, node.getSession());
+                            }
+
                         } else {
-                            n.set(field, property.getString());
+                            Value value = property.getValue();
+                            setPropertyValue(n, value, field, node.getSession());
                         }
                     }
                 } catch (RepositoryException e) {
@@ -963,6 +967,25 @@ public class NavigationHelper {
 
 
         return n;
+    }
+
+    private void setPropertyValue(GWTJahiaNode n, Value value, String field, JCRSessionWrapper session)
+            throws RepositoryException {
+        switch (value.getType()) {
+            case PropertyType.DATE:
+                n.set(field, value.getDate().getTime());
+                break;
+            case PropertyType.REFERENCE:
+            case PropertyType.WEAKREFERENCE:
+                try {
+                    n.set(field, session.getNodeByUUID(value.getString()).getPath());
+                } catch (ItemNotFoundException e) {
+                }
+                break;
+            default:
+                n.set(field, value.getString());
+                break;
+        }
     }
 
     public void setIcon(JCRNodeWrapper f, GWTJahiaNode n) {

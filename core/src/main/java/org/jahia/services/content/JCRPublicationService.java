@@ -306,7 +306,7 @@ public class JCRPublicationService extends JahiaService {
 //        for (Node s : toPublish) {
 //            s.setProperty("j:publishedLanguage")
 //        }
-
+        ((ArrayList) referencedNodes).removeAll(toPublish);
         for (JCRNodeWrapper node : referencedNodes) {
             try {
                 if (!pathes.contains(node.getPath())) {

@@ -104,7 +104,11 @@ public class ConflictResolver {
                     break;
                 }
             }
-            sourceVersion = sourceVersion.getLinearPredecessor();
+            try {
+                sourceVersion = sourceVersion.getLinearPredecessor();
+            } catch (NullPointerException e) {
+                sourceVersion = null;
+            }
         }
 
         List<Diff> sourceDiff = compare(baseSourceVersion.getFrozenNode(), sourceNode);

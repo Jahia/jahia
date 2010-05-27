@@ -12,13 +12,13 @@ import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.input.JDOMParseException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import javax.jcr.ItemExistsException;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -45,7 +45,7 @@ public class NewsMLImporter {
 
     }
 
-    public void processElement(Element element, JCRNodeWrapper node, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, FileSystemException {
+    public void processContentItem(Element element, JCRNodeWrapper node, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, FileSystemException {
         if (element.getAttributeValue("Href") != null) {
             logger.info("Found reference to external resource " + element.getAttributeValue("Href") + " on tag " + element.getName());
             if ("ContentItem".equals(element.getName())) {
@@ -86,6 +86,7 @@ public class NewsMLImporter {
                 }
             }
         }
+        /*
         for (Element childElement : (List<Element>) element.getChildren()) {
             JCRNodeWrapper childNode = getOrCreateChildNode(node, childElement.getName(), "jnt:feedContent");
             for (Attribute childElementAttribute : (List<Attribute>) element.getAttributes()) {
@@ -93,39 +94,55 @@ public class NewsMLImporter {
             }
             processElement(childElement, childNode, contextFileObject, feedNode);
         }
+        */
     }
 
-    public void processNewsComponent(Element newsComponent, JCRNodeWrapper node) {
+    public void processNewsComponent(Element newsComponent, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, FileSystemException, JDOMException {
+        String newsLanguage = getElementAttributeValue(newsComponent, "DescriptiveMetadata/Language", "FormalName");
+        String newsSubjectCode = getElementAttributeValue(newsComponent, "DescriptiveMetadata/SubjectCode/Subject", "FormalName");
+        String newsHeadline = getElementText(newsComponent, "NewsLines/HeadLine");
+        
+        if (newsLanguage != null) {
+            JCRSessionWrapper languageSession = JCRSessionFactory.getInstance().getCurrentUserSession(
+                    node.getSession().getWorkspace().getName(), new Locale(newsLanguage.toLowerCase()));
+        }
+        List<Element> contentItems = newsComponent.getChildren("ContentItem");
+        for (Element contentItem : contentItems) {
+            processContentItem(contentItem, node, contextFileObject, feedNode);
+        }
+        List<Element> subNewsComponents = newsComponent.getChildren("NewsComponent");
+        for (Element subNewsComponent : subNewsComponents) {
+            processNewsComponent(subNewsComponent, node, entryBaseName, contextFileObject, feedNode);
+        }
+    }
+
+    public void processNewsEnvelope(Element newsEnvelope, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) {
 
     }
 
-    public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, JDOMException, FileSystemException {
-
-        String newsItemID = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/NewsItemId").getText();
-        String newsPublicIdentifier = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/PublicIdentifier").getText();
-        String newsLanguage = getElement(document.getRootElement(), "//DescriptiveMetadata/Language").getAttributeValue("FormalName");
-        String newsSubjectCode = getAttributeValue(document.getRootElement(), "//DescriptiveMetadata/SubjectCode/Subject", "FormalName");
-        String newsDateStr = getElement(document.getRootElement(), "NewsItem/Identification/NewsIdentifier/DateId").getText();
-        String newsFirstCreatedDateStr = getElement(document.getRootElement(), "NewsItem/NewsManagement/FirstCreated").getText();
-        String newsThisRevisionCreatedDateStr = getElement(document.getRootElement(), "NewsItem/NewsManagement/ThisRevisionCreated").getText();
-        String newsUrgency = getElement(document.getRootElement(), "NewsItem/NewsManagement/Urgency").getAttributeValue("FormalName");
-        String newsStatus = getElement(document.getRootElement(), "NewsItem/NewsManagement/Status").getAttributeValue("FormalName");
+    public void processNewsItem(Element newsItem, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, JDOMException, FileSystemException {
+        String newsItemID = getElementText(newsItem, "Identification/NewsIdentifier/NewsItemId");
+        String newsPublicIdentifier = getElementText(newsItem, "Identification/NewsIdentifier/PublicIdentifier");
+        String newsDateStr = getElementText(newsItem, "Identification/NewsIdentifier/DateId");
+        String newsFirstCreatedDateStr = getElementText(newsItem, "NewsManagement/FirstCreated");
+        String newsThisRevisionCreatedDateStr = getElementText(newsItem, "NewsManagement/ThisRevisionCreated");
+        String newsUrgency = getElementAttributeValue(newsItem, "NewsManagement/Urgency","FormalName");
+        String newsStatus = getElementAttributeValue(newsItem, "NewsManagement/Status","FormalName");
         if ("Embargoed".equals(newsStatus)) {
-            Element statusWillChange = getElement(document.getRootElement(), "NewsItem/NewsManagement/StatusWillChange");
+            Element statusWillChange = getElement(newsItem, "NewsManagement/StatusWillChange");
             if (statusWillChange != null) {
-                Element dateAndTime = getElement(document.getRootElement(), "NewsItem/NewsManagement/StatusWillChange/DateAndTime");
+                Element dateAndTime = getElement(newsItem, "NewsManagement/StatusWillChange/DateAndTime");
                 if (dateAndTime != null) {
                     // date and time is set, let's integrate with time-based publishing.
                     String dateAndTimeStr = dateAndTime.getText();
                 }
             }
         }
-        Element newsInstruction = getElement(document.getRootElement(), "NewsItem/NewsManagement/Instruction");
-        // todo : we need to check if the language has been configured in the site, otherwise we use the current language.
-        JCRSessionWrapper languageSession = JCRSessionFactory.getInstance().getCurrentUserSession(
-                node.getSession().getWorkspace().getName(), new Locale(newsLanguage.toLowerCase()));
+        Element newsInstruction = getElement(newsItem, "NewsManagement/Instruction");
 
-        Query existingNodeQuery = languageSession.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:newsMLItem] as news WHERE news.[itemID]='" + newsItemID + "'", Query.JCR_SQL2);
+        JCRSessionWrapper session = node.getSession();
+
+        Query existingNodeQuery = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:newsMLItem] as news WHERE news.[itemID]='" + newsItemID + "'", Query.JCR_SQL2);
         QueryResult existingNodeQueryResult = existingNodeQuery.execute();
         NodeIterator existingNodeIterator = existingNodeQueryResult.getNodes();
         JCRNodeWrapper existingNode = null;
@@ -153,7 +170,6 @@ public class NewsMLImporter {
             logger.error("Error: trying to import as a new node the existing node with ID" + newsItemID + " aborting import !");
             return;
         }
-        String newsHeadline = getElement(document.getRootElement(), "NewsItem/NewsComponent/NewsLines/HeadLine").getText();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         Date newsDate = null;
         try {
@@ -162,40 +178,52 @@ public class NewsMLImporter {
             logger.error("Error parsing date " + newsDateStr + ", defaulting to now...", e);
             newsDate = new Date();
         }
-        logger.info("Importing news item with date " + newsDate.toString() + " and ID " + newsItemID + " in language " + newsLanguage + " in subject " + newsSubjectCode);
+        logger.info("Importing news item with date " + newsDate.toString() + " and ID " + newsItemID);
 
-        JCRNodeWrapper languageNode = languageSession.getNode(node.getPath());
-        languageSession.checkout(languageNode);
+        session.checkout(node);
 
-        JCRNodeWrapper feedEntryNode = null;
+        JCRNodeWrapper newsMLItemNode = null;
         if (mustUpdate && (existingNode != null)) {
-            languageSession.checkout(existingNode);
-            feedEntryNode = existingNode;
+            session.checkout(existingNode);
+            newsMLItemNode = existingNode;
             DateTimeFormatter iso8601DateTimeFormatter = ISODateTimeFormat.basicDateTimeNoMillis();
             DateTime thisRevisionCreatedDateTime = iso8601DateTimeFormatter.parseDateTime(newsThisRevisionCreatedDateStr);
             Calendar newsUpdateCalendar = Calendar.getInstance();
             newsUpdateCalendar.setTime(thisRevisionCreatedDateTime.toDate());
-            feedEntryNode.setProperty("contentUpdated", newsUpdateCalendar);
+            newsMLItemNode.setProperty("contentUpdated", newsUpdateCalendar);
         } else {
-            feedEntryNode = languageNode.addNode(entryBaseName, "jnt:newsMLItem");
+            newsMLItemNode = node.addNode(entryBaseName, "jnt:newsMLItem");
         }
-        feedEntryNode.setProperty("jcr:title", newsHeadline);
+        // newsMLItemNode.setProperty("jcr:title", newsHeadline);
         Calendar newsCalendar=Calendar.getInstance();
         newsCalendar.setTime(newsDate);
-        feedEntryNode.setProperty("date", newsCalendar);
-        feedEntryNode.setProperty("itemID", newsItemID);
-        feedEntryNode.setProperty("publicIdentifier", newsPublicIdentifier);
-        feedEntryNode.setProperty("urgency", Long.parseLong(newsUrgency));
-        feedEntryNode.setProperty("status", newsStatus);
-
-        Element rootElement = document.getRootElement();
-        JCRNodeWrapper newsMLNode = getOrCreateChildNode(feedEntryNode, rootElement.getName(), "jnt:feedContent");
-        for (Attribute childElementAttribute : (List<Attribute>) rootElement.getAttributes()) {
-            newsMLNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());
+        newsMLItemNode.setProperty("date", newsCalendar);
+        newsMLItemNode.setProperty("itemID", newsItemID);
+        newsMLItemNode.setProperty("publicIdentifier", newsPublicIdentifier);
+        if (newsUrgency != null) {
+            newsMLItemNode.setProperty("urgency", Long.parseLong(newsUrgency));
         }
-        processElement(rootElement, newsMLNode, contextFileObject, feedNode);
+        newsMLItemNode.setProperty("status", newsStatus);
 
-        languageSession.save();
+        /*
+        for (Attribute childElementAttribute : (List<Attribute>) newsItem.getAttributes()) {
+            newsMLItemNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());
+        }
+        */
+
+        List<Element> newsComponents = newsItem.getChildren("NewsComponent");
+        for (Element newsComponent : newsComponents) {
+            processNewsComponent(newsComponent, newsMLItemNode, entryBaseName, contextFileObject, feedNode);
+        }
+        // processElement(rootElement, newsMLNode, contextFileObject, feedNode);
+
+        session.save();
+
+    }
+
+    public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, JDOMException, FileSystemException {
+        processNewsEnvelope(document.getRootElement().getChild("NewsEnvelope"), node, entryBaseName, contextFileObject, feedNode);
+        processNewsItem(document.getRootElement().getChild("NewsItem"), node, entryBaseName, contextFileObject, feedNode);
     }
 
     public JCRNodeWrapper getOrCreateChildNode(JCRNodeWrapper parentNode, String childName, String nodeTypeName) throws RepositoryException {
@@ -242,12 +270,17 @@ public class NewsMLImporter {
                 saxBuilder.setFeature(
                         "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 
-                Document document = saxBuilder.build(currentNewsItemInputStream);
+                try {
+                    Document document = saxBuilder.build(currentNewsItemInputStream);
 
-                if ("NewsML".equals(document.getRootElement().getName())) {
-                    logger.info("Importing contents of XML NewsML file " + children[ i ].getName().getBaseName());
+                    if ("NewsML".equals(document.getRootElement().getName())) {
+                        logger.info("Importing contents of XML NewsML file " + children[ i ].getName().getBaseName());
 
-                    processDocument(document, parentNode, children[i].getName().getBaseName(), jarFile, parentNode);
+                        processDocument(document, parentNode, children[i].getName().getBaseName(), jarFile, parentNode);
+                    }
+                } catch (JDOMParseException jdpe) {
+                    logger.warn("Error "+jdpe.getMessage() +" while parsing file " + children[i].getName().getBaseName() + ", ignoring it. Switch logging to debug for detailed stack trace.");
+                    logger.debug("Detailed parsing error info ", jdpe);
                 }
             }
         }
@@ -276,10 +309,19 @@ public class NewsMLImporter {
         return (Element) xPath.selectSingleNode(scopeElement);
     }
 
-    public String getAttributeValue(Element scopeElement, String xPathExpression, String attributeName) throws JDOMException {
+    public String getElementAttributeValue(Element scopeElement, String xPathExpression, String attributeName) throws JDOMException {
         Element element = getElement(scopeElement, xPathExpression);
         if (element != null) {
             return element.getAttributeValue(attributeName);
+        } else {
+            return null;
+        }
+    }
+
+    public String getElementText(Element scopeElement, String xPathExpression) throws JDOMException {
+        Element element = getElement(scopeElement, xPathExpression);
+        if (element != null) {
+            return element.getText();
         } else {
             return null;
         }

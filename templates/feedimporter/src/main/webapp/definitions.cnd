@@ -16,11 +16,11 @@
  - subjectCode (string)
  - urgency (long)
  - contentUpdated (date) hidden
- + * (jnt:feedContent)
+ + * (jnt:newsMLComponent)
 
 [jnt:newsMLComponent] > jnt:content
  - Duid (string)
- + * (jnt:newsMLContentItem)
+ + * (jnt:newsMLContentItem, jnt:newsMLComponent)
 
 [jnt:newsMLContentItem] > jnt:content, mix:title, jmix:editorialContent
  - comment (string)
@@ -29,5 +29,7 @@
  - mediatype (string)
  - datacontent (string)
  - role (string)
+ - image (weakreference, file[mime='image/*'])
+
 
 [jnt:feedContent] > nt:unstructured

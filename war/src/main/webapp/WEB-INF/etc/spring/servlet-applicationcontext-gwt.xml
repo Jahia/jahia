@@ -10,7 +10,6 @@
                 /**/base.gwt=baseServiceController
                 /**/contentDefinition.gwt=contentDefinitionServiceController
                 /**/contentManager.gwt=contentManagerServiceController
-                /**/pdisplay.gwt=pdisplayServiceController
                 /**/sessionManager.gwt=sessionManagerServiceController
                 /**/subscription.gwt=subscriptionServiceController
                 /**/toolbar.gwt=toolbarServiceController
@@ -61,9 +60,6 @@
         <property name="sessionPollingFrequency" value="300000"/>
     </bean>
 
-    <bean name="pdisplayServiceController" parent="abstractServiceController">
-        <property name="remoteServiceName" value="gwtProcessDisplayService"/>
-    </bean>
     <bean name="gwtProcessDisplayService" class="org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl" scope="prototype">
         <property name="preferencesService" ref="JahiaPreferencesService"/>
     </bean>

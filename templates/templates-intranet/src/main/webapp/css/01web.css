@@ -78,7 +78,7 @@ body {
 	margin:0;
 }
 /******************************************************************************
-*  topheader
+*  Topheader
 ******************************************************************************/
 #bodywrapper #topheader{
 	background-color:#7b7b7b;
@@ -94,7 +94,7 @@ body {
 	position:relative;
 }
 /******************************************************************************
-*  bottomheader
+*  Bottom Header
 ******************************************************************************/
 #bodywrapper #bottomheader{
 	background:#dad0c7 url(img/bottomheader-bg.png) repeat-x bottom left;
@@ -103,23 +103,37 @@ body {
 	z-index:800;
 	width:100%
 }
-#bodywrapper #bottomheader a,
-#bodywrapper #bottomheader a:link,
-#bodywrapper #bottomheader a:visited {
-	color:#666666;
+/******************************************************************************
+* Breadcrumb
+******************************************************************************/
+
+#bodywrapper ul.breadcrumb  {
+	margin:1em 0;
+	padding:0;
+	list-style:none;
+	color:#666;
+}
+#bodywrapper ul.breadcrumb li {
+	display:inline;
+	margin:0;
+	padding:0;
+	background: none;
+	margin: 0 ;
+}
+#bodywrapper ul.breadcrumb a,
+#bodywrapper ul.breadcrumb a:link,
+#bodywrapper ul.breadcrumb a:visited
+{
+	padding:0 1em 0 0;
+	margin:0;
+	background: url(img/breadcrumb-separator.png) no-repeat 100% 50% ;
+	color:#666;
 	text-decoration:none;
 }
-#bodywrapper #bottomheader a:hover,
-#bodywrapper #bottomheader a:active {
-	color:#666666;
+#bodywrapper ul.breadcrumb a:hover,
+#bodywrapper ul.breadcrumb a:active {
+	color:#666;
 	text-decoration:underline;
-}
-#bodywrapper #breadcrumbs{
-	padding-bottom:10px;
-	color:#666666;
-	font-size:0.85em;
-	height:100%;
-	text-transform:uppercase;
 }
 /******************************************************************************
 *  content

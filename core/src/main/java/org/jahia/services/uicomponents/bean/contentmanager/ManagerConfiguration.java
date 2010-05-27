@@ -20,6 +20,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     private String beanName;
     private boolean enableTextMenu;
 
+    private List<Column> treeColumns;
     private List<Column> tableColumns;
     private List<Repository> repositories;
     private List<EngineTab> tabs;
@@ -58,6 +59,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
+        treeColumns = new ArrayList<Column>();
         repositories = new ArrayList<Repository>();
         tabs = new ArrayList<EngineTab>();
     }
@@ -80,6 +82,14 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     public void setTableColumns(List<Column> tableColumns) {
         this.tableColumns = tableColumns;
+    }
+
+    public List<Column> getTreeColumns() {
+        return treeColumns;
+    }
+
+    public void setTreeColumns(List<Column> treeColumns) {
+        this.treeColumns = treeColumns;
     }
 
     public List<Repository> getRepositories() {

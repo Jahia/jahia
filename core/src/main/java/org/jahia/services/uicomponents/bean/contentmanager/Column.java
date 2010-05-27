@@ -16,7 +16,7 @@ public class Column implements Serializable {
     private String title;
     private String titleKey;
     private String declaringNodeType;
-    private int size = 100;
+    private String size = "*";
 
     private Visibility visibility;
 
@@ -63,11 +63,11 @@ public class Column implements Serializable {
         this.declaringNodeType = declaringNodeType;
     }
 
-    public int getSize() {
+    public String getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(String size) {
         this.size = size;
     }
 }

@@ -26,7 +26,7 @@ public class ColumnPropertyEditor extends PropertyEditorSupport {
         }
 
         if (values.length > 1) {
-            c.setSize(Integer.parseInt(values[1]));
+            c.setSize(values[1]);
         }
         if (values.length > 2) {
             c.setTitleKey(values[2]);

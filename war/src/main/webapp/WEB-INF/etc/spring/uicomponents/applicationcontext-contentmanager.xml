@@ -103,6 +103,11 @@
             </list>
         </property>
         <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name</value>
+            </list>
+        </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
@@ -115,7 +120,7 @@
                     </property>
                 </bean>
                 <value>icon,40</value>
-                <value>name,240</value>
+                <value>name,*</value>
                 <value>locked,60</value>
                 <value>size,140</value>
                 <value>mix:lastModified.jcr:lastModified,10</value>
@@ -189,9 +194,14 @@
             </list>
         </property>
         <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>name</value>
+            </list>
+        </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,240</value>
+                <value>name,*</value>
                 <value>locked,60</value>
                 <value>jcr:lastModified,100</value>
             </list>
@@ -262,10 +272,16 @@
             </list>
         </property>
         <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName</value>
+            </list>
+        </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40</value>
-                <value>name,240</value>
+                <value>displayName,*</value>
+                <value>name,100</value>
                 <value>locked,60</value>
             </list>
         </property>
@@ -367,8 +383,8 @@
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40</value>
-                <value>name,240</value>
-                <value>count</value>
+                <value>name,*</value>
+                <value>count,60</value>
                 <value>locked,60</value>
             </list>
         </property>
@@ -466,9 +482,9 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,200</value>
-                <value>remoteUrl,200</value>
-                <value>remotePath,200</value>
+                <value>name,*</value>
+                <value>remoteUrl,250</value>
+                <value>remotePath,250</value>
             </list>
         </property>
 
@@ -563,7 +579,7 @@
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
-                <value>name,200</value>
+                <value>name,*</value>
                 <value>j:node,200</value>
                 <value>j:nodeType,200</value>
                 <value>j:availableWorkflows,200</value>
@@ -638,7 +654,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,240</value>
+                <value>name,*</value>
             </list>
         </property>
 
@@ -732,6 +748,12 @@
         </property>
 
         <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName</value>
+            </list>
+        </property>
+
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
@@ -847,12 +869,17 @@
         </property>
 
         <!-- columns -->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName</value>
+            </list>
+        </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
                 <value>icon,40</value>
-                <value>name,240</value>
-                <value>locked,60</value>
+                <value>displayName,*</value>
+                <value>name,100</value>
                 <value>mix:lastModified.jcr:lastModified,100</value>
                 <value>mix:lastModified.jcr:lastModifiedBy,100</value>
                 <value>publicationInfo,30</value>
@@ -905,7 +932,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,240</value>
+                <value>name,*</value>
             </list>
         </property>
     </bean>
@@ -956,7 +983,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,240</value>
+                <value>name,*</value>
             </list>
         </property>
 
@@ -967,8 +994,6 @@
         <property name="nodeTypes" >
             <list>
                 <value>nt:file</value>
-                <value>nt:folder</value>
-                <value>jnt:mountPoint</value>
             </list>
         </property>
         <property name="folderTypes">
@@ -1151,7 +1176,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,300</value>
+                <value>displayName</value>
             </list>
         </property>
     </bean>

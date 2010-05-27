@@ -35,14 +35,15 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.TreePanelDragSource;
-import com.extjs.gxt.ui.client.dnd.TreePanelDropTarget;
+import com.extjs.gxt.ui.client.dnd.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -50,6 +51,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
@@ -67,7 +69,7 @@ public class RepositoryTab extends ContentPanel {
     private TreeLoader<GWTJahiaNode> loader;
     private TreeStore<GWTJahiaNode> store;
     private ContentRepositoryTabs folderTreeContainer;
-    private TreePanel<GWTJahiaNode> m_tree;
+    private TreeGrid<GWTJahiaNode> m_tree;
 
     /**
      * Constructor
@@ -94,9 +96,18 @@ public class RepositoryTab extends ContentPanel {
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();
-        m_tree = factory.getTreePanel();
+
+        NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
+        columns.init();
+        columns.get(0).setRenderer(new TreeGridCellRenderer());
+        m_tree = factory.getTreeGrid(new ColumnModel(columns));
+        m_tree.setHideHeaders(true);
         m_tree.setIconProvider(ContentModelIconProvider.getInstance());
-        m_tree.setDisplayProperty("displayName");
+        if (columns.getAutoExpand() != null) {
+            m_tree.setAutoExpandColumn(columns.getAutoExpand());
+        }
+
+//        m_tree.setDisplayProperty("displayName");
         m_tree.setBorders(false);
         m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
@@ -121,7 +132,7 @@ public class RepositoryTab extends ContentPanel {
     public void init() {
         loader.load();
 
-        TreePanelDragSource source = new TreePanelDragSource(m_tree) {
+        TreeGridDragSource source = new TreeGridDragSource(m_tree) {
             @Override
             protected void onDragStart(DNDEvent e) {
                 super.onDragStart(e);
@@ -135,14 +146,14 @@ public class RepositoryTab extends ContentPanel {
         };
         source.addDNDListener(getLinker().getDndListener());
 
-        TreePanelDropTarget target = new TreePanelDropTarget(m_tree) {
+        TreeGridDropTarget target = new TreeGridDropTarget(m_tree) {
             @Override
-            protected void handleInsert(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
+            protected void handleInsert(DNDEvent dndEvent, TreeGrid.TreeNode treeNode) {
                 handleAppend(dndEvent, treeNode);
             }
 
             @Override
-            protected void handleAppend(DNDEvent event, TreePanel.TreeNode item) {
+            protected void handleAppend(DNDEvent event, TreeGrid.TreeNode item) {
                 super.handleAppend(event, item);
                 final List<GWTJahiaNode> list = (List<GWTJahiaNode>) event.getData();
                 for (GWTJahiaNode source : list) {
@@ -160,7 +171,7 @@ public class RepositoryTab extends ContentPanel {
             }
 
             @Override
-            protected void handleAppendDrop(DNDEvent dndEvent, TreePanel.TreeNode treeNode) {
+            protected void handleAppendDrop(DNDEvent dndEvent, TreeGrid.TreeNode treeNode) {
                 if (dndEvent.getStatus().getStatus()) {
                     ContentActions.move(getLinker(), (List<GWTJahiaNode>) dndEvent.getData(), (GWTJahiaNode) treeNode.getModel());
                     loader.load();
@@ -168,7 +179,7 @@ public class RepositoryTab extends ContentPanel {
             }
 
             @Override
-            protected void handleInsertDrop(DNDEvent event, TreePanel.TreeNode item, int index) {
+            protected void handleInsertDrop(DNDEvent event, TreeGrid.TreeNode item, int index) {
             }
         };
         target.setFeedback(DND.Feedback.BOTH);

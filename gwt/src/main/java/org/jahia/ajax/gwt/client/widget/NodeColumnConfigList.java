@@ -36,6 +36,7 @@ import java.util.List;
  */
 public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     private List<GWTColumn> columnList;
+    private String autoExpand;
 
     private static String[] STATE_IMAGES = new String[]{"000", "111", "121", "000", "000", "000"};
 
@@ -146,6 +147,9 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         }
     }
 
+    public String getAutoExpand() {
+        return autoExpand;
+    }
 
     /**
      * @return
@@ -154,7 +158,12 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
         List<GWTColumn> columns = columnList == null ? new ArrayList<GWTColumn>() : new ArrayList<GWTColumn>(columnList);
 
         for (GWTColumn column : columns) {
-            ColumnConfig col = new ColumnConfig(column.getKey(), column.getTitle(), column.getSize());
+            int i = column.getSize();
+            if (i == -1) {
+                autoExpand = column.getKey();
+                i = 250;
+            }
+            ColumnConfig col = new ColumnConfig(column.getKey(), column.getTitle(), i);
             col.setResizable(column.isResizable());
             col.setSortable(column.isSortable());
 

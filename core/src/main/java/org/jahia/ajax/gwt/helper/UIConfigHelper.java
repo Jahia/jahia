@@ -35,15 +35,12 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
-import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
-import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
-import org.jahia.bin.Jahia;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -56,7 +53,6 @@ import org.jahia.services.uicomponents.bean.editmode.*;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.editmode.SidePanelTab;
 import org.jahia.services.preferences.JahiaPreferencesService;
-import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.uicomponents.bean.editmode.Engine;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
@@ -64,8 +60,6 @@ import org.jahia.services.uicomponents.bean.toolbar.*;
 import org.jahia.services.uicomponents.bean.toolbar.Item;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -223,44 +217,6 @@ public class UIConfigHelper {
             // remove last alert message
             gwtJahiaStateInfo.setAlertMessage(null);
 
-            // check pdisplay
-            if (gwtJahiaStateInfo.isCheckProcessInfo()) {
-                GWTJahiaProcessJobInfo gwtProcessJobInfo = updateGWTProcessJobInfo(jahiaUser, gwtJahiaStateInfo.getGwtProcessJobInfo());
-                gwtJahiaStateInfo.setGwtProcessJobInfo(gwtProcessJobInfo);
-                if (gwtProcessJobInfo.isJobExecuting()) {
-                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-wait-min");
-                    gwtJahiaStateInfo.setText("Job is running (" + gwtProcessJobInfo.getNumberWaitingJobs() + ") waiting");
-                } else if (gwtProcessJobInfo.getNumberWaitingJobs() > 0) {
-                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-information");
-                    gwtJahiaStateInfo.setText(gwtProcessJobInfo.getNumberWaitingJobs() + " waiting jobs");
-                } else {
-                    gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-ok");
-                }
-
-                // pdisplay need refresh need refresh
-                if (gwtProcessJobInfo.isJobFinished()) {
-                    gwtJahiaStateInfo.setAlertMessage(getResources("label.processManagering.jobfinished", uiLocale, site));
-
-                    // current user job ended
-                    if (gwtProcessJobInfo.isCurrentUserJob() && !gwtProcessJobInfo.isSystemJob()) {
-                        gwtJahiaStateInfo.setCurrentUserJobEnded(true);
-                    } else {
-                        gwtJahiaStateInfo.setCurrentUserJobEnded(false);
-                    }
-                    // do we need to refresh ?
-                    if (gwtJahiaStateInfo.isNeedRefresh() || gwtProcessJobInfo.isCurrentPageValidated()) {
-                        gwtJahiaStateInfo.setNeedRefresh(true);
-                        gwtJahiaStateInfo.setIconStyle("gwt-toolbar-icon-notification-refresh");
-                        gwtJahiaStateInfo.setText(getResources("label.processManagering.reloadPage", uiLocale, site));
-                        gwtJahiaStateInfo.setRefreshMessage(getResources("label.processManagering.reloadPage", uiLocale, site));
-                    }
-
-                } else {
-                    gwtJahiaStateInfo.setCurrentUserJobEnded(false);
-                    gwtJahiaStateInfo.setNeedRefresh(false);
-                }
-            }
-
 
             return gwtJahiaStateInfo;
         } catch (Exception e) {
@@ -268,139 +224,6 @@ public class UIConfigHelper {
             throw new GWTJahiaServiceException("Error when triing to load Jahia state.");
         }
     }
-
-    /**
-     * Get Process Job stat
-     *
-     * @return
-     */
-    private GWTJahiaProcessJobInfo updateGWTProcessJobInfo(JahiaUser jahiaUser, GWTJahiaProcessJobInfo gwtProcessJobInfo) throws GWTJahiaServiceException {
-        long lastExecutedJob = getSchedulerService().getLastJobCompletedTime();
-        if (gwtProcessJobInfo == null) {
-            gwtProcessJobInfo = new GWTJahiaProcessJobInfo();
-            gwtProcessJobInfo.setLastViewTime(lastExecutedJob);
-        }
-        boolean isCurrentUser = false;
-        boolean isSystemJob = true;
-        boolean isCurrentPageValided = false;
-        String lastExecutedJobLabel = "";
-        String lastExecutionJobTitle = "";
-        String link = null;
-        JobDetail lastExecutedJobDetail = getSchedulerService().getLastCompletedJobDetail();
-        if (lastExecutedJobDetail != null) {
-            link = Jahia.getContextPath() + "/processing/jobreport.jsp?name=" + lastExecutedJobDetail.getName() + "&groupName=" + lastExecutedJobDetail.getGroup();
-            JobDataMap lastExecutedJobDataMap = lastExecutedJobDetail.getJobDataMap();
-            if (lastExecutedJobDataMap != null) {
-
-                // set 'is current user' flag
-                String lastExecutedJobUserKey = lastExecutedJobDataMap.getString(BackgroundJob.JOB_USERKEY);
-                if (lastExecutedJobUserKey != null) {
-                    isCurrentUser = lastExecutedJobUserKey.equalsIgnoreCase(jahiaUser.getUserKey());
-                }
-
-                // set title if any
-                lastExecutionJobTitle = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TITLE);
-
-                // set 'is System Job'
-                String lastExecutedJobType = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TYPE);
-                if (lastExecutedJobType != null) {
-                    // is system job
-//                    isSystemJob = !lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE);
-
-                    // workflow
-//                    if (lastExecutedJobType.equalsIgnoreCase(AbstractActivationJob.WORKFLOW_TYPE)) {
-//                        lastExecutedJobLabel = getLocaleJahiaEnginesResource("org.jahia.engines.processDisplay.op.workflow.label");
-//                    }
-                }
-            }
-        }
-
-
-        // current executing jobs
-        try {
-
-            List currentlyExecutingJobs = getSchedulerService().getCurrentlyExecutingJobs();
-            if (currentlyExecutingJobs != null && currentlyExecutingJobs.size() > 0) {
-                gwtProcessJobInfo.setJobExecuting(true);
-            } else {
-                gwtProcessJobInfo.setJobExecuting(false);
-            }
-            // get all job list
-            List jobList = ProcessDisplayServiceImpl.getAllActiveJobsDetails();
-            int waitingJobNumber = 0;
-            int nextJobCurrentUserIndex = -1;
-            String nextJobCurrentUserType = "-";
-            int maxIndex = jobList.size();
-            gwtProcessJobInfo.setNumberJobs(maxIndex);
-            for (int jobIndex = 0; jobIndex < maxIndex; jobIndex++) {
-                JobDetail currentJobDetail = (JobDetail) jobList.get(jobIndex);
-                JobDataMap currentJobDataMap = currentJobDetail.getJobDataMap();
-                // job: type
-                String type = currentJobDataMap.getString(BackgroundJob.JOB_TYPE);
-
-                // job: status
-                String currentJobStatus = currentJobDataMap.getString(BackgroundJob.JOB_STATUS);
-
-                // job: user key
-                String currentJobUserKey = currentJobDataMap.getString(BackgroundJob.JOB_USERKEY);
-                if (currentJobStatus.equalsIgnoreCase(BackgroundJob.STATUS_WAITING)) {
-                    waitingJobNumber++;
-                    if (currentJobUserKey != null && jahiaUser != null) {
-                        if (currentJobUserKey.equalsIgnoreCase(jahiaUser.getUserKey())) {
-                            if (nextJobCurrentUserIndex == -1) {
-                                nextJobCurrentUserType = type;
-                            }
-                        } else {
-                            // update nex job index
-                            nextJobCurrentUserIndex++;
-                        }
-                    }
-                }
-                if (currentJobStatus.equalsIgnoreCase(BackgroundJob.STATUS_RUNNING)) {
-                    // update nex job index
-                    nextJobCurrentUserIndex++;
-                    nextJobCurrentUserType = type;
-
-                }
-            }
-
-            // set need to refresh flag
-            gwtProcessJobInfo.setJobFinished(gwtProcessJobInfo.getLastViewTime() < lastExecutedJob);
-
-            boolean pageRefresh = false;
-            String value = preferencesService.getGenericPreferenceValue(ProcessDisplayServiceImpl.PREF_PAGE_REFRESH, jahiaUser);
-            if (value != null && value.length() > 0) {
-                try {
-                    pageRefresh = Boolean.parseBoolean(value);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                }
-
-            }
-
-
-            // set values
-            gwtProcessJobInfo.setCurrentUserJob(isCurrentUser);
-            gwtProcessJobInfo.setCurrentPageValidated(false);
-            gwtProcessJobInfo.setSystemJob(isSystemJob);
-            gwtProcessJobInfo.setJobReportUrl(link);
-            if (lastExecutionJobTitle == null) {
-                lastExecutionJobTitle = "";
-            }
-            gwtProcessJobInfo.setJobType(lastExecutedJobLabel);
-            gwtProcessJobInfo.setLastTitle(lastExecutionJobTitle);
-            gwtProcessJobInfo.setAutoRefresh(pageRefresh);
-            gwtProcessJobInfo.setLastViewTime(lastExecutedJob);
-            gwtProcessJobInfo.setNumberWaitingJobs(waitingJobNumber);
-            gwtProcessJobInfo.setNextJobCurrentUserIndex(nextJobCurrentUserIndex);
-            gwtProcessJobInfo.setNextJobCurrentUserType(nextJobCurrentUserType);
-        } catch (Exception e) {
-            logger.error("Unable to get number of running job.", e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-        return gwtProcessJobInfo;
-    }
-
 
     /**
      * Get Scheduler Service
@@ -559,25 +382,14 @@ public class UIConfigHelper {
                 // add table columns
                 for (Column item : config.getTableColumns()) {
                     if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
-                        GWTColumn col = new GWTColumn();
-                        col.setKey(item.getKey());
-                        if (item.getTitleKey() != null) {
-                            col.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
-                        } else if (item.getDeclaringNodeType() != null) {
-                            try {
-                                ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(item.getDeclaringNodeType()).getPropertyDefinition(item.getKey());
-                                col.setTitle(epd.getLabel(uiLocale != null ? uiLocale : locale));
-                            } catch (Exception e) {
-                                logger.error("Cannot get node type name", e);
-                                col.setTitle(item.getKey());
-                            }
-                        } else if (item.getTitle() != null) {
-                            col.setTitle(item.getTitle());
-                        } else {
-                            col.setTitle(item.getKey());
-                        }
-                        col.setSize(item.getSize());
-                        gwtConfig.addColumn(col);
+                        GWTColumn col = createGWTColumn(item, site, locale, uiLocale);
+                        gwtConfig.addTableColumn(col);
+                    }
+                }
+                for (Column item : config.getTreeColumns()) {
+                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
+                        GWTColumn col = createGWTColumn(item, site, locale, uiLocale);
+                        gwtConfig.addTreeColumn(col);
                     }
                 }
 
@@ -615,6 +427,32 @@ public class UIConfigHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    private GWTColumn createGWTColumn(Column item, JCRSiteNode site, Locale locale, Locale uiLocale) {
+        GWTColumn col = new GWTColumn();
+        col.setKey(item.getKey());
+        if (item.getTitleKey() != null) {
+            col.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+        } else if (item.getDeclaringNodeType() != null) {
+            try {
+                ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(item.getDeclaringNodeType()).getPropertyDefinition(item.getKey());
+                col.setTitle(epd.getLabel(uiLocale != null ? uiLocale : locale));
+            } catch (Exception e) {
+                logger.error("Cannot get node type name", e);
+                col.setTitle(item.getKey());
+            }
+        } else if (item.getTitle() != null) {
+            col.setTitle(item.getTitle());
+        } else {
+            col.setTitle(item.getKey());
+        }
+        if (item.getSize().equals("*")) {
+            col.setSize(-1);
+        } else {
+            col.setSize(Integer.parseInt(item.getSize()));
+        }
+        return col;
     }
 
 

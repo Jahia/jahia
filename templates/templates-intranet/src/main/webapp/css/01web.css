@@ -112,6 +112,8 @@ body {
 	padding:0;
 	list-style:none;
 	color:#666;
+	text-transform:uppercase;
+	font-size:85%;
 }
 #bodywrapper ul.breadcrumb li {
 	display:inline;

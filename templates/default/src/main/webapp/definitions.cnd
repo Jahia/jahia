@@ -112,3 +112,7 @@
  - cast (string, richtext) i18n
  - positionTop (long) indexed=no
  - positionLeft (long) indexed=no
+
+[jnt:pageTitle] > jnt:content, jmix:siteComponentContent
+
+[jnt:pageBreadcrumb] > jnt:content, jmix:siteComponentContent

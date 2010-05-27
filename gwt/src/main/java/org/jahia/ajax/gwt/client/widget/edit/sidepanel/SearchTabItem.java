@@ -272,8 +272,10 @@ class SearchTabItem extends SidePanelTabItem {
         gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
         gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
         List<String> list = new ArrayList<String>();
-        list.add(defPicker.getValue().getName());
-        gwtJahiaSearchQuery.setNodeTypes(list);
+        if (defPicker.getValue() != null) {
+            list.add(defPicker.getValue().getName());
+            gwtJahiaSearchQuery.setNodeTypes(list);
+        }
         return gwtJahiaSearchQuery;
     }
 

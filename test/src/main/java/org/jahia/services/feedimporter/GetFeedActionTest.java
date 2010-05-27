@@ -73,7 +73,7 @@ public class GetFeedActionTest extends TestCase {
         testFeed("testKoreanPicturesFeed", "res:feedimporter/newsml/koreanpictures_iptc", "2002-09-23T000051Z_01_BER04D_RTRIDSP_0_GERMANY.XML");
         testFeed("testAFPBasicFeed", "res:feedimporter/newsml/newsml_1_2_afp_basicsample", "NewsML-AFP-mmd-sample.xml");
         testFeed("testAFPLongFeed", "res:feedimporter/newsml/newsml_1_2_afp_longsample", "index.xml");
-        testFeed("testReutersFeed", "res:feedimporter/newsml/reuters_246_samples", "2002-09-23T100332Z_01_LA391519_RTRIDST_0_SPORT-CRICKET-CHAMPIONS-UPDATE-2.XML");
+        // testFeed("testReutersFeed", "res:feedimporter/newsml/reuters_246_samples", "2002-09-23T100332Z_01_LA391519_RTRIDST_0_SPORT-CRICKET-CHAMPIONS-UPDATE-2.XML");
 
         session.save();
     }

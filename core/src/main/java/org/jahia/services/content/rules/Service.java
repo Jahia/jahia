@@ -655,6 +655,7 @@ public class Service extends JahiaService {
     public void publishNode(NodeWrapper node,KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
         final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
+        jcrSessionWrapper.save();
         JCRPublicationService.getInstance().publish(nodeWrapper.getPath(), jcrSessionWrapper.getWorkspace().getName(),
                                                     Constants.LIVE_WORKSPACE,
                                                     Collections.singleton(jcrSessionWrapper.getLocale().toString()),

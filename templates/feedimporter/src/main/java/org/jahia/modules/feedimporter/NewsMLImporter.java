@@ -85,7 +85,7 @@ public class NewsMLImporter {
                                 existingFileNode = mediaNode.uploadFile(refFile.getName().getBaseName(), refFile.getContent().getInputStream(), JahiaContextLoaderListener.getServletContext().getMimeType(ref));
                             }
 
-                            contentItemNode.setProperty("image", contentItemNode);
+                            contentItemNode.setProperty("image", existingFileNode);
 
                         }
                     }

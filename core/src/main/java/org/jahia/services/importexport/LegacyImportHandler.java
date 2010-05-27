@@ -7,6 +7,7 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.*;
@@ -321,7 +322,7 @@ public class LegacyImportHandler extends DefaultHandler {
             }
 
             if (pageKey == null) {
-                pageKey = "page" + (pid++);
+                pageKey = JCRContentUtils.generateNodeName(title,32);
             }
 
             // remove all unsupported characters

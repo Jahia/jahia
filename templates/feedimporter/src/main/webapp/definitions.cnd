@@ -18,11 +18,17 @@
  - contentUpdated (date) hidden
  + * (jnt:newsMLComponent)
 
-[jnt:newsMLComponent] > jnt:content
- - Duid (string)
- + * (jnt:newsMLContentItem, jnt:newsMLComponent)
+[jnt:newsMLComponentOrContentItem] > jnt:content, mix:title
 
-[jnt:newsMLContentItem] > jnt:content, mix:title, jmix:editorialContent
+[jnt:newsMLComponent] > jnt:newsMLComponentOrContentItem
+ - Duid (string)
+ - language (string)
+ - subjectCode (string)
+ - headline (string)
+ - role (string)
+ + * (jnt:newsMLComponentOrContentItem)
+
+[jnt:newsMLContentItem] > jnt:newsMLComponentOrContentItem, jmix:editorialContent
  - comment (string)
  - format (string)
  - href (string)
@@ -30,6 +36,3 @@
  - datacontent (string)
  - role (string)
  - image (weakreference, file[mime='image/*'])
-
-
-[jnt:feedContent] > nt:unstructured

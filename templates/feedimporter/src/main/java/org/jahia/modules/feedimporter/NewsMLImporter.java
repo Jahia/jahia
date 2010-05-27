@@ -5,6 +5,7 @@ import org.apache.commons.vfs.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
 import org.apache.log4j.Logger;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -46,6 +47,10 @@ public class NewsMLImporter {
     }
 
     public void processContentItem(Element element, JCRNodeWrapper node, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, FileSystemException {
+
+        String nextAvailableName = JCRContentUtils.findAvailableNodeName(node, "contentItem");
+        JCRNodeWrapper contentItemNode = node.addNode(nextAvailableName, "jnt:newsMLContentItem");
+
         if (element.getAttributeValue("Href") != null) {
             logger.info("Found reference to external resource " + element.getAttributeValue("Href") + " on tag " + element.getName());
             if ("ContentItem".equals(element.getName())) {
@@ -77,14 +82,21 @@ public class NewsMLImporter {
                                 // found the node, for the moment we simply keep the old value, but we could create
                                 // a new version in a later update.
                             } else {
-                                mediaNode.uploadFile(refFile.getName().getBaseName(), refFile.getContent().getInputStream(), JahiaContextLoaderListener.getServletContext().getMimeType(ref));
+                                existingFileNode = mediaNode.uploadFile(refFile.getName().getBaseName(), refFile.getContent().getInputStream(), JahiaContextLoaderListener.getServletContext().getMimeType(ref));
                             }
 
-                            // todo : we must still create the node reference to be able to render the image in the template.
+                            contentItemNode.setProperty("image", contentItemNode);
+
                         }
                     }
                 }
             }
+        }
+
+        Element dataContentElement = element.getChild("DataContent");
+        if (dataContentElement != null) {
+            String dataContent = dataContentElement.getValue();
+            contentItemNode.setProperty("datacontent", dataContent);
         }
         /*
         for (Element childElement : (List<Element>) element.getChildren()) {
@@ -101,6 +113,26 @@ public class NewsMLImporter {
         String newsLanguage = getElementAttributeValue(newsComponent, "DescriptiveMetadata/Language", "FormalName");
         String newsSubjectCode = getElementAttributeValue(newsComponent, "DescriptiveMetadata/SubjectCode/Subject", "FormalName");
         String newsHeadline = getElementText(newsComponent, "NewsLines/HeadLine");
+        String role = getElementAttributeValue(newsComponent, "Role", "FormalName");
+        String dUID = newsComponent.getAttributeValue("Duid");
+
+        String nextAvailableName = JCRContentUtils.findAvailableNodeName(node, "newsComponent");
+        JCRNodeWrapper newsComponentNode = node.addNode(nextAvailableName, "jnt:newsMLComponent");
+        if (newsLanguage != null) {
+            newsComponentNode.setProperty("language", newsLanguage);
+        }
+        if (newsSubjectCode != null) {
+            newsComponentNode.setProperty("subjectCode", newsSubjectCode);
+        }
+        if (newsHeadline != null) {
+            newsComponentNode.setProperty("headline", newsHeadline);
+        }
+        if (role != null) {
+            newsComponentNode.setProperty("role", role);
+        }
+        if (dUID != null) {
+            newsComponentNode.setProperty("Duid", dUID);
+        }
         
         if (newsLanguage != null) {
             JCRSessionWrapper languageSession = JCRSessionFactory.getInstance().getCurrentUserSession(
@@ -108,11 +140,11 @@ public class NewsMLImporter {
         }
         List<Element> contentItems = newsComponent.getChildren("ContentItem");
         for (Element contentItem : contentItems) {
-            processContentItem(contentItem, node, contextFileObject, feedNode);
+            processContentItem(contentItem, newsComponentNode, contextFileObject, feedNode);
         }
         List<Element> subNewsComponents = newsComponent.getChildren("NewsComponent");
         for (Element subNewsComponent : subNewsComponents) {
-            processNewsComponent(subNewsComponent, node, entryBaseName, contextFileObject, feedNode);
+            processNewsComponent(subNewsComponent, newsComponentNode, entryBaseName, contextFileObject, feedNode);
         }
     }
 
@@ -205,6 +237,11 @@ public class NewsMLImporter {
         }
         newsMLItemNode.setProperty("status", newsStatus);
 
+        // for the moment remove all the children if there were some, because we don't know how to update them.
+        NodeIterator childNodeIterator = newsMLItemNode.getNodes();
+        while (childNodeIterator.hasNext()) {
+            childNodeIterator.nextNode().remove();
+        }
         /*
         for (Attribute childElementAttribute : (List<Attribute>) newsItem.getAttributes()) {
             newsMLItemNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());

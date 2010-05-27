@@ -72,6 +72,45 @@ body {
 	margin: 0 auto ;
 }
 /******************************************************************************
+*  Languages
+******************************************************************************/
+#bodywrapper div#languages {
+	float:right;
+	display:inline;
+	padding:10px;
+}
+
+#bodywrapper #languages ul  {
+	list-style: none;
+	float:left;
+	display:inline;
+	margin:0;
+	font-size:85%;
+	line-height:normal;
+}
+#bodywrapper #languages li {
+	display:inline;
+	padding:0 5px;
+	background: none;
+}
+#bodywrapper #languages li.selected {
+	color:#900;
+	text-decoration:underline
+}
+#bodywrapper #languages a,
+#bodywrapper #languages a:link,
+#bodywrapper #languages a:visited {
+	color:#333;
+	text-decoration:none;
+	background:none;
+}
+#bodywrapper #languages a:hover,
+#bodywrapper #languages a:active {
+	color:#900;
+	text-decoration:underline;
+	background:none;
+}
+/******************************************************************************
 * header-part1
 ******************************************************************************/
 #bodywrapper div#headerPart1{

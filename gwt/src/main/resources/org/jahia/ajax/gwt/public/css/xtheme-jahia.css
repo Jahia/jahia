@@ -18,16 +18,16 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 	background : #333333 url(../images/xtheme-jahia-andromeda/studiomode/toolbar/bg.png) no-repeat top right !important;
 	border-color:#333333!important;
 }
-.x-viewport-studiomode .x-toolbar button {
+.x-viewport-studiomode .x-toolbar-first button {
 	color:#fff !important;
 }	
-.x-viewport-studiomode .x-btn-tl, .x-viewport-studiomode .x-btn-tr, .x-viewport-studiomode .x-btn-tc, .x-viewport-studiomode .x-btn-ml, .x-viewport-studiomode .x-btn-mr, .x-viewport-studiomode .x-btn-mc, .x-viewport-studiomode .x-btn-bl, .x-viewport-studiomode .x-btn-br, .x-viewport-studiomode .x-btn-bc{
+.x-viewport-studiomode .x-toolbar-first .x-btn-tl, .x-viewport-studiomode .x-toolbar-first .x-btn-tr, .x-viewport-studiomode .x-toolbar-first .x-btn-tc, .x-viewport-studiomode .x-toolbar-first .x-btn-ml, .x-viewport-studiomode .x-toolbar-first .x-btn-mr, .x-viewport-studiomode .x-toolbar-first .x-btn-mc, .x-viewport-studiomode .x-toolbar-first .x-btn-bl, .x-viewport-studiomode .x-toolbar-first .x-btn-br, .x-viewport-studiomode .x-toolbar-first .x-btn-bc{
 	background-image:url(../images/xtheme-jahia-andromeda/studiomode/button/btn.png)!important;
 }
-.x-viewport-studiomode .x-toolbar .xtb-sep {
+.x-viewport-studiomode .x-toolbar-first .xtb-sep {
 	background-image:url(../images/xtheme-jahia-andromeda/studiomode/grid/grid-split.gif) !important;
 }
-.x-viewport-studiomode .x-toolbar .x-btn-over button {
+.x-viewport-studiomode .x-toolbar-first .x-btn-over button {
     color:#000 !important;
 }
 /*Edit Mode*/

@@ -90,7 +90,6 @@ public abstract class FormQuick extends FormPanel {
         String nameField = "";
         final Button saveButton = new Button(Messages.getResource("label.save"));
         addButton(saveButton);        
-        // todo : create the form
         JahiaContentDefinitionService.App.getInstance().getNodeType(nodetype, new AsyncCallback<GWTJahiaNodeType>() {
             public void onFailure(Throwable throwable) {
                 //To change body of implemented methods use File | Settings | File Templates.

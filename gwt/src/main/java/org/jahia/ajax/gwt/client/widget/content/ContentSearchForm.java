@@ -16,6 +16,8 @@ import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeDefinition;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -117,8 +119,6 @@ public class ContentSearchForm extends ContentPanel {
         inNameField = createNameField();
         scopeCheckGroup.add(inNameField);
 
-
-
         // scope tag field
         inTagField = createTagField();
         scopeCheckGroup.add(inTagField);
@@ -138,7 +138,6 @@ public class ContentSearchForm extends ContentPanel {
 
         fieldSet.add(scopeCheckGroup,new FormData("-20"));
 
-
         setWidth("100%");
         setFrame(true);
         setCollapsible(false);
@@ -146,7 +145,6 @@ public class ContentSearchForm extends ContentPanel {
         setHeaderVisible(false);
         getHeader().setBorders(false);
         add(searchForm, new RowData(1, 1, new Margins(0, 0, 20, 0)));
-
     }
 
     /**

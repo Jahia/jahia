@@ -16,10 +16,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
@@ -31,6 +34,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Search tab item for the side panel for performing simple queries in the content repository.
@@ -44,6 +48,7 @@ class SearchTabItem extends SidePanelTabItem {
     private TextField<String> searchField;
     private ContentPickerField pagePickerField;
     private ComboBox<GWTJahiaLanguage> langPickerField;
+    private ComboBox<GWTJahiaNodeType> defPicker;
     final PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
 
     public SearchTabItem(GWTSidePanelTab config) {
@@ -78,7 +83,7 @@ class SearchTabItem extends SidePanelTabItem {
             }
         });
         ok.setIconStyle("gwt-toolbar-icon-savedSearch");
-
+        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.search());
         final Button drag = new Button(Messages.getResource("org.jahia.jcr.edit.drag.label"));
         EditModeDragSource querySource = new EditModeDragSource(drag) {
             @Override
@@ -103,9 +108,11 @@ class SearchTabItem extends SidePanelTabItem {
         langPickerField = createLanguageSelectorField();
         searchForm.add(langPickerField);
 
+        defPicker = createNodeSelector();
+        searchForm.add(defPicker);
+
         searchForm.addButton(ok);
         searchForm.addButton(drag);
-
 
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
@@ -133,15 +140,12 @@ class SearchTabItem extends SidePanelTabItem {
 
         List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
         columnNames.add(new GWTColumn("icon","icon",40));
-        columnNames.add(new GWTColumn("displayName",Messages.getResource("label.name"),280));
+        columnNames.add(new GWTColumn("displayName",Messages.getResource("label.name"),200));
         final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
         columnConfigList.init();
 
         final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(columnConfigList));
 
-        //contentContainer.add(grid);
-
-        //contentVBoxData.setFlex(4);
         ContentPanel gridPanel = new ContentPanel();
         gridPanel.setLayout(new FitLayout());
         gridPanel.setBottomComponent(toolBar);
@@ -208,6 +212,37 @@ class SearchTabItem extends SidePanelTabItem {
         return combo;
     }
 
+    /**
+     * Create nodeTypes field
+     *
+     * @return
+     */
+    private ComboBox<GWTJahiaNodeType> createNodeSelector() {
+        // create a definition for j:node
+        final ComboBox<GWTJahiaNodeType> combo = new ComboBox<GWTJahiaNodeType>();
+        combo.setFieldLabel("nodetype");
+        combo.setStore(new ListStore<GWTJahiaNodeType>());
+        combo.setDisplayField("label");
+        combo.setValueField("name");
+        combo.setTypeAhead(true);
+        combo.setTriggerAction(ComboBox.TriggerAction.ALL);
+        combo.setForceSelection(true);
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("nt:base");
+        JahiaContentDefinitionService.App.getInstance().getNodeSubtypes("jmix:editorialContent",
+                new BaseAsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>>() {
+                    public void onSuccess(Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> result) {
+                        for (GWTJahiaNodeType key : result.keySet()) {
+                            combo.getStore().add(result.get(key));
+                        }
+                    }
+                    public void onApplicationFailure(Throwable caught) {
+                        Log.error("Unable to get nodetypes :",caught);
+                    }
+                });
+        return combo;
+    }
+
 
     /**
      * Method used by seach form
@@ -236,6 +271,9 @@ class SearchTabItem extends SidePanelTabItem {
         gwtJahiaSearchQuery.setQuery(searchField.getValue());
         gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
         gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
+        List<String> list = new ArrayList<String>();
+        list.add(defPicker.getValue().getName());
+        gwtJahiaSearchQuery.setNodeTypes(list);
         return gwtJahiaSearchQuery;
     }
 

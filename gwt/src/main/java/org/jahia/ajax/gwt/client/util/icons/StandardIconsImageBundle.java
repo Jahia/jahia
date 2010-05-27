@@ -54,6 +54,9 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("icon-query.png")
     public AbstractImagePrototype tabQuery();
 
+    @Resource("search.png")
+    public AbstractImagePrototype search();
+
     @Resource("icon-img.png")
     public AbstractImagePrototype img();
     

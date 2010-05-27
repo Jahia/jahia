@@ -587,26 +587,24 @@ body {
 /******************************************************************************
 * breadcrumb
 ******************************************************************************/
-#bodywrapper div#breadcrumb{
-	color:#999;
-}
 
-#bodywrapper #breadcrumb ul  {
+#bodywrapper ul.breadcrumb  {
 	font-size:90%;
 	margin:1em 0;
 	padding:0;
 	list-style:none;
+	color:#999;
 }
-#bodywrapper #breadcrumb li {
+#bodywrapper ul.breadcrumb li {
 	display:inline;
 	margin:0;
 	padding:0;
 	background: none;
 	margin: 0.4em ;
 }
-#bodywrapper #breadcrumb a,
-#bodywrapper #breadcrumb a:link,
-#bodywrapper #breadcrumb a:visited
+#bodywrapper ul.breadcrumb a,
+#bodywrapper ul.breadcrumb a:link,
+#bodywrapper ul.breadcrumb a:visited
 {
 	padding:0 1em 0 0;
 	margin:0;
@@ -614,8 +612,8 @@ body {
 	color:#999;
 	text-decoration:underline;
 }
-#bodywrapper #breadcrumb a:hover,
-#bodywrapper #breadcrumb a:active {
+#bodywrapper ul.breadcrumb a:hover,
+#bodywrapper ul.breadcrumb a:active {
 	color:#900;
 	text-decoration:underline;
 }

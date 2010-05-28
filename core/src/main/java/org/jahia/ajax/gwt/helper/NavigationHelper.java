@@ -692,6 +692,11 @@ public class NavigationHelper {
 
     public List<GWTJahiaNode> executeQuery(Query q, List<String> nodeTypesToApply, List<String> mimeTypesToMatch,
                                            List<String> filtersToApply) throws RepositoryException {
+        return executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply,GWTJahiaNode.DEFAULT_FIELDS);
+    }
+
+    public List<GWTJahiaNode> executeQuery(Query q, List<String> nodeTypesToApply, List<String> mimeTypesToMatch,
+                                           List<String> filtersToApply,List<String> fields) throws RepositoryException {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         QueryResult qr = q.execute();
         NodeIterator ni = qr.getNodes();
@@ -709,7 +714,7 @@ public class NavigationHelper {
                 boolean matchFilter = (filtersToApply != null && mimeTypesToMatch != null && filtersToApply.size() == 0 && mimeTypesToMatch.size() == 0) ||
                         matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n, mimeTypesToMatch);
                 if (matchFilter || hasNodes) {
-                    GWTJahiaNode node = getGWTJahiaNode(n);
+                    GWTJahiaNode node = getGWTJahiaNode(n,fields);
                     node.setMatchFilters(matchFilter);
                     result.add(node);
                 }

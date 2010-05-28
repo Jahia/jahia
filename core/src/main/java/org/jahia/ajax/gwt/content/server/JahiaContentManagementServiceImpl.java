@@ -311,13 +311,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
-                                     List<String> filters) throws GWTJahiaServiceException {
-        return search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters, retrieveCurrentSession());
+                                     List<String> filters,List<String> fields) throws GWTJahiaServiceException {
+        return search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters,fields, retrieveCurrentSession());
     }
 
     public ListLoadResult<GWTJahiaNode> searchSQLForLoad(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
-                                     List<String> filters) throws GWTJahiaServiceException {
-        return new BaseListLoadResult<GWTJahiaNode>(search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters, retrieveCurrentSession()));
+                                     List<String> filters,List<String> fields) throws GWTJahiaServiceException {
+        return new BaseListLoadResult<GWTJahiaNode>(search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters,fields, retrieveCurrentSession()));
     }
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {

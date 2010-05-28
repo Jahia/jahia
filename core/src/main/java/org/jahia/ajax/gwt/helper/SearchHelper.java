@@ -126,11 +126,12 @@ public class SearchHelper {
      * @return
      * @throws GWTJahiaServiceException
      */
-    public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
+                                        List<String> filters, List<String> fields, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(searchString,Query.JCR_SQL2);
             q.setLimit(limit);
-            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters);
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

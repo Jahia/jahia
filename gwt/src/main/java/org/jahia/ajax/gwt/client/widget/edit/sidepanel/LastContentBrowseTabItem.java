@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -24,6 +25,7 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -61,7 +63,11 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
             }
         });
         displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("label.name"), 280));
+        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("label.name"), 170));
+        ColumnConfig columnConfig = new ColumnConfig("jcr:lastModified", Messages.getResource("label.lastModified"),
+                                                     100);
+        columnConfig.setDateTimeFormat(DateTimeFormat.getShortDateTimeFormat());
+        displayColumns.add(columnConfig);
         final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
         contentContainer.add(grid);
@@ -109,7 +115,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
         contentContainer.mask("Loading", "x-mask-loading");
         async.searchSQL(config.getParams().get("search"), Integer.valueOf(config.getParams().get("limit")),
-                        JCRClientUtils.CONTENT_NODETYPES, null, null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                        JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON,"jcr:lastModified"), new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                         for (GWTJahiaNode node : gwtJahiaNodes) {
                             contentStore.add(node);

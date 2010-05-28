@@ -205,7 +205,7 @@ public class NodeWrapper implements Updateable {
         return null;
     }
 
-    Node getNode() {
+    public Node getNode() {
         return node;
     }
 

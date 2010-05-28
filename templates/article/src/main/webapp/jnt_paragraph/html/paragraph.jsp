@@ -11,7 +11,7 @@
 <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
 
 <h3><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
-
+<c:if test="${not empty insertText}">
 <div class='${insertType.string}-top float${insertPosition.string}'
      style='width:${insertWidth.string}px'>
 
@@ -19,6 +19,7 @@
         ${insertText.string}
     </div>
 </div>
+</c:if>
 <div class="float${currentNode.properties.align.string}">
     <c:if test="${!empty image}">
         <img src="${image.node.url}" alt="${image.node.url}" align="${currentNode.properties.align.string}"/>

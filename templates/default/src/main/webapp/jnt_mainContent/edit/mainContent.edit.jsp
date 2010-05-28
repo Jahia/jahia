@@ -2,6 +2,15 @@
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <template:addResources type="css" resources="formmaincontent.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript"
+                       resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
+<template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
+<template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="contributedefault.js"/>
+<template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -12,7 +21,13 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
-
+<c:if test="${empty requestScope.ajaxCall}">
+    <script>
+        $(document).ready(function(){
+            initEditFields("${currentNode.identifier}");
+        });
+    </script>
+</c:if>
 <div class="FormMainContent">
     <h3 class="title edit${currentNode.identifier}" jcr:id="jcr:title" jcr:url="${url.base}${currentNode.path}">
         <jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>

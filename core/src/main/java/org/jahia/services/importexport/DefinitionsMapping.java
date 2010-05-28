@@ -21,22 +21,22 @@ public class DefinitionsMapping {
 
     public DefinitionsMapping() {
         metadataProperties.put("jahia:defaultCategory", new PropertyMapping(
-                "jahia:defaultCategory", "jmix:categorized.j:defaultCategory"));
+                "jahia:defaultCategory", "jmix:categorized|j:defaultCategory"));
         metadataProperties.put("jahia:keywords", new PropertyMapping("jahia:keywords",
-                "jmix:keywords.j:keywords"));
+                "jmix:keywords|j:keywords"));
         metadataProperties.put("jahia:createdBy", new PropertyMapping("jahia:createdBy",
-                "mix:created.jcr:createdBy"));
+                "mix:created|jcr:createdBy"));
         metadataProperties.put("jahia:lastModifiedBy", new PropertyMapping("jahia:lastModifiedBy",
-                "mix:lastModified.jcr:lastModifiedBy"));
+                "mix:lastModified|jcr:lastModifiedBy"));
         metadataProperties.put("jahia:lastPublishingDate", new PropertyMapping(
-                "jahia:lastPublishingDate", "jmix:lastPublished.j:lastPublished"));
+                "jahia:lastPublishingDate", "jmix:lastPublished|j:lastPublished"));
         metadataProperties.put("jahia:lastPublisher", new PropertyMapping("jahia:lastPublisher",
-                "jmix:lastPublished.j:lastPublishedBy"));
+                "jmix:lastPublished|j:lastPublishedBy"));
     }
 
     String WORD = "([\\w:#]+)";
     String WORD_WITH_DOTS_AND_SLASHES = "([\\w:#.//]+)";    
-    String WORD_WITH_DOTS_AND_BRACKETS = "([\\w:#.\\(\\)]+)";    
+    String WORD_WITH_DOTS_SPACES_AND_BRACKETS = "([\\w:#.\\(\\)\\s]+)";    
     String WS = "\\s*";
     String WS_OR_COMMA = "[\\s,]*";
     String NODETYPE = "\\[" + WORD + "\\]";
@@ -44,9 +44,9 @@ public class DefinitionsMapping {
     String NODETYPE_MAPPING = NODETYPE + EQ + WORD;
     String NODE = WORD_WITH_DOTS_AND_SLASHES + WS + "(?:\\(" + WS + WORD + WS + "\\))?";
     String NODE_MAPPING = WS + "\\+" + WS + WORD + EQ + NODE;
-    String PROPERTY_MAPPING = WS + "-" + WS + WORD + EQ + "(" + WORD + "\\." + ")?" + WORD;
-    String VALUE_MAPPING = WS + WORD_WITH_DOTS_AND_BRACKETS + EQ + WORD_WITH_DOTS_AND_BRACKETS;
-    String PROPS = "(?:\\[((?:" + WS_OR_COMMA + "(" + WORD + "\\." + ")?" + WORD + EQ + WORD + WS + ")*)\\])";
+    String PROPERTY_MAPPING = WS + "-" + WS + WORD + EQ + "(" + WORD + "\\|" + ")?" + WORD_WITH_DOTS_AND_SLASHES;
+    String VALUE_MAPPING = WS + WORD_WITH_DOTS_SPACES_AND_BRACKETS + EQ + WORD_WITH_DOTS_SPACES_AND_BRACKETS;
+    String PROPS = "(?:\\[((?:" + WS_OR_COMMA + "(" + WORD + "\\|" + ")?" + WORD_WITH_DOTS_AND_SLASHES + EQ + WORD + WS + ")*)\\])";
     String ADD_NODE = "\\{" + WS + "addNode" + WS + NODE + WS + PROPS + "?" + WS + "\\}";
     String ADD_MIXIN = "\\{" + WS + "addMixin" + WS + WORD + WS + "\\}";
     String SET_PROPERTY = "\\{" + WS + "setProperty" + WS + PROPS + "?" + WS + "\\}";
@@ -87,12 +87,13 @@ public class DefinitionsMapping {
                 } else if ((matcher = PROPERTY_PATTERN.matcher(line)).matches()) {
                     String mixinType = matcher.group(3);
                     propMapping = new PropertyMapping(matcher.group(1), (!StringUtils
-                            .isEmpty(mixinType) ? mixinType + "." : "")
+                            .isEmpty(mixinType) ? mixinType + "|" : "")
                             + matcher.group(4));
                     typeMapping.addPropertyMapping(propMapping.originalName, propMapping);
                     currentMapping = propMapping;
                 } else if ((matcher = VALUE_PATTERN.matcher(line)).matches()) {
-                    ValueMapping vm = new ValueMapping(matcher.group(1), matcher.group(2));
+                    ValueMapping vm = new ValueMapping(StringUtils.trim(matcher.group(1)),
+                            StringUtils.trim(matcher.group(2)));
                     propMapping.addValueMapping(vm.originalName, vm);
                 } else if ((matcher = ADD_NODE_PATTERN.matcher(line)).matches()) {
                     String nodeName = matcher.group(1);
@@ -131,6 +132,8 @@ public class DefinitionsMapping {
                 return "#box";
             }
             return type.getName();
+        } else if ("jnt:box".equals(s.getNewName())) {
+            return "#box";            
         }
         return s.getNewName();
     }

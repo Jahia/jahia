@@ -93,7 +93,7 @@ PropertySettingList ::= '[' PropertySetting {',' PropertySetting} ']'
 
 PropertySetting ::= PropertyNameWithOptionalMixin '=' PropertyValue
 
-PropertyNameWithOptionalMixin ::= [NodeTypeName'.']PropertyName
+PropertyNameWithOptionalMixin ::= [NodeTypeName'|']PropertyName
 
 PropertyName ::= String
 
@@ -217,7 +217,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 ------------------------------------------------------  
 [jnt:mainContentContainer] = jnt:mainContent
  - mainContentBody = body
- - mainContentTitle = mix:title.jcr:title
+ - mainContentTitle = mix:title|jcr:title
 ------------------------------------------------------
  
   For standard Jahia metadata fields the mapping rules are already internally hardcoded so they do not need to be extra 
@@ -227,7 +227,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   in the above example.
 
   A field can be associated to an optional mixin type - the right hand side is then the mixin node type name,
-  followed by . (dot) and the property name. When mapping the field, the mixin type will be automatically added to
+  followed by | and the property name. When mapping the field, the mixin type will be automatically added to
   the node. In the above example the previous field mainContentTitle is now mapped to the standard property jcr:title after
   also adding the mixin type mix:title.    
 
@@ -252,7 +252,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 ------------------------------------------------------
 [web_templates:fileContainer] = jnt:fileReference
  - file = j:node 
- - fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+ - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
    true = details
    false = link
 ------------------------------------------------------
@@ -315,8 +315,8 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   
 -------------------------------------------------------  
 [jnt:box] = jnt:box
- - boxTitle = mix:title.jcr:title
- - skin = jmix:skinnable.j:skin
+ - boxTitle = mix:title|jcr:title
+ - skin = jmix:skinnable|j:skin
    resourceKey(skins.box2) = skins.box2
 -------------------------------------------------------
      
@@ -383,7 +383,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   
 -------------------------------------------------------  
 [web_templates:introductionContainer] = jnt:bigText
-   { setProperty [jmix:renderable.j:template=introduction] } 
+   { setProperty [jmix:renderable|j:template=introduction] } 
 -------------------------------------------------------  
   
   [[3]] Set property action 
@@ -395,7 +395,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 [web_templates:home] = jnt:page
  ...
  + promo = pagecontent/row1/col1/promo
-   { setProperty [jmix:renderable.j:template=twoColumns] }
+   { setProperty [jmix:renderable|j:template=twoColumns] }
 -------------------------------------------------------
 
   This example will add a mixin and set a property on the promo node.    
@@ -444,8 +444,8 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 ## Box
 
 [jnt:box] = jnt:box
- - boxTitle = mix:title.jcr:title
- - skin = jmix:skinnable.j:skin
+ - boxTitle = mix:title<jcr:title
+ - skin = jmix:skinnable|j:skin
    resourceKey(skins.box2) = skins.box2
 
 ## Menu
@@ -458,19 +458,19 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 [jnt:mainContentContainer] = jnt:mainContent
  - mainContentBody = body
  - mainContentAlign = align
- - mainContentTitle = mix:title.jcr:title
+ - mainContentTitle = mix:title|jcr:title
  - mainContentImage = image
 
 ## Text container
 
 [jnt:textContainer] = jnt:bigText
- - bigText = jnt:bigText.text
+ - bigText = text
 
 ## File container
 
 [jnt:fileContainer] = jnt:fileReference
  - file = j:node
- - fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+ - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
    true = details
    false = link
 
@@ -497,7 +497,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
  + logo = ../wrapperContent/logo
  + banner = pagecontent/row1/col1/banner
  + promo = pagecontent/row1/col1/promo
-   { setProperty [jmix:renderable.j:template=twoColumns] }
+   { setProperty [jmix:renderable|j:template=twoColumns] }
  + promoLarge = #skip
  + columnA_box = pagecontent/row1/col1
  + columnB_box = pagecontent/row1/col2

@@ -5,13 +5,13 @@
 [jnt:mainContentContainer] = jnt:mainContent
  - mainContentBody = body
  - mainContentAlign = align
- - mainContentTitle = mix:title.jcr:title
+ - mainContentTitle = mix:title|jcr:title
  - mainContentImage = image
 
 ## Text container
 
 [jnt:textContainer] = jnt:bigText
- - bigText = jnt:bigText.text
+ - bigText = text
 
 ## File container
 
@@ -19,7 +19,7 @@
 # + file = #shareableSource
 [jnt:fileContainer] = jnt:fileReference
  - file = j:node
- - fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+ - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
    true = details
    false = link
 
@@ -34,7 +34,7 @@
 ### Webtemplates mappings
 
 [web_templates:title] = mix:title
- - title = mix:title.jcr:title
+ - title = mix:title|jcr:title
  
 ## File container
 
@@ -42,21 +42,21 @@
 # + file = #shareableSource
 [web_templates:fileContainer] = jnt:fileReference
  - file = j:node 
- - fileDisplayDetails = jmix:renderableReference.j:referenceTemplate
+ - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
    true = details
    false = link
 
 ## News module
 
 [web_templates:newsContainer] = jnt:news
- - newsTitle = mix:title.jcr:title
+ - newsTitle = mix:title|jcr:title
  - newsDesc = desc
  - newsImage = image
  - newslink = link
  - newsDate = date
 
 [web_templates:lastNewsContainer] = jnt:lastNews
- - display = jmix:renderableList.j:subNodesTemplate
+ - display = jmix:renderableList|j:subNodesTemplate
    medium = default
 
 ## Events module
@@ -103,14 +103,14 @@
 ## Press
 
 [web_templates:pressContainer] = jnt:press
- - title = mix:title.jcr:title
+ - title = mix:title|jcr:title
 
 ## Text containers
 
 [web_templates:introductionContainer] = jnt:bigText
    { addMixin jmix:renderable }
    { setProperty [j:template=introduction] }
- - introduction = jnt:bigText.text
+ - introduction = text
 
 [web_templates:logoContainer] = jnt:imageReference
  - logo = j:node
@@ -125,8 +125,8 @@
 ## Box
 
 [jnt:box] = jnt:box
- - boxTitle = mix:title.jcr:title
- - skin = jmix:skinnable.j:skin
+ - boxTitle = mix:title|jcr:title
+ - skin = jmix:skinnable|j:skin
    resourceKey(skins.box2) = skins.box2
     
 ## Menu
@@ -147,12 +147,13 @@
     people = simple
     press = simple    
     job = simple    
+    layout = simple
      
 [web_templates:home] = jnt:page
  + logo = ../wrapperContent/logo
  + banner = pagecontent/row1/col1/banner
  + promo = pagecontent/row1/col1/promo
-   { setProperty [jmix:renderable.j:template=twoColumns] }
+   { setProperty [jmix:renderable|j:template=twoColumns] }
  + promoLarge = #skip
  + columnA_box = pagecontent/row1/col1
  + columnB_box = pagecontent/row1/col2

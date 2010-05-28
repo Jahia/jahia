@@ -82,7 +82,10 @@ public class GetFeed implements Action, BackgroundAction {
             remotePassword = feedNode.getProperty("password").getString();
         }
 
-        NewsMLImporter newsMLImporter = new NewsMLImporter(ServicesRegistry.getInstance().getCategoryService(), new HashMap<String,String>());
+        InputStream categoryMappingsInputStream = this.getClass().getClassLoader().getResourceAsStream("category_mappings.properties");
+        Properties categoryMappings = new Properties();
+        categoryMappings.load(categoryMappingsInputStream);
+        NewsMLImporter newsMLImporter = new NewsMLImporter(ServicesRegistry.getInstance().getCategoryService(), categoryMappings);
         newsMLImporter.importFeed(remoteUrl, remoteUser, remotePassword, feedNode, jcrSessionWrapper);
     }
 }

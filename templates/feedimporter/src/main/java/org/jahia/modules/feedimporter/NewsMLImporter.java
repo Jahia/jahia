@@ -46,9 +46,9 @@ public class NewsMLImporter {
     private static Logger logger = Logger.getLogger(NewsMLImporter.class);
 
     private CategoryService categoryService;
-    private Map<String,String> subjectCodeToCategoryKey;
+    private Properties subjectCodeToCategoryKey;
 
-    public NewsMLImporter(CategoryService categoryService, Map<String,String> subjectCodeToCategoryKey) {
+    public NewsMLImporter(CategoryService categoryService, Properties subjectCodeToCategoryKey) {
         this.categoryService = categoryService;
         this.subjectCodeToCategoryKey = subjectCodeToCategoryKey;
     }
@@ -154,25 +154,29 @@ public class NewsMLImporter {
             newsComponentNode.setProperty("subjectCode", newsSubjectCode);
             // we have the subject code, let's categorize the newsMLItem properly.
 
-            String categoryKey = subjectCodeToCategoryKey.get(newsSubjectCode);
+            String categoryKey = subjectCodeToCategoryKey.getProperty(newsSubjectCode);
             if (categoryKey != null) {
                 JCRNodeWrapper categoryNode = getCategoryNodeByKey(currentSession, categoryKey);
                 if (categoryNode != null) {
                     if (!newsMLItemNode.isNodeType(Constants.JAHIAMIX_CATEGORIZED)) {
                         newsMLItemNode.addMixin(Constants.JAHIAMIX_CATEGORIZED);
                     }
-                    JCRPropertyWrapper newsMLItemCategoryProperty = newsMLItemNode.getProperty(
-                            Constants.DEFAULT_CATEGORY);
                     List<Value> categoryReferences = new ArrayList<Value>();
-                    if (newsMLItemCategoryProperty != null) {
-                        final Value[] propertyValues = newsMLItemCategoryProperty.getValues();
-                        for (Value propertyValue : propertyValues) {
-                            if (!propertyValue.toString().equals(categoryNode.getIdentifier())) {
-                                categoryReferences.add(propertyValue);
-                            } else {
-                                logger.warn("Category " + categoryNode.getName() + " already set, will be setting again, but only once.");
+                    try {
+                        JCRPropertyWrapper newsMLItemCategoryProperty = newsMLItemNode.getProperty(
+                                Constants.DEFAULT_CATEGORY);
+                        if (newsMLItemCategoryProperty != null) {
+                            final Value[] propertyValues = newsMLItemCategoryProperty.getValues();
+                            for (Value propertyValue : propertyValues) {
+                                if (!propertyValue.toString().equals(categoryNode.getIdentifier())) {
+                                    categoryReferences.add(propertyValue);
+                                } else {
+                                    logger.warn("Category " + categoryNode.getName() + " already set, will be setting again, but only once.");
+                                }
                             }
                         }
+                    } catch (PathNotFoundException pnfe) {
+                        // this is ok, it means the property hasn't been set yet.
                     }
                     Value newCategoryRefValue = currentSession.getValueFactory().createValue(categoryNode, false);
                     categoryReferences.add(newCategoryRefValue);

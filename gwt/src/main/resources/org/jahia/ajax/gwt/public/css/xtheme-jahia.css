@@ -12,37 +12,208 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*fix jahia-gxt sep height*/
 .x-menu-sep{height:1px}
 
+/******************************************************************************
+* Header 
+******************************************************************************/
 /*Studio Mode*/
 .x-viewport-studiomode .x-toolbar-first{
 	background:none !important;
-	background : #333333 url(../images/xtheme-jahia-andromeda/studiomode/toolbar/bg.png) no-repeat top right !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/studioMode-bg.png) no-repeat top right !important;
 	border-color:#333333!important;
 }
 .x-viewport-studiomode .x-toolbar-first button {
 	color:#fff !important;
 }	
 .x-viewport-studiomode .x-toolbar-first .x-btn-tl, .x-viewport-studiomode .x-toolbar-first .x-btn-tr, .x-viewport-studiomode .x-toolbar-first .x-btn-tc, .x-viewport-studiomode .x-toolbar-first .x-btn-ml, .x-viewport-studiomode .x-toolbar-first .x-btn-mr, .x-viewport-studiomode .x-toolbar-first .x-btn-mc, .x-viewport-studiomode .x-toolbar-first .x-btn-bl, .x-viewport-studiomode .x-toolbar-first .x-btn-br, .x-viewport-studiomode .x-toolbar-first .x-btn-bc{
-	background-image:url(../images/xtheme-jahia-andromeda/studiomode/button/btn.png)!important;
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
 }
 .x-viewport-studiomode .x-toolbar-first .xtb-sep {
-	background-image:url(../images/xtheme-jahia-andromeda/studiomode/grid/grid-split.gif) !important;
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
 }
 .x-viewport-studiomode .x-toolbar-first .x-btn-over button {
     color:#000 !important;
 }
+.x-viewport-studiomode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
 /*Edit Mode*/
 .x-viewport-editmode .x-toolbar-first{
 	background:none !important;
-	background : #f0f4f5 url(../images/xtheme-jahia-andromeda/editmode/panel/editmode-bg.png) no-repeat top right !important;
-	border-color:#b7cbd8!important;
-}
-/*United Content Manager*/
-.x-viewport-contentmanager .x-toolbar-first {
-	background:none !important;
-	background : #f0f4f5 url(../images/xtheme-jahia-andromeda/ucmmode/panel/ucmmode-bg.png) no-repeat top right !important;
+	background : #f0f4f5 url(../images/xtheme-jahia-andromeda/header/toolbar/editMode-bg.png) no-repeat top right !important;
 	border-color:#b7cbd8!important;
 }
 
+/*United Content Manager*/
+.x-viewport-contentmanager .x-toolbar-first {
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/unitedContentManagerMode-bg.png) no-repeat top right !important;
+	border-color:#333333!important;
+}
+.x-viewport-contentmanager .x-toolbar-first button {
+	color:#fff !important;
+}	
+.x-viewport-contentmanager .x-toolbar-first .x-btn-tl, .x-viewport-contentmanager .x-toolbar-first .x-btn-tr, .x-viewport-contentmanager .x-toolbar-first .x-btn-tc, .x-viewport-contentmanager .x-toolbar-first .x-btn-ml, .x-viewport-contentmanager .x-toolbar-first .x-btn-mr, .x-viewport-contentmanager .x-toolbar-first .x-btn-mc, .x-viewport-contentmanager .x-toolbar-first .x-btn-bl, .x-viewport-contentmanager .x-toolbar-first .x-btn-br, .x-viewport-contentmanager .x-toolbar-first .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-contentmanager .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-contentmanager .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
+.x-viewport-contentmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
+/*Document Manager*/
+.x-viewport-filemanager .x-toolbar-first {
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/documentManagerMode-bg.png) no-repeat top right !important;
+	border-color:#333333!important;
+}
+.x-viewport-filemanager .x-toolbar-first button {
+	color:#fff !important;
+}	
+.x-viewport-filemanager .x-toolbar-first .x-btn-tl, .x-viewport-filemanager .x-toolbar-first .x-btn-tr, .x-viewport-filemanager .x-toolbar-first .x-btn-tc, .x-viewport-filemanager .x-toolbar-first .x-btn-ml, .x-viewport-filemanager .x-toolbar-first .x-btn-mr, .x-viewport-filemanager .x-toolbar-first .x-btn-mc, .x-viewport-filemanager .x-toolbar-first .x-btn-bl, .x-viewport-filemanager .x-toolbar-first .x-btn-br, .x-viewport-filemanager .x-toolbar-first .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-filemanager .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-filemanager .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
+.x-viewport-filemanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
+/*Mashup Manager */
+.x-viewport-mashupmanager .x-toolbar-first {
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/mashupManagerMode-bg.png) no-repeat top right !important;
+	border-color:#333333!important;
+}
+.x-viewport-mashupmanager .x-toolbar-first button {
+	color:#fff !important;
+}	
+.x-viewport-mashupmanager .x-toolbar-first .x-btn-tl, .x-viewport-mashupmanager .x-toolbar-first .x-btn-tr, .x-viewport-mashupmanager .x-toolbar-first .x-btn-tc, .x-viewport-mashupmanager .x-toolbar-first .x-btn-ml, .x-viewport-mashupmanager .x-toolbar-first .x-btn-mr, .x-viewport-mashupmanager .x-toolbar-first .x-btn-mc, .x-viewport-mashupmanager .x-toolbar-first .x-btn-bl, .x-viewport-mashupmanager .x-toolbar-first .x-btn-br, .x-viewport-mashupmanager .x-toolbar-first .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-mashupmanager .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-mashupmanager .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
+.x-viewport-mashupmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
+
+/*Category Manager */
+.x-viewport-categorymanager .x-toolbar-first {
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/categoryManagerMode-bg.png) no-repeat top right !important;
+	border-color:#333333!important;
+}
+.x-viewport-categorymanager .x-toolbar-first button {
+	color:#fff !important;
+}	
+.x-viewport-categorymanager .x-toolbar-first .x-btn-tl, .x-viewport-categorymanager .x-toolbar-first .x-btn-tr, .x-viewport-categorymanager .x-toolbar-first .x-btn-tc, .x-viewport-categorymanager .x-toolbar-first .x-btn-ml, .x-viewport-categorymanager .x-toolbar-first .x-btn-mr, .x-viewport-categorymanager .x-toolbar-first .x-btn-mc, .x-viewport-categorymanager .x-toolbar-first .x-btn-bl, .x-viewport-categorymanager .x-toolbar-first .x-btn-br, .x-viewport-categorymanager .x-toolbar-first .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-categorymanager .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-categorymanager .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
+.x-viewport-categorymanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
+/*Tag Manager */
+.x-viewport-tagmanager .x-toolbar-first {
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/tagManagerMode-bg.png) no-repeat top right !important;
+	border-color:#333333!important;
+}
+.x-viewport-tagmanager .x-toolbar-first button {
+	color:#fff !important;
+}	
+.x-viewport-tagmanager .x-toolbar-first .x-btn-tl, .x-viewport-tagmanager .x-toolbar-first .x-btn-tr, .x-viewport-tagmanager .x-toolbar-first .x-btn-tc, .x-viewport-tagmanager .x-toolbar-first .x-btn-ml, .x-viewport-tagmanager .x-toolbar-first .x-btn-mr, .x-viewport-tagmanager .x-toolbar-first .x-btn-mc, .x-viewport-tagmanager .x-toolbar-first .x-btn-bl, .x-viewport-tagmanager .x-toolbar-first .x-btn-br, .x-viewport-tagmanager .x-toolbar-first .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-tagmanager .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-tagmanager .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
+.x-viewport-tagmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+} 
+
+/*Remote Publication Manager */
+.x-viewport-remotepublicationmanager .x-toolbar-first {
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/remotePublicationManagerMode-bg.png) no-repeat top right !important;
+	border-color:#333333!important;
+}
+.x-viewport-remotepublicationmanager .x-toolbar-first button {
+	color:#fff !important;
+}	
+.x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-tl, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-tr, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-tc, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-ml, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-mr, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-mc, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-bl, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-br, .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-remotepublicationmanager .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
+.x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+} 
+
+/*Site Manager */
+.x-viewport-sitemanager .x-toolbar-first {
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/siteManagerMode-bg.png) no-repeat top right !important;
+	border-color:#333333!important;
+}
+.x-viewport-sitemanager .x-toolbar-first button {
+	color:#fff !important;
+}	
+.x-viewport-sitemanager .x-toolbar-first .x-btn-tl, .x-viewport-sitemanager .x-toolbar-first .x-btn-tr, .x-viewport-sitemanager .x-toolbar-first .x-btn-tc, .x-viewport-sitemanager .x-toolbar-first .x-btn-ml, .x-viewport-sitemanager .x-toolbar-first .x-btn-mr, .x-viewport-sitemanager .x-toolbar-first .x-btn-mc, .x-viewport-sitemanager .x-toolbar-first .x-btn-bl, .x-viewport-sitemanager .x-toolbar-first .x-btn-br, .x-viewport-sitemanager .x-toolbar-first .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-sitemanager .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-sitemanager .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
+.x-viewport-sitemanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
+/*Workflow Manager  */
+.x-viewport-workflowmanager .x-toolbar-first {
+	background:none !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/workflowManagerMode-bg.png) no-repeat top right !important;
+	border-color:#333333!important;
+}
+.x-viewport-workflowmanager .x-toolbar-first button {
+	color:#fff !important;
+}	
+.x-viewport-workflowmanager .x-toolbar-first .x-btn-tl, .x-viewport-workflowmanager .x-toolbar-first .x-btn-tr, .x-viewport-workflowmanager .x-toolbar-first .x-btn-tc, .x-viewport-workflowmanager .x-toolbar-first .x-btn-ml, .x-viewport-workflowmanager .x-toolbar-first .x-btn-mr, .x-viewport-workflowmanager .x-toolbar-first .x-btn-mc, .x-viewport-workflowmanager .x-toolbar-first .x-btn-bl, .x-viewport-workflowmanager .x-toolbar-first .x-btn-br, .x-viewport-workflowmanager .x-toolbar-first .x-btn-bc{
+	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
+}
+.x-viewport-workflowmanager .x-toolbar-first .xtb-sep {
+	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
+}
+.x-viewport-workflowmanager .x-toolbar-first .x-btn-over button {
+    color:#000 !important;
+}
+.x-viewport-workflowmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+}
 /****************************************************************************/
 
 .x-panel {

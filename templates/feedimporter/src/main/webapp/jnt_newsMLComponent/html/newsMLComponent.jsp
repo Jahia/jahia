@@ -7,13 +7,13 @@
 
 <template:addResources type="css" resources="news.css"/>
 
-<div class="newsMLComponent"><!--start newsListItem -->
+<div class="newsMLComponent"><!--start newsMLComponent -->
 
     Role : ${currentNode.properties.role.string}
 
     <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
     <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
-        <div class="feed feed-box-style${(status.index mod 2)+1}">
+        <div class="newsMLContentItem newMLContentItem-box-style${(status.index mod 2)+1}">
             <template:module node="${subchild}" template="default"/>
         </div>
     </c:forEach>

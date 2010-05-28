@@ -7,13 +7,21 @@
 
 <template:addResources type="css" resources="feed.css"/>
 
+<div class="feed"><!--start feed -->
+
 <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
-<c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
+<c:forEach items="${currentList}" var="subchild" varStatus="status">
+
+    ${subchild.primaryNodeTypeName}
+    
     <div class="feed feed-box-style${(status.index mod 2)+1}">
         <template:module node="${subchild}" template="default"/>
     </div>
 
-    <form action="${url.base}${currentNode.path}.getfeed.do" method="post">
-        <input type="submit" name="submit" value="Refresh feed"/>
-    </form>
 </c:forEach>
+
+<form action="${url.base}${currentNode.path}.getfeed.do" method="post">
+    <input type="submit" name="submit" value="Refresh feed"/>
+</form>
+
+</div>

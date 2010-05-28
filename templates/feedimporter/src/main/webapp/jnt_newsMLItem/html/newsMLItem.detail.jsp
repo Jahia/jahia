@@ -26,7 +26,7 @@
 
     <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
     <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
-        <div class="feed feed-box-style${(status.index mod 2)+1}">
+        <div class="newsMLItem newsMLItem-box-style${(status.index mod 2)+1}">
             <template:module node="${subchild}" template="default"/>
         </div>
     </c:forEach>

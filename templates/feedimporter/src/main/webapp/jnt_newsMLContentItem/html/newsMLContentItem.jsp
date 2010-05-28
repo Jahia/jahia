@@ -11,12 +11,12 @@
 <jcr:nodeProperty node="${currentNode}" name="image" var="newsImage"/>
 
 
-<div class="newsMLContentItem"><!--start newsListItem -->
+<div class="newsMLContentItem"><!--start newsMLContentItem -->
 
     <c:if test="${not empty newsImage}">
         <div class="newsImg"><a href="${url.base}${currentNode.path}.detail.html"><img src="${newsImage.node.url}"/></a></div>
     </c:if>
-    <p class="newsResume">
+    <p class="newsDataContent">
         ${functions:removeHtmlTags(currentNode.properties.datacontent.string)}
     </p>
 

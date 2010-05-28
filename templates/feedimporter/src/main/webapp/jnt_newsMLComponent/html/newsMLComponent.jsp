@@ -12,7 +12,7 @@
     Role : ${currentNode.properties.role.string}
 
     <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
-    <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
+    <c:forEach items="${currentList}" var="subchild" varStatus="status">
         <div class="newsMLContentItem newMLContentItem-box-style${(status.index mod 2)+1}">
             <template:module node="${subchild}" template="default"/>
         </div>

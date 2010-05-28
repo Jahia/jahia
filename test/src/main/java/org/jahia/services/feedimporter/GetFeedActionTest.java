@@ -49,11 +49,11 @@ public class GetFeedActionTest extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        /*try {
+        try {
             TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
-        }*/
+        }
     }
 
     public void testGetFeedAction() throws Exception {

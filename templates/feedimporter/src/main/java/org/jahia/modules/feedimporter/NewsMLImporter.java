@@ -115,7 +115,6 @@ public class NewsMLImporter {
         }
         */
 
-        node.getSession().save();
     }
 
     public JCRNodeWrapper getCategoryNodeByKey(JCRSessionWrapper session, String categoryKey) throws RepositoryException {
@@ -145,12 +144,6 @@ public class NewsMLImporter {
         String dUID = newsComponent.getAttributeValue("Duid");
 
         JCRSessionWrapper currentSession = parentNode.getSession();
-        if (newsLanguage != null) {
-            currentSession = JCRSessionFactory.getInstance().getCurrentUserSession(
-                    parentNode.getSession().getWorkspace().getName(), LanguageCodeConverters.languageCodeToLocale(newsLanguage.toLowerCase()));
-            newsMLItemNode = currentSession.getNodeByIdentifier(newsMLItemNode.getIdentifier());
-            parentNode = currentSession.getNodeByIdentifier(parentNode.getIdentifier());
-        }
         String nextAvailableName = JCRContentUtils.findAvailableNodeName(parentNode, "newsComponent");
         JCRNodeWrapper newsComponentNode = parentNode.addNode(nextAvailableName, "jnt:newsMLComponent");
 
@@ -189,7 +182,15 @@ public class NewsMLImporter {
         }
         if (newsHeadline != null) {
             newsComponentNode.setProperty("headline", newsHeadline);
-            newsMLItemNode.setProperty("jcr:title", newsHeadline); // we set the title for the news here.
+
+            if (newsLanguage != null) {
+                Locale locale = LanguageCodeConverters.languageCodeToLocale(newsLanguage.toLowerCase());
+                Node translation = newsMLItemNode.getOrCreateI18N(locale);
+
+                if (newsHeadline != null && newsHeadline.length() > 0) {
+                    translation.setProperty("jcr:title_" + locale.toString(), newsHeadline);
+                }
+            }
         }
         if (role != null) {
             newsComponentNode.setProperty("role", role);
@@ -198,8 +199,6 @@ public class NewsMLImporter {
             newsComponentNode.setProperty("Duid", dUID);
         }
 
-        currentSession.save();
-        
         List<Element> contentItems = newsComponent.getChildren("ContentItem");
         for (Element contentItem : contentItems) {
             processContentItem(contentItem, newsComponentNode, contextFileObject, feedNode);
@@ -313,15 +312,18 @@ public class NewsMLImporter {
         while (childNodeIterator.hasNext()) {
             childNodeIterator.nextNode().remove();
         }
-
-        session.save();
         
         List<Element> newsComponents = newsItem.getChildren("NewsComponent");
         for (Element newsComponent : newsComponents) {
             processNewsComponent(newsComponent, newsMLItemNode, entryBaseName, contextFileObject, feedNode, newsMLItemNode);
         }
 
+        String newsMLItemNodeIdentifier = newsMLItemNode.getIdentifier();
+
+        session.save();
+
         if (mustPublish) {
+            newsMLItemNode = session.getNodeByIdentifier(newsMLItemNodeIdentifier);
             JCRPublicationService.getInstance().publish(newsMLItemNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
         }
 

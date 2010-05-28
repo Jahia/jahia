@@ -65,6 +65,7 @@ public class ImportJob extends BackgroundJob {
     public static final String URI = "uri";
     public static final String FILENAME = "filename";
     public static final String DELETE_FILE = "delete";
+    public static final String ORIGINATING_JAHIA_RELEASE = "originatingJahiaRelease";
 
     public static final String COPY_TO_JCR = "copyToJCR";
 
@@ -94,7 +95,7 @@ public class ImportJob extends BackgroundJob {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             IOUtils.copy(f.getFileContent().downloadFile(), fileOutputStream);
             fileOutputStream.close();
-            ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, actions, result, site);
+            ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, actions, result, site, jobDataMap);
 
 //            if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END))) {
 //                if (result.getErrors().isEmpty()) {

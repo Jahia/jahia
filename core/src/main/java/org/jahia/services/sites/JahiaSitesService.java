@@ -121,7 +121,7 @@ public abstract class JahiaSitesService extends JahiaService {
     public abstract JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                                       Locale selectedLocale,
                                       String selectTmplSet, String firstImport, File fileImport, String fileImportName,
-                                      Boolean asAJob, Boolean doImportServerPermissions, ProcessingContext jParams) throws JahiaException, IOException;
+                                      Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, ProcessingContext jParams) throws JahiaException, IOException;
 
 
     /**

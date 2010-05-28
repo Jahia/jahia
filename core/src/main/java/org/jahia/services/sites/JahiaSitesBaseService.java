@@ -286,7 +286,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale,
                              String selectTmplSet, String firstImport, File fileImport, String fileImportName,
-                             Boolean asAJob, Boolean doImportServerPermissions, ProcessingContext jParams) throws JahiaException, IOException
+                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, ProcessingContext jParams) throws JahiaException, IOException
     {
         JahiaSite site = new JahiaSite(-1,title,serverName,siteKey, descr,null, null);
 
@@ -426,11 +426,12 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     jobDataMap.put(BackgroundJob.JOB_TYPE,ImportJob.IMPORT_TYPE);
                     jobDataMap.put(ImportJob.DELETE_FILE, Boolean.TRUE);
                     jobDataMap.put(ImportJob.COPY_TO_JCR, Boolean.TRUE);
+                    jobDataMap.put(ImportJob.ORIGINATING_JAHIA_RELEASE, originatingJahiaRelease);
 
                     ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
                 } else {
                     try {
-                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, new ArrayList<ImportAction>(), new ExtendedImportResult(), jParams.getSite());
+                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, new ArrayList<ImportAction>(), new ExtendedImportResult(), jParams.getSite(), Collections.emptyMap());
                     } catch (RepositoryException e) {
                         e.printStackTrace();
                     }

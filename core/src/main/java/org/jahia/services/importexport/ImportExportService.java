@@ -179,7 +179,7 @@ public interface ImportExportService {
      * @throws RepositoryException
      * @throws IOException
      */
-    void importSiteZip(File file, List<ImportAction> actions, ExtendedImportResult result, JahiaSite site) throws RepositoryException, IOException;
+    void importSiteZip(File file, List<ImportAction> actions, ExtendedImportResult result, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
 
     void importCategories(Category rootCategory, InputStream is);
 

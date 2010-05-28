@@ -226,7 +226,7 @@ public class Service extends JahiaService {
                                 sitesService.addSite(user.getJahiaUser(), infos.getProperty("sitetitle"), infos.getProperty(
                                         "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
                                         "description"), locale, tpl, "importRepositoryFile", null, uri, true,
-                                        false, ctx);
+                                        false, infos.getProperty("originatingJahiaRelease"), ctx);
                             } catch (Exception e) {
                                 logger.error("Cannot create site " + infos.get("sitetitle"), e);
                             }
@@ -446,7 +446,7 @@ public class Service extends JahiaService {
             File file = (File) infos.get("importFile");
             if (infos.get("type").equals("files")) {
                 try {
-                    ImportExportBaseService.getInstance().importSiteZip(file, new ArrayList<ImportAction>(), null, ctx.getSite());
+                    ImportExportBaseService.getInstance().importSiteZip(file, new ArrayList<ImportAction>(), null, ctx.getSite(), infos);
                 } catch (RepositoryException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
@@ -467,7 +467,7 @@ public class Service extends JahiaService {
                                 "fileImport", file,
                                 (String) infos.get(
                                         "importFileName"), true,
-                                false, ctx);
+                                false, (String) infos.get("originatingJahiaRelease"), ctx);
                         noMoreSite = !license;
                     }
                 } catch (Exception e) {

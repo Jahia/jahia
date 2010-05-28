@@ -921,7 +921,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     selectedLocale, (String) request.getAttribute("selectedTmplSet"),
                     (String) request.getAttribute("firstImport"), (File) request.getAttribute("fileImport"),
                     (String) request.getAttribute("fileImportName"), (Boolean) request.getAttribute("asAJob"),
-                    (Boolean) request.getAttribute("doImportServerPermissions"), jParams);
+                    (Boolean) request.getAttribute("doImportServerPermissions"), (String) request.getAttribute("originatingJahiaRelease"), jParams);
             if (site != null) {
                 // set as default site
                 if (defaultSite.booleanValue()) {
@@ -1860,6 +1860,7 @@ public class ManageSites extends AbstractAdministrationModule {
         importInfos.put("importFile", i);
         importInfos.put("importFileName", filename);
         importInfos.put("selected", Boolean.TRUE);
+        importInfos.put("originatingJahiaRelease", ((Properties)jParams.getAttribute("exportProps")).getProperty("JahiaRelease"));
         if (filename.endsWith(".xml")) {
             importInfos.put("type", "xml");
         } else {
@@ -2019,7 +2020,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     if (infos.get("type").equals("files")) {
                         try {
                             ImportExportBaseService.getInstance()
-                                    .importSiteZip(file, new ArrayList<ImportAction>(), null, jParams.getSite());
+                                    .importSiteZip(file, new ArrayList<ImportAction>(), null, jParams.getSite(), infos);
                         } catch (RepositoryException e) {
                             logger.error("Error when getting templates", e);
                         }
@@ -2040,7 +2041,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                         .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
                                                 (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                                 defaultLocale, tpl, "fileImport", file,
-                                                (String) infos.get("importFileName"), true, false, jParams);
+                                                (String) infos.get("importFileName"), true, false, (String) infos.get("originatingJahiaRelease"), jParams);
 
 //                                createSite(jParams.getUser(), (String) infos.get("sitetitle"),
 //                                        (String) infos.get("siteservername"), (String) infos.get("sitekey"), "", false, jParams.getLocale(), tpl, "fileImport", file, (String) infos.get("importFileName"),true);

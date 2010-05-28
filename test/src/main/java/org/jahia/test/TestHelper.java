@@ -101,7 +101,7 @@ public class TestHelper {
         }
 
         site = service.addSite(admin, name, serverName, name, name, ctx.getLocale(), templateSet,
-                               importFile == null ? "noImport" : "fileImport", importFile, null, false, false, ctx);
+                               importFile == null ? "noImport" : "fileImport", importFile, null, false, false, null, ctx);
 
         ctx.setSite(site);
 

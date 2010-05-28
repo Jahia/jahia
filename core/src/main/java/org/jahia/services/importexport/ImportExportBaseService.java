@@ -453,7 +453,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 //        exportPermissions(ch, ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission");
     }
 
-    public void importSiteZip(File file, List<ImportAction> actions, ExtendedImportResult result, JahiaSite site) throws RepositoryException, IOException {
+    public void importSiteZip(File file, List<ImportAction> actions, ExtendedImportResult result, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException {
         CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
         UsersImportHandler usersImportHandler = new UsersImportHandler(site);
 
@@ -588,7 +588,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             zis.reallyClose();
         }
 
-        // Import legacy content from 5.x
+        // Import legacy content from 5.x and 6.x
         for (Map.Entry<String, Long> entry : sizes.entrySet()) {
             if (entry.getKey().startsWith("export_")) {
                 // Old import
@@ -611,7 +611,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         zipentry.getSize();
 
-                        LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode));
+                        LegacyImportHandler importHandler = new LegacyImportHandler(session,
+                                siteFolder, reg, mapping, LanguageCodeConverters
+                                        .languageCodeToLocale(languageCode),
+                                infos != null ? (String)infos.get("originatingJahiaRelease")
+                                        : null);
                         importHandler.setReferences(references);
                         handleImport(zis, importHandler);
                         siteFolder.getSession().save();

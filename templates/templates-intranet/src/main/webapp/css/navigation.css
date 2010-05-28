@@ -118,3 +118,12 @@
 #bodywrapper #navigation #navbar ul.navmenu li.home a:hover {
 	background-image: url(img/icon-home-over.png);
 }
+
+#bodywrapper #navigation #navbar ul.level_2 li.hasChildren:hover,
+#bodywrapper #navigation #navbar ul.level_2 li.noChildren:hover {
+	background-image: none;
+	background-color: transparent;
+	border-color: #none;
+	line-height: 20px;
+	position: inherit;
+}

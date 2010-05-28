@@ -65,6 +65,7 @@
 	margin-right:5px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 #bodywrapper .FormContribute input.radio, #bodywrapper .FormContribute input.checkbox {
 	width:auto;

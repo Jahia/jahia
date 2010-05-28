@@ -328,9 +328,13 @@
  + wrapperContent (jnt:contentList) = jnt:contentList mandatory autocreated
 
 [jmix:renderableList] mixin
+ extends = jmix:list
+ itemtype = layout
  - j:subNodesTemplate (string, choicelist[templates=subnodes,resourceBundle,image]) nofulltext
 
 [jmix:renderableReference] mixin
+ extends = jnt:nodeLink
+ itemtype = layout
  - j:referenceTemplate (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:theme] mixin

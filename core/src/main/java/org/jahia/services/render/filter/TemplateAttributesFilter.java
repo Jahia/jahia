@@ -78,12 +78,14 @@ public class TemplateAttributesFilter extends AbstractFilter {
 
     private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams,
                                     String key) throws RepositoryException {
-        String pkey = StringUtils.substringAfter(key, ":");
-        if (!moduleParams.containsKey("forced" + StringUtils.capitalize(pkey))) {
-            if (node.hasProperty(key)) {
-                params.put(pkey, node.getProperty(key).getString());
-            } else {
-                params.put(pkey, null);
+        if (!key.equals("*")) {
+            String pkey = StringUtils.substringAfter(key, ":");
+            if (!moduleParams.containsKey("forced" + StringUtils.capitalize(pkey))) {
+                if (node.hasProperty(key)) {
+                    params.put(pkey, node.getProperty(key).getString());
+                } else {
+                    params.put(pkey, null);
+                }
             }
         }
     }

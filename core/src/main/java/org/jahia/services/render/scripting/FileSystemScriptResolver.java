@@ -175,9 +175,9 @@ public class FileSystemScriptResolver implements ScriptResolver {
         String path = currentTemplatePath;
         File d = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath() + "/" + path);
         File[] dirs = d.listFiles();
-        for (File f : dirs) {
-            if (f.exists() && !f.isFile()) {
-                f = new File(f, templateType);
+        for (File n : dirs) {
+            if (n.exists() && !n.isFile()) {
+                File f = new File(n, templateType);
                 if (f.exists() && !f.isFile()) {
                     File[] files = f.listFiles();
                     for (File file : files) {
@@ -190,7 +190,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
                                 key = "default";
                             }
                             if (!templates.containsKey(key)) {
-                                templates.put(key, new FileSystemTemplate(path + "/" + file.getName(), key, tplPackage, filename));
+                                templates.put(key, new FileSystemTemplate(SettingsBean.getInstance().getTemplatesContext() + path + "/" + n.getName() + "/" + f.getName() + "/" + file.getName(), key, tplPackage, filename));
                             }
                         }
                     }

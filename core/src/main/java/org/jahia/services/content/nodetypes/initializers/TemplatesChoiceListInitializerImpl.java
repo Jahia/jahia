@@ -90,18 +90,21 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         SortedSet<Template> templates;
         JCRSiteNode site = null;
         try {
-            if ("subnodes".equals(param) && node != null) {
+            if ("subnodes".equals(param)) {
                 templates = new TreeSet<Template>();
-                NodeIterator children = node.getNodes();
-                while (children.hasNext()) {
-                    JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
-                    final List<String> nodeTypesList = child.getNodeTypes();
-                    for (String s : nodeTypesList) {
-                        final SortedSet<Template> templateSortedSet = RenderService.getInstance()
-                                .getTemplatesSet(NodeTypeRegistry.getInstance().getNodeType(s));
-                        templates.addAll(templateSortedSet);
-                    }
-                }
+//                NodeIterator children = node.getNodes();
+//                while (children.hasNext()) {
+//                    JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
+//                    final List<String> nodeTypesList = child.getNodeTypes();
+//                    for (String s : nodeTypesList) {
+//                        final SortedSet<Template> templateSortedSet = RenderService.getInstance()
+//                                .getTemplatesSet(NodeTypeRegistry.getInstance().getNodeType(s));
+//                        templates.addAll(templateSortedSet);
+//                    }
+//                }
+
+                templates = RenderService.getInstance().getAllTemplatesSet();
+
                 param = "";
             } else {
                 templates = new TreeSet<Template>();

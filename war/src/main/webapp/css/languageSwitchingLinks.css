@@ -4,13 +4,28 @@
     background: url( "images/languageswitch/redirectLink.png" ) no-repeat top right;
     padding-right: 10px;
 }
+#bodywrapper .languageSwitching_horizontal_display {
+	float:right;
+	display:inline;
+	padding:10px;
+}
 
-.languageSwitching_horizontal_display ul li {
-    background-image: none;
-    background-position: 0 0;
-    padding: 3px 5px 3px 3px;
-    display: inline;
-    list-style-type: none;
+#bodywrapper .languageSwitching_horizontal_display ul {
+	list-style: none;
+	float:left;
+	display:inline;
+	margin:0;
+	padding:0;
+	font-size:85%;
+	line-height:normal;
+}
+#bodywrapper .languageSwitching_horizontal_display ul li {
+	display:inline;
+	padding:0 2px;
+	background: none;
+}
+#bodywrapper .languageSwitching_horizontal_display ul li a{
+	text-decoration:none;
 }
 
 .languageSwitching_horizontal_display ul li div {
@@ -29,10 +44,6 @@ span.flag {
     padding-left: 12px;
     padding-top: 2px;
     display: inline;
-}
-
-span.flag a:hover {
-    text-decoration: none;
 }
 
 li.nameInLocale span,

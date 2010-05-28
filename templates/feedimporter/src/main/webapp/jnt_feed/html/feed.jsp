@@ -12,11 +12,13 @@
 <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
 <c:forEach items="${currentList}" var="subchild" varStatus="status">
 
-    ${subchild.primaryNodeTypeName}
-    
+    <c:if test="${subchild.primaryNodeTypeName == 'jnt:contentList'}">
+
     <div class="feed feed-box-style${(status.index mod 2)+1}">
         <template:module node="${subchild}" template="default"/>
     </div>
+
+    </c:if>
 
 </c:forEach>
 

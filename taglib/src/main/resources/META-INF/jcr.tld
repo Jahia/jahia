@@ -679,4 +679,13 @@
             ${jcr:getParentsOfType(currentNode,'jnt:page')}
         </example>
     </function>
+    <function>
+        <description>Returns true if the current node has orderable child nodes.</description>
+        <name>hasOrderableChildNodes</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>boolean hasOrderableChildNodes(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>
+            ${jcr:hasOrderableChildNodes(currentNode)}
+        </example>
+    </function>
 </taglib>

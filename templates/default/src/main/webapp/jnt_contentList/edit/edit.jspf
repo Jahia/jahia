@@ -14,7 +14,7 @@
                 onclick="replace('edit-${child.identifier}', '${url.base}${child.path}.html?ajaxcall=true', '')">
             <span class="icon-contribute icon-preview"></span><fmt:message key="label.preview"/></button>
     </c:if>
-    <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean}">
+    <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean and jcr:hasOrderableChildNodes(currentNode)}">
         <c:if test="${not status.first}">
             <button id="moveUp-${currentNode.identifier}-${status.index}"
                     onclick="invert('${child.path}','${previousChild.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">

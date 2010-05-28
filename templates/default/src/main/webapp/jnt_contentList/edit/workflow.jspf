@@ -14,7 +14,7 @@
         </c:when>
         <c:otherwise>
             <input class="workflow" type="button" value="${wf.name}"
-                   onclick="startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true','${animatedWFs}${animatedTasks}animatedcollapse.reinit();')"/></c:otherwise>
+                   onclick="var callback = ''+${animatedWFs}${animatedTasks}+'animatedcollapse.reinit();';startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true',callback)"/></c:otherwise>
     </c:choose>
 </c:forEach>
 </c:if>
@@ -33,7 +33,7 @@
         <c:otherwise>
             <c:forEach items="${task.outcomes}" var="outcome">
                 <input class="workflowaction" type="button" value="${outcome}"
-                       onclick="executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true','${animatedWFs}${animatedTasks}animatedcollapse.reinit();')"/>
+                       onclick="var callback = ''+${animatedWFs}${animatedTasks}+'animatedcollapse.reinit();';executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true',callback)"/>
             </c:forEach>
         </c:otherwise>
     </c:choose>

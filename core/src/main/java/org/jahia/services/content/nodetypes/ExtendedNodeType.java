@@ -132,6 +132,22 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public boolean hasOrderableChildNodes() {
+        if(!hasOrderableChildNodes) {
+            return hasOrderableChildNodes(true);
+        }
+        return hasOrderableChildNodes;
+    }
+
+    private boolean hasOrderableChildNodes(boolean checkSupertypes) {
+        if (checkSupertypes) {
+            final ExtendedNodeType[] supertypes = getSupertypes();
+            for (ExtendedNodeType supertype : supertypes) {
+                if (supertype.hasOrderableChildNodes(false)) {
+                    return true;
+                }
+            }
+            return false;
+        }
         return hasOrderableChildNodes;
     }
 

@@ -354,4 +354,13 @@ public class JCRTagUtils {
 
         return parents;
     }
+
+    public static boolean hasOrderableChildNodes(JCRNodeWrapper node) {
+        try {
+            return node.getPrimaryNodeType().hasOrderableChildNodes();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+    }
 }

@@ -363,11 +363,6 @@ public class UIConfigHelper {
                 gwtConfig.setMimeTypes(config.getMimeTypes());
                 gwtConfig.setDefaultView(config.getDefaultView());
                 gwtConfig.setEnableFileDoubleClick(config.isEnableFileDoubleClick());
-                gwtConfig.setDisplaySize(config.isDisplaySize());
-                gwtConfig.setDisplayExt(config.isDisplayExt());
-                gwtConfig.setDisplayLock(config.isDisplayLock());
-                gwtConfig.setDisplayDate(config.isDisplayDate());
-                gwtConfig.setDisplayProvider(config.isDisplayProvider());
                 gwtConfig.setUseCheckboxForSelection(config.isUseCheckboxForSelection());
                 gwtConfig.setExpandRoot(config.isExpandRoot());
                 gwtConfig.setDisplaySearch(config.isDisplaySearch());
@@ -417,6 +412,9 @@ public class UIConfigHelper {
                         gwtConfig.addRepository(repository);
                     }
                 }
+
+                gwtConfig.setCreateEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getCreateEngines()));
+                gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getEditEngines()));
 
                 return gwtConfig;
             } else {

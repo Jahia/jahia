@@ -13,6 +13,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -78,7 +79,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param createInParentAndMoveBefore
      */
     public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore) {
-        super(getCreateConfig(type, (GWTEditConfiguration) linker.getConfig()), linker);
+        super(getCreateConfig(type, linker.getConfig()), linker);
         this.existingNode = false;
         this.parentNode = parent;
         this.type = type;
@@ -96,7 +97,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         init();
     }
 
-    public static GWTEngine getCreateConfig(GWTJahiaNodeType type, GWTEditConfiguration config) {
+    public static GWTEngine getCreateConfig(GWTJahiaNodeType type, GWTConfiguration config) {
         for (GWTEngine engine : config.getCreateEngines()) {
             if (type.getName().equals(engine.getNodeType()) || type.getSuperTypes().contains(engine.getNodeType())) {
                 return engine;

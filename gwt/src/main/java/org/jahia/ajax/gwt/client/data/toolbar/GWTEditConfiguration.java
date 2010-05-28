@@ -15,25 +15,13 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class GWTEditConfiguration extends GWTConfiguration implements Serializable {
-    private String name;
 
     private GWTJahiaToolbar topToolbar;
     private GWTJahiaToolbar contextMenu;
 
     private List<GWTSidePanelTab> tabs;
 
-    private List<GWTEngine> createEngines;
-    private List<GWTEngine> editEngines;
-
     public GWTEditConfiguration() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public GWTJahiaToolbar getTopToolbar() {
@@ -60,19 +48,4 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
         this.tabs = tabs;
     }
 
-    public List<GWTEngine> getCreateEngines() {
-        return createEngines;
-    }
-
-    public void setCreateEngines(List<GWTEngine> createEngines) {
-        this.createEngines = createEngines;
-    }
-
-    public List<GWTEngine> getEditEngines() {
-        return editEngines;
-    }
-
-    public void setEditEngines(List<GWTEngine> editEngines) {
-        this.editEngines = editEngines;
-    }
 }

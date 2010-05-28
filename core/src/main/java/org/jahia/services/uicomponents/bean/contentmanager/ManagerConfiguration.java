@@ -1,5 +1,6 @@
 package org.jahia.services.uicomponents.bean.contentmanager;
 
+import org.jahia.services.uicomponents.bean.editmode.Engine;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.toolbar.ToolbarSet;
 import org.springframework.beans.factory.BeanNameAware;
@@ -15,9 +16,8 @@ import java.util.List;
  * Time: 2:54:37 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ManagerConfiguration implements Serializable, BeanNameAware {
+public class ManagerConfiguration implements Serializable {
 
-    private String beanName;
     private boolean enableTextMenu;
 
     private List<Column> treeColumns;
@@ -34,19 +34,15 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     private short defaultView;
     private boolean enableFileDoubleClick = true;
-    private boolean displaySize = true;
-    private boolean displayExt = true;
-    private boolean displayLock = true;
-    private boolean displayDate = true;
-    private boolean displayProvider = false;
     private boolean useCheckboxForSelection = true;
+
+    private List<Engine> createEngines;
+    private List<Engine> editEngines;
 
     private ToolbarSet toolbarSet;
 
 
     private boolean expandRoot = false;
-
-    private boolean allowCollections = true;
 
     private boolean displaySearch = true;
 
@@ -160,55 +156,6 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.enableFileDoubleClick = enableFileDoubleClick;
     }
 
-    public boolean isDisplaySize() {
-        return displaySize;
-    }
-
-    public void setDisplaySize(boolean displaySize) {
-        this.displaySize = displaySize;
-    }
-
-    public boolean isDisplayExt() {
-        return displayExt;
-    }
-
-    public void setDisplayExt(boolean displayExt) {
-        this.displayExt = displayExt;
-    }
-
-    public boolean isDisplayLock() {
-        return displayLock;
-    }
-
-    public void setDisplayLock(boolean displayLock) {
-        this.displayLock = displayLock;
-    }
-
-    public boolean isDisplayDate() {
-        return displayDate;
-    }
-
-    public void setDisplayDate(boolean displayDate) {
-        this.displayDate = displayDate;
-    }
-
-    public boolean isDisplayProvider() {
-        return displayProvider;
-    }
-
-    public void setDisplayProvider(boolean displayProvider) {
-        this.displayProvider = displayProvider;
-    }
-
-    public boolean isAllowCollections() {
-        return allowCollections;
-    }
-
-    public void setAllowCollections(boolean allowConnections) {
-        this.allowCollections = allowConnections;
-    }
-
-
     public ToolbarSet getToolbarSet() {
         return toolbarSet;
     }
@@ -273,9 +220,20 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.displaySearchInContent = displaySearchInContent;
     }
 
-
-
-    public void setBeanName(String name) {
-        beanName = name;
+    public List<Engine> getCreateEngines() {
+        return createEngines;
     }
+
+    public void setCreateEngines(List<Engine> createEngines) {
+        this.createEngines = createEngines;
+    }
+
+    public List<Engine> getEditEngines() {
+        return editEngines;
+    }
+
+    public void setEditEngines(List<Engine> editEngines) {
+        this.editEngines = editEngines;
+    }
+
 }

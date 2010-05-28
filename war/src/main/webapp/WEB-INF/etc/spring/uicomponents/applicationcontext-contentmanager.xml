@@ -17,8 +17,86 @@
         </property>
     </bean>
 
+
+    <bean id="abstractmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration" abstract="true">
+        <!-- edit engine -->
+        <property name="editEngines">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
+                    <property name="nodeType" value="jmix:list"/>
+                    <property name="tabs">
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>listOrderingContent</value>
+                            <value>template</value>
+                            <value>layout</value>
+                            <value>metadata</value>
+                            <value>classification</value>
+                            <value>option</value>
+                            <value>rights</value>
+                            <value>usages</value>
+                            <value>publication</value>
+                            <value>workflow</value>
+                            <value>seo</value>
+                            <value>analytics</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
+                    <property name="nodeType" value="nt:base"/>
+                    <property name="tabs">
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>content</value>
+                            <value>layout</value>
+                            <value>metadata</value>
+                            <value>classification</value>
+                            <value>option</value>
+                            <value>rights</value>
+                            <value>usages</value>
+                            <value>publication</value>
+                            <value>workflow</value>
+                            <value>seo</value>
+                            <value>analytics</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+        <!-- create engine-->
+        <property name="createEngines">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
+                    <property name="nodeType" value="jnt:page"/>
+                    <property name="tabs">
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>createPage</value>
+                            <value>metadata</value>
+                            <value>classification</value>
+                            <value>option</value>
+                            <value>rights</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
+                    <property name="nodeType" value="nt:base"/>
+                    <property name="tabs">
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>content</value>
+                            <value>layout</value>
+                            <value>metadata</value>
+                            <value>classification</value>
+                            <value>option</value>
+                            <value>rights</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+    </bean>
+
     <!-- file manager -->
-    <bean id="filemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="filemanager" parent="abstractmanager">
         <property name="nodeTypes">
             <list>
                 <value>nt:file</value>
@@ -77,7 +155,6 @@
             </bean>
         </property>
         <property name="enableTextMenu" value="true"/>
-        <property name="displayProvider" value="true"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
@@ -129,7 +206,7 @@
     </bean>
 
     <!-- mashup manager -->
-    <bean id="mashupmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="mashupmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:portlet"/>
         <property name="folderTypes" value="jnt:portletList"/>
         <property name="toolbarSet">
@@ -169,8 +246,6 @@
         </property>
         <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
@@ -209,7 +284,7 @@
     </bean>
 
     <!-- category manager -->
-    <bean id="categorymanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="categorymanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:category"/>
         <property name="folderTypes" value="jnt:category"/>
         <property name="toolbarSet">
@@ -249,8 +324,6 @@
         </property>
         <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
@@ -288,7 +361,7 @@
     </bean>
 
     <!-- tag manager -->
-    <bean id="tagmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="tagmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:tag"/>
         <property name="folderTypes" value="jnt:tagList"/>
         <property name="toolbarSet">
@@ -352,9 +425,6 @@
         </property>
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -393,7 +463,7 @@
 
     <!-- remote publication manager -->
     <bean id="remotepublicationmanager"
-          class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+          parent="abstractmanager">
         <property name="nodeTypes" value="jnt:remotePublication"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
@@ -452,9 +522,6 @@
         </property>
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -491,7 +558,7 @@
     </bean>
 
     <bean id="workflowmanager"
-          class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+          parent="abstractmanager">
         <property name="nodeTypes" value="jnt:workflowRule"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
@@ -548,9 +615,6 @@
         </property>
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -590,7 +654,7 @@
 
     <!-- portlet definition manager -->
     <bean id="portletdefinitionmanager"
-          class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+          parent="abstractmanager">
 
         <property name="nodeTypes" value="jnt:portletDefinition"/>
         <property name="toolbarSet">
@@ -624,9 +688,6 @@
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="false"/>
         <property name="enableFileDoubleClick" value="false"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
@@ -662,7 +723,7 @@
 
 
     <!-- file manager -->
-    <bean id="contentmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="contentmanager" parent="abstractmanager">
         <property name="nodeTypes" value="nt:base"/>
         <property name="folderTypes" value="nt:base"/>
         <property name="enableTextMenu" value="true"/>
@@ -778,13 +839,10 @@
     </bean>
 
     <!-- sitemanager manager -->
-    <bean id="sitemanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="sitemanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:page"/>
         <property name="folderTypes" value="jnt:page"/>
         <property name="enableTextMenu" value="true"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
-        <property name="allowCollections" value="true"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -888,7 +946,7 @@
     </bean>
 
     <!-- file manager -->
-    <bean id="rolesmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="rolesmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:role"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
@@ -903,9 +961,6 @@
 
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -939,7 +994,7 @@
 
 
     <!-- file manager -->
-    <bean id="siterolesmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="siterolesmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:role"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
@@ -954,9 +1009,6 @@
 
         <property name="hideLeftPanel" value="true"/>
         <property name="enableTextMenu" value="true"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
-        <property name="displayDate" value="false"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -990,7 +1042,7 @@
     </bean>
 
     <!-- filepicker -->
-    <bean id="filepicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="filepicker" parent="abstractmanager">
         <property name="nodeTypes" >
             <list>
                 <value>nt:file</value>
@@ -1046,7 +1098,7 @@
     </bean>
 
     <!-- content picker -->
-    <bean id="contentpicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="contentpicker" parent="abstractmanager">
         <property name="nodeTypes" value="nt:base"/>
         <property name="folderTypes" value="nt:base"/>
         <property name="enableTextMenu" value="false"/>
@@ -1096,7 +1148,7 @@
     </bean>
 
     <!-- file manager -->
-    <bean id="linkpicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="linkpicker" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:page"/>
         <property name="folderTypes" value="jnt:page"/>
         <property name="toolbarSet">
@@ -1141,7 +1193,7 @@
     </bean>
 
     <!-- Page picker -->
-    <bean id="pagepicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="pagepicker" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:page"/>
         <property name="folderTypes" value="jnt:page"/>
         <property name="toolbarSet">
@@ -1182,7 +1234,7 @@
     </bean>
 
     <!-- file manager -->
-    <bean id="mashuppicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="mashuppicker" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:portlet"/>
         <property name="folderTypes" value="jnt:portletList"/>
         <property name="toolbarSet">
@@ -1200,8 +1252,6 @@
         <property name="displaySearchInTag" value="true"/>
         <property name="enableTextMenu" value="false"/>
         <property name="enableFileDoubleClick" value="false"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
         <property name="hideLeftPanel" value="true"/>
 
         <property name="defaultView" value="3"/>
@@ -1234,13 +1284,11 @@
     </bean>
 
     <!-- categorypicker -->
-    <bean id="categorypicker" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration">
+    <bean id="categorypicker" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:category"/>
         <property name="folderTypes" value="jnt:category"/>
         <property name="enableTextMenu" value="false"/>
         <property name="enableFileDoubleClick" value="false"/>
-        <property name="displayExt" value="false"/>
-        <property name="displaySize" value="false"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">

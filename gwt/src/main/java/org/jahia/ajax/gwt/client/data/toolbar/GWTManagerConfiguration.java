@@ -44,7 +44,6 @@ import java.util.ArrayList;
 
 public class GWTManagerConfiguration extends GWTConfiguration implements Serializable {
 
-    private String name;
     private boolean enableTextMenu;
 
     private List<GWTColumn> treeColumns;
@@ -95,14 +94,6 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         tableColumnKeys = new ArrayList<String>();
         repositories = new ArrayList<GWTRepository>();
         tabs = new ArrayList<String>();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void addTableColumn(GWTColumn col) {
@@ -242,47 +233,6 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     public void setEnableFileDoubleClick(boolean enableFileDoubleClick) {
         this.enableFileDoubleClick = enableFileDoubleClick;
     }
-
-    public boolean isDisplaySize() {
-        return displaySize;
-    }
-
-    public void setDisplaySize(boolean displaySize) {
-        this.displaySize = displaySize;
-    }
-
-    public boolean isDisplayExt() {
-        return displayExt;
-    }
-
-    public void setDisplayExt(boolean displayExt) {
-        this.displayExt = displayExt;
-    }
-
-    public boolean isDisplayLock() {
-        return displayLock;
-    }
-
-    public void setDisplayLock(boolean displayLock) {
-        this.displayLock = displayLock;
-    }
-
-    public boolean isDisplayDate() {
-        return displayDate;
-    }
-
-    public void setDisplayDate(boolean displayDate) {
-        this.displayDate = displayDate;
-    }
-
-    public boolean isDisplayProvider() {
-        return displayProvider;
-    }
-
-    public void setDisplayProvider(boolean displayProvider) {
-        this.displayProvider = displayProvider;
-    }
-
 
     public GWTJahiaToolbarSet getToolbarSet() {
         return toolbarSet;

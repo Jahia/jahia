@@ -115,6 +115,29 @@ public class SearchHelper {
     }
 
     /**
+     * Search for searchString and filters in the name f the node
+     *
+     * @param searchString
+     * @param limit
+     * @param nodeTypes
+     * @param mimeTypes
+     * @param filters
+     * @param currentUserSession
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+        try {
+            Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(searchString,Query.JCR_SQL2);
+            q.setLimit(limit);
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return new ArrayList<GWTJahiaNode>();
+    }
+
+    /**
      * Get saved search
      *
      * @param currentUserSession

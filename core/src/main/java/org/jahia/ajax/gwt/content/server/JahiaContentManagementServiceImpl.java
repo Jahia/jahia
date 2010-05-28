@@ -310,6 +310,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return search.search(searchString, limit, nodeTypes, mimeTypes, filters, retrieveCurrentSession());
     }
 
+    public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
+                                     List<String> filters) throws GWTJahiaServiceException {
+        return search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters, retrieveCurrentSession());
+    }
+
+    public ListLoadResult<GWTJahiaNode> searchSQLForLoad(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
+                                     List<String> filters) throws GWTJahiaServiceException {
+        return new BaseListLoadResult<GWTJahiaNode>(search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters, retrieveCurrentSession()));
+    }
+
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
         try {
             return mashup.searchPortlets(match, getRemoteJahiaUser(), getLocale());

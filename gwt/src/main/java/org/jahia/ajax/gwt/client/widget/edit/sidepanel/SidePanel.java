@@ -58,6 +58,8 @@ public class SidePanel extends ContentPanel {
                 tabItem = new WorkflowTabItem(tab);
             } else if (tab.getName().equals("categories")) {
                 tabItem = new CategoryBrowseTabItem(tab);
+            } else if (tab.getName().equals("lastContent")) {
+                tabItem = new LastContentBrowseTabItem(tab);
             }
 
             else {

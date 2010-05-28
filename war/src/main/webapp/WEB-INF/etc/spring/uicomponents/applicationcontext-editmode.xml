@@ -299,6 +299,7 @@
                 <ref bean="sidePanelTab.mashups"/>
                 <ref bean="sidePanelTab.search"/>
                 <ref bean="sidePanelTab.workflow"/>
+                <ref bean="sidePanelTab.lastContent"/>
             </list>
         </property>
 
@@ -495,5 +496,48 @@
         </property>
     </bean>
 
-
+    <bean id="sidePanelTab.lastContent" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+        <property name="key" value="lastContent"/>
+        <property name="params">
+            <map>
+                <entry key="search" value="select * from [jnt:content] as content order by content.['jcr:lastModified'] desc"/>
+                <entry key="limit" value="100"/>
+            </map>
+        </property>
+        <property name="treeContextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.NewContent"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+                <property name="contextMenu" value="true"/>
+            </bean>
+        </property>
+        <property name="tableContextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+                <property name="contextMenu" value="true"/>
+            </bean>
+        </property>
+    </bean>
 </beans>

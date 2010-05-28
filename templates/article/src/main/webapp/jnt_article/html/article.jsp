@@ -12,8 +12,8 @@
 <div class="intro">
     ${currentNode.properties.intro.string}
 </div>
-<c:forEach items="${currentNode.children}" var="paragraph">
-    <template:module node="${currentNode.properties.paragraph}" template="default"/>
+<c:forEach items="${currentNode.nodes}" var="paragraph">
+    <template:module node="${paragraph}" template="default"/>
 </c:forEach>
 <c:if test="${renderContext.editMode}">
     <template:module path="*"/>

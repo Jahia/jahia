@@ -331,22 +331,7 @@ public class ContentDefinitionHelper {
             }
 
 
-            List<ExtendedNodeType> nodeTypes = new ArrayList<ExtendedNodeType>();
-//            if (parentNode != null) {
-//                Collection<ExtendedNodeDefinition> definitions = new ArrayList<ExtendedNodeDefinition>();
-//
-//                for (String nodeTypeName : parentNode.getNodeTypes()) {
-//                    ExtendedNodeType nodeType = registry
-//                            .getNodeType(nodeTypeName);
-//                    definitions.addAll(nodeType.getUnstructuredChildNodeDefinitions().values());
-//                }
-//                for (ExtendedNodeDefinition nodeDef : definitions) {
-//                    ExtendedNodeType[] requiredPrimaryTypes = nodeDef.getRequiredPrimaryTypes();
-//                    for (ExtendedNodeType req : requiredPrimaryTypes) {
-//                        recurseAdd(req, types, contentTypes, nodeTypes);
-//                    }
-//                }
-//            } else
+            Set<ExtendedNodeType> nodeTypes = new HashSet<ExtendedNodeType>();
             if (baseTypes != null) {
                 for (String type : types) {
                     recurseAdd(registry.getNodeType(type), types, contentTypes, nodeTypes);
@@ -389,7 +374,7 @@ public class ContentDefinitionHelper {
     }
 
     private void recurseAdd(ExtendedNodeType req, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes,
-                            List<ExtendedNodeType> result) {
+                            Collection<ExtendedNodeType> result) {
         boolean excludeNonDroppable = false;
         if (req.getName().equals("jmix:droppableContent") || contentTypes.keySet().contains(req.getName())) {
             excludeNonDroppable = true;
@@ -405,7 +390,7 @@ public class ContentDefinitionHelper {
     }
 
     private void add(ExtendedNodeType type, List<String> baseTypes, Map<String, ExtendedNodeType> contentTypes,
-                     List<ExtendedNodeType> result, boolean excludeNonDroppable) {
+                     Collection<ExtendedNodeType> result, boolean excludeNonDroppable) {
         if (!excludedTypes.contains(type.getName()) && !type.isMixin() && !type.isAbstract() && (!excludeNonDroppable ||
                 CollectionUtils.containsAny(Arrays.asList(type.getDeclaredSupertypeNames()), contentTypes.keySet()))) {
             if (!baseTypes.isEmpty()) {

@@ -615,7 +615,7 @@ public class ExtendedNodeType implements NodeType {
         return mixinExtend;
     }
 
-    protected String getResourceBundleId() {
+    protected JahiaTemplatesPackage getTemplatePackage() {
         JahiaTemplatesPackage pkg = null;
         if (!getSystemId().startsWith("system-")) {
             try {
@@ -629,6 +629,11 @@ public class ExtendedNodeType implements NodeType {
             }
         }
 
+        return pkg;
+    }
+
+    protected String getResourceBundleId() {
+        JahiaTemplatesPackage pkg = getTemplatePackage();
         return pkg != null ? "templates." + pkg.getRootFolder() + "." + pkg.getResourceBundleName() : "JahiaTypesResources";
     }
 
@@ -636,8 +641,9 @@ public class ExtendedNodeType implements NodeType {
         String label = labels.get(locale);
         if (label == null) {
             String key = getName().replace(':', '_');
-            label = new JahiaResourceBundle(getResourceBundleId(), locale, null, JahiaTemplatesRBLoader
-                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(key, key);
+            String tpl = getTemplatePackage() != null ? getTemplatePackage().getName() : null;
+            label = new JahiaResourceBundle(getResourceBundleId(), locale, tpl, JahiaTemplatesRBLoader
+                    .getInstance(Thread.currentThread().getContextClassLoader(), tpl)).getString(key, key);
             labels.put(locale, label);
         }
         return label;

@@ -141,7 +141,7 @@ public class PagesTabItem extends SidePanelTabItem {
                     }
                 }
 
-                if (activeNode.getIcon().equals("icon-page")) {
+                if (activeNode.getIcon().endsWith("jnt_page")) {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 } else if (activeNode.getNodeTypes().contains("jnt:templatesFolder")
                         && EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_TYPE))) {
@@ -168,8 +168,7 @@ public class PagesTabItem extends SidePanelTabItem {
         public AsyncCallback<Object> getCallback() {
             AsyncCallback<Object> callback = new BaseAsyncCallback<Object>() {
                 public void onSuccess(Object o) {
-                    editLinker.refresh(Linker.REFRESH_MAIN);
-                    refresh(0);
+                    editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                 }
 
                 public void onApplicationFailure(Throwable throwable) {
@@ -192,7 +191,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             final GWTJahiaNode node = PagesTabItem.this.tree.getSelectionModel().getSelectedItem();
-            if (node.getIcon().equals("icon-page")) {
+            if (node.getIcon().endsWith("jnt_page")) {
                 l.add(node);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);

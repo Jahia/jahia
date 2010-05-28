@@ -596,10 +596,20 @@ public class NavigationHelper {
             PropertyIterator references = node.getReferences();
             while (references.hasNext()) {
                 JCRPropertyWrapper reference = (JCRPropertyWrapper) references.next();
-                JCRNodeWrapper refNode = (JCRNodeWrapper) reference.getNode();
-                JCRNodeWrapper parent = lookUpParentPageNode(refNode);
-                result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath(),
-                        parent == null ? "" : parent.getPath() + ".html"));
+                if (reference.isMultiple()) {
+                    Value[] referenceValues = reference.getValues();
+                    for (Value currentValue : referenceValues) {
+                        JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
+                        JCRNodeWrapper parent = lookUpParentPageNode(refNode);
+                        result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath(),
+                                parent == null ? "" : parent.getPath() + ".html"));
+                    }
+                } else {
+                    JCRNodeWrapper refNode = (JCRNodeWrapper) reference.getNode();
+                    JCRNodeWrapper parent = lookUpParentPageNode(refNode);
+                    result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath(),
+                            parent == null ? "" : parent.getPath() + ".html"));
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

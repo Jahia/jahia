@@ -7,6 +7,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.render.RenderContext;
@@ -69,43 +70,19 @@ public class GetFeed implements Action, BackgroundAction {
         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     }
 
-    private void getFeed(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper node)
+    private void getFeed(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper feedNode)
             throws RepositoryException, IOException, JDOMException {
-        String remoteUrl = node.getProperty("url").getString();
+        String remoteUrl = feedNode.getProperty("url").getString();
         String remoteUser = null;
-        if (node.hasProperty("user")) {
-            remoteUser = node.getProperty("user").getString();
+        if (feedNode.hasProperty("user")) {
+            remoteUser = feedNode.getProperty("user").getString();
         }
         String remotePassword = null;
-        if (node.hasProperty("password")) {
-            remotePassword = node.getProperty("password").getString();
+        if (feedNode.hasProperty("password")) {
+            remotePassword = feedNode.getProperty("password").getString();
         }
 
-        /*
-        HttpClient client = new HttpClient();
-        client.getParams().setAuthenticationPreemptive(true);
-
-        final URL url = new URL(remoteUrl);
-        client.getHostConfiguration().setHost(url.getHost(), url.getPort(), url.getProtocol());
-
-        if (remoteUser != null) {
-            org.apache.commons.httpclient.Credentials defaultcreds = new UsernamePasswordCredentials(remoteUser, remotePassword);
-            client.getState()
-                    .setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
-        }
-
-        GetMethod get = new GetMethod(remoteUrl);
-
-        client.executeMethod(get);
-        if (get.getStatusCode() != HttpServletResponse.SC_OK) {
-            logger.error("Error received on prepare : "+get.getStatusCode());
-            return new ActionResult(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null, new JSONObject(new HashMap()));
-        }
-
-        InputStream feed = get.getResponseBodyAsStream();
-        */
-
-        NewsMLImporter newsMLImporter = new NewsMLImporter();
-        newsMLImporter.importFeed(remoteUrl, remoteUser, remotePassword, node, jcrSessionWrapper);
+        NewsMLImporter newsMLImporter = new NewsMLImporter(ServicesRegistry.getInstance().getCategoryService(), new HashMap<String,String>());
+        newsMLImporter.importFeed(remoteUrl, remoteUser, remotePassword, feedNode, jcrSessionWrapper);
     }
 }

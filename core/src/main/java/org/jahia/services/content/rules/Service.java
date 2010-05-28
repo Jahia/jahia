@@ -598,8 +598,8 @@ public class Service extends JahiaService {
     private JCRNodeWrapper moveToSplitFolder(JCRNodeWrapper node) throws RepositoryException  {
         try {
             Node parent = node.getParent();
-            String splitConfig = parent.getProperty("j:splitConfig").getString();
-            String splitType= parent.getProperty("j:splitNodeType").getString();
+            String splitConfig = parent.getProperty(Constants.SPLIT_CONFIG).getString();
+            String splitType= parent.getProperty(Constants.SPLIT_NODETYPE).getString();
             String[] config = splitConfig.split(";");
             for (String s : config) {
                 String[] folderConfig = s.split(",");

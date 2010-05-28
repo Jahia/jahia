@@ -4,12 +4,16 @@ import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jdom.Attribute;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.services.categories.Category;
+import org.jahia.services.categories.CategoryService;
+import org.jahia.services.content.*;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -20,9 +24,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.io.IOException;
@@ -42,8 +45,12 @@ public class NewsMLImporter {
 
     private static Logger logger = Logger.getLogger(NewsMLImporter.class);
 
-    public NewsMLImporter() {
+    private CategoryService categoryService;
+    private Map<String,String> subjectCodeToCategoryKey;
 
+    public NewsMLImporter(CategoryService categoryService, Map<String,String> subjectCodeToCategoryKey) {
+        this.categoryService = categoryService;
+        this.subjectCodeToCategoryKey = subjectCodeToCategoryKey;
     }
 
     public void processContentItem(Element element, JCRNodeWrapper node, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, FileSystemException {
@@ -109,23 +116,79 @@ public class NewsMLImporter {
         */
     }
 
-    public void processNewsComponent(Element newsComponent, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, FileSystemException, JDOMException {
+    public JCRNodeWrapper getCategoryNodeByKey(JCRSessionWrapper session, String categoryKey) throws RepositoryException {
+        StringBuffer query = new StringBuffer("SELECT * FROM ["
+                + Constants.JAHIANT_CATEGORY);
+        query.append("] as cat WHERE cat.[" + Constants.NODENAME + "] = '");
+        query.append(categoryKey);
+        query.append("' ");
+        if (logger.isDebugEnabled()) {
+            logger.debug(query);
+        }
+        Query q = session.getWorkspace().getQueryManager().createQuery(
+                query.toString(), Query.JCR_SQL2);
+        QueryResult qr = q.execute();
+        NodeIterator ni = qr.getNodes();
+        while (ni.hasNext()) {
+            return (JCRNodeWrapper) ni.nextNode();
+        }
+        return null;
+    }
+
+    public void processNewsComponent(Element newsComponent, JCRNodeWrapper parentNode, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode, JCRNodeWrapper newsMLItemNode) throws RepositoryException, FileSystemException, JDOMException {
         String newsLanguage = getElementAttributeValue(newsComponent, "DescriptiveMetadata/Language", "FormalName");
         String newsSubjectCode = getElementAttributeValue(newsComponent, "DescriptiveMetadata/SubjectCode/Subject", "FormalName");
         String newsHeadline = getElementText(newsComponent, "NewsLines/HeadLine");
         String role = getElementAttributeValue(newsComponent, "Role", "FormalName");
         String dUID = newsComponent.getAttributeValue("Duid");
 
-        String nextAvailableName = JCRContentUtils.findAvailableNodeName(node, "newsComponent");
-        JCRNodeWrapper newsComponentNode = node.addNode(nextAvailableName, "jnt:newsMLComponent");
+        JCRSessionWrapper currentSession = parentNode.getSession();
+        String nextAvailableName = JCRContentUtils.findAvailableNodeName(parentNode, "newsComponent");
+        JCRNodeWrapper newsComponentNode = parentNode.addNode(nextAvailableName, "jnt:newsMLComponent");
+        if (newsLanguage != null) {
+            currentSession = JCRSessionFactory.getInstance().getCurrentUserSession(
+                    parentNode.getSession().getWorkspace().getName(), LanguageCodeConverters.languageCodeToLocale(newsLanguage.toLowerCase()));
+            newsComponentNode = currentSession.getNode(newsComponentNode.getPath());
+            newsMLItemNode = currentSession.getNode(newsMLItemNode.getPath());
+            parentNode = currentSession.getNode(parentNode.getPath());
+        }
+
         if (newsLanguage != null) {
             newsComponentNode.setProperty("language", newsLanguage);
         }
         if (newsSubjectCode != null) {
             newsComponentNode.setProperty("subjectCode", newsSubjectCode);
+            // we have the subject code, let's categorize the newsMLItem properly.
+
+            String categoryKey = subjectCodeToCategoryKey.get(newsSubjectCode);
+            if (categoryKey != null) {
+                JCRNodeWrapper categoryNode = getCategoryNodeByKey(currentSession, categoryKey);
+                if (categoryNode != null) {
+                    if (!newsMLItemNode.isNodeType(Constants.JAHIAMIX_CATEGORIZED)) {
+                        newsMLItemNode.addMixin(Constants.JAHIAMIX_CATEGORIZED);
+                    }
+                    JCRPropertyWrapper newsMLItemCategoryProperty = newsMLItemNode.getProperty(
+                            Constants.DEFAULT_CATEGORY);
+                    List<Value> categoryReferences = new ArrayList<Value>();
+                    if (newsMLItemCategoryProperty != null) {
+                        final Value[] propertyValues = newsMLItemCategoryProperty.getValues();
+                        for (Value propertyValue : propertyValues) {
+                            if (!propertyValue.toString().equals(categoryNode.getIdentifier())) {
+                                categoryReferences.add(propertyValue);
+                            } else {
+                                logger.warn("Category " + categoryNode.getName() + " already set, will be setting again, but only once.");
+                            }
+                        }
+                    }
+                    Value newCategoryRefValue = currentSession.getValueFactory().createValue(categoryNode, false);
+                    categoryReferences.add(newCategoryRefValue);
+                    newsMLItemNode.setProperty(Constants.DEFAULT_CATEGORY, (Value[]) categoryReferences.toArray());
+                }
+            }
         }
         if (newsHeadline != null) {
             newsComponentNode.setProperty("headline", newsHeadline);
+            newsMLItemNode.setProperty("jcr:title", newsHeadline); // we set the title for the news here.
         }
         if (role != null) {
             newsComponentNode.setProperty("role", role);
@@ -134,25 +197,21 @@ public class NewsMLImporter {
             newsComponentNode.setProperty("Duid", dUID);
         }
         
-        if (newsLanguage != null) {
-            JCRSessionWrapper languageSession = JCRSessionFactory.getInstance().getCurrentUserSession(
-                    node.getSession().getWorkspace().getName(), new Locale(newsLanguage.toLowerCase()));
-        }
         List<Element> contentItems = newsComponent.getChildren("ContentItem");
         for (Element contentItem : contentItems) {
             processContentItem(contentItem, newsComponentNode, contextFileObject, feedNode);
         }
         List<Element> subNewsComponents = newsComponent.getChildren("NewsComponent");
         for (Element subNewsComponent : subNewsComponents) {
-            processNewsComponent(subNewsComponent, newsComponentNode, entryBaseName, contextFileObject, feedNode);
+            processNewsComponent(subNewsComponent, newsComponentNode, entryBaseName, contextFileObject, feedNode, newsMLItemNode);
         }
     }
 
-    public void processNewsEnvelope(Element newsEnvelope, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) {
+    public void processNewsEnvelope(Element newsEnvelope, JCRNodeWrapper feedNode, String entryBaseName, FileObject contextFileObject) {
 
     }
 
-    public void processNewsItem(Element newsItem, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, JDOMException, FileSystemException {
+    public void processNewsItem(Element newsItem, JCRNodeWrapper parentNode, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, JDOMException, FileSystemException {
         String newsItemID = getElementText(newsItem, "Identification/NewsIdentifier/NewsItemId");
         String newsPublicIdentifier = getElementText(newsItem, "Identification/NewsIdentifier/PublicIdentifier");
         String newsDateStr = getElementText(newsItem, "Identification/NewsIdentifier/DateId");
@@ -172,7 +231,7 @@ public class NewsMLImporter {
         }
         Element newsInstruction = getElement(newsItem, "NewsManagement/Instruction");
 
-        JCRSessionWrapper session = node.getSession();
+        JCRSessionWrapper session = parentNode.getSession();
 
         Query existingNodeQuery = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:newsMLItem] as news WHERE news.[itemID]='" + newsItemID + "'", Query.JCR_SQL2);
         QueryResult existingNodeQueryResult = existingNodeQuery.execute();
@@ -212,7 +271,7 @@ public class NewsMLImporter {
         }
         logger.info("Importing news item with date " + newsDate.toString() + " and ID " + newsItemID);
 
-        session.checkout(node);
+        session.checkout(parentNode);
 
         JCRNodeWrapper newsMLItemNode = null;
         if (mustUpdate && (existingNode != null)) {
@@ -224,7 +283,14 @@ public class NewsMLImporter {
             newsUpdateCalendar.setTime(thisRevisionCreatedDateTime.toDate());
             newsMLItemNode.setProperty("contentUpdated", newsUpdateCalendar);
         } else {
-            newsMLItemNode = node.addNode(entryBaseName, "jnt:newsMLItem");
+            // before adding the node, let's make sure the auto-split configuration is properly setup on the feed node.
+            if (!feedNode.isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) {
+                feedNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
+                feedNode.setProperty(Constants.SPLIT_CONFIG, "date,date,YYYY;date,date,MM");
+                feedNode.setProperty(Constants.SPLIT_NODETYPE, Constants.JAHIANT_CONTENTLIST);
+            }
+
+            newsMLItemNode = parentNode.addNode(entryBaseName, "jnt:newsMLItem");
         }
         // newsMLItemNode.setProperty("jcr:title", newsHeadline);
         Calendar newsCalendar=Calendar.getInstance();
@@ -242,25 +308,19 @@ public class NewsMLImporter {
         while (childNodeIterator.hasNext()) {
             childNodeIterator.nextNode().remove();
         }
-        /*
-        for (Attribute childElementAttribute : (List<Attribute>) newsItem.getAttributes()) {
-            newsMLItemNode.setProperty(childElementAttribute.getName(), childElementAttribute.getValue());
-        }
-        */
 
         List<Element> newsComponents = newsItem.getChildren("NewsComponent");
         for (Element newsComponent : newsComponents) {
-            processNewsComponent(newsComponent, newsMLItemNode, entryBaseName, contextFileObject, feedNode);
+            processNewsComponent(newsComponent, newsMLItemNode, entryBaseName, contextFileObject, feedNode, newsMLItemNode);
         }
-        // processElement(rootElement, newsMLNode, contextFileObject, feedNode);
 
         session.save();
 
     }
 
-    public void processDocument(Document document, JCRNodeWrapper node, String entryBaseName, FileObject contextFileObject, JCRNodeWrapper feedNode) throws RepositoryException, JDOMException, FileSystemException {
-        processNewsEnvelope(document.getRootElement().getChild("NewsEnvelope"), node, entryBaseName, contextFileObject, feedNode);
-        processNewsItem(document.getRootElement().getChild("NewsItem"), node, entryBaseName, contextFileObject, feedNode);
+    public void processDocument(Document document, JCRNodeWrapper feedNode, String entryBaseName, FileObject contextFileObject) throws RepositoryException, JDOMException, FileSystemException {
+        processNewsEnvelope(document.getRootElement().getChild("NewsEnvelope"), feedNode, entryBaseName, contextFileObject);
+        processNewsItem(document.getRootElement().getChild("NewsItem"), feedNode, entryBaseName, contextFileObject, feedNode);
     }
 
     public JCRNodeWrapper getOrCreateChildNode(JCRNodeWrapper parentNode, String childName, String nodeTypeName) throws RepositoryException {
@@ -281,7 +341,7 @@ public class NewsMLImporter {
         }
     }
 
-    public void importFeed (String feedURL, String userName, String password, JCRNodeWrapper parentNode, JCRSessionWrapper session) throws IOException, JDOMException, RepositoryException {
+    public void importFeed (String feedURL, String userName, String password, JCRNodeWrapper feedNode, JCRSessionWrapper session) throws IOException, JDOMException, RepositoryException {
 
         if ((userName != null) && (password != null)) {
             StaticUserAuthenticator auth = new StaticUserAuthenticator(userName, password, null);
@@ -313,7 +373,7 @@ public class NewsMLImporter {
                     if ("NewsML".equals(document.getRootElement().getName())) {
                         logger.info("Importing contents of XML NewsML file " + children[ i ].getName().getBaseName());
 
-                        processDocument(document, parentNode, children[i].getName().getBaseName(), jarFile, parentNode);
+                        processDocument(document, feedNode, children[i].getName().getBaseName(), jarFile);
                     }
                 } catch (JDOMParseException jdpe) {
                     logger.warn("Error "+jdpe.getMessage() +" while parsing file " + children[i].getName().getBaseName() + ", ignoring it. Switch logging to debug for detailed stack trace.");

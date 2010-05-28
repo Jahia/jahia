@@ -140,6 +140,7 @@ public class Constants {
     public static final String JAHIANT_PREF = "jnt";
     public static final String JAHIAMIX_PREF = "jmix";
 
+    public static final String JAHIAMIX_AUTOSPLITFOLDERS = "jmix:autoSplitFolders";
     public static final String JAHIAMIX_CATEGORIZED = "jmix:categorized";
     public static final String JAHIAMIX_LASTPUBLISHED = "jmix:lastPublished";
     public static final String JAHIAMIX_NODENAMEINFO = "jmix:nodenameInfo";
@@ -203,6 +204,9 @@ public class Constants {
     public static final String FULLPATH = "j:fullpath";
     public static final String TAGS = "j:tags";
     public static final String DEFAULT_CATEGORY = "j:defaultCategory";
+
+    public static final String SPLIT_CONFIG = "j:splitConfig";
+    public static final String SPLIT_NODETYPE = "j:splitNodeType";
 
     public static final String JAHIANT_GROUP = "jnt:group";
     public static final String JAHIANT_MEMBERS = "jnt:members";

@@ -159,7 +159,7 @@
 // Query
 //---------------------------------------------------------
 
-[jnt:query] > nt:query, mix:title, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list, jmix:queryContent
+[jnt:query] > nt:query, mix:title, jmix:publication, jmix:list, jmix:queryContent
  - maxItems (long) = 10 indexed=no
 
 //---------------------------------------------------------
@@ -466,7 +466,7 @@
 
 [jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list
  orderable
- + * (jnt:content) = jnt:content version
+ + * (jmix:droppableContent) = jmix:droppableContent version
 
 [jnt:templatesSets] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:virtualsite)

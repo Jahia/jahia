@@ -27,14 +27,14 @@ rule "Synchronize feed"
        Execute the action "getfeed" at syncro on the node
 end
 
-rule "Auto Publish News Nodes"
-   salience -50
-   when
-       A new node is created
-        - the node has the type jnt:newsMLItem
-   then
-       Publish the node
-end
+#rule "Auto Publish News Nodes"
+#   salience -50
+#   when
+#       A new node is created
+#        - the node has the type jnt:newsMLItem
+#   then
+#       Publish the node
+#end
 
 rule "Auto Start Workflow On News Nodes"
    salience -50

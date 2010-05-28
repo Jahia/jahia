@@ -148,8 +148,8 @@ public class NewsMLImporter {
         if (newsLanguage != null) {
             currentSession = JCRSessionFactory.getInstance().getCurrentUserSession(
                     parentNode.getSession().getWorkspace().getName(), LanguageCodeConverters.languageCodeToLocale(newsLanguage.toLowerCase()));
-            newsMLItemNode = currentSession.getNode(newsMLItemNode.getPath());
-            parentNode = currentSession.getNode(parentNode.getPath());
+            newsMLItemNode = currentSession.getNodeByIdentifier(newsMLItemNode.getIdentifier());
+            parentNode = currentSession.getNodeByIdentifier(parentNode.getIdentifier());
         }
         String nextAvailableName = JCRContentUtils.findAvailableNodeName(parentNode, "newsComponent");
         JCRNodeWrapper newsComponentNode = parentNode.addNode(nextAvailableName, "jnt:newsMLComponent");
@@ -277,6 +277,7 @@ public class NewsMLImporter {
         session.checkout(parentNode);
 
         JCRNodeWrapper newsMLItemNode = null;
+        boolean mustPublish = true;
         if (mustUpdate && (existingNode != null)) {
             session.checkout(existingNode);
             newsMLItemNode = existingNode;
@@ -285,6 +286,7 @@ public class NewsMLImporter {
             Calendar newsUpdateCalendar = Calendar.getInstance();
             newsUpdateCalendar.setTime(thisRevisionCreatedDateTime.toDate());
             newsMLItemNode.setProperty("contentUpdated", newsUpdateCalendar);
+            mustPublish = false;
         } else {
             // before adding the node, let's make sure the auto-split configuration is properly setup on the feed node.
             if (!feedNode.isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) {
@@ -319,6 +321,9 @@ public class NewsMLImporter {
             processNewsComponent(newsComponent, newsMLItemNode, entryBaseName, contextFileObject, feedNode, newsMLItemNode);
         }
 
+        if (mustPublish) {
+            JCRPublicationService.getInstance().publish(newsMLItemNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        }
 
     }
 

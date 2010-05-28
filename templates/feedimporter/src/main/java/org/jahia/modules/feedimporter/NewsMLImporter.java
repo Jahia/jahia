@@ -180,7 +180,7 @@ public class NewsMLImporter {
                     }
                     Value newCategoryRefValue = currentSession.getValueFactory().createValue(categoryNode, false);
                     categoryReferences.add(newCategoryRefValue);
-                    newsMLItemNode.setProperty(Constants.DEFAULT_CATEGORY, (Value[]) categoryReferences.toArray());
+                    newsMLItemNode.setProperty(Constants.DEFAULT_CATEGORY, (Value[]) categoryReferences.toArray(new Value[categoryReferences.size()]));
                 }
             }
         }

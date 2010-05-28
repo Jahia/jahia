@@ -17,7 +17,7 @@
         <div class="newsImg"><a href="${url.base}${currentNode.path}.detail.html"><img src="${newsImage.node.url}"/></a></div>
     </c:if>
     <p class="newsResume">
-        ${functions:abbreviate(functions:removeHtmlTags(currentNode.properties.datacontent.string),400,450,'...')}
+        ${functions:removeHtmlTags(currentNode.properties.datacontent.string)}
     </p>
 
 </div>

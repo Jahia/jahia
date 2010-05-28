@@ -1,13 +1,12 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:feed] > jnt:content, mix:title, jmix:editorialContent, jmix:list
+[jnt:feed] > jnt:contentList, jmix:editorialContent
  - url (string)
  - user (string)
  - password (string)
  - type (string) < newsml
  - syncro (string)
  + medias (jnt:folder)
- + * (jnt:newsMLItem)
 
 [jnt:newsMLItem] > jnt:news
  - itemID (string)

@@ -49,11 +49,11 @@ public class GetFeedActionTest extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        try {
+        /*try {
             TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
-        }
+        }*/
     }
 
     public void testGetFeedAction() throws Exception {
@@ -61,13 +61,12 @@ public class GetFeedActionTest extends TestCase {
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-        JCRNodeWrapper node = session.getNode("/sites/"+TESTSITE_NAME+ "/home");
-        JCRNodeWrapper source = node.addNode("source", "jnt:page");
-        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
-
+        JCRNodeWrapper node = session.getNode("/sites/"+TESTSITE_NAME+ "/contents");
+        node.checkout();
+        node.addNode("feeds","jnt:contentList");
         session.save();
 
-        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/contents", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
 
         testFeed("testSDAFeed", "res:feedimporter/newsml/newsml_1_2_sda", "2_textwithphotoreference.xml");
         testFeed("testKoreanPicturesFeed", "res:feedimporter/newsml/koreanpictures_iptc", "2002-09-23T000051Z_01_BER04D_RTRIDSP_0_GERMANY.XML");
@@ -83,7 +82,7 @@ public class GetFeedActionTest extends TestCase {
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.EDIT_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-        JCRNodeWrapper node = session.getNode("/sites/"+TESTSITE_NAME+ "/home");
+        JCRNodeWrapper node = session.getNode("/sites/"+TESTSITE_NAME+ "/contents/feeds");
 
         session.checkout(node);
 
@@ -93,7 +92,7 @@ public class GetFeedActionTest extends TestCase {
         sdaFeedNode.setProperty("url", feedURL);
 
         session.save();
-        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/home/" + nodeName, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/contents/feeds/" + nodeName, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
 
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);
@@ -118,7 +117,7 @@ public class GetFeedActionTest extends TestCase {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.LIVE_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-        target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/home/"+nodeName+"/" + testNodeName);
+        target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/contents/feeds/"+nodeName+"/" + testNodeName);
         // assertNotNull("Feed should have some childs", target); deactivated because we load content in a single language.
     }
 

@@ -65,9 +65,15 @@
                     </c:if>
                 </td>
                 <td>
-                    <a
-                        href="${url.base}${child.path}.html"> <c:if
-                        test="${!empty child.properties['jcr:title'].string}">
+                    <c:choose>
+                        <c:when test="${jcr:isNodeType(child, 'jnt:contentList')}">
+                            <a href="${url.base}${child.path}.html">
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${url.base}${child.path}.edit.edit">
+                        </c:otherwise>
+                    </c:choose>
+                    <c:if test="${!empty child.properties['jcr:title'].string}">
                     ${fn:escapeXml(child.properties['jcr:title'].string)}
                 </c:if>
                     <c:if test="${empty child.properties['jcr:title'].string}">

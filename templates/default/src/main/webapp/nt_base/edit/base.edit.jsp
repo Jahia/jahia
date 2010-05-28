@@ -20,6 +20,7 @@
 <template:addResources type="css" resources="960.css"/>
 <template:addResources type="css" resources="datepicker.css"/>
 <template:addResources type="css" resources="contentlist.css"/>
+<template:addResources type="css" resources="formcontribute.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
@@ -34,6 +35,13 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
+<c:if test="${empty requestScope.ajaxCall}">
+    <script>
+        $(document).ready(function(){
+            initEditFields("${currentNode.identifier}");
+        });
+    </script>
+</c:if>
 <div class="FormContribute">
     <c:set var="type" value="${currentNode.primaryNodeType}"/>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">

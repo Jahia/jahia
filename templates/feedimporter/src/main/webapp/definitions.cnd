@@ -8,7 +8,7 @@
  - syncro (string)
  + medias (jnt:folder)
 
-[jnt:newsMLItem] > jnt:news
+[jnt:newsMLItem] > jnt:news, jmix:editorialContent
  - itemID (string)
  - status (string)
  - publicIdentifier (string)
@@ -19,7 +19,7 @@
 
 [jnt:newsMLComponentOrContentItem] > jnt:content, mix:title
 
-[jnt:newsMLComponent] > jnt:newsMLComponentOrContentItem
+[jnt:newsMLComponent] > jnt:newsMLComponentOrContentItem, jmix:editorialContent
  - Duid (string)
  - language (string)
  - subjectCode (string)

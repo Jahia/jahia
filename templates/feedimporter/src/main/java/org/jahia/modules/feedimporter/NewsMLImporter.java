@@ -114,6 +114,8 @@ public class NewsMLImporter {
             processElement(childElement, childNode, contextFileObject, feedNode);
         }
         */
+
+        node.getSession().save();
     }
 
     public JCRNodeWrapper getCategoryNodeByKey(JCRSessionWrapper session, String categoryKey) throws RepositoryException {
@@ -143,15 +145,14 @@ public class NewsMLImporter {
         String dUID = newsComponent.getAttributeValue("Duid");
 
         JCRSessionWrapper currentSession = parentNode.getSession();
-        String nextAvailableName = JCRContentUtils.findAvailableNodeName(parentNode, "newsComponent");
-        JCRNodeWrapper newsComponentNode = parentNode.addNode(nextAvailableName, "jnt:newsMLComponent");
         if (newsLanguage != null) {
             currentSession = JCRSessionFactory.getInstance().getCurrentUserSession(
                     parentNode.getSession().getWorkspace().getName(), LanguageCodeConverters.languageCodeToLocale(newsLanguage.toLowerCase()));
-            newsComponentNode = currentSession.getNode(newsComponentNode.getPath());
             newsMLItemNode = currentSession.getNode(newsMLItemNode.getPath());
             parentNode = currentSession.getNode(parentNode.getPath());
         }
+        String nextAvailableName = JCRContentUtils.findAvailableNodeName(parentNode, "newsComponent");
+        JCRNodeWrapper newsComponentNode = parentNode.addNode(nextAvailableName, "jnt:newsMLComponent");
 
         if (newsLanguage != null) {
             newsComponentNode.setProperty("language", newsLanguage);
@@ -196,6 +197,8 @@ public class NewsMLImporter {
         if (dUID != null) {
             newsComponentNode.setProperty("Duid", dUID);
         }
+
+        currentSession.save();
         
         List<Element> contentItems = newsComponent.getChildren("ContentItem");
         for (Element contentItem : contentItems) {
@@ -286,7 +289,7 @@ public class NewsMLImporter {
             // before adding the node, let's make sure the auto-split configuration is properly setup on the feed node.
             if (!feedNode.isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) {
                 feedNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
-                feedNode.setProperty(Constants.SPLIT_CONFIG, "date,date,YYYY;date,date,MM");
+                feedNode.setProperty(Constants.SPLIT_CONFIG, "date,date,yyyy;date,date,MM");
                 feedNode.setProperty(Constants.SPLIT_NODETYPE, Constants.JAHIANT_CONTENTLIST);
             }
 
@@ -309,12 +312,13 @@ public class NewsMLImporter {
             childNodeIterator.nextNode().remove();
         }
 
+        session.save();
+        
         List<Element> newsComponents = newsItem.getChildren("NewsComponent");
         for (Element newsComponent : newsComponents) {
             processNewsComponent(newsComponent, newsMLItemNode, entryBaseName, contextFileObject, feedNode, newsMLItemNode);
         }
 
-        session.save();
 
     }
 

@@ -101,7 +101,7 @@ public abstract class AbstractFilter implements RenderFilter {
     public static class MainResourceCondition implements ExecutionCondition {
 
         public boolean matches(RenderContext renderContext, Resource resource) {
-            return (renderContext.getMainResource() == resource);
+            return (renderContext.getMainResource().getNode().getPath().equals(resource.getNode().getPath()));
         }
     }
 

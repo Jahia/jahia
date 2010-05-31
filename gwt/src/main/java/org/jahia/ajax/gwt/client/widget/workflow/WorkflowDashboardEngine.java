@@ -216,7 +216,7 @@ public class WorkflowDashboardEngine extends Window {
                     window.setScrollMode(Style.Scroll.AUTO);
                     window.setSize(800, 600);
                     contentManager.getRenderedContent(node.getPath(), action.getWorkspace(), action.getLocale(), null,
-                            "bodywrapper", null, false, null, new BaseAsyncCallback<GWTRenderResult>() {
+                            "gwt", null, false, null, new BaseAsyncCallback<GWTRenderResult>() {
 
                                 public void onSuccess(GWTRenderResult result) {
                                     HTML html = new HTML(result.getResult());

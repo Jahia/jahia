@@ -38,7 +38,7 @@ public class TemplateHelper {
      *
      * @param path
      * @param template
-     * @param templateWrapper
+     * @param configuration
      * @param contextParams
      * @param editMode
      * @param configName
@@ -46,11 +46,11 @@ public class TemplateHelper {
      * @param response
      * @param currentUserSession
      */
-    public GWTRenderResult getRenderedContent(String path, String template, String templateWrapper, Map<String, String> contextParams, boolean editMode, String configName, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTRenderResult getRenderedContent(String path, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
-            Resource r = new Resource(node, "html", null, template, Resource.CONFIGURATION_GWT);
+            Resource r = new Resource(node, "html", null, template, configuration);
             request.setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
@@ -68,11 +68,6 @@ public class TemplateHelper {
                 for (Map.Entry<String, String> entry : contextParams.entrySet()) {
                     r.getModuleParams().put(entry.getKey(), entry.getValue());
                 }
-            }
-            if ("bodywrapper".equals(templateWrapper)) {
-                r.pushBodyWrapper();
-            } else {
-                r.pushWrapper(templateWrapper);
             }
 
             JCRSiteNode site = node.resolveSite();

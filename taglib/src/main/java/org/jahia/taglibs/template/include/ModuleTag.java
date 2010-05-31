@@ -288,8 +288,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     boolean templateShared = resource.getNode().hasProperty("j:templateShared") && resource.getNode().getProperty("j:templateShared").getBoolean();
                     boolean templateDeployed = resource.getNode().hasProperty("j:templateDeployed") && resource.getNode().getProperty("j:templateDeployed").getBoolean();
                     boolean isTemplateMode = Studio.STUDIO_MODE.equals(renderContext.getEditModeConfigName());
-
-                    if (renderContext.isEditMode() && editable && (isTemplateMode || !templateLocked)) {
+                    if (canEdit(renderContext, templateLocked, isTemplateMode)) {
                         String type = getModuleType();
 
                         Script script = null;
@@ -336,6 +335,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         }
         return EVAL_PAGE;
+    }
+
+    private boolean canEdit(RenderContext renderContext, boolean templateLocked, boolean templateMode) {
+        return renderContext.isEditMode() && editable && (templateMode || !templateLocked) && !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"));
     }
 
     protected void printModuleStart(String type, boolean templateLocked, boolean templateShared, boolean templateDeployed, boolean parentLocked, String path, String resolvedTemplate, String scriptInfo) throws RepositoryException, IOException {
@@ -454,13 +457,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             currentResource.getMissingResources().add(path);
         }
 
-        if (renderContext.isEditMode()) {
-            boolean templateLocked = currentResource.getNode().hasProperty("j:templateLocked") && currentResource.getNode().getProperty("j:templateLocked").getBoolean();
-            boolean isTemplateMode = Studio.STUDIO_MODE.equals(renderContext.getEditModeConfigName());
-            if (!templateLocked || isTemplateMode) {
-                printModuleStart("placeholder", false, false, false, false, path, null, null);
-                printModuleEnd();
-            }
+        boolean templateLocked = currentResource.getNode().hasProperty("j:templateLocked") && currentResource.getNode().getProperty("j:templateLocked").getBoolean();
+        boolean isTemplateMode = Studio.STUDIO_MODE.equals(renderContext.getEditModeConfigName());
+        if (canEdit(renderContext, templateLocked, isTemplateMode)) {
+            printModuleStart("placeholder", false, false, false, false, path, null, null);
+            printModuleEnd();
         }
     }
 

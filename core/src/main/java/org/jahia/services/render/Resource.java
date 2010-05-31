@@ -66,7 +66,7 @@ public class Resource {
     private String template;
     private String forcedTemplate;
     private String contextConfiguration;
-    private Stack<Wrapper> wrappers;
+    private Stack<String> wrappers;
 
     private Set<JCRNodeWrapper> dependencies;
     private List<String> missingResources;
@@ -94,7 +94,7 @@ public class Resource {
         dependencies.add(node);
 
         missingResources = new ArrayList<String>();
-        wrappers = new Stack<Wrapper>();
+        wrappers = new Stack<String>();
         options = new ArrayList<Option>();
 
     }
@@ -178,59 +178,14 @@ public class Resource {
         return !wrappers.isEmpty();
     }
 
-    public Wrapper popWrapper() {
+    public String popWrapper() {
         return wrappers.pop();
     }
 
-    public Wrapper pushWrapper(String wrapper) {
-        return wrappers.push(new Wrapper(wrapper,node));
+    public String pushWrapper(String wrapper) {
+        return wrappers.push(wrapper);
     }
 
-    public void pushBodyWrapper() {
-        JCRNodeWrapper current = node;
-        Set<String> foundWrappers = new HashSet<String>();
-        try {
-            if (node.isNodeType("jnt:wrapper")) {
-                foundWrappers.add(node.getProperty("j:key").getString());
-            }
-            while (true) {
-                if (current.isNodeType("jmix:wrapper")) {
-                    Query q = current.getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:wrapper] as w where ischildnode(w, ["+current.getPath()+"])", Query.JCR_SQL2);
-                    QueryResult result = q.execute();
-                    NodeIterator ni = result.getNodes();
-                    while (ni.hasNext()) {
-                        JCRNodeWrapper wrapper = (JCRNodeWrapper) ni.next();
-                        if (!foundWrappers.contains(wrapper.getName())) {
-                            boolean ok = true;
-                            if (wrapper.hasProperty("j:applyOn")) {
-                                ok = false;
-                                Value[] values = wrapper.getProperty("j:applyOn").getValues();
-                                for (Value value : values) {
-                                    ok |= node.isNodeType(value.getString());
-                                }
-                                if (values.length == 0) {
-                                    ok = true;
-                                }
-                            }
-                            if (ok) {
-                                wrappers.push(new Wrapper(wrapper.getProperty("j:template").getString(), wrapper));
-                                foundWrappers.add(wrapper.getProperty("j:key").getString());
-                            }
-                        }
-                    }
-                }
-                current = current.getParent();
-            }
-        } catch (ItemNotFoundException e) {
-            // default
-            if (!foundWrappers.contains("bodywrapper")) {
-                wrappers.push(new Wrapper("bodywrapper", node));
-            }
-            return;
-        } catch (RepositoryException e) {
-            logger.error("Cannot find wrapper",e);
-        }
-    }
 
     @Override
     public String toString() {
@@ -341,16 +296,6 @@ public class Resource {
         @Override
         public int hashCode() {
             return nodeType.getName().hashCode();
-        }
-    }
-
-    public class Wrapper {
-        public String template;
-        public JCRNodeWrapper node;
-
-        Wrapper(String template, JCRNodeWrapper node) {
-            this.template = template;
-            this.node = node;
         }
     }
 }

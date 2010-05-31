@@ -82,7 +82,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 JahiaContentManagementService.App.getInstance().getRenderedContent(
                         gwtJahiaNodeSelectionChangedEvent.getSelectedItem().getPath(), null, editLinker.getLocale(),
-                        "default", "bodywrapper", null, true, config.getName(),
+                        "default", "preview", null, true, config.getName(),
                         new BaseAsyncCallback<GWTRenderResult>() {
 
                             public void onSuccess(GWTRenderResult gwtRenderResult) {

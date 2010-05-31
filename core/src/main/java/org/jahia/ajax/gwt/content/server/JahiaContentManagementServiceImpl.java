@@ -982,7 +982,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template,
-                                              String templateWrapper, Map<String, String> contextParams,
+                                              String configuration, Map<String, String> contextParams,
                                               boolean editMode, String configName) throws GWTJahiaServiceException {
         if (locale != null) {
             final Locale value = LanguageCodeConverters.languageCodeToLocale(locale);
@@ -991,7 +991,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
         return this.template
-                .getRenderedContent(path, template, templateWrapper, contextParams, editMode, configName, getRequest(),
+                .getRenderedContent(path, template, configuration, contextParams, editMode, configName, getRequest(),
                         getResponse(), retrieveCurrentSession());
     }
 

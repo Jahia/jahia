@@ -621,8 +621,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     JCRSiteNode site = resource.getNode().resolveSite();
 
                     renderContext.setSite(site);
-                    resource.pushWrapper("wrapper.fullpage");
-                    resource.pushBodyWrapper();
+//                    resource.pushWrapper("wrapper.fullpage");
+//                    resource.pushBodyWrapper();
 
                     long lastModified = getLastModified(resource, renderContext);
 

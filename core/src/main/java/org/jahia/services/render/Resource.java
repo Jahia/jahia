@@ -39,7 +39,11 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.ItemNotFoundException;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import java.util.*;
 
 /**
@@ -63,7 +67,6 @@ public class Resource {
     private String forcedTemplate;
     private String contextConfiguration;
     private Stack<Wrapper> wrappers;
-    private String bodywrapper;
 
     private Set<JCRNodeWrapper> dependencies;
     private List<String> missingResources;
@@ -183,28 +186,47 @@ public class Resource {
         return wrappers.push(new Wrapper(wrapper,node));
     }
 
-    public Wrapper pushBodyWrapper() {
+    public void pushBodyWrapper() {
         JCRNodeWrapper current = node;
+        Set<String> foundWrappers = new HashSet<String>();
         try {
+            if (node.isNodeType("jnt:wrapper")) {
+                foundWrappers.add(node.getName());
+            }
             while (true) {
-                if (current.getParent().isNodeType("jnt:virtualsite") && (current.isNodeType("jnt:folder") || current.isNodeType("jnt:contentList")))  {
-                    bodywrapper = "bodywrapper";
-                    current = node;
-                    break;
-                }
-                if (current.hasProperty("j:bodywrapper")) {
-                    bodywrapper = current.getProperty("j:bodywrapper").getString();
-                    current = current.getNode("wrapperContent");
-                    break;
+                if (current.isNodeType("jmix:wrapper")) {
+                    Query q = current.getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:wrapper] as w where ischildnode(w, ["+current.getPath()+"])", Query.JCR_SQL2);
+                    QueryResult result = q.execute();
+                    NodeIterator ni = result.getNodes();
+                    while (ni.hasNext()) {
+                        JCRNodeWrapper wrapper = (JCRNodeWrapper) ni.next();
+                        if (!foundWrappers.contains(wrapper.getName())) {
+                            boolean ok = true;
+                            if (wrapper.hasProperty("j:applyOn")) {
+                                ok = false;
+                                Value[] values = wrapper.getProperty("j:applyOn").getValues();
+                                for (Value value : values) {
+                                    ok |= node.isNodeType(value.getString());
+                                }
+                            }
+                            if (ok) {
+                                wrappers.push(new Wrapper(wrapper.getProperty("j:template").getString(), wrapper));
+                                foundWrappers.add(wrapper.getProperty("j:key").getString());
+                            }
+                        }
+                    }
                 }
                 current = current.getParent();
             }
         } catch (ItemNotFoundException e) {
-            return wrappers.push(new Wrapper("bodywrapper", node));
+            // default
+            if (!foundWrappers.contains("bodywrapper")) {
+                wrappers.push(new Wrapper("bodywrapper", node));
+            }
+            return;
         } catch (RepositoryException e) {
             logger.error("Cannot find wrapper",e);
         }
-        return wrappers.push(new Wrapper(bodywrapper, current));
     }
 
     @Override
@@ -317,10 +339,6 @@ public class Resource {
         public int hashCode() {
             return nodeType.getName().hashCode();
         }
-    }
-
-    public String getBodywrapper() {
-        return bodywrapper;
     }
 
     public class Wrapper {

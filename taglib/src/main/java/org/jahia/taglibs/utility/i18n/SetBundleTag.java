@@ -38,6 +38,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.core.Config;
@@ -86,10 +87,15 @@ public class SetBundleTag extends TagSupport {
                 logger.debug(e.getMessage(), e);
                 locale = pageContext.getRequest().getLocale();
             }
-            ResourceBundle resourceBundle = new JahiaResourceBundle(basename,
-                    locale,
-                    context != null && context.getSite() != null ? context
-                            .getSite().getTemplatePackageName() : null);
+            ResourceBundle resourceBundle = null;
+            try {
+                resourceBundle = new JahiaResourceBundle(basename,
+                        locale,
+                        context != null && context.getSite() != null && context.getSite().getSession().isLive() ? context
+                                .getSite().getTemplatePackageName() : null);
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
             LocalizationContext locCtxt = new LocalizationContext(resourceBundle, locale);
             if (var != null) {
                 pageContext.setAttribute(var, locCtxt, scope);

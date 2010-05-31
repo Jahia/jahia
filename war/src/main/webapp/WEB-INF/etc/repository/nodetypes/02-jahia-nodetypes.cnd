@@ -170,7 +170,7 @@
  - j:extractedText (string) protected hidden
  - j:lastExtractionDate (date) protected nofulltext hidden
 
-[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable
+[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:list
 
 [jnt:file] > nt:file, jmix:lockable, jmix:nodenameInfo, jmix:basemetadata, jmix:thumbnail, jmix:publication, jmix:observable
 
@@ -321,11 +321,15 @@
  itemtype = layout
  - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
 
-[jmix:bodywrapper] mixin
- extends = jnt:content, jnt:page
+[jmix:wrapper] mixin
+ extends = nt:base
  itemtype = layout
- - j:bodywrapper (string, choicelist[templates=bodywrapper])
- + wrapperContent (jnt:contentList) = jnt:contentList mandatory autocreated
+ + * (jnt:wrapper)
+
+[jnt:wrapper] > nt:base, jmix:nodenameInfo, jmix:renderable, jmix:basemetadata, jmix:publication
+ - j:key (string) mandatory
+ - j:applyOn (string, choicelist[nodetypes]) multiple
+ + * (jnt:content)
 
 [jmix:renderableList] mixin
  extends = jmix:list
@@ -351,7 +355,7 @@
  - j:virtualsitesFolderConfig (string) nofulltext
  - j:virtualsitesFolderSkeleton (string) nofulltext
 
-[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:googleAnalyticsAccount, jmix:bodywrapper
+[jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:googleAnalyticsAccount
  - j:title (string) protected nofulltext
  - j:serverName (string) protected nofulltext
  - j:description (string) protected

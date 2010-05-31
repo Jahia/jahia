@@ -12,10 +12,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:if test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
-    <template:addWrapper name="system"/>
-    <c:set var="subNodesTemplate" value="info"/>
-</c:if>
 
 <c:forEach items="${currentNode.nodes}" var="subchild">
    <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}"/>

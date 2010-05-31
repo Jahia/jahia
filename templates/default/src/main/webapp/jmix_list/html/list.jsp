@@ -15,13 +15,6 @@
 
 <template:include template="hidden.header"/>
 
-<c:if test="${currentResource.bodywrapper eq 'bodywrapper'}">
-    <c:if test="${subNodesTemplate != 'info'}">
-        <template:addWrapper name="system"/>
-    </c:if>
-    <c:set var="subNodesTemplate" value="info"/>
-</c:if>
-
 <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
     <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}">
         <c:if test="${not empty renderOptionsOnChild}">

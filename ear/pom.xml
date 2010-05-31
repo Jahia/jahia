@@ -46,7 +46,6 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-war</artifactId>
             <version>${jahia.package.version}</version>
-            <classifier>${jahia.war.classifier}</classifier>
             <type>war</type>
         </dependency>
         <!-- We will to deploy the RAR inside the EAR for JEE app servers.
@@ -109,7 +108,6 @@
                       </manifestEntries>
                       <!--manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile-->
                     </archive>
-                    <classifier>${jahia.war.classifier}</classifier>
                     <earSourceDirectory>src/main/resources</earSourceDirectory>
 
                     <modules>

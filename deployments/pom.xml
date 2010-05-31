@@ -22,5 +22,11 @@
                 <module>jboss</module>
             </modules>
         </profile>
+        <profile>
+            <id>installer</id>
+            <modules>
+                <module>jboss</module>
+            </modules>
+        </profile>
     </profiles>
 </project>

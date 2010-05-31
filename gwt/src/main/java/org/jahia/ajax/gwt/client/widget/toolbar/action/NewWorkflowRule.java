@@ -11,11 +11,10 @@ import org.jahia.ajax.gwt.client.widget.form.FormQuick;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Display the new workflow rule window.
  * User: david
  * Date: May 19, 2010
  * Time: 4:33:55 PM
- * To change this template use File | Settings | File Templates.
  */
 public class NewWorkflowRule  extends BaseActionItem {
         public void onComponentSelection() {
@@ -33,7 +32,7 @@ public class NewWorkflowRule  extends BaseActionItem {
             w.setResizable(false);
             w.setBodyBorder(false);
             w.setLayout(new FillLayout());
-            w.setWidth(400);
+            w.setWidth(600);
             w.setHeight(350);
             w.add(new FormQuick("jnt:workflowRule","/workflowrules") {
                 public void onWorkflowRuleCreated() {

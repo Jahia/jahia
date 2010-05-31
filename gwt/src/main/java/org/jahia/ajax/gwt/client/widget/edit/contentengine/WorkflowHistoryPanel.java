@@ -113,22 +113,22 @@ public class WorkflowHistoryPanel extends LayoutContainer {
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("displayName", Messages.get("label_name", "Name"), 100);
+        ColumnConfig column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 100);
         column.setRenderer(new TreeGridCellRenderer<GWTJahiaWorkflowHistoryItem>());
         config.add(column);
 
-        column = new ColumnConfig("assignee", Messages.get("label_user", "User"), 100);
+        column = new ColumnConfig("assignee", Messages.get("label.user", "User"), 100);
         config.add(column);
 
-        column = new ColumnConfig("startDate", Messages.get("label_startDate", "Start date"), 100);
+        column = new ColumnConfig("startDate", Messages.get("org.jahia.engines.processDisplay.tab.startdate", "Start date"), 100);
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
 
-        column = new ColumnConfig("endDate", Messages.get("label_endDate", "End date"), 100);
+        column = new ColumnConfig("endDate", Messages.get("org.jahia.engines.processDisplay.tab.enddate", "End date"), 100);
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
 
-        column = new ColumnConfig("duration", Messages.get("label_duration", "Duration"), 100);
+        column = new ColumnConfig("duration", Messages.get("org.jahia.engines.processDisplay.column.duration", "Duration"), 100);
         column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
             public Object render(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config, int rowIndex,
                     int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> store, Grid<GWTJahiaWorkflowHistoryItem> grid) {
@@ -137,16 +137,16 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                 if (duration != null) {
                     long time = duration.longValue();
                     if (time < 1000) {
-                        display = time + " " + Messages.get("label_milliseconds", "ms");
+                        display = time + " " + Messages.get("label.milliseconds", "ms");
                     } else if (time < 1000 * 60L) {
-                        display = ((long) (time / 1000)) + " " + Messages.get("label_seconds", "sec");
+                        display = ((long) (time / 1000)) + " " + Messages.get("label.seconds", "sec");
                     } else if (time < 1000 * 60 * 60L) {
-                        display = ((long) (time / (1000 * 60L))) + " " + Messages.get("label_minutes", "min") + " "
-                                + ((long) ((time % (1000 * 60L)) / 1000)) + " " + Messages.get("label_seconds", "sec");
+                        display = ((long) (time / (1000 * 60L))) + " " + Messages.get("label.minutes", "min") + " "
+                                + ((long) ((time % (1000 * 60L)) / 1000)) + " " + Messages.get("label.seconds", "sec");
                     } else {
                         display = ((long) (time / (1000 * 60 * 60L))) + " " + Messages.get("label_hours", "h") + " "
                                 + ((long) ((time % (1000 * 60 * 60L)) / (1000 * 60L))) + " "
-                                + Messages.get("label_minutes", "min");
+                                + Messages.get("label.minutes", "min");
                     }
                 }
                 return display;

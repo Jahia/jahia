@@ -40,8 +40,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.Validator;
-import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -50,12 +48,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
-import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,11 +57,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Shows the form for the new workflow rule.
  * User: jahia
  * Date: 27 f�vr. 2009
  * Time: 16:43:07
- * To change this template use File | Settings | File Templates.
  */
 public abstract class FormQuick extends FormPanel {
     String nodetype;
@@ -87,7 +80,7 @@ public abstract class FormQuick extends FormPanel {
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setStyleAttribute("padding", "4");
         setLabelWidth(150);
-        String nameField = "";
+        setFieldWidth(400);
         final Button saveButton = new Button(Messages.getResource("label.save"));
         addButton(saveButton);        
         JahiaContentDefinitionService.App.getInstance().getNodeType(nodetype, new AsyncCallback<GWTJahiaNodeType>() {
@@ -96,7 +89,7 @@ public abstract class FormQuick extends FormPanel {
             }
             public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
 
-                final TextField nameField = new TextField();
+                final TextField<String> nameField = new TextField<String>();
                 final Map<String,GWTJahiaItemDefinition> defs = new HashMap<String,GWTJahiaItemDefinition>();
                 nameField.setName("name");
                 nameField.setFieldLabel(Messages.getNotEmptyResource("name", "Name"));

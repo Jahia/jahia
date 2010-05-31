@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -64,7 +65,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represent the workflow action dialog widget.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -79,13 +80,14 @@ public class WorkflowActionDialog extends Window {
         contentManagement = JahiaContentManagementService.App.getInstance();
         contentDefinition = JahiaContentDefinitionService.App.getInstance();
         setModal(true);
-        setHeading("Workflow action [" + action.getName() + "] for node: " + node.getDisplayName());
+        setHeading(Messages.get("label.workflowAction", "Workflow action") + " [" + action.getName() + "] "
+                + Messages.get("label.for", "for") + " node: " + node.getDisplayName());
         setWidth(800);
         setHeight(600);
         setLayout(new RowLayout(Style.Orientation.VERTICAL));
         setFrame(true);
         final ContentPanel commentPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
-        commentPanel.setHeading("Comments");
+        commentPanel.setHeading(Messages.get("org.jahia.jcr.publication.publicationComments", "Comments"));
         commentPanel.setBorders(false);
         commentPanel.setCollapsible(false);
         commentPanel.setTitleCollapse(false);
@@ -107,22 +109,22 @@ public class WorkflowActionDialog extends Window {
         formPanel.setBodyBorder(false);
         formPanel.setLayout(new FormLayout(FormPanel.LabelAlign.LEFT));
         final TextArea textArea = new TextArea();
-        textArea.setFieldLabel("Comment");
+        textArea.setFieldLabel(Messages.get("label.comment", "Comment"));
         textArea.setPreventScrollbars(false);
         textArea.setHeight(50);
         textArea.setWidth(750);
         textArea.setAllowBlank(false);
         FormData data = new FormData("-20");
         formPanel.add(textArea, data);
-        Button button = new Button("Add comment");
+        Button button = new Button(Messages.get("label.addComment", "Add comment"));
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                contentManagement.addCommentToTask(action, textArea.getValue(), new BaseAsyncCallback() {
+                contentManagement.addCommentToTask(action, textArea.getValue(), new BaseAsyncCallback<Object>() {
                     public void onSuccess(Object result) {
                         commentsContainer.removeAll();
                         displayComments(action, dialog, commentsContainer);
-                        Info.display("Comment Added", "Comment Added");
+                        Info.display(Messages.get("label.commentAdded", "Comment Added"), Messages.get("label.commentAdded", "Comment Added"));
                     }
 
                     public void onApplicationFailure(Throwable caught) {
@@ -141,7 +143,7 @@ public class WorkflowActionDialog extends Window {
         add(commentPanel,new RowData(1, 0.75, new Margins(0)));
 
         final ContentPanel actionPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
-        actionPanel.setHeading("Actions");
+        actionPanel.setHeading(Messages.get("label.action", "Actions"));
         actionPanel.setBorders(false);
         actionPanel.setCollapsible(false);
         actionPanel.setTitleCollapse(false);
@@ -174,7 +176,7 @@ public class WorkflowActionDialog extends Window {
                 for (GWTJahiaWorkflowTaskComment comment : result) {
                     Text text = new Text(comment.getComment());
                     text.setWidth(450);
-                    Text time = new Text("at " + DateTimeFormat.getMediumDateTimeFormat().format(comment.getTime()));
+                    Text time = new Text(Messages.get("label.at", "at") + " " + DateTimeFormat.getMediumDateTimeFormat().format(comment.getTime()));
 //                    Text user = new Text("by " + comment.getUser());
                     HorizontalPanel commentPanel = new HorizontalPanel();
                     commentPanel.setBorders(false);

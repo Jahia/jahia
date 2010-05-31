@@ -26,11 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* Created by IntelliJ IDEA.
+* Window, displaying the current publication status.
 * User: toto
 * Date: Jan 28, 2010
 * Time: 2:44:46 PM
-* To change this template use File | Settings | File Templates.
 */
 class PublicationStatusWindow extends Window {
     protected Linker linker;
@@ -59,7 +58,7 @@ class PublicationStatusWindow extends Window {
         TableData d = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
         d.setMargin(5);
         commentsPanel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
-        commentsPanel.add(new Label("Comments"), d);
+        commentsPanel.add(new Label(Messages.get("org.jahia.jcr.publication.publicationComments", "Comments")), d);
         commentsPanel.add(comments, d);
         commentsPanel.setHeight(70);
         commentsPanel.setWidth("100%");
@@ -106,7 +105,7 @@ class PublicationStatusWindow extends Window {
             }
         });
         configs.add(column);
-        column = new ColumnConfig("mainTitle", "Parent object", 150);
+        column = new ColumnConfig("mainTitle", Messages.get("label.parentObject", "Parent object"), 150);
         column.setHidden(true);
         configs.add(column);
         GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
@@ -146,7 +145,7 @@ class PublicationStatusWindow extends Window {
             public String render(GroupColumnData data) {
                 final ColumnConfig config = cm.getColumnById(data.field);
                 String f = config.getHeader();
-                String l = data.models.size() == 1 ? "Item" : "Items";  
+                String l = data.models.size() == 1 ? Messages.get("label.item", "Item") : Messages.get("label.items", "Items");  
                 String v = config.getRenderer() != null ? config.getRenderer().render(data.models.get(0), null,null,0,0,null,null).toString() : data.group;
                 return f + ": " + v + " (" + data.models.size() + " " + l + ")";
             }
@@ -166,7 +165,7 @@ class PublicationStatusWindow extends Window {
             }
         });
         ok = new Button(Messages.getResource("label.publish"));
-        noWorkflow = new Button("Bypass workflow");
+        noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
         final ArrayList<String> uuids = new ArrayList<String>(infos.keySet());
 
         ok.addSelectionListener(new ButtonEventSelectionListener(uuids, true));

@@ -191,7 +191,7 @@ public class Resource {
         Set<String> foundWrappers = new HashSet<String>();
         try {
             if (node.isNodeType("jnt:wrapper")) {
-                foundWrappers.add(node.getName());
+                foundWrappers.add(node.getProperty("j:key").getString());
             }
             while (true) {
                 if (current.isNodeType("jmix:wrapper")) {
@@ -207,6 +207,9 @@ public class Resource {
                                 Value[] values = wrapper.getProperty("j:applyOn").getValues();
                                 for (Value value : values) {
                                     ok |= node.isNodeType(value.getString());
+                                }
+                                if (values.length == 0) {
+                                    ok = true;
                                 }
                             }
                             if (ok) {

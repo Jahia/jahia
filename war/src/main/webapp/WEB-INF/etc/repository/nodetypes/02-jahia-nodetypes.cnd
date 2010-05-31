@@ -331,6 +331,8 @@
  - j:applyOn (string, choicelist[nodetypes]) multiple
  + * (jnt:content)
 
+[jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
+
 [jmix:renderableList] mixin
  extends = jmix:list
  itemtype = layout

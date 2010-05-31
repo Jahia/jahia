@@ -76,6 +76,9 @@
                                j:templateLocked="true"/>
                 </topMenu>
                 <footer jcr:primaryType="jnt:contentList"/>
+                <wrappercontent jcr:primaryType="jnt:contentList">
+                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+                </wrappercontent>
             </bodywrapper>
             <search-results jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default"
                             jcr:primaryType="jnt:page" changefreq="monthly"

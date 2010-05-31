@@ -143,6 +143,9 @@
                 </bottomMenu>
                 <logoFooter jcr:primaryType="jnt:contentList"/>
                 <footer jcr:primaryType="jnt:contentList"/>
+                <wrappercontent jcr:primaryType="jnt:contentList">
+                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+                </wrappercontent>
             </bodywrapper>
         </templates-web>
     </templatesSet>

@@ -921,6 +921,9 @@
               <j:translation_fr jcr:primaryType="jnt:translation" jcr:lastModifiedBy="root"  jcr:language="fr" text_fr="&lt;BODY&gt;  &lt;P&gt;       © Copyright 2002-2009 - ACME International Corp.&lt;/P&gt; &lt;/BODY&gt; " jcr:lastModified="2009-05-19T17:18:28.000+02:00" />
             </bigText_4>
           </footer>
+                <wrappercontent jcr:primaryType="jnt:contentList">
+                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+                </wrappercontent>
             </bodywrapper>
           <groups jcr:created="2010-04-30T16:56:27.597+02:00" jcr:primaryType="jnt:groupsFolder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-04-30T16:56:36.621+02:00">
             <administrators j:hidden="false" jcr:created="2010-04-30T16:56:36.576+02:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy=" system " j:external="false" jcr:createdBy=" system " jcr:lastModified="2010-04-30T16:56:36.621+02:00">

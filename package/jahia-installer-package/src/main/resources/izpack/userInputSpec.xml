@@ -33,7 +33,7 @@
                 <choice txt="Oracle 10.2.1.0 / Oracle 11.x" id="dbSettings.dbms.type.oracle" value="oracle"/>
                 <choice txt="Oracle 9.x / Oracle 10.1.x" id="dbSettings.dbms.type.oracle.legacy" value="oracle_legacy"/>
                 <choice txt="PostgreSQL 7.4.x / 8.x" id="dbSettings.dbms.type.postgresql" value="postgresql"/>
-                <choice txt="Sun JavaDB / Apache Derby (standalone)" id="dbSettings.dbms.type.derby" value="derby"/>
+                <choice txt="Sun Java DB / Apache Derby (standalone)" id="dbSettings.dbms.type.derby" value="derby"/>
             </spec>
         </field>
     </panel>

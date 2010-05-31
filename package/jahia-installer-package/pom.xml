@@ -12,8 +12,8 @@
     <properties>
         <product.name>Jahia Community Edition</product.name>
         <installer.filename>Jahia_CE_v${jahia.package.version}</installer.filename>
-        <archivers.version>1.3</archivers.version>
-        <configurators.version>1.6</configurators.version>
+        <archivers.version>1.4</archivers.version>
+        <configurators.version>1.7</configurators.version>
         <izpack.version>4.3.2</izpack.version>
         <staging.dir>${project.build.directory}/izpack</staging.dir>
         <launch4j.jahia.version>6.5.0.0</launch4j.jahia.version>
@@ -100,6 +100,14 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/artifacts/jahia</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-jboss-config</artifactId>
+                                    <version>${jahia.package.version}</version>
+                                    <type>sar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/artifacts/jahia-jboss-config</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
@@ -111,14 +119,6 @@
                         </goals>
                         <configuration>
                             <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.jahia.server</groupId>
-                                    <artifactId>jahia-war</artifactId>
-                                    <version>${jahia.package.version}</version>
-                                    <type>war</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/artifacts</outputDirectory>
-                                </artifactItem>
                                 <artifactItem>
                                     <groupId>org.jahia.server</groupId>
                                     <artifactId>shared-libraries</artifactId>

@@ -21,6 +21,11 @@
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/tomcat/webapps/ROOT" condition="cnd.pack.tomcat"/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/build" condition="!cnd.pack.tomcat"/>
 
+        <variable name="jahia.war.excludes" value="" condition="!cnd.server.type.jboss"/>
+        <variable name="jahia.war.excludes" value="**/WEB-INF/lib/jboss-j2ee-*.jar,**/WEB-INF/lib/jstl-*.jar,**/WEB-INF/lib/standard-*.jar,**/WEB-INF/lib/ojdbc5-*.jar,**/WEB-INF/lib/orai18n-*.jar,**/WEB-INF/lib/sqljdbc-*.jar,**/WEB-INF/lib/mysql-connector-java-*.jar,**/WEB-INF/lib/derby-*.jar,**/WEB-INF/lib/derbyclient-*.jar,**/WEB-INF/lib/postgresql-*.jar" condition="cnd.server.type.jboss"/>
+        
+        <variable name="server.type" value="tomcat" condition="cnd.pack.tomcat"/>
+
         <!-- embedded Derby defaults -->
         <variable name="dbSettings.dbms.type" value="derby_embedded" condition="cnd.db.dbms.derby_embedded"/>
         <variable name="dbSettings.dbms.createTables" value="true" condition="cnd.db.dbms.derby_embedded"/>
@@ -49,6 +54,16 @@
     <conditions>
         <condition type="packselection" id="cnd.pack.tomcat">
             <packid>tomcat</packid>
+        </condition>
+        
+        <condition type="variable" id="cnd.server.type.jboss">
+            <name>server.type</name>
+            <value>jboss</value>
+        </condition>
+        
+        <condition type="or" id="cnd.skip.shared.libs">
+            <condition type="ref" refid="cnd.pack.tomcat"/>
+            <condition type="ref" refid="cnd.server.type.jboss"/>
         </condition>
         
         <condition type="variable" id="cnd.db.mode.standalone">
@@ -108,6 +123,7 @@
         <langpack iso3="spa"/>
     </locale>
     <resources>
+        <res id="TargetPanel.dir.unix" src="unix-path.txt" />
         <res id="TargetPanel.dir.windows" src="windows-path.txt" />
         <res id="installer.langsel.img" src="../images/jahia-community.png"/>
         <res id="Heading.image" src="../images/top-logo.gif.png"/>
@@ -181,22 +197,30 @@
             <fileset dir="../licenses" targetdir="$INSTALL_PATH/licenses" />
             <fileset dir="../links" targetdir="$INSTALL_PATH/bin" />
             <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}" />
+            <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss"/>
             <singlefile override="update" src="install.properties" target="$INSTALL_PATH/install.properties"/>
             <singlefile override="update" src="../dependency/configurators-${configurators.version}-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
-            <singlefile override="update" src="../dependency/archivers-${archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
-            <singlefile override="update" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.pack.tomcat"/>
+            <singlefile override="update" src="../dependency/archivers-${archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar" condition="!cnd.pack.tomcat"/>
+            <singlefile override="update" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
             <parsable targetfile="$INSTALL_PATH/install.properties" type="javaprop"/>
             <executable targetfile="$INSTALL_PATH/configurators.jar" stage="postinstall" type="jar" keep="false">
                 <args>
                     <arg value="$INSTALL_PATH/install.properties"/>
                 </args>
             </executable>
+            <executable targetfile="$INSTALL_PATH/archivers.jar" stage="postinstall" type="jar" keep="true" condition="cnd.server.type.jboss">
+                <args>
+                    <arg value="-m"/><!-- delete the build folder after archiving -->
+                    <arg value="$INSTALL_PATH/jahia-jboss-config.sar"/>
+                    <arg value="$INSTALL_PATH/jahia-jboss-config"/>
+                </args>
+            </executable>
             <executable targetfile="$INSTALL_PATH/archivers.jar" stage="postinstall" type="jar" keep="false" condition="!cnd.pack.tomcat">
                 <args>
-                    <arg value="${server.type}"/>
+                    <arg value="-m"/><!-- delete the build folder after archiving -->
                     <arg value="$INSTALL_PATH/ROOT.war"/>
                     <arg value="$INSTALL_PATH/build"/>
-                    <arg value="true"/><!-- delete the build folder after archiving -->
+                    <arg value="${jahia.war.excludes}"/>
                 </args>
             </executable>
         </pack>

@@ -101,7 +101,7 @@
                                 <module>org.jahia.ajax.gwt.module.jobreport.JobReport</module>
                                 <module>org.jahia.ajax.gwt.module.pdisplay.ProcessDisplay</module>
                                  -->
-                                <!--
+                                <!-- 
                                 <module>org.jahia.ajax.gwt.module.linkchecker.LinkChecker</module>
                                  -->
 
@@ -799,43 +799,36 @@
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc5</artifactId>
             <version>${driver.oracle.version}</version>
-            <scope>${drivers.libs.scope}</scope>
         </dependency>
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>orai18n</artifactId>
             <version>${driver.oracle.version}</version>
-            <scope>${drivers.libs.scope}</scope>
         </dependency>
         <dependency>
             <groupId>microsoft</groupId>
             <artifactId>sqljdbc</artifactId>
             <version>${driver.mssql.version}</version>
-            <scope>${drivers.libs.scope}</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${driver.mysql.version}</version>
-            <scope>${drivers.libs.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
             <version>${driver.derby.version}</version>
-            <scope>${drivers.libs.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derbyclient</artifactId>
             <version>${driver.derby.version}</version>
-            <scope>${drivers.libs.scope}</scope>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${driver.postgresql.version}</version>
-            <scope>${drivers.libs.scope}</scope>
         </dependency>
 
         <!-- JSTL -->
@@ -843,13 +836,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.1.2</version>
-            <scope>${jboss.libs.scope}</scope>
         </dependency>
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
-            <scope>${jboss.libs.scope}</scope>
         </dependency>
 
         <!-- Shindig WAR overlay -->
@@ -948,34 +939,6 @@
                 </configuration>
             </plugin>
 
-            <!-- doesn't work yet, due to errors in JAMon JSPs, upgrading the library should solve this (hopefully !)
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jspc-maven-plugin</artifactId>
-                <version>1.4.6</version>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>jspc</id>
-                        <phase>compile</phase>
-                        <goals>
-                             <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webXml>${pom.basedir}/target/jspweb.xml</webXml>
-                </configuration>
-            </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -989,12 +952,9 @@
                             <includes>
                                 <include>WEB-INF/web.xml</include>
                                 <include>WEB-INF/ibm-web-bnd.xmi</include>
-                                <include>html/startup/javascript_start.html</include>
-                                <include>html/startup/loadingjahia.html</include>
                             </includes>
                         </resource>
                     </webResources>
-                    <!--packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes-->
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -1002,7 +962,6 @@
                             <!--addExtensions>true</addExtensions-->
                         </manifest>
                     </archive>
-                    <classifier>${jahia.war.classifier}</classifier>
                 </configuration>                   
             </plugin>
 

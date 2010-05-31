@@ -1086,7 +1086,6 @@
             <groupId>jboss</groupId>
             <artifactId>jboss-j2ee</artifactId>
             <version>4.2.3.GA</version>
-            <scope>${jboss.libs.scope}</scope>
         </dependency>
         
         <dependency>

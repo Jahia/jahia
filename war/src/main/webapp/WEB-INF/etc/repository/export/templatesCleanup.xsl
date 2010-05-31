@@ -17,6 +17,8 @@
             <xsl:when test="name()='j:fullpath'"/>
             <xsl:when test="name()='j:movedFrom'"/>
             <xsl:when test="name()='j:siteId'"/>
+            <xsl:when test="name()='j:published'"/>
+            <xsl:when test="name()='j:checkinDate'"/>
             <xsl:otherwise>
                 <xsl:copy/>
             </xsl:otherwise>

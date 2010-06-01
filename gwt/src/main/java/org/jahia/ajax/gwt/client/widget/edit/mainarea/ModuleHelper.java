@@ -214,12 +214,16 @@ public class ModuleHelper {
                 } else {
                     template = null;
                 }
+                String params = "";
+                if (path.indexOf('?') > 0) {
+                    params = path.substring(path.indexOf('?')+1);
+                }
                 path = path.substring(0,path.indexOf('.'));
                 DOM.setElementAttribute(element,"href","#");
                 if (template == null) {
-                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"',null)");
+                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"',null,'"+params+"')");
                 } else {
-                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"','"+template+"')");
+                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"','"+template+",'"+params+"')");
                 }
             }
         }

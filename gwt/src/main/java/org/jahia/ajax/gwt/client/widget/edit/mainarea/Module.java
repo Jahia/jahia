@@ -6,6 +6,8 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
+import java.util.Map;
+
 /**
  * Interface defining what is a mdoule on a rendered page in edit mode
  * A module could be selected, edited, dragged etc.
@@ -18,6 +20,7 @@ public abstract class Module extends LayoutContainer {
     protected String path;
     protected String template;
     protected String scriptInfo;
+    protected Map<String,String> moduleParams;
     protected Module parentModule;
     protected MainModule mainModule;
     protected String nodeTypes;

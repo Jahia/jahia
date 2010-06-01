@@ -24,10 +24,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * First module of any rendered element.
@@ -120,7 +117,7 @@ public class MainModule extends Module {
 
     private void refresh() {
         JahiaContentManagementService.App.getInstance()
-                .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", null, true,
+                .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
                         config.getName(), new BaseAsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
                                 int i = getVScrollPosition();
@@ -218,10 +215,19 @@ public class MainModule extends Module {
         refresh();
     }
 
-    public static void staticGoTo(String path, String template) {
+    public static void staticGoTo(String path, String template, String param) {
+        Map<String,String> params = null;
+        if (param.length() > 0) {
+            params = new HashMap<String,String>();
+            for (String s : param.split("&")) {
+                final String[] key = param.split("=");
+                params.put(key[0], key[1]);
+            }
+        }
         module.mask("Loading", "x-mask-loading");
         module.path = path;
         module.template = template;
+        module.moduleParams = params;
         module.refresh();
     }
 
@@ -269,8 +275,8 @@ public class MainModule extends Module {
     }
 
     public static native void exportStaticMethod() /*-{
-       $wnd.goTo = function(x,y) {
-          @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;)(x,y);
+       $wnd.goTo = function(path,template,params) {
+          @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::staticGoTo(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(path,template,params);
        }
     }-*/;
 

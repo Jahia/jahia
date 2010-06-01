@@ -72,6 +72,7 @@ public class LoginBox extends Window {
         form.setFrame(false);
         form.setAction(JahiaGWTParameters.getContextPath() + "/cms/login?doLogin=true&restMode=true");
         form.setMethod(Method.POST);
+        form.setLabelWidth(125);
         
         VerticalPanel vpLabels = new VerticalPanel();
         vpLabels.add(new Label(Messages.get("message.sessionExpired",

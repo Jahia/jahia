@@ -905,6 +905,29 @@ public class NavigationHelper {
             }
         }
 
+        if (fields.contains(GWTJahiaNode.AVAILABLE_WORKKFLOWS)) {
+            try {
+                if (node.hasProperty(GWTJahiaNode.AVAILABLE_WORKKFLOWS)) {
+                    final JCRPropertyWrapper property = node.getProperty(GWTJahiaNode.AVAILABLE_WORKKFLOWS);
+                    Value[] values = null;
+                    if (property.isMultiple()) {
+                        values = property.getValues();
+                    } else {
+                        values = new Value[] {property.getValue()};
+                    }
+                    List<String> vals = new LinkedList<String>();
+                    if (values != null) {
+                        for (Value value : values) {
+                            vals.add(value.getString());
+                        }
+                    }
+                    n.set(GWTJahiaNode.AVAILABLE_WORKKFLOWS, StringUtils.join(vals, ", "));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
+            }
+        }
+        
         // properties
         for (String field : fields) {
             if (!GWTJahiaNode.RESERVED_FIELDS.contains(field)) {

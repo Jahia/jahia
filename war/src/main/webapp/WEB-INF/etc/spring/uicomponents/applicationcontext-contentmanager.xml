@@ -643,10 +643,10 @@
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
-                <value>name,*</value>
+                <value>name,200</value>
                 <value>j:node,200</value>
                 <value>j:nodeType,200</value>
-                <value>j:availableWorkflows,200</value>
+                <value>j:availableWorkflows,*</value>
             </list>
         </property>
 

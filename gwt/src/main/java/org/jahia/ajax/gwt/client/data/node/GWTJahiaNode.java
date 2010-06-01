@@ -72,6 +72,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String CHILDREN_INFO = "childrenInfo";
     public static final String COUNT = "count";
     public static final String PUBLICATION_INFO = "publicationInfo";
+    public static final String AVAILABLE_WORKKFLOWS = "j:availableWorkflows";
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:template", "j:width", "j:height");
@@ -82,7 +83,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final List<String> RESERVED_FIELDS =
             Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, WRITEABLE, DELETEABLE, UUID, DISPLAY_NAME, FILE,
                     SIZE, NODE_TYPES, INHERITED_NODE_TYPES, ACL_CONTEXT, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,
-                    CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT);
+                    CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT, AVAILABLE_WORKKFLOWS);
 
     private boolean displayable = false;
     private boolean isShared = false;

@@ -110,6 +110,6 @@
 
     <templatesSet jcr:primaryType="jnt:templatesSets"/>
 
-    <bodywrapper jcr:primaryType="jnt:wrapper" j:key="bodywrapper" j:template="systemwrapper" j:applyOn="jmix:list"/>
+    <systemwrapper jcr:primaryType="jnt:wrapper" j:key="bodywrapper" j:template="systemwrapper" j:applyOn="jmix:list"/>
 
 </content>

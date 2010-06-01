@@ -300,6 +300,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public Integer isValidSession()  throws GWTJahiaServiceException;
 
+    public ListLoadResult<GWTJahiaNode> getAllWrappers(String path, List<String> fields) throws GWTJahiaServiceException;
+
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -188,7 +189,9 @@ public class MainModule extends Module {
         ModuleHelper.tranformLinks(html);
         ModuleHelper.initAllModules(this, html);
         ModuleHelper.buildTree(this);
+        long start = System.currentTimeMillis();
         parse();
+        Log.info("Parse : "+(System.currentTimeMillis() - start));
         layout();
     }
 

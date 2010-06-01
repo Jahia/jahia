@@ -897,7 +897,7 @@
               </row1>
             </pagecontent>
           </search-results>
-            <bodywrapper jcr:primaryType="jnt:wrapper" j:template="web.bodywrapper" j:key="bodywrapper">
+            <sitewrapper jcr:primaryType="jnt:wrapper" j:template="web.bodywrapper" j:key="bodywrapper">
           <header j:published="true" jcr:created="2010-04-30T16:56:27.580+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-30T16:56:28.347+02:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " j:checkinDate="2010-04-30T16:56:28.347+02:00" jcr:lastModified="2010-04-30T16:56:28.098+02:00">
             <shortcuts j:templateShared="false" jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable" j:template="inline" j:published="true" jcr:created="2010-04-30T16:56:27.581+02:00" jcr:primaryType="jnt:shortcuts" jcr:lastModifiedBy=" system " j:lastPublished="2010-04-30T16:56:28.347+02:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " jcr:lastModified="2010-04-30T16:56:28.098+02:00" j:checkinDate="2010-04-30T16:56:28.347+02:00" j:templateLocked="true" />
           </header>
@@ -924,7 +924,7 @@
                 <wrappercontent jcr:primaryType="jnt:contentList">
                     <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
                 </wrappercontent>
-            </bodywrapper>
+            </sitewrapper>
           <groups jcr:created="2010-04-30T16:56:27.597+02:00" jcr:primaryType="jnt:groupsFolder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-04-30T16:56:36.621+02:00">
             <administrators j:hidden="false" jcr:created="2010-04-30T16:56:36.576+02:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy=" system " j:external="false" jcr:createdBy=" system " jcr:lastModified="2010-04-30T16:56:36.621+02:00">
               <j:members jcr:primaryType="jnt:members">

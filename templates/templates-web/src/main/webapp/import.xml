@@ -106,7 +106,7 @@
                     </row1>
                 </pagecontent>
             </search-results>
-            <bodywrapper jcr:primaryType="jnt:wrapper" j:template="web.bodywrapper" j:key="bodywrapper">
+            <sitewrapper jcr:primaryType="jnt:wrapper" j:template="web.bodywrapper" j:key="bodywrapper">
                 <header jcr:primaryType="jnt:contentList">
                     <shortcuts j:templateShared="false" j:template="inline"
                                jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable"
@@ -139,7 +139,7 @@
                 <wrappercontent jcr:primaryType="jnt:contentList">
                     <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay"/>
                 </wrappercontent>
-            </bodywrapper>
+            </sitewrapper>
         </templates-web>
     </templatesSet>
 </content>

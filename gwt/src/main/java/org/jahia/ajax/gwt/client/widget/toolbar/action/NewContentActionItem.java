@@ -16,8 +16,19 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 * To change this template use File | Settings | File Templates.
 */
 public class NewContentActionItem extends BaseActionItem  {
+    private String nodeTypes = "";
+    protected String parentType = "jnt:contentList";
+
+    public void setNodeTypes(String nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
+    public void setParentType(String parentType) {
+        this.parentType = parentType;
+    }
+
     public void onComponentSelection() {
-        String nodeTypes = "";
+        String nodeTypes = this.nodeTypes;
         if (linker instanceof EditLinker) {
             Module m = ((EditLinker) linker).getSelectedModule();
             if (m == null) {
@@ -44,7 +55,7 @@ public class NewContentActionItem extends BaseActionItem  {
             n = linker.getMainNode();
         }
         if (n != null) {
-            boolean contentList = n.getNodeTypes().contains("jnt:contentList");
+            boolean contentList = n.getNodeTypes().contains(parentType);
             setEnabled(contentList && lh.isMainSelection() && lh.isParentWriteable() || contentList && lh.isTableSelection() && lh.isSingleFolder() && lh.isWriteable());
         } else {
             setEnabled(false);

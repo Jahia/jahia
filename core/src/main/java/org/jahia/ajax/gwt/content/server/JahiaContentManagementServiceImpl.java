@@ -70,7 +70,12 @@ import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
@@ -1367,6 +1372,55 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                                                      String locale) throws GWTJahiaServiceException {
         return workflow.getWorkflowHistoryItems(nodeId, historyItem,
                 retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)));
+    }
+
+    public ListLoadResult<GWTJahiaNode> getAllWrappers(String path, List<String> fields) throws GWTJahiaServiceException {
+        try {
+            JCRSessionWrapper session = retrieveCurrentSession();
+            JCRNodeWrapper node = session.getNode(path);
+            List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
+            JCRNodeWrapper current = node;
+            try {
+                while (true) {
+                    Query q = current.getSession().getWorkspace().getQueryManager().createQuery(
+                            "select * from [jnt:wrapper] as w where ischildnode(w, [" + current.getPath() + "])",
+                            Query.JCR_SQL2);
+                    QueryResult result = q.execute();
+                    NodeIterator ni = result.getNodes();
+                    while (ni.hasNext()) {
+                        JCRNodeWrapper wrapper = (JCRNodeWrapper) ni.next();
+                        if (!wrapper.getName().equals("systemfolder")) {
+                            final GWTJahiaNode jahiaNode = navigation.getGWTJahiaNode(wrapper, fields);
+
+                            boolean ok = false;
+                            if (wrapper.hasProperty("j:applyOn")) {
+                                ok = false;
+                                Value[] values = wrapper.getProperty("j:applyOn").getValues();
+                                for (Value value : values) {
+                                    ok |= node.isNodeType(value.getString());
+                                }
+                                if (values.length == 0) {
+                                    ok = true;
+                                }
+                            }
+                            if (ok) {
+                                jahiaNode.set("activeWrapper", new Boolean(ok));
+                            }
+
+                            list.add(jahiaNode);
+                        }
+                    }
+                    current = current.getParent();
+                }
+            } catch (ItemNotFoundException e) {
+            } catch (RepositoryException e) {
+                logger.error("Cannot find wrapper", e);
+            }
+            return new BaseListLoadResult<GWTJahiaNode>(list);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 
     public Integer isValidSession() throws GWTJahiaServiceException {

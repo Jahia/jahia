@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -24,6 +25,7 @@ public class EditManager extends ContentPanel {
     private BorderLayout borderLayout ;
 
     public EditManager(String html, String path, String template, String locale, GWTEditConfiguration config) {
+        long start = System.currentTimeMillis();
         borderLayout =  new BorderLayout();
         setLayout(borderLayout);
         setHeaderVisible(false);
@@ -47,7 +49,7 @@ public class EditManager extends ContentPanel {
         editLinker = new EditLinker(mainModule, sidePanel, toolbar, config);
         editLinker.setLocale(locale);
 
-
+        Log.info("Edit manager inited : " + (System.currentTimeMillis() - start));
 
 
 

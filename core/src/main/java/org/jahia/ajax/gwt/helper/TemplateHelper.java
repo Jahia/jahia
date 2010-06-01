@@ -46,7 +46,10 @@ public class TemplateHelper {
      * @param response
      * @param currentUserSession
      */
-    public GWTRenderResult getRenderedContent(String path, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public GWTRenderResult getRenderedContent(String path, String template, String configuration,
+                                              Map<String, String> contextParams, boolean editMode, String configName,
+                                              HttpServletRequest request, HttpServletResponse response,
+                                              JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
@@ -82,7 +85,8 @@ public class TemplateHelper {
         return result;
     }
 
-    public List<String[]> getTemplatesSet(String path, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+    public List<String[]> getTemplatesSet(String path, JCRSessionWrapper currentUserSession)
+            throws GWTJahiaServiceException {
         List<String[]> templatesPath = new ArrayList<String[]>();
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
@@ -121,7 +125,8 @@ public class TemplateHelper {
      * @param currentUserSession
      * @return
      */
-    public String getNodeURL(String path, int mode, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) {
+    public String getNodeURL(String path, int mode, HttpServletRequest request, HttpServletResponse response,
+                             JCRSessionWrapper currentUserSession) {
         return getNodeURL(path, null, mode, request, response, currentUserSession);
     }
 
@@ -133,7 +138,8 @@ public class TemplateHelper {
      * @param currentUserSession
      * @return
      */
-    public String getNodeURL(String path, String versionNumber, int mode, HttpServletRequest request, HttpServletResponse response, JCRSessionWrapper currentUserSession) {
+    public String getNodeURL(String path, String versionNumber, int mode, HttpServletRequest request,
+                             HttpServletResponse response, JCRSessionWrapper currentUserSession) {
         try {
             final JCRSessionWrapper session = currentUserSession;
             final JCRNodeWrapper node = session.getNode(path);
@@ -190,8 +196,8 @@ public class TemplateHelper {
 //        }
         for (Template template : set) {
             final String key = template.getKey();
-            if (!key.startsWith("wrapper.") && !key.startsWith("skins.") &&
-                    !key.startsWith("debug.") && !key.matches("^.*\\\\.hidden\\\\..*")) {
+            if (!key.startsWith("wrapper.") && !key.startsWith("skins.") && !key.startsWith("debug.") &&
+                    !key.matches("^.*\\\\.hidden\\\\..*")) {
                 result.add(template);
             }
         }

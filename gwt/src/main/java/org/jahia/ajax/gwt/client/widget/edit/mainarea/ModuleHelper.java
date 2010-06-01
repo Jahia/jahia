@@ -33,6 +33,7 @@ public class ModuleHelper {
     private static Map<String, List<String>> wrappedContentInfo;
 
     public static void initAllModules(final MainModule m, HTML html) {
+        long start = System.currentTimeMillis();
         modules = new ArrayList<Module>();
         modulesById = new HashMap<String, Module>();
         modulesByPath = new HashMap<String, List<Module>>();
@@ -105,9 +106,6 @@ public class ModuleHelper {
                     final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
                     if (moduleList != null) {
                         for (Module module : moduleList) {
-                            if (Log.isDebugEnabled()) {
-                                Log.debug("set object for "+module.getModuleId());
-                            }
                             module.setNode(gwtJahiaNode);
                         }
                     }
@@ -131,9 +129,11 @@ public class ModuleHelper {
                 Log.error("Unable to get nodetypes :",caught);
             }
         });
+        Log.info("Parsing : "+(System.currentTimeMillis() - start));
     }
 
     public static void buildTree(Module module) {
+        long start = System.currentTimeMillis();
         String rootId = module.getModuleId();
         Element element = module.getHtml().getElement();
         children = new HashMap<String, List<String>>();
@@ -159,6 +159,7 @@ public class ModuleHelper {
                 }
             }
         }
+        Log.info("Build tree : "+(System.currentTimeMillis() - start));
     }
 
     public static Map<Element, Module> parse(Module module, Module parent) {
@@ -190,11 +191,13 @@ public class ModuleHelper {
     }
 
     public static void move(Map<Element, Module> m) {
+        long start = System.currentTimeMillis();
         for (Element divElement : m.keySet()) {
             Element moduleElement = m.get(divElement).getContainer().getElement();
             divElement.setInnerHTML("");
             DOM.appendChild(divElement, moduleElement);
         }
+        Log.info("Move : "+(System.currentTimeMillis() - start));
     }
 
     public static List<Module> getModules() {
@@ -202,6 +205,7 @@ public class ModuleHelper {
     }
 
     public static void tranformLinks(final HTML html) {
+        long start = System.currentTimeMillis();
         String baseUrl = JahiaGWTParameters.getBaseUrl();
         List<Element> el = getAllLinks(html.getElement());
         for (Element element : el) {
@@ -227,6 +231,7 @@ public class ModuleHelper {
                 }
             }
         }
+        Log.info("Transform links : "+(System.currentTimeMillis() - start));
     }
 
     public static List<Element> getAllLinks(Element parent) {

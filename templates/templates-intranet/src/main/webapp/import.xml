@@ -55,7 +55,7 @@
                     </pagecontent>
                 </double>
             </templates>
-            <bodywrapper jcr:primaryType="jnt:wrapper" j:template="intranet.bodywrapper" j:key="bodywrapper">
+            <sitewrapper jcr:primaryType="jnt:wrapper" j:template="intranet.bodywrapper" j:key="bodywrapper">
                 <logo jcr:primaryType="jnt:contentList"/>
                 <simpleSearch jcr:primaryType="jnt:contentList">
                     <simpleSearchForm result="/templatesSet/templates-intranet/search-results"
@@ -74,7 +74,7 @@
                 <wrappercontent jcr:primaryType="jnt:contentList">
                     <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
                 </wrappercontent>
-            </bodywrapper>
+            </sitewrapper>
             <search-results jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default"
                             jcr:primaryType="jnt:page" changefreq="monthly"
                             j:sourceTemplate="/templatesSet/templates-web/templates/simple" priority="0.5">

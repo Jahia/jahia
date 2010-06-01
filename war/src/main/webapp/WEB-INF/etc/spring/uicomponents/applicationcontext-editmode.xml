@@ -20,6 +20,14 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+                        <bean id="Toolbar.ItemsGroup.SitesSwitcher" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
+                                    <property name="root" value="/templatesSet/*"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.templatesSet"/>
+                        </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
                             <property name="layout" value="menu"/>
                             <property name="titleKey" value="label.new"/>
@@ -316,6 +324,16 @@
                         <ref bean="Toolbar.Item.NewTemplate"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                    <property name="nodeTypes" value="jnt:wrapper"/>
+                                    <property name="parentType" value="jnt:page"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.newWrapper"/>
+                            <property name="icon" value="newWrapper"/>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
                             </property>
                             <property name="titleKey" value="label.templatesDeploy"/>
@@ -333,6 +351,17 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+                <property name="contextMenu" value="true"/>
+            </bean>
+        </property>
+        <property name="tableContextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Delete"/>
                     </list>
                 </property>
                 <property name="contextMenu" value="true"/>

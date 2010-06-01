@@ -71,13 +71,13 @@ public class BodyWrapperFilter extends AbstractFilter {
                 foundWrappers.add(node.getProperty("j:key").getString());
             }
             while (true) {
-                if (current.isNodeType("jmix:wrapper")) {
+//                if (current.isNodeType("jmix:wrapper")) {
                     Query q = current.getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:wrapper] as w where ischildnode(w, ["+current.getPath()+"])", Query.JCR_SQL2);
                     QueryResult result = q.execute();
                     NodeIterator ni = result.getNodes();
                     while (ni.hasNext()) {
                         JCRNodeWrapper wrapper = (JCRNodeWrapper) ni.next();
-                        if (!foundWrappers.contains(wrapper.getName())) {
+                        if (!foundWrappers.contains(wrapper.getProperty("j:key").getString())) {
                             boolean ok = true;
                             if (wrapper.hasProperty("j:applyOn")) {
                                 ok = false;
@@ -95,7 +95,7 @@ public class BodyWrapperFilter extends AbstractFilter {
                             }
                         }
                     }
-                }
+//                }
                 current = current.getParent();
             }
         } catch (ItemNotFoundException e) {

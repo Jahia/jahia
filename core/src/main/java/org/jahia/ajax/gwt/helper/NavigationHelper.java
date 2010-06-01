@@ -254,9 +254,17 @@ public class NavigationHelper {
         for (String key : keys) {
             try {
                 if (key.startsWith("/")) {
-                    GWTJahiaNode root = getNode(key, fields, currentUserSession);
-                    if (root != null) {
-                        userNodes.add(root);
+                    if (key.endsWith("/*")) {
+                        NodeIterator ni = currentUserSession.getNode(StringUtils.substringBeforeLast(key,"/*")).getNodes();
+                        while (ni.hasNext()) {
+                            JCRNodeWrapper node = (JCRNodeWrapper) ni.next();
+                            userNodes.add(getGWTJahiaNode(node));
+                        }
+                    } else {
+                        GWTJahiaNode root = getNode(key, fields, currentUserSession);
+                        if (root != null) {
+                            userNodes.add(root);
+                        }
                     }
                 } else if (key.equals(JCRClientUtils.MY_REPOSITORY)) {
                     JCRNodeWrapper node = jcrService.getUserFolder(currentUserSession.getUser());
@@ -367,11 +375,17 @@ public class NavigationHelper {
                         userNodes.addAll(list);
                     }
                 } else if (key.equals(JCRClientUtils.TEMPLATES_REPOSITORY)) {
-                    GWTJahiaNode root = getNode("/templatesSet", fields, currentUserSession);
+//                    GWTJahiaNode root = getNode("/templatesSet", fields, currentUserSession);
+//                    if (root != null) {
+//                        List<GWTJahiaNode> list = ls(root, Arrays.asList("jnt:virtualsite"), null, null, fields, currentUserSession);
+//                        userNodes.addAll(list);
+//                    }
+                    final GWTJahiaNode root = getGWTJahiaNode(site);
                     if (root != null) {
-                        List<GWTJahiaNode> list = ls(root, Arrays.asList("jnt:virtualsite"), null, null, fields, currentUserSession);
-                        userNodes.addAll(list);
-                    }
+                        root.setDisplayName("Default pages");
+                        userNodes.add(root);
+                    }                   
+                    userNodes.add(getGWTJahiaNode(site.getNode("templates")));
                 } else if (key.equals(JCRClientUtils.REMOTEPUBLICATIONS_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/remotePublications", fields, currentUserSession);
                     if (root != null) {

@@ -507,7 +507,7 @@
 [jmix:listRestrictions] mixin
  extends = jnt:contentList
  itemtype = template
- - j:allowedTypes (string, choicelist[nodetypes]) multiple
+ - j:allowedTypes (string, choicelist[subnodetypes = 'jmix:droppableContent']) multiple
 
 
 //---------------------------------------------------------

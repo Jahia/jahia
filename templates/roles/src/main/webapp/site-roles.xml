@@ -29,6 +29,8 @@
    	        <mashupmanager jcr:primaryType="jnt:permission"/>
    	        <categorymanager jcr:primaryType="jnt:permission"/>
    	        <sitemanager jcr:primaryType="jnt:permission"/>
+            <remotepublicationmanager jcr:primaryType="jnt:permission"/>
+            <workflowmanager jcr:primaryType="jnt:permission"/>
    	    </managers>
    	    <toolbar jcr:primaryType="jnt:permissionGroup">
    		    <categories-menu jcr:primaryType="jnt:permission"/> 	    

@@ -74,7 +74,7 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
         // grid
         final List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
         columnNames.add(new GWTColumn("icon","icon",40));
-        columnNames.add(new GWTColumn("name","name",300));
+        columnNames.add(new GWTColumn("displayName","displayName",300));
         final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(new NodeColumnConfigList(columnNames,true)));
         contentContainer.add(grid);
 

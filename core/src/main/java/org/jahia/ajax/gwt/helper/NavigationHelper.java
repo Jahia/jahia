@@ -33,7 +33,6 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -918,7 +917,9 @@ public class NavigationHelper {
                     List<String> vals = new LinkedList<String>();
                     if (values != null) {
                         for (Value value : values) {
-                            vals.add(value.getString());
+                            if (value != null) {
+                                vals.add(value.getString());
+                            }
                         }
                     }
                     n.set(GWTJahiaNode.AVAILABLE_WORKKFLOWS, StringUtils.join(vals, ", "));

@@ -82,6 +82,9 @@ class MashupBrowseTabItem extends BrowseTabItem {
         listView.setTemplate(getMashupTemplate());
         contentContainer.add(listView);
 
+        tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
+        listView.setContextMenu(createContextMenu(config.getTableContextMenu(), listView.getSelectionModel()));
+
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
         add(contentContainer, contentVBoxData);

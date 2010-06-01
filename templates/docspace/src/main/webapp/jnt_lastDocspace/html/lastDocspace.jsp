@@ -17,7 +17,7 @@
 <h4 class="boxdocspace-title"><fmt:message key="docspace.label.docspace.last"/></h4>
 <ul class="docspacelist">
     <jcr:sql var="result"
-             sql="select * from [jnt:docspace] as file where isdescendantnode(file, ['${startNode.path}']) order by file.[jcr:lastModified] desc"/>
+             sql="select * from [jnt:folder] as file where isdescendantnode(file, ['${startNode.path}']) order by file.[jcr:lastModified] desc"/>
     <c:forEach items="${result.nodes}" var="docspace" end="9">
         <li>
             <c:if test="${jcr:hasPermission(docspace, 'write')}">

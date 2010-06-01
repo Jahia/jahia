@@ -7,11 +7,11 @@
 
 [jnt:docFilesList] > jnt:content, jmix:list, jmix:pager
 
-[jnt:searchUsers]
+[jnt:aclUsers] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent
 
 [jnt:docspace] > jnt:content, mix:title, jmix:tagged, jmix:docspaceElement
 + filesList (jnt:docFilesList)
-+ searchUsers (jnt:searchUsers)
++ searchUsers (jnt:aclUsers)
 + * (jnt:docspace)
 + * (jnt:file)
 

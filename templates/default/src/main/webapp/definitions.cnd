@@ -118,4 +118,8 @@
 [jnt:pageBreadcrumb] > jnt:content, jmix:siteComponentContent
 
 [jnt:languageSwitcher] > jnt:content, jmix:siteComponentContent
- - typeOfDisplay (string,choicelist[resourceBundle]) = isoLocaleCountryCode mandatory indexed=no < isoLocaleCountryCode,languageCode,doubleLetter,letter,nameInLocale,nameCurrentLocale,flag  
+ - typeOfDisplay (string,choicelist[resourceBundle]) = isoLocaleCountryCode mandatory indexed=no < isoLocaleCountryCode,languageCode,doubleLetter,letter,nameInLocale,nameCurrentLocale,flag
+
+[jnt:tree] > jnt:content, jmix:siteComponentContent
+ - nodeType (string, choicelist[subnodetypes = 'jnt:page,jnt:contentList,jnt:folder',resourceBundle]) mandatory
+ - templateForLink (string, choicelist[templates,resourceBundle]) mandatory   

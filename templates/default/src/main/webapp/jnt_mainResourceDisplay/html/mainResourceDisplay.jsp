@@ -43,7 +43,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <template:module node="${renderContext.mainResource.node}" forcedTemplate="${currentNode.properties['j:referenceTemplate']}" />
+        <template:module node="${renderContext.mainResource.node}" forcedTemplate="${currentNode.properties['j:referenceTemplate'].string}" />
     </c:otherwise>
 </c:choose>
 

@@ -40,7 +40,9 @@
                     <div class="formDocspace">
                         <form method="post" action="${pageNode.name}/" name="newDocspace">
                             <input type="hidden" name="autoCheckin" value="true">
-                            <input type="hidden" name="nodeType" value="jnt:docspace">
+                            <input type="hidden" name="nodeType" value="jnt:folder">
+                            <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
+                            <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
 
                             <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.docspace.new"/></h3>
                             <fieldset>

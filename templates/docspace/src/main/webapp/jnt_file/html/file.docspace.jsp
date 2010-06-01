@@ -14,6 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css"/>
+<template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.js"/>
 <template:addResources type="javascript"
@@ -61,7 +62,7 @@
     });
 </script>
 <div class='grid_12'><!--start grid_12-->
-    <a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html"><fmt:message
+    <a class="docspaceBack" href="${url.base}${currentNode.parent.path}.docspace.html"><fmt:message
             key="docspace.label.back"/> ${currentNode.parent.name}</a>
     <c:if test="${hasWriteAccess}">
         <a href="#" id="actions" title="Delete" class="delete"><fmt:message key="docspace.label.file.delete"/></a>
@@ -78,9 +79,9 @@
 									<span class="icon_large ${functions:fileIcon(currentNode.name)}_large"></span>
                         </div>
                     </div>
-                    <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}"><img
-                            title="Download" value="download"
-                            src="${url.currentModule}/css/img/download.png"/>&nbsp;${currentNode.name}&nbsp;${currentNode.baseVersion.name}
+                    <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}" title="Download ${currentNode.name}"><img
+                            title="Download ${currentNode.name}" value="download"
+                            src="${url.currentModule}/css/img/download.png"/>&nbsp;${functions:abbreviate(currentNode.name,20,30,'...')}&nbsp;${currentNode.baseVersion.name}
                     </a></h3>
 
                     <p class="clearMaringPadding docspacedate "><fmt:message key="label.created"/> : <fmt:formatDate
@@ -143,7 +144,7 @@
             </div>
         </div>
     </c:if>
-    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.document.history.tile"/></h4>
+    <%--<h4 class="boxdocspace-title2"><fmt:message key="docspace.label.document.history.tile"/></h4>
 
 
     <div class="boxdocspace">
@@ -158,7 +159,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>--%>
     <!--stop boxdocspace -->
 
     <div class='clear'></div>

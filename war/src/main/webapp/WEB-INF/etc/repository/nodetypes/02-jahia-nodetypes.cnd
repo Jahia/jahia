@@ -152,7 +152,7 @@
 
 [jnt:workflowRule] > nt:base
  - j:node (weakreference) nofulltext
- - j:nodeType (string,choicelist[subnodetypes='jnt:page,jnt:content,jnt:folder,jnt:file',resourceBundle]) nofulltext
+ - j:nodeType (string,choicelist[nodetypes=nt:base,resourceBundle]) nofulltext
  - j:availableWorkflows (string,choicelist[workflow]) multiple nofulltext
 
 //---------------------------------------------------------
@@ -328,7 +328,7 @@
 
 [jnt:wrapper] > nt:base, jmix:nodenameInfo, jmix:renderable, jmix:basemetadata, jmix:publication
  - j:key (string) mandatory
- - j:applyOn (string, choicelist[subnodetypes='jnt:page,jnt:content,jnt:folder,jnt:file']) multiple
+ - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
  + * (jnt:content)
 
 [jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
@@ -507,7 +507,7 @@
 [jmix:listRestrictions] mixin
  extends = jnt:contentList
  itemtype = template
- - j:allowedTypes (string, choicelist[subnodetypes = 'jnt:droppableContent']) multiple
+ - j:allowedTypes (string, choicelist[nodetypes]) multiple
 
 
 //---------------------------------------------------------

@@ -12,27 +12,20 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css,jquery.treeview.css"/>
+<template:addResources type="css" resources="jquery.treeview.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.treeview.min.js"/>
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#docspaceTree").treeview();
+        $("#tree${currentNode.identifier}").treeview();
     });
 </script>
 <c:set var="pageNode" value="${jcr:getParentOfType(currentNode, 'jnt:page')}"/>
-<h4 class="boxdocspace-title2"><fmt:message key="docspace.label.docspace.title"/></h4>
-<div class="boxdocspace"><!--start boxdocspace -->
-    <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
-        <div class="boxdocspace-inner">
-            <div class="boxdocspace-inner-border">
-                <ul id="docspaceTree" class="filetree">
-                    <c:forEach var="node" items="${jcr:getChildrenOfType(pageNode,'jnt:folder')}">
-                        <template:module node="${node}" forcedTemplate="hidden.docspace.tree">
-                            <template:param name="renderOptions" value="none"/>
-                        </template:module>
-                    </c:forEach>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+<c:set var="nodeTypeForTree" value="${currentNode.properties.nodeType.string}" scope="request"/>
+<c:set var="templateForTree" value="${currentNode.properties.templateForLink.string}" scope="request"/>
+<ul id="tree${currentNode.identifier}" class="filetree">
+    <c:forEach var="node" items="${jcr:getChildrenOfType(pageNode,nodeTypeForTree)}">
+        <template:module node="${node}" forcedTemplate="hidden.tree"/>
+    </c:forEach>
+</ul>
+<c:remove var="nodeTypeForTree" scope="request"/>
+<c:remove var="templateForTree" scope="request"/>

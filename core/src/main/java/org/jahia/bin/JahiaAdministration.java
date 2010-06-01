@@ -647,7 +647,7 @@ public class JahiaAdministration extends HttpServlet {
             theUser = uMgr.lookupUser(jahiaLoginUsername);
 
             if (theUser == null) {
-                String s = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
+                String s = JahiaResourceBundle.getJahiaInternalResource("message.invalidUsernamePassword",
                         request.getLocale());
                 logger.warn(s);
                 request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", s);
@@ -686,7 +686,7 @@ public class JahiaAdministration extends HttpServlet {
                         }
                     }
                 } else {
-                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.invalidUsernamePassword",
                             request.getLocale());
                     request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     logger.error("Login Error: User " + jahiaLoginUsername + " entered bad password.");
@@ -859,7 +859,7 @@ public class JahiaAdministration extends HttpServlet {
         } catch (JahiaException je) {
             String dspMsg = JahiaResourceBundle
                     .getJahiaInternalResource(
-                            "org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.logininvalid.label",
+                            "message.invalidUsernamePassword",
                             request.getLocale());
             request.setAttribute(JahiaAdministration.CLASS_NAME
                     + "jahiaDisplayMessage", dspMsg);

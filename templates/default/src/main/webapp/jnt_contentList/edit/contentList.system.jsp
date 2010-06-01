@@ -31,20 +31,87 @@
 <c:set var="animatedTasks" value=""/>
 <c:set var="animatedWFs" value=""/>
 
-        <c:set var="inSite" value="true"/>
+<table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">
+    <thead>
+    <tr>
+        <th width="5%" align="center">
+            <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
+                <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="${url.currentModule}/images/icons/folder_up.png"></a></div></th>
+            </c:if>
+        </th>
+        <th width="5%"><fmt:message key="label.type"/> </th>
+        <th width="35%"><fmt:message key="label.title"/> </th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_creationDate"/> </th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastModificationDate"/></th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastPublishingDate"/></th>
+        <th width="20%" style="white-space: nowrap;"><fmt:message key="label.workflow"/></th>
+        <th width="5%"><fmt:message key="label.lock"/></th>
+        <th width="20%" class="lastCol"><fmt:message key="label.action"/> </th>
+    </tr>
+    </thead>
+    <tbody>
         <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
-            <%@include file="edit.jspf" %>
-            <%@include file="workflow.jspf" %>
-            <div id="edit-${child.identifier}">
-                <template:module templateType="html" node="${child}"/>
-            </div>
-            <hr/>
+            <tr class="evenLine">
+                <td align="center">
+                    
+                </td>
+                <td >
+                    <c:if test="${jcr:isNodeType(child, 'jnt:contentList')}">
+                        <img  height="24" width="24" border="0" style="cursor: pointer;" src="${url.currentModule}/images/icons/folder-contenu.png"/>
+                    </c:if>
+                    <c:if test="${!jcr:isNodeType(child, 'jnt:contentList')}">
+                        ${fn:escapeXml(child.primaryNodeType.name)}
+                    </c:if>
+                </td>
+                <td>
+                    <c:choose>
+                        <c:when test="${jcr:isNodeType(child, 'jnt:contentList')}">
+                            <a href="${url.base}${child.path}.html">
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${url.base}${child.path}.edit.edit">
+                        </c:otherwise>
+                    </c:choose>
+                    <c:if test="${!empty child.properties['jcr:title'].string}">
+                    ${fn:escapeXml(child.properties['jcr:title'].string)}
+                </c:if>
+                    <c:if test="${empty child.properties['jcr:title'].string}">
+                        ${fn:escapeXml(child.name)}
+                    </c:if></a>
+                </td>
+                <td>
+                    <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
+                </td>
+                <td>
+                    <fmt:formatDate value="${child.properties['jcr:lastModified'].date.time}"
+                                    pattern="yyyy-MM-dd HH:mm"/>
+                </td align="center">
+                <td>
+                    <fmt:formatDate value="${child.properties['j:lastPublished'].date.time}"
+                                    pattern="yyyy-MM-dd HH:mm"/>
+                </td>
+                <td>
+                   <%@include file="workflow.jspf" %>
+                </td>
+                <td>
+                    <c:if test="${child.locked}">
+                        <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Locked"
+                             src="${url.currentModule}/images/icons/locked.gif">
+                    </c:if>
+                </td>
+                <td class="lastCol">
+                        <%--
+                                <a title="Editer" href="#"><img height="16" width="16" border="0" style="cursor: pointer;" title="Editer" alt="Editer" src="${url.currentModule}/images/icons/edit.png"></a>&nbsp;
+                        --%>
+                    <%@include file="edit.jspf" %>
+                </td>
+            </tr>
         </c:forEach>
-        <div class="clear"></div>
-        <c:if test="${editable and renderContext.editMode}">
-            <template:module path="*"/>
-        </c:if>
+    </tbody>
+</table>
         <template:include templateType="html" template="hidden.footer"/>
+<div class="addcontent">
+
 
 
 <c:if test="${empty param.ajaxcall}">

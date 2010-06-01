@@ -4,19 +4,13 @@
            xmlns:j="http://www.jahia.org/jahia/1.0"
            xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <files jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:wrapper">
-        <bodywrapper jcr:primaryType="jnt:wrapper" j:template="bodywrapper" j:key="bodywrapper"/>
-    </files>
-    
-    <mashups jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:wrapper">
-        <bodywrapper jcr:primaryType="jnt:wrapper" j:template="bodywrapper" j:key="bodywrapper"/>
-    </mashups>
+    <files jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:wrapper"/>
+
+    <mashups jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:wrapper"/>
 
     <groups jcr:primaryType="jnt:groupsFolder"/>
 
-    <contents jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:wrapper">
-        <bodywrapper jcr:primaryType="jnt:wrapper" j:template="bodywrapper" j:key="bodywrapper"/>
-    </contents>
+    <contents jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:wrapper"/>
 
     <themes jcr:primaryType="jnt:folder"/>
 

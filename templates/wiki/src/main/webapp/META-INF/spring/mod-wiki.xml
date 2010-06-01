@@ -13,5 +13,6 @@
     </bean>
 
     <bean id="defaultSyntaxFactory" class="org.xwiki.rendering.internal.parser.DefaultSyntaxFactory"/>
+
     <bean name="NewWikiPageHandler" class="org.jahia.modules.wiki.errors.NewWikiPageHandler"/>
 </beans>

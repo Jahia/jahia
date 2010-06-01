@@ -47,19 +47,14 @@ import org.jahia.services.usermanager.JahiaUser;
 
 import com.ibm.icu.text.Normalizer;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RangeIterator;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
+import java.util.*;
 
 /**
  * Utility class for accessing and manipulation JCR properties.
@@ -480,5 +475,75 @@ public final class JCRContentUtils {
             }
         }
         return result;
+    }
+
+    public static JCRNodeWrapper getParentOfType(JCRNodeWrapper node,
+            String type) {
+        JCRNodeWrapper matchingParent = null;
+        try {
+            JCRNodeWrapper parent = node.getParent();
+            while (parent != null) {
+                if (parent.isNodeType(type)) {
+                    matchingParent = parent;
+                    break;
+                }
+                parent = parent.getParent();
+            }
+        } catch (ItemNotFoundException e) {
+            // we reached the hierarchy top
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving nodes parent node. Cause: "
+                    + e.getMessage(), e);
+        }
+        return matchingParent;
+    }
+
+    public static NodeIterator getChildrenOfType(JCRNodeWrapper node, String type) {
+        NodeIterator children = null;
+        if (type.contains(",")) {
+            String[] typesToCheck = type.split(type, ',');
+            List<Node> matchingChildren = new LinkedList<Node>();
+            try {
+                for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+                    Node child = iterator.nextNode();
+                    for (String matchType : typesToCheck) {
+                        if (child.isNodeType(matchType)) {
+                            matchingChildren.add(child);
+                            break;
+                        }
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.warn(e.getMessage(), e);
+            }
+            children = new NodeIteratorImpl(matchingChildren.iterator(), matchingChildren.size());
+        } else {
+            children = getNodes(node, type);
+        }
+        return children;
+    }
+
+    public static NodeIterator getNodes(JCRNodeWrapper node, String type) {
+        try {
+            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
+                                                                                  Query.JCR_SQL2).execute().getNodes();
+        } catch (InvalidQueryException e) {
+            logger.error("Error while retrieving nodes", e);
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving nodes", e);
+        }
+        return NodeIteratorImpl.EMPTY;
+    }
+
+    public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
+        try {
+            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where isdescendantnode(sel,['"+node.getPath()+"'])",
+                                                                                  Query.JCR_SQL2).execute().getNodes();
+        } catch (InvalidQueryException e) {
+            logger.error("Error while retrieving nodes", e);
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving nodes", e);
+        }
+        return NodeIteratorImpl.EMPTY;
     }
 }

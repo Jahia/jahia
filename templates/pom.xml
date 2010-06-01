@@ -103,6 +103,7 @@
         <module>calendar</module>
         <module>staticHTML</module>
         <module>bookmarks</module>
+        <module>tabularList</module>
     </modules>
 
 

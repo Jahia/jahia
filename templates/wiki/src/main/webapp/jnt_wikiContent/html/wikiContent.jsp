@@ -1,1 +1,0 @@
- ${currentNode.properties.text.string}

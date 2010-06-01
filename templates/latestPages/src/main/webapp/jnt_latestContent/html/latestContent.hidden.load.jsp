@@ -17,21 +17,14 @@
 
 <%-- Get parameters of the module --%>
 <jcr:nodeProperty node="${currentNode}" name='j:nbOfResult' var="nbOfResult"/>
-<jcr:nodeProperty node="${currentNode}" name='j:mode' var="mode"/>
+<c:set var="startNode" value="${currentNode.properties.startNode.node}"/>
 <jcr:nodeProperty node="${currentNode}" name='j:criteria' var="criteria"/>
 <jcr:nodeProperty node="${currentNode}" name='j:type' var="type"/>
 
 <%-- Execute the query, depending on the selected mode --%>
-<c:if test="${mode.string eq 'site'}">
-    <jcr:sql var="result"
-             sql="SELECT * FROM [${type.string}] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.site.path}') ORDER BY [jcr:${criteria.string}] DESC"
-             limit="${nbOfResult.long}"/>
-</c:if>
-<c:if test="${mode.string eq 'platform'}">
-    <jcr:sql var="result"
-             sql="SELECT * FROM [${type.string}] AS page WHERE ISDESCENDANTNODE(page,'${renderContext.site.parent.path}') ORDER BY [jcr:${criteria.string}] DESC"
-             limit="${nbOfResult.long}"/>
-</c:if>
+<jcr:sql var="result"
+         sql="SELECT * FROM [${type.string}] AS page WHERE ISDESCENDANTNODE(page,'${startNode.path}') ORDER BY [jcr:${criteria.string}] DESC"
+         limit="${nbOfResult.long}"/>
 
 <%-- Debug message --%>
 <%-- <p>Debug > Nb of result from query (Criteria : ${criteria.string} - Nb of result : ${nbOfResult.long} - Mode : ${mode.string}) : ${fn:length(result.nodes)}</p>  --%>

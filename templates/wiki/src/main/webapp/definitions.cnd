@@ -3,4 +3,6 @@
 [jnt:wikiPage] > jnt:content, mix:title
  - lastComment (string)
  - text (string, richtext) i18n
+ + * (jnt:wikiPage)
 
+[jnt:wikiPageFormCreation] > jnt:content, jmix:siteComponentContent, mix:title

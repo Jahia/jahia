@@ -229,3 +229,4 @@
  - content (weakreference,choicelist[nodes='/shared/content/myList;test_templates:choiceListItem'])
 */ 
  - category (weakreference,choicelist[nodes='/categories;jnt:category'])
+ - multipleCategories (weakreference,choicelist[nodes='/categories;jnt:category']) multiple

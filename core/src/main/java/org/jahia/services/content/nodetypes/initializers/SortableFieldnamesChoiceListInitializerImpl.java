@@ -40,7 +40,7 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
+import org.jahia.services.content.nodetypes.renderer.AbstractChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
 
 import javax.jcr.NodeIterator;
@@ -55,7 +55,7 @@ import java.util.*;
  * @author Benjamin Papez
  * @author Sergiy Shyrkov
  */
-public class SortableFieldnamesChoiceListInitializerImpl implements ChoiceListInitializer, ChoiceListRenderer {
+public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceListRenderer implements ChoiceListInitializer {
     private transient static Logger logger = Logger.getLogger(TemplatesChoiceListInitializerImpl.class);
 
     private Set<String> excludedNodeTypes = Collections.emptySet();
@@ -147,13 +147,6 @@ public class SortableFieldnamesChoiceListInitializerImpl implements ChoiceListIn
         } else {
             return new ExtendedPropertyDefinition[0];
         }
-    }
-
-    public Map<String, Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
-            throws RepositoryException {
-        Map<String, Object> map = new HashMap<String, Object>(1);
-        map.put("displayName", getStringRendering(context, propertyWrapper));
-        return map;
     }
 
     public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)

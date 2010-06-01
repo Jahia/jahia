@@ -38,7 +38,7 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
+import org.jahia.services.content.nodetypes.renderer.AbstractChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -54,14 +54,10 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 17 nov. 2009
  */
-public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitializer,  ChoiceListRenderer {
+public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListRenderer implements ChoiceListInitializer {
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
-        final JahiaTemplatesPackage tpkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
-                    epd.getDeclaringNodeType().getSystemId());
-        String templatePackageName = tpkg != null?tpkg.getName():null;
-
-        JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, templatePackageName);
+        JahiaResourceBundle rb = new JahiaResourceBundle(null, locale, getTemplatePackageName(epd));
 
         if (values == null || values.size() == 0) {
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();
@@ -83,22 +79,22 @@ public class ResourceBundleChoiceListInitializerImpl implements ChoiceListInitia
         }
     }
 
-    public Map<String, Object> getObjectRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
-            throws RepositoryException {
-        Map<String, Object> map = new HashMap<String, Object>(1);
-        map.put("displayName", getStringRendering(context, propertyWrapper));
-        return map;
-    }
-
     public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
             throws RepositoryException {
         
         String propValue = propertyWrapper.getValue().getString();
         
-        JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getMainResource().getLocale(), context
-                .getSite() != null ? context.getSite().getTemplatePackageName() : null);
-        
+        JahiaResourceBundle rb = new JahiaResourceBundle(null, context.getMainResource().getLocale(),
+                getTemplatePackageName((ExtendedPropertyDefinition) propertyWrapper.getDefinition()));
+
         return rb.get(((ExtendedPropertyDefinition) propertyWrapper.getDefinition()).getResourceBundleKey()
                 + "." + propValue, propValue);
+    }
+
+    private String getTemplatePackageName(ExtendedPropertyDefinition definition) {
+        final JahiaTemplatesPackage tpkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getTemplatePackage(definition.getDeclaringNodeType().getSystemId());
+
+        return tpkg != null ? tpkg.getName() : null;
     }
 }

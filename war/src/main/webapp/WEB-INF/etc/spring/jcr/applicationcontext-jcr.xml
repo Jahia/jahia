@@ -212,6 +212,7 @@
     <bean id="workflowInitializer" class="org.jahia.services.content.nodetypes.initializers.WorkflowChoiceListInitializer">
         <property name="workflowService" ref="workflowService"/>
     </bean>
+    <bean id="nodeReferenceRenderer" class="org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer"/>
 
     <bean id="choiceListInitializers" class="org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService" factory-method="getInstance">
         <property name="initializers">
@@ -240,6 +241,7 @@
                 <entry key="country" value-ref="countryInitializerRenderer"/>
                 <entry key="flagcountry" value-ref="countryFlagInitializer"/>
                 <entry key="resourceBundle" value-ref="rbInitializer"/>
+                <entry key="nodeReference" value-ref="nodeReferenceRenderer"/>
             </map>
         </property>
     </bean>

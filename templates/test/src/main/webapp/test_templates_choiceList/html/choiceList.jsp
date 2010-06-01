@@ -20,5 +20,8 @@ Product: ${currentNode.properties.product.string}<br/>
 Content: ${currentNode.properties.content.string}<br/>
 --%>
 
-Category: ${currentNode.properties.category.string}<br/>
+Category:
+<jcr:nodePropertyRenderer node="${currentNode}" name="category" renderer="nodeReference"/><br/>
 
+Multiple categories:
+<jcr:nodePropertyRenderer node="${currentNode}" name="multipleCategories" renderer="nodeReference"/><br/>

@@ -145,7 +145,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
             if (toolbarEnabled) {
                 ToolBar toolBar = new ToolBar();
 
-                propertiesEditor.setTopComponent(toolBar);
+                propertiesEditor.add(toolBar);
 
                 Button item = new Button(Messages.getResource("label.save"));
                 item.setIconStyle("gwt-icons-save");

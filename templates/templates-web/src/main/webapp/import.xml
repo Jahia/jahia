@@ -10,7 +10,6 @@
             <contents jcr:mixinTypes="jmix:templateInformation jmix:wrapper" j:published="true"
                       jcr:primaryType="jnt:contentList"
                       j:checkinDate="2010-04-30T15:43:00.492+02:00">
-                <bodywrapper jcr:primaryType="jnt:wrapper" j:template="bodywrapper" j:key="bodywrapper"/>
                 <site_components jcr:mixinTypes="jmix:templateInformation" j:published="true"
                                  jcr:primaryType="jnt:contentList" j:checkinDate="2010-04-30T15:43:00.492+02:00">
                     <simple-search result="/templatesSet/templates-web/search-results"
@@ -41,14 +40,8 @@
                     </bottom-menu>
                 </site_components>
             </contents>
-            <files jcr:mixinTypes="jmix:templateInformation jmix:wrapper" jcr:primaryType="jnt:folder">
-                <bodywrapper jcr:primaryType="jnt:wrapper" j:template="bodywrapper" j:key="bodywrapper"/>
-            </files>
-            <mashups jcr:mixinTypes="jmix:templateInformation jmix:wrapper" j:published="true"
-                     jcr:primaryType="jnt:portletList"
-                     j:checkinDate="2010-04-30T15:43:00.492+02:00">
-                <bodywrapper jcr:primaryType="jnt:wrapper" j:template="bodywrapper" j:key="bodywrapper"/>
-            </mashups>
+            <files jcr:mixinTypes="jmix:templateInformation jmix:wrapper" jcr:primaryType="jnt:folder"/>
+            <mashups jcr:mixinTypes="jmix:templateInformation jmix:wrapper" jcr:primaryType="jnt:portletList" />
             <themes jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:folder"/>
             <home jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page"
                   changefreq="monthly" priority="0.5">
@@ -144,7 +137,7 @@
                 <logoFooter jcr:primaryType="jnt:contentList"/>
                 <footer jcr:primaryType="jnt:contentList"/>
                 <wrappercontent jcr:primaryType="jnt:contentList">
-                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay"/>
                 </wrappercontent>
             </bodywrapper>
         </templates-web>

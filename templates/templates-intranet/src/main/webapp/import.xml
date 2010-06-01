@@ -7,7 +7,6 @@
                             jcr:mixinTypes="jmix:wrapper"
                             j:installedModules="templates-intranet">
             <contents jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:wrapper">
-                <bodywrapper jcr:primaryType="jnt:wrapper" j:template="bodywrapper" j:key="bodywrapper"/>
                 <site_components jcr:primaryType="jnt:contentList">
                     <login-to-jahia jcr:mixinTypes="jmix:templateInformation jmix:shareable"
                                     jcr:primaryType="jnt:loginForm" j:templateLocked="true">
@@ -16,12 +15,8 @@
                     </login-to-jahia>
                 </site_components>
             </contents>
-            <files jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:wrapper">
-                <bodywrapper jcr:primaryType="jnt:wrapper" j:template="bodywrapper" j:key="bodywrapper"/>
-            </files>
-            <mashups jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:wrapper">
-                <bodywrapper jcr:primaryType="jnt:wrapper" j:template="bodywrapper" j:key="bodywrapper"/>
-            </mashups>
+            <files jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:wrapper"/>
+            <mashups jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:wrapper"/>
             <themes jcr:primaryType="jnt:folder"/>
             <home j:template="default" jcr:primaryType="jnt:page">
                 <j:translation_en jcr:language="en" jcr:title_en="Home" jcr:primaryType="jnt:translation"/>

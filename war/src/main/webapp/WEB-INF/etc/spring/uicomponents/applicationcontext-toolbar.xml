@@ -95,8 +95,9 @@
                 <ref bean="Toolbar.Item.ContentManager"/>
                 <ref bean="Toolbar.Item.CategoryManager"/>
                 <ref bean="Toolbar.Item.TagManager"/>
-                <ref bean="Toolbar.Item.RemotePublicationManager"/>
                 <ref bean="Toolbar.Item.SiteManager"/>
+                <ref bean="Toolbar.Item.RemotePublicationManager"/>
+                <ref bean="Toolbar.Item.WorkflowManager"/>
             </list>
         </property>
     </bean>
@@ -325,8 +326,8 @@
         <property name="items">
             <list>
                 <ref bean="Toolbar.Item.WorkflowStatuswAction"/>
-                <ref bean="Toolbar.Item.WorflowDashboard"/>
-                <ref bean="Toolbar.Item.WorflowManager"/>
+                <ref bean="Toolbar.Item.WorkflowDashboard"/>
+                <ref bean="Toolbar.Item.WorkflowManager"/>
             </list>
         </property>
     </bean>
@@ -752,7 +753,7 @@
         <property name="icon" value="remotePublicationManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/categorymanager"/>
+                <property name="siteActionPermission" value="managers/remotepublicationmanager"/>
             </bean>
         </property>
         <property name="properties">
@@ -1345,7 +1346,7 @@
     </bean>
 
     <!-- workflow Manager -->
-    <bean id="Toolbar.Item.WorflowManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.WorkflowManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
@@ -1353,7 +1354,7 @@
         <property name="icon" value="workflowManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/categorymanager"/>
+                <property name="siteActionPermission" value="managers/workflowmanager"/>
             </bean>
         </property>
         <property name="properties">
@@ -1374,7 +1375,7 @@
         </property>
     </bean>
     
-    <bean id="Toolbar.Item.WorflowDashboard" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.WorkflowDashboard" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowDashboardActionItem"/>
         </property>

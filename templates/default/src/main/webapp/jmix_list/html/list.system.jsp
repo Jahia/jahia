@@ -24,7 +24,7 @@
     <tr>
         <th width="5%" align="center">
             <c:if test="${jcr:isNodeType(currentNode.parent,'jmix:list')}">
-                <a title="parent" href="${url.base}${currentNode.parent.path}.system.html"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="${url.currentModule}/images/icons/folder_up.png"></a>
+                <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="${url.currentModule}/images/icons/folder_up.png"></a>
             </c:if>
         </th>
         <th width="5%"><fmt:message key="label.type"/></th>
@@ -54,12 +54,7 @@
                 ${fn:escapeXml(subchild.primaryNodeType.name)}
             </td>
             <td>
-
-                <c:choose>
-                    <c:when test="${jcr:isNodeType(subchild,'jmix:list')}"><a href="${url.base}${subchild.path}.system.html"></c:when>
-                    <c:otherwise><a href="${url.base}${subchild.path}.html"></c:otherwise>
-                </c:choose>
-                <c:if test="${!empty subchild.properties['jcr:title'].string}">
+                <a href="${url.base}${subchild.path}.html"><c:if test="${!empty subchild.properties['jcr:title'].string}">
                 ${fn:escapeXml(subchild.properties['jcr:title'].string)}
                 </c:if>
                 <c:if test="${empty subchild.properties['jcr:title'].string}">

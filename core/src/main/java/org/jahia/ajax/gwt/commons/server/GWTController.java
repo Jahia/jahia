@@ -135,11 +135,11 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             // NEVER use or cache a legacy serializer
             return new SerializationPolicy() {
                 @Override public boolean shouldDeserializeFields(Class<?> clazz) {
-                    return true;
+                    return (clazz != Object.class);
                 }
 
                 @Override public boolean shouldSerializeFields(Class<?> clazz) {
-                    return true;
+                    return (clazz != Object.class);
                 }
 
                 @Override public void validateDeserialize(Class<?> clazz) throws SerializationException {

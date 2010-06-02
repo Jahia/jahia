@@ -33,10 +33,8 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -44,7 +42,10 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.client.ui.Image;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -105,24 +106,16 @@ public class ImageCrop extends Window {
         height.setVisible(false);
         form.add(height);
         
-        HorizontalPanel hPanel = new HorizontalPanel();
-        hPanel.setHorizontalAlign(HorizontalAlignment.CENTER);
-        hPanel.add(new HTML(
-                        "<div>"
-                                + "<img src=\""
-                                + n.getUrl()
-                                + "\" id=\"cropbox\"/></div>"
-                                + "<script type=\"text/javascript\"> "
-                                + "jQuery(function() { jQuery('#cropbox').Jcrop({ "
-                                + "boxWidth: 700,"
-                                + " boxHeight: 400,"
-                                + "onSelect: syncSelection"
-                                + " }); }); "
-                                + "function syncSelection(c){ jQuery('#left-input').val(c.x); jQuery('#top-input').val(c.y); jQuery('#width-input').val(c.w); jQuery('#height-input').val(c.h); }"
-                                + "</script>"));
-        
-
-        form.add(hPanel);
+        final Image image = new Image();
+        image.addLoadHandler(new LoadHandler() {
+            public void onLoad(LoadEvent event) {
+                initJcrop();
+            }
+        });
+        // Point the image at a real URL.
+        image.getElement().setId("cropbox");
+        image.setUrl(n.getUrl());
+        form.add(image);
         
         ButtonBar buttons = new ButtonBar();
         Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
@@ -149,6 +142,10 @@ public class ImageCrop extends Window {
         setHeaderVisible(true);
         setAutoHide(false);
     }
+    
+    private native void initJcrop() /*-{
+        $wnd.jQuery('#cropbox').Jcrop({ boxWidth: 700, boxHeight: 400, onSelect: function(c) { $wnd.jQuery('#left-input').val(c.x); $wnd.jQuery('#top-input').val(c.y); $wnd.jQuery('#width-input').val(c.w); $wnd.jQuery('#height-input').val(c.h); }});        
+    }-*/;
 
     private void cropImage(final String path, final String targetName, final int top, final int left, final int width, final int height, final boolean force) {
         JahiaContentManagementService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new BaseAsyncCallback<Object>() {

@@ -1,0 +1,81 @@
+Jahia Crazy Jane - Jahia node types definitions
+
+Jahia is bundle with preset definitions. The purpose of this file is to explain them.
+
+* generic modifiers :
+
+    ** extends :
+
+        you can specify on which nodetype contents applies.
+
+-----------------------
+ extends = jnt:contentList, jnt:folder
+-----------------------
+
+    ** itemtype :
+
+        define on which panel in the edit engine, the mixin will be display
+
+-----------------------
+itemtype = template
+-----------------------
+
+* Mixins :
+
+    You can add mixins to any nodetype definition in order to change the way they are display in engines.
+
+    ** edit mode (Side panel)
+
+        [jmix:droppableContent] allows content to be drop in a placeholder
+
+        [jmix:listContent]  appears in content lists list
+
+        [jmix:editorialContent]  appears in editorial contents list
+
+        [jmix:siteComponentContent]  appears in site component list
+
+        [jmix:queryContent]   appears in the Query component list
+
+        [jmix:formContent]  appears in the form component list
+
+    ** other mixins
+
+        [jmix:list]   define all lists in jahia, can be order. It uses all list display mechanisms
+
+        [mix:title]   unify all title of contents. Also provide a description. You can access them with jcr:title and jcr:description properties.
+
+* System, content and files :
+
+    **Jahia store items using this definitions
+
+        System directories can store folders and contentLists
+        folders can store files or folders
+        contentlists can store contents or contentlits
+
+    **System directories
+
+        They are used to store all jahia internal items
+
+--------------------
+[jnt:templatesSets] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
+[jnt:usersFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list
+--------------------
+
+    **ContentList
+
+        store all droppable contents.
+
+--------------------
+[jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list
+ orderable
+ + * (jmix:droppableContent) = jmix:droppableContent version
+--------------------
+
+
+    **Folders
+    
+        store all files and folders.
+
+--------------------
+[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable
+--------------------

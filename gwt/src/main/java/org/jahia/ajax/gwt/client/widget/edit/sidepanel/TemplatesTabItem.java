@@ -43,10 +43,8 @@ public class TemplatesTabItem extends BrowseTabItem {
 //    private ComboBox<GWTJahiaBasicDataBean> templateBox;
 
     public TemplatesTabItem(GWTSidePanelTab config) {
-        super(JCRClientUtils.TEMPLATES_REPOSITORY, Arrays.asList("jnt:page"), config);
+        super(Arrays.asList("$site","$site/templates"), Arrays.asList("jnt:page"), config);
         setIcon(StandardIconsProvider.STANDARD_ICONS.tabPages());
-
-        ComboBox<GWTJahiaNode> siteSwitcher = new ComboBox<GWTJahiaNode>();
 
         this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
             @Override
@@ -62,7 +60,6 @@ public class TemplatesTabItem extends BrowseTabItem {
             }
         });
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-
 
         contentContainer = new LayoutContainer();
         contentContainer.setId("images-view");

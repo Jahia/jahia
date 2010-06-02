@@ -32,6 +32,7 @@ import java.util.List;
 public class GWTJahiaNodeTreeFactory {
     private boolean init = true;
     protected String repository;
+    protected List<String> paths;
     protected List<String> nodeTypes;
     protected List<String> filters;
     protected List<String> fields = GWTJahiaNode.DEFAULT_FIELDS;
@@ -42,12 +43,12 @@ public class GWTJahiaNodeTreeFactory {
     protected GWTJahiaNodeTreeLoader loader;
     protected TreeStore<GWTJahiaNode> store;
 
-    public GWTJahiaNodeTreeFactory(final String repositoryType) {
-        this(repositoryType, GWTJahiaNode.DEFAULT_FIELDS);
+    public GWTJahiaNodeTreeFactory(final List<String> paths) {
+        this(paths, GWTJahiaNode.DEFAULT_FIELDS);
     }
 
-    public GWTJahiaNodeTreeFactory(final String repositoryType, List<String> fields) {
-        repository = repositoryType;
+    public GWTJahiaNodeTreeFactory(final List<String> paths, List<String> fields) {
+        this.paths = paths;
         this.fields = fields;
     }
 
@@ -242,7 +243,7 @@ public class GWTJahiaNodeTreeFactory {
         protected void load(Object currentPage, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
             if (currentPage == null) {
                 JahiaContentManagementService.App.getInstance()
-                        .getRoot(repository, nodeTypes, mimeTypes, filters, fields, selectedPath, openPath,
+                        .getRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedPath, openPath,
                                 listAsyncCallback);
             } else {
                 GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) currentPage;

@@ -38,9 +38,8 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     protected String repositoryType;
     protected List<String> folderTypes;
 
-    public BrowseTabItem(final String repositoryType, final List<String> folderTypes, GWTSidePanelTab config) {
+    public BrowseTabItem(final List<String> paths, final List<String> folderTypes, GWTSidePanelTab config) {
         super(config);
-        this.repositoryType = repositoryType;
         this.folderTypes = folderTypes;
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
@@ -50,7 +49,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         treeContainer.setBorders(true);
         treeContainer.setScrollMode(Style.Scroll.AUTO);
         treeContainer.setLayout(new FitLayout());
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(this.repositoryType);
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(paths);
         factory.setNodeTypes(this.folderTypes);
 
         ColumnConfig columnConfig = new ColumnConfig("displayName", "Name", 80);

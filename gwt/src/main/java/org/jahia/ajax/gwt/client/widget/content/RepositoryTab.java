@@ -88,7 +88,7 @@ public class RepositoryTab extends ContentPanel {
         getHeader().setIcon(ToolbarIconProvider.getInstance().getIcon(repo.getKey()));
 
         // tree component
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getKey());
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getPathes());
         factory.setNodeTypes(config.getFolderTypes());
         factory.setMimeTypes(config.getMimeTypes());
         factory.setFilters(config.getFilters());

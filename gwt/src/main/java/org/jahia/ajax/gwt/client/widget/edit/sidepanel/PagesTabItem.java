@@ -37,7 +37,6 @@ import java.util.List;
  */
 public class PagesTabItem extends SidePanelTabItem {
 
-    protected LayoutContainer treeContainer;
     protected TreeGrid<GWTJahiaNode> tree;
     protected String path;
     protected GWTJahiaNodeTreeFactory factory;
@@ -55,7 +54,7 @@ public class PagesTabItem extends SidePanelTabItem {
         columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
         ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
 
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(JCRClientUtils.SITE_REPOSITORY);
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites/*"));
         factory.setNodeTypes(JCRClientUtils.SITE_NODETYPES);
         this.factory = factory;
         this.factory.setSelectedPath(path);

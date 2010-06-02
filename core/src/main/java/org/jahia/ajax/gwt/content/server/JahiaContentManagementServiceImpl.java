@@ -248,17 +248,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return new BaseListLoadResult<GWTJahiaNode>(filteredList);
     }
 
-    public List<GWTJahiaNode> getRoot(String repositoryType, List<String> nodeTypes, List<String> mimeTypes,
+    public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
                                       List<String> filters, List<String> fields, List<String> selectedNodes,
                                       List<String> openPaths) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.size() == 0) {
-            openPaths = getOpenPathsForRepository(repositoryType);
+            openPaths = getOpenPathsForRepository(paths.toString());
         }
 
-        logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n")
+        logger.debug(new StringBuilder("retrieving open paths for ").append(paths).append(" :\n")
                 .append(openPaths).toString());
 
-        return navigation.retrieveRoot(repositoryType, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths,
+        return navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths,
                 getSite(), retrieveCurrentSession());
     }
 

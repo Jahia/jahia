@@ -38,7 +38,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
     protected DisplayGridDragSource displayGridSource;
 
     public ContentBrowseTabItem(GWTSidePanelTab config) {
-        super(JCRClientUtils.ALL_CONTENT, JCRClientUtils.CONTENTLIST_NODETYPES, config);
+        super(Arrays.asList("/shared/contents","$site/contents","$user/contents"), JCRClientUtils.CONTENTLIST_NODETYPES, config);
         setIcon(StandardIconsProvider.STANDARD_ICONS.tabBrowseContent());
 
         contentContainer = new LayoutContainer();

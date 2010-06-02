@@ -40,6 +40,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -74,7 +75,7 @@ public class ContentManager extends TriPanelBrowserViewport {
             tree = null;
             DeferredCommand.addCommand(new Command() {
                 public void execute() {
-                    JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getKey(), null,null,null,null,null,null,new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                    JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getPathes(), null,null,null,null,null,null,new BaseAsyncCallback<List<GWTJahiaNode>>() {
                         public void onSuccess(List<GWTJahiaNode> gwtJahiaNode) {
                             linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode.get(0));
                             linker.refresh();

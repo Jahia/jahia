@@ -975,7 +975,11 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
                     <property name="key" value="roleRepository"/>
-                    <property name="pathes" value="/roles"/>
+                    <property name="pathes">
+                        <list>
+                            <value>/roles</value>
+                        </list>
+                    </property>
                 </bean>
             </list>
         </property>

@@ -48,8 +48,6 @@ import java.util.ArrayList;
  */
 public class ContentPickerBrowser extends TopRightComponent {
 
-    private GWTManagerConfiguration config;
-    private String pickerType;
     private ContentPanel m_component;
     private SearchGrid m_search;
     private TabPanel tabs;
@@ -57,9 +55,6 @@ public class ContentPickerBrowser extends TopRightComponent {
     private GWTJahiaNode lastSelection;
 
     public ContentPickerBrowser(String pickerType, String rootPath, List<GWTJahiaNode> selectedNodes, GWTManagerConfiguration config, boolean multiple) {
-        this.pickerType = pickerType;
-        this.config = config;
-
         tabs = new TabPanel();
         tabs.setHeight(400);
         tabs.setBodyBorder(false);

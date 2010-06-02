@@ -70,7 +70,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields,
                 AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
 
-    void getRoot(String repositoryType, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, AsyncCallback<List<GWTJahiaNode>> async);
+    void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, AsyncCallback<List<GWTJahiaNode>> async);
 
     /**
      * Get a node by its path if existing.

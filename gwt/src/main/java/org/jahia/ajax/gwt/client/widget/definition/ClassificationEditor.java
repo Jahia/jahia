@@ -115,7 +115,7 @@ public class ClassificationEditor extends ContentPanel {
      * @return
      */
     private TreeGrid<GWTJahiaNode> createCategoriedPickerPanel() {
-        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(JCRClientUtils.CATEGORY_REPOSITORY, GWTJahiaNode.DEFAULT_REFERENCE_FIELDS);
+        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(Arrays.asList("/categories"), GWTJahiaNode.DEFAULT_REFERENCE_FIELDS);
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         treeStore = treeGridFactory.getStore();
 

@@ -25,6 +25,7 @@ import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
     protected DisplayGridDragSource displayGridSource;
 
     public CategoryBrowseTabItem(final GWTSidePanelTab config) {
-        super(JCRClientUtils.CATEGORY_REPOSITORY, JCRClientUtils.CATEGORY_NODETYPES, config);
+        super(Arrays.asList("/categories"), JCRClientUtils.CATEGORY_NODETYPES, config);
         setIcon(StandardIconsProvider.STANDARD_ICONS.tabBrowseByCategory());
 
         contentContainer = new LayoutContainer();

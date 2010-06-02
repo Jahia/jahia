@@ -20,14 +20,12 @@ import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
  */
 public class RolesManager extends LayoutContainer {
 
-    private String rootPath;
-    private String siteKey;
+    private String config;
 
 
-    public RolesManager(final String rootPath, final String siteKey) {
+    public RolesManager(final String config) {
         super();
-        this.rootPath = rootPath != null && rootPath.length() > 0 ? rootPath : null;
-        this.siteKey = siteKey != null && siteKey.length() > 0 ? siteKey : null;
+        this.config = config;
     }
 
 
@@ -36,10 +34,10 @@ public class RolesManager extends LayoutContainer {
         super.onRender(parent, index);
         setLayout(new FillLayout());
 
-        JahiaContentManagementService.App.getInstance().getManagerConfiguration(ManagerConfigurationFactory.ROLESMANAGER, new BaseAsyncCallback<GWTManagerConfiguration>() {
+        JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new BaseAsyncCallback<GWTManagerConfiguration>() {
             public void onSuccess(GWTManagerConfiguration config) {
                 final ContentManagerEmbedded cm = new ContentManagerEmbedded(null, null, config);
-                final PermissionRolePanel pr = new PermissionRolePanel(siteKey);
+                final PermissionRolePanel pr = new PermissionRolePanel(config.getRepositories().get(0).getPathes().get(0));
                 cm.getLinker().registerExtraComponent(pr);
 
                 TabPanel tabPanel = new TabPanel();

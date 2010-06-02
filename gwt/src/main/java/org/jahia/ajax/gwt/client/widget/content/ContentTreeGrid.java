@@ -219,7 +219,7 @@ public class ContentTreeGrid extends LayoutContainer {
          */
         private void init() {
 
-            GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getKey());
+            GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getPathes());
             factory.setNodeTypes(configuration.getFolderTypes());
             factory.setMimeTypes(configuration.getMimeTypes());
             factory.setFilters(configuration.getFilters());

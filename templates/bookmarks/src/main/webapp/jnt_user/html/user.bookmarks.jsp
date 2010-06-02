@@ -46,7 +46,7 @@
                 &nbsp;<span>&nbsp;<fmt:formatDate
                     value="${bookmark.properties['date'].date.time}" dateStyle="short" type="both"/></span>
                <div class="floatright">
-               &nbsp;<button onclick="deleteNode('${bookmark.path}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true')">
+               &nbsp;<button onclick="deleteNode('${bookmark.path}', '${url.base}', '${currentNode.UUID}', '${url.current}')">
                     <span class="icon-contribute icon-delete"></span><fmt:message key="label.delete"/></button>
                </div>
                <div class="clear"></div>

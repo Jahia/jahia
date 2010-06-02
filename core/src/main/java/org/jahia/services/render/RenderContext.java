@@ -81,6 +81,8 @@ public class RenderContext {
 
     private Set<String> resourceFileNames = new LinkedHashSet<String>();
     private boolean previewMode = false;
+    private boolean ajaxRequest = false;
+    private Resource ajaxResource = null;
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -269,4 +271,19 @@ public class RenderContext {
         return previewMode;
     }
 
+    public void setAjaxRequest(boolean ajaxRequest) {
+        this.ajaxRequest = ajaxRequest;
+    }
+
+    public boolean isAjaxRequest() {
+        return ajaxRequest;
+    }
+
+    public void setAjaxResource(Resource ajaxResource) {
+        this.ajaxResource = ajaxResource;
+    }
+
+    public Resource getAjaxResource() {
+        return ajaxResource;
+    }
 }

@@ -71,7 +71,7 @@
                 url         : '${url.base}${currentNode.path}/' + noAccent($('#docspacetitle').val().replace(' ', '')),
                 data        : $(this).serializeArray(),
                 success     : function(data) {
-                    $.get('${url.base}${currentNode.path}/filesList.hidden.docspace.html?ajaxcall=true', null, function(
+                    $.get('${url.base}${currentNode.path}/filesList.hidden.docspace.html', null, function(
                             data) {
                         $("#documentList${currentNode.identifier}").html(data);
                     });

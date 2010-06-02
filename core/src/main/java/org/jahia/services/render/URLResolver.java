@@ -322,6 +322,10 @@ public class URLResolver {
                 versionDate);
     }
 
+    public Resource getResource(String path) throws RepositoryException {
+        return resolveResource(getWorkspace(), getLocale(), path, null);
+    }
+
     /**
      * Creates a node from the specified path.
      * <p/>

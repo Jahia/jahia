@@ -71,7 +71,7 @@
                 url         : '${url.base}${currentNode.path}/' + noAccent($('#docspacetitle').val().replace(' ', '')),
                 data        : $(this).serializeArray(),
                 success     : function(data) {
-                    $.get('${url.base}${currentNode.path}.docspace.html?ajaxcall=true', null, function(data) {
+                    $.get('${url.base}${currentNode.path}.docspace.html', null, function(data) {
                         $("#documentList${currentNode.identifier}").html(data);
                     });
                     $.fancybox.resize();
@@ -232,6 +232,7 @@
                 <input type="hidden" name="nodeType" value="jnt:folder">
                 <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
                 <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
+                <input type="hidden" name="jcr:mixinTypes" value="jmix:pager"/>
                 <fieldset>
                     <legend><fmt:message key="docspace.label.subdocspace.creation"/></legend>
                     <p id="login_error" style="display:none;">Please, enter data</p>

@@ -43,7 +43,7 @@ public class TextDiffTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         DiffMatchPatch diff = new DiffMatchPatch();
-        LinkedList<DiffMatchPatch.Diff> list = diff.diff_main(newText, oldText);
+        LinkedList<DiffMatchPatch.Diff> list = diff.diff_main(oldText, newText);
         diff.diff_cleanupSemantic(list);
         if (var != null) {
             pageContext.setAttribute(var,diff.diff_prettyHtml(list), scope);

@@ -45,7 +45,8 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="mainresource.css" />
 <c:set var="mainTemplate" value="${renderContext.mainResource.resolvedTemplate}"/>
-<c:if test="${not empty currentNode.properties['j:referenceTemplate'].string}">
+<c:if test="${(not empty currentNode.properties['j:referenceTemplate'].string) and
+(not (currentNode.properties['j:referenceTemplate'].string eq 'default') and (empty mainTemplate or mainTemplate eq 'default'))}">
     <c:set var="mainTemplate" value="${currentNode.properties['j:referenceTemplate'].string}"/>
 </c:if>
 <c:choose>
@@ -60,7 +61,14 @@
         </div>
     </c:when>
     <c:otherwise>
-        <template:module node="${renderContext.mainResource.node}" forcedTemplate="${mainTemplate}" />
+        <c:choose>
+            <c:when test="${renderContext.ajaxRequest and not empty renderContext.ajaxResource}">
+                <template:module node="${renderContext.ajaxResource.node}" forcedTemplate="${mainTemplate}" />
+            </c:when>
+            <c:otherwise>
+                <template:module node="${renderContext.mainResource.node}" forcedTemplate="${mainTemplate}" />
+            </c:otherwise>
+        </c:choose>
     </c:otherwise>
 </c:choose>
 

@@ -46,18 +46,26 @@
                     </c:when>
                     <c:otherwise>
                         <c:choose>
-                            <c:when test="${renderContext.editMode or renderContext.contributionMode}">
+                            <c:when test="${renderContext.editMode}">
                                 <li>
                                     <a href="${url.mainResource}?displayTab=${subList.identifier}"><span>${subList.properties['jcr:title'].string}</span></a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <%--<li>
-                                    <a onclick="replace('tabs${currentNode.identifier}', '${url.base}${currentNode.path}.html?ajaxcall=true&displayTab=${subList.identifier}', '')"><span>${subList.properties['jcr:title'].string}</span></a>
-                                </li>--%>
+                                <c:choose>
+                                    <c:when test="${renderContext.ajaxRequest and not empty renderContext.ajaxResource}">
+                                        <c:set var="res" value="${renderContext.ajaxResource.node.path}"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="res" value="${renderContext.mainResource.node.path}"/>
+                                    </c:otherwise>
+                                </c:choose>
                                 <li>
-                                    <a href="${url.mainResource}?displayTab=${subList.identifier}"><span>${subList.properties['jcr:title'].string}</span></a>
+                                    <a onclick="jreplace('tabs${currentNode.identifier}', '${url.base}${currentNode.path}.html',{displayTab:'${subList.identifier}',mainResource:'${res}.html'}, '');"><span>${subList.properties['jcr:title'].string}</span></a>
                                 </li>
+                                <%--<li>
+                                    <a href="${url.mainResource}?displayTab=${subList.identifier}"><span>${subList.properties['jcr:title'].string}</span></a>
+                                </li>--%>
                             </c:otherwise>
                         </c:choose>
                     </c:otherwise>

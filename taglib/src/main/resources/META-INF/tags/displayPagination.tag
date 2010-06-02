@@ -26,9 +26,7 @@
     <c:if test="${not empty currentResource.moduleParams.displaySearchParams}">
         <c:set var="searchUrl"><search:searchUrl/></c:set>
     </c:if>
-    <c:url value="${searchUrl}" context="/" var="basePaginationUrl">
-        <c:param name="ajaxcall" value="true"/>
-    </c:url>
+    <c:url value="${searchUrl}" context="/" var="basePaginationUrl"/>
     <div class="pagination"><!--start pagination-->
 
         <div class="paginationPosition"><span>Page ${currentPage} of ${nbPages} (${totalSize} results)</span>
@@ -47,12 +45,12 @@
             &nbsp;
             <c:if test="${currentPage>1}">
                 <a class="previousLink"
-                   href="javascript:replace('${currentNode.UUID}','${basePaginationUrl}&begin=${ (currentPage-2) * pageSize }&end=${ (currentPage-1)*pageSize-1}&pagesize=${pageSize}','${currentResource.moduleParams.callback}')">Previous</a>
+                   onclick="jreplace('${currentNode.UUID}','${basePaginationUrl}',{begin:${ (currentPage-2) * pageSize },end:${ (currentPage-1)*pageSize-1},pagesize:${pageSize}},'${currentResource.moduleParams.callback}')">Previous</a>
             </c:if>
             <c:forEach begin="1" end="${nbPages}" var="i">
                 <c:if test="${i != currentPage}">
                     <span><a class="paginationPageUrl"
-                             href="javascript:replace('${currentNode.UUID}','${basePaginationUrl}&begin=${ (i-1) * pageSize }&end=${ i*pageSize-1}&pagesize=${pageSize}','${currentResource.moduleParams.callback}')"> ${ i }</a></span>
+                             onclick="jreplace('${currentNode.UUID}','${basePaginationUrl}',{begin:${ (i-1) * pageSize },end:${ i*pageSize-1},pagesize:${pageSize}},'${currentResource.moduleParams.callback}')"> ${ i }</a></span>
                 </c:if>
                 <c:if test="${i == currentPage}">
                     <span class="currentPage">${ i }</span>
@@ -61,7 +59,7 @@
 
             <c:if test="${currentPage<nbPages}">
                 <a class="nextLink"
-                   href="javascript:replace('${currentNode.UUID}','${basePaginationUrl}&begin=${ currentPage * pageSize }&end=${ (currentPage+1)*pageSize-1}&pagesize=${pageSize}','${currentResource.moduleParams.callback}')">Next</a>
+                   onclick="jreplace('${currentNode.UUID}','${basePaginationUrl}',{begin:${ currentPage * pageSize },end:${ (currentPage+1)*pageSize-1},pagesize:${pageSize}},'${currentResource.moduleParams.callback}')">Next</a>
             </c:if>
         </div>
 

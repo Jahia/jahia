@@ -27,8 +27,8 @@
                             <input type="hidden" name="nodeType" value="jnt:folder">
                             <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
                             <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
+                            <input type="hidden" name="jcr:mixinTypes" value="jmix:pager"/>
                             <input type="hidden" name="normalizeNodeName" value="true"/>
-
                             <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.docspace.new"/></h3>
                             <fieldset>
                                 <legend><fmt:message key="docspace.label.workspace.creation"/></legend>

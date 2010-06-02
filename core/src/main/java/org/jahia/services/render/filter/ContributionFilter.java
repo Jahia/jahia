@@ -28,7 +28,7 @@ public class ContributionFilter extends AbstractFilter {
             if (node.hasProperty("j:editableInContribution")
                     && node.getProperty("j:editableInContribution").getBoolean()
                     && !resource.getTemplateType().equals("edit")
-                    && context.getRequest().getParameter("ajaxcall") == null) {
+                    && !context.isAjaxRequest()) {
                 resource.setTemplateType("edit");
                 resource.setTemplate("listedit");
             }

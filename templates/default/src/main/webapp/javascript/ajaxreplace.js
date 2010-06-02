@@ -16,3 +16,10 @@ function replace(id, url, callback) {
     };
     http.send(null);
 }
+
+function jreplace(id,url,params,callback) {
+    $.get(url,params,function(data){
+        $("#"+id).html(data);
+        eval(callback);
+    });
+}

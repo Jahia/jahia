@@ -14,7 +14,7 @@
         </c:when>
         <c:otherwise>
             <input class="workflow" type="button" value="${wf.name}"
-                   onclick="var callback = ''+${animatedWFs}${animatedTasks}+'animatedcollapse.reinit();';startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true',callback)"/></c:otherwise>
+                   onclick="var callback = ''+${animatedWFs}${animatedTasks}+'animatedcollapse.reinit();';startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}',callback)"/></c:otherwise>
     </c:choose>
 </c:forEach>
 </c:if>
@@ -33,7 +33,7 @@
         <c:otherwise>
             <c:forEach items="${task.outcomes}" var="outcome">
                 <input class="workflowaction" type="button" value="${outcome}"
-                       onclick="var callback = ''+${animatedWFs}${animatedTasks}+'animatedcollapse.reinit();';executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true',callback)"/>
+                       onclick="var callback = ''+${animatedWFs}${animatedTasks}+'animatedcollapse.reinit();';executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}',callback)"/>
             </c:forEach>
         </c:otherwise>
     </c:choose>
@@ -48,7 +48,7 @@
                         <template:param name="workflowStartForm" value="${wf.provider}:${wf.key}"/>
                         <template:param name="workflowStartFormWFName" value="${wf.name}"/>
                         <template:param name="workflowStartFormWFCallbackId" value="${currentNode.UUID}"/>
-                        <template:param name="workflowStartFormWFCallbackURL" value="${url.current}?ajaxcall=true"/>
+                        <template:param name="workflowStartFormWFCallbackURL" value="${url.current}"/>
                         <template:param name="workflowStartFormWFCallbackJS" value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});$('.workflowformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=workflow');});animatedcollapse.reinit();"/>
                     </template:module>
                 </div>
@@ -66,7 +66,7 @@
                         <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                         <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
                         <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
-                        <template:param name="workflowTaskFormCallbackURL" value="${url.current}?ajaxcall=true"/>
+                        <template:param name="workflowTaskFormCallbackURL" value="${url.current}"/>
                         <template:param name="workflowTaskFormCallbackJS" value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});$('.workflowformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=workflow');});animatedcollapse.reinit();"/>
                     </template:module>
                 </div>

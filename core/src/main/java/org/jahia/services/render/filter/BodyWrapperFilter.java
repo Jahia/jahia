@@ -33,7 +33,7 @@ public class BodyWrapperFilter extends AbstractFilter {
             renderContext.getRequest().setAttribute("bodyWrapperStack", wrappers);
         }
 
-        if (!wrappers.isEmpty() && renderContext.getRequest().getParameter("ajaxcall") == null) {
+        if (!wrappers.isEmpty() && !renderContext.isAjaxRequest()) {
             Wrapper wrapper = wrappers.pop();
 
             try {
@@ -59,7 +59,7 @@ public class BodyWrapperFilter extends AbstractFilter {
                 logger.error("Cannot execute wrapper "+wrapper,e);
             }
         }
-        chain.pushAttribute(renderContext.getRequest(), "inWrapper", (renderContext.getRequest().getParameter("ajaxcall") == null)?Boolean.FALSE:Boolean.TRUE);
+        chain.pushAttribute(renderContext.getRequest(), "inWrapper", (renderContext.isAjaxRequest())?Boolean.TRUE:Boolean.FALSE);
         return chain.doFilter(renderContext, resource);
     }
 

@@ -191,7 +191,7 @@
                 <c:otherwise>
                     <c:forEach items="${task.outcomes}" var="outcome">
                         <input class="workflowaction" type="button" value="${outcome}"
-                               onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}?ajaxcall=true','window.location=window.location;')"/>
+                               onclick="executeTask('${node.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}','window.location=window.location;')"/>
                     </c:forEach>
                 </c:otherwise>
             </c:choose>
@@ -220,7 +220,7 @@
                     <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                     <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
                     <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
-                    <template:param name="workflowTaskFormCallbackURL" value="${url.current}?ajaxcall=true"/>
+                    <template:param name="workflowTaskFormCallbackURL" value="${url.current}"/>
                     <template:param name="workflowTaskFormCallbackJS"
                                     value="$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();"/>
                 </template:module>
@@ -255,7 +255,7 @@
             <script type="text/javascript">
                 var options${task.id} = {
                     success: function() {
-                        replace('${currentNode.identifier}', '${url.current}?ajaxcall=true', "$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();$('#commentsForm${task.id}').ajaxForm(options${task.id});");
+                        replace('${currentNode.identifier}', '${url.current}', "$('.taskformdiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=100');});animatedcollapse.reinit();$('#commentsForm${task.id}').ajaxForm(options${task.id});");
 
                         $.each(richTextEditors, function(key, value) {
                             value.setData("");
@@ -286,12 +286,12 @@
     <div class="paginationNavigation">
         <c:if test="${currentPage>1}">
             <a class="previousLink"
-               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?ajaxcall=true&begin=${ (currentPage-2) * pageSize }&end=${ (currentPage-1)*pageSize-1}')">Previous</a>
+               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ (currentPage-2) * pageSize }&end=${ (currentPage-1)*pageSize-1}')">Previous</a>
         </c:if>
         <c:forEach begin="1" end="${nbPages}" var="i">
             <c:if test="${i != currentPage}">
                     <span><a class="paginationPageUrl"
-                             href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?ajaxcall=true&begin=${ (i-1) * pageSize }&end=${ i*pageSize-1}')"> ${ i }</a></span>
+                             href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ (i-1) * pageSize }&end=${ i*pageSize-1}')"> ${ i }</a></span>
             </c:if>
             <c:if test="${i == currentPage}">
                 <span class="currentPage">${ i }</span>
@@ -300,7 +300,7 @@
 
         <c:if test="${currentPage<nbPages}">
             <a class="nextLink"
-               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?ajaxcall=true&begin=${ currentPage * pageSize }&end=${ (currentPage+1)*pageSize-1}')">Next</a>
+               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ currentPage * pageSize }&end=${ (currentPage+1)*pageSize-1}')">Next</a>
         </c:if>
     </div>
 

@@ -616,7 +616,16 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             "/" + urlResolver.getLocale().toString() + urlResolver.getPath() :
                             urlResolver.getVanityUrl(), req, resp, parameters);
                 } else {
-                    Resource resource = urlResolver.getResource(getVersionDate(req));
+                    final String requestWith = req.getHeader("x-requested-with");
+                    boolean isAjaxRequest = requestWith != null &&
+                                            requestWith.equals("XMLHttpRequest");
+                    renderContext.setAjaxRequest(isAjaxRequest);
+                    Resource resource;
+                    if(isAjaxRequest && req.getParameter("mainResource")!=null) {
+                        resource = urlResolver.getResource(req.getParameter("mainResource"));
+                        renderContext.setAjaxResource(resource);
+                    }
+                    resource = urlResolver.getResource(getVersionDate(req));
                     renderContext.setMainResource(resource);
                     JCRSiteNode site = resource.getNode().resolveSite();
 

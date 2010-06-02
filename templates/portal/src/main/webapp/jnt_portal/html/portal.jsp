@@ -15,7 +15,7 @@
 $(document).ready(function(){
 	$(".btn-slide").click(function(){
 		$(document).ready(function() {
-            $.get('${url.base}${currentNode.path}.select.html',{ajaxcall:true},function(data) {
+            $.get('${url.base}${currentNode.path}.select.html',null,function(data) {
                 $("#selectWidgetsArea").html(data);
             });
         });

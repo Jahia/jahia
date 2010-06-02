@@ -47,7 +47,7 @@
         <template:include templateType="html" template="hidden.footer"/>
 
 
-<c:if test="${empty param.ajaxcall}">
+<c:if test="${not renderContext.ajaxRequest}">
     <%-- include add nodes forms --%>
     <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="types"/>
     <h3 class="titleaddnewcontent">
@@ -73,7 +73,7 @@
             <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
                 <template:module node="${currentNode}" templateType="edit" template="add">
                     <template:param name="resourceNodeType" value="${type.string}"/>
-                    <template:param name="currentListURL" value="${url.current}?ajaxcall=true"/>
+                    <template:param name="currentListURL" value="${url.current}"/>
                 </template:module>
             </div>
         </c:forEach>

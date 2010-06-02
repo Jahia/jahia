@@ -1,20 +1,20 @@
 package org.jahia.services.render;
 
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.LazyMap;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.*;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.content.JCRStoreService;
-import org.apache.commons.collections.map.LazyMap;
-import org.apache.commons.collections.Transformer;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.RepositoryException;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access
@@ -95,9 +95,11 @@ public class URLGenerator {
             try {
                 if (context.getSite().hasProperty("j:sourceTemplate")) {
                     studio += "/" + context.getSite().getProperty("j:sourceTemplate").getNode().getName() + "/";
-                    if (resource.getNode().isNodeType("jnt:page") && resource.getNode().hasProperty("j:sourceTemplate")) {
+                    if (resource.getNode().isNodeType("jnt:page") && resource.getNode().hasProperty(
+                            "j:sourceTemplate")) {
                         try {
-                            studio += "templates/" + resource.getNode().getProperty("j:sourceTemplate").getNode().getName() + ".html";
+                            studio += "templates/" + resource.getNode().getProperty(
+                                    "j:sourceTemplate").getNode().getName() + ".html";
                         } catch (RepositoryException e) {
                             studio += "home.html";
                         }
@@ -106,7 +108,7 @@ public class URLGenerator {
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error("Cannot get studio url",e);
+                logger.error("Cannot get studio url", e);
             }
         } else {
             studio += ".html";
@@ -185,9 +187,9 @@ public class URLGenerator {
         if (userProfile == null) {
             if (!JahiaUserManagerService.isGuest(context.getUser())) {
                 if (context.getSite() != null) {
-                    userProfile = base + context.getSite().getPath() + "/users/" + context.getUser().getUsername() + "."+ resource.getTemplateType();
+                    userProfile = base + context.getSite().getPath() + "/users/" + context.getUser().getUsername() + "." + resource.getTemplateType();
                 } else {
-                    userProfile = base + "/users/" + context.getUser().getUserKey() + "."+ resource.getTemplateType();
+                    userProfile = base + "/users/" + context.getUser().getUserKey() + "." + resource.getTemplateType();
                 }
             }
         }
@@ -195,7 +197,8 @@ public class URLGenerator {
     }
 
     public String getCurrentModule() {
-        return getTemplatesPath() + "/" + ((Script) context.getRequest().getAttribute("script")).getTemplate().getModule().getRootFolder();
+        return getTemplatesPath() + "/" + ((Script) context.getRequest().getAttribute(
+                "script")).getTemplate().getModule().getRootFolder();
     }
 
     public String getCurrent() {
@@ -246,7 +249,7 @@ public class URLGenerator {
      */
     public String getMainResource() {
         if (context.isEditMode()) {
-            if(context.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
+            if (context.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
                 return getStudio();
             }
             return getEdit();
@@ -256,7 +259,7 @@ public class URLGenerator {
     }
 
     public String buildURL(JCRNodeWrapper node, String template, String templateType) {
-        return base + node.getPath() + (template != null ? "." + template : "") + "."+ templateType;
+        return base + node.getPath() + (template != null ? "." + template : "") + "." + templateType;
     }
 
     /**
@@ -361,5 +364,27 @@ public class URLGenerator {
 
     public String getToPDF() {
         return toPDF;
+    }
+
+    public String getRealResource() {
+        if (context.isAjaxRequest() && context.getAjaxResource() != null) {
+            if (context.isEditMode()) {
+                return baseEdit + context.getAjaxResource().getNode().getPath() + ".html";
+            } else if (context.isContributionMode()) {
+                return baseContribute + context.getAjaxResource().getNode().getPath() + ".html";
+            } else {
+                return (Constants.LIVE_WORKSPACE.equals(
+                        context.getAjaxResource().getWorkspace()) ? baseLive : basePreview) + context.getAjaxResource().getNode().getPath() + ".html";
+            }
+        } else {
+            if (context.isEditMode()) {
+                if (context.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
+                    return getStudio();
+                }
+                return getEdit();
+            } else {
+                return Constants.LIVE_WORKSPACE.equals(resource.getWorkspace()) ? live : preview;
+            }
+        }
     }
 }

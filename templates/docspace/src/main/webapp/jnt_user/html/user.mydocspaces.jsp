@@ -24,7 +24,7 @@
     <jcr:sql var="result"
              sql="select * from [jnt:docspace] as file order by file.[jcr:lastModified] desc"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
-    <c:set var="listTotalSize" value="${fn:length(result.nodes)}" scope="request"/>
+    <c:set var="listTotalSize" value="${functions:length(result.nodes)}" scope="request"/>
     <c:choose>
         <c:when test="${empty param.pagesize}">
             <c:set var="pageSize" value="40"/>

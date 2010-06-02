@@ -52,8 +52,11 @@
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li>
+                                <%--<li>
                                     <a onclick="replace('tabs${currentNode.identifier}', '${url.base}${currentNode.path}.html?ajaxcall=true&displayTab=${subList.identifier}', '')"><span>${subList.properties['jcr:title'].string}</span></a>
+                                </li>--%>
+                                <li>
+                                    <a href="${url.mainResource}?displayTab=${subList.identifier}"><span>${subList.properties['jcr:title'].string}</span></a>
                                 </li>
                             </c:otherwise>
                         </c:choose>
@@ -70,6 +73,6 @@
     </c:if>
     <!--stop tabContainer-->
 </div>
-<c:if test="${renderContext.editMode or renderContext.contributionMode}">
+<c:if test="${renderContext.editMode}">
     <template:module path="*"/>
 </c:if>

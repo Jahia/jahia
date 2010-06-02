@@ -59,7 +59,7 @@ public class BodyWrapperFilter extends AbstractFilter {
                 logger.error("Cannot execute wrapper "+wrapper,e);
             }
         }
-        chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.FALSE);
+        chain.pushAttribute(renderContext.getRequest(), "inWrapper", (renderContext.getRequest().getParameter("ajaxcall") == null)?Boolean.FALSE:Boolean.TRUE);
         return chain.doFilter(renderContext, resource);
     }
 

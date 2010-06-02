@@ -246,6 +246,9 @@ public class URLGenerator {
      */
     public String getMainResource() {
         if (context.isEditMode()) {
+            if(context.getEditModeConfigName().equals(Studio.STUDIO_MODE)) {
+                return getStudio();
+            }
             return getEdit();
         } else {
             return Constants.LIVE_WORKSPACE.equals(resource.getWorkspace()) ? live : preview;

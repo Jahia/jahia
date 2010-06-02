@@ -87,42 +87,87 @@
             </wrappercontent>
           </wrapper>
         </docspace>
-      </templates>
+        <wiki jcr:primaryType="jnt:page">
 
+          <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Wiki" />
+          <pagecontent jcr:primaryType="jnt:contentList">
+            <row column="2col412" jcr:primaryType="jnt:row">
+              <col2 j:subNodesTemplate="link" j:skin="skins.box2style1" jcr:mixinTypes="jmix:renderableList jmix:skinnable" jcr:primaryType="jnt:contentList">
+                <j:translation_en j:subNodesTemplate="link" j:skin="skins.box2style1" jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Create Wiki Pages" />
+                <create-a-wiki-page jcr:primaryType="jnt:wikiPageFormCreation">
+                  <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Create a wiki page" />
+                </create-a-wiki-page>
+              </col2>
+
+              <col1 j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                <j:translation_en j:skin="skins.box5" jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Latest Wiki Pages" />
+                <latestContent j:criteria="lastModified" j:template="linkList" jcr:mixinTypes="jmix:renderable" j:type="jnt:wikiPage" j:nbOfResult="20" startNode="/templatesSet/templates-intranet/templates/wiki" jcr:primaryType="jnt:latestContent" />
+              </col1>
+            </row>
+          </pagecontent>
+          <wrapper j:template="default" jcr:primaryType="jnt:wrapper" j:key="wikiPageWrapper" j:applyOn="jnt:wikiPage">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row column="2col124" jcr:primaryType="jnt:row">
+
+                <col1 jcr:primaryType="jnt:contentList">
+                  <tabularList jcr:primaryType="jnt:tabularList">
+                    <content jcr:primaryType="jnt:contentList">
+                      <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Content" />
+                      <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="default" />
+                    </content>
+                    <contribute jcr:primaryType="jnt:contentList">
+                      <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Contribute" />
+                      <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="contribute" />
+
+                    </contribute>
+                    <history jcr:primaryType="jnt:contentList">
+                      <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="History" />
+                      <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="history" />
+                    </history>
+                  </tabularList>
+                </col1>
+                <col2 jcr:primaryType="jnt:contentList" />
+              </row>
+
+            </wrappercontent>
+          </wrapper>
+        </wiki>
+      </templates>
       <sitewrapper j:template="intranet.bodywrapper" jcr:primaryType="jnt:wrapper" j:key="bodywrapper">
         <logo jcr:primaryType="jnt:contentList" />
         <simpleSearch jcr:primaryType="jnt:contentList">
           <simpleSearchForm result="/templatesSet/templates-intranet/search-results" jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" j:templateLocked="true" />
         </simpleSearch>
+
         <topMenu jcr:primaryType="jnt:contentList">
           <topBar jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:navMenu">
             <navMenuMultilevel j:maxDepth="2" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="1" />
           </topBar>
-
           <shortcuts jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:shortcuts" j:templateLocked="true" />
         </topMenu>
         <footer jcr:primaryType="jnt:contentList" />
         <wrappercontent jcr:primaryType="jnt:contentList">
           <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+
         </wrappercontent>
         <pagetitle jcr:primaryType="jnt:contentList" />
       </sitewrapper>
       <search-results jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
-
         <j:translation_en j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly" jcr:language="en" jcr:title_en="Search results" priority="0.5" />
         <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
           <row1 column="1col16" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
             <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
               <results autoSuggest="true" pageSize="10" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
+
                 <j:translation_en autoSuggest="true" pageSize="10" jcr:primaryType="jnt:translation" jcr:title_en="Results" autoSuggestHitCount="2" jcr:language="en" autoSuggestMinimumHitCount="2" />
               </results>
             </col1>
             <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
-
           </row1>
         </pagecontent>
       </search-results>
     </templates-intranet>
   </templatesSet>
+
 </content>
 

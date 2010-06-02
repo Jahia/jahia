@@ -328,7 +328,7 @@
 
 [jnt:wrapper] > nt:base, jmix:nodenameInfo, jmix:renderable, jmix:basemetadata, jmix:publication
  - j:key (string) mandatory
- - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
+ - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
  + * (jnt:content)
 
 [jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent

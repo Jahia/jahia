@@ -36,6 +36,8 @@ import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
@@ -58,9 +60,9 @@ public class NodeWrapper implements Updateable {
     private String name;
     private String type;
 
-    private Node node;
+    private JCRNodeWrapper node;
     
-    public NodeWrapper(Node node) {
+    public NodeWrapper(JCRNodeWrapper node) {
         this.node = node;
     }
 
@@ -91,9 +93,9 @@ public class NodeWrapper implements Updateable {
         }
     }
 
-    public void doUpdate(Session s, List<Updateable> delayedUpdates) throws RepositoryException {
+    public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates) throws RepositoryException {
         try {
-            Node node = (Node) s.getItem(parentNodePath);
+            JCRNodeWrapper node = s.getNode(parentNodePath);
 
             if (node.isLocked()) {
                 logger.debug("Node is still locked, delay subnode creation to later");
@@ -142,7 +144,7 @@ public class NodeWrapper implements Updateable {
         List<NodeWrapper> results = new ArrayList<NodeWrapper>();
         NodeIterator it = node.getNodes();
         while (it.hasNext()) {
-            Node n = it.nextNode();
+            JCRNodeWrapper n = (JCRNodeWrapper) it.nextNode();
             results.add(new NodeWrapper(n));
         }
         return results;
@@ -156,7 +158,7 @@ public class NodeWrapper implements Updateable {
         List<PropertyWrapper> results = new ArrayList<PropertyWrapper>();
         PropertyIterator it = node.getProperties();
         while (it.hasNext()) {
-            Property p = it.nextProperty();
+            JCRPropertyWrapper p = (JCRPropertyWrapper) it.nextProperty();
             results.add(new PropertyWrapper(this,p));
         }
         return results;
@@ -205,14 +207,14 @@ public class NodeWrapper implements Updateable {
         return null;
     }
 
-    public Node getNode() {
+    public JCRNodeWrapper getNode() {
         return node;
     }
 
     public NodeWrapper getNode(String relPath) throws RepositoryException {
         NodeIterator it = node.getNodes();
         while (it.hasNext()) {
-            Node n = it.nextNode();
+            JCRNodeWrapper n = (JCRNodeWrapper) it.nextNode();
             if (n.getName().equals(relPath)) {
                 return new NodeWrapper(n);
             }
@@ -221,12 +223,7 @@ public class NodeWrapper implements Updateable {
     }
 
     public String toString() {
-        try {
-            return node.getPath();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return "";
+        return node.getPath();
     }
     
 }

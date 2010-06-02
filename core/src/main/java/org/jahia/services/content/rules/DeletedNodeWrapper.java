@@ -34,6 +34,7 @@ package org.jahia.services.content.rules;
 import org.drools.spi.KnowledgeHelper;
 
 import javax.jcr.RepositoryException;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,6 +45,9 @@ import javax.jcr.RepositoryException;
  */
 public class DeletedNodeWrapper {
     private String path;
+    private String identifier;
+    private String primary;
+    private List<String> mixins;
 
     private NodeWrapper parent;
 
@@ -71,4 +75,13 @@ public class DeletedNodeWrapper {
     public NodeWrapper getParent() {
         return parent;
     }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
 }

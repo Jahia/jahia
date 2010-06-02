@@ -40,6 +40,9 @@ import org.apache.commons.io.IOUtils;
 import org.drools.ObjectFilter;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.tools.imageprocess.ImageProcess;
 
 import javax.jcr.Node;
@@ -138,7 +141,7 @@ public class ImageService {
     }
     public void addThumbnail(NodeWrapper imageNode, String name, int size,boolean square, KnowledgeHelper drools) throws Exception {
         if (imageNode.getNode().hasNode(name)) {
-            Node node = imageNode.getNode().getNode(name);
+            JCRNodeWrapper node = imageNode.getNode().getNode(name);
             Calendar thumbDate = node.getProperty("jcr:lastModified").getDate();
             Calendar contentDate = imageNode.getNode().getNode("jcr:content").getProperty("jcr:lastModified").getDate();
             if (contentDate.after(thumbDate)) {
@@ -161,16 +164,16 @@ public class ImageService {
     }
 
     public void addThumbnail(PropertyWrapper propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
-        final Property property = propertyWrapper.getProperty();
-        final Session session = property.getSession();
-        Node node = session.getNodeByIdentifier(property.getString());
+        final JCRPropertyWrapper property = propertyWrapper.getProperty();
+        final JCRSessionWrapper session = property.getSession();
+        JCRNodeWrapper node = session.getNodeByIdentifier(property.getString());
         addThumbnail(new NodeWrapper(node),name, size,drools);
     }
 
     public void addSquareThumbnail(PropertyWrapper propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
-        final Property property = propertyWrapper.getProperty();
-        final Session session = property.getSession();
-        Node node = session.getNodeByIdentifier(property.getString());
+        final JCRPropertyWrapper property = propertyWrapper.getProperty();
+        final JCRSessionWrapper session = property.getSession();
+        JCRNodeWrapper node = session.getNodeByIdentifier(property.getString());
         addThumbnail(new NodeWrapper(node),name, size,drools);
     }
 

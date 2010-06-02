@@ -31,6 +31,8 @@
  */
 package org.jahia.services.content.rules;
 
+import org.jahia.services.content.JCRSessionWrapper;
+
 import javax.jcr.Session;
 import javax.jcr.RepositoryException;
 import java.util.List;
@@ -43,5 +45,5 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface Updateable {
-    public void doUpdate(Session s, List<Updateable> delayedUpdates) throws RepositoryException;
+    public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates) throws RepositoryException;
 }

@@ -34,6 +34,9 @@ package org.jahia.services.content.rules;
 import org.apache.tika.io.IOUtils;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.categories.Category;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -62,7 +65,7 @@ public class PropertyWrapper implements Updateable {
             org.apache.log4j.Logger.getLogger(PropertyWrapper.class);
 
     private String path;
-    private Property property;
+    private JCRPropertyWrapper property;
 
     private String nodePath;
     private String name;
@@ -70,7 +73,7 @@ public class PropertyWrapper implements Updateable {
 
     private NodeWrapper nodeWrapper;
 
-    public PropertyWrapper(NodeWrapper nodeWrapper, Property property) throws RepositoryException {
+    public PropertyWrapper(NodeWrapper nodeWrapper, JCRPropertyWrapper property) throws RepositoryException {
         this.nodeWrapper = nodeWrapper;
         this.property = property;
         path = property.getPath();
@@ -87,7 +90,7 @@ public class PropertyWrapper implements Updateable {
 
         this.nodeWrapper = nodeWrapper;
 
-        Node node = nodeWrapper.getNode();
+        JCRNodeWrapper node = nodeWrapper.getNode();
         nodePath = nodeWrapper.getPath();
         this.name = name;
         value = o;
@@ -103,7 +106,7 @@ public class PropertyWrapper implements Updateable {
             copyToStaging(node, drools);
         }
     }
-    private void copyToStaging(Node node, KnowledgeHelper drools) {
+    private void copyToStaging(JCRNodeWrapper node, KnowledgeHelper drools) {
         return;
 //        try {
 //            JCRStoreProvider provider = (JCRStoreProvider)drools.getWorkingMemory().getGlobal("provider");
@@ -135,9 +138,9 @@ public class PropertyWrapper implements Updateable {
 //        }
     }
     
-    public void doUpdate(Session s, List<Updateable> delayedUpdates) throws RepositoryException {
+    public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates) throws RepositoryException {
         try {
-            Node node = (Node) s.getItem(nodePath);
+            JCRNodeWrapper node = s.getNode(nodePath);
 
             if (node.isLocked()) {
                 logger.debug("Node is still locked, delay property update to later");
@@ -178,7 +181,7 @@ public class PropertyWrapper implements Updateable {
 
     }
 
-    protected void setProperty(Node node, String name, Object objectValue,final boolean overrideIfExisting)
+    protected void setProperty(JCRNodeWrapper node, String name, Object objectValue,final boolean overrideIfExisting)
             throws RepositoryException {
 
         try {
@@ -337,7 +340,7 @@ public class PropertyWrapper implements Updateable {
         return nodeWrapper;
     }
 
-    Property getProperty() {
+    JCRPropertyWrapper getProperty() {
         return property;
     }
 

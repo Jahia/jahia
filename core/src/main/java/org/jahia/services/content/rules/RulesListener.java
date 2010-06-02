@@ -290,7 +290,7 @@ public class RulesListener extends DefaultEventListener {
                                 try {
                                     if (!event.getPath().startsWith("/jcr:system/")) {
                                         if (event.getType() == Event.NODE_ADDED) {
-                                            Node n = (Node) s.getItem(event.getPath());
+                                            JCRNodeWrapper n = s.getNode(event.getPath());
                                             if (n.isNodeType("jmix:observable")) {
                                                 final String identifier = n.getIdentifier();
                                                 NodeWrapper rn = eventsMap.get(identifier);
@@ -304,9 +304,9 @@ public class RulesListener extends DefaultEventListener {
                                             String path = event.getPath();
                                             String propertyName = path.substring(path.lastIndexOf('/') + 1);
                                             if (!propertiesToIgnore.contains(propertyName)) {
-                                                Property p = (Property) s.getItem(path);
+                                                JCRPropertyWrapper p = (JCRPropertyWrapper) s.getItem(path);
 
-                                                Node parent = p.getParent();
+                                                JCRNodeWrapper parent = p.getParent();
 //                                    if (parent.isNodeType("jnt:translation")) {
 //                                        parent = parent.getParent();
 //                                    }
@@ -329,7 +329,7 @@ public class RulesListener extends DefaultEventListener {
                                             String parentPath = null;
                                             try {
                                                 parentPath = StringUtils.substringBeforeLast(event.getPath(), "/");
-                                                Node parent = s.getNode(parentPath);
+                                                JCRNodeWrapper parent = s.getNode(parentPath);
                                                 final String identifier = parent.getIdentifier();
                                                 NodeWrapper w = eventsMap.get(identifier);
                                                 if (w == null) {
@@ -337,7 +337,9 @@ public class RulesListener extends DefaultEventListener {
                                                     eventsMap.put(identifier, w);
                                                 }
 
-                                                list.add(new DeletedNodeWrapper(w, event.getPath()));
+                                                final DeletedNodeWrapper e = new DeletedNodeWrapper(w, event.getPath());
+                                                e.setIdentifier(event.getIdentifier());
+                                                list.add(e);
                                             } catch (PathNotFoundException e) {
                                             }
                                         } else if (event.getType() == Event.PROPERTY_REMOVED) {
@@ -347,7 +349,7 @@ public class RulesListener extends DefaultEventListener {
                                             String propertyName = path.substring(index + 1);
                                             if (!propertiesToIgnore.contains(propertyName)) {
                                                 try {
-                                                    Node n = (Node) s.getItem(nodePath);
+                                                    JCRNodeWrapper n = s.getNode(nodePath);
                                                     String key = n.isNodeType(Constants.MIX_REFERENCEABLE) ? n.getIdentifier() : n.getPath();
                                                     NodeWrapper rn = eventsMap.get(key);
                                                     if (rn == null) {

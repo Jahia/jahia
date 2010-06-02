@@ -2013,7 +2013,11 @@ public class ManageSites extends AbstractAdministrationModule {
                 File file = (File) infos.get("importFile");
                 if (request.getParameter(file.getName() + "selected") != null &&
                         infos.get("importFileName").equals("users.xml")) {
-                    ImportExportBaseService.getInstance().importUsers(file);
+                    try {
+                        ImportExportBaseService.getInstance().importUsers(file);
+                    } finally {
+                        file.delete();
+                    }
                     break;
                 }
             }
@@ -2027,6 +2031,8 @@ public class ManageSites extends AbstractAdministrationModule {
                                     .importSiteZip(file, new ArrayList<ImportAction>(), null, jParams.getSite(), infos);
                         } catch (RepositoryException e) {
                             logger.error("Error when getting templates", e);
+                        } finally {
+                            file.delete();
                         }
                     } else if (infos.get("type").equals("xml") &&
                             (infos.get("importFileName").equals("serverPermissions.xml") ||
@@ -2066,8 +2072,14 @@ public class ManageSites extends AbstractAdministrationModule {
                         if (infos.get("importFileName").equals("serverPermissions.xml")) {
                             // pass the old-new site key information for server permissions
                             jParams.setAttribute("sitePermissions_siteKeyMapping", siteKeyMapping);
-                            ImportExportBaseService.getInstance()
-                                    .importServerPermissions(jParams, new FileInputStream(file));
+                            InputStream is = new FileInputStream(file);
+                            try {
+                                ImportExportBaseService.getInstance()
+                                        .importServerPermissions(jParams, new FileInputStream(file));
+                            } finally {
+                                IOUtils.closeQuietly(is);
+                                file.delete();
+                            }
                         }
                     }
                 }

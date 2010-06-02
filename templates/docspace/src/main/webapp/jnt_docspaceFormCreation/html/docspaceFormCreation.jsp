@@ -14,22 +14,6 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css,jquery.treeview.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.treeview.min.js"/>
-<template:addResources type="inlinejavascript">
-    function noAccent(chaine) {
-    temp = chaine.replace(/[àâä]/gi, "a");
-    temp = temp.replace(/[éèêë]/gi, "e");
-    temp = temp.replace(/[îï]/gi, "i");
-    temp = temp.replace(/[ôö]/gi, "o");
-    temp = temp.replace(/[ùûü]/gi, "u");
-    var t = "";
-    for (var i = 0; i < temp.length; i++) {
-    if (temp.charCodeAt(i) > 47 && temp.charCodeAt(i) < 123)
-    t += temp.charAt(i);
-    }
-    return t;
-    }
-
-</template:addResources>
 <c:set var="pageNode" value="${jcr:getParentOfType(currentNode, 'jnt:page')}"/>
 <c:if test="${jcr:hasPermission(pageNode, 'write')}">
     <div class="boxdocspace">
@@ -43,6 +27,7 @@
                             <input type="hidden" name="nodeType" value="jnt:folder">
                             <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
                             <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
+                            <input type="hidden" name="normalizeNodeName" value="true"/>
 
                             <h3 class="boxdocspacetitleh3"><fmt:message key="docspace.label.docspace.new"/></h3>
                             <fieldset>
@@ -65,7 +50,7 @@
                                                        alert('you must fill the title ');
                                                        return false;
                                                    }
-                                                   document.newDocspace.action = '${url.basePreview}${pageNode.path}/'+noAccent(document.newDocspace.elements['jcr:title'].value.replace(' ',''));
+                                                   document.newDocspace.action = '${url.basePreview}${pageNode.path}/'+encodeURIComponent(document.newDocspace.elements['jcr:title'].value);
                                                    document.newDocspace.submit();
                                                "
                                             />

@@ -35,7 +35,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="mainresource.css" />
+<c:set var="mainTemplate" value="${renderContext.mainResource.resolvedTemplate}"/>
+<c:if test="${not empty currentNode.properties['j:referenceTemplate'].string}">
+    <c:set var="mainTemplate" value="${currentNode.properties['j:referenceTemplate'].string}"/>
+</c:if>
 <c:choose>
      <c:when test="${not inWrapper}">
         <div class="mainResourceArea">
@@ -48,7 +60,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <template:module node="${renderContext.mainResource.node}" forcedTemplate="${currentNode.properties['j:referenceTemplate'].string}" />
+        <template:module node="${renderContext.mainResource.node}" forcedTemplate="${mainTemplate}" />
     </c:otherwise>
 </c:choose>
 

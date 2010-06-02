@@ -35,7 +35,6 @@ package org.jahia.bin;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -59,7 +58,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Performs the default action when data is posted to the render servlet, i.e. creates or modifies a node.
  *
  * @author : rincevent
  * @since : JAHIA 6.1

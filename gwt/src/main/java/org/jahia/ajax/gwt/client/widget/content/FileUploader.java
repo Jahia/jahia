@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -319,6 +320,7 @@ public class FileUploader extends Window {
         textField.setFieldLabel("rename");
         textField.setName(key + "_name");
         textField.setValue(name);
+        textField.setEnabled(false);
 
         final HiddenField<String> hiddenField = new HiddenField<String>();
         hiddenField.setName(key + "_tmp");
@@ -328,19 +330,21 @@ public class FileUploader extends Window {
         final SimpleComboBox<String> choose = new SimpleComboBox<String>();
         choose.setEditable(false);
         choose.setName(key);
+        choose.setTriggerAction(TriggerAction.ALL);
+        choose.setForceSelection(true);
         // 0 = rename
-        choose.add(Messages.getResource("label.rename"));
+        choose.add(Messages.get("label.rename", "Rename"));
         // 1= rename-to
-        choose.add(Messages.getResource("label.rename") + " auto");
+        choose.add(Messages.get("label.rename", "Rename") + " auto");
         // 2 = overwrite
-        choose.add(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"));
+        choose.add(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label", "Overwrite"));
         // 4 = add new version
-        choose.add(Messages.getNotEmptyResource("fm_add_new_version","Add a new version"));
+        choose.add(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.addNewVersion.label","Add a new version"));
         choose.setHideLabel(true);
         choose.setValue(choose.getStore().getAt(1));
         choose.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
             public void handleEvent(SelectionChangedEvent event) {
-                if (choose.getValue().getValue().equals("Rename")) {
+                if (choose.getValue().getValue().equals(Messages.get("label.rename", "Rename"))) {
                     textField.setValue(name);
                     textField.enable();
                 } else {

@@ -74,8 +74,8 @@ public class InfoTabItem extends EditEngineTabItem {
                             "<b>" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.info.lock.label") + ":</b> " + selectedNode.getLockOwner()));
                 }
 
-                flowPanel.add(new HTML("<b>Types:</b> " + selectedNode.getNodeTypes()));
-                flowPanel.add(new HTML("<b>Tags:</b> " + selectedNode.getTags()));
+                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
+                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
             } else {
                 int numberFiles = 0;
                 int numberFolders = 0;

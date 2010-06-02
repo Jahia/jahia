@@ -38,6 +38,8 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -61,13 +63,13 @@ import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowTask;
 import org.jahia.tools.imageprocess.ImageProcess;
-import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.ItemNotFoundException;
@@ -80,7 +82,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.*;
 
 /**
@@ -848,23 +849,29 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
-            File tmp = File.createTempFile("image", "tmp");
-            FileUtils.copyStream(node.getFileContent().downloadFile(), new FileOutputStream(tmp));
-            Opener op = new Opener();
-            ImagePlus ip = op.openImage(tmp.getPath());
-            ImageProcessor processor = ip.getProcessor();
-
-            processor.setRoi(left, top, width, height);
-            processor = processor.crop();
-            ip.setProcessor(null, processor);
-
-            File f = File.createTempFile("image", "tmp");
-            ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-            ((JCRNodeWrapper) node.getParent())
-                    .uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
-            node.getParent().save();
-            tmp.delete();
-            f.delete();
+            File tmp = JCRContentUtils.downloadFileContent(node, File.createTempFile("image", null));
+            try {
+                Opener op = new Opener();
+                ImagePlus ip = op.openImage(tmp.getPath());
+                ImageProcessor processor = ip.getProcessor();
+    
+                processor.setRoi(left, top, width, height);
+                processor = processor.crop();
+                ip.setProcessor(null, processor);
+    
+                File f = File.createTempFile("image", null);
+                ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
+                FileInputStream fis = new FileInputStream(f);
+                try {
+                    ((JCRNodeWrapper) node.getParent()).uploadFile(target, fis, node.getFileContent().getContentType());
+                    node.getParent().save();
+                } finally {
+                    IOUtils.closeQuietly(fis);
+                    f.delete();
+                }
+            } finally {
+                tmp.delete();
+            }
         } catch (ExistingFileException e) {
             throw e;
         } catch (Exception e) {
@@ -883,21 +890,27 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
-            File tmp = File.createTempFile("image", "tmp");
-            FileUtils.copyStream(node.getFileContent().downloadFile(), new FileOutputStream(tmp));
-            Opener op = new Opener();
-            ImagePlus ip = op.openImage(tmp.getPath());
-            ImageProcessor processor = ip.getProcessor();
-            processor = processor.resize(width, height);
-            ip.setProcessor(null, processor);
-
-            File f = File.createTempFile("image", "tmp");
-            ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-            ((JCRNodeWrapper) node.getParent())
-                    .uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
-            node.getParent().save();
-            tmp.delete();
-            f.delete();
+            File tmp = JCRContentUtils.downloadFileContent(node, File.createTempFile("image", null));
+            try {
+                Opener op = new Opener();
+                ImagePlus ip = op.openImage(tmp.getPath());
+                ImageProcessor processor = ip.getProcessor();
+                processor = processor.resize(width, height);
+                ip.setProcessor(null, processor);
+    
+                File f = File.createTempFile("image", null);
+                ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
+                FileInputStream fis = new FileInputStream(f);
+                try {
+                    ((JCRNodeWrapper) node.getParent()).uploadFile(target, fis, node.getFileContent().getContentType());
+                    node.getParent().save();
+                } finally {
+                    IOUtils.closeQuietly(fis);
+                    f.delete();
+                }
+            } finally {
+                tmp.delete();
+            }
         } catch (ExistingFileException e) {
             throw e;
         } catch (Exception e) {
@@ -916,25 +929,31 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
-            File tmp = File.createTempFile("image", "tmp");
-            FileUtils.copyStream(node.getFileContent().downloadFile(), new FileOutputStream(tmp));
-            Opener op = new Opener();
-            ImagePlus ip = op.openImage(tmp.getPath());
-            ImageProcessor processor = ip.getProcessor();
-            if (clockwise) {
-                processor = processor.rotateRight();
-            } else {
-                processor = processor.rotateLeft();
+            File tmp = JCRContentUtils.downloadFileContent(node, File.createTempFile("image", null));
+            try {
+                Opener op = new Opener();
+                ImagePlus ip = op.openImage(tmp.getPath());
+                ImageProcessor processor = ip.getProcessor();
+                if (clockwise) {
+                    processor = processor.rotateRight();
+                } else {
+                    processor = processor.rotateLeft();
+                }
+                ip.setProcessor(null, processor);
+    
+                File f = File.createTempFile("image", null);
+                ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
+                FileInputStream fis = new FileInputStream(f);
+                try {
+                    ((JCRNodeWrapper) node.getParent()).uploadFile(target, fis, node.getFileContent().getContentType());
+                    node.getParent().save();
+                } finally {
+                    IOUtils.closeQuietly(fis);
+                    f.delete();
+                }
+            } finally {
+                tmp.delete();
             }
-            ip.setProcessor(null, processor);
-
-            File f = File.createTempFile("image", "tmp");
-            ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-            ((JCRNodeWrapper) node.getParent())
-                    .uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
-            node.getParent().save();
-            tmp.delete();
-            f.delete();
         } catch (ExistingFileException e) {
             throw e;
         } catch (Exception e) {

@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -42,7 +43,6 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ParamBean;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ReferencesHelper;
@@ -52,6 +52,9 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -65,7 +68,6 @@ public class ContentManagerHelper {
 
     private static Logger logger = Logger.getLogger(ContentManagerHelper.class);
 
-    private JCRStoreService jcrService;
     private JahiaSitesService sitesService;
     private ImportExportBaseService importExport;
 
@@ -77,10 +79,6 @@ public class ContentManagerHelper {
 
     public void setImportExport(ImportExportBaseService importExport) {
         this.importExport = importExport;
-    }
-
-    public void setJcrService(JCRStoreService jcrService) {
-        this.jcrService = jcrService;
     }
 
     public void setNavigation(NavigationHelper navigation) {
@@ -584,11 +582,20 @@ public class ContentManagerHelper {
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
         GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
         try {
-            if ("application/zip".equals(item.contentType)) {
-                importExport.importZip(parentPath, item.file, false);
-                item.file.delete();
-            } else if ("application/xml".equals(item.contentType) || "text/xml".equals(item.contentType)) {
-                importExport.importXML(parentPath, item.fileStream, false);
+            if ("application/zip".equals(item.getContentType())) {
+                try {
+                    importExport.importZip(parentPath, item.getFile(), false);
+                } finally {
+                    item.dispose();
+                }
+            } else if ("application/xml".equals(item.getContentType()) || "text/xml".equals(item.getContentType())) {
+                FileInputStream is = item.getStream();
+                try {
+                    importExport.importXML(parentPath, is, false);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                    item.dispose();
+                }
             }
         } catch (Exception e) {
             logger.error("Error when importing", e);
@@ -799,8 +806,17 @@ public class ContentManagerHelper {
                         throw new GWTJahiaServiceException("file exists");
                     }
                 default:
-                    parent.uploadFile(newName, GWTFileManagerUploadServlet.getItem(tmpName).fileStream,
-                            GWTFileManagerUploadServlet.getItem(tmpName).contentType);
+                    GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
+                    FileInputStream is = null;
+                    try {
+                        is = item.getStream();
+                        parent.uploadFile(newName, is, item.getContentType());
+                    } catch (FileNotFoundException e) {
+                        logger.error(e.getMessage(), e);
+                    } finally {
+                        IOUtils.closeQuietly(is);
+                        item.dispose();
+                    }
                     break;
             }
             parent.save();

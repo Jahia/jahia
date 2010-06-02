@@ -32,6 +32,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
+import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.services.cache.CacheService;
@@ -40,6 +41,9 @@ import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -97,11 +101,24 @@ public class VersioningHelper {
                     node.save();
                 }
                 node.checkout();
-                node.getFileContent().uploadFile(GWTFileManagerUploadServlet.getItem(tmpName).fileStream, GWTFileManagerUploadServlet.getItem(tmpName).contentType);
+                GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
+                FileInputStream is = null;
+                try {
+                    is = item.getStream();
+                    node.getFileContent().uploadFile(is, item.getContentType());
+                } catch (FileNotFoundException e) {
+                    throw new GWTJahiaServiceException(e.getMessage());
+                } finally {
+                    IOUtils.closeQuietly(is);
+                    item.dispose();
+                }
+                
                 node.save();
                 node.checkpoint();
 
-                logger.debug("Number of version: " + node.getVersions().size());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Number of version: " + node.getVersions().size());
+                }
 
             } else {
                 logger.error("Could not add version to a null file.");

@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content.rules;
 
+import org.apache.tika.io.IOUtils;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -45,6 +46,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -235,12 +237,13 @@ public class PropertyWrapper implements Updateable {
                 if (property != null) {
                     path = property.getPath();
                 }
-                if (objectValue instanceof File) {
-                    ((File) objectValue).delete();
-                }
             }
         } catch (NoSuchNodeTypeException e) {
             logger.debug("Nodetype not supported", e);
+        } finally {
+            if (objectValue instanceof File) {
+                ((File) objectValue).delete();
+            }
         }
     }
 
@@ -265,13 +268,15 @@ public class PropertyWrapper implements Updateable {
             Calendar c = new GregorianCalendar();
             c.setTime((Date) objectValue);
             return factory.createValue(c);
-        } else if (objectValue instanceof byte[]) {
-            return factory.createValue(new ByteArrayInputStream((byte[]) objectValue));
-        } else if (objectValue instanceof File) {
+        } else if (objectValue instanceof byte[] || objectValue instanceof File) {
+            InputStream is = null;
             try {
-                return factory.createValue(new FileInputStream((File) objectValue));
-            } catch (FileNotFoundException e) {
-                logger.error("File not found ", e);
+                is = objectValue instanceof File ? new FileInputStream((File) objectValue) : new ByteArrayInputStream((byte[]) objectValue);
+                return factory.createValue(factory.createBinary(is));
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e);
+            } finally {
+                IOUtils.closeQuietly(is);
             }
         }
         return null;

@@ -37,13 +37,12 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.apache.log4j.Logger;
 import org.apache.tika.io.IOUtils;
@@ -51,7 +50,6 @@ import org.apache.tika.metadata.Metadata;
 import org.drools.WorkingMemory;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -274,8 +272,10 @@ public class ExtractionService {
     /**
      * @param mapping the mapping to set
      */
-    public void setMapping(Map<String, String[]> mapping) {
-        this.mapping = mapping;
+    public void setMapping(Map<String, String> mapping) {
+        this.mapping = new HashMap<String, String[]>(mapping.size());
+        for (Map.Entry<String, String> entry : mapping.entrySet()) {
+            this.mapping.put(entry.getKey(), StringUtils.split(entry.getValue(), '.'));
+        }
     }
-    
 }

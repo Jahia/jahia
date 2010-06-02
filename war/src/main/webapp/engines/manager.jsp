@@ -35,11 +35,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title><internal:message key="label.${param.conf}"/></title>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
+    <c:if test="${param.conf == 'filemanager' || param.conf == 'contentmanager'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/templates/assets/css/jquery.Jcrop.css"/>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/templates/assets/javascript/jquery.min.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/templates/assets/javascript/jquery.Jcrop.min.js"></script>
+    </c:if>
 </head>
 <body>
 <internal:contentManager conf="${param.conf}"/>

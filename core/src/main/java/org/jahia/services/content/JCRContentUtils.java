@@ -32,13 +32,13 @@
 package org.jahia.services.content;
 
 import org.apache.commons.collections.map.UnmodifiableMap;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -54,6 +54,11 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -545,5 +550,38 @@ public final class JCRContentUtils {
             logger.error("Error while retrieving nodes", e);
         }
         return NodeIteratorImpl.EMPTY;
+    }
+
+    
+    /**
+     * Downloads the JCR content to a specified file. 
+     * @param node the JCR node with the file content 
+     * @param targetFile target file to write data into
+     * @return the target file descriptor
+     * @throws IOException in case of an error
+     */
+    public static File downloadFileContent(JCRNodeWrapper node, File targetFile) throws IOException {
+        InputStream is = node.getFileContent().downloadFile();
+        if (is == null) {
+            throw new IllegalArgumentException("Provided node has no file content");
+        }
+        FileOutputStream os = new FileOutputStream(targetFile);
+        try {
+            IOUtils.copy(is, os);
+        } finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
+        }
+        return targetFile;
+    }
+    
+    /**
+     * Downloads the JCR content to a temporary file. 
+     * @param node the JCR node with the file content 
+     * @return the target file descriptor
+     * @throws IOException in case of an error
+     */
+    public static File downloadFileContent(JCRNodeWrapper node) throws IOException {
+        return downloadFileContent(node, File.createTempFile("data", null));
     }
 }

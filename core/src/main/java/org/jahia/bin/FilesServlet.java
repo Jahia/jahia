@@ -161,12 +161,15 @@ public class FilesServlet extends HttpServlet {
                 if (b == null) {
                     is = fileContent.downloadFile();
                     if(is!=null) {
-                        b = new byte[contentLength];
-                        int i = is.read(b);
-                        if(i>0) {
-                            cache.put(cacheKey,b);
+                        try {
+                            b = new byte[contentLength];
+                            int i = is.read(b);
+                            if(i>0) {
+                                cache.put(cacheKey,b);
+                            }
+                        } finally {
+                            IOUtils.closeQuietly(is);
                         }
-                        IOUtils.closeQuietly(is);
                     } else {
                         res.sendError(HttpServletResponse.SC_NOT_FOUND);
                         return;
@@ -181,9 +184,12 @@ public class FilesServlet extends HttpServlet {
                 }
             }
 
-            IOUtils.copy(is, os);
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(os);
+            try {
+                IOUtils.copy(is, os);
+            } finally {
+                IOUtils.closeQuietly(is);
+                IOUtils.closeQuietly(os);
+            }
 
             return;
         }

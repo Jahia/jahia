@@ -31,13 +31,12 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.utils.zip.ZipEntry;
@@ -51,11 +50,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Helper class for ZIP file manipulations.
  * User: rfelden
  * Date: 19 sept. 2008
  * Time: 09:33:04
- * To change this template use File | Settings | File Templates.
  */
 public class ZipHelper {
     private static Logger logger = Logger.getLogger(ZipHelper.class);
@@ -71,8 +69,9 @@ public class ZipHelper {
      */
     public List<String> zipFiles(final JCRNodeWrapper parentDirectory, final String zipname, final List<JCRNodeWrapper> files) {
         List<String> missedPaths = null;
+        File tmp = null;
         try {
-            final File tmp = File.createTempFile("jahiazip", null);
+            tmp = File.createTempFile("jahiazip", null);
             final ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(tmp));
             final byte[] buffer = new byte[4096];
             String parentDir = parentDirectory.getPath();
@@ -90,9 +89,10 @@ public class ZipHelper {
                     missedPaths.add(file.getPath());
                 }
             }
+            InputStream is = new FileInputStream(tmp);
             try {
                 zout.close();
-                JCRNodeWrapper result = parentDirectory.uploadFile(zipname, new FileInputStream(tmp), "application/zip");
+                JCRNodeWrapper result = parentDirectory.uploadFile(zipname, is, "application/zip");
                 result.saveSession();
             } catch (IOException e) {
                 logger.error("Error writing resulting zipped file", e);
@@ -106,14 +106,17 @@ public class ZipHelper {
                 for (JCRNodeWrapper node : files) {
                     missedPaths.add(node.getName());
                 }
+            } finally {
+                IOUtils.closeQuietly(is);
             }
-            tmp.delete();
         } catch (final IOException e) {
             logger.error("Error creating zipped file", e);
             missedPaths = new ArrayList<String>();
             for (JCRNodeWrapper node : files) {
                 missedPaths.add(node.getName());
             }
+        } finally {
+            FileUtils.deleteQuietly(tmp);
         }
         return missedPaths;
     }
@@ -147,8 +150,7 @@ public class ZipHelper {
     }
 
     public boolean unzipFile(final JCRNodeWrapper zipfile, final JCRNodeWrapper destination, JCRSessionWrapper currentUserSession) throws RepositoryException {
-        InputStream in = zipfile.getFileContent().downloadFile();
-        return doUnzipContent(in, destination.getPath(), currentUserSession);
+        return doUnzipContent(zipfile.getFileContent().downloadFile(), destination.getPath(), currentUserSession);
     }
 
     private boolean doUnzipContent(final InputStream in, final String dest, JCRSessionWrapper currentUserSession) throws RepositoryException {
@@ -196,7 +198,6 @@ public class ZipHelper {
                     }
                 }
             }
-            zis.reallyClose();
         } catch (IOException e) {
             logger.error("Error when unzipping file", e);
             result = false;
@@ -206,7 +207,7 @@ public class ZipHelper {
         } finally {
             if (zis != null) {
                 try {
-                    zis.close();
+                    zis.reallyClose();
                 } catch (Exception e) {
                     logger.error("Error when closing zip stream", e);
                 }

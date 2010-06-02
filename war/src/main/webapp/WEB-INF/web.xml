@@ -339,7 +339,7 @@
     </listener>
 
     <listener>
-        <listener-class>org.jahia.bin.JahiaWebAppListener</listener-class>
+        <listener-class>org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet</listener-class>
     </listener>
 
 <!-- Shindig context listeners -->

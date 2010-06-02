@@ -37,51 +37,55 @@
         <property name="sourceMap">
             <map>
                 <!-- common -->
-                <entry key="title" value="mix:title,jcr:title"/>
-                <entry key="description" value="mix:title,jcr:description"/>
+                <entry key="title" value="mix:title.jcr:title"/>
+                <entry key="description" value="mix:title.jcr:description"/>
                 
                 <!-- Microsoft Office -->
-                <entry key="Application-Name" value="jmix:document,j:appName"/>
-                <entry key="Character Count" value="jmix:document,j:charCount"/>
-                <entry key="Comments" value="mix:title,jcr:description"/>
-                <entry key="Keywords" value="jmix:keywords,j:keywords"/>
-                <entry key="Page-Count" value="jmix:document,j:pageCount"/>
-                <entry key="subject" value="jmix:document,j:subject"/>
-                <entry key="Word-Count" value="jmix:document,j:wordCount"/>
+                <entry key="Application-Name" value="jmix:document.j:appName"/>
+                <entry key="Character Count" value="jmix:document.j:charCount"/>
+                <entry key="Comments" value="mix:title.jcr:description"/>
+                <entry key="Keywords" value="jmix:keywords.j:keywords"/>
+                <entry key="Page-Count" value="jmix:document.j:pageCount"/>
+                <entry key="subject" value="jmix:document.j:subject"/>
+                <entry key="Word-Count" value="jmix:document.j:wordCount"/>
                 
                 <!-- PDF -->
-                <entry key="producer" value="jmix:document,j:appName"/>
+                <entry key="producer" value="jmix:document.j:appName"/>
+                
+                <!-- Image -->
+                <entry key="height" value="jmix:image.j:height"/>
+                <entry key="width" value="jmix:image.j:width"/>
                 
                 <!-- EXIF -->
-                <entry key="Color Space" value="jmix:exif,j:colorSpace"/>
-                <entry key="Components Configuration" value="jmix:exif,j:componentsConfiguration"/>
-                <entry key="Compression" value="jmix:exif,j:compression"/>
-                <entry key="Compressed Bits Per Pixel" value="jmix:exif,j:compressedBitsPerPixel"/>
-                <entry key="Date/Time" value="jmix:exif,j:dateTime"/>
-                <entry key="Date/Time Digitized" value="jmix:exif,j:dateTimeDigitized"/>
-                <entry key="Date/Time Original" value="jmix:exif,j:dateTimeOriginal"/>
-                <entry key="Exif Version" value="jmix:exif,j:exifVersion"/>
-                <entry key="Exposure Bias Value" value="jmix:exif,j:exposureBiasValue"/>
-                <entry key="Exposure Program" value="jmix:exif,j:exposureProgram"/>
-                <entry key="Exposure Time" value="jmix:exif,j:exposureTime"/>
-                <entry key="File Source" value="jmix:exif,j:fileSource"/>
-                <entry key="Flash" value="jmix:exif,j:flash"/>
-                <entry key="FlashPix Version" value="jmix:exif,j:flashPixVersion"/>
-                <entry key="F-Number" value="jmix:exif,j:fNumber"/>
-                <entry key="Focal Length" value="jmix:exif,j:focalLength"/>
-                <entry key="Interoperability Index" value="jmix:exif,j:interoperabilityIndex"/>
-                <entry key="Interoperability Version" value="jmix:exif,j:interoperabilityVersion"/>
-                <entry key="Make" value="jmix:exif,j:make"/>
-                <entry key="Max Aperture Value" value="jmix:exif,j:maxApertureValue"/>
-                <entry key="Metering Mode" value="jmix:exif,j:meteringMode"/>
-                <entry key="Model" value="jmix:exif,j:model"/>
-                <entry key="Orientation" value="jmix:exif,j:orientation"/>
-                <entry key="Resolution Unit" value="jmix:exif,j:resolutionUnit"/>
-                <entry key="Scene Type" value="jmix:exif,j:sceneType"/>
-                <entry key="Software" value="jmix:exif,j:software"/>
-                <entry key="X Resolution" value="jmix:exif,j:xresolution"/>
-                <entry key="YCbCr Positioning" value="jmix:exif,j:ycbcrPositioning"/>
-                <entry key="Y Resolution" value="jmix:exif,j:yresolution"/>
+                <entry key="Color Space" value="jmix:exif.j:colorSpace"/>
+                <entry key="Components Configuration" value="jmix:exif.j:componentsConfiguration"/>
+                <entry key="Compression" value="jmix:exif.j:compression"/>
+                <entry key="Compressed Bits Per Pixel" value="jmix:exif.j:compressedBitsPerPixel"/>
+                <entry key="Date/Time" value="jmix:exif.j:dateTime"/>
+                <entry key="Date/Time Digitized" value="jmix:exif.j:dateTimeDigitized"/>
+                <entry key="Date/Time Original" value="jmix:exif.j:dateTimeOriginal"/>
+                <entry key="Exif Version" value="jmix:exif.j:exifVersion"/>
+                <entry key="Exposure Bias Value" value="jmix:exif.j:exposureBiasValue"/>
+                <entry key="Exposure Program" value="jmix:exif.j:exposureProgram"/>
+                <entry key="Exposure Time" value="jmix:exif.j:exposureTime"/>
+                <entry key="File Source" value="jmix:exif.j:fileSource"/>
+                <entry key="Flash" value="jmix:exif.j:flash"/>
+                <entry key="FlashPix Version" value="jmix:exif.j:flashPixVersion"/>
+                <entry key="F-Number" value="jmix:exif.j:fNumber"/>
+                <entry key="Focal Length" value="jmix:exif.j:focalLength"/>
+                <entry key="Interoperability Index" value="jmix:exif.j:interoperabilityIndex"/>
+                <entry key="Interoperability Version" value="jmix:exif.j:interoperabilityVersion"/>
+                <entry key="Make" value="jmix:exif.j:make"/>
+                <entry key="Max Aperture Value" value="jmix:exif.j:maxApertureValue"/>
+                <entry key="Metering Mode" value="jmix:exif.j:meteringMode"/>
+                <entry key="Model" value="jmix:exif.j:model"/>
+                <entry key="Orientation" value="jmix:exif.j:orientation"/>
+                <entry key="Resolution Unit" value="jmix:exif.j:resolutionUnit"/>
+                <entry key="Scene Type" value="jmix:exif.j:sceneType"/>
+                <entry key="Software" value="jmix:exif.j:software"/>
+                <entry key="X Resolution" value="jmix:exif.j:xresolution"/>
+                <entry key="YCbCr Positioning" value="jmix:exif.j:ycbcrPositioning"/>
+                <entry key="Y Resolution" value="jmix:exif.j:yresolution"/>
             </map>
         </property>
     </bean>

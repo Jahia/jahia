@@ -34,12 +34,15 @@ package org.jahia.bin;
 
 import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
+import java.io.InputStream;
+
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -77,6 +80,7 @@ public class ToPDFServlet extends HttpServlet implements Controller {
         String path = StringUtils.substringAfter(request.getPathInfo().substring(1), "/");
         String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
         String nodePath = request.getParameter("path");
+        InputStream is = null; 
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
             JCRNodeWrapper node = session.getNode(nodePath);
@@ -84,12 +88,15 @@ public class ToPDFServlet extends HttpServlet implements Controller {
                 response.setContentType(converterService.getMimeType("pdf"));
                 response.setHeader("Content-Disposition", "attachment; filename=\""
                         + StringUtils.substringBeforeLast(node.getName(), ".") + ".pdf\"");
-                converterService.convert(node.getFileContent().downloadFile(),FilenameUtils.getExtension(node.getName()),response.getOutputStream(),converterService.getMimeType("pdf"));
+                is = node.getFileContent().downloadFile();
+                converterService.convert(is,FilenameUtils.getExtension(node.getName()),response.getOutputStream(),converterService.getMimeType("pdf"));
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Path should be a file");
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(),e);
+        } finally {
+            IOUtils.closeQuietly(is);
         }
 
         return null;

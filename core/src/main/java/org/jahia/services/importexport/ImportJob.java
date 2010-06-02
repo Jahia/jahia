@@ -31,11 +31,11 @@
  */
 package org.jahia.services.importexport;
 
-import org.apache.commons.io.IOUtils;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -45,7 +45,6 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,87 +90,14 @@ public class ImportJob extends BackgroundJob {
         ExtendedImportResult result = new ExtendedImportResult();
 
         if (f != null) {
-            File file = File.createTempFile("import", "zip");
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            IOUtils.copy(f.getFileContent().downloadFile(), fileOutputStream);
-            fileOutputStream.close();
-            ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, actions, result, site, jobDataMap);
-
-//            if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END))) {
-//                if (result.getErrors().isEmpty()) {
-//                    Class<? extends BackgroundJob> jobClass = PublishAllJob.class;
-//                    JobDetail publishjobDetail = BackgroundJob.createJahiaJob("ActivatingAll", jobClass, context);
-//                    JobDataMap publishjobDataMap = publishjobDetail.getJobDataMap();
-//                    publishjobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, context.getSiteKey());
-//                    publishjobDataMap.put(BackgroundJob.JOB_TYPE, AbstractActivationJob.WORKFLOW_TYPE);
-//                    publishjobDataMap.put(AbstractActivationJob.COMMENTS_INPUT, "Auto publish " + uri);
-//                    final SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
-//                    schedulerServ.scheduleJobAtEndOfRequest(publishjobDetail);
-//                } else {
-//                    MailService mailService = ServicesRegistry.getInstance().getMailService();
-//                    GroovyScriptEngine groovyScriptEngine = (GroovyScriptEngine) SpringContextSingleton.getInstance().getContext().getBean("groovyScriptEngine");
-//                    GroovyMimeMessagePreparator messageMimePreparator = new GroovyMimeMessagePreparator();
-//                    messageMimePreparator.setGroovyScriptEngine(groovyScriptEngine);
-//                    String senderEmail = mailService.defaultSender();
-//
-//                    JahiaGroup adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
-//                            .lookupGroup(context.getSiteID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-//                    Set<Principal> members = adminGroup.getRecursiveUserMembers();
-//
-//                    String recipientEmail = mailService.defaultRecipient();
-//                    if (members.iterator().hasNext()) {
-//                        JahiaUser user = (JahiaUser) members.iterator().next();
-//                        UserProperty userProperty = user.getUserProperty("email");
-//                        if (userProperty != null) {
-//                            String s = userProperty.getValue();
-//                            if (s != null && s.trim().length() > 0) {
-//                                recipientEmail += ";" + s;
-//                            }
-//                        }
-//                    }
-//                    Binding binding = new Binding();
-//                    // Bind all necessary variables for groovy script
-//                    binding.setVariable("processingContext", context);
-//                    binding.setVariable("from", senderEmail);
-//                    binding.setVariable("to", recipientEmail);
-//                    binding.setVariable("locale", context.getLocale());
-//                    binding.setVariable("results", result);
-//
-//                    messageMimePreparator.setBinding(binding);
-//                    messageMimePreparator.setTemplatePath("autoexport_notvalidated.groovy");
-//                    mailService.sendTemplateMessage(messageMimePreparator);
-//                }
-//            }
-
-//                if (Boolean.TRUE.equals(jobDataMap.get(COPY_TO_JCR)) ) {
-//                    ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
-//                    try {
-//                        JCRNodeWrapper source = imported.getJCRNode(context);
-//                        Node parent = source.getParent();
-//                        if (parent.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-//                            Node dest = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/"+parent.getName());
-//                            source.copyFile(dest.getPath());
-//                            if (source.hasNode("j:acl")) {
-//                                dest.addMixin("jmix:accessControlled");
-//                                ((JCRNodeWrapper)source.getNode("j:acl")).copyFile(dest.getPath());
-//                            }
-//                            dest.save();
-//                        }
-//                    } catch (JahiaException e) {
-//                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//                    } catch (RepositoryException e) {
-//                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//                    }
-//                }
+            File file = JCRContentUtils.downloadFileContent(f, File.createTempFile("import", ".zip"));
+            try {
+                ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, actions, result, site, jobDataMap);
+            } finally {
+                file.delete();
+            }
         }
 
-//        try {
-//            if (imported != null) {
-//                LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + imported.getObjectKey().getType(), imported.getID());
-//                ((Set<LockKey>)jobDataMap.get(JOB_LOCKS)).add(lock);
-//            }
-//        } catch (Exception e) {
-//        }
         if (jobDataMap.get(DELETE_FILE) != null) {
             if (result.getStatus() == TreeOperationResult.COMPLETED_OPERATION_STATUS) {
                 f.remove();

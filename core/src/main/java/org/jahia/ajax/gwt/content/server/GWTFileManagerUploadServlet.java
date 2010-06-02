@@ -37,6 +37,7 @@ import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -53,17 +54,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * File upload servlet to handle requests from GWT upload form.
  *
  * @author rfelden
  * @version 2 avr. 2008 - 16:51:39
  */
-public class GWTFileManagerUploadServlet extends HttpServlet {
+public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSessionListener {
     public static final int OK = 0;
     public static final int EXISTS = 1;
     public static final int READONLY = 2;
@@ -72,9 +76,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
     private static Logger logger = Logger.getLogger(GWTFileManagerUploadServlet.class);
 
+    @SuppressWarnings("unchecked")
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.debug("Entered GWT upload servlet");
-
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         upload.setSizeMax(Jahia.getSettings().getJahiaFileUploadMaxSize());
@@ -133,11 +136,10 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
             final JahiaUser user = (JahiaUser) request.getSession().getAttribute(ParamBean.SESSION_USER);
 
-            boolean failed = false;
             final List<String> pathsToUnzip = new ArrayList<String>();
             for (String filename : uploads.keySet()) {
+                final FileItem item = uploads.get(filename);
                 try {
-                    final FileItem item = uploads.get(filename);
                     final int i = writeToDisk(user, item, location, filename);
                     switch (i) {
                         case OK:
@@ -147,9 +149,16 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                             printWriter.write("OK: " + filename + "\n");
                             break;
                         case EXISTS:
-                            File f = File.createTempFile("upload", ".tmp");
-                            IOUtils.copy(item.getInputStream(), new FileOutputStream(f));
-                            asyncItems.put(f.getName(), new Item(item.getContentType(), item.getSize(), f));
+                            File f = File.createTempFile("upload", null);
+                            InputStream is = item.getInputStream();
+                            FileOutputStream os = new FileOutputStream(f);
+                            try {
+                                IOUtils.copy(is, os);
+                            } finally {
+                                IOUtils.closeQuietly(os);
+                                IOUtils.closeQuietly(is);
+                            }
+                            asyncItems.put(f.getName(), new Item(item.getContentType(), item.getSize(), f, request.getSession().getId()));
 
                             printWriter.write("EXISTS: " + item.getFieldName() + " " + f.getName() + " " + filename + "\n");
                             break;
@@ -162,7 +171,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                     }
                 } catch (IOException e) {
                     logger.error("Upload failed for file \n", e);
-                    failed = true;
+                } finally {
+                    item.delete();
                 }
             }
 
@@ -184,10 +194,17 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             for (FileItem fileItem : uploads.values()) {
                 printWriter.write("<html><body>");
                 File f = File.createTempFile("upload", ".tmp");
-                IOUtils.copy(fileItem.getInputStream(), new FileOutputStream(f));
+                InputStream is = fileItem.getInputStream();
+                FileOutputStream os = new FileOutputStream(f);
+                try {
+                    IOUtils.copy(is, os);
+                } finally {
+                    IOUtils.closeQuietly(os);
+                    IOUtils.closeQuietly(is);
+                }
                 printWriter.write("<div id=\"uploaded\" key=\"" + f.getName() + "\" name=\"" + fileItem.getName() + "\"></div>\n");
                 printWriter.write("</body></html>");
-                asyncItems.put(f.getName(), new Item(fileItem.getContentType(), fileItem.getSize(), f));
+                asyncItems.put(f.getName(), new Item(fileItem.getContentType(), fileItem.getSize(), f, request.getSession().getId()));
             }
         }
     }
@@ -226,14 +243,16 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             logger.debug("destination is not writable for user " + user.getName());
             return READONLY;
         }
-        JCRNodeWrapper result;
         try {
             if (locationFolder.hasNode(filename)) {
                 return EXISTS;
             }
             InputStream is = item.getInputStream();
-            result = locationFolder.uploadFile(filename, is, item.getContentType());
-            is.close();
+            try {
+                locationFolder.uploadFile(filename, is, item.getContentType());
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
             locationFolder.saveSession();
         } catch (RepositoryException e) {
             logger.error("exception ", e);
@@ -245,26 +264,76 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
     private static Map<String, Item> asyncItems = new HashMap<String, Item>();
 
     public static class Item {
-        public String contentType;
-        public long length;
-        public File file;
-        public FileInputStream fileStream;
+        private String contentType;
+        private long length;
+        private File file;
+        private String sessionId;
 
-        Item(String contentType, long length, final File file) throws FileNotFoundException {
+        Item(String contentType, long length, final File file, String sessionId) throws FileNotFoundException {
             this.contentType = contentType;
             this.length = length;
             this.file = file;
-            this.fileStream = new FileInputStream(file) {
-                @Override
-                public void close() throws IOException {
-                    super.close();
-                    file.delete();
-                }
-            };
+            this.sessionId = sessionId;
+        }
+        
+        public FileInputStream getStream() throws FileNotFoundException {
+            return new FileInputStream(file);
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public long getLength() {
+            return length;
+        }
+
+        public File getFile() {
+            return file;
+        }
+        
+        /**
+         * Deletes the corresponding file and cleans up its reference.
+         */
+        public void dispose() {
+            if (file != null) {
+                asyncItems.remove(file.getName());
+                FileUtils.deleteQuietly(file);
+            } 
         }
     }
 
     public static Item getItem(String key) {
         return asyncItems.get(key);
+    }
+
+    public void sessionCreated(HttpSessionEvent se) {
+        // do nothing
+    }
+
+    public void sessionDestroyed(HttpSessionEvent se) {
+        // clean up items, belonging to this session
+        String id = null;
+        try {
+            id = se.getSession().getId();
+        } catch (Exception e) {
+            logger.warn("Unable to get ID of the session. Skip cleaning up temporary uploaded files.", e);
+        }
+        if (id != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Checking temporary uploaded files for session with ID " + id);
+            }
+            for (Iterator<Map.Entry<String, Item>> iterator = asyncItems.entrySet().iterator(); iterator.hasNext();) {
+                Map.Entry<String, Item> entry = iterator.next();
+                Item item = entry.getValue();
+                if (item.sessionId != null && id.equals(item.sessionId)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Removing item " + item.file);
+                    }
+                    iterator.remove();
+                    item.file.delete();
+                }
+            }
+        }
     }
 }

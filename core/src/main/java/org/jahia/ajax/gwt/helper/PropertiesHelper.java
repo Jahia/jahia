@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.log4j.Logger;
+import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -50,14 +51,15 @@ import org.jahia.services.usermanager.JahiaUser;
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
+
+import java.io.FileInputStream;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Helper class for setting node properties based on GWT bean values.
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:45:42 PM
- * To change this template use File | Settings | File Templates.
  */
 public class PropertiesHelper {
     private static Logger logger = Logger.getLogger(PropertiesHelper.class);
@@ -273,11 +275,6 @@ public class PropertiesHelper {
         for (GWTJahiaNodeProperty prop : newProps) {
             try {
                 if (prop != null && !prop.getName().equals("*")) {
-                    boolean isCategory = SelectorType.CATEGORY == JCRContentUtils
-                            .getPropertyDefSelector(((ExtendedNodeType) objectNode
-                                    .getDefinition().getDeclaringNodeType())
-                                    .getPropertyDefinitionsAsMap().get(
-                                    prop.getName()));
                     if (prop.isMultiple()) {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {
@@ -292,9 +289,9 @@ public class PropertiesHelper {
                         if (prop.getValues().size() > 0) {
                             GWTJahiaNodePropertyValue propValue = prop.getValues().get(0);
                             if (propValue.getType() == GWTJahiaNodePropertyType.ASYNC_UPLOAD) {
-                                GWTFileManagerUploadServlet.Item i = GWTFileManagerUploadServlet.getItem(propValue.getString());
+                                GWTFileManagerUploadServlet.Item fileItem = GWTFileManagerUploadServlet.getItem(propValue.getString());
                                 boolean clear = propValue.getString().equals("clear");
-                                if (!clear && i == null) {
+                                if (!clear && fileItem == null) {
                                     continue;
                                 }
                                 ExtendedNodeDefinition end = ((ExtendedNodeType) objectNode.getPrimaryNodeType()).getChildNodeDefinitionsAsMap().get(prop.getName());
@@ -309,8 +306,14 @@ public class PropertiesHelper {
                                             String s = end.getRequiredPrimaryTypeNames()[0];
                                             Node content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
 
-                                            content.setProperty(Constants.JCR_MIMETYPE, i.contentType);
-                                            content.setProperty(Constants.JCR_DATA, i.fileStream);
+                                            content.setProperty(Constants.JCR_MIMETYPE, fileItem.getContentType());
+                                            FileInputStream is = fileItem.getStream();
+                                            try {
+                                                content.setProperty(Constants.JCR_DATA, is);
+                                            } finally {
+                                                IOUtils.closeQuietly(is);
+                                                fileItem.dispose();
+                                            }
                                             content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
                                         }
                                     } catch (Throwable e) {
@@ -378,7 +381,7 @@ public class PropertiesHelper {
 
     public List<Value> getCategoryPathValues(String value) {
         if (value == null || value.length() == 0) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         List<Value> values = new LinkedList<Value>();
         String[] categories = StringUtils.split(value, ",");

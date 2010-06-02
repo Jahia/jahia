@@ -77,7 +77,7 @@ public class ImageProcess {
 
         // Load the input image.
 
-        File tmp = File.createTempFile("image","tmp");
+        File tmp = File.createTempFile("image", null);
         FileUtils.copyStream(istream, new FileOutputStream(tmp));
         Opener op = new Opener();
         ImagePlus ip = op.openImage(tmp.getPath());

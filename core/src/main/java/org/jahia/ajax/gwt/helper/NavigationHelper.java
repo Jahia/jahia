@@ -166,7 +166,7 @@ public class NavigationHelper {
                 } catch (RepositoryException e) {
                     logger.error(e, e);
                 }
-                // collection condition is available only if the parent node is not a nt:query. Else, the node has to matcch the node type condition
+                // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
                 if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
                     GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode, fields);
                     gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
@@ -261,10 +261,10 @@ public class NavigationHelper {
                             userNodes.add(getGWTJahiaNode(node));
                         }
                     } else {
-                        GWTJahiaNode root = getNode(key, fields, currentUserSession);
-                        if (root != null) {
-                            userNodes.add(root);
-                        }
+                    GWTJahiaNode root = getNode(key, fields, currentUserSession);
+                    if (root != null) {
+                        userNodes.add(root);
+                    }
                     }
                 } else if (key.equals(JCRClientUtils.MY_REPOSITORY)) {
                     JCRNodeWrapper node = jcrService.getUserFolder(currentUserSession.getUser());
@@ -384,7 +384,7 @@ public class NavigationHelper {
                     if (root != null) {
                         root.setDisplayName("Default pages");
                         userNodes.add(root);
-                    }                   
+                    }
                     userNodes.add(getGWTJahiaNode(site.getNode("templates")));
                 } else if (key.equals(JCRClientUtils.REMOTEPUBLICATIONS_REPOSITORY)) {
                     GWTJahiaNode root = getNode("/remotePublications", fields, currentUserSession);
@@ -943,6 +943,16 @@ public class NavigationHelper {
             }
         }
         
+        if (n.isFile() && nodeTypes.contains("jmix:image")) {
+            fields = new LinkedList<String>(fields);
+            if (!fields.contains("j:height")) {
+                fields.add("j:height");
+            }
+            if (!fields.contains("j:width")) {
+                fields.add("j:width");
+            }
+        }
+
         // properties
         for (String field : fields) {
             if (!GWTJahiaNode.RESERVED_FIELDS.contains(field)) {
@@ -966,7 +976,7 @@ public class NavigationHelper {
                 }
             }
         }
-
+        
         try {
             if (node.hasProperty("jcr:title")) {
                 n.setDisplayName(node.getProperty("jcr:title").getString());

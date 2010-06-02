@@ -192,7 +192,7 @@ public class DocumentConverterService implements ApplicationContextAware {
 
     protected File createTempFile() throws IOException {
         // todo: use fileCleaningTracker
-        return File.createTempFile("doc-converter", "tmp");
+        return File.createTempFile("doc-converter", null);
     }
 
     public String getMimeType(String extension) {

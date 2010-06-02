@@ -10,11 +10,8 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
 
 import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.*;
 
@@ -37,27 +34,31 @@ public class ChoiceListFacetsInitializers implements ModuleChoiceListInitializer
         return key;
     }
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType,
+                                                     String param, List<ChoiceListValue> values, Locale locale,
+                                                     Map<String, Object> context) {
         final Set<ChoiceListValue> listValues = new HashSet<ChoiceListValue>();
         try {
             JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
+            if (node != null) {
                 NodeIterator children = node.getNodes();
-            while (children.hasNext()) {
+                while (children.hasNext()) {
                     JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
                     final List<String> nodeTypesList = child.getNodeTypes();
                     for (String s : nodeTypesList) {
-                        NodeType nt =  NodeTypeRegistry.getInstance().getNodeType(s);
-                    final PropertyDefinition[] pr = nt.getPropertyDefinitions();
-                    for (PropertyDefinition p : pr) {
-                        ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) p;
-                        if (ep.isFacetable()) {
-                            String displayName = ep.getLabel(locale);
-                            String value = p.getDeclaringNodeType().getName() + ";" + p.getName();
-                            listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(), new ValueImpl(
-                                    value, PropertyType.STRING, false)));
+                        NodeType nt = NodeTypeRegistry.getInstance().getNodeType(s);
+                        final PropertyDefinition[] pr = nt.getPropertyDefinitions();
+                        for (PropertyDefinition p : pr) {
+                            ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) p;
+                            if (ep.isFacetable()) {
+                                String displayName = ep.getLabel(locale);
+                                String value = p.getDeclaringNodeType().getName() + ";" + p.getName();
+                                listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(),
+                                                                   new ValueImpl(value, PropertyType.STRING, false)));
+                            }
                         }
                     }
-                    }
+                }
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

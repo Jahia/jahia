@@ -38,7 +38,7 @@ public class RoleEditor {
 
         final RootPanel panel = RootPanel.get(PERMISSION_ROLE);
         if (panel != null) {
-            panel.add(new RolesManager(panel.getElement().getAttribute("config")));
+            panel.add(new RolesManager(panel.getElement().getAttribute("config"),panel.getElement().getAttribute("siteKey")));
         }
 
     }

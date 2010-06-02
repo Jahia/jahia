@@ -78,7 +78,7 @@
 </div>
 <div class="content-item">
  <div class="dex-subTabBar">
-    <div id="gwtpermissionrole" siteKey="<%=((JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE)).getSiteKey()%>" rootPath='<%="/sites/"+((JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE)).getSiteKey()+"/roles"%>' class="jahia-admin-gxt"></div>
+    <div id="gwtpermissionrole" config="siterolesmanager" siteKey="<%=((JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE)).getSiteKey()%>"  class="jahia-admin-gxt"></div>
  </div>
 
 </div>

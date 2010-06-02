@@ -227,7 +227,7 @@ public class ModuleHelper {
                 if (template == null) {
                     DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"',null,'"+params+"')");
                 } else {
-                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"','"+template+",'"+params+"')");
+                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"','"+template+"','"+params+"')");
                 }
             }
         }

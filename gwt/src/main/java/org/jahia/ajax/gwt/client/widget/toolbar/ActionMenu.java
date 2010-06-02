@@ -7,7 +7,6 @@ import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -21,11 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Action menu component.
  * User: ktlili
  * Date: Mar 15, 2010
  * Time: 5:05:34 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ActionMenu extends Menu {
     private Linker linker;
@@ -98,7 +96,7 @@ public class ActionMenu extends Menu {
     }
 
     /**
-     * Override this methode to provide a custom "beforeShow" behaviour
+     * Override this method to provide a custom "beforeShow" behaviour
      */
     public void beforeShow() {
         linker.syncSelectionContext();
@@ -126,8 +124,7 @@ public class ActionMenu extends Menu {
     private void createMenu(GWTJahiaToolbar gwtJahiaToolbar) {
         for (int i = 0; i < gwtJahiaToolbar.getGwtToolbarItemsGroups().size(); i++) {
             GWTJahiaToolbarItemsGroup itemsGroup = gwtJahiaToolbar.getGwtToolbarItemsGroups().get(i);
-            if (i > 0 && i <= gwtJahiaToolbar.getGwtToolbarItemsGroups().size() &&
-                    itemsGroup.getGwtToolbarItems().isEmpty()) {
+            if (i > 0 && !itemsGroup.getGwtToolbarItems().isEmpty()) {
                 add(new SeparatorMenuItem());
             }
             for (GWTJahiaToolbarItem gwtJahiaToolbarItem : itemsGroup.getGwtToolbarItems()) {

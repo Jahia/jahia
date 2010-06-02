@@ -21,14 +21,6 @@
                                           jcr:primaryType="jnt:translation" jcr:language="en"
                                           jcr:title_en="Simple search" j:checkinDate="2010-04-30T15:43:00.492+02:00"/>
                     </simple-search>
-                    <side-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable"
-                               j:template="sideMenu" j:published="true" jcr:primaryType="jnt:navMenu"
-                               j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
-                        <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:published="true"
-                                           j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
-                                           j:startLevel="2" j:allowedTypes="jnt:page"
-                                           j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true"/>
-                    </side-menu>
                     <bottom-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable"
                                  j:template="sideMenu" j:published="true" jcr:primaryType="jnt:navMenu"
                                  j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
@@ -73,7 +65,13 @@
                             <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
                                 <simple-search
                                         j:share="/templatesSet/templates-web/contents/site_components/simple-search"/>
-                                <side-menu j:share="/templatesSet/templates-web/contents/site_components/side-menu"/>
+                                <side-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation"
+                                           j:template="sideMenu" jcr:primaryType="jnt:navMenu" j:templateLocked="true">
+                                    <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:published="true"
+                                                       j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
+                                                       j:startLevel="2" j:allowedTypes="jnt:page"
+                                                       j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true"/>
+                                </side-menu>
                             </col2>
                         </row1>
                     </pagecontent>

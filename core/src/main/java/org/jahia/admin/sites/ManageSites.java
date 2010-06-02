@@ -52,6 +52,7 @@
 package org.jahia.admin.sites;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
@@ -1769,28 +1770,29 @@ public class ManageSites extends AbstractAdministrationModule {
 
     private void prepareFileImports(File f, String name, HttpServletRequest request) {
         if (f != null && f.exists()) {
+            ZipInputStream zis = null;
             try {
                 Properties exportProps = new Properties();
-                ZipInputStream zis = new ZipInputStream(new FileInputStream(f));
+                zis = new ZipInputStream(new FileInputStream(f));
                 ZipEntry z;
                 Map<File, String> imports = new HashMap<File, String>();
                 List<File> importList = new ArrayList<File>();
                 while ((z = zis.getNextEntry()) != null) {
                     File i = File.createTempFile("import", ".zip");
                     OutputStream os = new FileOutputStream(i);
-                    byte[] buf = new byte[4096];
-                    int r;
-                    while ((r = zis.read(buf)) > 0) {
-                        os.write(buf, 0, r);
-                    }
+                    IOUtils.copy(zis, os);
                     os.close();
 
                     String n = z.getName();
                     if (n.equals("export.properties")) {
-                        exportProps.load(new FileInputStream(i));
+                        FileInputStream is = new FileInputStream(i);
+                        try {
+                            exportProps.load(is);
+                        } finally {
+                            IOUtils.closeQuietly(is);
+                            i.delete();
+                        }
                         jParams.setAttribute("exportProps", exportProps);
-                        i.delete();
-
                     } else if (n.equals("classes.jar")) {
                         i.delete();
                     } else if (n.equals("site.properties") || ((n.startsWith("export_") && n.endsWith(".xml")))) {
@@ -1843,6 +1845,8 @@ public class ManageSites extends AbstractAdministrationModule {
                 jParams.getSessionState().setAttribute("importsInfosSorted", sorted);
             } catch (IOException e) {
                 logger.error("Cannot read import file :" + e.getMessage());
+            } finally {
+                IOUtils.closeQuietly(zis);
             }
         }
 //        SharedTemplatePackagesRegistry tmplSetReg = SharedTemplatePackagesRegistry.getInstance();

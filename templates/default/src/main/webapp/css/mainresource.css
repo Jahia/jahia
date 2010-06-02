@@ -1,1 +1,28 @@
-#bodywrapper .mainResourceArea { height:200px; overflow:hidden; background-color:#eaeaea; padding:5px; color:#ccc }
+#bodywrapper .mainResourceArea { 
+	height:200px; 
+	overflow:hidden; 
+	background-color:#eaeaea; 
+	padding:5px;
+	color:#ccc;
+	position:relative;
+}
+#bodywrapper .mainResourceTemplate{
+	background-color: #333;
+	border:1px solid #000;
+	color:#fff;
+	padding:5px;
+	position:absolute; 
+	left: 35%;  
+	top: 35%; 
+	width: 30%; 
+	margin-left: auto; 
+	margin-right: auto; 
+	text-align:center;
+    font-family: tahoma, arial, verdana, sans-serif;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999;
+}

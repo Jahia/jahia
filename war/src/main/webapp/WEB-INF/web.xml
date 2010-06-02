@@ -191,6 +191,11 @@
 <!-- End of shindig filters -->    
 
     <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>*.html</url-pattern>
     </filter-mapping>
@@ -261,7 +266,6 @@
        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-
     <filter-mapping>
         <filter-name>NtlmHttpFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -282,11 +286,6 @@
         <filter-name>ErrorEventFilter</filter-name>
         <url-pattern>/*</url-pattern>
         <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
-    
-    <filter-mapping>
-    	<filter-name>CharacterEncodingFilter</filter-name>
-    	<url-pattern>/*</url-pattern>
     </filter-mapping>
     
 <!-- Shinding filter mappings -->

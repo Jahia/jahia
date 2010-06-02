@@ -144,7 +144,7 @@
             </div>
         </div>
     </c:if>
-    <%--<h4 class="boxdocspace-title2"><fmt:message key="docspace.label.document.history.tile"/></h4>
+    <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.document.history.tile"/></h4>
 
 
     <div class="boxdocspace">
@@ -159,7 +159,7 @@
                 </div>
             </div>
         </div>
-    </div>--%>
+    </div>
     <!--stop boxdocspace -->
 
     <div class='clear'></div>

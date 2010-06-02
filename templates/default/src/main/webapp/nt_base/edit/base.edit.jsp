@@ -17,7 +17,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="960.css"/>
 <template:addResources type="css" resources="datepicker.css"/>
 <template:addResources type="css" resources="contentlist.css"/>
 <template:addResources type="css" resources="formcontribute.css"/>

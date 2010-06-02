@@ -18,7 +18,6 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="userProfile.css"/>
-<template:addResources type="css" resources="960.css"/>
 <template:addWrapper name="wrapper.dashboard"/>
 <div id="${currentNode.identifier}">
     <jcr:sql var="result"

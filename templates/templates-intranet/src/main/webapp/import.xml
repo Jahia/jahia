@@ -1,103 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0">
-    <templatesSet>
-        <templates-intranet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
-                            xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
-                            xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:primaryType="jnt:virtualsite"
-                            jcr:mixinTypes="jmix:wrapper"
-                            j:installedModules="templates-intranet">
-            <contents jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:wrapper">
-                <site_components jcr:primaryType="jnt:contentList">
-                    <login-to-jahia jcr:mixinTypes="jmix:templateInformation jmix:shareable"
-                                    jcr:primaryType="jnt:loginForm" j:templateLocked="true">
-                        <j:translation_en jcr:language="en" jcr:title_en="Login to Jahia"
-                                          jcr:primaryType="jnt:translation"/>
-                    </login-to-jahia>
-                </site_components>
-            </contents>
-            <files jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:wrapper"/>
-            <mashups jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:wrapper"/>
-            <themes jcr:primaryType="jnt:folder"/>
-            <home j:template="default" jcr:primaryType="jnt:page">
-                <j:translation_en jcr:language="en" jcr:title_en="Home" jcr:primaryType="jnt:translation"/>
-                <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"
-                             j:templateLocked="true">
-                    <row1 column="2col106" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row"
-                          j:templateLocked="true">
-                        <col1 jcr:primaryType="jnt:contentList"/>
-                        <col2 jcr:primaryType="jnt:contentList">
-                            <login-to-jahia
-                                    j:share="/templatesSet/templates-intranet/contents/site_components/login-to-jahia"/>
-                        </col2>
-                    </row1>
-                </pagecontent>
-            </home>
-            <templates jcr:primaryType="jnt:templatesFolder">
-                <simple jcr:mixinTypes="jmix:sitemap" j:template="default" jcr:primaryType="jnt:page"
-                        changefreq="monthly" priority="0.5">
-                    <j:translation_en jcr:title_en="Simple" jcr:language="en" jcr:primaryType="jnt:translation"/>
-                    <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"
-                                 j:templateLocked="true">
-                        <row1 column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row"
-                              j:templateLocked="true">
-                            <col1 jcr:primaryType="jnt:contentList"/>
-                            <col2 jcr:primaryType="jnt:contentList"/>
-                        </row1>
-                    </pagecontent>
-                </simple>
-                <double jcr:mixinTypes="jmix:sitemap" j:template="default" jcr:primaryType="jnt:page"
-                        changefreq="monthly" priority="0.5">
-                    <j:translation_en jcr:title_en="Double" jcr:language="en" jcr:primaryType="jnt:translation"/>
-                    <pagecontent jcr:primaryType="jnt:contentList">
-                        <row1 column="3col664" jcr:primaryType="jnt:row">
-                            <col1 jcr:primaryType="jnt:contentList"/>
-                        </row1>
-                    </pagecontent>
-                </double>
-            </templates>
-            <sitewrapper jcr:primaryType="jnt:wrapper" j:template="intranet.bodywrapper" j:key="bodywrapper">
-                <logo jcr:primaryType="jnt:contentList"/>
-                <simpleSearch jcr:primaryType="jnt:contentList">
-                    <simpleSearchForm result="/templatesSet/templates-intranet/search-results"
-                                      jcr:mixinTypes="jmix:templateInformation jmix:shareable"
-                                      jcr:primaryType="jnt:simpleSearchForm" j:templateLocked="true"/>
-                </simpleSearch>
-                <topMenu jcr:primaryType="jnt:contentList">
-                    <topBar jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:navMenu">
-                        <navMenuMultilevel j:maxDepth="2" j:useVisitedNodeAsBaseline="false"
-                                           jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="1"/>
-                    </topBar>
-                    <shortcuts jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:shortcuts"
-                               j:templateLocked="true"/>
-                </topMenu>
-                <footer jcr:primaryType="jnt:contentList"/>
-                <wrappercontent jcr:primaryType="jnt:contentList">
-                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
-                </wrappercontent>
-            </sitewrapper>
-            <search-results jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default"
-                            jcr:primaryType="jnt:page" changefreq="monthly"
-                            j:sourceTemplate="/templatesSet/templates-web/templates/simple" priority="0.5">
-                <j:translation_en j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly"
-                                  j:sourceTemplate="d06c5c24-25ec-4548-9ba4-6b1e1e50e627" jcr:language="en"
-                                  jcr:title_en="Search results" priority="0.5"/>
-                <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"
-                             j:templateLocked="true">
-                    <row1 column="1col16" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row"
-                          j:templateLocked="true">
-                        <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
-                            <results autoSuggest="true" pageSize="10" jcr:mixinTypes="jmix:templateInformation"
-                                     jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2"
-                                     autoSuggestMinimumHitCount="2">
-                                <j:translation_en autoSuggest="true" pageSize="10" jcr:primaryType="jnt:translation"
-                                                  jcr:language="en" autoSuggestHitCount="2" jcr:title_en="Results"
-                                                  autoSuggestMinimumHitCount="2"/>
-                            </results>
-                        </col1>
-                        <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"/>
-                    </row1>
-                </pagecontent>
-            </search-results>
-        </templates-intranet>
-    </templatesSet>
+  <templatesSet>
+    <templates-intranet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:wrapper" jcr:primaryType="jnt:virtualsite" j:installedModules="templates-intranet">
+      <contents jcr:mixinTypes="jmix:wrapper" jcr:primaryType="jnt:contentList">
+        <site_components jcr:primaryType="jnt:contentList">
+          <login-to-jahia jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:loginForm" j:templateLocked="true">
+            <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="Login to Jahia" jcr:language="en" />
+          </login-to-jahia>
+        </site_components>
+
+      </contents>
+      <files jcr:mixinTypes="jmix:wrapper" jcr:primaryType="jnt:folder" />
+      <mashups jcr:mixinTypes="jmix:wrapper" jcr:primaryType="jnt:portletList" />
+      <themes jcr:primaryType="jnt:folder" />
+      <home j:template="default" jcr:primaryType="jnt:page">
+        <j:translation_en jcr:title_en="Home" jcr:language="en" jcr:primaryType="jnt:translation" />
+        <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
+          <row1 column="2col106" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
+            <col1 jcr:primaryType="jnt:contentList" />
+
+            <col2 jcr:primaryType="jnt:contentList">
+              <login-to-jahia j:share="/templatesSet/templates-intranet/contents/site_components/login-to-jahia" />
+            </col2>
+          </row1>
+        </pagecontent>
+      </home>
+      <templates jcr:primaryType="jnt:templatesFolder">
+        <simple jcr:mixinTypes="jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+          <j:translation_en jcr:title_en="Simple" jcr:language="en" jcr:primaryType="jnt:translation" />
+
+          <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
+            <row1 column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
+              <col1 jcr:primaryType="jnt:contentList" />
+              <col2 jcr:primaryType="jnt:contentList" />
+            </row1>
+          </pagecontent>
+        </simple>
+        <double jcr:mixinTypes="jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+          <j:translation_en jcr:title_en="Double" jcr:language="en" jcr:primaryType="jnt:translation" />
+
+          <pagecontent jcr:primaryType="jnt:contentList">
+            <row1 column="3col664" jcr:primaryType="jnt:row">
+              <col1 jcr:primaryType="jnt:contentList" />
+              <col2 jcr:primaryType="jnt:contentList" />
+              <col3 jcr:primaryType="jnt:contentList" />
+            </row1>
+          </pagecontent>
+        </double>
+        <docspace jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:page">
+
+          <j:translation_en jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" jcr:title_en="Docspace" jcr:language="en" />
+          <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+            <row column="2col88" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row">
+              <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+                <docspaceTree jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:docspaceTree" />
+              </col1>
+              <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+                <docspaceFormCreation jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:docspaceFormCreation" />
+                <contentList jcr:mixinTypes="jmix:renderable jmix:templateInformation" j:template="twoColumns" jcr:primaryType="jnt:contentList">
+
+                  <lastDocspace jcr:mixinTypes="jmix:templateInformation" startNode="/templatesSet/templates-intranet/templates/docspace" jcr:primaryType="jnt:lastDocspace" />
+                  <lastDocspaceDoc jcr:mixinTypes="jmix:templateInformation" startNode="/templatesSet/templates-intranet/templates/docspace" jcr:primaryType="jnt:lastDocspaceDoc" />
+                </contentList>
+              </col2>
+            </row>
+          </pagecontent>
+          <wrapper j:template="default" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:wrapper" j:key="folderWrapper" j:applyOn="jnt:folder">
+            <wrappercontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+              <row column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row">
+
+                <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+                  <mainResourceDisplay jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="docspace.detail" />
+                </col1>
+                <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+                  <aclUsers jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper/wrappercontent/row/col1/mainResourceDisplay" />
+                  <aclUsers-1 jcr:mixinTypes="jmix:renderable jmix:templateInformation" j:template="add" jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper/wrappercontent/row/col1/mainResourceDisplay" />
+                  <lastDocspace jcr:mixinTypes="jmix:templateInformation" startNode="/templatesSet/templates-intranet/templates/docspace" jcr:primaryType="jnt:lastDocspace" />
+                </col2>
+              </row>
+
+              <row-1 column="1col16" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row">
+                <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+                  <mainResourceDisplay jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="docspace" />
+                </col1>
+              </row-1>
+            </wrappercontent>
+          </wrapper>
+        </docspace>
+      </templates>
+
+      <sitewrapper j:template="intranet.bodywrapper" jcr:primaryType="jnt:wrapper" j:key="bodywrapper">
+        <logo jcr:primaryType="jnt:contentList" />
+        <simpleSearch jcr:primaryType="jnt:contentList">
+          <simpleSearchForm result="/templatesSet/templates-intranet/search-results" jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" j:templateLocked="true" />
+        </simpleSearch>
+        <topMenu jcr:primaryType="jnt:contentList">
+          <topBar jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:navMenu">
+            <navMenuMultilevel j:maxDepth="2" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="1" />
+          </topBar>
+
+          <shortcuts jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:shortcuts" j:templateLocked="true" />
+        </topMenu>
+        <footer jcr:primaryType="jnt:contentList" />
+        <wrappercontent jcr:primaryType="jnt:contentList">
+          <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+        </wrappercontent>
+        <pagetitle jcr:primaryType="jnt:contentList" />
+      </sitewrapper>
+      <search-results jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+
+        <j:translation_en j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly" jcr:language="en" jcr:title_en="Search results" priority="0.5" />
+        <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
+          <row1 column="1col16" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row" j:templateLocked="true">
+            <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
+              <results autoSuggest="true" pageSize="10" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
+                <j:translation_en autoSuggest="true" pageSize="10" jcr:primaryType="jnt:translation" jcr:title_en="Results" autoSuggestHitCount="2" jcr:language="en" autoSuggestMinimumHitCount="2" />
+              </results>
+            </col1>
+            <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" />
+
+          </row1>
+        </pagecontent>
+      </search-results>
+    </templates-intranet>
+  </templatesSet>
 </content>
+

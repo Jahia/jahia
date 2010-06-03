@@ -34,54 +34,42 @@ package org.jahia.services.content.rules;
 import org.drools.spi.KnowledgeHelper;
 
 import javax.jcr.RepositoryException;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
  * User: toto
  * Date: 17 janv. 2008
- * Time: 15:17:58
+ * Time: 15:20:31
  * To change this template use File | Settings | File Templates.
  */
-public class DeletedNodeWrapper {
-    private String path;
-    private String identifier;
-    private String primary;
-    private List<String> mixins;
+public class DeletedPropertyFact {
+    private String nodePath;
+    private AddedNodeFact node;
+    private String name;
 
-    private NodeWrapper parent;
-
-    public DeletedNodeWrapper(NodeWrapper nodeWrapper, KnowledgeHelper drools) throws RepositoryException {
-        path = nodeWrapper.getPath();
-        nodeWrapper.getNode().remove();
-        drools.retract(nodeWrapper);
-
-        // should also retract properties and subnodes
+    public DeletedPropertyFact(ChangedPropertyFact property, KnowledgeHelper drools) throws RepositoryException {
+        name = property.getName();
+        node = property.getNode();
+        nodePath = node.getPath();
+        property.getProperty().remove();
+        drools.retract(property);
     }
 
-    public DeletedNodeWrapper(NodeWrapper parent, String path) throws RepositoryException {
-        this.parent = parent;
-        this.path = path;
+    public DeletedPropertyFact(AddedNodeFact node, String property) throws RepositoryException {
+        this.node = node;
+        nodePath = node.getPath();
+        name = property;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public AddedNodeFact getNode() {
+        return node;
     }
 
     public String toString() {
-        return "deleted "+path;
+        return "deleted "+nodePath+"/"+name;
     }
-
-    public String getPath() {
-        return path;
-    }
-
-    public NodeWrapper getParent() {
-        return parent;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-    }
-
 }

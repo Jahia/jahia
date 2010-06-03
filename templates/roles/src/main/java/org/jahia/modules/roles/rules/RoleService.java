@@ -46,7 +46,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.rules.NodeWrapper;
+import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.RoleIdentity;
@@ -185,7 +185,7 @@ public class RoleService {
      * @param drools the rule engine helper class
      * @throws RepositoryException in case of an error
      */
-    public void updateSiteLangPermissions(final NodeWrapper node, KnowledgeHelper drools) throws RepositoryException {
+    public void updateSiteLangPermissions(final AddedNodeFact node, KnowledgeHelper drools) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper siteNode = session.getNode(node.getPath());

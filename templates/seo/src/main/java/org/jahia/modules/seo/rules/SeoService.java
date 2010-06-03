@@ -42,7 +42,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.rules.NodeWrapper;
+import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 
@@ -68,7 +68,7 @@ public class SeoService {
      * @param drools the rule engine helper class
      * @throws RepositoryException in case of an error
      */
-    public void addMapping(final NodeWrapper node, final String locale, final String url, final boolean isDefault,
+    public void addMapping(final AddedNodeFact node, final String locale, final String url, final boolean isDefault,
             KnowledgeHelper drools) throws RepositoryException {
         if (logger.isDebugEnabled()) {
             logger.debug("Adding URL mapping for node " + node.getPath() + " and locale '" + locale + "'");
@@ -101,7 +101,7 @@ public class SeoService {
      * @param drools the rule engine helper class
      * @throws RepositoryException in case of an error
      */
-    public void removeMappings(final NodeWrapper node, final String locale, KnowledgeHelper drools)
+    public void removeMappings(final AddedNodeFact node, final String locale, KnowledgeHelper drools)
             throws RepositoryException {
         if (logger.isDebugEnabled()) {
             logger.debug("Removing URL mappings for locale '" + locale + "' from node " + node.getPath());

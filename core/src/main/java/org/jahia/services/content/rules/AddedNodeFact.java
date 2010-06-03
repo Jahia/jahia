@@ -52,21 +52,21 @@ import java.util.List;
  * Date: 20 déc. 2007
  * Time: 11:53:45
  */
-public class NodeWrapper implements Updateable {
-    private static Logger logger = Logger.getLogger(NodeWrapper.class);
+public class AddedNodeFact implements Updateable {
+    private static Logger logger = Logger.getLogger(AddedNodeFact.class);
 
-    private NodeWrapper parentNode;
+    private AddedNodeFact parentNode;
     private String parentNodePath;
     private String name;
     private String type;
 
     private JCRNodeWrapper node;
     
-    public NodeWrapper(JCRNodeWrapper node) {
+    public AddedNodeFact(JCRNodeWrapper node) {
         this.node = node;
     }
 
-    public NodeWrapper(NodeWrapper parentNodeWrapper, String name, String type, KnowledgeHelper drools) throws RepositoryException {
+    public AddedNodeFact(AddedNodeFact parentNodeWrapper, String name, String type, KnowledgeHelper drools) throws RepositoryException {
         this.parentNode = parentNodeWrapper;
 
         JCRNodeWrapper node = (JCRNodeWrapper) parentNode.getNode();
@@ -126,9 +126,9 @@ public class NodeWrapper implements Updateable {
         return null;
     }
 
-    public NodeWrapper getContent() throws RepositoryException {
+    public AddedNodeFact getContent() throws RepositoryException {
         if (node.hasNode(Constants.JCR_CONTENT)) {
-            return new NodeWrapper(node.getNode(Constants.JCR_CONTENT));
+            return new AddedNodeFact(node.getNode(Constants.JCR_CONTENT));
         }
         return null;
     }
@@ -140,32 +140,32 @@ public class NodeWrapper implements Updateable {
         return null;
     }
 
-    public List<NodeWrapper> getChildNodes() throws RepositoryException {
-        List<NodeWrapper> results = new ArrayList<NodeWrapper>();
+    public List<AddedNodeFact> getChildNodes() throws RepositoryException {
+        List<AddedNodeFact> results = new ArrayList<AddedNodeFact>();
         NodeIterator it = node.getNodes();
         while (it.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) it.nextNode();
-            results.add(new NodeWrapper(n));
+            results.add(new AddedNodeFact(n));
         }
         return results;
     }
 
-    public NodeWrapper getParent() throws RepositoryException {
-        return new NodeWrapper(node.getParent());
+    public AddedNodeFact getParent() throws RepositoryException {
+        return new AddedNodeFact(node.getParent());
     }
 
-    public List<PropertyWrapper> getProperties() throws RepositoryException {
-        List<PropertyWrapper> results = new ArrayList<PropertyWrapper>();
+    public List<ChangedPropertyFact> getProperties() throws RepositoryException {
+        List<ChangedPropertyFact> results = new ArrayList<ChangedPropertyFact>();
         PropertyIterator it = node.getProperties();
         while (it.hasNext()) {
             JCRPropertyWrapper p = (JCRPropertyWrapper) it.nextProperty();
-            results.add(new PropertyWrapper(this,p));
+            results.add(new ChangedPropertyFact(this,p));
         }
         return results;
     }
 
-    public PropertyWrapper getProperty(String propertyName) throws RepositoryException {
-        return new PropertyWrapper(this,node.getProperty(propertyName));
+    public ChangedPropertyFact getProperty(String propertyName) throws RepositoryException {
+        return new ChangedPropertyFact(this,node.getProperty(propertyName));
     }
 
     public List<String> getTypes() throws RepositoryException {
@@ -184,18 +184,18 @@ public class NodeWrapper implements Updateable {
 
     public void addType(String type, KnowledgeHelper drools) throws RepositoryException {
         node.addMixin(type);
-        drools.insert(new PropertyWrapper(this, node.getProperty(Constants.JCR_MIXINTYPES)));
+        drools.insert(new ChangedPropertyFact(this, node.getProperty(Constants.JCR_MIXINTYPES)));
         //        drools.update(this);
     }
 
     public void removeType(String type, KnowledgeHelper drools) throws RepositoryException {
         node.removeMixin(type);
-        drools.insert(new PropertyWrapper(this, node.getProperty(Constants.JCR_MIXINTYPES)));
+        drools.insert(new ChangedPropertyFact(this, node.getProperty(Constants.JCR_MIXINTYPES)));
         //        drools.update(this);
     }
 
-    public NodeWrapper getAncestor(String type) throws RepositoryException {
-        NodeWrapper ancestor = this;
+    public AddedNodeFact getAncestor(String type) throws RepositoryException {
+        AddedNodeFact ancestor = this;
         try {
             while (!ancestor.getNode().isNodeType(Constants.JAHIANT_PAGE) && (ancestor = ancestor.getParent()) != null) {
                 if (ancestor.getNode().isNodeType(type)) {
@@ -211,12 +211,12 @@ public class NodeWrapper implements Updateable {
         return node;
     }
 
-    public NodeWrapper getNode(String relPath) throws RepositoryException {
+    public AddedNodeFact getNode(String relPath) throws RepositoryException {
         NodeIterator it = node.getNodes();
         while (it.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) it.nextNode();
             if (n.getName().equals(relPath)) {
-                return new NodeWrapper(n);
+                return new AddedNodeFact(n);
             }
         }
         throw new PathNotFoundException(relPath);

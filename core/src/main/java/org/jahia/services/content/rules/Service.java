@@ -63,6 +63,7 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
 import javax.jcr.*;
+import javax.jcr.query.Query;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.text.ParseException;
@@ -96,7 +97,7 @@ public class Service extends JahiaService {
         return instance;
     }
 
-    public void setPermissions(NodeWrapper node, String acl, KnowledgeHelper drools) {
+    public void setPermissions(AddedNodeFact node, String acl, KnowledgeHelper drools) {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
         StringTokenizer st = new StringTokenizer(acl, "|");
         while (st.hasMoreTokens()) {
@@ -117,7 +118,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void revokeAllPermissions(NodeWrapper node) {
+    public void revokeAllPermissions(AddedNodeFact node) {
         try {
             JCRNodeWrapperImpl.revokeAllPermissions(node.getNode());
         } catch (RepositoryException e) {
@@ -125,7 +126,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void setAclInheritanceBreak(NodeWrapper node, boolean aclInheritanceBreak) {
+    public void setAclInheritanceBreak(AddedNodeFact node, boolean aclInheritanceBreak) {
         try {
             JCRNodeWrapperImpl.setAclInheritanceBreak(node.getNode(), aclInheritanceBreak);
         } catch (RepositoryException e) {
@@ -133,7 +134,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void importNode(NodeWrapper node, KnowledgeHelper drools) throws RepositoryException {
+    public void importNode(AddedNodeFact node, KnowledgeHelper drools) throws RepositoryException {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
         String uri = node.getPath();
         String name = node.getName();
@@ -252,7 +253,7 @@ public class Service extends JahiaService {
 
     }
     
-    public void importXML(final NodeWrapper targetNode, final String path, KnowledgeHelper drools)
+    public void importXML(final AddedNodeFact targetNode, final String path, KnowledgeHelper drools)
             throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -276,7 +277,7 @@ public class Service extends JahiaService {
         });
     }
 
-    private List<Map<Object, Object>> prepareFileImports(NodeWrapper node, String name) {
+    private List<Map<Object, Object>> prepareFileImports(AddedNodeFact node, String name) {
         try {
             Properties exportProps = new Properties();
             Node contentNode = node.getNode().getNode(Constants.JCR_CONTENT);
@@ -491,7 +492,7 @@ public class Service extends JahiaService {
 
     }
 
-    public void incrementProperty(NodeWrapper node, String propertyName,
+    public void incrementProperty(AddedNodeFact node, String propertyName,
                                   KnowledgeHelper drools) {
         final Node jcrNode = node.getNode();
         try {
@@ -508,7 +509,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void addToProperty(NodeWrapper node, String propertyName, List<?> value,
+    public void addToProperty(AddedNodeFact node, String propertyName, List<?> value,
                               KnowledgeHelper drools) {
         final Node jcrNode = node.getNode();
         try {
@@ -525,7 +526,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void addNewTag(NodeWrapper node, final String value, KnowledgeHelper drools) throws RepositoryException {
+    public void addNewTag(AddedNodeFact node, final String value, KnowledgeHelper drools) throws RepositoryException {
         String siteKey = node.getPath().startsWith("/sites/")? StringUtils.substringBefore(node.getPath().substring(7),"/"):null;
         if (siteKey == null) {
             logger.warn("Current site cannot be detected. Skip adding new tag for the node " + node.getPath());
@@ -534,7 +535,7 @@ public class Service extends JahiaService {
         taggingService.tag(node.getNode(), value, siteKey, true);
     }
 
-    public void executeRuleLater(NodeWrapper node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)
+    public void executeRuleLater(AddedNodeFact node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
         final String jobName = "RULE_JOB_" + uuid + ruleToExecute;
@@ -552,7 +553,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void executeActionLater(NodeWrapper node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
+    public void executeActionLater(AddedNodeFact node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
         final String jobName = "ACTION_JOB_" + uuid + actionToExecute;
@@ -569,7 +570,7 @@ public class Service extends JahiaService {
         }
     }
 
-    private Trigger getTrigger(NodeWrapper node, String propertyName, String jobName)
+    private Trigger getTrigger(AddedNodeFact node, String propertyName, String jobName)
             throws ParseException, RepositoryException {
         final Property property = node.getNode().getProperty(propertyName);
         if (property.getType() == PropertyType.DATE) {
@@ -579,7 +580,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void moveSubnodesToSplitFolder(NodeWrapper n, KnowledgeHelper drools) throws RepositoryException {
+    public void moveSubnodesToSplitFolder(AddedNodeFact n, KnowledgeHelper drools) throws RepositoryException {
         NodeIterator ni = n.getNode().getNodes();
         while (ni.hasNext()) {
             Node node = (Node) ni.next();
@@ -587,11 +588,11 @@ public class Service extends JahiaService {
         }
     }
 
-    public void moveToSplitFolder(NodeWrapper n, KnowledgeHelper drools) throws RepositoryException  {
+    public void moveToSplitFolder(AddedNodeFact n, KnowledgeHelper drools) throws RepositoryException  {
         JCRNodeWrapper newNode = moveToSplitFolder((JCRNodeWrapper) n.getNode());
         if (newNode != null) {
             drools.retract(n);
-            drools.insert(new NodeWrapper(newNode));
+            drools.insert(new AddedNodeFact(newNode));
         }
     }
 
@@ -652,7 +653,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void publishNode(NodeWrapper node,KnowledgeHelper drools) throws RepositoryException {
+    public void publishNode(AddedNodeFact node,KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
         final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
         jcrSessionWrapper.save();
@@ -662,18 +663,46 @@ public class Service extends JahiaService {
                                                     true, false);
     }
 
-    public void startWorkflowOnNode(NodeWrapper node,String processKey, String provider,KnowledgeHelper drools) throws RepositoryException {
+    public void startWorkflowOnNode(AddedNodeFact node,String processKey, String provider,KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
         final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
         WorkflowService.getInstance().startProcess(nodeWrapper, processKey, provider, new HashMap<String, Object>());
     }
 
-    public void createNavigationEntry(NodeWrapper node, KnowledgeHelper drools) {
-        System.out.println("added");
+    public void createNavigationEntry(AddedNodeFact node, KnowledgeHelper drools) {
+        try {
+            final String statement = "select * from ['jmix:autoCreateNavMenu'] where ['j:baselineNode']='" +
+                    node.getNode().getParent().getIdentifier()+"'";
+            NodeIterator ni = node.getNode().getSession().getWorkspace().getQueryManager().createQuery(statement, Query.JCR_SQL2).execute().getNodes();
+
+            while (ni.hasNext()) {
+                JCRNodeWrapper menu = (JCRNodeWrapper) ni.next();
+                menu.checkout();
+                String name = JCRContentUtils.findAvailableNodeName(menu, node.getName());
+                JCRNodeWrapper link = menu.addNode(name, "jnt:navMenuNodeLink");
+                link.setProperty("j:node",node.getNode());
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
-    public void deleteNavigationEntry(DeletedNodeWrapper node, KnowledgeHelper drools) {
-        System.out.println("removed");
+    public void deleteNavigationEntry(DeletedNodeFact node, KnowledgeHelper drools) {
+        try {
+            final String statement = "select * from ['jnt:nodeLink'] where ['j:node']='" +
+                    node.getIdentifier()+"'";
+
+            NodeIterator ni = node.getSession().getWorkspace().getQueryManager().createQuery(statement, Query.JCR_SQL2).execute().getNodes();
+
+            while (ni.hasNext()) {
+                JCRNodeWrapper link = (JCRNodeWrapper) ni.next();
+                link.getParent().checkout();
+                link.remove();
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
 
     }
 

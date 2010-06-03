@@ -32,6 +32,7 @@
 package org.jahia.services.content.rules;
 
 import org.drools.spi.KnowledgeHelper;
+import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
 
@@ -39,37 +40,54 @@ import javax.jcr.RepositoryException;
  * Created by IntelliJ IDEA.
  * User: toto
  * Date: 17 janv. 2008
- * Time: 15:20:31
+ * Time: 15:17:58
  * To change this template use File | Settings | File Templates.
  */
-public class DeletedPropertyWrapper {
-    private String nodePath;
-    private NodeWrapper node;
-    private String name;
+public class DeletedNodeFact {
+    private String path;
+    private String identifier;
+    private JCRSessionWrapper session;
 
-    public DeletedPropertyWrapper(PropertyWrapper property, KnowledgeHelper drools) throws RepositoryException {
-        name = property.getName();
-        node = property.getNode();
-        nodePath = node.getPath();
-        property.getProperty().remove();
-        drools.retract(property);
+    private AddedNodeFact parent;
+
+    public DeletedNodeFact(AddedNodeFact nodeWrapper, KnowledgeHelper drools) throws RepositoryException {
+        path = nodeWrapper.getPath();
+        nodeWrapper.getNode().remove();
+        drools.retract(nodeWrapper);
+
+        // should also retract properties and subnodes
     }
 
-    public DeletedPropertyWrapper(NodeWrapper node, String property) throws RepositoryException {
-        this.node = node;
-        nodePath = node.getPath();
-        name = property;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public NodeWrapper getNode() {
-        return node;
+    public DeletedNodeFact(AddedNodeFact parent, String path) throws RepositoryException {
+        this.parent = parent;
+        this.path = path;
     }
 
     public String toString() {
-        return "deleted "+nodePath+"/"+name;
+        return "deleted "+path;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public AddedNodeFact getParent() {
+        return parent;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public JCRSessionWrapper getSession() {
+        return session;
+    }
+
+    public void setSession(JCRSessionWrapper session) {
+        this.session = session;
     }
 }

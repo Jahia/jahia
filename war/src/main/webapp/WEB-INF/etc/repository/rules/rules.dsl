@@ -1,10 +1,10 @@
-[condition][]A file content has been modified=property : PropertyWrapper ( name == "jcr:data", contentnode : node ) and NodeWrapper ( name == "jcr:content" ) from contentnode and node : NodeWrapper () from contentnode.parent
-[condition][]A new node "{name}" is created=node : NodeWrapper ( name == "{name}")
-[condition][]A new node is created=node : NodeWrapper ( )
-[condition][]A node is deleted=node : DeletedNodeWrapper ( )
-[condition][]A property has been set on a node=property : PropertyWrapper ( propertyName : name, propertyValue : stringValues , node : node )
-[condition][]A property has been removed from a node=property : DeletedPropertyWrapper ( propertyName : name, node : node )
-[condition][]A property {property} has been set on a node=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
+[condition][]A file content has been modified=property : ChangedPropertyFact ( name == "jcr:data", contentnode : node ) and AddedNodeFact ( name == "jcr:content" ) from contentnode and node : AddedNodeFact () from contentnode.parent
+[condition][]A new node "{name}" is created=node : AddedNodeFact ( name == "{name}")
+[condition][]A new node is created=node : AddedNodeFact ( )
+[condition][]A node is deleted=node : DeletedNodeFact ( )
+[condition][]A property has been set on a node=property : ChangedPropertyFact ( propertyName : name, propertyValue : stringValues , node : node )
+[condition][]A property has been removed from a node=property : DeletedPropertyFact ( propertyName : name, node : node )
+[condition][]A property {property} has been set on a node=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
 [condition][]The metadata field "{name}" has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {name} : value )
 [condition][]The metadata field "{name}" identified by {field} has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {field} : value )
@@ -12,14 +12,14 @@
 [condition][]A well known metadata field has been extracted=metadata : ExtractedVariable ( node == node.path, correspondingPropertyName != null, metadataName : name, metadataValue : value, knownType : correspondingNodeTypeName, knownProperty : correspondingPropertyName )
 [condition][]The current user belongs to a group=g : Group (groupName : name) from user.groups
 [condition][]The current user has a property named {userproperty}=userProperty : UserProperty( name == "{userproperty}", propertyValue : value ) from user.properties
-[condition][]The node has a parent=parent : NodeWrapper () from node.parent
-[condition][]The property {property} has not been modified yet on the {node}=not PropertyWrapper ( name=="{property}" , node=={node} )
-[condition][]The property {property} has not the value "{value}" on the {node}=PropertyWrapper ( name == "{property}" , stringValue != "{value}" ) from {node}.properties
-[condition][]The property {property} is not defined for the {node}=not ( PropertyWrapper ( name == "{property}" ) from {node}.properties )
-[condition][]The type {name} has been assigned to a node=m : PropertyWrapper ( name == "jcr:mixinTypes", stringValues contains "{name}", node : node )
-[condition][]The {node} has a child=child : NodeWrapper ( ) from node.childNodes
-[condition][]The {node} has a property {property}=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues ) from {node}.properties
-[condition][]The rule {ruleName} is executing = job : JobRuleExecution ( ruleToExecute=={ruleName}) and node : NodeWrapper() from job.node
+[condition][]The node has a parent=parent : AddedNodeFact () from node.parent
+[condition][]The property {property} has not been modified yet on the {node}=not ChangedPropertyFact ( name=="{property}" , node=={node} )
+[condition][]The property {property} has not the value "{value}" on the {node}=ChangedPropertyFact ( name == "{property}" , stringValue != "{value}" ) from {node}.properties
+[condition][]The property {property} is not defined for the {node}=not ( ChangedPropertyFact ( name == "{property}" ) from {node}.properties )
+[condition][]The type {name} has been assigned to a node=m : ChangedPropertyFact ( name == "jcr:mixinTypes", stringValues contains "{name}", node : node )
+[condition][]The {node} has a child=child : AddedNodeFact ( ) from node.childNodes
+[condition][]The {node} has a property {property}=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues ) from {node}.properties
+[condition][]The rule {ruleName} is executing = job : JobRuleExecution ( ruleToExecute=={ruleName}) and node : AddedNodeFact() from job.node
 [condition][]- it has the extension type {type}=types contains "{type}"
 [condition][]- it has the type {type}=node.types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
@@ -41,35 +41,35 @@
 [consequence][]Assign permissions "{perms}" on the {node} to this group=service.setPermissions({node},"g:" + groupName + ":{perms}", drools);
 [consequence][]Assign permissions on the {node} from the property value=service.setPermissions({node},propertyValue, drools);
 [consequence][]Break all ACL inheritance on the {node}=service.setAclInheritanceBreak({node},true);
-[consequence][]Create a new folder {nodename} under the {node}=NodeWrapper {nodename} = new NodeWrapper({node}, "{nodename}", "jnt:folder", drools);insert ({nodename});
-[consequence][]Create a new node {nodename} of type {type} under the {node}=NodeWrapper {nodename} = new NodeWrapper({node}, "{nodename}", "{type}", drools);insert ({nodename});
-[consequence][]Create a new node {nodename} under the {node}=NodeWrapper {nodename} = new NodeWrapper({node}, "{nodename}", null, drools);insert ({nodename});
+[consequence][]Create a new folder {nodename} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", "jnt:folder", drools);insert ({nodename});
+[consequence][]Create a new node {nodename} of type {type} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", "{type}", drools);insert ({nodename});
+[consequence][]Create a new node {nodename} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", null, drools);insert ({nodename});
 [consequence][]Create a square thumbnail on reference "{name}" of size {size}=imageService.addSquareThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create a thumbnail on reference "{name}" of size {size}=imageService.addThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create an image "{name}" of size {size}=imageService.addThumbnail(node, "{name}",{size}, drools);
 [consequence][]Extract properties from the file=extractionService.extractProperties(node, drools);
-[consequence][]Get the ancestor "{name}" of type {type}=NodeWrapper {name} = node.getAncestor("{type}");
+[consequence][]Get the ancestor "{name}" of type {type}=AddedNodeFact {name} = node.getAncestor("{type}");
 [consequence][]Import the node=service.importNode(node,drools);
 [consequence][]Import file {xmlFile} into {node}=service.importXML(node, {xmlFile}, drools);
 [consequence][]Log {message}= logger.info({message});
 [consequence][]LogDebug {message}= logger.debug({message});
-[consequence][]Remove this property=insert (new DeletedPropertyWrapper(property, drools));
+[consequence][]Remove this property=insert (new DeletedPropertyFact(property, drools));
 [consequence][]Restore ACL inheritance on the {node}=service.setAclInheritanceBreak({node},false);
 [consequence][]Revoke all permissions on the {node}=service.revokeAllPermissions({node});
-[consequence][]Set and copy to staging the property {property} of the {node} with the current time=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", new java.util.Date(), drools, true));
-[consequence][]Set and copy to staging the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", user.getName(), drools, true));
-[consequence][]Set not existing property {property} of the {node} with the current time=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", new java.util.Date(), drools, false,false));
-[consequence][]Set not existing property {property} of the {node} with the name of the current user=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", user.getName(), drools, false,false));
-[consequence][]Set the property {property} of the {node} with the current time=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", new java.util.Date(), drools, false));
+[consequence][]Set and copy to staging the property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools, true));
+[consequence][]Set and copy to staging the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools, true));
+[consequence][]Set not existing property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools, false,false));
+[consequence][]Set not existing property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools, false,false));
+[consequence][]Set the property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools, false));
 [consequence][]Set the property {property} of the {node} with the height of the image= imageService.setHeight({node}, "{property}", drools);
-[consequence][]Set the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", user.getName(), drools, false));
-[consequence][]Set the property {property} of the {node} with the name of the node=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", provider.decodeInternalName(node.getName()), drools, false));
-[consequence][]Set the property {property} of the {node} with the path of the node=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", provider.decodeInternalName(node.getPath()), drools, false));
-[consequence][]Set the property {property} of the {node} with the value "{value}"=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", "{value}", drools, false));
-[consequence][]Set the property {property} of the {node} with the value of that property=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", propertyValue, drools, false));
-[consequence][]Set the property {property} of the {node} with the value of {variable}=if ({node} != null) insert (new PropertyWrapper({node}, "{property}", {variable}, drools, false));
+[consequence][]Set the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools, false));
+[consequence][]Set the property {property} of the {node} with the name of the node=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", provider.decodeInternalName(node.getName()), drools, false));
+[consequence][]Set the property {property} of the {node} with the path of the node=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", provider.decodeInternalName(node.getPath()), drools, false));
+[consequence][]Set the property {property} of the {node} with the value "{value}"=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", "{value}", drools, false));
+[consequence][]Set the property {property} of the {node} with the value of that property=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", propertyValue, drools, false));
+[consequence][]Set the property {property} of the {node} with the value of {variable}=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", {variable}, drools, false));
 [consequence][]Set the property {property} of the {node} with the width of the image= imageService.setWidth({node}, "{property}", drools);
-[consequence][]Set corresponding property with the value of the extracted {metadata}=if (node != null) {node.addType(metadata.getCorrespondingNodeTypeName(), drools ); insert (new PropertyWrapper(node, metadata.getCorrespondingPropertyName(), metadata.getValue(), drools, false)); }
+[consequence][]Set corresponding property with the value of the extracted {metadata}=if (node != null) {node.addType(metadata.getCorrespondingNodeTypeName(), drools ); insert (new ChangedPropertyFact(node, metadata.getCorrespondingPropertyName(), metadata.getValue(), drools, false)); }
 [consequence][]Increment the property {property} of the {node}=service.incrementProperty(node,"{property}", drools);
 [consequence][]Add the property value to the property {property} of the {node}=service.addToProperty(node,"{property}",propertyValue, drools);
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);
@@ -79,3 +79,5 @@
 [consequence][]Start the workflow {processKey} from {provider} on the {node}=service.startWorkflowOnNode(node,{processKey},{provider}, drools);
 [consequence][]Move to split folder {node}=service.moveToSplitFolder(node, drools);
 [consequence][]Move subnodes of {node} to split folder=service.moveSubnodesToSplitFolder(node, drools);
+[consequence][]Create a link in the navigation menu=service.createNavigationEntry(node,drools);
+[consequence][]Delete associated links=service.deleteNavigationEntry(node,drools);

@@ -46,8 +46,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.tools.imageprocess.ImageProcess;
 
 import javax.jcr.Node;
-import javax.jcr.Session;
-import javax.jcr.Property;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -73,7 +71,7 @@ public class ImageService {
     }
 
 
-    private ImageWrapper getImageWrapper(final NodeWrapper imageNode, KnowledgeHelper drools) throws Exception {
+    private ImageWrapper getImageWrapper(final AddedNodeFact imageNode, KnowledgeHelper drools) throws Exception {
         Iterator<?> it = drools.getWorkingMemory().iterateObjects(new ObjectFilter() {
             public boolean accept(Object o) {
                 if (o instanceof ImageWrapper) {
@@ -136,48 +134,48 @@ public class ImageService {
         return ImageProcess.save(type, ip,outputFile);
     }
 
-    public void addThumbnail(NodeWrapper imageNode, String name, int size, KnowledgeHelper drools) throws Exception {
+    public void addThumbnail(AddedNodeFact imageNode, String name, int size, KnowledgeHelper drools) throws Exception {
         addThumbnail(imageNode, name, size,false, drools);
     }
-    public void addThumbnail(NodeWrapper imageNode, String name, int size,boolean square, KnowledgeHelper drools) throws Exception {
+    public void addThumbnail(AddedNodeFact imageNode, String name, int size,boolean square, KnowledgeHelper drools) throws Exception {
         if (imageNode.getNode().hasNode(name)) {
             JCRNodeWrapper node = imageNode.getNode().getNode(name);
             Calendar thumbDate = node.getProperty("jcr:lastModified").getDate();
             Calendar contentDate = imageNode.getNode().getNode("jcr:content").getProperty("jcr:lastModified").getDate();
             if (contentDate.after(thumbDate)) {
-                NodeWrapper thumbNode = new NodeWrapper(node);
+                AddedNodeFact thumbNode = new AddedNodeFact(node);
                 File f = getThumbFile(imageNode, size,square, drools);
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_DATA, f, drools, false));
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools, false));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_DATA, f, drools, false));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools, false));
             }
         } else {
             File f = getThumbFile(imageNode, size,square, drools);
 
-            NodeWrapper thumbNode = new NodeWrapper(imageNode, name, "jnt:resource", drools);
+            AddedNodeFact thumbNode = new AddedNodeFact(imageNode, name, "jnt:resource", drools);
             if (thumbNode.getNode() != null) {
                 drools.insert(thumbNode);
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_DATA, f, drools, false));
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_MIMETYPE, imageNode.getMimeType(), drools, false));
-                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools, false));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_DATA, f, drools, false));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_MIMETYPE, imageNode.getMimeType(), drools, false));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools, false));
             }
         }
     }
 
-    public void addThumbnail(PropertyWrapper propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
+    public void addThumbnail(ChangedPropertyFact propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
         final JCRPropertyWrapper property = propertyWrapper.getProperty();
         final JCRSessionWrapper session = property.getSession();
         JCRNodeWrapper node = session.getNodeByIdentifier(property.getString());
-        addThumbnail(new NodeWrapper(node),name, size,drools);
+        addThumbnail(new AddedNodeFact(node),name, size,drools);
     }
 
-    public void addSquareThumbnail(PropertyWrapper propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
+    public void addSquareThumbnail(ChangedPropertyFact propertyWrapper, String name, int size, KnowledgeHelper drools) throws Exception {
         final JCRPropertyWrapper property = propertyWrapper.getProperty();
         final JCRSessionWrapper session = property.getSession();
         JCRNodeWrapper node = session.getNodeByIdentifier(property.getString());
-        addThumbnail(new NodeWrapper(node),name, size,drools);
+        addThumbnail(new AddedNodeFact(node),name, size,drools);
     }
 
-    private File getThumbFile(NodeWrapper imageNode, int size,boolean square,KnowledgeHelper drools) throws Exception {
+    private File getThumbFile(AddedNodeFact imageNode, int size,boolean square,KnowledgeHelper drools) throws Exception {
         String savePath = org.jahia.settings.SettingsBean.getInstance().getTmpContentDiskPath();
         File Ftemp = new File(savePath);
         if (!Ftemp.exists()) Ftemp.mkdirs();
@@ -190,25 +188,25 @@ public class ImageService {
         return f;
     }
 
-    public void setHeight(NodeWrapper imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
+    public void setHeight(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
         if (!imageNode.getNode().hasProperty(propertyName)) {
             ImageWrapper iw = getImageWrapper(imageNode, drools);
             ImagePlus ip = iw.getImagePlus();
             if (ip == null) {
                 return;
             }
-            drools.insert(new PropertyWrapper(imageNode, propertyName, ip.getHeight(), drools, false));
+            drools.insert(new ChangedPropertyFact(imageNode, propertyName, ip.getHeight(), drools, false));
         }
     }
 
-    public void setWidth(NodeWrapper imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
+    public void setWidth(AddedNodeFact imageNode, String propertyName, KnowledgeHelper drools) throws Exception {
         if (!imageNode.getNode().hasProperty(propertyName)) {
             ImageWrapper iw = getImageWrapper(imageNode, drools);
             ImagePlus ip = iw.getImagePlus();
             if (ip == null) {
                 return;
             }
-            drools.insert(new PropertyWrapper(imageNode, propertyName, ip.getWidth(), drools, false));
+            drools.insert(new ChangedPropertyFact(imageNode, propertyName, ip.getWidth(), drools, false));
         }
     }
 

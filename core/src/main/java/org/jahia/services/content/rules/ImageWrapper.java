@@ -41,18 +41,18 @@ import ij.ImagePlus;
  * To change this template use File | Settings | File Templates.
  */
 public class ImageWrapper {
-    private NodeWrapper parentNode;
+    private AddedNodeFact parentNode;
 
     private ImagePlus ip;
     private int imageType;
 
-    public ImageWrapper(NodeWrapper parentNode, ImagePlus ip,int imageType) {
+    public ImageWrapper(AddedNodeFact parentNode, ImagePlus ip,int imageType) {
         this.parentNode = parentNode;
         this.imageType = imageType;
         this.ip = ip;
     }
 
-    public NodeWrapper getParentNode() {
+    public AddedNodeFact getParentNode() {
         return parentNode;
     }
 

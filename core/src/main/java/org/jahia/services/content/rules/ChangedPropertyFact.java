@@ -48,7 +48,6 @@ import javax.jcr.nodetype.NodeType;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -60,9 +59,10 @@ import java.util.*;
  * Time: 17:27:10
  * To change this template use File | Settings | File Templates.
  */
-public class PropertyWrapper implements Updateable {
+
+public class ChangedPropertyFact implements Updateable {
     private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(PropertyWrapper.class);
+            org.apache.log4j.Logger.getLogger(ChangedPropertyFact.class);
 
     private String path;
     private JCRPropertyWrapper property;
@@ -71,18 +71,18 @@ public class PropertyWrapper implements Updateable {
     private String name;
     private Object value;
 
-    private NodeWrapper nodeWrapper;
+    private AddedNodeFact nodeWrapper;
 
-    public PropertyWrapper(NodeWrapper nodeWrapper, JCRPropertyWrapper property) throws RepositoryException {
+    public ChangedPropertyFact(AddedNodeFact nodeWrapper, JCRPropertyWrapper property) throws RepositoryException {
         this.nodeWrapper = nodeWrapper;
         this.property = property;
         path = property.getPath();
     }
 
-    public PropertyWrapper(NodeWrapper nodeWrapper, final String name, final Object o, KnowledgeHelper drools, final boolean copyToStaging) throws RepositoryException {
+    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools, final boolean copyToStaging) throws RepositoryException {
         this(nodeWrapper, name, o, drools, copyToStaging,true);
     }
-    public PropertyWrapper(NodeWrapper nodeWrapper, final String name, final Object o, KnowledgeHelper drools,
+    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools,
                            final boolean copyToStaging, final boolean overrideIfExisting) throws RepositoryException {
         if (nodeWrapper == null) {
             return;
@@ -336,7 +336,7 @@ public class PropertyWrapper implements Updateable {
         return 0;
     }
 
-    public NodeWrapper getNode() {
+    public AddedNodeFact getNode() {
         return nodeWrapper;
     }
 

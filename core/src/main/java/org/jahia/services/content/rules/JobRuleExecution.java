@@ -41,9 +41,9 @@ package org.jahia.services.content.rules;
  */
 public class JobRuleExecution {
     private final String ruleToExecute;
-    private final NodeWrapper node;
+    private final AddedNodeFact node;
 
-    public JobRuleExecution(String ruleToExecute, NodeWrapper wrapper) {
+    public JobRuleExecution(String ruleToExecute, AddedNodeFact wrapper) {
         this.ruleToExecute = ruleToExecute;
         this.node = wrapper;
     }
@@ -52,7 +52,7 @@ public class JobRuleExecution {
         return ruleToExecute;
     }
 
-    public NodeWrapper getNode() {
+    public AddedNodeFact getNode() {
         return node;
     }
 }

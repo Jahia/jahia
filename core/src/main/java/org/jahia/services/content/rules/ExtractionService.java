@@ -124,7 +124,7 @@ public class ExtractionService {
      * @param drools context of the rule engine
      * @throws Exception
      */
-    public void extractProperties(NodeWrapper node, KnowledgeHelper drools) throws Exception{
+    public void extractProperties(AddedNodeFact node, KnowledgeHelper drools) throws Exception{
         if (!textExtractionService.isEnabled()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Text extraction service is disabled. Skip extracting properties for node " + node.getPath());
@@ -132,7 +132,7 @@ public class ExtractionService {
             return;
         }
         
-        NodeWrapper contentNode = node.getContent();
+        AddedNodeFact contentNode = node.getContent();
         if (contentNode == null) {
             return;
         }

@@ -22,7 +22,7 @@
 <template:addWrapper name="wrapper.dashboard"/>
 <div id="${currentNode.identifier}">
     <jcr:sql var="result"
-             sql="select * from [jnt:docspace] as file order by file.[jcr:lastModified] desc"/>
+             sql="select * from [jnt:folder] as file order by file.[jcr:lastModified] desc"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
     <c:set var="listTotalSize" value="${functions:length(result.nodes)}" scope="request"/>
     <c:choose>
@@ -36,14 +36,16 @@
     <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
     <ul class="docspacelist">
         <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
-            <li>
-                <c:if test="${jcr:hasPermission(subchild, 'write')}">
+            <c:if test="${jcr:hasPermission(subchild, 'write') and (not empty jcr:getParentOfType(subchild, 'jnt:page'))}">
+                <li>
                     <a class="adocspace" href="${url.basePreview}${subchild.path}.html"
                        title="${subchild.name}">${functions:abbreviate(subchild.name,20,30,'...')}</a>
-                </c:if>
-                &nbsp;<span><fmt:message key="label.lastModif"/>:&nbsp;<fmt:formatDate
-                    value="${subchild.properties['jcr:lastModified'].date.time}" dateStyle="short" type="both"/></span>
-            </li>
+
+                    &nbsp;<span><fmt:message key="label.lastModif"/>:&nbsp;<fmt:formatDate
+                        value="${subchild.properties['jcr:lastModified'].date.time}" dateStyle="short"
+                        type="both"/></span>
+                </li>
+            </c:if>
         </c:forEach>
     </ul>
     <template:displayPagination nbItemsList="5,10,20,40,60,80,100,200"/>

@@ -5,7 +5,7 @@
                        xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
                        xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
                        jcr:mixinTypes="jmix:templateInformation jmix:sitemap jmix:wrapper"
-                       j:published="true" jcr:primaryType="jnt:virtualsite" changefreq="monthly"
+                       jcr:primaryType="jnt:virtualsite" changefreq="monthly"
                        j:installedModules="templates-web" priority="0.5" j:checkinDate="2010-04-21T10:59:52.531+02:00">
             <contents jcr:mixinTypes="jmix:templateInformation jmix:wrapper" j:published="true"
                       jcr:primaryType="jnt:contentList"
@@ -41,7 +41,7 @@
                                   jcr:primaryType="jnt:translation"/>
                 <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"
                              j:templateLocked="true">
-                    <row1 column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row"
+                    <row1 column="2col115" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row"
                           j:templateLocked="true">
                         <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"/>
                         <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
@@ -59,18 +59,18 @@
                                       jcr:primaryType="jnt:translation"/>
                     <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"
                                  j:templateLocked="true">
-                        <row1 column="2col124" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row"
+                        <row1 column="2col115" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:row"
                               j:templateLocked="true">
                             <col1 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList"/>
                             <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
                                 <simple-search
                                         j:share="/templatesSet/templates-web/contents/site_components/simple-search"/>
                                 <side-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation"
-                                           j:template="sideMenu" jcr:primaryType="jnt:navMenu" j:templateLocked="true">
+                                           j:template="sideMenu" jcr:primaryType="jnt:navMenu">
                                     <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:published="true"
                                                        j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
                                                        j:startLevel="2" j:allowedTypes="jnt:page"
-                                                       j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true"/>
+                                                       j:checkinDate="2010-04-30T15:43:00.492+02:00"/>
                                 </side-menu>
                             </col2>
                         </row1>
@@ -113,11 +113,10 @@
                 <logo jcr:primaryType="jnt:contentList"/>
                 <topMenu jcr:primaryType="jnt:contentList">
                     <top-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable" j:published="true"
-                              jcr:primaryType="jnt:navMenu" j:checkinDate="2010-04-30T15:43:00.492+02:00"
-                              j:templateLocked="true">
+                              jcr:primaryType="jnt:navMenu" j:checkinDate="2010-04-30T15:43:00.492+02:00">
                         <home j:node="/templatesSet/templates-web/home" jcr:mixinTypes="jmix:templateInformation"
                               j:published="true" jcr:primaryType="jnt:navMenuNodeLink"
-                              j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
+                              j:checkinDate="2010-04-30T15:43:00.492+02:00" >
                             <j:translation_en jcr:mixinTypes="jmix:templateInformation" j:published="true"
                                               jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Home"
                                               j:checkinDate="2010-04-30T15:43:00.492+02:00"/>
@@ -125,8 +124,7 @@
                         <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="1" j:published="true"
                                            j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
                                            j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1"
-                                           j:allowedTypes="jnt:page" j:checkinDate="2010-04-30T15:43:00.492+02:00"
-                                           j:templateLocked="true"/>
+                                           j:allowedTypes="jnt:page" j:checkinDate="2010-04-30T15:43:00.492+02:00" />
                     </top-menu>
                 </topMenu>
                 <bottomMenu jcr:primaryType="jnt:contentList">

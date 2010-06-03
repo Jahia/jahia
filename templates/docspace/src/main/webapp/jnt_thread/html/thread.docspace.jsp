@@ -35,6 +35,5 @@
     </c:forEach>
     <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
 </ul>
-<template:include template="newDocspacePostForm"/>
 <template:removePager id="${currentNode.identifier}"/>
 

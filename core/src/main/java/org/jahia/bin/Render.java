@@ -235,7 +235,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 .getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
         JCRNodeWrapper node = session.getNode(urlResolver.getPath());
         session.checkout(node);
-        Set<Map.Entry<String, String[]>> set = req.getParameterMap().entrySet();
+        Map parameters = req.getParameterMap();
+        if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
+            String[] mixinTypes = (String[]) parameters.get(Constants.JCR_MIXINTYPES);
+            for (String mixinType : mixinTypes) {
+                node.addMixin(mixinType);
+            }
+        }
+        Set<Map.Entry<String, String[]>> set = parameters.entrySet();
         for (Map.Entry<String, String[]> entry : set) {
             String key = entry.getKey();
             if (!reservedParameters.contains(key)) {

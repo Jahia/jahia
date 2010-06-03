@@ -14,6 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css"/>
+<template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.js"/>
 <template:addResources type="javascript"
@@ -21,37 +22,28 @@
 
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
-<template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
-<template:addResources type="javascript" resources="ajaxreplace.js"/>
-<template:addResources type="css" resources="jquery.fancybox.css"/>
-<c:set var="bindedComponent" value="${currentNode.properties['j:bindedComponent'].node}"/>
-<c:if test="${not empty bindedComponent}">
-    <c:choose>
-        <c:when test="${jcr:isNodeType(bindedComponent, 'jnt:mainResourceDisplay')}">
-            <c:set var="aclNode" value="${renderContext.mainResource.node}"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="aclNode" value="${bindedComponent}"/>
-        </c:otherwise>
-    </c:choose>
-    <ul class="docspacelist docspacelistusers">
-        <c:forEach items="${aclNode.aclEntries}" var="acls">
-            <li>
-                <c:set var="users" value="${fn:substringBefore(acls.key, ':')}"/>
-                <c:choose>
-                    <c:when test="${users eq 'u'}">
-                        <c:set value="user_32" var="iconName"/>
-                    </c:when>
-                    <c:when test="${users eq 'g'}">
-                        <c:set value="group-icon" var="iconName"/>
-                    </c:when>
-                </c:choose>
-                <img class="floatleft" alt="user default icon" src="${url.currentModule}/images/${iconName}.png"/>
-                <a class="floatleft" href="#"><c:out value="${fn:substringAfter(acls.key,':')}"/></a>
+<c:set value="${jcr:hasPermission(currentNode, 'write')}" var="hasWriteAccess"/>
+<c:if test="${hasWriteAccess}">
+    <div class="boxdocspace"><!--start boxdocspace -->
+        <div class="boxdocspacegrey boxdocspacepadding10 boxdocspacemarginbottom16">
+            <div class="boxdocspace-inner">
+                <div class="boxdocspace-inner-border">
+                    <form action="${url.base}${currentNode.parent.path}/*" method="POST" name="uploadFile"
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="nodeType" value="jnt:file"/>
+                        <input type="hidden" name="redirectTo"
+                               value="${url.base}${renderContext.mainResource.node.path}"/>
+                        <input type="hidden" name="newNodeOutputFormat" value="docspace.html"/>
+                        <input type="hidden" name="targetDirectory" value="${currentNode.parent.path}"/>
+                        <input type="hidden" name="version" value="true"/>
+                        <label><fmt:message key="docspace.label.document.add.version"/></label>
 
-                <div class='clear'></div>
-            </li>
-        </c:forEach>
-    </ul>
+                        <input type="file" name="file">
+                        <input class="button" type="submit" id="upload" value="Upload"/>
+                    </form>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </c:if>
-<template:linker path="*"/>

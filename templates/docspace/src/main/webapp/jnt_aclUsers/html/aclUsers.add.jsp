@@ -90,7 +90,7 @@
         </script>
         <c:choose>
             <c:when test="${jcr:isNodeType(bindedComponent, 'jnt:mainResourceDisplay')}">
-                <c:set var="aclNode" value="${currentResource.node}"/>
+                <c:set var="aclNode" value="${renderContext.mainResource.node}"/>
             </c:when>
             <c:otherwise>
                 <c:set var="aclNode" value="${bindedComponent}"/>

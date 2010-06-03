@@ -52,6 +52,7 @@ import org.json.JSONObject;
 import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -121,54 +122,7 @@ public class DefaultPostAction implements Action {
             if (!"*".equals(lastPath)) {
                 nodeName = lastPath;
             }
-            if (StringUtils.isBlank(nodeName)) {
-                if (parameters.get("jcr:title") != null) {
-                    nodeName = JCRContentUtils.generateNodeName(parameters.get("jcr:title").get(0), 32);
-                } else {
-                    nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
-                }
-                nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);
-            }
-            if (ServletRequestUtils.getBooleanParameter(req, Render.NORMALIZE_NODE_NAME, false)) {
-                nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
-            }
-            try {
-                newNode = session.getNode(realPath + "/" + nodeName);
-                if (!newNode.isCheckedOut()) {
-                    newNode.checkout();
-                }
-            } catch (PathNotFoundException e) {
-                if (!node.isCheckedOut()) {
-                    node.checkout();
-                }
-                newNode = node.addNode(nodeName, nodeType);
-            }
-            if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
-                for (Object o : ((ArrayList) parameters.get(Constants.JCR_MIXINTYPES))) {
-                    String mixin = (String) o;
-                    newNode.addMixin(mixin);
-                }
-            }
-            Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
-            for (Map.Entry<String, List<String>> entry : set) {
-                String key = entry.getKey();
-                if (!Render.reservedParameters.contains(key)) {
-                    List<String> values = entry.getValue();
-                    if (!values.get(0).equals("Submit")) {
-                        ExtendedPropertyDefinition propertyDefinition = newNode.getApplicablePropertyDefinition(key);
-                        if (propertyDefinition.isMultiple()) {
-                            newNode.setProperty(key, values.toArray(new String[values.size()]));
-                        } else if(values.get(0).length() > 0){
-                            if(propertyDefinition.getRequiredType() == ExtendedPropertyType.DATE) {
-                                DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values.get(0));
-                                newNode.setProperty(key,dateTime.toCalendar(Locale.ENGLISH));
-                            } else {
-                                newNode.setProperty(key, values.get(0));
-                            }
-                        }
-                    }
-                }
-            }
+            newNode = createNode(req, parameters, session, node, realPath.toString(), nodeType, nodeName);
             final FileUpload fileUpload = (FileUpload) req.getAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE);
             if (fileUpload != null && fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
                 final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
@@ -197,5 +151,60 @@ public class DefaultPostAction implements Action {
         } else {
             return null;
         }
+    }
+
+    protected JCRNodeWrapper createNode(HttpServletRequest req, Map<String, List<String>> parameters,
+                                     JCRSessionWrapper session, JCRNodeWrapper node, String realPath,
+                                     String nodeType, String nodeName) throws RepositoryException {
+        JCRNodeWrapper newNode;
+        if (StringUtils.isBlank(nodeName)) {
+            if (parameters.get("jcr:title") != null) {
+                nodeName = JCRContentUtils.generateNodeName(parameters.get("jcr:title").get(0), 32);
+            } else {
+                nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
+            }
+            nodeName = JCRContentUtils.findAvailableNodeName(node, nodeName);
+        }
+        if (ServletRequestUtils.getBooleanParameter(req, Render.NORMALIZE_NODE_NAME, false)) {
+            nodeName = JCRContentUtils.generateNodeName(nodeName, 255);
+        }
+        try {
+            newNode = session.getNode(realPath + "/" + nodeName);
+            if (!newNode.isCheckedOut()) {
+                newNode.checkout();
+            }
+        } catch (PathNotFoundException e) {
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
+            newNode = node.addNode(nodeName, nodeType);
+        }
+        if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
+            for (Object o : ((ArrayList) parameters.get(Constants.JCR_MIXINTYPES))) {
+                String mixin = (String) o;
+                newNode.addMixin(mixin);
+            }
+        }
+        Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
+        for (Map.Entry<String, List<String>> entry : set) {
+            String key = entry.getKey();
+            if (!Render.reservedParameters.contains(key)) {
+                List<String> values = entry.getValue();
+                if (!values.get(0).equals("Submit")) {
+                    ExtendedPropertyDefinition propertyDefinition = newNode.getApplicablePropertyDefinition(key);
+                    if (propertyDefinition.isMultiple()) {
+                        newNode.setProperty(key, values.toArray(new String[values.size()]));
+                    } else if(values.get(0).length() > 0){
+                        if(propertyDefinition.getRequiredType() == ExtendedPropertyType.DATE) {
+                            DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values.get(0));
+                            newNode.setProperty(key,dateTime.toCalendar(Locale.ENGLISH));
+                        } else {
+                            newNode.setProperty(key, values.get(0));
+                        }
+                    }
+                }
+            }
+        }
+        return newNode;
     }
 }

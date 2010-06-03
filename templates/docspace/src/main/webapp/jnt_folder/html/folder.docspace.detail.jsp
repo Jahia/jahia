@@ -198,10 +198,6 @@
                                        value="${url.base}${renderContext.mainResource.node.path}"/>
                                 <input type="hidden" name="targetDirectory" value="${currentNode.path}"/>
                                 <input type="file" name="file">
-                                <input type="hidden" name="jcr:mixinTypes" value="jmix:comments"/>
-                                <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
-                                <input type="hidden" name="jcr:mixinTypes" value="jmix:rating"/>
-                                <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
                                 <input type="hidden" name="version" value="true"/>
                                 <input class="button" type="submit" id="upload" value="Upload"/>
                             </form>

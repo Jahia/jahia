@@ -22,7 +22,7 @@
         <li>
             <c:if test="${jcr:hasPermission(document, 'write')}">
                 <span class="icon ${functions:fileIcon(document.name)}"></span><a
-                    href="${url.basePreview}${document.path}.docspace.html"
+                    href="${url.basePreview}${document.path}.html"
                     title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
             </c:if>
             <c:if test="${not jcr:hasPermission(document, 'write')}">

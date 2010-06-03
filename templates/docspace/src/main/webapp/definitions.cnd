@@ -1,19 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-
-[jmix:docspaceElement] mixin
-
-[jnt:docspaceFile] > jmix:docspaceElement mixin
-
-[jnt:docFilesList] > jnt:content, jmix:list, jmix:pager
-
 [jnt:aclUsers] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent
-
-[jnt:docspace] > jnt:content, mix:title, jmix:tagged, jmix:docspaceElement
-+ filesList (jnt:docFilesList)
-+ searchUsers (jnt:aclUsers)
-+ * (jnt:docspace)
-+ * (jnt:file)
 
 [jnt:docspaceTree] > jnt:content, jmix:siteComponentContent
 
@@ -23,4 +10,6 @@
  - startNode (weakreference) mandatory
 
 [jnt:lastDocspace] > jnt:content, jmix:queryContent
- - startNode (weakreference) mandatory 
+ - startNode (weakreference) mandatory
+
+[jnt:displayVersion] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent  

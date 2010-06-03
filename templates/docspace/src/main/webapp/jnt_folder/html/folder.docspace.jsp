@@ -97,7 +97,7 @@
                                             <span class="icon ${functions:fileIcon(subchild.name)}"></span> </c:otherwise>
                                     </c:choose></td>
                                 <td headers="Title">
-                                    <a href="${url.base}${subchild.path}.docspace.html" title="${subchild.name}">${functions:abbreviate(subchild.name,30,40,'...')}</a><br/>
+                                    <a href="${url.base}${subchild.path}.html" title="${subchild.name}">${functions:abbreviate(subchild.name,30,40,'...')}</a><br/>
                                 </td>
                                 <td class="center" headers="Download">
                                     <c:if test="${not jcr:isNodeType(subchild, 'jnt:folder')}"><a

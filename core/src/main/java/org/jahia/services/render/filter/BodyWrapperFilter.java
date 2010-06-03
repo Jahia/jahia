@@ -72,7 +72,7 @@ public class BodyWrapperFilter extends AbstractFilter {
             }
             while (true) {
 //                if (current.isNodeType("jmix:wrapper")) {
-                    Query q = current.getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:wrapper] as w where ischildnode(w, ["+current.getPath()+"])", Query.JCR_SQL2);
+                    Query q = current.getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:wrapper] as w where ischildnode(w, ['"+current.getPath()+"'])", Query.JCR_SQL2);
                     QueryResult result = q.execute();
                     NodeIterator ni = result.getNodes();
                     while (ni.hasNext()) {

@@ -293,10 +293,10 @@
                             <property name="priority" value="40" />
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
-                        <bean class="org.jahia.services.render.filter.OptionsFilter" >
+                        <!--<bean class="org.jahia.services.render.filter.OptionsFilter" >
                             <property name="priority" value="50" />
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>
-                        </bean>
+                        </bean>-->
                         <bean class="org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter">
                             <property name="applyOnNodeTypes" value="jmix:googleanalytics"/>
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>

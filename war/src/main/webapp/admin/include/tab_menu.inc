@@ -86,6 +86,23 @@
                 </div>
             </div>
         </li>
+        <%  }
+        %>
+        <li class="dex-TabBarItem<% if (stretcherToOpen == 1) { %>-selected<% } %>">
+            <div>
+                <div>
+          <span class="tab-icon ico-site">
+            <a href='<%=Jahia.getContextPath() + "/cms/studio/default/en/templatesSet/templates-intranet/home.html" %>'>Go to Studio</a>
+          </span>
+                </div>
+            </div>
+        </li>
+
+
+        <%
+            if (theSite != null) {
+            String siteName = theSite.getTitle();;
+        %>
 
         <li class="dex-TabBarItem tabExit">
             <div>

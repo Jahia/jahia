@@ -36,14 +36,22 @@
             var newTag = tagForm.elements['j:newTag'];
             if (newTag.value.length > 0) {
                 var tagContainer = jQuery('#jahia-tags-' + uuid);
+                if(jQuery(".notaggeditem"+uuid).length>0){
+                    jQuery(".notaggeditem"+uuid).hide();
+                    separator = '';
+                }
                 if (tagContainer.find("span:contains('" + newTag.value + "')").length == 0) {
                     jQuery.post(tagForm.action, jQuery(tagForm).serialize(), function (data) {
                         if (separator.length > 0 && jQuery('#jahia-tags-' + uuid + ' > span').length > 0) {
                             tagContainer.append(separator);
                         }
-                        var tagDisplay = jQuery('<span>' + newTag.value + '</span>');
+                        var tagDisplay = jQuery('<span class="taggeditem">' + newTag.value + '</span>');
                         tagDisplay.hide();
-                        tagContainer.append(tagDisplay);
+                        if(jQuery(".notaggeditem"+uuid).length>0){
+                            jQuery(".notaggeditem"+uuid).replaceWith(tagDisplay);
+                        } else {
+                            tagContainer.append(tagDisplay);
+                        }
                         tagDisplay.fadeIn('fast');
                         newTag.value = '';
                     });

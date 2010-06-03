@@ -37,11 +37,18 @@
             </c:if>
         </c:forEach>
         <div class="tagged">
-            <span>Tags :</span>
+            <span><fmt:message key="label.tags"/>:</span>
             <span id="jahia-tags-${bindedComponent.identifier}">
-	            <c:forEach items="${filteredTags}" var="tag" varStatus="status">
-                    <span class="taggeditem">${fn:escapeXml(tag.value)}</span>${!status.last ? separator : ''}
-                </c:forEach>
+                <c:choose>
+                    <c:when test="${not empty filteredTags}">
+                        <c:forEach items="${filteredTags}" var="tag" varStatus="status">
+                            <span class="taggeditem">${fn:escapeXml(tag.value)}</span>${!status.last ? separator : ''}
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="notaggeditem${bindedComponent.identifier}"><fmt:message key="label.tags.notag"/></span>
+                    </c:otherwise>
+                </c:choose>
             </span>
         </div>
     </div>

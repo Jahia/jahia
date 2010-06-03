@@ -62,7 +62,7 @@
     });
 </script>
 <div><!--start grid_12-->
-    <a class="docspaceBack" href="${url.base}${currentNode.parent.path}.docspace.html"><fmt:message
+    <a class="docspaceBack" href="${url.base}${currentNode.parent.path}.html"><fmt:message
             key="docspace.label.back"/> ${currentNode.parent.name}</a>
     <c:if test="${hasWriteAccess}">
         <a href="#" id="actions" title="Delete" class="delete"><fmt:message key="docspace.label.file.delete"/></a>

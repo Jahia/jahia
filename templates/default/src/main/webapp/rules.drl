@@ -25,3 +25,18 @@ rule "Tagging"
    then
        Tag the node with the propertyValueAsString
 end
+
+rule "Menu - create page"
+    when
+        A new node is created
+         - it has the type jnt:page
+    then
+        Create a link in the navigation menu
+end
+
+rule "Menu - delete page"
+    when
+        A node is deleted
+    then
+        Delete associated links
+end

@@ -13,15 +13,22 @@
 
 [jmix:navMenuItem] mixin
 
+[jmix:autoCreateNavMenu] mixin
+ extends = jnt:navMenu
+ - j:baselineNode (weakreference)
+ - j:maxDepth (long) = 3
+
 [jnt:navMenu] > jnt:content, mix:title, jmix:navMenuItem, jmix:siteComponentContent
  orderable
  + * (jmix:navMenuItem)
 
 [jnt:navMenuText] > jnt:text, jmix:navMenuItem
+ + * (jmix:navMenuItem)
 
 [jnt:navMenuExternalLink] > jnt:externalLink, jmix:navMenuItem
 
 [jnt:navMenuNodeLink] > jnt:nodeLink, jmix:navMenuItem
+ + * (jmix:navMenuItem)
 
 [jnt:navMenuQuery] > jnt:query, jmix:navMenuItem
 

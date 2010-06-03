@@ -196,10 +196,8 @@
           <simpleSearchForm result="/templatesSet/templates-intranet/search-results" jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" j:templateLocked="true" />
         </simpleSearch>
         <topMenu jcr:primaryType="jnt:contentList">
-          <topBar jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:navMenu">
-            <navMenuMultilevel j:maxDepth="2" j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel" j:startLevel="1" />
-
-          </topBar>
+            <top-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable"
+                      jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-intranet/home" j:maxDepth="2" j:styleName="navigation"/>
           <shortcuts jcr:mixinTypes="jmix:templateInformation jmix:shareable" jcr:primaryType="jnt:shortcuts" j:templateLocked="true" />
         </topMenu>
         <footer jcr:primaryType="jnt:contentList" />

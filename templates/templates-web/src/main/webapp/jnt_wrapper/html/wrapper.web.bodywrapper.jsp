@@ -30,10 +30,7 @@
                 <div class="logotop"><template:area path="logo"/></div>
             </div>
             <div class="container container_16">
-                <div id="navigationN1"><!--start navigationN1-->
-                    <template:area path="topMenu"/><!--Include MENU-->
-                </div>
-                <!--stop navigationN1-->
+                <template:area path="topMenu"/><!--Include MENU-->
             </div>
             <div class="clear"></div>
         </div>

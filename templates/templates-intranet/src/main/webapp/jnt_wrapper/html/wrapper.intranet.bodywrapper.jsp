@@ -36,7 +36,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../../common/declarations.jspf" %>
-<template:addResources type="css" resources="960.css,01web.css,02mod.css" />
+<template:addResources type="css" resources="960.css,01web.css,02mod.css,navigation.css" />
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>
@@ -65,9 +65,7 @@
                 </div>
 			<div class="clear"></div></div>
             <div class="grid_16">
-                <div id="navigation">
-                    <template:area path="topMenu"/>
-                </div>
+                <template:area path="topMenu"/>
             </div>
         </div>
         <div class="clear"></div>

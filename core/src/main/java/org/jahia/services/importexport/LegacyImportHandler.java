@@ -23,7 +23,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -67,9 +66,11 @@ public class LegacyImportHandler extends DefaultHandler {
     private static final String PAGE = "page";
     private static final String LINK = "link";
 
-    public LegacyImportHandler(JCRSessionWrapper session,
-            JCRNodeWrapper currentSiteNode, NodeTypeRegistry registry,
-            DefinitionsMapping mapping, Locale locale, String originatingJahiaRelease) {
+    private String currentNode;
+    private int level = 0;
+
+    public LegacyImportHandler(JCRSessionWrapper session, JCRNodeWrapper currentSiteNode, NodeTypeRegistry registry,
+                               DefinitionsMapping mapping, Locale locale, String originatingJahiaRelease) {
         this.session = session;
         this.uuidMapping = session.getUuidMapping();
         this.pathMapping = session.getPathMapping();
@@ -98,24 +99,18 @@ public class LegacyImportHandler extends DefaultHandler {
      * element (such as allocating a new tree node or writing output to a file).
      * </p>
      *
-     * @param uri
-     *            The Namespace URI, or the empty string if the element has no Namespace URI or if Namespace processing is not being
-     *            performed.
-     * @param localName
-     *            The local name (without prefix), or the empty string if Namespace processing is not being performed.
-     * @param qName
-     *            The qualified name (with prefix), or the empty string if qualified names are not available.
-     * @param attributes
-     *            The attributes attached to the element. If there are no attributes, it shall be an empty Attributes object.
-     * @throws org.xml.sax.SAXException
-     *             Any SAX exception, possibly wrapping another exception.
+     * @param uri        The Namespace URI, or the empty string if the element has no Namespace URI or if Namespace processing is not being
+     *                   performed.
+     * @param localName  The local name (without prefix), or the empty string if Namespace processing is not being performed.
+     * @param qName      The qualified name (with prefix), or the empty string if qualified names are not available.
+     * @param attributes The attributes attached to the element. If there are no attributes, it shall be an empty Attributes object.
+     * @throws org.xml.sax.SAXException Any SAX exception, possibly wrapping another exception.
      * @see org.xml.sax.ContentHandler#startElement
      */
     @Override
-    public void startElement(String uri, String localName, String qName,
-            Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         try {
-
+            currentNode = localName;
             String uuid = attributes.getValue("jcr:uuid");
 
             int ctx = -1;
@@ -123,76 +118,56 @@ public class LegacyImportHandler extends DefaultHandler {
                 ctx = currentCtx.peek().ctx.peek();
             }
 
-            if (ctx == -1 && HTTP_WWW_JAHIA_ORG.equals(uri)
-                    && PAGE.equals(localName)) {
+            System.out.print(StringUtils.repeat(" ", level) + "<"+currentNode + "> , ctx = "+ctx);
+            level++;
+            if (ctx == -1 && HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
                 // System.out.println("create page" + attributes.getValue("jahia:title"));
-                createPage(
-                        attributes.getValue(Constants.JCR_NS, "primaryType"),
-                        attributes.getValue("jahia:title"), attributes
-                                .getValue("jahia:template"), attributes
-                                .getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
+                createPage(attributes.getValue(Constants.JCR_NS, "primaryType"), attributes.getValue("jahia:title"),
+                        attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"),
+                        uuid);
                 return;
             }
 
             switch (ctx) {
                 case CTX_PAGE:
-                    if (localName.endsWith("List")
-                            && getCurrentContentType() != null
-                            && getCurrentContentType()
-                                    .getChildNodeDefinitionsAsMap()
-                                    .containsKey(
-                                            StringUtils.substringBeforeLast(
-                                                    localName, "List"))) {
+                    if (localName.endsWith("List") && getCurrentContentType() != null &&
+                            getCurrentContentType().getChildNodeDefinitionsAsMap()
+                                    .containsKey(StringUtils.substringBeforeLast(localName, "List"))) {
                         // System.out.println("create list " + localName);
                         // Must be a container list
-                        ExtendedNodeDefinition nodeDef = getCurrentContentType()
-                                .getChildNodeDefinitionsAsMap().get(
-                                        StringUtils.substringBeforeLast(
-                                                localName, "List"));
+                        ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
+                                .get(StringUtils.substringBeforeLast(localName, "List"));
 
                         createContentList(nodeDef, uuid);
                         setMetadata(attributes);
                     } else {
-                        logger.warn("Unexpected " + localName + " element in import file - skipping it and its subtree");
+                        logger.warn(
+                                "Unexpected " + localName + " element in import file - skipping it and its subtree");
                         currentCtx.peek().pushSkip();
                     }
                     break;
                 case CTX_CTN:
-                    if (localName.endsWith("List")
-                            && getCurrentContentType() != null
-                            && getCurrentContentType()
-                                    .getChildNodeDefinitionsAsMap()
-                                    .containsKey(
-                                            StringUtils.substringBeforeLast(
-                                                    localName, "List"))) {
+                    if (localName.endsWith("List") && getCurrentContentType() != null &&
+                            getCurrentContentType().getChildNodeDefinitionsAsMap()
+                                    .containsKey(StringUtils.substringBeforeLast(localName, "List"))) {
                         // System.out.println("create list " + localName);
                         // Must be a container list
-                        ExtendedNodeDefinition nodeDef = getCurrentContentType()
-                                .getChildNodeDefinitionsAsMap().get(
-                                        StringUtils.substringBeforeLast(
-                                                localName, "List"));
+                        ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
+                                .get(StringUtils.substringBeforeLast(localName, "List"));
 
                         createContentList(nodeDef, uuid);
                         setMetadata(attributes);
                     } else {
                         // System.out.println("create field " + localName);
                         ExtendedItemDefinition itemDef;
-                        if (getCurrentContentType()
-                                .getChildNodeDefinitionsAsMap().containsKey(
-                                        localName)) {
-                            itemDef = getCurrentContentType()
-                                    .getChildNodeDefinitionsAsMap().get(
-                                            localName);
+                        if (getCurrentContentType().getChildNodeDefinitionsAsMap().containsKey(localName)) {
+                            itemDef = getCurrentContentType().getChildNodeDefinitionsAsMap().get(localName);
                         } else {
-                            itemDef = getCurrentContentType()
-                                    .getPropertyDefinitionsAsMap().get(
-                                            localName);
+                            itemDef = getCurrentContentType().getPropertyDefinitionsAsMap().get(localName);
                         }
-                        if (itemDef != null
-                                && (itemDef.isNode() || setPropertyField(getCurrentContentType(),
-                                        localName, attributes.getValue("jahia:value")))) {
-                            String mappedProperty = mapping.getMappedProperty(
-                                    getCurrentContentType(), localName);
+                        if (itemDef != null && (itemDef.isNode() || setPropertyField(getCurrentContentType(), localName,
+                                attributes.getValue("jahia:value")))) {
+                            String mappedProperty = mapping.getMappedProperty(getCurrentContentType(), localName);
                             if ("#skip".equals(mappedProperty)) {
                                 currentCtx.peek().pushSkip();
                             } else {
@@ -204,14 +179,12 @@ public class LegacyImportHandler extends DefaultHandler {
                     }
                     break;
                 case CTX_BOX:
-                    if (localName.endsWith("List")
-                            && getCurrentContentType() != null
-                            && getCurrentContentType().getChildNodeDefinitionsAsMap().containsKey(
-                                    StringUtils.substringBeforeLast(localName, "List"))) {
+                    if (localName.endsWith("List") && getCurrentContentType() != null &&
+                            getCurrentContentType().getChildNodeDefinitionsAsMap()
+                                    .containsKey(StringUtils.substringBeforeLast(localName, "List"))) {
                         if (!isSingleContainerBox(localName)) {
-                            ExtendedNodeDefinition nodeDef = getCurrentContentType()
-                                    .getChildNodeDefinitionsAsMap().get(
-                                            StringUtils.substringBeforeLast(localName, "List"));
+                            ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
+                                    .get(StringUtils.substringBeforeLast(localName, "List"));
 
                             createContentList(nodeDef, uuid);
                             setMetadata(attributes);
@@ -219,11 +192,10 @@ public class LegacyImportHandler extends DefaultHandler {
                             currentCtx.peek().pushBox(null);
                         }
                     } else {
-                        String propertyName = mapping.getMappedProperty(getCurrentContentType(),
-                                localName);
+                        String propertyName = mapping.getMappedProperty(getCurrentContentType(), localName);
                         currentCtx.peek().boxProperties.peek().put(propertyName,
-                                mapping.getMappedPropertyValue(getCurrentContentType(),
-                                        localName, attributes.getValue("jahia:value")));
+                                mapping.getMappedPropertyValue(getCurrentContentType(), localName,
+                                        attributes.getValue("jahia:value")));
                         currentCtx.peek().pushField(propertyName);
                     }
                     break;
@@ -234,8 +206,8 @@ public class LegacyImportHandler extends DefaultHandler {
                      * ctnDefinition.getRequiredPrimaryTypes()[0];
                      */
 
-                    createContent(StringUtils.startsWith(originatingJahiaRelease, "5") ? qName
-                            : attributes.getValue(Constants.JCR_NS, "primaryType"), uuid,
+                    createContent(StringUtils.startsWith(originatingJahiaRelease, "5") ? qName :
+                            attributes.getValue(Constants.JCR_NS, "primaryType"), uuid,
                             attributes.getValue("jahia:jahiaLinkActivation_picker_relationship"));
                     setMetadata(attributes);
                     break;
@@ -245,8 +217,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
                 case CTX_SHAREABLE:
                     // System.out.println("create shareable "+localName);
-                    if ("#shareableSource".equals(mapping.getMappedNode(
-                            getCurrentContentType(), localName))) {
+                    if ("#shareableSource".equals(mapping.getMappedNode(getCurrentContentType(), localName))) {
                         createShareableNode(attributes.getValue("jahia:value"));
                     } else {
                         currentCtx.peek().pushSkip();
@@ -257,13 +228,22 @@ public class LegacyImportHandler extends DefaultHandler {
                     currentCtx.peek().pushSkip();
                     break;
                 case CTX_NAVLINK:
-                    if (StringUtils.startsWith(originatingJahiaRelease, "5")
-                            && "#navlink".equals(getMappedNodeType(qName))) {
-                        currentCtx.peek().pushNavLink(getCurrentContentType());
-                    } else {
-                        currentCtx.peek().pushField(
-                                mapping.getMappedNode(getCurrentContentType(), localName));
+                    currentCtx.peek().pushNavLink(getCurrentContentType());
+
+                    final JCRNodeWrapper page = currentCtx.peek().contents.peek();
+
+                    String title = attributes.getValue("jahia:title");
+                    if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
+                        createPage(attributes.getValue(Constants.JCR_NS, "primaryType"), title,
+                                attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
+
+                        // todo : add a link here ??
+                    } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
+                        createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"));
+                    } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
+                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"));
                     }
+
                     break;
             }
         } catch (RepositoryException e) {
@@ -287,12 +267,9 @@ public class LegacyImportHandler extends DefaultHandler {
     private boolean isSingleContainerBox(String localName) {
         String listName = StringUtils.substringBeforeLast(localName, "List");
         boolean isSingleContainer = false;
-        for (String requiredPrimaryType : getCurrentContentType()
-                .getChildNodeDefinitionsAsMap().get(
-                        StringUtils.substringBeforeLast(localName, "List"))
-                .getRequiredPrimaryTypeNames()) {
-            if (requiredPrimaryType.contains(listName)
-                    && requiredPrimaryType.endsWith("Single")) {
+        for (String requiredPrimaryType : getCurrentContentType().getChildNodeDefinitionsAsMap()
+                .get(StringUtils.substringBeforeLast(localName, "List")).getRequiredPrimaryTypeNames()) {
+            if (requiredPrimaryType.contains(listName) && requiredPrimaryType.endsWith("Single")) {
                 isSingleContainer = true;
                 break;
             }
@@ -308,36 +285,37 @@ public class LegacyImportHandler extends DefaultHandler {
      * element (such as finalising a tree node or writing output to a file).
      * </p>
      *
-     * @param uri
-     *            The Namespace URI, or the empty string if the element has no Namespace URI or if Namespace processing is not being
-     *            performed.
-     * @param localName
-     *            The local name (without prefix), or the empty string if Namespace processing is not being performed.
-     * @param qName
-     *            The qualified name (with prefix), or the empty string if qualified names are not available.
-     * @throws org.xml.sax.SAXException
-     *             Any SAX exception, possibly wrapping another exception.
+     * @param uri       The Namespace URI, or the empty string if the element has no Namespace URI or if Namespace processing is not being
+     *                  performed.
+     * @param localName The local name (without prefix), or the empty string if Namespace processing is not being performed.
+     * @param qName     The qualified name (with prefix), or the empty string if qualified names are not available.
+     * @throws org.xml.sax.SAXException Any SAX exception, possibly wrapping another exception.
      * @see org.xml.sax.ContentHandler#endElement
      */
     @Override
-    public void endElement(String uri, String localName, String qName)
-            throws SAXException {
+    public void endElement(String uri, String localName, String qName) throws SAXException {
         if (currentCtx.peek().ctx.peek() == CTX_PAGE) {
+            level--;
             currentCtx.pop();
+            if (!currentCtx.isEmpty()) {
+                currentCtx.peek().pop();
+                System.out.println(StringUtils.repeat(" ", level) + "</"+localName + "> , popped full ctx , ctx = "+currentCtx.peek().ctx.peek());
+            }
         } else {
+            level--;
+            System.out.println(StringUtils.repeat(" ", level) + "</"+localName + "> , ctx = "+currentCtx.peek().ctx.peek());
             currentCtx.peek().pop();
         }
     }
 
-    private void createPage(String primaryType, String title, String template,
-            String pageKey, String uuid) throws RepositoryException {
+    private void createPage(String primaryType, String title, String template, String pageKey, String uuid)
+            throws RepositoryException {
         JCRNodeWrapper subPage;
         ExtendedNodeType t = registry.getNodeType(primaryType);
         if (uuidMapping.containsKey(uuid)) {
             subPage = session.getNodeByIdentifier(uuidMapping.get(uuid));
         } else {
-            JCRNodeWrapper parent = (currentCtx.isEmpty() ? currentSiteNode
-                    : getCurrentPageNode());
+            JCRNodeWrapper parent = (currentCtx.isEmpty() ? currentSiteNode : getCurrentPageNode());
 
             if (!parent.isCheckedOut()) {
                 parent.checkout();
@@ -348,7 +326,7 @@ public class LegacyImportHandler extends DefaultHandler {
             }
 
             if (pageKey == null) {
-                pageKey = JCRContentUtils.generateNodeName(title,32);
+                pageKey = JCRContentUtils.generateNodeName(title, 32);
             }
 
             // remove all unsupported characters
@@ -363,19 +341,15 @@ public class LegacyImportHandler extends DefaultHandler {
                 if (!StringUtils.isEmpty(template)) {
                     template = mapping.getMappedPropertyValue(pageType, "jahia:template", template);
                 }
-                templateNode = !StringUtils.isEmpty(template) ? currentSiteNode
-                        .getNode("templates/" + template) : null;
+                templateNode = !StringUtils.isEmpty(template) ? currentSiteNode.getNode("templates/" + template) : null;
             } catch (PathNotFoundException e) {
-                logger
-                        .warn("Template '" + template
-                                + "' not found. Plain jnt:page will be created");
+                logger.warn("Template '" + template + "' not found. Plain jnt:page will be created");
             }
 
             subPage = addOrCheckoutPageNode(templateNode, parent, pageKey);
             uuidMapping.put(uuid, subPage.getIdentifier());
 
-            performActions(mapping.getActions(pageType, "jahia:template",
-                    template), subPage);
+            performActions(mapping.getActions(pageType, "jahia:template", template), subPage);
             performActions(mapping.getActions(t), subPage);
         }
 
@@ -388,7 +362,51 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
 
-    private JCRNodeWrapper addOrCheckoutPageNode (JCRNodeWrapper template, JCRNodeWrapper parent, String nodeName) throws RepositoryException {
+    private void createExternalLink(JCRNodeWrapper page, String title, String uuid, final String url)
+            throws RepositoryException {
+        JCRNodeWrapper sub;
+        if (uuidMapping.containsKey(uuid)) {
+            sub = session.getNodeByIdentifier(uuidMapping.get(uuid));
+        } else {
+            sub = addOrCheckoutNode(page, "link_"+(ctnId++), "jnt:externalLink", null);
+            sub.setProperty("j:url", url);
+            uuidMapping.put(uuid, sub.getIdentifier());
+        }
+
+        Node translation = sub.getOrCreateI18N(locale);
+        if (title != null && title.length() > 0) {
+            translation.setProperty("jcr:title_" + locale.toString(), title);
+        }
+    }
+
+    private void createInternalLink(JCRNodeWrapper page, String title, String uuid, final String reference)
+            throws RepositoryException {
+        JCRNodeWrapper sub;
+        if (uuidMapping.containsKey(uuid)) {
+            sub = session.getNodeByIdentifier(uuidMapping.get(uuid));
+        } else {
+            // System.out.println("link Field-node : " + localName);
+
+            sub = addOrCheckoutNode(page, "link_"+(ctnId++), "jnt:nodeLink", null);
+            if (!references.containsKey(reference)) {
+                references.put(reference, new ArrayList<String>());
+            }
+            references.get(reference).add(sub.getIdentifier() + "/j:node");
+            uuidMapping.put(uuid, sub.getIdentifier());
+        }
+
+        Node translation = sub.getOrCreateI18N(locale);
+        if (title != null && title.length() > 0) {
+            translation.setProperty("jcr:title_" + locale.toString(), title);
+        }
+
+        sub.setProperty("jcr:title", title);
+    }
+
+
+
+    private JCRNodeWrapper addOrCheckoutPageNode(JCRNodeWrapper template, JCRNodeWrapper parent, String nodeName)
+            throws RepositoryException {
         JCRNodeWrapper node = null;
         try {
             node = parent.getNode(nodeName);
@@ -410,14 +428,15 @@ public class LegacyImportHandler extends DefaultHandler {
         return node;
     }
 
-    private JCRNodeWrapper checkoutNode (JCRNodeWrapper node) throws RepositoryException {
+    private JCRNodeWrapper checkoutNode(JCRNodeWrapper node) throws RepositoryException {
         if (!node.isCheckedOut()) {
             node.checkout();
         }
         return node;
     }
 
-    private JCRNodeWrapper addOrCheckoutNode (JCRNodeWrapper parent, String nodeName, String nodeType, List<String> followingNodeNames) throws RepositoryException {
+    private JCRNodeWrapper addOrCheckoutNode(JCRNodeWrapper parent, String nodeName, String nodeType,
+                                             List<String> followingNodeNames) throws RepositoryException {
         JCRNodeWrapper node = null;
         try {
             node = parent.getNode(nodeName);
@@ -454,10 +473,8 @@ public class LegacyImportHandler extends DefaultHandler {
         return node;
     }
 
-    private void createContentList(ExtendedNodeDefinition listDefinition,
-            String uuid) throws RepositoryException {
-        String nodeName = mapping.getMappedNode(getCurrentContentType(),
-                listDefinition.getName());
+    private void createContentList(ExtendedNodeDefinition listDefinition, String uuid) throws RepositoryException {
+        String nodeName = mapping.getMappedNode(getCurrentContentType(), listDefinition.getName());
 
         String nodeType = Constants.JAHIANT_CONTENTLIST;
         if (nodeName.indexOf("|") > 0) {
@@ -466,8 +483,8 @@ public class LegacyImportHandler extends DefaultHandler {
         }
         ExtendedNodeType primaryNodeType = listDefinition.getRequiredPrimaryTypes()[0];
         try {
-            primaryNodeType = registry.getNodeType(StringUtils.substringBeforeLast(listDefinition
-                    .getRequiredPrimaryTypes()[0].getName(), "List"));
+            primaryNodeType = registry.getNodeType(
+                    StringUtils.substringBeforeLast(listDefinition.getRequiredPrimaryTypes()[0].getName(), "List"));
         } catch (NoSuchNodeTypeException ex) {
         }
         String mappedNodeType = mapping.getMappedType(primaryNodeType);
@@ -484,14 +501,13 @@ public class LegacyImportHandler extends DefaultHandler {
                 }
                 nodeName = StringUtils.substringAfterLast(nodeName, "/");
             }
-            if (StringUtils.isEmpty(nodeType)
-                    && parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(nodeName) != null) {
-                String[] strings = parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(
-                        nodeName).getRequiredPrimaryTypeNames();
+            if (StringUtils.isEmpty(nodeType) &&
+                    parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(nodeName) != null) {
+                String[] strings = parent.getPrimaryNodeType().getChildNodeDefinitionsAsMap().get(nodeName)
+                        .getRequiredPrimaryTypeNames();
                 nodeType = strings[0];
             }
-            List<String> mappedOldNodeNames = mapping.getMappedNodesForType(
-                    getCurrentContentType(), true);
+            List<String> mappedOldNodeNames = mapping.getMappedNodesForType(getCurrentContentType(), true);
             int indexOfName = mappedOldNodeNames.indexOf(listDefinition.getName());
             List<String> mappedNewNodeNames = null;
             if (indexOfName != -1) {
@@ -500,16 +516,14 @@ public class LegacyImportHandler extends DefaultHandler {
             }
             JCRNodeWrapper node = addOrCheckoutNode(parent, nodeName, nodeType, mappedNewNodeNames);
 
-            performActions(mapping.getActions(getCurrentContentType(), listDefinition.getName()),
-                    node);
+            performActions(mapping.getActions(getCurrentContentType(), listDefinition.getName()), node);
             uuidMapping.put(uuid, node.getIdentifier());
 
             ExtendedNodeType listType = listDefinition.getRequiredPrimaryTypes()[0];
             currentCtx.peek().pushList(node, listType);
 
             if (currentCtx.peek().boxProperties.peek() != null) {
-                for (Map.Entry<String, String> entry : currentCtx.peek().boxProperties.peek()
-                        .entrySet()) {
+                for (Map.Entry<String, String> entry : currentCtx.peek().boxProperties.peek().entrySet()) {
                     setPropertyField(getCurrentContentType(), entry.getKey(), entry.getValue());
                 }
             }
@@ -520,13 +534,12 @@ public class LegacyImportHandler extends DefaultHandler {
         if (!references.containsKey(uuid)) {
             references.put(uuid, new ArrayList<String>());
         }
-        references.get(uuid).add(
-                getCurrentContentNode().getIdentifier() + "/@ctn" + (ctnId++));
+        references.get(uuid).add(getCurrentContentNode().getIdentifier() + "/@ctn" + (ctnId++));
         currentCtx.peek().pushSkip();
     }
 
-    private void createContent(String primaryType, String uuid,
-            String pickerRelationshipUuid) throws RepositoryException {
+    private void createContent(String primaryType, String uuid, String pickerRelationshipUuid)
+            throws RepositoryException {
         ExtendedNodeType t = registry.getNodeType(primaryType);
         String nodeType = mapping.getMappedType(t);
 
@@ -540,17 +553,14 @@ public class LegacyImportHandler extends DefaultHandler {
             currentCtx.peek().pushShareable(t);
         } else {
             if (uuidMapping.containsKey(uuid)) {
-                JCRNodeWrapper node = session.getNodeByIdentifier(uuidMapping
-                        .get(uuid));
+                JCRNodeWrapper node = session.getNodeByIdentifier(uuidMapping.get(uuid));
                 currentCtx.peek().pushContainer(node, t);
             } else if (pickerRelationshipUuid != null) {
                 if (!references.containsKey(pickerRelationshipUuid)) {
-                    references.put(pickerRelationshipUuid,
-                            new ArrayList<String>());
+                    references.put(pickerRelationshipUuid, new ArrayList<String>());
                 }
-                references.get(pickerRelationshipUuid).add(
-                        getCurrentContentNode().getIdentifier() + "/@ctn"
-                                + (ctnId++));
+                references.get(pickerRelationshipUuid)
+                        .add(getCurrentContentNode().getIdentifier() + "/@ctn" + (ctnId++));
                 currentCtx.peek().pushSkip();
             } else {
                 try {
@@ -565,8 +575,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     return;
                 }
                 JCRNodeWrapper node = addOrCheckoutNode(getCurrentContentNode(),
-                        StringUtils.substringAfter(nodeType, ":") + "_"
-                                + (ctnId++), nodeType, null);
+                        StringUtils.substringAfter(nodeType, ":") + "_" + (ctnId++), nodeType, null);
                 uuidMapping.put(uuid, node.getIdentifier());
                 performActions(mapping.getActions(t), node);
                 currentCtx.peek().pushContainer(node, t);
@@ -574,17 +583,14 @@ public class LegacyImportHandler extends DefaultHandler {
             }
 
             if (currentCtx.peek().boxProperties.peek() != null) {
-                for (Map.Entry<String, String> entry : currentCtx.peek().boxProperties
-                        .peek().entrySet()) {
-                    setPropertyField(getCurrentContentType(), entry.getKey(),
-                            entry.getValue());
+                for (Map.Entry<String, String> entry : currentCtx.peek().boxProperties.peek().entrySet()) {
+                    setPropertyField(getCurrentContentType(), entry.getKey(), entry.getValue());
                 }
             }
         }
     }
 
-    private void performActions(List<Action> actions, JCRNodeWrapper node)
-            throws RepositoryException {
+    private void performActions(List<Action> actions, JCRNodeWrapper node) throws RepositoryException {
         for (Action action : actions) {
             if (action instanceof AddMixin) {
                 AddMixin addMixinAction = (AddMixin) action;
@@ -592,8 +598,8 @@ public class LegacyImportHandler extends DefaultHandler {
                 node.addMixin(addMixinAction.getNodeType());
             } else if (action instanceof AddNode) {
                 AddNode addNodeAction = (AddNode) action;
-                JCRNodeWrapper addedNode = addOrCheckoutNode(node, addNodeAction.getName(), addNodeAction
-                        .getNodeType(), null);
+                JCRNodeWrapper addedNode =
+                        addOrCheckoutNode(node, addNodeAction.getName(), addNodeAction.getNodeType(), null);
                 setProperties(addedNode, addNodeAction.getProperties());
             } else if (action instanceof SetProperties) {
                 SetProperties setPropertiesAction = (SetProperties) action;
@@ -612,8 +618,7 @@ public class LegacyImportHandler extends DefaultHandler {
             try {
                 setPropertyField(null, null, node, propertyName, property.getValue());
             } catch (RepositoryException e) {
-                logger.warn("Error setting property: " + propertyName + " on node: "
-                        + node.getPath(), e);
+                logger.warn("Error setting property: " + propertyName + " on node: " + node.getPath(), e);
             }
         }
     }
@@ -626,85 +631,50 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
 
-    private void setNodeField(String uri, String localName, String uuid,
-            Attributes attributes) throws RepositoryException, SAXException {
+    private void setNodeField(String uri, String localName, String uuid, Attributes attributes)
+            throws RepositoryException, SAXException {
 
         JCRNodeWrapper node = getCurrentContentNode();
         String title = attributes.getValue("jahia:title");
         String propertyName = currentCtx.peek().propertyNames.peek();
 
         if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
-            createPage(attributes.getValue(Constants.JCR_NS, "primaryType"),
-                    title, attributes.getValue("jahia:template"), attributes
-                            .getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
+            createPage(attributes.getValue(Constants.JCR_NS, "primaryType"), title,
+                    attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
 
-            JCRNodeWrapper page = currentCtx.peek().contents.peek();
-
-            JCRNodeWrapper linkNode = null;
-            if ( node.isNodeType("jnt:nodeLink")) {
-                linkNode = node;
-            } else if (!node.hasNode(propertyName)) {
-                linkNode = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null);
-            }
-
-            if ( node != null && node.isNodeType("jnt:nodeLink")) {
-                linkNode = node;
-//                } else if (!node.hasNode(propertyName)) {
-//                    linkNode = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null);
-            }
-            if (linkNode != null) {
-                Node translation = linkNode.getOrCreateI18N(locale);
-                if (title != null && title.length() > 0) {
-                    translation.setProperty("jcr:title_" + locale.toString(),
-                            title);
-                }
-
-                linkNode.setProperty("jcr:title", title);
-                linkNode.setProperty("j:node", page);
-            }
+            // todo : add a link here ??
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
             // System.out.println("link Field-node : " + localName);
             String reference = attributes.getValue("jahia:reference");
-            JCRNodeWrapper linkNode = null;
-            if ( node.isNodeType("jnt:nodeLink")) {
-                linkNode = node;
-            } else if (!node.hasNode(propertyName)) {
-                linkNode = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null);
-            }
-            if (linkNode != null) {
-                Node translation = linkNode.getOrCreateI18N(locale);
+            if (!node.hasNode(propertyName)) {
+                JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null);
+
+                Node translation = sub.getOrCreateI18N(locale);
                 if (title != null && title.length() > 0) {
-                    translation.setProperty("jcr:title_" + locale.toString(),
-                            title);
+                    translation.setProperty("jcr:title_" + locale.toString(), title);
                 }
 
-                linkNode.setProperty("jcr:title", title);
+                sub.setProperty("jcr:title", title);
 
                 if (!references.containsKey(reference)) {
                     references.put(reference, new ArrayList<String>());
                 }
-                references.get(reference).add(linkNode.getIdentifier() + "/j:node");
+                references.get(reference).add(sub.getIdentifier() + "/j:node");
             }
             currentCtx.peek().pushSkip();
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
             // System.out.println("external link Field-node : " + localName);
 
             String value = attributes.getValue("jahia:value");
+            if (!node.hasNode(propertyName)) {
+                JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:externalLink", null);
 
-            JCRNodeWrapper linkNode = null;
-            if ( node.isNodeType("jnt:nodeLink")) {
-                linkNode = node;
-            } else if (!node.hasNode(propertyName)) {
-                linkNode = addOrCheckoutNode(node, propertyName, "jnt:externalLink", null);
-            }
-            if (linkNode != null) {
-                Node translation = linkNode.getOrCreateI18N(locale);
+                Node translation = sub.getOrCreateI18N(locale);
                 if (title != null && title.length() > 0) {
-                    translation.setProperty("jcr:title_" + locale.toString(),
-                            title);
+                    translation.setProperty("jcr:title_" + locale.toString(), title);
                 }
 
-                linkNode.setProperty("j:url", value);
+                sub.setProperty("j:url", value);
             }
             currentCtx.peek().pushSkip();
         } else {
@@ -712,15 +682,15 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
 
-    private boolean setPropertyField(ExtendedNodeType baseType,
-            String localName, String value) throws RepositoryException {
-        String propertyName = baseType != null ? mapping.getMappedProperty(baseType, localName)
-                : mapping.getMappedMetadataProperty(localName);
+    private boolean setPropertyField(ExtendedNodeType baseType, String localName, String value)
+            throws RepositoryException {
+        String propertyName = baseType != null ? mapping.getMappedProperty(baseType, localName) :
+                mapping.getMappedMetadataProperty(localName);
         return setPropertyField(baseType, localName, getCurrentContentNode(), propertyName, value);
     }
 
     private boolean setPropertyField(ExtendedNodeType baseType, String localName, JCRNodeWrapper node,
-            String propertyName, String value) throws RepositoryException {
+                                     String propertyName, String value) throws RepositoryException {
         JCRNodeWrapper parent = node;
         String mixinType = null;
         if (propertyName.contains("|")) {
@@ -741,8 +711,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
         ExtendedPropertyDefinition propertyDefinition = null;
         try {
-            propertyDefinition = parent
-                    .getApplicablePropertyDefinition(propertyName);
+            propertyDefinition = parent.getApplicablePropertyDefinition(propertyName);
         } catch (ConstraintViolationException e) {
             // System.out.println("Ignore/not found here : " + propertyName);
             return false;
@@ -778,17 +747,14 @@ public class LegacyImportHandler extends DefaultHandler {
                         String[] strings = value.split("\\$\\$\\$");
                         List<Value> values = new ArrayList<Value>();
                         for (String s : strings) {
-                            Value v = createReferenceValue(s,
-                                    propertyDefinition.getSelector());
+                            Value v = createReferenceValue(s, propertyDefinition.getSelector());
                             if (v != null) {
                                 values.add(v);
                             }
                         }
-                        n.setProperty(propertyName, values
-                                .toArray(new Value[values.size()]));
+                        n.setProperty(propertyName, values.toArray(new Value[values.size()]));
                     } else {
-                        Value v = createReferenceValue(value,
-                                propertyDefinition.getSelector());
+                        Value v = createReferenceValue(value, propertyDefinition.getSelector());
                         if (v != null) {
                             n.setProperty(propertyName, v);
                         }
@@ -802,27 +768,18 @@ public class LegacyImportHandler extends DefaultHandler {
                             break;
                         }
                         default: {
-                            String[] vcs = propertyDefinition
-                                    .getValueConstraints();
+                            String[] vcs = propertyDefinition.getValueConstraints();
                             List<String> constraints = Arrays.asList(vcs);
                             if (!propertyDefinition.isMultiple()) {
                                 if (value.startsWith("<jahia-resource")) {
-                                    value = ResourceBundleMarker
-                                            .parseMarkerValue(value)
-                                            .getResourceKey();
-                                    if (value.startsWith(propertyDefinition
-                                            .getResourceBundleKey())) {
-                                        value = value
-                                                .substring(propertyDefinition
-                                                        .getResourceBundleKey()
-                                                        .length() + 1);
+                                    value = ResourceBundleMarker.parseMarkerValue(value).getResourceKey();
+                                    if (value.startsWith(propertyDefinition.getResourceBundleKey())) {
+                                        value = value.substring(propertyDefinition.getResourceBundleKey().length() + 1);
                                     }
                                 }
-                                value = baseType != null ? mapping
-                                        .getMappedPropertyValue(baseType,
-                                                localName, value) : value;
-                                if (constraints.isEmpty()
-                                        || constraints.contains(value)) {
+                                value = baseType != null ? mapping.getMappedPropertyValue(baseType, localName, value) :
+                                        value;
+                                if (constraints.isEmpty() || constraints.contains(value)) {
                                     n.setProperty(propertyName, value);
                                 }
                             } else {
@@ -832,35 +789,24 @@ public class LegacyImportHandler extends DefaultHandler {
                                     String string = strings[i];
 
                                     if (string.startsWith("<jahia-resource")) {
-                                        string = ResourceBundleMarker
-                                                .parseMarkerValue(string)
-                                                .getResourceKey();
-                                        if (string
-                                                .startsWith(propertyDefinition
-                                                        .getResourceBundleKey())) {
-                                            string = string
-                                                    .substring(propertyDefinition
-                                                            .getResourceBundleKey()
-                                                            .length() + 1);
+                                        string = ResourceBundleMarker.parseMarkerValue(string).getResourceKey();
+                                        if (string.startsWith(propertyDefinition.getResourceBundleKey())) {
+                                            string = string.substring(
+                                                    propertyDefinition.getResourceBundleKey().length() + 1);
                                         }
                                     }
-                                    value = baseType != null ? mapping
-                                            .getMappedPropertyValue(baseType,
-                                                    localName, value) : value;
-                                    if (constraints.isEmpty()
-                                            || constraints.contains(value)) {
-                                        values.add(new ValueImpl(string,
-                                                propertyDefinition
-                                                        .getRequiredType()));
+                                    value = baseType != null ?
+                                            mapping.getMappedPropertyValue(baseType, localName, value) : value;
+                                    if (constraints.isEmpty() || constraints.contains(value)) {
+                                        values.add(new ValueImpl(string, propertyDefinition.getRequiredType()));
                                     }
                                 }
                                 ;
-                                n.setProperty(propertyName, values
-                                        .toArray(new Value[values.size()]));
+                                n.setProperty(propertyName, values.toArray(new Value[values.size()]));
                             }
                             break;
+                        }
                     }
-                }
             }
         } else {
             return false;
@@ -869,18 +815,15 @@ public class LegacyImportHandler extends DefaultHandler {
         return true;
     }
 
-    private Value createReferenceValue(String value, int selector)
-            throws RepositoryException {
+    private Value createReferenceValue(String value, int selector) throws RepositoryException {
         try {
             switch (selector) {
                 case SelectorType.CATEGORY: {
-                    List<Category> c = ServicesRegistry.getInstance()
-                            .getCategoryService().getCategory(value);
+                    List<Category> c = ServicesRegistry.getInstance().getCategoryService().getCategory(value);
                     if (c.isEmpty()) {
                         logger.warn("Cannot find category : " + value);
                     } else {
-                        Value v = new ValueImpl(c.get(0).getID(),
-                                PropertyType.REFERENCE);
+                        Value v = new ValueImpl(c.get(0).getID(), PropertyType.REFERENCE);
                         if (c.size() > 1) {
                             logger.warn("Multiple category match : " + value);
                         }
@@ -896,29 +839,23 @@ public class LegacyImportHandler extends DefaultHandler {
                             if (pathMapping != null) {
                                 for (String map : pathMapping.keySet()) {
                                     if (value.startsWith(map)) {
-                                        value = pathMapping.get(map)
-                                                + value.substring(map.length());
+                                        value = pathMapping.get(map) + value.substring(map.length());
                                         break;
                                     }
                                 }
                             }
                             JCRNodeWrapper file = session.getNode(value);
-                            return new ValueImpl(file.getIdentifier(),
-                                    PropertyType.WEAKREFERENCE);
+                            return new ValueImpl(file.getIdentifier(), PropertyType.WEAKREFERENCE);
                         } catch (PathNotFoundException e) {
 
                         }
                     } else {
                         try {
-                            String providerKey = StringUtils.substringBefore(
-                                    value, ":");
-                            String uuid = StringUtils
-                                    .substringAfter(value, ":");
+                            String providerKey = StringUtils.substringBefore(value, ":");
+                            String uuid = StringUtils.substringAfter(value, ":");
                             if (!uuid.equals("/")) {
-                                JCRNodeWrapper file = session.getNodeByUUID(
-                                        providerKey, uuid);
-                                return new ValueImpl(file.getIdentifier(),
-                                        PropertyType.WEAKREFERENCE);
+                                JCRNodeWrapper file = session.getNodeByUUID(providerKey, uuid);
+                                return new ValueImpl(file.getIdentifier(), PropertyType.WEAKREFERENCE);
                             }
                         } catch (ItemNotFoundException e) {
                         } catch (UnsupportedRepositoryOperationException e) {
@@ -964,6 +901,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushList(JCRNodeWrapper node, ExtendedNodeType type) {
+            System.out.println(" push "+currentNode + " , ctx = "+CTX_LIST);
             contents.push(node);
             contentsType.push(type);
             propertyNames.push(null);
@@ -972,6 +910,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushContainer(JCRNodeWrapper node, ExtendedNodeType type) {
+            System.out.println(" push "+currentNode + " , ctx = "+CTX_CTN);
             contents.push(node);
             contentsType.push(type);
             propertyNames.push(null);
@@ -980,6 +919,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushField(String propertyName) {
+            System.out.println(" push "+currentNode + " , ctx = "+CTX_FIELD);
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(propertyName);
@@ -994,13 +934,16 @@ public class LegacyImportHandler extends DefaultHandler {
             if (ctx.peek() == CTX_LIST) {
                 ctx.push(CTX_BOX);
                 boxProperties.push(new HashMap<String, String>());
+                System.out.println(" box push "+currentNode + " , ctx = "+CTX_BOX);
             } else {
                 ctx.push(CTX_LIST);
                 boxProperties.push(boxProperties.peek());
+                System.out.println(" box push "+currentNode + " , ctx = "+CTX_LIST);
             }
         }
 
         void pushNavLink(ExtendedNodeType t) {
+            System.out.println(" push "+currentNode + " , ctx = "+CTX_NAVLINK);
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(null);
@@ -1009,6 +952,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushSkip() {
+            System.out.println(" push "+currentNode + " , ctx = "+CTX_SKIP);
             contents.push(contents.peek());
             contentsType.push(contentsType.peek());
             propertyNames.push(null);
@@ -1017,6 +961,7 @@ public class LegacyImportHandler extends DefaultHandler {
         }
 
         void pushShareable(ExtendedNodeType t) {
+            System.out.println(" push "+currentNode + " , ctx = "+CTX_SHAREABLE);
             contents.push(contents.peek());
             contentsType.push(t);
             propertyNames.push(null);

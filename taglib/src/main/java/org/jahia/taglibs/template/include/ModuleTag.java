@@ -176,7 +176,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     public int doEndTag() throws JspException {
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-
+//            if (true)
+//            throw new RuntimeException();
             buffer = new StringBuffer();
 
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);

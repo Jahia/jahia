@@ -467,7 +467,9 @@
 // Pages, content lists, reusable components
 //---------------------------------------------------------
 
-[jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged
+[jmix:navMenuItem] mixin
+
+[jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem
  orderable
  - j:sourceTemplate (weakreference) hidden
  + * (nt:base) = nt:base version

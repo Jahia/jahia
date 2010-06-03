@@ -32,18 +32,10 @@
 package org.jahia.services.render;
 
 import org.apache.log4j.Logger;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import java.util.*;
 
 /**
@@ -77,10 +69,11 @@ public class Resource {
 
     /**
      * Creates a resource from the specified parameter
-     * @param node The node to display
-     * @param templateType template type
-     * @param template the template name, null if default
-     * @param forcedTemplate the template name, null if default
+     *
+     * @param node                 The node to display
+     * @param templateType         template type
+     * @param template             the template name, null if default
+     * @param forcedTemplate       the template name, null if default
      * @param contextConfiguration
      */
     public Resource(JCRNodeWrapper node, String templateType, String template, String forcedTemplate,
@@ -146,7 +139,7 @@ public class Resource {
         }
         try {
             if (node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
-                l.add( node.getProperty("j:template").getString() );
+                l.add(node.getProperty("j:template").getString());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -189,16 +182,12 @@ public class Resource {
 
     @Override
     public String toString() {
-        return "Resource{" +
-                "node=" + node.getPath() +
-                ", templateType='" + templateType + '\'' +
-                ", template='" + template + '\'' +
-                ", forcedTemplate='" + forcedTemplate + '\'' +
-                '}';
+        return "Resource{" + "node=" + node.getPath() + ", templateType='" + templateType + '\'' + ", template='" +
+                template + '\'' + ", forcedTemplate='" + forcedTemplate + '\'' + '}';
     }
 
     public void addOption(String wrapper, ExtendedNodeType nodeType) {
-        options.add(new Option(wrapper,nodeType));
+        options.add(new Option(wrapper, nodeType));
     }
 
     public List<Option> getOptions() {
@@ -210,7 +199,7 @@ public class Resource {
     }
 
     public void removeOption(ExtendedNodeType mixinNodeType) {
-        options.remove(new Option("",mixinNodeType));
+        options.remove(new Option("", mixinNodeType));
     }
 
     public ExtendedNodeType getResourceNodeType() {
@@ -223,21 +212,41 @@ public class Resource {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Resource resource = (Resource) o;
 
-        if (node != null ? !node.equals(resource.node) : resource.node != null) return false;
-        if (templateType != null ? !templateType.equals(resource.templateType) : resource.templateType != null)
+        if (node != null ? !node.equals(resource.node) : resource.node != null) {
             return false;
-        if (template != null ? !template.equals(resource.template) : resource.template != null) return false;
-        if (forcedTemplate != null ? !forcedTemplate.equals(resource.forcedTemplate) : resource.forcedTemplate != null)
+        }
+        if (templateType != null ? !templateType.equals(resource.templateType) : resource.templateType != null) {
             return false;
-        if (wrappers != null ? !wrappers.equals(resource.wrappers) : resource.wrappers != null) return false;
-        if (options != null ? !options.equals(resource.options) : resource.options != null) return false;
-        if (resourceNodeType != null ? !resourceNodeType.equals(resource.resourceNodeType) : resource.resourceNodeType != null)
+        }
+        if (template != null ? !template.equals(resource.template) : resource.template != null) {
             return false;
+        }
+        if (forcedTemplate != null ? !forcedTemplate.equals(resource.forcedTemplate) :
+                resource.forcedTemplate != null) {
+            return false;
+        }
+        if (wrappers != null ? !wrappers.equals(resource.wrappers) : resource.wrappers != null) {
+            return false;
+        }
+        if (options != null ? !options.equals(resource.options) : resource.options != null) {
+            return false;
+        }
+        if (resourceNodeType != null ? !resourceNodeType.equals(resource.resourceNodeType) :
+                resource.resourceNodeType != null) {
+            return false;
+        }
+        if (moduleParams != null ? !moduleParams.equals(resource.moduleParams) : resource.moduleParams != null) {
+            return false;
+        }
 
         return true;
     }
@@ -251,6 +260,7 @@ public class Resource {
         result = 31 * result + (wrappers != null ? wrappers.hashCode() : 0);
         result = 31 * result + (options != null ? options.hashCode() : 0);
         result = 31 * result + (resourceNodeType != null ? resourceNodeType.hashCode() : 0);
+        result = 31 * result + (moduleParams != null ? moduleParams.hashCode() : 0);
         return result;
     }
 
@@ -274,6 +284,7 @@ public class Resource {
         /* (non-Javadoc)
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
+
         public int compareTo(Option o) {
             return nodeType.getName().compareTo(o.getNodeType().getName());
         }

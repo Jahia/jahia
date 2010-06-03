@@ -21,15 +21,8 @@
                                           jcr:primaryType="jnt:translation" jcr:language="en"
                                           jcr:title_en="Simple search" j:checkinDate="2010-04-30T15:43:00.492+02:00"/>
                     </simple-search>
-                    <bottom-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation jmix:shareable"
-                                 j:template="sideMenu" j:published="true" jcr:primaryType="jnt:navMenu"
-                                 j:checkinDate="2010-04-30T15:43:00.492+02:00" j:templateLocked="true">
-                        <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:published="true"
-                                           j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
-                                           j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1"
-                                           j:allowedTypes="jnt:page" j:checkinDate="2010-04-30T15:43:00.492+02:00"
-                                           j:templateLocked="true"/>
-                    </bottom-menu>
+                    <side-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable"
+                               jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-web/home" j:maxDepth="3" j:startLevel="1" j:styleName="navigationN2"/>
                 </site_components>
             </contents>
             <files jcr:mixinTypes="jmix:templateInformation jmix:wrapper" jcr:primaryType="jnt:folder"/>
@@ -65,13 +58,7 @@
                             <col2 jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
                                 <simple-search
                                         j:share="/templatesSet/templates-web/contents/site_components/simple-search"/>
-                                <side-menu jcr:mixinTypes="jmix:renderable jmix:templateInformation"
-                                           j:template="sideMenu" jcr:primaryType="jnt:navMenu">
-                                    <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="2" j:published="true"
-                                                       j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
-                                                       j:startLevel="2" j:allowedTypes="jnt:page"
-                                                       j:checkinDate="2010-04-30T15:43:00.492+02:00"/>
-                                </side-menu>
+                                <side-menu j:share="/templatesSet/templates-web/contents/site_components/side-menu"/>
                             </col2>
                         </row1>
                     </pagecontent>
@@ -112,24 +99,9 @@
                 </header>
                 <logo jcr:primaryType="jnt:contentList"/>
                 <topMenu jcr:primaryType="jnt:contentList">
-                    <top-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable" j:published="true"
-                              jcr:primaryType="jnt:navMenu" j:checkinDate="2010-04-30T15:43:00.492+02:00">
-                        <home j:node="/templatesSet/templates-web/home" jcr:mixinTypes="jmix:templateInformation"
-                              j:published="true" jcr:primaryType="jnt:navMenuNodeLink"
-                              j:checkinDate="2010-04-30T15:43:00.492+02:00" >
-                            <j:translation_en jcr:mixinTypes="jmix:templateInformation" j:published="true"
-                                              jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Home"
-                                              j:checkinDate="2010-04-30T15:43:00.492+02:00"/>
-                        </home>
-                        <navMenuMultilevel jcr:mixinTypes="jmix:templateInformation" j:maxDepth="1" j:published="true"
-                                           j:useVisitedNodeAsBaseline="false" jcr:primaryType="jnt:navMenuMultilevel"
-                                           j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1"
-                                           j:allowedTypes="jnt:page" j:checkinDate="2010-04-30T15:43:00.492+02:00" />
-                    </top-menu>
+                    <top-menu jcr:mixinTypes="jmix:templateInformation jmix:shareable"
+                              jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-web/home" j:maxDepth="1" j:styleName="navigationN1"/>
                 </topMenu>
-                <bottomMenu jcr:primaryType="jnt:contentList">
-                    <bottom-menu j:share="/templatesSet/templates-web/contents/site_components/bottom-menu"/>
-                </bottomMenu>
                 <logoFooter jcr:primaryType="jnt:contentList"/>
                 <footer jcr:primaryType="jnt:contentList"/>
                 <wrappercontent jcr:primaryType="jnt:contentList">

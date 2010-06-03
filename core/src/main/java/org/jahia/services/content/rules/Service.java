@@ -669,43 +669,6 @@ public class Service extends JahiaService {
         WorkflowService.getInstance().startProcess(nodeWrapper, processKey, provider, new HashMap<String, Object>());
     }
 
-    public void createNavigationEntry(AddedNodeFact node, KnowledgeHelper drools) {
-        try {
-            final String statement = "select * from ['jmix:autoCreateNavMenu'] where ['j:baselineNode']='" +
-                    node.getNode().getParent().getIdentifier()+"'";
-            NodeIterator ni = node.getNode().getSession().getWorkspace().getQueryManager().createQuery(statement, Query.JCR_SQL2).execute().getNodes();
-
-            while (ni.hasNext()) {
-                JCRNodeWrapper menu = (JCRNodeWrapper) ni.next();
-                menu.checkout();
-                String name = JCRContentUtils.findAvailableNodeName(menu, node.getName());
-                JCRNodeWrapper link = menu.addNode(name, "jnt:navMenuNodeLink");
-                link.setProperty("j:node",node.getNode());
-            }
-        } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
-    public void deleteNavigationEntry(DeletedNodeFact node, KnowledgeHelper drools) {
-        try {
-            final String statement = "select * from ['jnt:nodeLink'] where ['j:node']='" +
-                    node.getIdentifier()+"'";
-
-            NodeIterator ni = node.getSession().getWorkspace().getQueryManager().createQuery(statement, Query.JCR_SQL2).execute().getNodes();
-
-            while (ni.hasNext()) {
-                JCRNodeWrapper link = (JCRNodeWrapper) ni.next();
-                link.getParent().checkout();
-                link.remove();
-            }
-        } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-
-    }
-
     public void setTaggingService(TaggingService taggingService) {
         this.taggingService = taggingService;
     }

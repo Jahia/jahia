@@ -89,11 +89,7 @@
     <div class="clear"></div></div><!--stop topfooter-->
 
     <div id="bottomfooter"><!--start bottomfooter-->
-        <div class="container container_16">
                 <template:area path="footer" nodeTypes="jnt:row" />
-            <div class='clear'></div>
-        </div>
-
         <div class="clear"></div>
     </div>
     <!--stop bottomfooter-->

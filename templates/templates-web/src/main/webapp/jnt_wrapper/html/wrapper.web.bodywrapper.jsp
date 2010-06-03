@@ -39,10 +39,7 @@
         </div>
         <!--stop bottomheader-->
         <div id="content"><!--start content-->
-            <div class="container container_16">
-                <template:area path="wrappercontent"/>
-                <div class="clear"></div>
-            </div>
+            <template:area path="wrappercontent"/>
             <!--stop content-->
             <div class="clear"></div>
         </div>

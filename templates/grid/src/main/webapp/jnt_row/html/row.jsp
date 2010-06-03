@@ -15,6 +15,10 @@
             <c:set target="${colMap}" property="col1" value="12"/>
             <c:set target="${colMap}" property="col2" value="4"/>
         </c:when>
+        <c:when test="${column.string == '2col115'}">
+            <c:set target="${colMap}" property="col1" value="11"/>
+            <c:set target="${colMap}" property="col2" value="5"/>
+        </c:when>
         <c:when test="${column.string == '2col106'}">
             <c:set target="${colMap}" property="col1" value="10"/>
             <c:set target="${colMap}" property="col2" value="6"/>
@@ -22,6 +26,10 @@
         <c:when test="${column.string == '2col610'}">
             <c:set target="${colMap}" property="col2" value="6"/>
             <c:set target="${colMap}" property="col1" value="10"/>
+        </c:when>
+        <c:when test="${column.string == '2col610'}">
+            <c:set target="${colMap}" property="col2" value="5"/>
+            <c:set target="${colMap}" property="col1" value="11"/>
         </c:when>
         <c:when test="${column.string == '2col88'}">
             <c:set target="${colMap}" property="col1" value="8"/>
@@ -58,6 +66,7 @@
         </c:otherwise>
     </c:choose>
 
+<div class="container container_16">
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <c:choose>
         <c:when test="${col.value > 8}">
@@ -78,4 +87,5 @@
     </c:choose>
 </c:forEach>
     <div class='clear'></div>
+</div>
 

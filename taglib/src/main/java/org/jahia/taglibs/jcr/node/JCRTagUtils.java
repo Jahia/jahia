@@ -123,8 +123,17 @@ public class JCRTagUtils {
 
     public static NodeIterator getNodes(JCRNodeWrapper node, String type) {
         try {
-            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
-                                                                                  Query.JCR_SQL2).execute().getNodes();
+            List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
+            NodeIterator ni = node.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+                if (child.isNodeType(type)) {
+                    res.add(child);
+                }
+            }
+            return new NodeIteratorImpl(res.iterator(), res.size());
+//            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
+//                                                                                  Query.JCR_SQL2).execute().getNodes();
         } catch (InvalidQueryException e) {
             logger.error("Error while retrieving nodes", e);
         } catch (RepositoryException e) {
@@ -145,23 +154,19 @@ public class JCRTagUtils {
      */
     public static boolean hasChildrenOfType(JCRNodeWrapper node, String type) {
         boolean hasChildrenOfType = false;
-        if (type.contains(",")) {
-            String[] typesToCheck = StringUtils.split(type, ',');
-            try {
-                for (NodeIterator iterator = node.getNodes(); iterator.hasNext() && !hasChildrenOfType;) {
-                    Node child = iterator.nextNode();
-                    for (String matchType : typesToCheck) {
-                        if (child.isNodeType(matchType)) {
-                            hasChildrenOfType = true;
-                            break;
-                        }
+        String[] typesToCheck = StringUtils.split(type, ',');
+        try {
+            for (NodeIterator iterator = node.getNodes(); iterator.hasNext() && !hasChildrenOfType;) {
+                Node child = iterator.nextNode();
+                for (String matchType : typesToCheck) {
+                    if (child.isNodeType(matchType)) {
+                        hasChildrenOfType = true;
+                        break;
                     }
                 }
-            } catch (RepositoryException e) {
-                logger.warn(e.getMessage(), e);
             }
-        } else {
-            hasChildrenOfType = getNodes(node, type).getSize() > 0;
+        } catch (RepositoryException e) {
+            logger.warn(e.getMessage(), e);
         }
         return hasChildrenOfType;
     }

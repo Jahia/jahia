@@ -55,7 +55,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
@@ -219,7 +218,7 @@ public class ContentTreeGrid extends LayoutContainer {
          */
         private void init() {
 
-            GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getPathes());
+            GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getPaths());
             factory.setNodeTypes(configuration.getFolderTypes());
             factory.setMimeTypes(configuration.getMimeTypes());
             factory.setFilters(configuration.getFilters());

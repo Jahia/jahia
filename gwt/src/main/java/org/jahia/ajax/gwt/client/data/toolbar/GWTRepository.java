@@ -15,7 +15,7 @@ import java.util.List;
 public class GWTRepository implements Serializable, IsSerializable {
     private String title;
     private String key;
-    private List<String> pathes;
+    private List<String> paths;
 
     public GWTRepository() {
     }
@@ -36,11 +36,11 @@ public class GWTRepository implements Serializable, IsSerializable {
         this.key = key;
     }
 
-    public List<String> getPathes() {
-        return pathes;
+    public List<String> getPaths() {
+        return paths;
     }
 
-    public void setPathes(List<String> pathes) {
-        this.pathes = pathes;
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
     }
 }

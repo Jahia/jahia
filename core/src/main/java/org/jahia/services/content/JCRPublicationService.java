@@ -266,9 +266,9 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void publish(final JCRNodeWrapper sourceNode, JCRSessionWrapper destinationSession, Set<String> languages,
-                         boolean allSubTree, boolean publishParent, Set<String> pathes) throws RepositoryException {
+                         boolean allSubTree, boolean publishParent, Set<String> paths) throws RepositoryException {
         final Calendar calendar = new GregorianCalendar();
-        pathes.add(sourceNode.getPath());
+        paths.add(sourceNode.getPath());
 
         final String destinationWorkspace = destinationSession.getWorkspace().getName();
 
@@ -309,8 +309,8 @@ public class JCRPublicationService extends JahiaService {
         ((ArrayList) referencedNodes).removeAll(toPublish);
         for (JCRNodeWrapper node : referencedNodes) {
             try {
-                if (!pathes.contains(node.getPath())) {
-                    publish(node, destinationSession, languages, false, true, pathes);
+                if (!paths.contains(node.getPath())) {
+                    publish(node, destinationSession, languages, false, true, paths);
                 }
             } catch (Exception e) {
                 logger.warn("Cannot publish node at : " + node.getPath(),e);
@@ -534,7 +534,7 @@ public class JCRPublicationService extends JahiaService {
                     denied.add(nodeWrapper.getPath());
                 }
             }
-            JahiaAccessManager.setDeniedPathes(denied);
+            JahiaAccessManager.setDeniedPaths(denied);
 
             if (!destinationVersionManager.isCheckedOut(destinationParentPath)) {
                 destinationVersionManager.checkout(destinationParentPath);
@@ -601,7 +601,7 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
         } finally {
-            JahiaAccessManager.setDeniedPathes(null);
+            JahiaAccessManager.setDeniedPaths(null);
         }
         JCRNodeWrapper destinationNode = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
         if (pruneNodes != null && sourceNode.getNodes().hasNext()) {

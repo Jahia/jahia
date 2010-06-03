@@ -408,7 +408,7 @@ public class UIConfigHelper {
                         } else {
                             repository.setTitle(item.getKey());
                         }
-                        repository.setPathes(item.getPathes());
+                        repository.setPaths(item.getPaths());
                         gwtConfig.addRepository(repository);
                     }
                 }

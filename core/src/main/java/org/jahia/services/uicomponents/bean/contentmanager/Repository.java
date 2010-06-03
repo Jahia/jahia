@@ -1,7 +1,6 @@
 package org.jahia.services.uicomponents.bean.contentmanager;
 
 import org.jahia.services.uicomponents.bean.Visibility;
-import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,7 +17,7 @@ public class Repository implements Serializable {
     private String title;
     private String titleKey;
     private Visibility visibility;
-    private List<String> pathes;
+    private List<String> paths;
 
     public Visibility getVisibility() {
         return visibility;
@@ -52,11 +51,11 @@ public class Repository implements Serializable {
         this.titleKey = titleKey;
     }
 
-    public List<String> getPathes() {
-        return pathes;
+    public List<String> getPaths() {
+        return paths;
     }
 
-    public void setPathes(List<String> pathes) {
-        this.pathes = pathes;
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
     }
 }

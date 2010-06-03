@@ -103,7 +103,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
-    public static void setDeniedPathes(Collection<String> denied) {
+    public static void setDeniedPaths(Collection<String> denied) {
         JahiaAccessManager.deniedPathes.set(denied);
     }
 

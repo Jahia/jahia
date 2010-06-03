@@ -44,7 +44,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
@@ -88,7 +87,7 @@ public class RepositoryTab extends ContentPanel {
         getHeader().setIcon(ToolbarIconProvider.getInstance().getIcon(repo.getKey()));
 
         // tree component
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getPathes());
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(repository.getPaths());
         factory.setNodeTypes(config.getFolderTypes());
         factory.setMimeTypes(config.getMimeTypes());
         factory.setFilters(config.getFilters());

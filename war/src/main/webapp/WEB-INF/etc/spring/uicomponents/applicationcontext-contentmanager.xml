@@ -439,7 +439,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
                     <property name="key" value="tagRepository"/>
-                    <property name="pathes" value="$site/tags"/>
+                    <property name="paths" value="$site/tags"/>
                 </bean>
             </list>
         </property>
@@ -536,7 +536,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
                     <property name="key" value="remotePublicationsRepository"/>
-                    <property name="pathes" value="/remotePublications"/>
+                    <property name="paths" value="/remotePublications"/>
                 </bean>
             </list>
         </property>
@@ -629,7 +629,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
                     <property name="key" value="workflowRepository"/>
-                    <property name="pathes" value="/workflowRules"/>
+                    <property name="paths" value="/workflowRules"/>
                 </bean>
             </list>
         </property>
@@ -701,7 +701,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
                     <property name="key" value="portletDefinitionRepository"/>
-                    <property name="pathes" value="/remotePublications"/>
+                    <property name="paths" value="/remotePublications"/>
                 </bean>
             </list>
         </property>
@@ -975,7 +975,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
                     <property name="key" value="roleRepository"/>
-                    <property name="pathes">
+                    <property name="paths">
                         <list>
                             <value>/roles</value>
                         </list>
@@ -1027,7 +1027,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
                     <property name="key" value="siteRoleRepository"/>
-                    <property name="pathes" value="$site/roles"/>
+                    <property name="paths" value="$site/roles"/>
                 </bean>
             </list>
         </property>
@@ -1523,57 +1523,57 @@
     <!-- accordion -->
     <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="globalRepository"/>
-        <property name="pathes" value="/"/>
+        <property name="paths" value="/"/>
     </bean>
 
     <bean id="repository.shared" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedRepository"/>
-        <property name="pathes" value="/shared/files"/>
+        <property name="paths" value="/shared/files"/>
     </bean>
 
     <bean id="repository.my" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myRepository"/>
-        <property name="pathes" value="$user/files"/>
+        <property name="paths" value="$user/files"/>
     </bean>
 
     <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websiteRepository"/>
-        <property name="pathes" value="$site/files"/>
+        <property name="paths" value="$site/files"/>
     </bean>
 
     <bean id="repository.myexternal" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myExternalRepository"/>
-        <property name="pathes" value="/mounts"/>
+        <property name="paths" value="/mounts"/>
     </bean>
 
     <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedMashupRepository"/>
-        <property name="pathes" value="/shared/mashups"/>
+        <property name="paths" value="/shared/mashups"/>
     </bean>
 
     <bean id="repository.websitemahsup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websiteMashupRepository"/>
-        <property name="pathes" value="$site/mashups"/>
+        <property name="paths" value="$site/mashups"/>
     </bean>
 
     <bean id="repository.mymashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myMashupRepository"/>
-        <property name="pathes" value="$user/mashups"/>
+        <property name="paths" value="$user/mashups"/>
     </bean>
 
     <bean id="repository.users" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="usersRepository"/>
-        <property name="pathes" value="/users"/>
+        <property name="paths" value="/users"/>
     </bean>
 
     <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="categoryRepository"/>
-        <property name="pathes" value="/categories"/>
+        <property name="paths" value="/categories"/>
     </bean>
 
     <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRepository"/>
-        <property name="pathes" value="/sites"/>
+        <property name="paths" value="/sites"/>
     </bean>
 
 </beans>

@@ -1033,9 +1033,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.importContent(parentPath, fileKey);
     }
 
-    public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> pathes) throws GWTJahiaServiceException {
+    public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> paths) throws GWTJahiaServiceException {
         List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
-        for (String path : pathes) {
+        for (String path : paths) {
             try {
                 GWTJahiaNode gwtJahiaNode = navigation.getNode(path, retrieveCurrentSession());
                 gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getUUID(), false));

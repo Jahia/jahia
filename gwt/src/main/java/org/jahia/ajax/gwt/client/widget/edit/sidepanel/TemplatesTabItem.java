@@ -1,13 +1,11 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -16,8 +14,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -43,7 +39,7 @@ public class TemplatesTabItem extends BrowseTabItem {
 //    private ComboBox<GWTJahiaBasicDataBean> templateBox;
 
     public TemplatesTabItem(GWTSidePanelTab config) {
-        super(Arrays.asList("$site","$site/templates"), Arrays.asList("jnt:page"), config);
+        super(config);
         setIcon(StandardIconsProvider.STANDARD_ICONS.tabPages());
 
         this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {

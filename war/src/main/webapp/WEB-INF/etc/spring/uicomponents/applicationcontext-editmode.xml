@@ -316,6 +316,13 @@
     <!-- side tabs-->
     <bean id="sidePanelTab.templates" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="templates"/>
+        <property name="paths">
+            <list>
+                <value>$site</value>
+                <value>$site/templates</value>
+            </list>
+        </property>
+        <property name="folderTypes" value="jnt:page"/>
         <property name="treeContextMenu">
             <bean id="org.jahia.toolbar.sidePanel.templates"
                   class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -401,6 +408,8 @@
 
     <bean id="sidePanelTab.categories" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="categories"/>
+        <property name="folderTypes" value="jnt:category"/>
+        <property name="paths" value="/categories"/>
         <property name="params">
             <map>
                 <entry key="limit" value="500"/>
@@ -410,6 +419,14 @@
 
     <bean id="sidePanelTab.content" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="content"/>
+        <property name="paths">
+            <list>
+                <value>/shared/contents</value>
+                <value>$site/contents</value>
+                <value>$user/contents</value>
+            </list>
+        </property>
+        <property name="folderTypes" value="jnt:contentList"/>
         <property name="treeContextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -449,6 +466,19 @@
 
     <bean id="sidePanelTab.filesimages" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="filesimages"/>
+        <property name="paths">
+            <list>
+                <value>/shared/files</value>
+                <value>$site/files</value>
+                <value>$user/files</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>nt:folder</value>
+                <value>jnt:mountPoint</value>
+            </list>
+        </property>
         <property name="treeContextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -485,9 +515,16 @@
             </bean>
         </property>
     </bean>
-
     <bean id="sidePanelTab.mashups" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="mashups"/>
+        <property name="paths">
+            <list>
+                <value>/shared/mashups</value>
+                <value>$site/mashups</value>
+                <value>$user/mashups</value>
+            </list>
+        </property>
+        <property name="folderTypes" value="jnt:portletList"/>
         <property name="treeContextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">

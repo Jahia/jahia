@@ -41,7 +41,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
     protected ImageDragSource dragSource;
 
     public FileImagesBrowseTabItem(GWTSidePanelTab config) {
-        super(Arrays.asList("/shared/files","$site/files","$user/files"), JCRClientUtils.FOLDER_NODETYPES, config);
+        super(config);
         setIcon(StandardIconsProvider.STANDARD_ICONS.tabDocuments());
 
         contentContainer = new LayoutContainer();

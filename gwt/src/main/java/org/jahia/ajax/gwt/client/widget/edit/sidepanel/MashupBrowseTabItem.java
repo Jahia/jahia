@@ -38,7 +38,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
     protected ImageDragSource dragSource;
 
     public MashupBrowseTabItem(GWTSidePanelTab config) {
-        super(Arrays.asList("/shared/mashups","$site/mashups","$user/mashups"), JCRClientUtils.PORTLETLIST_NODETYPES, config);
+        super(config);
         setIcon(StandardIconsProvider.STANDARD_ICONS.mashup());
 
         contentContainer = new LayoutContainer();

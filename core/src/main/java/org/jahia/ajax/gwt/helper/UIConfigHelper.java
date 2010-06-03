@@ -673,6 +673,11 @@ public class UIConfigHelper {
                 gwtSidePanel.setTreeContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTreeContextMenu()));
                 gwtSidePanel.setTableContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTableContextMenu()));
                 gwtSidePanel.setParams(sidePanelTab.getParams());
+                gwtSidePanel.setFilters(sidePanelTab.getFilters());
+                gwtSidePanel.setFolderTypes(sidePanelTab.getFolderTypes());
+                gwtSidePanel.setMimeTypes(sidePanelTab.getMimeTypes());
+                gwtSidePanel.setPaths(sidePanelTab.getPaths());
+                gwtSidePanel.setNodeTypes(sidePanelTab.getNodeTypes());
                 gwtSidePanelTabList.add(gwtSidePanel);
             }
         }

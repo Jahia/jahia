@@ -5,6 +5,8 @@ import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +23,11 @@ public class SidePanelTab implements Serializable, BeanNameAware {
     private Toolbar tableContextMenu;
     private Map<String, String> params;
     private Visibility visibility;
+    private List<String> paths = new ArrayList<String>();
+    private List<String> folderTypes = new ArrayList<String>();
+    private List<String> nodeTypes = new ArrayList<String>();
+    private List<String> filters = new ArrayList<String>();
+    private List<String> mimeTypes = new ArrayList<String>();
 
     public SidePanelTab() {
     }
@@ -76,4 +83,45 @@ public class SidePanelTab implements Serializable, BeanNameAware {
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
+
+    public List<String> getPaths() {
+        return paths;
+    }
+
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
+    }
+
+    public List<String> getFolderTypes() {
+        return folderTypes;
+    }
+
+    public void setFolderTypes(List<String> folderTypes) {
+        this.folderTypes = folderTypes;
+    }
+
+    public List<String> getNodeTypes() {
+        return nodeTypes;
+    }
+
+    public void setNodeTypes(List<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
+    public List<String> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(List<String> filters) {
+        this.filters = filters;
+    }
+
+    public List<String> getMimeTypes() {
+        return mimeTypes;
+    }
+
+    public void setMimeTypes(List<String> mimeTypes) {
+        this.mimeTypes = mimeTypes;
+    }
 }
+

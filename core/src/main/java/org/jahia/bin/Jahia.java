@@ -1222,7 +1222,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             }
 
         }
-        Jahia.jahiaContextPath = ctxPath;
+        Jahia.jahiaContextPath = ctxPath.equals("/") ? "" : ctxPath;
         Jahia.jahiaServletPath = getDefaultServletPath(servletContext);
     }
 

@@ -95,8 +95,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 /**
@@ -133,9 +132,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     static private final String INIT_PARAM_ADMIN_SERVLET_PATH =
         "admin_servlet_path";
-
-    static private final String CTX_PARAM_CONTEXT_PATH =
-        "contextPath";
 
     static private final String CTX_PARAM_DEFAULT_SERVLET_PATH =
         "defaultJahiaServletPath";
@@ -1205,10 +1201,29 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     }
     
     public static void initContextData(ServletContext servletContext) {
-        String ctxPath = servletContext.getInitParameter(CTX_PARAM_CONTEXT_PATH);
-        Jahia.jahiaContextPath = ctxPath.equals("/") ? "" : ctxPath;
+
+        String ctxPath = ""; // assume ROOT context by default
+        InputStream is = servletContext.getResourceAsStream(SettingsBean.JAHIA_PROPERTIES_FILE_PATH);
+        if (is != null) {
+            Properties settings = new Properties();
+            try {
+                settings.load(is);
+            } catch (Exception e) {
+                logger.warn("Unable to read " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource", e);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
+            ctxPath = (String) settings.get("jahia.contextPath");
+            if (ctxPath == null || ctxPath.length() > 0 && !ctxPath.startsWith("/")) {
+                logger.fatal("Invalid value for the jahia.contextPath in the "
+                        + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");
+                throw new IllegalArgumentException("Invalid value for the jahia.contextPath in the "
+                        + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");
+            }
+
+        }
+        Jahia.jahiaContextPath = ctxPath;
         Jahia.jahiaServletPath = getDefaultServletPath(servletContext);
-        System.setProperty("jahia.deploy.war.contextPath", Jahia.jahiaContextPath);
     }
 
-} // end Jahia
+}

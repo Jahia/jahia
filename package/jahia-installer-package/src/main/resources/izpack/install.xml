@@ -18,6 +18,7 @@
         <variable name="product.version" value="${jahia.package.version}"/>
     </variables>
     <dynamicvariables>
+        <variable name="jahia.war.contextPath" value=""/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/tomcat/webapps/ROOT" condition="cnd.pack.tomcat"/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/build" condition="!cnd.pack.tomcat"/>
 

@@ -24,14 +24,6 @@
 
     <context-param>
         <description>
-            The context path of this Web Application (will be removed with Servlet 2.5).
-        </description>
-        <param-name>contextPath</param-name>
-        <param-value>${jahia.deploy.war.contextPath}</param-value>
-    </context-param>
-
-    <context-param>
-        <description>
             The default Jahia servlet path that will be used for generating URLs.
             If you change it, please also add a corresponding servlet mapping for 'Jahia' servlet.
         </description>

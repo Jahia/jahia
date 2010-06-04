@@ -9,6 +9,15 @@
 #  cache implementation configuration, Hibernate configuration, etc.
 
 ######################################################################
+### Web application context path #####################################
+######################################################################
+# By default Jahia is deployed into ROOT context (context path is empty
+# in this case). If deployed into another context, e.g. /jahia this value
+# should be adjusted accordingly (in this case the context path starts
+# with a slash).
+jahia.contextPath                                      = 
+
+######################################################################
 ### Server  ##########################################################
 ######################################################################
 # General server information, such as release version, the application

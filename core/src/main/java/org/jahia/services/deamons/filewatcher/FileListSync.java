@@ -90,7 +90,6 @@ public class FileListSync implements ClusterListener {
     
     private static FileListSync instance;
 
-    public static final String CONTEXT_PATH = "contextPath";
     public static final String PATH = "path";
 
     private ClusterService clusterService;

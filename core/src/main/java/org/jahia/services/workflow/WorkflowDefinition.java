@@ -81,4 +81,24 @@ public class WorkflowDefinition extends WorkflowBase {
     public void setFormResourceName(String formResourceName) {
         this.formResourceName = formResourceName;
     }
+
+    /**
+     * Returns the name of this item.
+     *
+     * @return the name of this item
+     */
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+
+    /**
+     * Returns the name of the workflow item provider.
+     *
+     * @return the name of the workflow item provider
+     */
+    @Override
+    public String getProvider() {
+        return super.getProvider();
+    }
 }

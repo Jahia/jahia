@@ -26,7 +26,7 @@
         </pagecontent>
       </home>
       <templates jcr:primaryType="jnt:templatesFolder">
-        <simple jcr:mixinTypes="jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+        <simple jcr:mixinTypes="jmix:sitemap" j:template="default" jcr:primaryType="jnt:template" changefreq="monthly" priority="0.5">
           <j:translation_en jcr:title_en="Simple" jcr:language="en" jcr:primaryType="jnt:translation" />
 
           <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">
@@ -36,7 +36,7 @@
             </row1>
           </pagecontent>
         </simple>
-        <double jcr:mixinTypes="jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+        <double jcr:mixinTypes="jmix:sitemap" j:template="default" jcr:primaryType="jnt:template" changefreq="monthly" priority="0.5">
           <j:translation_en jcr:title_en="Double" jcr:language="en" jcr:primaryType="jnt:translation" />
 
           <pagecontent jcr:primaryType="jnt:contentList">
@@ -47,7 +47,7 @@
             </row1>
           </pagecontent>
         </double>
-        <docspace jcr:mixinTypes="jmix:templateInformation jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+        <docspace jcr:mixinTypes="jmix:templateInformation jmix:sitemap" jcr:primaryType="jnt:template" changefreq="monthly" priority="0.5">
 
           <j:translation_en jcr:title_en="Docspace" jcr:language="en" jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:translation" />
           <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList">
@@ -119,7 +119,7 @@
           </wrapper-1>
         </docspace>
 
-        <wiki jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+        <wiki jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:template" changefreq="monthly" priority="0.5">
           <j:translation_en jcr:title_en="Wiki" jcr:language="en" jcr:primaryType="jnt:translation" />
           <pagecontent jcr:primaryType="jnt:contentList">
             <row column="2col412" jcr:primaryType="jnt:row">
@@ -163,7 +163,7 @@
             </wrappercontent>
           </wrapper>
         </wiki>
-        <forum jcr:primaryType="jnt:page">
+        <forum jcr:primaryType="jnt:template">
           <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Forum" />
           <pagecontent jcr:primaryType="jnt:contentList">
             <row column="2col124" jcr:primaryType="jnt:row">

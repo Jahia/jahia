@@ -571,12 +571,13 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param node The destination node
      * @param name The new name of the copied file node
      * @param allowsExternalSharedNodes
+     * @param templateToPage
      * @return true if action was successful, or false if not
      * @throws RepositoryException
      */
-    boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes) throws RepositoryException;
+    boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes, boolean templateToPage) throws RepositoryException;
 
-    boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes,Map<String, List<String>> references) throws RepositoryException;
+    boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, boolean templateToPage, Map<String, List<String>> references) throws RepositoryException;
 
     void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException;
 

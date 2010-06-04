@@ -916,8 +916,6 @@ public class NavigationHelper {
                 } catch (RepositoryException e) {
                     n.setIcon(folder + "jnt_portlet");
                 }
-            } else if (f.isNodeType("jnt:page") && f.getParent().isNodeType("jnt:templatesFolder")) {
-                n.setIcon(folder + "jnt_page_template");
             } else {
                 final ExtendedNodeType type = f.getPrimaryNodeType();
                 String icon = getIcon(type);

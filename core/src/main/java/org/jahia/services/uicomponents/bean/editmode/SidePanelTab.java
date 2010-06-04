@@ -1,6 +1,7 @@
 package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.services.uicomponents.bean.Visibility;
+import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 
@@ -28,8 +29,12 @@ public class SidePanelTab implements Serializable, BeanNameAware {
     private List<String> nodeTypes = new ArrayList<String>();
     private List<String> filters = new ArrayList<String>();
     private List<String> mimeTypes = new ArrayList<String>();
+    private List<Column> treeColumns;
+    private List<Column> tableColumns;
 
     public SidePanelTab() {
+        tableColumns = new ArrayList<Column>();
+        treeColumns = new ArrayList<Column>();
     }
 
     public String getKey() {
@@ -123,5 +128,22 @@ public class SidePanelTab implements Serializable, BeanNameAware {
     public void setMimeTypes(List<String> mimeTypes) {
         this.mimeTypes = mimeTypes;
     }
+
+    public List<Column> getTableColumns() {
+        return tableColumns;
+    }
+
+    public void setTableColumns(List<Column> tableColumns) {
+        this.tableColumns = tableColumns;
+    }
+
+    public List<Column> getTreeColumns() {
+        return treeColumns;
+    }
+
+    public void setTreeColumns(List<Column> treeColumns) {
+        this.treeColumns = treeColumns;
+    }
+
 }
 

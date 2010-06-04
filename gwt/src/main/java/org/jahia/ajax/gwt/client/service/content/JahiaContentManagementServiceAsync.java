@@ -124,7 +124,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, AsyncCallback async);
 
-    void copyAndSaveProperties(List<String> pathsToCopy, String destinationPath, List<String> mixin, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> newsProps, AsyncCallback async);
+    void createPage(List<String> pathsToCopy, String destinationPath, List<String> mixin, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, boolean templateToPage, List<GWTJahiaNodeProperty> newsProps, AsyncCallback async);
 
     void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
 

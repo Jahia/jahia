@@ -474,6 +474,8 @@
  - j:sourceTemplate (weakreference) hidden
  + * (nt:base) = nt:base version
 
+[jnt:template] > jnt:page
+
 [jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
 
 [jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list
@@ -484,7 +486,7 @@
  + * (jnt:virtualsite)
 
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
- + * (jnt:page)
+ + * (jnt:template)
 
 [jmix:autoSplitFolders] mixin extends = jnt:contentList
  - j:splitConfig (string) mandatory

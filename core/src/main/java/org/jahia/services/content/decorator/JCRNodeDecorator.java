@@ -251,12 +251,12 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.copy(dest, name);
     }
 
-    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
-        return node.copy(dest, name, allowsExternalSharedNodes);
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, boolean templateToPage) throws RepositoryException {
+        return node.copy(dest, name, allowsExternalSharedNodes, false);
     }
 
-    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes,Map<String, List<String>> references) throws RepositoryException {
-        return node.copy(dest, name, allowsExternalSharedNodes, references);
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, boolean templateToPage, Map<String, List<String>> references) throws RepositoryException {
+        return node.copy(dest, name, allowsExternalSharedNodes, false, references);
     }    
 
     public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {

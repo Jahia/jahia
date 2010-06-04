@@ -41,8 +41,6 @@
 </c:if>
 
 <c:set var="items" value="${jcr:getChildrenOfType(current,'jnt:page,jnt:nodeLink,jnt:externalLink')}"/>
-<c:choose>
-    <c:when test="${not empty items}">
         <c:if test="${navMenuLevel eq 1}">
             <div id="navbar">
         </c:if>
@@ -51,6 +49,7 @@
         </c:if>
         <ul class="navmenu level_${navMenuLevel - startLevelValue}">
             <c:forEach items="${items}" var="menuItem" varStatus="menuStatus">
+                <c:set var="notempty" value="true"/>
                 <c:set var="inpath" value="${fn:startsWith(renderContext.mainResource.node.path, menuItem.path)}"/>
                 <c:set var="selected" value="${renderContext.mainResource.node.path eq menuItem.path}"/>
                 <c:if test="${startLevelValue < navMenuLevel or inpath}">
@@ -86,6 +85,9 @@
                     </c:choose>
                 </c:if>
             </c:forEach>
+            <c:if test="${not notempty and renderContext.editMode}">
+	       <li>Empty nav bar</li>
+	       </c:if>
         </ul>
         <c:if test="${navMenuLevel > 1}">
             </div>
@@ -93,11 +95,6 @@
         <c:if test="${navMenuLevel eq 1}">
             </div>
         </c:if>
-    </c:when>
-    <c:otherwise>
-        empty
-    </c:otherwise>
-</c:choose>
 <c:if test="${navMenuLevel == 1}">
     </div>
 </c:if>

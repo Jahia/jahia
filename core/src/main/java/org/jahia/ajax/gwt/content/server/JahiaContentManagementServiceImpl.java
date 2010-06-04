@@ -396,12 +396,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut)
             throws GWTJahiaServiceException {
-        contentManager.copy(pathsToCopy, destinationPath, newName, false, cut, false, retrieveCurrentSession());
+        contentManager.copy(pathsToCopy, destinationPath, newName, false, cut, false, false, retrieveCurrentSession());
     }
 
-    public void copyAndSaveProperties(List<String> pathsToCopy, String destinationPath, List<String> mixin,
+    public void createPage(List<String> pathsToCopy, String destinationPath, List<String> mixin,
                                       GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
-                                      List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
+                                      boolean templateToPage, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
         try {
             String newName = null;
             List<GWTJahiaNodeProperty> l = langCodeProperties.get(getSite().getDefaultLanguage());
@@ -413,7 +413,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
 
             List<GWTJahiaNode> nodes = contentManager
-                    .copy(pathsToCopy, destinationPath, newName, false, false, false, retrieveCurrentSession());
+                    .copy(pathsToCopy, destinationPath, newName, false, false, false, templateToPage, retrieveCurrentSession());
             for (GWTJahiaNode node : nodes) {
                 node.getNodeTypes().addAll(mixin);
             }
@@ -442,17 +442,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName)
             throws GWTJahiaServiceException {
-        contentManager.copy(pathsToCopy, destinationPath, newName, false, false, true, retrieveCurrentSession());
+        contentManager.copy(pathsToCopy, destinationPath, newName, false, false, true, false, retrieveCurrentSession());
     }
 
     public void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut)
             throws GWTJahiaServiceException {
-        contentManager.copy(nodes, path, newName, true, cut, false, retrieveCurrentSession());
+        contentManager.copy(nodes, path, newName, true, cut, false, false, retrieveCurrentSession());
     }
 
     public void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName)
             throws GWTJahiaServiceException {
-        contentManager.copy(pathsToCopy, destinationPath, newName, true, false, true, retrieveCurrentSession());
+        contentManager.copy(pathsToCopy, destinationPath, newName, true, false, true, false, retrieveCurrentSession());
     }
 
     public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException {
@@ -1296,9 +1296,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
-    @SuppressWarnings("unchecked")
     private List<String> getOpenPathsForRepository(String repositoryType) throws GWTJahiaServiceException {
-        return (List<String>) getSession().getAttribute(NavigationHelper.SAVED_OPEN_PATHS + repositoryType);
+        return (List<String>) getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
     }
 
     private JahiaUser getUser() {

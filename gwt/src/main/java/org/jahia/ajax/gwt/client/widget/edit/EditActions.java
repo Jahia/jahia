@@ -43,17 +43,18 @@ public class EditActions {
      * Create page
      *
      * @param linker
+     * @param type
      */
-    public static void createPage(final Linker linker) {
+    public static void createPage(final Linker linker, final String type) {
         if (linker.getMainNode() != null) {
-            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new BaseAsyncCallback<GWTJahiaNodeType>() {
+            JahiaContentDefinitionService.App.getInstance().getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onApplicationFailure(Throwable throwable) {
                     Log.error("", throwable);
                     com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
                 }
 
                 public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                    new CreatePageContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null).show();
+                    new CreatePageContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null, type.equals("jnt:page")).show();
 //                    new ContentTypeWindow(linker, linker.getMainNode(), gwtJahiaNodeType,true).show();
                 }
             });

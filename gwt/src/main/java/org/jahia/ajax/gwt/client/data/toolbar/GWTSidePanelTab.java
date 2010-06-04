@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
+import org.jahia.ajax.gwt.client.messages.Messages;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +26,22 @@ public class GWTSidePanelTab  implements Serializable {
     private List<String> filters = new ArrayList<String>();
     private List<String> mimeTypes = new ArrayList<String>();
 
+    private List<GWTColumn> treeColumns;
+    private List<String> treeColumnKeys;
+
+    private List<GWTColumn> tableColumns;
+    private List<String> tableColumnKeys;
+
     public GWTSidePanelTab() {
+        treeColumns = new ArrayList<GWTColumn>();
+        treeColumnKeys = new ArrayList<String>();
+        tableColumns = new ArrayList<GWTColumn>();
+        tableColumnKeys = new ArrayList<String>();
     }
 
 
     public GWTSidePanelTab(String name) {
+        this();
         this.name = name;
     }
 
@@ -111,4 +124,43 @@ public class GWTSidePanelTab  implements Serializable {
     public void setMimeTypes(List<String> mimeTypes) {
         this.mimeTypes = mimeTypes;
     }
+
+    public void addTableColumn(GWTColumn col) {
+        tableColumns.add(col);
+        tableColumnKeys.add(col.getKey());
+    }
+
+    public void addTreeColumn(GWTColumn col) {
+        treeColumns.add(col);
+        treeColumnKeys.add(col.getKey());
+    }
+
+    public List<GWTColumn> getTableColumns() {
+        if (tableColumns.isEmpty()) {
+            addTableColumn(new GWTColumn("name", Messages.getResource("label.name"),-1));
+        }
+        return tableColumns;
+    }
+
+    public List<String> getTableColumnKeys() {
+        if (tableColumns.isEmpty()) {
+            addTableColumn(new GWTColumn("name", Messages.getResource("label.name"),-1));
+        }
+        return tableColumnKeys;
+    }
+
+    public List<GWTColumn> getTreeColumns() {
+        if (treeColumns.isEmpty()) {
+            addTreeColumn(new GWTColumn("name", Messages.getResource("label.name"),-1));
+        }
+        return treeColumns;
+    }
+
+    public List<String> getTreeColumnKeys() {
+        if (treeColumns.isEmpty()) {
+            addTreeColumn(new GWTColumn("name", Messages.getResource("label.name"),-1));
+        }
+        return treeColumnKeys;
+    }
+
 }

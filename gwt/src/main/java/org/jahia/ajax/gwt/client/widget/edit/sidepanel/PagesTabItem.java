@@ -21,6 +21,7 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.*;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
@@ -52,16 +53,19 @@ public class PagesTabItem extends SidePanelTabItem {
     private void initTree() {
         ColumnConfig columnConfig = new ColumnConfig("displayName","Name",80);
         columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
-        ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
 
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites/*"));
-        factory.setNodeTypes(JCRClientUtils.SITE_NODETYPES);
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(config.getPaths());
+        factory.setNodeTypes(config.getFolderTypes());
         this.factory = factory;
         this.factory.setSelectedPath(path);
 
-        tree = factory.getTreeGrid(new ColumnModel(Arrays.asList(columnConfig,author)));
+        NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
+        columns.init();
+        columns.get(0).setRenderer(new TreeGridCellRenderer());
 
-        tree.setAutoExpandColumn("displayName");
+        tree = factory.getTreeGrid(new ColumnModel(columns));
+
+        tree.setAutoExpandColumn(columns.getAutoExpand());
         tree.getTreeView().setRowHeight(25);
         tree.getTreeView().setForceFit(true);
         tree.setHeight("100%");
@@ -140,7 +144,7 @@ public class PagesTabItem extends SidePanelTabItem {
                     }
                 }
 
-                if (activeNode.getIcon().endsWith("jnt_page")) {
+                if (activeNode.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
                     e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 } else if (activeNode.getNodeTypes().contains("jnt:templatesFolder")
                         && EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_TYPE))) {
@@ -190,7 +194,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             final GWTJahiaNode node = PagesTabItem.this.tree.getSelectionModel().getSelectedItem();
-            if (node.getIcon().endsWith("jnt_page")) {
+            if (node.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
                 l.add(node);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);

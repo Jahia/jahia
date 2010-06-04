@@ -17,6 +17,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
@@ -52,11 +53,12 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(config.getPaths());
         factory.setNodeTypes(this.folderTypes);
 
-        ColumnConfig columnConfig = new ColumnConfig("displayName", "Name", 80);
-        columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
-//        ColumnConfig author = new ColumnConfig("createdBy", "Author", 40);
-        tree = factory.getTreeGrid(new ColumnModel(Arrays.asList(columnConfig)));
-        tree.setAutoExpandColumn("displayName");
+        NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
+        columns.init();
+        columns.get(0).setRenderer(new TreeGridCellRenderer());
+
+        tree = factory.getTreeGrid(new ColumnModel(columns));
+        tree.setAutoExpandColumn(columns.getAutoExpand());
         tree.getTreeView().setRowHeight(25);
         tree.getTreeView().setForceFit(true);
         tree.setHeight("100%");

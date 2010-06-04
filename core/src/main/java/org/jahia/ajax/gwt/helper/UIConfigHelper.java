@@ -678,6 +678,20 @@ public class UIConfigHelper {
                 gwtSidePanel.setMimeTypes(sidePanelTab.getMimeTypes());
                 gwtSidePanel.setPaths(sidePanelTab.getPaths());
                 gwtSidePanel.setNodeTypes(sidePanelTab.getNodeTypes());
+                // add table columns
+                for (Column item : sidePanelTab.getTableColumns()) {
+                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
+                        GWTColumn col = createGWTColumn(item, site, locale, uiLocale);
+                        gwtSidePanel.addTableColumn(col);
+                    }
+                }
+                for (Column item : sidePanelTab.getTreeColumns()) {
+                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
+                        GWTColumn col = createGWTColumn(item, site, locale, uiLocale);
+                        gwtSidePanel.addTreeColumn(col);
+                    }
+                }
+
                 gwtSidePanelTabList.add(gwtSidePanel);
             }
         }

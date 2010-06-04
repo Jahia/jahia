@@ -65,19 +65,11 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     private short defaultView;
     private boolean enableFileDoubleClick = true;
-    private boolean displaySize = true;
-    private boolean displayExt = true;
-    private boolean displayLock = true;
-    private boolean displayDate = true;
-    private boolean displayProvider = false;
     private boolean useCheckboxForSelection = true;
 
-    private String toolbarGroup;
     private GWTJahiaToolbarSet toolbarSet;
 
     private boolean expandRoot = false;
-
-    private boolean allowCollections = true;
 
     private boolean displaySearch = true;
 

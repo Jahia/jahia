@@ -12,7 +12,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
  */
 public class NewTemplateActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        EditActions.createPage(linker);
+        EditActions.createPage(linker, "jnt:template");
     }
 
     public void handleNewLinkerSelection() {

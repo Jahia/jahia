@@ -391,7 +391,7 @@ public class ContentManagerHelper {
     }
 
     public List<GWTJahiaNode> copy(List<String> pathsToCopy, String destinationPath, String newName, boolean moveOnTop,
-                                   boolean cut, boolean reference, JCRSessionWrapper currentUserSession)
+                                   boolean cut, boolean reference, boolean templateToPage, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
 
@@ -419,7 +419,7 @@ public class ContentManagerHelper {
                     try {
                         name = findAvailableName(targetParent, name, currentUserSession);
                         if (targetParent.isWriteable() && !targetParent.isLocked()) {
-                            final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
+                            final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference, templateToPage);
 
                             if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                                 targetParent.orderBefore(name, targetNode.getName());
@@ -460,7 +460,7 @@ public class ContentManagerHelper {
     }
 
     private JCRNodeWrapper doPaste(JCRNodeWrapper targetNode, JCRNodeWrapper node, String name, boolean cut,
-                                   boolean reference) throws RepositoryException, JahiaException {
+                                   boolean reference, boolean templateToPage) throws RepositoryException, JahiaException {
         if (cut) {
             node.checkout();
             targetNode.checkout();
@@ -489,7 +489,7 @@ public class ContentManagerHelper {
             }
 
         } else {
-            node.copy(targetNode, name, true);
+            node.copy(targetNode, name, true, templateToPage);
         }
         return targetNode.getNode(name);
     }
@@ -843,7 +843,7 @@ public class ContentManagerHelper {
                                     destinationNode =
                                             session.getNode(StringUtils.substringBeforeLast(entry.getValue(), "/"));
                                     originalNode.copy(destinationNode,
-                                            StringUtils.substringAfterLast(entry.getValue(), "/"), true);
+                                            StringUtils.substringAfterLast(entry.getValue(), "/"), true, false);
                                 }
                             }
                             ReferencesHelper.resolveCrossReferences(session, references);
@@ -899,7 +899,7 @@ public class ContentManagerHelper {
             if (!sharedSource && sharedDestination) {
                 final JCRNodeWrapper parent = destinationNode.getParent();
                 destinationNode.remove();
-                source.copy(parent, source.getName(), !toPage);
+                source.copy(parent, source.getName(), !toPage, false);
                 return;
             }
 
@@ -936,7 +936,7 @@ public class ContentManagerHelper {
             } else if (!sharedSource && sharedDestination) {
                 final JCRNodeWrapper parent = destinationNode.getParent();
                 destinationNode.remove();
-                source.copy(parent, source.getName(), !toPage);
+                source.copy(parent, source.getName(), !toPage, false);
                 return;
             }
         }
@@ -969,7 +969,7 @@ public class ContentManagerHelper {
                                 child.addMixin("jmix:templateInformation");
                                 child.setProperty("j:templateDeployed", true);
                             }
-                            child.copy(destinationNode, child.getName(), !toPage);
+                            child.copy(destinationNode, child.getName(), !toPage, false);
                         }
                     }
                 }
@@ -982,7 +982,7 @@ public class ContentManagerHelper {
                         child.addMixin("jmix:templateInformation");
                         child.setProperty("j:templateDeployed", true);
                     }
-                    child.copy(destinationNode, child.getName(), !toPage);
+                    child.copy(destinationNode, child.getName(), !toPage, false);
                 }
             }
         }

@@ -45,7 +45,7 @@ public class CloneAction implements org.jahia.bin.Action {
         String targetPath = req.getParameter("target");
         String newName = req.getParameter("newName");
         JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(resource.getWorkspace(), resource.getLocale());
-        contentManager.copy(Arrays.asList(sourcePath),targetPath,null,false,false,true,jcrSessionWrapper);
+        contentManager.copy(Arrays.asList(sourcePath),targetPath,null,false,false,true, false, jcrSessionWrapper);
         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     }
 }

@@ -131,6 +131,18 @@
                     </property>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
+                    <property name="nodeType" value="jnt:template"/>
+                    <property name="tabs">
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>createPage</value>
+                            <value>template</value>
+                            <value>layout</value>
+                            <value>option</value>
+                            <value>rights</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
@@ -322,7 +334,17 @@
                 <value>$site/templates</value>
             </list>
         </property>
-        <property name="folderTypes" value="jnt:page"/>
+        <property name="folderTypes" >
+            <list>
+                <value>jnt:template</value>
+                <value>jnt:page</value>
+            </list>
+        </property>
+        <property name="treeColumns">
+            <list>
+                <value>displayName,*</value>
+            </list>
+        </property>
         <property name="treeContextMenu">
             <bean id="org.jahia.toolbar.sidePanel.templates"
                   class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -378,6 +400,18 @@
 
     <bean id="sidePanelTab.pages" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="pages"/>
+        <property name="paths">
+            <list>
+                <value>/sites/*</value>
+            </list>
+        </property>
+        <property name="folderTypes" value="jmix:navMenuItem"/>
+        <property name="treeColumns">
+            <list>
+                <value>displayName,*</value>
+                <value>author,100</value>
+            </list>
+        </property>
         <property name="treeContextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -388,6 +422,27 @@
                             <property name="titleKey" value="label.rename"/>
                             <property name="icon" value="rename"/>
                         </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                    <property name="nodeTypes" value="jnt:navMenuNodeLink"/>
+                                    <property name="parentType" value="jnt:page"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.newInternalLink"/>
+                            <property name="icon" value="newInternalLink"/>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                    <property name="nodeTypes" value="jnt:navMenuExternalLink"/>
+                                    <property name="parentType" value="jnt:page"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.newExternalLink"/>
+                            <property name="icon" value="newExternalLink"/>
+                        </bean>
+
                         <ref bean="Toolbar.Item.EditContent"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Separator"/>
@@ -427,6 +482,11 @@
             </list>
         </property>
         <property name="folderTypes" value="jnt:contentList"/>
+        <property name="treeColumns">
+            <list>
+                <value>displayName,*</value>
+            </list>
+        </property>
         <property name="treeContextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -479,6 +539,11 @@
                 <value>jnt:mountPoint</value>
             </list>
         </property>
+        <property name="treeColumns">
+            <list>
+                <value>displayName,*</value>
+            </list>
+        </property>
         <property name="treeContextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -525,6 +590,11 @@
             </list>
         </property>
         <property name="folderTypes" value="jnt:portletList"/>
+        <property name="treeColumns">
+            <list>
+                <value>displayName,*</value>
+            </list>
+        </property>
         <property name="treeContextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">

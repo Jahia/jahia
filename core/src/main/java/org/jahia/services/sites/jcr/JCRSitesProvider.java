@@ -8,7 +8,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -197,7 +196,7 @@ public class JCRSitesProvider {
 //                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
 
                                     JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + templatePackage);
-                                    defaultSite.copy(session.getNode("/sites"), siteKey, false);
+                                    defaultSite.copy(session.getNode("/sites"), siteKey, false, false);
 
                                     if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
                                         InputStream is = null;

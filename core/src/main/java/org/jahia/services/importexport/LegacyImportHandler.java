@@ -239,9 +239,9 @@ public class LegacyImportHandler extends DefaultHandler {
 
                         // todo : add a link here ??
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
-                        createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"));
+                        createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"), "jnt:navMenuNodeLink");
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
-                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"));
+                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), "jnt:navMenuExternalLink");
                     }
 
                     break;
@@ -362,13 +362,14 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
 
-    private void createExternalLink(JCRNodeWrapper page, String title, String uuid, final String url)
+    private void createExternalLink(JCRNodeWrapper page, String title, String uuid, final String url,
+                                    final String nodeType)
             throws RepositoryException {
         JCRNodeWrapper sub;
         if (uuidMapping.containsKey(uuid)) {
             sub = session.getNodeByIdentifier(uuidMapping.get(uuid));
         } else {
-            sub = addOrCheckoutNode(page, "link_"+(ctnId++), "jnt:externalLink", null);
+            sub = addOrCheckoutNode(page, "link_"+(ctnId++), nodeType, null);
             sub.setProperty("j:url", url);
             uuidMapping.put(uuid, sub.getIdentifier());
         }
@@ -379,7 +380,8 @@ public class LegacyImportHandler extends DefaultHandler {
         }
     }
 
-    private void createInternalLink(JCRNodeWrapper page, String title, String uuid, final String reference)
+    private void createInternalLink(JCRNodeWrapper page, String title, String uuid, final String reference,
+                                    final String nodeType)
             throws RepositoryException {
         JCRNodeWrapper sub;
         if (uuidMapping.containsKey(uuid)) {
@@ -387,7 +389,7 @@ public class LegacyImportHandler extends DefaultHandler {
         } else {
             // System.out.println("link Field-node : " + localName);
 
-            sub = addOrCheckoutNode(page, "link_"+(ctnId++), "jnt:nodeLink", null);
+            sub = addOrCheckoutNode(page, "link_"+(ctnId++), nodeType, null);
             if (!references.containsKey(reference)) {
                 references.put(reference, new ArrayList<String>());
             }
@@ -418,7 +420,7 @@ public class LegacyImportHandler extends DefaultHandler {
                 parent.checkout();
             }
             if (template != null) {
-                template.copy(parent, nodeName, true);
+                template.copy(parent, nodeName, true, true);
                 node = parent.getNode(nodeName);
                 node.setProperty("j:sourceTemplate", template);
             } else {

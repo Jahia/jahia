@@ -134,7 +134,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut) throws GWTJahiaServiceException;
 
-    public void copyAndSaveProperties(List<String> pathsToCopy, String destinationPath, List<String> mixin, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException;
+    public void createPage(List<String> pathsToCopy, String destinationPath, List<String> mixin, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, boolean templateToPage, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException;
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException;
 

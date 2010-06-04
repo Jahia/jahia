@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
+import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRContentUtils;
@@ -833,7 +834,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public String getExportUrl(String path) throws GWTJahiaServiceException {
         try {
             JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession();
-            return "/jahia" + Export.getExportServletPath() + "/" + jcrSessionWrapper.getWorkspace().getName() + path;
+            return Jahia.getContextPath() + Export.getExportServletPath() + "/" + jcrSessionWrapper.getWorkspace().getName() + path;
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -1295,8 +1296,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
 
+    @SuppressWarnings("unchecked")
     private List<String> getOpenPathsForRepository(String repositoryType) throws GWTJahiaServiceException {
-        return (List<String>) getSession().getAttribute(navigation.SAVED_OPEN_PATHS + repositoryType);
+        return (List<String>) getSession().getAttribute(NavigationHelper.SAVED_OPEN_PATHS + repositoryType);
     }
 
     private JahiaUser getUser() {

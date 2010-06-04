@@ -2,15 +2,15 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Header;
+import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -57,6 +57,12 @@ public class MainModule extends Module {
         head.addStyleName("x-panel-header");
         head.setStyleAttribute("z-index", "999");
         head.setStyleAttribute("position", "relative");
+        head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent event) {
+                mask("Loading", "x-mask-loading");
+                refresh(EditLinker.REFRESH_MAIN);
+            }
+        }));
 
         Hover.getInstance().setMainModule(this);
         Selection.getInstance().setMainModule(this);

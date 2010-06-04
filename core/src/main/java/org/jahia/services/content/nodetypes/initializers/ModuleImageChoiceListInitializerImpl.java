@@ -85,7 +85,7 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
                         if (s.equals("/")) {
                             s = "";
                         }
-                        value.addProperty("image", s + "/" + template.getRootFolderPath() + "/img/" + value.getValue().getString() + "." + param);
+                        value.addProperty("image", s + (template.getRootFolderPath().startsWith("/")?"":"/")+template.getRootFolderPath() + "/img/" + value.getValue().getString() + "." + param);
                     }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);

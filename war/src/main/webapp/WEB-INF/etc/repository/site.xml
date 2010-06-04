@@ -26,18 +26,4 @@
                                     j:privileges="jcr:write_live" j:aceType="GRANT"/>
         </j:acl>
     </tags>
-    
-    <permissions jcr:primaryType="jnt:permissions" jcr:mixinTypes="jmix:accessControlled">
-        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
-                                    j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
-        </j:acl>
-    </permissions>
-
-    <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">
-        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
-                                    j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
-        </j:acl>
-    </roles>
 </site>

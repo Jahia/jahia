@@ -33,6 +33,7 @@
 package org.jahia.modules.roles.rules;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -41,12 +42,10 @@ import javax.jcr.Value;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.rules.AddedNodeFact;
+import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.RoleIdentity;
@@ -74,7 +73,7 @@ public class RoleService {
     private org.jahia.services.rbac.jcr.RoleService roleService;
 
     private JahiaUserManagerService userService;
-
+    
     private Role getRole(String role) {
         return new RoleIdentity(role.contains("/") ? StringUtils.substringAfterLast(role, "/") : role, JCRContentUtils
                 .getSiteKey(role));
@@ -103,6 +102,38 @@ public class RoleService {
     }
 
     /**
+     * Assign provided permissions to a specified role.
+     * 
+     * @param role the role to be modified
+     * @param permissionsToGrant the list of permissions to be granted
+     * @param drools the rule engine helper class
+     * @throws RepositoryException in case of an error
+     */
+    public void grantPermissionsToRole(final String role, final List<String> permissionsToGrant, KnowledgeHelper drools)
+            throws RepositoryException {
+        String site = JCRContentUtils.getSiteKey(role);
+        List<PermissionImpl> allSitePermissions = roleService.getPermissions(site);
+        List<Permission> permissions = new LinkedList<Permission>();
+        
+        for (String perm : permissionsToGrant) {
+            if (perm.endsWith("/*")) {
+                // granting group
+                String permGroup = StringUtils.substringBeforeLast(perm, "/*");
+                for (PermissionImpl sitePermission : allSitePermissions) {
+                    if (sitePermission.getGroup().equals(permGroup)) {
+                        permissions.add(sitePermission);
+                    }
+                }
+            } else {
+                permissions.add(new PermissionIdentity(perm, site));
+            }
+        }
+        if (!permissions.isEmpty()) {
+            roleService.grantPermissions(getRole(role), permissions);
+        }
+    }
+
+    /**
      * Assign permission to a specified role.
      * 
      * @param role the role to be modified
@@ -116,7 +147,7 @@ public class RoleService {
     }
 
     /**
-     * Grant role to a specified group.
+     * Grant a role to a specified group.
      * 
      * @param group to be modified
      * @param role the role to be granted
@@ -130,6 +161,29 @@ public class RoleService {
             rbacService.grantRole(principal, getRole(role));
         } else {
             logger.warn("Unable to look up the specified group for name '" + group + "'. Skip granting role.");
+        }
+    }
+
+    /**
+     * Grant role to a specified list of principals.
+     * 
+     * @param principals the list of principals to grant a role to
+     * @param role the role to be granted
+     * @param drools the rule engine helper class
+     * @throws RepositoryException in case of an error
+     */
+    public void grantRoleToPrincipals(final List<String> principals, final String role, KnowledgeHelper drools)
+            throws RepositoryException {
+        for (String principal : principals) {
+            if (principal.startsWith("u:")) {
+                grantRoleToUser(principal.substring(2), role, drools);
+            } else if (principal.startsWith("g:")) {
+                grantRoleToGroup(principal.substring(2), role, drools);
+            } else {
+                logger.warn("Unknown principal type '" + principal + "'."
+                        + " Support only users (prefixed with 'u:') and groups (prefixed with 'u:')."
+                        + " Skip granting role.");
+            }
         }
     }
 
@@ -186,17 +240,12 @@ public class RoleService {
      * @throws RepositoryException in case of an error
      */
     public void updateSiteLangPermissions(final AddedNodeFact node, KnowledgeHelper drools) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper siteNode = session.getNode(node.getPath());
-                final String siteKey = siteNode.getName();
-                final Value[] languages = siteNode.getProperty("j:languages").getValues();
-                for (Value language : languages) {
-                    roleService.savePermission(new PermissionIdentity(language.getString(), "languages", siteKey));
-                }
-                return true;
-            }
-        });
+        JCRNodeWrapper siteNode = node.getNode();
+        final String siteKey = siteNode.getName();
+        final Value[] languages = siteNode.getProperty("j:languages").getValues();
+        for (Value language : languages) {
+            roleService.savePermission(new PermissionIdentity(language.getString(), "languages", siteKey));
+        }
     }
 
 }

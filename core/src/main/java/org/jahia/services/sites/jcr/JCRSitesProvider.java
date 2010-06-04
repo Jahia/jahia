@@ -8,10 +8,14 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -175,8 +179,8 @@ public class JCRSitesProvider {
             final int siteId = id;
             site.setID(id);
 
-            jcrTemplate.doExecuteWithSystemSession(new JCRCallback() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:virtualsitesFolder]", Query.JCR_SQL2);
                         QueryResult qr = q.execute();
@@ -199,12 +203,24 @@ public class JCRSitesProvider {
                                     defaultSite.copy(session.getNode("/sites"), siteKey, false, false);
 
                                     if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
-                                        InputStream is = null;
-                                        try {
-                                            is = new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString());
-                                            session.importXML(f.getPath()+"/"+ siteKey, is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
-                                        } finally {
-                                            IOUtils.closeQuietly(is);
+                                        String[] skeletons = sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString().split(",");
+                                        for (int i = 0; i < skeletons.length; i++) {
+                                            String skeleton = skeletons[i].trim();
+                                            File path = null; 
+                                            if (skeleton.startsWith("/")) {
+                                                path = new File(SettingsBean.getInstance().getJahiaJspDiskPath(), skeleton); 
+                                            } else {
+                                                path = new File(SettingsBean.getInstance().getJahiaEtcDiskPath(), "/repository/"+ skeleton);
+                                            }
+                                            if (path.exists()) {
+                                                InputStream is = null;
+                                                try {
+                                                    is = new FileInputStream(path);
+                                                    session.importXML(f.getPath()+"/"+ siteKey, is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                                } finally {
+                                                    IOUtils.closeQuietly(is);
+                                                }
+                                            }
                                         }
                                     }
 
@@ -232,7 +248,7 @@ public class JCRSitesProvider {
                         session.save();
                     } catch (PathNotFoundException e) {
                     }
-                    return null;
+                    return true;
                 }
             });
         } catch (RepositoryException e) {
@@ -242,8 +258,8 @@ public class JCRSitesProvider {
 
     public void deleteSite(final String siteKey) {
         try {
-            JCRCallback deleteCacllback = new JCRCallback() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            JCRCallback<Boolean> deleteCacllback = new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode("/sites");
                     if (!sites.isCheckedOut()) {
                         session.checkout(sites);
@@ -257,7 +273,7 @@ public class JCRSitesProvider {
                     }
                     site.remove();
                     session.save();
-                    return null;
+                    return true;
                 }
             };
             JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCacllback);

@@ -95,6 +95,8 @@
 
 [jnt:role] > nt:base, mix:referenceable, mix:title, jmix:observable
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
+ - j:assignedPermissions (string) protected hidden multiple indexed=no
+ - j:grantToPrincipals (string) protected hidden multiple indexed=no
 
 [jnt:roles] > nt:base, mix:versionable
  + * (jnt:role)

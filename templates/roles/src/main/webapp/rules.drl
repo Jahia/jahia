@@ -14,102 +14,30 @@ global Logger logger
 global RoleService roleService
 ###############################################################################
 
-rule "Create roles/permissions for new site"
+rule "Initial permissions-to-role assignment"
 	when
-		A new node is created
-			- the node has the type jnt:virtualsite
+		A property j:assignedPermissions has been set on a node
+			- the node has the type jnt:role
 	then
-    	Import file "/templates/roles/site-roles.xml" into node
+		Log "Grant permissions " + propertyValue + " to role " + node.getPath()
+		Grant a list of permissions propertyValue to role node.getPath()
+end
+
+rule "Initial role-to-user assignment"
+	when
+		A property j:grantToPrincipals has been set on a node
+			- the node has the type jnt:role
+	then
+		Log "Granting to principals " + propertyValue + " the role " + node.getPath()
+		Grant role node.getPath() to principals propertyValue
 end
 
 rule "Create permission for site languages"
-  when
-      A property j:languages has been set on a node
-       - the node has the type jnt:virtualsite
-  then
-      Update site language permissions for node
-      Grant permissions in group "languages" to role node.getPath() + "/roles/content-manager"
-      # Temporary workaround
-		Log "Grant permissions to content-manager role"
-		Grant permissions in group "actions" to role node.getPath() + "/roles/content-manager"
+	when
+		A property j:languages has been set on a node
+			- the node has the type jnt:virtualsite
+	then
+		Update site language permissions for node
 		Grant permissions in group "languages" to role node.getPath() + "/roles/content-manager"
-		Grant permissions in group "managers" to role node.getPath() + "/roles/content-manager"
-		Grant permissions in group "toolbar" to role node.getPath() + "/roles/content-manager"
-		Grant role node.getPath() + "/roles/content-manager" to group "users"
-      
 end
 
-############################################
-### Init permissions for server-level roles
-############################################
-rule "Grant permissions to server-content-manager role"
-	when
-		A new node "server-content-manager" is created
-			- the node has the type jnt:role
-	then
-		Log "Grant permissions to server-content-manager role"
-		Grant permission "global/virtual-sites" to role node.getName()
-		Grant permission "global/portlets" to role node.getName()
-		Grant permission "global/server-and-cache" to role node.getName()
-end
-
-rule "Grant permissions to security-advisor role"
-	when
-		A new node "security-advisor" is created
-			- the node has the type jnt:role
-	then
-		Log "Grant permissions to security-advisor role"
-		Grant permission "global/server-permissions" to role node.getName()
-		Grant permission "global/password-policy" to role node.getName()
-end
-
-rule "Grant permissions to support-manager role"
-	when
-		A new node "support-manager" is created
-			- the node has the type jnt:role
-	then
-		Log "Grant permissions to support-manager role"
-		Grant permission "global/issue-tracking" to role node.getName()
-		Grant permission "global/documentation" to role node.getName()
-		Grant permission "global/about" to role node.getName()
-end
-
-rule "Grant permissions to webmaster role"
-	when
-		A new node "webmaster" is created
-			- the node has the type jnt:role
-	then
-		Log "Grant permissions to webmaster role"
-		Grant permission "global/email-settings" to role node.getName()
-		Grant permission "global/root-user" to role node.getName()
-		Grant permission "global/patches" to role node.getName()
-		Grant permission "global/studio-mode" to role node.getName()
-end
-
-############################################
-### Init permissions for site-level roles
-############################################
-rule "Grant permissions to content-manager role"
-	when
-		A new node "content-manager" is created
-			- the node has the type jnt:role
-	then
-		Log "Grant permissions to content-manager role"
-		Grant permissions in group "actions" to role node.getPath()
-		Grant permissions in group "languages" to role node.getPath()
-		Grant permissions in group "managers" to role node.getPath()
-		Grant permissions in group "toolbar" to role node.getPath()
-		Grant role node.getPath() to group "users"
-end
-
-rule "Grant permissions to user-manager role"
-	when
-		A new node "user-manager" is created
-			- the node has the type jnt:role
-	then
-		Log "Grant permissions to user-manager role"
-		Grant permission "admin/jahia-administration" to role node.getPath()
-		Grant permission "global/users" to role node.getPath()
-		Grant permission "admin/groups" to role node.getPath()
-		Grant permission "admin/site-permissions" to role node.getPath()
-end

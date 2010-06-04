@@ -33,10 +33,18 @@
                                               j:principal="g:administrators"
                                               j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
         </j:acl>
-        <server-content-manager jcr:primaryType="jnt:role"/>
-        <security-advisor jcr:primaryType="jnt:role"/>
-        <support-manager jcr:primaryType="jnt:role"/>
-        <webmaster jcr:primaryType="jnt:role"/>
+        
+        <server-content-manager jcr:primaryType="jnt:role"
+            j:assignedPermissions="global/virtual-sites global/portlets global/server-and-cache"/>
+            
+        <security-advisor jcr:primaryType="jnt:role"
+            j:assignedPermissions="global/server-permissions global/password-policy"/>
+            
+        <support-manager jcr:primaryType="jnt:role"
+            j:assignedPermissions="global/issue-tracking global/documentation global/about"/>
+            
+        <webmaster jcr:primaryType="jnt:role"
+            j:assignedPermissions="global/email-settings global/root-user global/patches global/studio-mode"/>
     </roles>
 
 </content>

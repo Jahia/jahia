@@ -83,7 +83,7 @@
     <workflowrules jcr:primaryType="jnt:workflowRules"/>
 
     <sites jcr:primaryType="jnt:virtualsitesFolder"
-           j:virtualsitesFolderSkeleton="site.xml"/>
+           j:virtualsitesFolderSkeleton="site.xml,/templates/roles/site-roles.xml"/>
 
     <imports jcr:primaryType="jnt:importDropBox"/>
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper"/>

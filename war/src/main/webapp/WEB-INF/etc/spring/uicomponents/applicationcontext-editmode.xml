@@ -251,8 +251,8 @@
                             <value>usages</value>
                             <value>publication</value>
                             <value>workflow</value>
-                            <value>seo</value>
-                            <value>analytics</value>
+                            <value>seo,$site/edit-mode-tabs/seo</value>
+                            <value>analytics,$site/edit-mode-tabs/seo</value>
                         </list>
                     </property>
                 </bean>
@@ -269,8 +269,8 @@
                             <value>usages</value>
                             <value>publication</value>
                             <value>workflow</value>
-                            <value>seo</value>
-                            <value>analytics</value>
+                            <value>seo,$site/edit-mode-tabs/seo</value>
+                            <value>analytics,$site/edit-mode-tabs/seo</value>
                         </list>
                     </property>
                 </bean>

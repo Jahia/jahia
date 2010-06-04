@@ -5,6 +5,10 @@
                     xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
 
     <permissions jcr:primaryType="jnt:permissions" jcr:mixinTypes="jmix:accessControlled">
+        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
+        </j:acl>
  	    <admin jcr:primaryType="jnt:permissionGroup">
    		    <jahia-administration jcr:primaryType="jnt:permission"/> 	       		    
    		    <groups jcr:primaryType="jnt:permission"/>
@@ -57,12 +61,28 @@
             <full jcr:primaryType="jnt:permission"/>      
             <basic jcr:primaryType="jnt:permission"/>
             <light jcr:primaryType="jnt:permission"/>
-        </wysiwyg-editor-toolbar>        
+        </wysiwyg-editor-toolbar>
+        <edit-mode-tabs jcr:primaryType="jnt:permissionGroup">
+            <analytics jcr:primaryType="jnt:permission"/>
+            <seo jcr:primaryType="jnt:permission"/>
+        </edit-mode-tabs>
     </permissions>
 
     <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">
-        <content-manager jcr:primaryType="jnt:role"/>
-        <user-manager jcr:primaryType="jnt:role"/>
+        <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
+            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
+                                    j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
+        </j:acl>
+        
+        <content-manager jcr:primaryType="jnt:role"
+            j:assignedPermissions="actions/* languages/* managers/* toolbar/*"
+            j:grantToPrincipals="g:users"/>
+        
+        <user-manager jcr:primaryType="jnt:role"
+            j:assignedPermissions="admin/jahia-administration global/users admin/groups admin/groups"/>
+
+        <seo-manager jcr:primaryType="jnt:role"
+            j:assignedPermissions="edit-mode-tabs/analytics edit-mode-tabs/seo"/>
     </roles>
 
 </content>

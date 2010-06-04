@@ -223,7 +223,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> users = new ArrayList<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT u.[j:nodename] FROM [" + Constants.JAHIANT_USER + "] as u ORDER BY u.[j:nodename]";
+                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] ORDER BY [j:nodename]";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         RowIterator rows = qr.getRows();
@@ -255,7 +255,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> users = new ArrayList<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT u.[j:nodename] FROM [" + Constants.JAHIANT_USER + "] as u ORDER BY u.[j:nodename]";
+                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] ORDER BY u.[j:nodename]";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         RowIterator rows = qr.getRows();

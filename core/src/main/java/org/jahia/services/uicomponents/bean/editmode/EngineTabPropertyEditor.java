@@ -1,21 +1,30 @@
 package org.jahia.services.uicomponents.bean.editmode;
 
-import org.jahia.services.uicomponents.bean.contentmanager.Column;
-
 import java.beans.PropertyEditorSupport;
 
+import org.jahia.services.uicomponents.bean.Visibility;
+
 /**
- * Created by IntelliJ IDEA.
+ * Engine tab specific property editor.
  * User: toto
  * Date: May 10, 2010
  * Time: 3:39:09 PM
- * To change this template use File | Settings | File Templates.
  */
 public class EngineTabPropertyEditor  extends PropertyEditorSupport {
 
     public void setAsText(String text) throws IllegalArgumentException {
         EngineTab c = new EngineTab();
-        c.setKey(text);
+        String[] values = text.split(",");
+        c.setKey(values[0]);
+        if (values.length > 1) {
+            Visibility v = new Visibility();
+            if (values[1].startsWith("$site/")) {
+                v.setSiteActionPermission(values[1].substring("$site/".length()));
+            } else {
+                v.setServerActionPermission(values[1]);
+            }
+            c.setVisibility(v);
+        }
         setValue(c);
     }
 

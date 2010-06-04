@@ -151,6 +151,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             for (String param : attributes.keySet()) {
                 buf.append(" ").append(param).append("=\"").append(attributes.get(param)).append("\"");
             }
+            if (renderContext.isEditMode()) {
+                buf.append(" style=\"overflow:hidden\"");
+            }
             buf.append(">");
 
             // add google visualizer api if there is at least one active google analytics profile and if its the edit mode

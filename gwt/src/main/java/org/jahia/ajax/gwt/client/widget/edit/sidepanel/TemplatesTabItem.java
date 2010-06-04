@@ -49,13 +49,17 @@ public class TemplatesTabItem extends BrowseTabItem {
                 if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
                     if (!getSelectedItem().getNodeTypes().contains("jnt:virtualsite") && !getSelectedItem().getNodeTypes().contains("jnt:templatesFolder")) {
                         editLinker.getMainModule().goTo(getSelectedItem().getPath(), null);
-                        listView.mask("Loading");
-                        listLoader.load(getSelectedItem());
                     }
                 }
             }
         });
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+                listView.mask("Loading");
+                listLoader.load(se.getSelectedItem());
+            }
+        });
 
         contentContainer = new LayoutContainer();
         contentContainer.setId("images-view");
@@ -123,7 +127,9 @@ public class TemplatesTabItem extends BrowseTabItem {
         listView.getSelectionModel().addListener(Events.SelectionChange,
                 new Listener<SelectionChangedEvent<GWTJahiaNode>>() {
                     public void handleEvent(SelectionChangedEvent<GWTJahiaNode> se) {
-                        editLinker.getMainModule().goTo(se.getSelectedItem().getPath(), null);
+                        if (se.getSelectedItem() != null) {
+                            editLinker.getMainModule().goTo(se.getSelectedItem().getPath(), null);
+                        }
                     }
                 });
 
@@ -168,7 +174,7 @@ public class TemplatesTabItem extends BrowseTabItem {
             tree.getTreeStore().removeAll();
             listView.getStore().removeAll();
             tree.getTreeStore().getLoader().load();
-
+            listLoader.load();
         }
     }
 

@@ -999,7 +999,6 @@
                             <directory>${pom.basedir}/src/main/webapp</directory>
                             <filtering>true</filtering>
                             <includes>
-                                <include>WEB-INF/web.xml</include>
                                 <include>WEB-INF/ibm-web-bnd.xmi</include>
                             </includes>
                         </resource>

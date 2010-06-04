@@ -88,7 +88,7 @@ function initEditFields(id) {
 function invert(source, target, urlbase, callbackId, callbackUrl) {
     $.post(urlbase + source + ".move.do", {"action":"moveBefore", "target":target, "source":source},
         function(result) {
-            replace(callbackId, callbackUrl, '');
+            jreplace(callbackId, callbackUrl,null, '');
         },
         'json'
     );
@@ -98,7 +98,7 @@ function invert(source, target, urlbase, callbackId, callbackUrl) {
 function deleteNode(source, urlbase, callbackId, callbackUrl) {
     $.post(urlbase + source, {"methodToCall":"delete"},
         function(result) {
-            replace(callbackId, callbackUrl, '');
+            jreplace(callbackId, callbackUrl,null, '');
         },
         'json'
     );
@@ -107,7 +107,7 @@ function deleteNode(source, urlbase, callbackId, callbackUrl) {
 function startWorkflow(source, process, urlbase, callbackId, callbackUrl) {
     $.post(urlbase + source + ".startWorkflow.do", {"process": process},
         function(result) {
-            replace(callbackId, callbackUrl, '');
+            jreplace(callbackId, callbackUrl,null, '');
         },
         'json'
     );
@@ -116,7 +116,7 @@ function startWorkflow(source, process, urlbase, callbackId, callbackUrl) {
 function executeTask(source, action, outcome, urlbase, callbackId, callbackUrl, callbackJS) {
     $.post(urlbase + source + ".executeTask.do", {"action":action, "outcome":outcome},
         function(result) {
-            replace(callbackId, callbackUrl, callbackJS);
+            jreplace(callbackId, callbackUrl,null, callbackJS);
         },
         'json'
     );

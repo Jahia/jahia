@@ -134,7 +134,7 @@
                     <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
                         <c:forEach items="${workflowTaskFormTask.outcomes}" var="outcome">
                             <button type="button"
-                                    onclick="$('#outcome').val('${outcome}');$('#${currentNode.name}${scriptTypeName}').submit();"><span
+                                    onclick="$('#outcome').val('${outcome}');$('#${jsNodeName}${scriptTypeName}').submit();"><span
                                     class="icon-contribute icon-accept"></span>&nbsp;${outcome}
                             </button>
                         </c:forEach>
@@ -155,13 +155,13 @@
                 success: function() {
                 <c:choose>
                 <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
-                    replace('${currentResource.moduleParams.workflowStartFormWFCallbackId}', '${currentResource.moduleParams.workflowStartFormWFCallbackURL}', "${currentResource.moduleParams.workflowStartFormWFCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
+                    jreplace('${currentResource.moduleParams.workflowStartFormWFCallbackId}', '${currentResource.moduleParams.workflowStartFormWFCallbackURL}',null, "${currentResource.moduleParams.workflowStartFormWFCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
                 </c:when>
                 <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
-                    replace('${currentResource.moduleParams.workflowTaskFormCallbackId}', '${currentResource.moduleParams.workflowTaskFormCallbackURL}', "${currentResource.moduleParams.workflowTaskFormCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
+                    jreplace('${currentResource.moduleParams.workflowTaskFormCallbackId}', '${currentResource.moduleParams.workflowTaskFormCallbackURL}',null, "${currentResource.moduleParams.workflowTaskFormCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
                 </c:when>
                 <c:otherwise>
-                    replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', "$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
+                    jreplace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}',null, "$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
                 </c:otherwise>
                 </c:choose>
                     $.each(richTextEditors, function(key, value) {

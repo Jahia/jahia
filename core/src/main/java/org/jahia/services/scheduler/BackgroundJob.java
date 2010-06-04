@@ -103,7 +103,8 @@ public abstract class BackgroundJob implements StatefulJob {
         jobDataMap.putAsString(JOB_CREATED, now); //creation
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getUserKey());
-        jobDataMap.put(JOB_CURRENT_LOCALE, sessionFactory.getCurrentLocale());
+        jobDataMap.put(JOB_CURRENT_LOCALE, sessionFactory.getCurrentLocale() != null ? sessionFactory
+                .getCurrentLocale().toString() : null);
 
         jobDetail.setJobDataMap(jobDataMap);
         return jobDetail;

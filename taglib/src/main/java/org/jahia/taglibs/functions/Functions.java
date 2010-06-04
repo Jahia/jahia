@@ -335,7 +335,7 @@ public class Functions {
      * @param list List<T> list to be reversed.
      * @return <code>java.util.List</code> the reversed list.
      */
-    public static <T extends Object> List<T> reverse(List<T> list) {
+    public static <T> List<T> reverse(Collection<T> list) {
         List<T> copy = new ArrayList<T>();
         copy.addAll(list);
         Collections.reverse(copy);

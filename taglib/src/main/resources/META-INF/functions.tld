@@ -309,7 +309,7 @@
         </description>
         <name>reverse</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.util.List reverse(java.util.List)</function-signature>
+        <function-signature>java.util.List reverse(java.util.Collection)</function-signature>
         <example>
             Tag usage reverse: ${functions:reverse(mylist)}
         </example>

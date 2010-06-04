@@ -5,6 +5,14 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="forum.css"/>
 <jcr:sql var="numberOfPostsQuery"
          sql="select * from [jnt:post] as post  where isdescendantnode(post, ['${currentNode.path}']) order by post.[jcr:lastModified] desc"/>
@@ -48,7 +56,7 @@
                                                                                                            width="11"
                                                                                                            title="View the latest post"
                                                                                                            alt="View the latest post"
-                                                                                                           src="/jahia/templates/jahia_forum/img/icon_topic_latest.gif"/>${createdBy.string}
+                                                                                                           src="${url.currentModule}/css/img/icon_topic_latest.gif"/>${createdBy.string}
         </a><br/><fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span>
         </c:if>
     </dd>

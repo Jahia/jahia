@@ -255,26 +255,21 @@ public class Service extends JahiaService {
     
     public void importXML(final AddedNodeFact targetNode, final String path, KnowledgeHelper drools)
             throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                InputStream is = null;
-                try {
-                    is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
-                    if (is == null) {
-                        throw new FileNotFoundException("Unable to locate resource at the specified path: " + path);
-                    }
-                    session.importXML(targetNode.getPath(), is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
-                    session.save();
-                } catch (Exception e) {
-                    logger.error("Error reading content of file " + path, e);
-                } finally {
-                    IOUtils.closeQuietly(is);
-                }
-                logger.info("Content of the file '" + path + "' for target node " + targetNode
-                        + " imported successfully");
-                return true;
+        InputStream is = null;
+        try {
+            is = JahiaContextLoaderListener.getServletContext().getResourceAsStream(path);
+            if (is == null) {
+                throw new FileNotFoundException("Unable to locate resource at the specified path: " + path);
             }
-        });
+            JCRSessionWrapper session = targetNode.getNode().getSession();
+            session.importXML(targetNode.getPath(), is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+            session.save();
+        } catch (Exception e) {
+            logger.error("Error reading content of file " + path, e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+        logger.info("Content of the file '" + path + "' for target node " + targetNode + " imported successfully");
     }
 
     private List<Map<Object, Object>> prepareFileImports(AddedNodeFact node, String name) {

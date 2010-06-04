@@ -127,6 +127,7 @@ shortcuts
 	height:38px;
 	position:relative;
 	width:82px;
+	float:right;
 }
 #bodywrapper #navigation #shortcuts{
 	float:right;

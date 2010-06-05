@@ -36,11 +36,11 @@ end
 #       Publish the node
 #end
 
-rule "Auto Start Workflow On News Nodes"
-   salience -50
-   when
-       A property contentUpdated has been set on a node
-        - the node has the type jnt:newsMLItem
-   then
-       Start the workflow "2-step-publication" from "jBPM" on the node
-end
+#rule "Auto Start Workflow On News Nodes"
+#   salience -50
+#   when
+#       A property contentUpdated has been set on a node
+#        - the node has the type jnt:newsMLItem
+#   then
+#       Start the workflow "2-step-publication" from "jBPM" on the node
+#end

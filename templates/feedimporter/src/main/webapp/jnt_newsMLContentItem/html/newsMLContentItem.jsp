@@ -14,7 +14,7 @@
 <div class="newsMLContentItem"><!--start newsMLContentItem -->
 
     <c:if test="${not empty newsImage}">
-        <div class="newsImg"><a href="${url.base}${currentNode.path}.detail.html"><img src="${newsImage.node.url}"/></a></div>
+        <div class="newsImg"><a href="${url.base}${currentNode.path}.detail.html"><img src="${newsImage.node.url}" width="200" /></a></div>
     </c:if>
     <p class="newsDataContent">
         ${functions:removeHtmlTags(currentNode.properties.datacontent.string)}

@@ -4,26 +4,26 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-
 <template:addResources type="css" resources="news.css"/>
 
-
-<jcr:nodeProperty node="${currentNode}" name="image" var="newsImage"/>
-
-
-<div class="newsListItem"><!--start newsListItem -->
-    <h4><a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h4>
-
-    <p class="newsInfo">
-        <span class="newsLabelDate"><fmt:message key="label.date"/>:</span>
-            <span class="newsDate">
-                <fmt:formatDate value="${currentNode.properties.date.time}" pattern="dd/MM/yyyy"/>&nbsp;<fmt:formatDate
-                    value="${currentNode.properties.date.time}" pattern="HH:mm" var="dateTimeNews"/>
-                <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>
-            </span>
+<div class="tc-article"><!--start newsListItem -->
+    <div class="image">
+        <jcr:sql var="imageQuery"
+                 sql="select * from [jnt:newsMLContentItem] as c  where isdescendantnode(c,['${currentNode.path}'])"/>
+        <c:forEach items="${imageQuery.nodes}" var="contentItemNode">
+            <jcr:nodeProperty node="${contentItemNode}" name="image" var="newsImage"/>
+            <c:if test="${not empty newsImage}">
+                <img src="${newsImage.node.url}" alt="" width="73" height="73"/>
+            </c:if>
+        </c:forEach>
+    </div>
+    <span class="newsDate">
+        <fmt:formatDate value="${currentNode.properties.date.time}" pattern="dd/MM/yyyy"/>&nbsp;<fmt:formatDate
+            value="${currentNode.properties.date.time}" pattern="HH:mm" var="dateTimeNews"/>
+        <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>
+    </span>
+    <h3><a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></a></h3>
+    <p>
     </p>
-
-    <div class="more"><span><a href="${url.base}${currentNode.path}.detail.html"><fmt:message key="label.read"/>: <jcr:nodeProperty
-            node="${currentNode}" name="jcr:title"/></a></span></div>
-    <div class="clear"></div>
+    <div class="tc-separator"></div>
 </div>

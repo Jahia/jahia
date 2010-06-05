@@ -15,6 +15,7 @@
  - subjectCode (string)
  - urgency (long)
  - contentUpdated (date) hidden
+ - associatedWith (string) multiple
  + * (jnt:newsMLComponent)
 
 [jnt:newsMLComponentOrContentItem] > jnt:content, mix:title
@@ -35,3 +36,9 @@
  - datacontent (string)
  - role (string)
  - image (weakreference, file[mime='image/*'])
+
+ [jnt:newsMLUrgencyQuery] > jnt:query, jmix:queryContent
+ - minimumUrgencyValue (long)
+
+ [jnt:newsMLMostPopularArticles] > jnt:content, jmix:queryContent
+ 

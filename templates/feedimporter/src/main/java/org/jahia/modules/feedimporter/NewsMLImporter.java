@@ -13,6 +13,9 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.workflow.Workflow;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -71,13 +74,20 @@ public class NewsMLImporter {
                         if (refFile == null) {
                             logger.warn("Couldn't find file " + ref + " in feed location " + contextFileObject.toString());
                         } else {
+                            JCRNodeWrapper targetParentNode = feedNode.resolveSite();
+                            if (targetParentNode == null) {
+                                targetParentNode = feedNode.getSession().getNode("/shared/files");
+                            } else {
+                                targetParentNode = targetParentNode.getNode("files");
+                            }
+                            feedNode.getSession().checkout(targetParentNode);
                             JCRNodeWrapper mediaNode = null;
                             try {
-                                mediaNode = feedNode.getNode("medias");
+                                mediaNode = targetParentNode.getNode("feed_medias");
                             } catch (PathNotFoundException pnfe) {
                             }
                             if (mediaNode == null) {
-                                mediaNode = feedNode.addNode("medias", "jnt:folder");
+                                mediaNode = targetParentNode.addNode("feed_medias", "jnt:folder");
                             }
                             logger.info("Storing file " + refFile + " into feed media repository");
                             JCRNodeWrapper existingFileNode = null;
@@ -152,7 +162,8 @@ public class NewsMLImporter {
         }
         if (newsSubjectCode != null) {
             newsComponentNode.setProperty("subjectCode", newsSubjectCode);
-            // we have the subject code, let's categorize the newsMLItem properly.
+            newsMLItemNode.setProperty("subjectCode", newsSubjectCode);
+             // we have the subject code, let's categorize the newsMLItem properly.
 
             String categoryKey = subjectCodeToCategoryKey.getProperty(newsSubjectCode);
             if (categoryKey != null) {
@@ -181,7 +192,11 @@ public class NewsMLImporter {
                     Value newCategoryRefValue = currentSession.getValueFactory().createValue(categoryNode, false);
                     categoryReferences.add(newCategoryRefValue);
                     newsMLItemNode.setProperty(Constants.DEFAULT_CATEGORY, (Value[]) categoryReferences.toArray(new Value[categoryReferences.size()]));
+                } else {
+                    logger.warn("Category " + categoryKey + " not available in the CMS, please create it !");
                 }
+            } else {
+                logger.warn("SubjectCode " + newsSubjectCode + " not found in mapping file.");
             }
         }
         if (newsHeadline != null) {
@@ -214,6 +229,30 @@ public class NewsMLImporter {
     }
 
     public void processNewsEnvelope(Element newsEnvelope, JCRNodeWrapper feedNode, String entryBaseName, FileObject contextFileObject) {
+
+    }
+
+    public void addAssociationURN(JCRSessionWrapper session, JCRNodeWrapper newsMLItemNode, String associatedWithURN) throws RepositoryException {
+        List<Value> associatedWithValues = new ArrayList<Value>();
+        try {
+            JCRPropertyWrapper associatedWithProperty = newsMLItemNode.getProperty(
+                    "associatedWith");
+            if (associatedWithProperty != null) {
+                final Value[] propertyValues = associatedWithProperty.getValues();
+                for (Value propertyValue : propertyValues) {
+                    if (!propertyValue.toString().equals(associatedWithURN)) {
+                        associatedWithValues.add(propertyValue);
+                    } else {
+                        logger.warn("URN " + associatedWithURN + " already associated, will be setting again, but only once.");
+                    }
+                }
+            }
+        } catch (PathNotFoundException pnfe) {
+            // this is ok, it means the property hasn't been set yet.
+        }
+        Value newAssociatedWithURNValue = session.getValueFactory().createValue(associatedWithURN);
+        associatedWithValues.add(newAssociatedWithURNValue);
+        newsMLItemNode.setProperty("associatedWith", (Value[]) associatedWithValues.toArray(new Value[associatedWithValues.size()]));
 
     }
 
@@ -294,10 +333,10 @@ public class NewsMLImporter {
             // before adding the node, let's make sure the auto-split configuration is properly setup on the feed node.
             if (!feedNode.isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) {
                 feedNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
-                feedNode.setProperty(Constants.SPLIT_CONFIG, "date,date,yyyy;date,date,MM");
+                feedNode.setProperty(Constants.SPLIT_CONFIG, "date,date,yyyy;date,date,MM;date,date,dd");
                 feedNode.setProperty(Constants.SPLIT_NODETYPE, Constants.JAHIANT_CONTENTLIST);
             }
-
+            entryBaseName = entryBaseName.replaceAll("\\.", "_");
             newsMLItemNode = parentNode.addNode(entryBaseName, "jnt:newsMLItem");
         }
         // newsMLItemNode.setProperty("jcr:title", newsHeadline);
@@ -310,6 +349,18 @@ public class NewsMLImporter {
             newsMLItemNode.setProperty("urgency", Long.parseLong(newsUrgency));
         }
         newsMLItemNode.setProperty("status", newsStatus);
+
+        // now let's setup up associations.
+        List<Element> associatedWithList = getElements(newsItem, "NewsManagement/AssociatedWith");
+        if ((associatedWithList != null) && (associatedWithList.size() > 0)) {
+            for (Element associatedWith : associatedWithList) {
+                String associatedWithURN = associatedWith.getAttributeValue("NewsItem");
+                // we have the URN, now let's query the JCR to see if we have the element in our system.
+                // todo what about late binding as we might not have yet imported the reference documents, should we
+                // do the binding at render time, but this might slow down rendering ?
+                addAssociationURN(session, newsMLItemNode, associatedWithURN);
+            }
+        }
 
         // for the moment remove all the children if there were some, because we don't know how to update them.
         NodeIterator childNodeIterator = newsMLItemNode.getNodes();
@@ -328,7 +379,19 @@ public class NewsMLImporter {
 
         if (mustPublish) {
             newsMLItemNode = session.getNodeByIdentifier(newsMLItemNodeIdentifier);
+            logger.info("Publishing news item " + newsMLItemNode.getPath());
             JCRPublicationService.getInstance().publish(newsMLItemNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        } else if (mustUpdate) {
+            newsMLItemNode = session.getNodeByIdentifier(newsMLItemNodeIdentifier);
+            final JCRSessionWrapper jcrSessionWrapper = newsMLItemNode.getSession();
+
+            List<Workflow> activeWorkflows = WorkflowService.getInstance().getActiveWorkflows(newsMLItemNode);
+            if (activeWorkflows.size() == 0) {
+                logger.info("Update detected on news item " + newsMLItemNode.getPath() + " starting workflow on updated item...");
+                WorkflowService.getInstance().startProcess(newsMLItemNode, "2-step-publication", "jBPM", new HashMap<String, Object>());
+            } else {
+                logger.warn("Update detected on news item " + newsMLItemNode.getPath() + " but workflow is already active, not starting another.");
+            }
         }
 
     }
@@ -437,6 +500,15 @@ public class NewsMLImporter {
         } else {
             return null;
         }
+    }
+
+    public List<Element> getElements(Element scopeElement, String xPathExpression) throws JDOMException {
+        XPath xPath = XPath.newInstance(xPathExpression);
+        String namespaceURI = scopeElement.getDocument().getRootElement().getNamespaceURI();
+        if ((namespaceURI != null) && (!"".equals(namespaceURI))) {
+            xPath.addNamespace("xp", namespaceURI);
+        }
+        return (List<Element>) xPath.selectNodes(scopeElement);            
     }
 
 }

@@ -9,7 +9,7 @@
 
 <div class="newsMLComponent"><!--start newsMLComponent -->
 
-    Role : ${currentNode.properties.role.string}
+    <!-- Role : ${currentNode.properties.role.string} -->
 
     <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
     <c:forEach items="${currentList}" var="subchild" varStatus="status">

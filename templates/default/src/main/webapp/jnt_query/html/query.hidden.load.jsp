@@ -24,7 +24,4 @@
 	</c:otherwise>
 </c:choose>
 <c:set var="editable" value="false" scope="request"/>
-<c:if test="${renderContext.editMode && empty currentList}">
-    <p><fmt:message key="search.results.no.results"/></p>
-</c:if>
 <c:set var="listTotalSize" value="${end}" scope="request"/>

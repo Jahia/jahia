@@ -617,6 +617,19 @@ public class Service extends JahiaService {
                         if (key != null && key.length() > index) {
                             key = key.substring(0, index);
                         }
+                    } else if (type.equals("substring")) {
+                        if (propertyName.equals("j:nodename")) {
+                            key = node.getName();
+                            key = StringUtils.substringAfter(key,":");
+                        } else if (node.hasProperty(propertyName)) {
+                            key = node.getProperty(propertyName).getString();
+                        }
+                        String[] indexes = folderConfig[2].split("-");
+                        final int startIndex = Integer.parseInt(indexes[0]);
+                        final int endIndex = Integer.parseInt(indexes[1]);
+                        if (key != null && key.length() > endIndex) {
+                            key = key.substring(startIndex, endIndex);
+                        }
                     } else if (type.equals("date")) {
                         if (node.hasProperty(propertyName)) {
                             Calendar calendar = node.getProperty(propertyName).getDate();

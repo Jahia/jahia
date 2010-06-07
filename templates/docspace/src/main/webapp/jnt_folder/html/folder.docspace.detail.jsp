@@ -186,7 +186,7 @@
     <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.list.workspaces.title"/></h4>
     <c:if test="${hasWriteAccess}">
         <div class="boxdocspace"><!--start boxdocspace -->
-            <div class="boxdocspacegrey boxdocspacepadding10 ">
+            <div class="boxdocspacegrey boxdocspacepadding10 boxdocspacemarginbottom16">
                 <div class="boxdocspace-inner">
                     <div class="boxdocspace-inner-border">
                         <div class="floatleft uploadfile">

@@ -335,6 +335,8 @@
 
 [jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
 
+[jnt:currentUserDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
+
 [jmix:renderableList] mixin
  extends = jmix:list
  itemtype = layout

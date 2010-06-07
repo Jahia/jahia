@@ -83,7 +83,7 @@ public class WorkflowDashboardEngine extends Window {
                                 StringBuilder html = new StringBuilder();
                                 for (GWTJahiaWorkflowHistoryItem item : result) {
                                     GWTJahiaWorkflowHistoryTask task = (GWTJahiaWorkflowHistoryTask) item;
-                                    html.append("<p style=\"background-color:white").append("\"><span>Start:&nbsp;")
+                                    html.append("<p><span>Start:&nbsp;")
                                             .append(DateTimeFormat.getMediumDateTimeFormat().format(
                                                     item.getStartDate())).append("</span>");
                                     if (task.getAssignee() != null) {

@@ -248,6 +248,7 @@ public class WorkflowActionDialog extends Window {
                 @Override
                 public void componentSelected(ButtonEvent buttonEvent) {
                     List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
+                    dialog.mask("Executing");
                     if (propertiesEditor != null) {
                         nodeProperties = propertiesEditor.getProperties();
                     }

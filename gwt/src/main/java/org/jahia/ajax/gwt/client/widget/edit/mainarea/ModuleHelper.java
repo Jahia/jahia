@@ -221,8 +221,11 @@ public class ModuleHelper {
                 String params = "";
                 if (path.indexOf('?') > 0) {
                     params = path.substring(path.indexOf('?')+1);
+                    path = path.substring(0,path.indexOf('?')); 
                 }
-                path = path.substring(0,path.indexOf('.'));
+                if (path.indexOf('.') > -1) {
+                    path = path.substring(0,path.indexOf('.'));
+                }
                 DOM.setElementAttribute(element,"href","#");
                 if (template == null) {
                     DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"',null,'"+params+"')");

@@ -33,7 +33,7 @@
                         <input type="hidden" name="nodeType" value="jnt:file"/>
                         <input type="hidden" name="redirectTo"
                                value="${url.base}${renderContext.mainResource.node.path}"/>
-                        <input type="hidden" name="newNodeOutputFormat" value="docspace.html"/>
+                        <input type="hidden" name="newNodeOutputFormat" value="html"/>
                         <input type="hidden" name="targetDirectory" value="${currentNode.parent.path}"/>
                         <input type="hidden" name="version" value="true"/>
                         <label><fmt:message key="docspace.label.document.add.version"/></label>

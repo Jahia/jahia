@@ -513,7 +513,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         }
 
         for (HistoryTask jbpmHistoryTask : jbpmTasks) {
-            historyItems.add(new HistoryWorkflowTask(jbpmHistoryTask.getExecutionId(), null, getKey(), jbpmHistoryTask
+            final Task task = taskService.getTask(jbpmHistoryTask.getId());
+            historyItems.add(new HistoryWorkflowTask(jbpmHistoryTask.getExecutionId(), (task != null ? task.getName() : ""), getKey(), jbpmHistoryTask
                     .getCreateTime(), jbpmHistoryTask.getEndTime(), jbpmHistoryTask.getOutcome(), jbpmHistoryTask
                     .getAssignee()));
         }

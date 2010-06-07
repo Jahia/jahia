@@ -9,12 +9,14 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryIt
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 
 import javax.jcr.NodeIterator;
@@ -188,9 +190,14 @@ public class WorkflowHelper {
                 List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getProcessId(),
                         historyItem.getProvider());
                 for (HistoryWorkflowTask wfTask : tasks) {
-                    history.add(new GWTJahiaWorkflowHistoryTask(wfTask.getOutcome(), wfTask.getProcessId(), wfTask
+                    final String userKey = wfTask.getAssignee();
+                    String userName = "";
+                    if (userKey != null) {
+                        userName = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey).getName();
+                    }
+                    history.add(new GWTJahiaWorkflowHistoryTask(wfTask.getName() + (wfTask.getOutcome() != null ? " : " + wfTask.getOutcome():""), wfTask.getProcessId(), wfTask
                             .getProvider(), wfTask.isCompleted(), wfTask.getStartTime(), wfTask.getEndTime(), wfTask
-                            .getDuration(), wfTask.getOutcome(), wfTask.getAssignee()));
+                            .getDuration(), wfTask.getOutcome(), userName));
                 }
             } else {
                 // read all processes

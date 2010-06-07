@@ -629,7 +629,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
                     <property name="key" value="workflowRepository"/>
-                    <property name="paths" value="/workflowRules"/>
+                    <property name="paths" value="/workflowrules"/>
                 </bean>
             </list>
         </property>

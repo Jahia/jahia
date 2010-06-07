@@ -32,8 +32,8 @@ Basic Jahia REST API
 |                |             |authentification. If you are using AJAX calls   |
 |                |             |you should set this to "false".                 |
 *----------------+-------------+------------------------------------------------+
-|loginFromTag    |yes          |Should always be set to "1" otherwise login will|
-|                |             |not work                                        |
+|doLogin         |yes          |Should always be set to "true" otherwise login  |
+|                |             | will not work                                  |
 *----------------+-------------+------------------------------------------------+
 |redirect        |no           |Allows you to specify another URL to redirect   |
 |                |             |after successful login                          |

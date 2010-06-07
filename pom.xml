@@ -262,6 +262,7 @@
         <profile>
             <id>qa-build</id>
             <modules>
+                <module>ear</module>
                 <module>package</module>
             </modules>
         </profile>

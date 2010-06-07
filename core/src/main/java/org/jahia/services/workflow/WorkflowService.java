@@ -211,7 +211,7 @@ public class WorkflowService {
         while (ni.hasNext()) {
             JCRNodeWrapper rule = (JCRNodeWrapper) ni.next();
             if (node.getPath().startsWith(rule.getProperty("j:node").getNode().getPath()) &&
-                    node.isNodeType(rule.getProperty("j:nodeType").getString())) {
+                    (!rule.hasProperty("j:nodeType") || node.isNodeType(rule.getProperty("j:nodeType").getString()))) {
                 return rule;
             }
         }

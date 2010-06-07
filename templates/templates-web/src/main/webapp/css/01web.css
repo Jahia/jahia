@@ -166,11 +166,15 @@ body {
 	text-transform:uppercase;
 	white-space:nowrap
 }
-#bodywrapper #navigationN1 li a.last {
+#bodywrapper #navigationN1 li.lastInLevel a {
 	background:none;
 }
 #bodywrapper #navigationN1 li a:hover,
-#bodywrapper #navigationN1 li a.on {
+#bodywrapper #navigationN1 li.selected a,
+#bodywrapper #navigationN1 li.selected a:link,
+#bodywrapper #navigationN1 li.selected a:visited,
+#bodywrapper #navigationN1 li.selected a:hover,
+#bodywrapper #navigationN1 li.selected a:active {
 	color:#900;
 }
 

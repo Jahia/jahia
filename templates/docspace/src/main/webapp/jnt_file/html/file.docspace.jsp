@@ -78,6 +78,12 @@
                         <div class="itemImage itemImageLeft">
 									<span class="icon_large ${functions:fileIcon(currentNode.name)}_large"></span>
                         </div>
+                        <div class="itemImage itemImageLeft"
+                            <c:url var="pdfLink" value="${url.toPDF}" context="/">
+                                <c:param name="path" value="${currentNode.path}"/>
+                            </c:url>
+                            <a href="${pdfLink}" title="convert to PDF"><span class="icon_large pdf_large"></span></a>
+                        </div>
                     </div>
                     <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}" title="Download ${currentNode.name}"><img
                             title="Download ${currentNode.name}" value="download"

@@ -1,6 +1,10 @@
 #bodywrapper form.userssearchform {
 	position:relative;
 	width:220px;
+	margin-bottom:10px
+}
+#bodywrapper form.userssearchform  label.addUsers{
+	display:none
 }
 #bodywrapper form.userssearchform .text-input {
 	background-image:url(img/userssearchform-bar-bg.png);

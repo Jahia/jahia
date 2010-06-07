@@ -100,7 +100,7 @@
 
             <jcr:nodeProperty name="jcr:title" node="${aclNode}" var="title"/>
             <c:if test="${not empty title.string}">
-                <label for="searchUser">${fn:escapeXml(title.string)}:&nbsp;</label>
+                <label class="addUsers" for="searchUser">${fn:escapeXml(title.string)}:&nbsp;</label>
             </c:if>
             <fmt:message key='search.users.defaultText' var="startSearching"/>
             <input type="text" name="user" id="searchUser" value="${startSearching}"

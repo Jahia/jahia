@@ -111,6 +111,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String AUTO_CHECKIN = "autoCheckin";
     public static final String CAPTCHA = "captcha";
     public static final String TARGETDIRECTORY = "targetDirectory";
+    public static final String TARGETNAME = "targetName";
     public static final String NORMALIZE_NODE_NAME = "normalizeNodeName";
     public static final String VERSION = "version";
 
@@ -130,6 +131,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         reservedParameters.add(AUTO_CHECKIN);
         reservedParameters.add(CAPTCHA);
         reservedParameters.add(TARGETDIRECTORY);
+        reservedParameters.add(TARGETNAME);
         reservedParameters.add(Constants.JCR_MIXINTYPES);
         reservedParameters.add(NORMALIZE_NODE_NAME);
         reservedParameters.add(VERSION);
@@ -403,6 +405,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 .getNode(session); //todo ldap users
                         String target = userDirectory.getPath() + "/files";
                         boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
+                        boolean isTargetNameDefined = fileUpload.getParameterNames().contains(TARGETNAME);
                         boolean isVersionActivated = fileUpload.getParameterNames().contains(VERSION) ?
                                 (fileUpload.getParameterValues(VERSION))[0].equals("true") : false;
                         final String requestWith = req.getHeader("x-requested-with");
@@ -422,13 +425,19 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
                             for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
                                 //if node exists, do a checkout before
-                                JCRNodeWrapper fileNode = targetDirectory.hasNode(itemEntry.getValue().getName()) ?
-                                        targetDirectory.getNode(itemEntry.getValue().getName()) : null;
+                                String name = itemEntry.getValue().getName();
+
+                                if (isTargetNameDefined) {
+                                    name = (fileUpload.getParameterValues(TARGETNAME))[0];
+                                }
+
+                                JCRNodeWrapper fileNode = targetDirectory.hasNode(name) ?
+                                        targetDirectory.getNode(name) : null;
                                 if (fileNode != null && isVersionActivated) {
                                     session.checkout(fileNode);
                                 }
                                 final JCRNodeWrapper wrapper = targetDirectory
-                                        .uploadFile(itemEntry.getValue().getName(),
+                                        .uploadFile(name,
                                                 itemEntry.getValue().getInputStream(),
                                                 itemEntry.getValue().getContentType());
                                 uuids.add(wrapper.getIdentifier());
@@ -436,11 +445,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 if (isVersionActivated) {
                                     if (!wrapper.isVersioned()) {
                                         wrapper.versionFile();
-                                        session.save();
-                                        wrapper.checkpoint();
                                     }
                                     session.save();
-                                    wrapper.checkin();
+                                    wrapper.checkpoint();
                                 }
                             }
                             fileUpload.markFilesAsConsumed();

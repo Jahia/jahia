@@ -35,6 +35,7 @@
                                value="${url.base}${renderContext.mainResource.node.path}"/>
                         <input type="hidden" name="newNodeOutputFormat" value="html"/>
                         <input type="hidden" name="targetDirectory" value="${currentNode.parent.path}"/>
+                        <input type="hidden" name="targetName" value="${currentNode.name}"/>
                         <input type="hidden" name="version" value="true"/>
                         <label><fmt:message key="docspace.label.document.add.version"/></label>
 

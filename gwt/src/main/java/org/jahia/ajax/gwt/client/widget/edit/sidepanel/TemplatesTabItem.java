@@ -70,19 +70,25 @@ public class TemplatesTabItem extends BrowseTabItem {
         RpcProxy<ListLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(final Object gwtJahiaFolder, final AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                JahiaContentManagementService.App.getInstance()
-                        .getAllWrappers(((GWTJahiaNode)gwtJahiaFolder).getPath(), Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:applyOn", "j:key"), new BaseAsyncCallback<ListLoadResult<GWTJahiaNode>>() {
-                            public void onApplicationFailure(Throwable caught) {
-                                listAsyncCallback.onFailure(caught);
-                                listView.unmask();
-                            }
+                if (gwtJahiaFolder != null && (((GWTJahiaNode)gwtJahiaFolder).getNodeTypes().contains("jnt:page") || ((GWTJahiaNode)gwtJahiaFolder).getNodeTypes().contains("jnt:template"))) {
+                    JahiaContentManagementService.App.getInstance()
+                            .getAllWrappers(((GWTJahiaNode)gwtJahiaFolder).getPath(), Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:applyOn", "j:key"), new BaseAsyncCallback<ListLoadResult<GWTJahiaNode>>() {
+                                public void onApplicationFailure(Throwable caught) {
+                                    listAsyncCallback.onFailure(caught);
+                                    listView.unmask();
+                                }
 
-                            public void onSuccess(ListLoadResult<GWTJahiaNode> result) {
-                                result.getData().add(0,(GWTJahiaNode) gwtJahiaFolder);
-                                listAsyncCallback.onSuccess(result);
-                                listView.unmask();
-                            }
-                        });
+                                public void onSuccess(ListLoadResult<GWTJahiaNode> result) {
+                                    result.getData().add(0,(GWTJahiaNode) gwtJahiaFolder);
+                                    listAsyncCallback.onSuccess(result);
+                                    listView.unmask();
+                                }
+                            });
+
+                } else {
+                    listView.getStore().removeAll();
+                    listView.unmask();
+                }
             }
         };
 

@@ -51,7 +51,7 @@
 
                     <fieldset>
                         <p class="field">
-                            <input value="<c:if test="${not empty bindedComponent.children}"> Re:</c:if>${bindedComponent.properties.threadSubject.string}"
+                            <input value=""
                                    type="text" size="35" id="forum_site" name="jcr:title"
                                    tabindex="1"/>
                         </p>

@@ -8,7 +8,17 @@
 
     <mashups jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:wrapper"/>
 
-    <groups jcr:primaryType="jnt:groupsFolder"/>
+    <groups jcr:primaryType="jnt:groupsFolder">
+        <guest jcr:primaryType="jnt:group" j:hidden="false">
+            <j:members jcr:primaryType="jnt:members"/>
+        </guest>
+        <users jcr:primaryType="jnt:group" j:hidden="false">
+            <j:members jcr:primaryType="jnt:members"/>
+        </users>
+        <administrators jcr:primaryType="jnt:group" j:hidden="false">
+            <j:members jcr:primaryType="jnt:members"/>
+        </administrators>
+    </groups>    
 
     <contents jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:wrapper"/>
 

@@ -143,11 +143,6 @@
                                 </list>
                             </property>
                             <property name="contextMenu" value="true"/>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/documents-menu"/>
-                                </bean>
-                            </property>
                         </bean>
                         <ref bean="org.jahia.toolbar.manager.documents.shortcuts"/>
                     </list>
@@ -233,11 +228,6 @@
                                     <ref bean="Toolbar.ItemsGroup.Menu.View"/>
                                 </list>
                             </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/mashups-menu"/>
-                                </bean>
-                            </property>
                         </bean>
                         <ref bean="org.jahia.toolbar.manager.mashups.shortcuts"/>
                     </list>
@@ -311,11 +301,6 @@
                                     <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
                                 </list>
                             </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/categories-menu"/>
-                                </bean>
-                            </property>
                             <property name="contextMenu" value="true"/>
                         </bean>
                         <ref bean="org.jahia.toolbar.manager.categories.shortcuts"/>
@@ -388,11 +373,6 @@
                                     <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
                                 </list>
                             </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/tags-shortcuts"/>
-                                </bean>
-                            </property>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
@@ -412,11 +392,6 @@
                                     </bean>
                                     <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
                                 </list>
-                            </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/tags-menu"/>
-                                </bean>
                             </property>
                             <property name="contextMenu" value="true"/>
                         </bean>
@@ -486,11 +461,6 @@
                                     </bean>
                                 </list>
                             </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/remotepublication-shortcuts"/>
-                                </bean>
-                            </property>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
@@ -509,11 +479,6 @@
                                         </property>
                                     </bean>
                                 </list>
-                            </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/remotepublication-menu"/>
-                                </bean>
                             </property>
                             <property name="contextMenu" value="true"/>
                         </bean>
@@ -580,11 +545,6 @@
                                     </bean>
                                 </list>
                             </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/workflow-shortcuts"/>
-                                </bean>
-                            </property>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
@@ -602,11 +562,6 @@
                                         </property>
                                     </bean>
                                 </list>
-                            </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/workflow-menu"/>
-                                </bean>
                             </property>
                             <property name="contextMenu" value="true"/>
                         </bean>
@@ -675,11 +630,6 @@
                                     </bean>
                                     <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
                                 </list>
-                            </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/portletDefinitions-shortcuts"/>
-                                </bean>
                             </property>
                         </bean>
                     </list>
@@ -769,11 +719,6 @@
                                 </list>
                             </property>
                             <property name="contextMenu" value="true"/>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/content-menu"/>
-                                </bean>
-                            </property>
                         </bean>
                         <ref bean="org.jahia.toolbar.manager.content.shortcuts"/>
                     </list>
@@ -864,11 +809,6 @@
                                     <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
                                 </list>
                             </property>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/sites-shortcuts"/>
-                                </bean>
-                            </property>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
@@ -890,11 +830,6 @@
                                 </list>
                             </property>
                             <property name="contextMenu" value="true"/>
-                            <property name="visibility">
-                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                                    <property name="siteActionPermission" value="toolbar/sites-menu"/>
-                                </bean>
-                            </property>
                         </bean>
                     </list>
                 </property>
@@ -1357,11 +1292,6 @@
                 <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
         </property>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="toolbar/categories-shortcuts"/>
-            </bean>
-        </property>
     </bean>
     <!-- end of the Category Manager -->
 
@@ -1391,11 +1321,6 @@
                 <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
         </property>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="toolbar/content-shortcuts"/>
-            </bean>
-        </property>
     </bean>
     <!-- end of the Content Manager -->
 
@@ -1422,11 +1347,6 @@
                 <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
         </property>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="toolbar/documents-shortcuts"/>
-            </bean>
-        </property>
     </bean>
     <!-- end of the Document Manager -->
 
@@ -1450,11 +1370,6 @@
                 <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
                 <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
-        </property>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="toolbar/mashups-shortcuts"/>
-            </bean>
         </property>
     </bean>
     <!-- end of the Mashup Manager -->
@@ -1487,11 +1402,6 @@
                 </bean>
             </list>
         </property>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="toolbar/roles-menu"/>
-            </bean>
-        </property>
         <property name="contextMenu" value="true"/>
     </bean>
     <bean id="org.jahia.toolbar.manager.roles.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -1511,11 +1421,6 @@
                 <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
                 <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
             </list>
-        </property>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="toolbar/roles-shortcuts"/>
-            </bean>
         </property>
     </bean>
 

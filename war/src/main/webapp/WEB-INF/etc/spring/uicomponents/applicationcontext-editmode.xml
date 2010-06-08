@@ -10,6 +10,9 @@
                 <entry key="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                     <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTabPropertyEditor"/>
                 </entry>
+                <entry key="org.jahia.services.uicomponents.bean.Visibility">
+                    <bean class="org.jahia.services.uicomponents.bean.VisibilityPropertyEditor"/>
+                </entry>
             </map>
         </property>
     </bean>
@@ -27,6 +30,7 @@
                                 </bean>
                             </property>
                             <property name="titleKey" value="label.templatesSet"/>
+                            <property name="visibility" value="$site/toolbar/site-switcher"/>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
                             <property name="layout" value="menu"/>
@@ -39,12 +43,14 @@
                                     <ref bean="Toolbar.Item.NewContent"/>
                                 </list>
                             </property>
+                            <property name="visibility" value="$site/toolbar/new"/>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
                             </property>
                             <property name="titleKey" value="label.templatesDeploy"/>
+                            <property name="visibility" value="$site/toolbar/deploy-templates"/>
                         </bean>
                         <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                         <ref bean="Toolbar.Item.Separator"/>
@@ -59,11 +65,7 @@
                         <ref bean="Toolbar.Item.Admin"/>
                     </list>
                 </property>
-                <property name="visibility">
-                    <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                        <property name="siteActionPermission" value="actions/edit-mode"/>
-                    </bean>
-                </property>
+                <property name="visibility" value="$site/actions/edit-mode"/>
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
@@ -75,11 +77,7 @@
                         <ref bean="Toolbar.Item.Separator"/>
                     </list>
                 </property>
-                <property name="visibility">
-                    <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                        <property name="serverActionPermission" value="global/studio-mode"/>
-                    </bean>
-                </property>
+                <property name="visibility" value="global/studio-mode"/>
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
@@ -91,12 +89,12 @@
                     <property name="nodeType" value="jmix:list"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>listOrderingContent</value>
-                            <value>template</value>
-                            <value>layout</value>
-                            <value>option</value>
-                            <value>rights</value>
-                            <value>usages</value>
+                            <value>listOrderingContent,$site/edit-mode/list-management</value>
+                            <value>template,$site/edit-mode/template</value>
+                            <value>layout,$site/edit-mode/layout</value>
+                            <value>options,$site/edit-mode/options</value>
+                            <value>rights,$site/edit-mode/rights</value>
+                            <value>usages,$site/edit-mode/usages</value>
                         </list>
                     </property>
                 </bean>
@@ -104,12 +102,12 @@
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content</value>
-                            <value>template</value>
-                            <value>layout</value>
-                            <value>option</value>
-                            <value>rights</value>
-                            <value>usages</value>
+                            <value>content,$site/edit-mode/content</value>
+                            <value>template,$site/edit-mode/template</value>
+                            <value>layout,$site/edit-mode/layout</value>
+                            <value>options,$site/edit-mode/options</value>
+                            <value>rights,$site/edit-mode/rights</value>
+                            <value>usages,$site/edit-mode/usages</value>
                         </list>
                     </property>
                 </bean>
@@ -123,10 +121,10 @@
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>createPage</value>
-                            <value>template</value>
-                            <value>option</value>
-                            <value>rights</value>
+                            <value>createPage,$site/edit-mode/create-page</value>
+                            <value>template,$site/edit-mode/template</value>
+                            <value>options,$site/edit-mode/options</value>
+                            <value>rights,$site/edit-mode/rights</value>
                         </list>
                     </property>
                 </bean>
@@ -134,11 +132,11 @@
                     <property name="nodeType" value="jnt:template"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>createPage</value>
-                            <value>template</value>
-                            <value>layout</value>
-                            <value>option</value>
-                            <value>rights</value>
+                            <value>createPage,$site/edit-mode/create-page</value>
+                            <value>template,$site/edit-mode/template</value>
+                            <value>layout,$site/edit-mode/layout</value>
+                            <value>options,$site/edit-mode/options</value>
+                            <value>rights,$site/edit-mode/rights</value>
                         </list>
                     </property>
                 </bean>
@@ -146,10 +144,10 @@
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content</value>
-                            <value>template</value>
-                            <value>layout</value>
-                            <value>option</value>
+                            <value>content,$site/edit-mode/content</value>
+                            <value>template,$site/edit-mode/template</value>
+                            <value>layout,$site/edit-mode/layout</value>
+                            <value>options,$site/edit-mode/options</value>
                         </list>
                     </property>
                 </bean>
@@ -188,6 +186,7 @@
                                     <ref bean="Toolbar.Item.NewContent"/>
                                 </list>
                             </property>
+                            <property name="visibility" value="$site/toolbar/new"/>
                         </bean>
                         <ref bean="Toolbar.Item.Live"/>
                         <ref bean="Toolbar.ItemsGroup.Preview"/>
@@ -208,11 +207,7 @@
                         <ref bean="Toolbar.Item.Studio"/>
                     </list>
                 </property>
-                <property name="visibility">
-                    <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                        <property name="siteActionPermission" value="actions/edit-mode"/>
-                    </bean>
-                </property>
+                <property name="visibility" value="$site/actions/edit-mode"/>
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
@@ -225,11 +220,7 @@
                         <ref bean="Toolbar.ItemsGroup.PublicationAction"/>
                     </list>
                 </property>
-                <property name="visibility">
-                    <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                        <property name="siteActionPermission" value="actions/edit-mode"/>
-                    </bean>
-                </property>
+                <property name="visibility" value="$site/actions/edit-mode"/>
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
@@ -241,18 +232,18 @@
                     <property name="nodeType" value="jmix:list"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>listOrderingContent</value>
-                            <value>template</value>
-                            <value>layout</value>
-                            <value>metadata</value>
-                            <value>classification</value>
-                            <value>option</value>
-                            <value>rights</value>
-                            <value>usages</value>
-                            <value>publication</value>
-                            <value>workflow</value>
-                            <value>seo,$site/edit-mode-tabs/seo</value>
-                            <value>analytics,$site/edit-mode-tabs/seo</value>
+                            <value>listOrderingContent,$site/edit-mode/list-management</value>
+                            <value>template,$site/edit-mode/template</value>
+                            <value>layout,$site/edit-mode/layout</value>
+                            <value>metadata,$site/edit-mode/metadata</value>
+                            <value>classification,$site/edit-mode/classification</value>
+                            <value>options,$site/edit-mode/options</value>
+                            <value>rights,$site/edit-mode/rights</value>
+                            <value>usages,$site/edit-mode/usages</value>
+                            <value>publication,$site/edit-mode/publication</value>
+                            <value>workflow,$site/edit-mode/workflow</value>
+                            <value>seo,$site/edit-mode/seo</value>
+                            <value>analytics,$site/edit-mode/analytics</value>
                         </list>
                     </property>
                 </bean>
@@ -260,17 +251,17 @@
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content</value>
-                            <value>layout</value>
-                            <value>metadata</value>
-                            <value>classification</value>
-                            <value>option</value>
-                            <value>rights</value>
-                            <value>usages</value>
-                            <value>publication</value>
-                            <value>workflow</value>
-                            <value>seo,$site/edit-mode-tabs/seo</value>
-                            <value>analytics,$site/edit-mode-tabs/seo</value>
+                            <value>content,$site/edit-mode/content</value>
+                            <value>layout,$site/edit-mode/layout</value>
+                            <value>metadata,$site/edit-mode/metadata</value>
+                            <value>classification,$site/edit-mode/classification</value>
+                            <value>options,$site/edit-mode/options</value>
+                            <value>rights,$site/edit-mode/rights</value>
+                            <value>usages,$site/edit-mode/usages</value>
+                            <value>publication,$site/edit-mode/publication</value>
+                            <value>workflow,$site/edit-mode/workflow</value>
+                            <value>seo,$site/edit-mode/seo</value>
+                            <value>analytics,$site/edit-mode/analytics</value>
                         </list>
                     </property>
                 </bean>
@@ -284,11 +275,11 @@
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>createPage</value>
-                            <value>metadata</value>
-                            <value>classification</value>
-                            <value>option</value>
-                            <value>rights</value>
+                            <value>createPage,$site/edit-mode/create-page</value>
+                            <value>metadata,$site/edit-mode/metadata</value>
+                            <value>classification,$site/edit-mode/classification</value>
+                            <value>options,$site/edit-mode/options</value>
+                            <value>rights,$site/edit-mode/rights</value>
                         </list>
                     </property>
                 </bean>
@@ -296,12 +287,12 @@
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content</value>
-                            <value>layout</value>
-                            <value>metadata</value>
-                            <value>classification</value>
-                            <value>option</value>
-                            <value>rights</value>
+                            <value>content,$site/edit-mode/content</value>
+                            <value>layout,$site/edit-mode/layout</value>
+                            <value>metadata,$site/edit-mode/metadata</value>
+                            <value>classification,$site/edit-mode/classification</value>
+                            <value>options,$site/edit-mode/options</value>
+                            <value>rights,$site/edit-mode/rights</value>
                         </list>
                     </property>
                 </bean>
@@ -396,6 +387,7 @@
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
+        <property name="visibility" value="$site/selector/templates"/>
     </bean>
 
     <bean id="sidePanelTab.pages" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -455,10 +447,12 @@
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
+        <property name="visibility" value="$site/selector/sitemap"/>
     </bean>
 
     <bean id="sidePanelTab.createContent" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="createContent"/>
+        <property name="visibility" value="$site/selector/create"/>
     </bean>
 
     <bean id="sidePanelTab.categories" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -470,6 +464,7 @@
                 <entry key="limit" value="500"/>
             </map>
         </property>
+        <property name="visibility" value="$site/selector/categories"/>
     </bean>
 
     <bean id="sidePanelTab.content" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -522,6 +517,7 @@
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
+        <property name="visibility" value="$site/selector/content"/>
     </bean>
 
     <bean id="sidePanelTab.filesimages" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -579,6 +575,7 @@
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
+        <property name="visibility" value="$site/selector/files-and-images"/>
     </bean>
     <bean id="sidePanelTab.mashups" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="mashups"/>
@@ -630,6 +627,7 @@
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
+        <property name="visibility" value="$site/selector/mashups"/>
     </bean>
 
     <bean id="sidePanelTab.search" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -639,32 +637,12 @@
                 <entry key="numberResults" value="20"/>
             </map>
         </property>
-
+        <property name="visibility" value="$site/selector/search"/>
     </bean>
 
     <bean id="sidePanelTab.workflow" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="workflow"/>
-    </bean>
-
-
-    <bean id="compare-engine" class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-        <property name="toolbars">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                    <property name="items">
-                        <list>
-                            <ref bean="Toolbar.Item.Publish"/>
-                            <ref bean="Toolbar.Item.PublishAll"/>
-                        </list>
-                    </property>
-                    <property name="visibility">
-                        <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                            <property name="siteActionPermission" value="actions/edit-mode"/>
-                        </bean>
-                    </property>
-                </bean>
-            </list>
-        </property>
+        <property name="visibility" value="$site/selector/workflow"/>
     </bean>
 
     <bean id="sidePanelTab.lastContent" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
@@ -709,6 +687,23 @@
                 </property>
                 <property name="contextMenu" value="true"/>
             </bean>
+        </property>
+        <property name="visibility" value="$site/selector/latest"/>
+    </bean>
+    
+    <bean id="compare-engine" class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+        <property name="toolbars">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                    <property name="items">
+                        <list>
+                            <ref bean="Toolbar.Item.Publish"/>
+                            <ref bean="Toolbar.Item.PublishAll"/>
+                        </list>
+                    </property>
+                    <property name="visibility" value="$site/actions/edit-mode"/>
+                </bean>
+            </list>
         </property>
     </bean>
 </beans>

@@ -31,11 +31,7 @@
     <bean id="Toolbar.ItemsGroup.User" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
         <property name="layout" value="menu"/>
         <property name="icon" value="user"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
+        <property name="visibility" value="$site/toolbar/user"/>
         <property name="titleKey" value="label.user"/>
         <property name="items">
             <list>
@@ -143,6 +139,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem"/>
         </property>
         <property name="titleKey" value="label.languages"/>
+        <property name="visibility" value="$site/toolbar/language-switcher"/>
     </bean>
 
     <bean id="Toolbar.ItemsGroup.Preview" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
@@ -155,6 +152,7 @@
                 <ref bean="Toolbar.Item.ShowCompareEngine"/>
             </list>
         </property>
+        <property name="visibility" value="$site/toolbar/preview-mode"/>
     </bean>
 
     <bean id="Toolbar.ItemsGroup.EditAction" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
@@ -182,6 +180,7 @@
                 <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
             </list>
         </property>
+        <property name="visibility" value="$site/toolbar/edit"/>
     </bean>
 
     <bean id="Toolbar.ItemsGroup.EditStudioAction"
@@ -211,6 +210,7 @@
                 <ref bean="Toolbar.Item.SwitchLockComponentInTemplate"/>
             </list>
         </property>
+        <property name="visibility" value="$site/toolbar/edit"/>
     </bean>
 
 
@@ -228,6 +228,7 @@
                 <ref bean="Toolbar.Item.ViewPublishStatus"/>
             </list>
         </property>
+        <property name="visibility" value="$site/toolbar/publication"/>
     </bean>
 
     <bean id="Toolbar.ItemsGroup.ContentAction"
@@ -241,22 +242,6 @@
         </property>
     </bean>
 
-
-    <bean id="Toolbar.ItemsGroup.Admin" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="icon" value="admin"/>
-        <property name="titleKey" value="label.administration"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Admin"/>
-            </list>
-        </property>
-    </bean>
 
     <!-- Content Manager item groups -->
     <!-- drop-down menus -->
@@ -330,6 +315,7 @@
                 <ref bean="Toolbar.Item.WorkflowManager"/>
             </list>
         </property>
+        <property name="visibility" value="$site/toolbar/workflow"/>
     </bean>
 
 
@@ -491,11 +477,6 @@
         </property>
         <property name="titleKey" value="label.live"/>
         <property name="icon" value="live"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
 
         <property name="properties">
             <list>
@@ -505,6 +486,7 @@
                 </bean>
             </list>
         </property>
+        <property name="visibility" value="$site/toolbar/live-mode"/>
     </bean>
 
 
@@ -546,6 +528,7 @@
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
                 <property name="serverActionPermission" value="global/studio-mode"/>
+                <property name="siteActionPermission" value="toolbar/studio-mode"/>
             </bean>
         </property>
     </bean>
@@ -579,11 +562,7 @@
         </property>
         <property name="titleKey" value="label.administration"/>
         <property name="icon" value="admin"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="admin/jahia-administration"/>
-            </bean>
-        </property>
+        <property name="visibility" value="$site/admin/jahia-administration"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
@@ -603,7 +582,7 @@
         <property name="icon" value="fileManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/filemanager"/>
+                <property name="siteActionPermission" value="managers/file-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -633,7 +612,7 @@
         <property name="icon" value="contentManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/contentmanager"/>
+                <property name="siteActionPermission" value="managers/content-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -663,7 +642,7 @@
         <property name="icon" value="mashupManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/mashupmanager"/>
+                <property name="siteActionPermission" value="managers/mashup-manager"/>
             </bean>
         </property>
 
@@ -694,7 +673,7 @@
         <property name="icon" value="categoryManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/categorymanager"/>
+                <property name="siteActionPermission" value="managers/category-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -724,7 +703,7 @@
         <property name="icon" value="tagManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/categorymanager"/>
+                <property name="siteActionPermission" value="managers/tag-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -753,7 +732,7 @@
         <property name="icon" value="remotePublicationManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/remotepublicationmanager"/>
+                <property name="siteActionPermission" value="managers/remote-publication-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -783,7 +762,7 @@
         <property name="icon" value="siteManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/sitemanager"/>
+                <property name="siteActionPermission" value="managers/site-manager"/>
             </bean>
         </property>
         <property name="properties">
@@ -1354,7 +1333,7 @@
         <property name="icon" value="workflowManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/workflowmanager"/>
+                <property name="siteActionPermission" value="managers/workflow-manager"/>
             </bean>
         </property>
         <property name="properties">

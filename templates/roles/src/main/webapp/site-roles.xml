@@ -9,63 +9,74 @@
             <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
                                     j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
         </j:acl>
- 	    <admin jcr:primaryType="jnt:permissionGroup">
-   		    <jahia-administration jcr:primaryType="jnt:permission"/> 	       		    
-   		    <groups jcr:primaryType="jnt:permission"/>
-   		    <site-languages jcr:primaryType="jnt:permission"/>
-   		    <site-permissions jcr:primaryType="jnt:permission"/>
-   		    <html-editors-admin jcr:primaryType="jnt:permission"/>
-   		    <integrity-checks jcr:primaryType="jnt:permission"/>
-   		    <analytics jcr:primaryType="jnt:permission"/>
-   	    </admin>
    	    <actions jcr:primaryType="jnt:permissionGroup">
-   		    <edit-mode jcr:primaryType="jnt:permission"/>
             <contribute-mode jcr:primaryType="jnt:permission"/>   
+            <edit-mode jcr:primaryType="jnt:permission"/>
    		    <import jcr:primaryType="jnt:permission"/> 	    
    	    </actions>   	    
+        <admin jcr:primaryType="jnt:permissionGroup">
+            <jahia-administration jcr:primaryType="jnt:permission"/>                    
+            <groups jcr:primaryType="jnt:permission"/>
+            <site-languages jcr:primaryType="jnt:permission"/>
+            <site-permissions jcr:primaryType="jnt:permission"/>
+            <analytics jcr:primaryType="jnt:permission"/>
+        </admin>
+        <edit-mode jcr:primaryType="jnt:permissionGroup">
+            <analytics jcr:primaryType="jnt:permission"/>
+            <classification jcr:primaryType="jnt:permission"/>
+            <content jcr:primaryType="jnt:permission"/>
+            <create-page jcr:primaryType="jnt:permission"/>
+            <layout jcr:primaryType="jnt:permission"/>
+            <list-management jcr:primaryType="jnt:permission"/>
+            <metadata jcr:primaryType="jnt:permission"/>
+            <options jcr:primaryType="jnt:permission"/>
+            <publication jcr:primaryType="jnt:permission"/>
+            <rights jcr:primaryType="jnt:permission"/>
+            <seo jcr:primaryType="jnt:permission"/>
+            <template jcr:primaryType="jnt:permission"/>
+            <usages jcr:primaryType="jnt:permission"/>
+            <workflow jcr:primaryType="jnt:permission"/>
+        </edit-mode>
    	    <managers jcr:primaryType="jnt:permissionGroup">
-   	        <filemanager jcr:primaryType="jnt:permission"/>
-   	        <contentmanager jcr:primaryType="jnt:permission"/>
-   	        <mashupmanager jcr:primaryType="jnt:permission"/>
-   	        <categorymanager jcr:primaryType="jnt:permission"/>
-   	        <sitemanager jcr:primaryType="jnt:permission"/>
-            <remotepublicationmanager jcr:primaryType="jnt:permission"/>
-            <workflowmanager jcr:primaryType="jnt:permission"/>
+            <category-manager jcr:primaryType="jnt:permission"/>
+            <content-manager jcr:primaryType="jnt:permission"/>
+   	        <file-manager jcr:primaryType="jnt:permission"/>
+   	        <mashup-manager jcr:primaryType="jnt:permission"/>
+            <remote-publication-manager jcr:primaryType="jnt:permission"/>
+   	        <site-manager jcr:primaryType="jnt:permission"/>
+            <tag-manager jcr:primaryType="jnt:permission"/>
+            <workflow-manager jcr:primaryType="jnt:permission"/>
    	    </managers>
-   	    <toolbar jcr:primaryType="jnt:permissionGroup">
-   		    <categories-menu jcr:primaryType="jnt:permission"/> 	    
-   		    <categories-shortcuts jcr:primaryType="jnt:permission"/>
-   		    <content-menu jcr:primaryType="jnt:permission"/> 	    
-   		    <content-shortcuts jcr:primaryType="jnt:permission"/>
-   		    <documents-menu jcr:primaryType="jnt:permission"/> 	    
-   		    <documents-shortcuts jcr:primaryType="jnt:permission"/>
-   		    <mashups-menu jcr:primaryType="jnt:permission"/> 	    
-   		    <mashups-shortcuts jcr:primaryType="jnt:permission"/>
-   		    <portletDefinitions-shortcuts jcr:primaryType="jnt:permission"/>
-   		    <sites-menu jcr:primaryType="jnt:permission"/> 	    
-   		    <sites-shortcuts jcr:primaryType="jnt:permission"/>
-   		    <tags-menu jcr:primaryType="jnt:permission"/> 	    
-   		    <tags-shortcuts jcr:primaryType="jnt:permission"/>   		       		       		       		       		       		    
-   		    <roles-menu jcr:primaryType="jnt:permission"/> 	    
-   		    <roles-shortcuts jcr:primaryType="jnt:permission"/>   		    
-            <remotepublication-menu jcr:primaryType="jnt:permission" />
-            <remotepublication-shortcuts jcr:primaryType="jnt:permission" />
-            <workflow-menu jcr:primaryType="jnt:permission" />
-            <workflow-shortcuts jcr:primaryType="jnt:permission" />
-   	    </toolbar>
-   	    <integrity jcr:primaryType="jnt:permissionGroup">
-   		    <link-integrity jcr:primaryType="jnt:permission"/> 	    
-   		    <wai-compliance jcr:primaryType="jnt:permission"/>
-   	    </integrity>   	    
+        <selector jcr:primaryType="jnt:permissionGroup">
+            <categories jcr:primaryType="jnt:permission"/>
+            <content jcr:primaryType="jnt:permission"/>
+            <create jcr:primaryType="jnt:permission"/>
+            <files-and-images jcr:primaryType="jnt:permission"/>
+            <latest jcr:primaryType="jnt:permission"/>
+            <mashups jcr:primaryType="jnt:permission"/>
+            <search jcr:primaryType="jnt:permission"/>
+            <sitemap jcr:primaryType="jnt:permission"/>
+            <templates jcr:primaryType="jnt:permission"/>
+            <workflow jcr:primaryType="jnt:permission"/>
+        </selector>
+        <toolbar jcr:primaryType="jnt:permissionGroup">
+            <deploy-templates jcr:primaryType="jnt:permission" />
+            <edit jcr:primaryType="jnt:permission"/>       
+            <language-switcher jcr:primaryType="jnt:permission"/>
+            <live-mode jcr:primaryType="jnt:permission"/>
+            <new jcr:primaryType="jnt:permission"/>         
+            <preview-mode jcr:primaryType="jnt:permission"/>
+            <publication jcr:primaryType="jnt:permission"/>
+            <site-switcher jcr:primaryType="jnt:permission"/>
+            <studio-mode jcr:primaryType="jnt:permission"/>
+            <user jcr:primaryType="jnt:permission"/>        
+            <workflow jcr:primaryType="jnt:permission"/>
+        </toolbar>
         <wysiwyg-editor-toolbar jcr:primaryType="jnt:permissionGroup">
             <full jcr:primaryType="jnt:permission"/>      
             <basic jcr:primaryType="jnt:permission"/>
             <light jcr:primaryType="jnt:permission"/>
         </wysiwyg-editor-toolbar>
-        <edit-mode-tabs jcr:primaryType="jnt:permissionGroup">
-            <analytics jcr:primaryType="jnt:permission"/>
-            <seo jcr:primaryType="jnt:permission"/>
-        </edit-mode-tabs>
     </permissions>
 
     <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">
@@ -74,15 +85,28 @@
                                     j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
         </j:acl>
         
-        <content-manager jcr:primaryType="jnt:role"
-            j:assignedPermissions="actions/* languages/* managers/* toolbar/*"
-            j:grantToPrincipals="g:users"/>
-        
-        <user-manager jcr:primaryType="jnt:role"
-            j:assignedPermissions="admin/jahia-administration global/users admin/groups admin/groups"/>
-
+        <editor jcr:primaryType="jnt:role"
+            j:assignedPermissions="actions/* edit-mode/classification edit-mode/content edit-mode/create-page edit-mode/list-management edit-mode/metadata edit-mode/options edit-mode/seo languages/* managers/file-manager managers/mashup-manager managers/site-manager selector/content selector/create selector/files-and-images selector/mashups selector/search selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/new toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/basic"/>
+            
+        <editor-in-chief jcr:primaryType="jnt:role"
+            j:assignedPermissions="actions/* edit-mode/* languages/* managers/category-manager managers/file-manager managers/mashup-manager managers/site-manager managers/tag-manager managers/workflow-manager selector/* toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/new toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/*"/>
+            
+        <publisher jcr:primaryType="jnt:role"
+            j:assignedPermissions="actions/* edit-mode/classification edit-mode/content edit-mode/create-page edit-mode/list-management edit-mode/metadata edit-mode/publication edit-mode/template edit-mode/usages edit-mode/workflow languages/* managers/remote-publication-manager managers/site-manager managers/workflow-manager selector/context selector/latest selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/basic"/>
+            
         <seo-manager jcr:primaryType="jnt:role"
-            j:assignedPermissions="edit-mode-tabs/analytics edit-mode-tabs/seo"/>
+            j:assignedPermissions="actions/edit-mode edit-mode/analytics edit-mode/layout edit-mode/metadata edit-mode/seo edit-mode/usages languages/* managers/category-manager managers/site-manager managers/tag-manager selector/files-and-images selector/search selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/light"/>
+
+        <site-administrator jcr:primaryType="jnt:role"
+            j:assignedPermissions="actions/* admin/* edit-mode/* languages/* managers/* toolbar/* selector/* wysiwyg-editor-toolbar/*"
+            j:grantToPrincipals="g:administrators"/>
+        
+        <translator jcr:primaryType="jnt:role"
+            j:assignedPermissions="languages/* managers/file-manager selector/files-and-images selector/search selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/basic"/>
+            
+        <web-designer jcr:primaryType="jnt:role"
+            j:assignedPermissions="actions/* edit-mode/content edit-mode/create-page edit-mode/layout edit-mode/list-management edit-mode/metadata edit-mode/options languages/* managers/file-manager managers/mashup-manager selector/content selector/create selector/files-and-images selector/mashups selector/search selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/studio-mode toolbar/user toolbar/workflow wysiwyg-editor-toolbar/basic"/>
+            
     </roles>
 
 </content>

@@ -42,6 +42,7 @@ import javax.jcr.Value;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.rules.AddedNodeFact;
@@ -51,6 +52,8 @@ import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.rbac.jcr.PermissionImpl;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -73,6 +76,8 @@ public class RoleService {
     private org.jahia.services.rbac.jcr.RoleService roleService;
 
     private JahiaUserManagerService userService;
+    
+    private JahiaSitesService siteService;
     
     private Role getRole(String role) {
         return new RoleIdentity(role.contains("/") ? StringUtils.substringAfterLast(role, "/") : role, JCRContentUtils
@@ -156,11 +161,24 @@ public class RoleService {
      */
     public void grantRoleToGroup(final String group, final String role, KnowledgeHelper drools)
             throws RepositoryException {
-        JahiaGroup principal = groupService.lookupGroup(group);
+        String groupKey = group;
+        if (group != null && !group.contains(":")) {
+            String siteKey = JCRContentUtils.getSiteKey(role);
+            JahiaSite site = null;
+            try {
+                site = siteKey != null ? siteService.getSiteByKey(siteKey) : null;
+            } catch (JahiaException e) {
+                logger.warn("Unable to find group for key '" + groupKey + "'", e);
+            }
+            if (site != null) {
+                groupKey = group + ":" + site.getID();
+            }
+        }
+        JahiaGroup principal = groupService.lookupGroup(groupKey);
         if (principal != null) {
             rbacService.grantRole(principal, getRole(role));
         } else {
-            logger.warn("Unable to look up the specified group for name '" + group + "'. Skip granting role.");
+            logger.warn("Unable to look up the specified group by key '" + groupKey + "'. Skip granting role.");
         }
     }
 
@@ -246,6 +264,13 @@ public class RoleService {
         for (Value language : languages) {
             roleService.savePermission(new PermissionIdentity(language.getString(), "languages", siteKey));
         }
+    }
+
+    /**
+     * @param siteService the siteService to set
+     */
+    public void setSiteService(JahiaSitesService siteService) {
+        this.siteService = siteService;
     }
 
 }

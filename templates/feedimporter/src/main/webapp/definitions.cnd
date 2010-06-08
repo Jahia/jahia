@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:feed] > jnt:contentList, jmix:editorialContent
+[jnt:feed] > jnt:contentList, jmix:sandboxContent
  - url (string)
  - user (string)
  - password (string)
@@ -8,7 +8,7 @@
  - syncro (string)
  + medias (jnt:folder)
 
-[jnt:newsMLItem] > jnt:news, jmix:editorialContent
+[jnt:newsMLItem] > jnt:news, jmix:sandboxContent
  - itemID (string)
  - status (string)
  - publicIdentifier (string)
@@ -20,7 +20,7 @@
 
 [jnt:newsMLComponentOrContentItem] > jnt:content, mix:title
 
-[jnt:newsMLComponent] > jnt:newsMLComponentOrContentItem, jmix:editorialContent
+[jnt:newsMLComponent] > jnt:newsMLComponentOrContentItem, jmix:sandboxContent
  - Duid (string)
  - language (string)
  - subjectCode (string)
@@ -28,7 +28,7 @@
  - role (string)
  + * (jnt:newsMLComponentOrContentItem)
 
-[jnt:newsMLContentItem] > jnt:newsMLComponentOrContentItem, jmix:editorialContent
+[jnt:newsMLContentItem] > jnt:newsMLComponentOrContentItem, jmix:sandboxContent
  - comment (string)
  - format (string)
  - href (string)
@@ -37,8 +37,8 @@
  - role (string)
  - image (weakreference, file[mime='image/*'])
 
- [jnt:newsMLUrgencyQuery] > jnt:query, jmix:queryContent
+ [jnt:newsMLUrgencyQuery] > jnt:query, jmix:sandboxContent
  - minimumUrgencyValue (long)
 
- [jnt:newsMLMostPopularArticles] > jnt:content, jmix:queryContent
+ [jnt:newsMLMostPopularArticles] > jnt:content, jmix:sandboxContent
  

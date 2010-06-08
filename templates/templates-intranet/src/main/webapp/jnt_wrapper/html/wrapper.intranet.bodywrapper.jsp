@@ -72,9 +72,7 @@
     </div>
     <!--stop bottomheader-->
     <div id="content"><!--start content-->
-        <div class="container container_16">
-            <template:area path="wrappercontent"/>
-        </div>
+        <template:area path="wrappercontent"/>
         <div class="clear"></div>
     </div>
     <!--stop content-->

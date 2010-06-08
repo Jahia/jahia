@@ -80,10 +80,11 @@ public class ToPDFServlet extends HttpServlet implements Controller {
         String path = StringUtils.substringAfter(request.getPathInfo().substring(1), "/");
         String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
         String nodePath = request.getParameter("path");
+        String id = request.getParameter("id");
         InputStream is = null; 
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
-            JCRNodeWrapper node = session.getNode(nodePath);
+            JCRNodeWrapper node = id != null ? session.getNodeByIdentifier(id) : session.getNode(nodePath);
             if(node.isNodeType("nt:file")) {
                 response.setContentType(converterService.getMimeType("pdf"));
                 response.setHeader("Content-Disposition", "attachment; filename=\""

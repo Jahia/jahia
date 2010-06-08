@@ -262,7 +262,6 @@
         <profile>
             <id>qa-build</id>
             <modules>
-                <module>ear</module>
                 <module>package</module>
             </modules>
         </profile>
@@ -291,7 +290,6 @@
     <module>prepackagedSites</module>
     <module>test</module>
     <module>war</module>
-    <!--<module>ear</module>-->
   </modules>
 
     <distributionManagement>

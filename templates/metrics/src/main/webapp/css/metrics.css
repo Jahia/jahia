@@ -1,0 +1,18 @@
+.metrics ul,
+.metrics ol {
+	line-height: 21px;
+	padding: 4px 0 0 15px;
+}
+
+.metrics ol li {
+	list-style: decimal inside;
+}
+
+.metrics ul a,
+.metrics ol a {
+	color: #555;
+}
+
+.metrics ul a {
+	padding-left: 10px;
+}

@@ -12,7 +12,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<template:addResources type="css" resources="forum.css"/>
+<template:addResources type="css" resources="commentable.css"/>
 <c:set var="bindedComponent" value="${currentNode.properties['j:bindedComponent'].node}"/>
 <c:if test="${not empty bindedComponent}">
     <c:choose>
@@ -23,60 +23,38 @@
             <c:set var="bindedComponent" value="${bindedComponent}"/>
         </c:otherwise>
     </c:choose>
-    <script type="text/javascript">
-        function jahiaForumQuote(targetId, quotedText) {
-            var targetArea = document.getElementById(targetId);
-            if (targetArea) {
-                targetArea.value = targetArea.value + '\n<blockquote>\n' + quotedText + '\n</blockquote>\n';
-            }
-            return false;
-        }
-    </script>
 
-
-    <a name="threadPost"></a>
+    <a name="addComments"></a>
 
     <form action="${url.base}${bindedComponent.path}.addComment.do" method="post">
         <input type="hidden" name="nodeType" value="jnt:post"/>
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
 
-        <div class="post-reply"><!--start post-reply-->
-            <div class="forum-box forum-box-style2">
-                <span class="forum-corners-top"><span></span></span>
-
-                <div id="forum-Form"><!--start forum-Form-->
-                    <h4 class="forum-h4-first">${bindedComponent.properties.threadSubject.string} : <fmt:message
-                            key="reply"/></h4>
+                <div id="formCommentableComment">
 
                     <fieldset>
                         <p class="field">
-                            <input value=""
-                                   type="text" size="35" id="forum_site" name="jcr:title"
+                            <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
+                            <input class="" value=""
+                                   type="text" size="35" id="comment-title" name="jcr:title"
                                    tabindex="1"/>
                         </p>
 
                         <p class="field">
-                            <textarea rows="7" cols="35" id="jahia-forum-thread-${bindedComponent.identifier}"
+                        <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message key="comment.body"/></label>
+                            <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
                                       name="content"
                                       tabindex="2"></textarea>
                         </p>
 
-                        <p class="forum_button">
+                        <p>
                             <input type="reset" value="Reset" class="button" tabindex="3"/>
 
                             <input type="submit" value="Submit" class="button" tabindex="4"/>
                         </p>
                     </fieldset>
                 </div>
-                <!--stop forum-Form-->
-
-
-                <div class="clear"></div>
-                <span class="forum-corners-bottom"><span></span></span>
-            </div>
-        </div>
-        <!--stop post-reply-->
     </form>
 </c:if>
 <template:linker path="*"/>

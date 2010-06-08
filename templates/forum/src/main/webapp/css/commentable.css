@@ -1,0 +1,31 @@
+/******************************************************************************
+*  Form comments
+******************************************************************************/
+#bodywrapper #formCommentableComment {
+	margin: 0;
+	padding:0;
+    clear:both;
+}
+#bodywrapper #formCommentableComment p{
+	margin:0;
+	padding:0;
+}
+#bodywrapper #formCommentableComment p.field{
+	margin-bottom:0.5em;
+}
+#bodywrapper #formCommentableComment label{
+display:block
+}
+#bodywrapper #formCommentableComment textarea,
+#bodywrapper #formCommentableComment input{
+	width:98%
+}
+#bodywrapper #formCommentableComment input.button{
+	width:auto
+}
+#bodywrapper #formCommentableComment fieldset{
+	border:none;
+	margin:0;
+	padding:0;
+}
+

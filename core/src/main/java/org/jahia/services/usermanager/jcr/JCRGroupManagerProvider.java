@@ -577,7 +577,6 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         boolean external = groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
                         if (allowExternal || !external) {
                             group = getGroup(groupNode, name, siteID1, external);
-                            if (external) {}
                             getCache().put(trueGroupKey, group);
                         }
                         return group;

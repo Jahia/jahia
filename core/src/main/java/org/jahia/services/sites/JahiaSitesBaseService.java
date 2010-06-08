@@ -56,7 +56,6 @@ import org.jahia.services.sites.jcr.JCRSitesProvider;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -321,7 +320,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 setDefaultSite(site);
             }
 
-            JahiaUserManagerService jums = ServicesRegistry.getInstance().getJahiaUserManagerService();
             JahiaGroupManagerService jgms = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
             updateSite(site);
@@ -344,8 +342,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 adminGroup = jgms.createGroup(site.getID(),
                         JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null, false);
             }
-
-            JahiaUser guestSiteUser = jums.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
 
             // attach superadmin user (current) to administrators group...
             adminGroup.addMember(currentUser);

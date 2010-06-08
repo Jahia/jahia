@@ -313,6 +313,12 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>2.1</version>
             </plugin>
+            <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we
+ need to force the version of the plugin to version 2.1-beta-1 -->
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1-beta-1</version>
+            </plugin>
         </plugins>
     </pluginManagement>
     <plugins>

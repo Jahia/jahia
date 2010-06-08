@@ -36,7 +36,11 @@
         </div>
         <!--stop bottomheader-->
         <div id="content"><!--start content-->
-            <template:area path="wrappercontent"/>
+            <div class="container container_16">
+                <div class="grid_16">
+                    <template:area path="wrappercontent"/>
+                </div>
+            </div>
             <!--stop content-->
             <div class="clear"></div>
         </div>

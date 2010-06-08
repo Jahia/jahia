@@ -235,3 +235,14 @@ $(document).ready(function() {
     </div>
 </div>
 -------------------------------------------------
+
+* Access User {Properties} From My Templates
+
+  In your templates the user as a JahiaUser object is available directly under the renderContext object.
+
+-------------------------------------------------
+// Display username
+${renderContext.user.username}
+// Display user firstname
+${renderContext.user.properties['j:firstName']}
+-------------------------------------------------

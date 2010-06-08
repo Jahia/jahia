@@ -66,11 +66,10 @@
         </c:otherwise>
     </c:choose>
 
-<div class="container container_16">
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <c:choose>
         <c:when test="${col.value > 8}">
-            <div class='grid_${col.value}'><!--start grid_${col.value}-->
+            <div class='grid_${col.value} <c:if test="${count.first}">alpha</c:if> <c:if test="${count.last}">omega</c:if>'><!--start grid_${col.value}-->
 				<template:area path="${col.key}"/>
 				<div class='clear'></div>
 			</div>
@@ -78,7 +77,7 @@
         </c:when>
 
         <c:otherwise>
-            <div class='grid_${col.value}'><!--start grid_${col.value}-->
+            <div class='grid_${col.value} <c:if test="${count.first}">alpha</c:if> <c:if test="${count.last}">omega</c:if>'><!--start grid_${col.value}-->
                 <template:area path="${col.key}"/>
                 <div class='clear'></div>
             </div>
@@ -87,5 +86,4 @@
     </c:choose>
 </c:forEach>
     <div class='clear'></div>
-</div>
 

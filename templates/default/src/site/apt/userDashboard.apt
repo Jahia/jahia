@@ -1,0 +1,5 @@
+Customization of User Dashboard
+
+  The user dashboard is defined as a wrapper for the user object <jnt:user>. This wrapper is editable in the <<studio>>.
+
+  

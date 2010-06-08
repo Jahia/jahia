@@ -191,7 +191,7 @@
 <%--map all display values --%>
 <jsp:useBean id="userProperties" class="java.util.HashMap"/>
 
-<div class='grid_4'><!--start grid_4-->
+<div class='grid_4 alpha'><!--start grid_4-->
     <div class="image imageEdit" id="portrait">
         <div class="itemImage itemImageRight"><jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
             <c:if test="${not empty picture}">
@@ -344,7 +344,7 @@
 
 </div>
 <!--stop grid_8-->
-<div class='grid_4'><!--start grid_4-->
+<div class='grid_4 omega'><!--start grid_4-->
     <%--<div class="boxuserprofile">
                 <div class="boxuserprofilegrey boxuserprofilepadding16 boxuserprofilemarginbottom16">
                     <div class="boxuserprofile-inner">

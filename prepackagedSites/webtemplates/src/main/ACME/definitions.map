@@ -148,7 +148,7 @@
     people = simple
     press = simple    
     job = simple    
-    layout = simple
+    layout = my-portal
      
 [web_templates:home] = jnt:page
  + logo = ../sitewrapper/logo

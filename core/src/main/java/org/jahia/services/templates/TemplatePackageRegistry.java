@@ -45,8 +45,6 @@ import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.settings.SettingsBean;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.bin.Action;
-import org.jahia.utils.profile.ProfileExtension;
-import org.jahia.utils.profile.ProfileExtensions;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
@@ -71,8 +69,6 @@ class TemplatePackageRegistry {
         private TemplatePackageRegistry templatePackageRegistry;
         
         private ChoiceListInitializerService choiceListInitializers;
-        
-        private ProfileExtensions profileExtensions;
         
         private Map<String, String> staticAssetMapping;
 
@@ -118,12 +114,6 @@ class TemplatePackageRegistry {
                         }
                     }
                 }
-            } else if (bean instanceof ProfileExtension) {
-                ProfileExtension profileExtension = (ProfileExtension) bean;
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Registering ProfileExtension '" + beanName + "'");
-                }
-                profileExtensions.registerExtension(profileExtension);
             } else if (bean instanceof StaticAssetMapping) {
                 StaticAssetMapping mappings = (StaticAssetMapping) bean;
                 staticAssetMapping.putAll(mappings.getMapping());
@@ -172,13 +162,6 @@ class TemplatePackageRegistry {
          */
         public void setChoiceListInitializers(ChoiceListInitializerService choiceListInitializers) {
             this.choiceListInitializers = choiceListInitializers;
-        }
-
-        /**
-         * @param profileExtensions the profileExtensions to set
-         */
-        public void setProfileExtensions(ProfileExtensions profileExtensions) {
-            this.profileExtensions = profileExtensions;
         }
 
         /**

@@ -275,7 +275,7 @@
                         <my-profile jcr:primaryType="jnt:contentList">
                             <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="My Profile"
                                               jcr:language="en"/>
-                            <user-profile jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="page"/>
+                            <user-profile jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="myprofile"/>
                         </my-profile>
                         <my-content jcr:primaryType="jnt:contentList">
                             <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en"

@@ -17,7 +17,6 @@
 <%--@elvariable id="task" type="org.jahia.services.workflow.WorkflowTask"--%>
 <template:addResources type="css" resources="tasks.css"/>
 <template:addResources type="css" resources="contentlist.css"/>
-<template:addWrapper name="wrapper.dashboard"/>
 
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>

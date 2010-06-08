@@ -19,7 +19,6 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="bookmarks.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
-<template:addWrapper name="wrapper.dashboard"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <div id="${currentNode.identifier}">

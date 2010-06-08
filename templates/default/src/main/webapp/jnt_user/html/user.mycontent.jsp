@@ -18,7 +18,6 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="userProfile.css"/>
-<template:addWrapper name="wrapper.dashboard"/>
 <div id="${currentNode.identifier}">
     <jcr:sql var="result"
              sql="select * from [jnt:content] as p where p.[jcr:createdBy]='${currentNode.name}' or p.[jcr:lastModifiedBy]='${currentNode.name}' order by p.[jcr:lastModified] desc"/>

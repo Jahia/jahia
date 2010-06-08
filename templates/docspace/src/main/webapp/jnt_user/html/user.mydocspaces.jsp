@@ -19,7 +19,6 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="docspace.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
-<template:addWrapper name="wrapper.dashboard"/>
 <div id="${currentNode.identifier}">
     <jcr:sql var="result"
              sql="select * from [jnt:folder] as file order by file.[jcr:lastModified] desc"/>

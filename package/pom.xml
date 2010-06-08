@@ -25,6 +25,7 @@
               <id>qa-build</id>
               <modules>
                   <module>jahia-qa-package</module>
+                  <module>ear</module>
               </modules>
         </profile>
         <profile>

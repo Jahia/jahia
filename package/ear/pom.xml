@@ -2,7 +2,7 @@
 <project>
     <parent>
         <groupId>org.jahia.server</groupId>
-        <artifactId>jahia-root</artifactId>
+        <artifactId>jahia-package</artifactId>
         <version>6.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -117,89 +117,6 @@
                             <contextRoot>${jahia.deploy.war.contextPath}</contextRoot>
                             <bundleFileName>jahia.war</bundleFileName>
                         </webModule>
-                        <!--
-                        <jarModule>
-                            <groupId>javax.portlet</groupId>
-                            <artifactId>portlet-api</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>org.apache.pluto</groupId>
-                            <artifactId>pluto-container</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>org.apache.pluto</groupId>
-                            <artifactId>pluto-descriptor-api</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>org.apache.pluto</groupId>
-                            <artifactId>pluto-descriptor-impl</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>org.apache.pluto</groupId>
-                            <artifactId>pluto-taglib</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-
-                        <jarModule>
-                            <groupId>javax.activation</groupId>
-                            <artifactId>activation</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>org.codehaus.castor</groupId>
-                            <artifactId>castor</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>javax.ccpp</groupId>
-                            <artifactId>ccpp</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>javax.xml.bind</groupId>
-                            <artifactId>jaxb-api</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>com.sun.xml.bind</groupId>
-                            <artifactId>jaxb-impl</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>stax</groupId>
-                            <artifactId>stax</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>stax</groupId>
-                            <artifactId>stax-api</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>xerces</groupId>
-                            <artifactId>xercesImpl</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>xerces</groupId>
-                            <artifactId>xmlParserAPIs</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>commons-logging</groupId>
-                            <artifactId>commons-logging</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>log4j</groupId>
-                            <artifactId>log4j</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
-                        -->
                     </modules>
                 </configuration>
             </plugin>

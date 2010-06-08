@@ -6,7 +6,6 @@
 	<bean name="org.jahia.modules.default.ModuleRegistry" class="org.jahia.services.templates.TemplatePackageRegistry$ModuleRegistry">
 		<property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
         <property name="choiceListInitializers" ref="choiceListInitializers"/>
-        <property name="profileExtensions" ref="profileExtensions"/>
         <property name="staticAssetMapping" ref="org.jahia.services.render.StaticAssetMappingRegistry"/>
 	</bean>
 

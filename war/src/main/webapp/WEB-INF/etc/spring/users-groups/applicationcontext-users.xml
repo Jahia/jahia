@@ -26,7 +26,5 @@
             <bean class="org.jahia.services.usermanager.JahiaSiteUserManagerDBService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
         </property>
     </bean>
-
-    <bean id="profileExtensions" class="org.jahia.utils.profile.ProfileExtensions"/>
     
 </beans>

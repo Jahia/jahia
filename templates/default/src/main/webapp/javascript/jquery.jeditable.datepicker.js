@@ -78,6 +78,7 @@ $.editable.addInputType('datepicker', {
     plugin : function(settings, original) {
         var form = this;
         settings.onblur = null;
-        $("#datepicker_", this).datepicker({dateFormat: $.datepicker.ISO_8601});
+        $("#datepicker_", this).datepicker({changeMonth: true,
+			changeYear: true,dateFormat: $.datepicker.ISO_8601,yearRange: '1950:2030'});
     }
 });

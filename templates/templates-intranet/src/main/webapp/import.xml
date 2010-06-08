@@ -206,7 +206,8 @@
         </wrappercontent>
         <pagetitle jcr:primaryType="jnt:contentList" />
       </sitewrapper>
-
+        <userwrapper j:template="default" jcr:primaryType="jnt:wrapper" j:key="userwrapper" j:applyOn="jnt:user">
+        </userwrapper>
       <search-results jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
         <j:translation_en j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly" jcr:language="en" jcr:title_en="Search results" priority="0.5" />
         <pagecontent jcr:mixinTypes="jmix:templateInformation" jcr:primaryType="jnt:contentList" j:templateLocked="true">

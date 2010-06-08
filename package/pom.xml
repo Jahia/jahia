@@ -19,6 +19,7 @@
               <id>qa-jboss</id>
               <modules>
                   <module>jahia-qa-package</module>
+                  <module>deployments</module>
               </modules>
         </profile>
         <profile>
@@ -38,6 +39,7 @@
             <id>installer</id>
             <modules>
                 <module>jahia-installer-package</module>
+                <module>deployments</module>
             </modules>
         </profile>
     </profiles>

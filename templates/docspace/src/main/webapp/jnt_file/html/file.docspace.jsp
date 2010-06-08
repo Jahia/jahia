@@ -74,19 +74,22 @@
         <div class="boxdocspacepadding16 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
+                    <fmt:message key="docspace.label.download" var="i18nDownload"/>
                     <div class="imagefloatleft">
                         <div class="itemImage itemImageLeft">
-									<span class="icon_large ${functions:fileIcon(currentNode.name)}_large"></span>
+							<a href="${currentNode.url}" title="${i18nDownload}&nbsp;${fn:escapeXml(currentNode.name)}"><span class="icon_large ${functions:fileIcon(currentNode.name)}_large"></span></a>
                         </div>
+                        <c:if test="${currentNode.fileContent.contentType != 'application/pdf'}">
                         <div class="itemImage itemImageLeft"
                             <c:url var="pdfLink" value="${url.toPDF}" context="/">
-                                <c:param name="path" value="${currentNode.path}"/>
+                                <c:param name="id" value="${currentNode.identifier}"/>
                             </c:url>
-                            <a href="${pdfLink}" title="convert to PDF"><span class="icon_large pdf_large"></span></a>
+                            <a href="${pdfLink}" title="${i18nDownload}&nbsp;<fmt:message key='docspace.label.asPdf'/>"><span class="icon_large pdf_large"></span></a>
                         </div>
+                        </c:if>
                     </div>
                     <h3><fmt:message key="docspace.label.document.name"/> <a href="${currentNode.url}" title="Download ${currentNode.name}"><img
-                            title="Download ${currentNode.name}" value="download"
+                            title="${i18nDownload}&nbsp;${fn:escapeXml(currentNode.name)}" value="download"
                             src="${url.currentModule}/css/img/download.png"/>&nbsp;${functions:abbreviate(currentNode.name,20,30,'...')}&nbsp;${currentNode.baseVersion.name}
                     </a></h3>
 

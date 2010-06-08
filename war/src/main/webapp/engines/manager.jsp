@@ -31,8 +31,29 @@
     between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+--%><%@ page import="java.util.*,javax.servlet.http.HttpServletResponse" contentType="text/html;charset=UTF-8" language="java" %><%
+Map<String, String> configToPermissionMapping = new HashMap<String, String>();
+configToPermissionMapping.put("categorymanager", "category-manager");
+configToPermissionMapping.put("contentmanager", "content-manager");
+configToPermissionMapping.put("filemanager", "file-manager");
+configToPermissionMapping.put("mashupmanager", "mashup-manager");
+configToPermissionMapping.put("remotepublicationmanager", "remote-publication-manager");
+configToPermissionMapping.put("sitemanager", "site-manager");
+configToPermissionMapping.put("tagmanager", "tag-manager");
+configToPermissionMapping.put("workflowmanager", "workflow-manager");
+%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
+%><%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" 
+%><%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %><%
+    if (request.getParameter("site") != null && request.getParameter("conf") != null && configToPermissionMapping.containsKey(request.getParameter("conf"))) {
+        pageContext.setAttribute("permission", "managers/" + configToPermissionMapping.get(request.getParameter("conf")));
+        %>
+        <jcr:node var="siteNode" uuid="${param.site}"/>
+        <c:if test="${not empty siteNode && !functions:isUserPermittedForSite(permission, siteNode.siteKey)}">
+        <% response.sendError(HttpServletResponse.SC_FORBIDDEN);%>
+        </c:if>
+        <%
+    }
+%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

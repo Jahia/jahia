@@ -255,7 +255,7 @@
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>java.lang.Boolean isUserInRoleForSite(java.lang.String,java.lang.String)</function-signature>
         <example>
-            &lt;c:if test="${functions:isUserInRoleForSite('actions/edit-mode')}"&gt;
+            &lt;c:if test="${functions:isUserInRoleForSite('actions/edit-mode', renderContext.site.siteKey)}"&gt;
             The user is authorized to perform actions in edit mode
             &lt;/c:if&gt;
         </example>
@@ -285,7 +285,7 @@
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>java.lang.Boolean isUserPermittedForSite(java.lang.String,java.lang.String)</function-signature>
         <example>
-            &lt;c:if test="${functions:isUserPermitted('admin/site-languages')}"&gt;
+            &lt;c:if test="${functions:isUserPermittedForSite('admin/site-languages', renderContext.site.siteKey)}"&gt;
             The user is authorized to manage languages for the current site
             &lt;/c:if&gt;
         </example>

@@ -94,7 +94,7 @@ function setFocus()
 
 <div id="topTitle">
 <h1>Jahia</h1>
-<h2 class="edit"><fmt:message key="label.manageUsers"/> : <%= currentSite%></h2>
+<h2 class="edit"><fmt:message key="label.manageUsers"/></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"

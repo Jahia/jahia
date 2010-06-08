@@ -421,7 +421,7 @@
 
 [jmix:googleanalytics]  mixin
  extends = jnt:content, jnt:page
- itemtype = option
+ itemtype = options
 - j:gaenabled (boolean)
 
 //---------------------------------------------------------
@@ -472,6 +472,8 @@
 //---------------------------------------------------------
 
 [jmix:navMenuItem] mixin
+ itemtype = options
+ - j:displayInMenu (string,choicelist) = 'primary' autocreated multiple < 'primary','secondary'
 
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem
  orderable

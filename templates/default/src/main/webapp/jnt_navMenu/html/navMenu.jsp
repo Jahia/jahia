@@ -40,7 +40,7 @@
     </c:if>
 </c:if>
 
-<c:set var="items" value="${jcr:getChildrenOfType(current,'jnt:page,jnt:nodeLink,jnt:externalLink')}"/>
+<c:set var="items" value="${jcr:getChildrenOfType(current,'jmix:navMenuItem')}"/>
         <c:if test="${navMenuLevel eq 1}">
             <div id="navbar">
         </c:if>
@@ -49,10 +49,17 @@
         </c:if>
         <ul class="navmenu level_${navMenuLevel - startLevelValue}">
             <c:forEach items="${items}" var="menuItem" varStatus="menuStatus">
-                <c:set var="notempty" value="true"/>
                 <c:set var="inpath" value="${fn:startsWith(renderContext.mainResource.node.path, menuItem.path)}"/>
                 <c:set var="selected" value="${renderContext.mainResource.node.path eq menuItem.path}"/>
-                <c:if test="${startLevelValue < navMenuLevel or inpath}">
+                <c:set var="correctType" value="false"/>
+                <c:forEach items="${menuItem.properties['j:displayInMenu']}" var="display">
+                   <c:if test="${display.string eq currentNode.properties['j:menuType'].string}">
+                       <c:set var="correctType" value="${display.string eq currentNode.properties['j:menuType'].string}"/>
+                   </c:if>
+                </c:forEach>
+
+                <c:if test="${(startLevelValue < navMenuLevel or inpath) and correctType}">
+                    <c:set var="notempty" value="true"/>
                     <c:set var="hasChildren" value="${navMenuLevel < maxDepth.long && jcr:hasChildrenOfType(menuItem,'jnt:page,jnt:nodeLink,jnt:externalLink')}"/>
 
                     <c:choose>

@@ -16,6 +16,7 @@
  - j:baselineNode (weakreference)
  - j:maxDepth (long) = 2
  - j:startLevel (long) = 0
+ - j:menuType (string,choicelist) = 'primary' autocreated < 'primary','secondary'
  - j:styleName (string)
 
 [jnt:navMenuText] > jnt:text, jmix:navMenuItem

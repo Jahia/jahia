@@ -21,7 +21,7 @@
 <c:if test="${jcr:isNodeType(renderContext.mainResource.node,'jnt:wikiPage')}">
     <c:set var="pageNode" value="${renderContext.mainResource.node}"/>
 </c:if>
-<form method="post" action="${url.base}${pageNode.path}/${pageName}">
+<form class="formWiki" method="post" action="${url.base}${pageNode.path}/${pageName}">
     <input type="hidden" name="autoCheckin" value="true">
     <input type="hidden" name="nodeType" value="jnt:wikiPage">
     <c:choose>
@@ -29,16 +29,17 @@
     <input type="hidden" name="jcr:title" value="${param['newPageName']}">
     </c:when>
         <c:otherwise>
-            <label for="title-${currentNode.identifier}"><fmt:message key="label.title"/></label>
+            <label for="title-${currentNode.identifier}"><fmt:message key="label.title"/>: </label>
             <input type="text" name="jcr:title" id="title-${currentNode.identifier}"/>
         </c:otherwise>
     </c:choose>
-    <label for="text-${currentNode.identifier}"><fmt:message key="jnt_wiki.Content"/></label>
+    <label for="text-${currentNode.identifier}"><fmt:message key="jnt_wiki.Content"/>: </label>
     <textarea class="textareawiki" name="text" rows="30" cols="85" id="text-${currentNode.identifier}">
         <fmt:message key="jnt_wiki.typeContentHere"/>
     </textarea>
     <p>
-        <label for="comment-${currentNode.identifier}"><fmt:message key="jnt_wiki.addComment"/></label> : <input name="lastComment" id="comment-${currentNode.identifier}"/>
-        <input class="button" type="submit"/>
+        <label for="comment-${currentNode.identifier}"><fmt:message key="jnt_wiki.addComment"/>: </label><input name="lastComment" id="comment-${currentNode.identifier}"/>
+        
     </p>
+    <input class="button" type="submit"/>
 </form>

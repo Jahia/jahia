@@ -5,9 +5,6 @@
 
 <div class="wiki">
     <template:module node="${currentNode}" forcedTemplate="syntax"/>
-    <div class="bottomanchor">
-        <a href="wikiPage.jsp#bodywrapper"><fmt:message key="pageTop"/></a>
-    </div>
     <div class="clear"></div>
 </div>
 

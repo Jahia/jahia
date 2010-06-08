@@ -1,16 +1,28 @@
 /******************************************************************************
-* WIKI Create
+* WIKI form
 ******************************************************************************/
-#bodywrapper #wikicreate p{
-	margin:0;
+#bodywrapper .formWiki {
+	margin:0
+}
+#bodywrapper .formWiki p{
+	margin:0.5em 0;
 	padding:0;
 }
-#bodywrapper #wikicreate fieldset {
-	padding:0 ;
-	border:none;
+#bodywrapper .formWiki fieldset {
+	border:none	
 }
-#bodywrapper #wikicreate .create{
-	width:90%
+#bodywrapper .formWiki legend {
+	display:none	
+}
+#bodywrapper .formWiki label {
+display:block
+}
+#bodywrapper .formWiki input, #bodywrapper .formWiki textarea {
+	width:98%;
+	clear:both
+}
+#bodywrapper .formWiki input.button{
+	width:auto
 }
 /******************************************************************************
 * WIKI Search

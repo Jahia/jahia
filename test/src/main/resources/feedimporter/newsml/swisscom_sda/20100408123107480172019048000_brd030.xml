@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T123107+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brd030</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brd030:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T123107+0200</FirstCreated>
+<ThisRevisionCreated>20100408T123107+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7354"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7356"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Modekette H&amp;M will nach gutem ersten Quartal weiter expandieren</HeadLine>
+<DateLine>Stockholm</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>H&amp;M verdient zum Jahresauftakt deutlich mehr</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Mode</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="ti"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="04000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="SE"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Die schwedische Textilkette Hennes &amp; Mauritz (H&amp;M) hat in ihrem ersten Geschäftsquartal 2010 die Gewinne kräftig gesteigert und wieder mehr umgesetzt.</p>
+<p>Vor Steuern stieg der Gewinn in den Monaten Dezember bis Ende Februar um 42 Prozent auf 5,1 Mrd. schwedische Kronen (755 Mio. Franken), wie der Konzern mitteilte. Unter dem Strich verbuchte H&amp;M einen Überschuss von 3,7 Mrd. Kronen nach 2,6 Mrd. Kronen im Vorjahreszeitraum. Der Umsatz wuchs um 7 Prozent auf 24,8 Mrd. Kronen. Den grössten Anteil am Umsatz steuerte das Deutschland-Geschäft bei.</p>
+<p>Angesichts der noch immer schwachen Konjunktur seien das befriedigende Resultate, erklärte H&amp;M. Die Frühjahrskollektionen seien bis jetzt gut angekommen bei den Kunden. Im Februar stiegen die Erlöse in lokaler Währung um zehn Prozent. Die Modekette konnte im März von dem in diesem Jahr frühen Ostergeschäft profitieren, sie erzielte einen mehr als 20 Prozent höheren Umsatz.</p>
+<p>H&amp;M betreibt 2018 Läden weltweit und will weiter expandieren. Im Februar wurde der erste Laden in Südkorea eröffnet, im März folgte Israel. Im zweiten Geschäftsquartal will H&amp;M insgesamt 73 Geschäfte eröffnen, vornehmlich in Grossbritannien, China, Norwegen, Dänemark und Deutschland.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

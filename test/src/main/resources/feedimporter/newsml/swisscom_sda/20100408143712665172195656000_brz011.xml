@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T143712+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brz011</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brz011:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T143712+0200</FirstCreated>
+<ThisRevisionCreated>20100408T143712+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd9592"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd9591"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Den Kanal von Korinth übersprungen</HeadLine>
+<DateLine>Motorrad</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Spektakulärer Flug von Robbie Maddison</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Motorrad</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="sba"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15041000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Wenige Wochen nach seinem x-ten Weltrekordflug sorgt der Motocrosser Robbie Maddison wieder für Spektakel.</p>
+<p>Nach dem weitesten je mit einem Motorrad absolvierten Flug (ca. 107 m) in Melbourne wählte der 28-jährige Australier, ein Konkurrent des Westschweizers Mat Rebeau auf der X-Fighers-Tour, einen europäischen Ort für eine Aktion der Sonderklasse aus. In den letzten Jahren gingen Bilder vom Sprung an der Tower Bridge über die Themse oder in Las Vegas um die Welt, nun meisterte Maddison den Kanal von Korinth. Auf einer verwinkelten Anfahrt auf unterschiedlichen Unterlagen beschleunigte er sein 500 ccm starkes Bike auf 125 km/h, um den 85 Meter entfernten Landehügel zu erreichen. Der höchste Flugpunkt lag über 95 Meter über dem Niveau des Kanals.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

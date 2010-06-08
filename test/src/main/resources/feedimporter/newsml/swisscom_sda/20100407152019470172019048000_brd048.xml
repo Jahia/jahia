@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T152019+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd011</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd011:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T091003+0200</FirstCreated>
+<ThisRevisionCreated>20100407T152019+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7219"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7220"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Daimler greift mit Renault-Nissan im Kleinwagen-Markt an</HeadLine>
+<DateLine>Tokio/München</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Nissan bestätigt Zusammenarbeit mit Daimler</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Autoindustrie</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+</Source>
+<Property FormalName="author" Value="ti"/>
+<Property FormalName="author" Value="efe"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="04000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="DE"/>
+<Property FormalName="Country" Value="JP"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Meldung aktualisiert und umgeschrieben</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der deutsche Autokonzern Daimler spannt mit dem französischen Hersteller Renault und dessen japanischen Kompagnon Nissan auf dem lukrativen Kleinwagen-Markt zusammen. Das strategische Bündnis wurde den Medien vorgestellt.</p>
+<p>Im Vordergrund steht demnach die Kooperation im Segment für Kompaktwagen. Das Bündnis sieht aber auch die Zusammenarbeit bei Elektroantrieben, leichten Nutzfahrzeugen sowie den Austausch von Motoren vor.</p>
+<p>"Diese Kooperation ist der richtige Schritt zur richtigen Zeit", sagte Daimler-Chef Dieter Zetsche. Der Stuttgarter Premiumhersteller sei bei grossen Modellen bereits bestens aufgestellt. Im heiss umkämpfen Kompaktwagenmarkt hätten die Schwaben dagegen Nachholbedarf.</p>
+<p>Renault-Nissan-Chef Carlos Ghosn betonte: "Daimler ist für uns der optimale Partner. Wir profitieren alle voneinander." Die Konzerne binden sich mit einer Überkreuzbeteiligung von jeweils 3,1 Prozent aneinander. Von ihrer Allianz erhoffen sich die neuen Partner Einsparungen von 2 Mrd. Euro in den nächsten fünf Jahren.</p>
+<p>Die neuen Partner vereinbarten, die nächste Generation des City-Flitzers smart fortwo, einen neuen Viersitzer der Marke smart, sowie den nächsten Renault Twingo auf Basis einer gemeinsamen Architektur zu entwickeln. Die Markteinführungen dieser Modelle sind von 2013 an vorgesehen - auch Varianten mit Elektroantrieb soll es geben.</p>
+<p>Das smart-Werk im französischen Hambach wird die Zweisitzer produzieren. Die Viersitzer-Varianten sollen aus dem Renault-Werk im slowenischem Novo Mesto kommen.</p>
+<p>Die Zusammenarbeit bei den Antrieben soll vor allem die gemeinsame Nutzung von Diesel- und Benzinmotoren umfassen. Im Bereich der leichten Nutzfahrzeuge werden die Franzosen Mercedes-Benz Vans die Basis für einen neuen Stadtlieferwagen zur Verfügung stellen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

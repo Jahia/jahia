@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T142350+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Photo Dienst D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>phd7258</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:phd7258:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T142350+0200</FirstCreated>
+<ThisRevisionCreated>20100407T142350+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Comix-Fetival Fumetto vom letzten Jahr (Archiv)</HeadLine>
+<DateLine>Bern</DateLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="key"/>
+</Provider>
+<Source>
+<Party FormalName="Keystone"/>
+</Source>
+<Property FormalName="author" Value="unknown"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Comix-Fetival Fumetto vom letzten Jahr (Archiv)</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+<NewsComponent>
+<Role FormalName="Main"/>
+<ContentItem Href="20100407142301.jpg">
+<MediaType FormalName="Photo"/>
+<Format FormalName="JPEG"/>
+<Characteristics>
+<Property FormalName="Height" Value="480"/>
+<Property FormalName="Width" Value="640"/>
+<Property FormalName="Unit" Value="Pixel"/>
+</Characteristics>
+</ContentItem>
+</NewsComponent>
+<NewsComponent>
+<Role FormalName="Caption"/>
+<ContentItem>
+<DataContent>Comix-Fetival Fumetto vom letzten Jahr (Archiv)</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

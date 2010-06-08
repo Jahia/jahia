@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T072113+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd007</NewsItemId>
+<RevisionId PreviousRevision="2" Update="N">3</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd007:3N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T051552+0200</FirstCreated>
+<ThisRevisionCreated>20100406T072113+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7109"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7112"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>US-Präsident Obama schränkt mögliche Anwendung von Atomwaffen ein</HeadLine>
+<DateLine>Washington</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Obama ändert Nuklearstrategie der USA</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Atomwaffen</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11001000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="US"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Catchline geändert</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Präsident Barack Obama ändert die militärische Nuklearstrategie der USA: Ein Ersteinsatz von Atomwaffen soll künftig nur noch unter eingeschränkten Bedingungen infrage kommen.</p>
+<p>Damit soll die von Obama angestrebte atomwaffenfreie Welt ein Stück näher rücken. Der Präsident erläuterte seine Pläne in einem Interview der "New York Times" - am Vorabend der mit Spannung erwarteten offiziellen Vorstellung seiner neuen Nuklearstrategie.</p>
+<p>Demnach wollen sich die USA erstmals dazu verpflichten, keine Atomwaffen gegen Nicht-Atommächte einzusetzen, die sich an den Vertrag zur Nichtweiterverbreitung von Nuklearwaffen halten - auch dann, wenn sie die USA mit biologischen oder chemischen Waffen angreifen.</p>
+<p>Solche Bedrohungen, so zitierte die "New York Times" aus dem Interview, könnte mit einer Reihe anderer Optionen begegnet werden, einer Kombination aus alten und neuen konventionellen Waffen. Als Ausnahmen nannte Obama demnach aber "Aussenseiter" wie den Iran oder Nordkorea, die den Vertrag entweder verletzt oder dagegen verstossen hätten.</p>
+<p>Obama deutete in dem Interview weiter an, dass er nach der Unterzeichnung des neuen START-Vertrags mit Russland zur Verringerung strategischer Atomwaffen am 8. April in Prag auch über eine Reduzierung von Waffen kürzerer Reichweite sprechen will.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

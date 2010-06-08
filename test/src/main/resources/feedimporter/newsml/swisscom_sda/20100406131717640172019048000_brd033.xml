@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T131717+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd033</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd033:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T131717+0200</FirstCreated>
+<ThisRevisionCreated>20100406T131717+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7140"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7139"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Grossbritannien will bis November globale Bankenabgabe</HeadLine>
+<DateLine>London</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Gordon Brown lanciert globale Bankenabgabe</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Banken</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="ti"/>
+<Property FormalName="author" Value="fos"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="04000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="DE"/>
+<Property FormalName="Country" Value="GB"/>
+<Property FormalName="Country" Value="FR"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der britische Premierminister Gordon Brown nährt die Hoffnung auf eine globale Bankenabgabe. Frankreich, Grossbritannien und Deutschland hätten sich im Grundsatz auf eine Steuer geeinigt, sagte Brown der "Financial Times".</p>
+<p>Er hoffe, die Vereinigten Staaten würden auf den Zug aufspringen. Bis zum nächsten G20-Gipfel im Juni werde es zwar noch nicht soweit sein. Das liege auch daran, dass Kanada als Ausrichter des Juni-Treffens Zweifel am Sinn einer Sondersteuer hege. Brown will eine Einigung aber beim übernächsten Treffen der 20 wichtigsten Volkswirtschaften im November unter Dach und Fach haben.</p>
+<p>Die deutsche Regierung hatte bereits Ende März eine Bankenabgabe auf den Weg gebracht. Mit der neuen Strafgebühr für alle Institute und schärferen Regeln soll für künftige Finanzkrisen vorgesorgt werden. Die Abgabe soll riskante Geschäfte eindämmen und verhindern, dass einzelne Grossbanken die ganze Wirtschaft gefährden.</p>
+<p>Brown sei noch unentschlossen, ob Grossbritannien Vermögenswerte oder Risiken der Banken besteuern wolle, schreibt das Blatt weiter. Zudem habe er noch keine Vorstellungen darüber, wieviel Geld die Sonderabgabe einfahren solle. In den Krisenfonds sollen nach den derzeitigen deutschen Plänen jährlich bis zu 1,2 Mrd. Euro fliessen, die Amerikaner wollen ihren Banken 10 Mrd. Dollar abnehmen.</p>
+<p>In Deutschland soll die Steuer in einen Fonds für künftige Bankenpleiten gehen. Brown sieht darin allerdings einen Anreiz für Banken, besonders riskante Transaktionen vorzunehmen. José Manuel Barroso, Präsident der EU-Kommission, brachte den Vorschlag ein, das Geld solle in Entwicklungshilfe und Klimaschutz fliessen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

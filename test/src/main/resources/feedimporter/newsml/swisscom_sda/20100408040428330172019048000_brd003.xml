@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T040428+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brd003</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brd003:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T040428+0200</FirstCreated>
+<ThisRevisionCreated>20100408T040428+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7312"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7314"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Kirgistans gestürzter Präsident anscheinend nach Osch geflogen</HeadLine>
+<DateLine>Bischkek</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Opposition kontrolliert Kirgistan</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Kirgistan</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+<Party FormalName="rtd"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="KG"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Nach den Unruhen in Kirgistans Hauptstadt Bischkek ist der bisherige Präsident Kurmanbek Bakijew anscheinend mit einem Flugzeug in die Stadt Osch im Westen des zentralasiatischen Landes entkommen. Dies erklärte das Verteidigungsministerium.</p>
+<p>Bakijew sei auf Anraten seiner Sicherheitsberater in die Stadt an der Grenze zu Usbekistan geflüchtet, hiess es. Ein Mitarbeiter der Flughafenbehörden sagte, der 60-jährige Präsident sei mit einem kleinen Flugzeug in die rund 300 Kilometer entfernte Stadt gestartet.</p>
+<p>Unterdessen konsolidierten Vertreter der bisherigen Opposition die Machtübernahme. "Die Macht ist nun in der Hand der Regierung des Volkes", sagte die frühere Aussenministerin Rosa Otunbajewa im staatlichen Radio. "Verantwortungsvolle Leute sind ausgewählt worden und kümmern sich schon um eine Normalisierung."</p>
+<p>Otunbajewa sagte der Nachrichtenagentur Reuters, sie werde eine Übergangsregierung leiten. Diese solle sechs Monate im Amt bleiben und eine neue Verfassung erarbeiten. Damit sollten die Grundlagen für faire und freie Präsidentenwahlen geschaffen werden.</p>
+<p>Otunbajewa forderte Bakijew in dem Telefoninterview zum Rücktritt auf. Nach Angaben des Gesundheitsministeriums waren bei den Unruhen mindestens 47 Menschen getötet und mehr als 400 weitere verletzt worden. Die Regierungsgegner sprachen von mindestens 100 Toten.</p>
+<p>Bakijew war nach der sogenannten Tulpenrevolution im Jahr 2005 mit dem Versprechen demokratischer Reformen Staatschef geworden. Im vergangenen Sommer wurde er in einer umstrittenen Wahl im Amt bestätigt. Die Opposition und Menschenrechtsorganisationen warfen ihm Korruption, Machtmissbrauch und Unterdrückung der Meinungsfreiheit vor.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

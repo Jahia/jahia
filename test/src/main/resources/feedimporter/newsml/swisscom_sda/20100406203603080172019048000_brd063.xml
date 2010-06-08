@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T203603+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd063</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd063:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T203603+0200</FirstCreated>
+<ThisRevisionCreated>20100406T203603+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7193"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7194"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Anschlagsserie in Bagdad fordert 35 Tote und über 100 Verletzte</HeadLine>
+<DateLine>Bagdad</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Bis zu 35 Tote bei Anschlagsserie in Bagdad</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Irak</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="gb"/>
+<Property FormalName="author" Value="kr"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="IQ"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Bei einer Serie von sechs Bombenexplosionen in Bagdad sind nach Angaben aus Sicherheitskreisen bis zu 35 Menschen getötet worden. Möglicherweise sind über 100 verletzt worden.</p>
+<p>Wie aus dem irakischen Innenministerium verlautete, wurden in mehrheitlich von Schiiten bewohnten Stadtvierteln beinahe zeitgleich sechs Bombenanschläge verübt. Insgesamt seien sieben Gebäude eingestürzt.</p>
+<p>Ein Attentat hatte ein Café im belebten Stadtteil Allawi im Zentrum der Stadt zum Ziel. Dabei stürzten zwei Gebäude ein und begruben Bewohner und Kunden unter sich. Weitere betroffene Stadtviertel waren Tschurta Rabijah im Westen sowie Tschikuk und Schuala im Norden der Stadt. Auch im südlichen Viertel Al Amil detonierte ein Sprengsatz.</p>
+<p>"Wir sind auf dem Schlachtfeld und müssen mit jeder Art von Angriff rechnen", sagte ein Sprecher der Sicherheitskräfte. Er machte die Extremistengruppe Al-Kaida und Anhänger des gestürzten Diktators Saddam Hussein für die Anschläge verantwortlich.</p>
+<p>Am Ostersonntag hatten drei Attentäter binnen weniger Minuten ihre mit Sprengstoff beladenen Fahrzeuge vor dem Eingang der ägyptischen Botschaft, der iranischen Botschaft sowie in der Nähe der deutschen, spanischen und syrischen Botschaften gezündet. Die Regierung machte auch hier Al-Kaida für die Anschläge verantwortlich.</p>
+<p>Die Wiederherstellung der Sicherheit wird eines der zentralen Probleme der neuen Regierung im Irak sein. Die Wahlen Anfang März hatten keinen klaren Gewinner hervorgebracht. Die Koalitionsverhandlungen könnten sich noch Monate hinziehen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

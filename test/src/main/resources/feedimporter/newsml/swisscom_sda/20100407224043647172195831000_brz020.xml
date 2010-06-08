@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T224043+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brz020</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brz020:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T224043+0200</FirstCreated>
+<ThisRevisionCreated>20100407T224043+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9569"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9570"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Bayern München und Lyon im Halbfinal</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Lyon und Bayern erreichen Halbfinals</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Champions League</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="int"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15073000"/>
+<SubjectDetail FormalName="15073020"/>
+<SubjectMatter FormalName="15054000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Bayern München qualifizierte sich dank der Auswärtstorregel für die Halbfinals der Champions League.</p>
+<p>Dem 2:1-Sieg aus dem Hinspiel liessen die Deutschen bei Manchester United ein 2:3 folgen.</p>
+<p>Manchester United führte nach sieben Minuten 2:0 und nach 41 Minuten 3:0, doch ein Bayern-Treffer noch vor der Halbzeit und ein Platzverweis gegen Manchester Uniteds Raffael ermöglichten die Wende.</p>
+<p>Im Halbfinal trifft Bayern München auf Lyon, das das französische Duell trotz einer 0:1-Niederlage in Bordeaux für sich entschied.</p>
+<p>Bordeaux - Lyon 1:0 (1:0).</p>
+<p>Chaban-Delmas. - 32 000 Zuschauer. - SR Undiano Mallenco (Sp). - Tor: 45. Chamakh 1:0. - Bordeaux: Carrasso; Sané, Ciani, Planus (85. Cavenaghi), Trémoulinas; Diarra (70. Chalmé), Plasil; Jussie (79. Gouffran), Gourcuff, Wendel; Chamakh. - Lyon: Lloris; Réveillère, Cris, Boumsong (76. Bodmer), Cissokho; Gonalons, Toulalan, Källström; Delgado, Gomis (66. Pjanic), Bastos (88. Ederson). - Bemerkungen: Bordeaux komplett. Lyon ohne Lisandro, Govou (beide gesperrt), Clerc und Makoun (beide verletzt). 44. Lattenschuss von Diarra. Verwarnungen: 33. Cissokho (Unsportlichkeit). 67. Gonalons (Foul). 69. Toulalan (Foul). 78. Källström (Foul). 89. Delgado (Foul).</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T144817+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd039</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd039:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T144817+0200</FirstCreated>
+<ThisRevisionCreated>20100406T144817+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Erdölkonzern Total muss sich wegen Bestechung verantworten</HeadLine>
+<DateLine>Paris</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Erdölfirma Total wegen Korruption angeklagt</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>"Öl für Nahrungsmittel"</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="gb"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="02000000"/>
+<SubjectMatter FormalName="02008000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="FR"/>
+<Property FormalName="Country" Value="IQ"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der französische Erdölkonzern Total muss sich im Zusammenhang mit dem UNO-Programm "Öl für Nahrungsmittel" für den Irak nun doch wegen Bestechung verantworten. Ein Untersuchungsrichter habe "entgegen allen Erwartungen" Anklage erhoben, teilte Firmenanwalt Jean Veil mit.</p>
+<p>Wie die französische Wirtschaftszeitung "Les Echos" berichtete, werden dem grössten französischen Unternehmen auch Mittäterschaft und Hehlerei vorgeworfen.</p>
+<p>Die Pariser Staatsanwaltschaft hatte im September beantragt, die Ermittlungen gegen den früheren französischen Innenminister Charles Pasqua und Total-Chef Christophe de Margerie im Zusammenhang mit dem UNO-Programm einzustellen.</p>
+<p>Das fragliche Programm erlaubte dem Regime unter dem damaligen irakischen Machthaber Saddam Hussein, von 1996 bis 2003 begrenzte Mengen an Erdöl auszuführen und mit den Erlösen von insgesamt 64 Milliarden Dollar Lebensmittel einzuführen. "Öl für Lebensmittel" sollte die Folgen des Embargos gegen den Irak für die Zivilbevölkerung abschwächen.</p>
+<p>Ein Untersuchungsausschuss unter Leitung des früheren Präsidenten der US-Zentralbank, Paul Volcker, kam später zu dem Schluss, dass die irakische Regierung mehrere Millionen Dollar aus dem Programm der Vereinten Nationen veruntreut hatte.</p>
+<p>Etwa 2200 Unternehmen aus 66 Ländern waren demnach an dem Skandal um Korruption und Misswirtschaft beteiligt, darunter 180 französische Firmen. In verschiedenen Ländern wurden daraufhin Ermittlungen eingeleitet.</p>
+<p>Im September wurde das britische Brückenbau-Unternehmen Mabey and Johnson zu einer Geldstrafe von 3,6 Millionen Euro verurteilt. Es soll im Rahmen des UNO-Programms ebenfalls Schmiergelder an die damalige irakische Führung gezahlt haben.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

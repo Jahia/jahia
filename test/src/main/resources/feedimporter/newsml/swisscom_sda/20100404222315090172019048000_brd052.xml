@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T222315+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="2"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brd052</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brd052:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T222315+0200</FirstCreated>
+<ThisRevisionCreated>20100404T222315+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="2"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd7007"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd7008"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Drei Inhaftierte aus Gefängnis Willisau entwichen - Wärter verletzt</HeadLine>
+<DateLine>Willisau</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Drei Willisauer Häftlinge auf der Flucht</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Ausbruch</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="gt"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<Subject FormalName="02000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="LU"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Aus dem Gefängnis Willisau sind drei Männer ausgebrochen. Sie überwältigten einen Gefängnismitarbeiter und schlossen ihn in eine Zelle ein. Der Wärter erlitt dabei mittelschwere Verletzungen.</p>
+<p>Bei den drei Insassen handle es sich um zwei Serben und einen Schweizer im Alter von 20 bis 35 Jahren, wie die Luzerner Strafuntersuchungsbehörden mitteilten. Die Ausbrecher seien gewalttätig und gefährlich.</p>
+<p>Sie seien nach dem Nachtessen auf der Rückkehr in ihre Zellen gewesen, als sie den Gefängnismitarbeiter angriffen, wie Behördensprecher Simon Kopp auf Anfrage ausführte. Der Mann sei geknebelt und in eine Zelle eingeschlossen worden. Bei ihrem Ausbruch seien die Männer nicht bewaffnet gewesen.</p>
+<p>Die drei Männer seien für verschiedenste Delikte in dem kleinen Willisauer Gefängnis gewesen. Es handle sich nicht um Schwerverbrecher, präzisierte Gefängnisdirektor Hanspeter Zihlmann.</p>
+<p>Einer wäre im Mai freigekommen, einer war noch nicht verurteilt worden, und der dritte hätte eine Therapie antreten sollen. Es sei das erste Mal, dass es in dem zehn Plätze fassenden Gefängnis zu einem Ausbruch gekommen sei, sagte Zihlmann weiter.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

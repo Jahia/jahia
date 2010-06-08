@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T201948+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brz002</NewsItemId>
+<RevisionId PreviousRevision="1" Update="A">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brz002:2A</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T065220+0200</FirstCreated>
+<ThisRevisionCreated>20100406T201948+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd9501"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd9502"/>
+<Instruction FormalName="Delete">
+<RevisionStatus>
+<Status FormalName="Canceled"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Inter Mailand und FC Barcelona mit leichten Vorteilen</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Arsenal und ZSKA Moskau in Zugzwang</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Champions League</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="int"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15054000"/>
+<SubjectDetail FormalName="15073020"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">delete</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der FC Barcelona und Inter Mailand gehen mit leichten Vorteilen in die heutigen Viertelfinal-Rückspiele der Champions League.</p>
+<p>Dem Titelverteidiger reicht im Camp Nou gegen Arsenal (20.45) nach dem 2:2 vom letzten Mittwoch möglicherweise bereits ein Remis zum Weiterkommen, Inter hat in Moskau gegen ZSKA (18.30) einen 1:0-Vorsprung zu verteidigen.</p>
+<p>Für Barcelona geht es in dieser Woche um Alles oder Nichts: Vier Tage nach dem Duell mit Arsenal treffen die Katalanen in der Meisterschaft auswärts auf Real Madrid, das punktgleich mit Barça die Primera Division anführt. Doch für Trainer Josep Guardiola liegt der Fokus klar auf der Königsklasse: "Das Spiel gegen Arsenal ist die wichtigste Partie des Jahres, der Schlüssel für die gesamte Saison." Denn Guardiola will nicht nur am Samstag, sondern auch am 22. Mai mit seinem Team im Bernabeu antreten und als erstes Team in der Geschichte den Titel in der Champions League erfolgreich verteidigen.</p>
+<p>Dass der heutige Gegner Arsenal überhaupt noch mit leisen Hoffnungen auf die Halbfinal-Qualifikation nach Barcelona gereist ist, hat sich der spanische Meister allerdings selbst zuzuschreiben. Barça hatte beim 2:2 im Hinspiel eine Gala geliefert, es aber versäumt, die Vorentscheidung herbeizuführen. Trotz erstklassiger Chancen stand es bei Halbzeit 0:0, ehe Zlatan Ibrahimovic die Spanier mit einer Doublette scheinbar auf die Siegesstrasse brachte. Doch Theo Walcott und Cesc Fabregas mit einem Foulpenalty gelang in der Schlussphase noch der Ausgleich für die Londoner.</p>
+<p>Im heutigen Rückspiel der Neuauflage des Champions-League-Finals von 2006 müssen beide Trainer auf diverse Leistungsträger verzichten. Bei den Katalanen fehlen der verletzte Ibrahimovic sowie die gesperrten Innenverteidiger Carles Puyol und Gerard Piqué, zudem ist der Einsatz des bereits im Hinspiel verletzten Andres Iniesta fraglich. Am Wochenende hatte das derzeit wohl beste Team der Welt allerdings bewiesen, dass es Ausfälle durchaus kompensieren kann: Den glänzenden 4:1-Sieg über Athletic Bilbao hatte Barcelona mit einer völlig umgekrempelten Mannschaft erzielt, wobei der 19-jährige Bojan Krkic mit zwei Treffern auf sich aufmerksam machte.</p>
+<p>Bei den Gästen aus London dürfte der Ausfall des ehemaligen Barcelona-Juniors Fabregas schwer wiegen. Der Spanier hatte im Hinspiel in London einen Wadenbeinbruch erlitten. Zudem fallen auch die Verteidiger William Gallas, Alex Song und Johan Djourou sowie die Offensivkräfte Andrej Arschawin und Robin van Persie aus. Trainer Arsène Wenger kündigte an, dass der Franzose Samir Nasri für Fabregas als Spielmacher vorgesehen ist. Was auf sein Team zukommt, hatte Wenger schon nach dem Hinspiel beschrieben: In den ersten 30 Minuten sei Barça "wie ein Sturm" über das Emirates-Stadion gefegt.</p>
+<p>Arsenal ist neben Manchester United, das am Mittwoch im Old Trafford einen 1:2-Rückstand gegen Bayern München aufholen muss, der letzte englischen Klub in der Champions League. Sollten beide Teams scheitern, würde erstmals seit 2003 die Halbfinals ohne englische Vertreter stattfinden. In den vergangenen drei Jahren kamen stets drei der vier Halbfinalisten von der Insel.</p>
+<hl2>Inters Respekt vor dem Kunstrasen</hl2>
+<p>Inter Mailand kämpft vor seinem Rückspiel bei ZSKA Moskau mit der Angst vor dem ungeliebten Kunstrasen im Luschniki-Stadion. "Es ist unser erstes Mal auf Kunstrasen. Das könnte uns in Moskau Schwierigkeiten bereiten. Deshalb habe ich meinen Spielern gesagt: 'Spielt wie damals als Kinder auf der Strasse.' Denn wer auf der Strasse spielen kann, der sieht auch auf Kunstrasen gut aus", sagte Inter-Coach Jose Mourinho.</p>
+<p>Der italienische Meister muss in Russland einen 1:0-Sieg aus dem Hinspiel verteidigen. Die zuletzt gesperrten Brasilianer Lucio und Thiago Motta kehren bei den Italienern wohl ebenso wieder in die Startformation zurück wie der Holländer Wesley Sneijder, der beim souveränen 3:0 in der Serie A am Samstag gegen Bologna wegen einer Knöchelverletzung pausiert hatte.</p>
+<p>ZSKA Moskau, der UEFA-Cup-Sieger von 2005 und zukünftige Klub von Seydou Doumbia, hat vor dem Rückspiel im Luschniki-Stadion mit personellen Problemen zu kämpfen. Aber auch ohne die gesperrten Mittelfeldspieler Milos Krasic and Jewgeni Aldonin will ZSKA als erstes russisches Team in der Geschichte der Champions League in die Halbfinals einziehen. Stadtrivale Spartak war 1991 im Meistercup, dem Vorläufer der Champions League, in die Runde der besten Vier vorgestossen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

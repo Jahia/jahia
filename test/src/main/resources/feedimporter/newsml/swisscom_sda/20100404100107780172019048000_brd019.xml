@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T100107+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brd019</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brd019:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T100107+0200</FirstCreated>
+<ThisRevisionCreated>20100404T100107+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6961"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6962"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Sojus-Rakete an Internationale Raumstation angedockt</HeadLine>
+<DateLine>Moskau</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Sojus-Rakete am Ziel</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Raumfahrt</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="kp"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="RU"/>
+<Property FormalName="Country" Value="US"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Die am Freitag gestartete Sojus-Raumkapsel mit drei Astronauten aus Russland und den USA an Bord ist an die Internationale Raumstation ISS angedockt. Die Mission der Astronautin und der zwei Astronauten dauert sechs Monate.</p>
+<p>Die Russen Alexander Skorzow und Michail Kornjenko und die US-Astronautin Tracy Caldwell Dyson seien um 7.25 Uhr MEZ an ihrem Ziel angekommen, zitierte die Nachrichtenagentur Interfax das russische Kontrollzentrum.</p>
+<p>Die Drei sollen ein halbes Jahr auf der ISS bleiben. Für die beiden 43 und 49 Jahre alten Kosmonauten war es der erste Flug ins All, Caldwell Dyson flog bereits 2007 an Bord der US-Raumfähre "Endeavour" zur ISS.</p>
+<p>Kornjenko wird in der Raumstation seinen 50. Geburtstag feiern. Im Rahmen der Mission soll das Team Möglichkeiten untersuchen, Erdbeben vorherzusagen.</p>
+<p>Am Montag sollte die US-Raumfähre "Discovery" mit sieben Astronauten an Bord zur ISS starten. Die NASA will ihre Shuttle-Flotte bis Ende des Jahres endgültig ausser Betrieb nehmen. Die Fahrten ins All sollen dann künftig vollständig die russischen Sojus-Raketen übernehmen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

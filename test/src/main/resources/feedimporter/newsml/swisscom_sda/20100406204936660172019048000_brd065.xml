@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T204937+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd031</NewsItemId>
+<RevisionId PreviousRevision="2" Update="N">3</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd031:3N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T123215+0200</FirstCreated>
+<ThisRevisionCreated>20100406T204937+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7136"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7135"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Von Willisauer Häftlingen fehlt weiter jede Spur - Umplatzierung</HeadLine>
+<DateLine>Luzern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Willisauer Häftlinge weiter auf der Flucht</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Strafvollzug</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="rl"/>
+<Property FormalName="author" Value="om"/>
+<Property FormalName="author" Value="fos"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<Subject FormalName="02000000"/>
+<SubjectMatter FormalName="02001000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="LU"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Meldung aktualisiert</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Von den drei Häftlingen, die am Sonntagabend aus dem Gefängnis Willisau LU ausgebrochen sind, fehlte auch nach zwei Tagen jede Spur. Die anderen Insassen der über zehn Plätze verfügenden Haftanstalt werden in andere Gefängnisse umplatziert.</p>
+<p>Dies teilte die im Kanton Luzern für den Justizvollzug zuständige Dienststellenleiterin, Barbara Ludwig, mit. Willisau ist eine Aussenstelle des Haft- und Untersuchungsgefängnisses Grosshof in Kriens LU.</p>
+<p>Sie wolle das Konzept der Aussenstelle überprüfen und den Vorfall detailliert abklären, schreibt Ludwig in der Mitteilung. Es gehe darum zu klären, wie es zu diesem Ausbruch habe kommen können. Bisher habe es aus dem Gefängnis Willisau keine Fluchten gegeben.</p>
+<p>Die drei Männer hatten am Sonntagabend einen Wärter überwältigt, geknebelt und in eine Zelle gesperrt. Danach entwichen sie aus dem Gefängnis. Der Wärter musste vorübergehend hospitalisiert werden.</p>
+<p>Bei den Entwichenen handelt es sich um zwei Serben und einen Schweizer im Alter von 20 bis 35 Jahren. Sie wurden unmittelbar nach der Flucht national zur Verhaftung ausgeschrieben. Die Behörden bezeichnen sie als gewalttätig und gefährlich.</p>
+<p>Zwei der Inhaftierten stammen aus dem Aargau. Der eine ist nach Angaben der Behörde wegen Diebstahls und Sachbeschädigung, der andere wegen Raufhandels und versuchter Tötung verurteilt.</p>
+<p>Der dritte Mann stammt aus dem Kanton Luzern. Er wurde mehrfach wegen Raubs und Drogendelikten verurteilt. Zudem ist ein Prozess wegen mehrfachen Raubs und gewerbsmässigen Diebstahls hängig.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

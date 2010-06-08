@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T171830+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd059</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd059:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T171830+0200</FirstCreated>
+<ThisRevisionCreated>20100407T171830+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7282"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7281"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Griechische Regierung stattet Banken mit Geld für Kredite aus</HeadLine>
+<DateLine>Athen</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Griechenland versorgt Banken mit Geld</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Banken</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+<Party FormalName="apa"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="cz"/>
+<Property FormalName="author" Value="fos"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04006000"/>
+<SubjectDetail FormalName="04006002"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="GR"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Die griechische Regierung stellt den Banken 15 Mrd. Euro als zinslosen Kredit zur Verfügung. Die Banken sollen damit den Kreditfluss an Unternehmen wieder in Gang bringen. Damit reagierte Athen auf Gerüchte, die Griechen hätten rund acht Mrd. Euro an privaten Geldanlagen ins Ausland geschafft.</p>
+<p>Der griechische Finanzminister Giorgos Papakonstantinou betonte, die Regierung werde "genau verfolgen", wohin die Kredite fliessen würden. Sie seien nur zur Stärkung der Märkte gedacht. Nach den Angaben sollen die Gelder zu marktüblichen Zinsen an griechische Firmen fliessen.</p>
+<p>Die Renditen griechischer Staatsanleihen stabilisierten sich nach ihrem Höhenflug am Vortag auf hohem Niveau. Zehnjährige Papiere notierten mit 7,12 Prozent.</p>
+<p>Gerüchte, dass die griechische Regierung über eine Veränderung des Hilfspakets verhandeln wolle, hatte die Rendite am Dienstag in der Spitze bis auf 7,17 Prozent steigen lassen. Dies war der höchste Wert seit dem Beitritt Griechenlands zur Eurozone.</p>
+<p>Nach den Spekulationen vom Vortag wollen die Griechen die strengen Bedingungen des Internationalen Währungsfonds (IWF) umgehen. Der griechische Finanzminister hatte die Gerüchte allerdings dementiert.</p>
+<p>Klarheit über das genaue Ausmass der griechischen Schulden will die europäische Statistikbehörde Eurostat am 22. April geben. Dann sollen die Defizit- und Schuldenwerte der EU-Länder für 2009 veröffentlicht werden, kündigte eine Sprecherin der EU-Kommission an.</p>
+<p>Die EU verfolgt die Lage in dem vom Schuldenkollaps bedrohten Griechenland nach Worten des ständigen EU-Ratspräsidenten Herman Van Rompuy ganz genau. Van Rompuy forderte vor dem Europaparlament in Brüssel ausserdem, dass die Europäische Union die Lehren aus dem "griechischen Fall" ziehe und die Frage der unterschiedlichen Wettbewerbsfähigkeit der Mitgliedstaaten angehe.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T134611+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brz004</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brz004:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T134611+0200</FirstCreated>
+<ThisRevisionCreated>20100405T134611+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9474"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9473"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Überraschungsauftritt von Tiger Woods</HeadLine>
+<DateLine>Golf</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Tiger Woods schon am Bälleschlagen</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Golf</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="sid"/>
+</Source>
+<Property FormalName="author" Value="plh"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15027000"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Tiger Woods hat am Ostersonntag, vier Tage vor dem Beginn des US-Masters, völlig überraschend die ersten Bälle auf dem hügeligem Gelände des Augusta National Golf Club geschlagen.</p>
+<p>Unter Ausschluss der Öffentlichkeit und ohne Vorankündigung spielte der Superstar neun Löcher zusammen mit seinem langjährigem Mentor Mark O'Meara. Das Golf Bag des 34-Jährigen war ohne jeglichen Sponsorenaufdruck, nur das Kürzel "TW" prangte auf der schwarzen Tasche von Tiger Woods.</p>
+<p>Auf einer Pressekonferenz wollte sich der viermalige US-Masters-Sieger Woods am Ostermontag den Fragen der Medienvertreter stellen. Wie weit der erste Sportmilliardär dabei auf seine private Krise der letzten Monate eingehen würde, war im Vorfeld nicht bekannt. SID dj aar ab</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

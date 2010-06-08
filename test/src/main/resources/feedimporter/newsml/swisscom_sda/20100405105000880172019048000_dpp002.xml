@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T105000+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-People"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>dpp001</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:dpp001:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T104809+0200</FirstCreated>
+<ThisRevisionCreated>20100405T105000+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7034"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7035"/>
+<Instruction FormalName="Rectify">
+<RevisionStatus>
+<Status FormalName="Canceled"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Michael von der Heide lebt mit gebrauchten Möbeln</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Michael von der Heide lebt mit Mann und Hund</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Leben und Wohnen</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="zy"/>
+<Property FormalName="author" Value="kp"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Tippfehler im letzten Abschnitt korrigiert</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Michael von der Heide (38) lebt seit 15 Jahren mit dem sechs Jahre älteren Modedesigner Willi Spiess in Zürich zusammen. Spiess ist für die Inneneinrichtung und für das Kochen zuständig. Der dritte Hausgenosse heisst Mao und ist eine Bulldogge.</p>
+<p>"Die Einrichtung macht Willi", erklärt von der Heide gegenüber dem Magazin des "SonntagsBlicks". "Er hat die Gabe, in Brockis die schönsten Möbelstücke aufzuspüren. Was mir nicht gefällt, lasse ich eine Woche stehen und stelle es danach in den Keller."</p>
+<p>Spiess entwirft aber auch die Bühnenkostüme für von der Heide am Eurovision Song Contest 2010 in Oslo. Übertreiben wollen sie das Outfit nicht, aber "bescheiden gehen wird nicht hin", so der Sänger. Ob er Angst vor dem Wettbewerb in Oslo habe? "Nein, ich habe eh nie Angst, auch nicht vor dem Erfolg. Sonst wäre ich immer noch in Amden (Anmerkung der Redaktion: Geburtsort im Kanton St. Gallen) Chüngelstall ausmisten."</p>
+<p>Der Sohn eines Deutschen und einer Schweizerin lebt nicht nur für die Musik, sondern mag auch Hunde. So darf die Französische Bulldogge Mao mit von der Heide und Spiess die Wohnung teilen. Aber eigentlich hätte Mao gar nicht Mao heissen sollen, sondern Büsi. "Wir wollten ihn eigentlich Büsi taufen, als er schnuckelig klein zu uns kam. Aber einen ausgewachsenen Hund Büsi rufen, das geht nicht." So wurde der Hund Mao getauft, denn "er sieht mit seiner Schnauze aus wie Mao Tse-tung", begründet der gelernte Krankenpfleger die Namensgebung.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T223710+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd070</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd070:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T223710+0200</FirstCreated>
+<ThisRevisionCreated>20100406T223710+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Armee räumt Fehler bei Vorgehen gegen Palästinenser ein</HeadLine>
+<DateLine>Jerusalem</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Israelische Armee übt Selbstkritik</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Israel</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+</Source>
+<Property FormalName="author" Value="nh"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11001000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="IL"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Israels Streitkräfte haben Fehler beim Vorgehen gegen demonstrierende Palästinenser im Westjordanland eingestanden. Bei der Intervention am 20. März waren zwei Jugendliche erschossen wurden.</p>
+<p>Ein Eingreifen der Soldaten bei den Demonstrationen in dem Dorf Irak Burin sei nicht erforderlich gewesen, hiess es in einer Antwort des Militärs auf eine Anfrage der Nachrichtenagentur Reuters.</p>
+<p>Zudem hätte am darauffolgenden Tag zumindest eine weitere Schiesserei in der Gegend vermieden werden können, hätten sich die Soldaten professioneller verhalten. Auch dabei waren zwei Jugendliche ums Leben gekommen.</p>
+<p>Bei beiden Vorfällen hätten sich den Soldaten Alternativen geboten, hiess es in den Untersuchungsergebnissen des Generalmajors Avi Misrahi weiter. Es ist ungewöhnlich, dass das israelische Militär seine Angehörigen öffentlich kritisiert.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

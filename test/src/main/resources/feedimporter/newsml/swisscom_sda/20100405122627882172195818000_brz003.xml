@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T122627+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brz003</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brz003:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T122627+0200</FirstCreated>
+<ThisRevisionCreated>20100405T122627+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9472"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9471"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Federers Vorsprung wieder grösser</HeadLine>
+<DateLine>Tennis</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Federer mit über 3000 Punkten Vorsprung</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>ATP-/WTA-Rankings</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="sv"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15065000"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Roger Federer führt das ATP-Ranking wieder mit grösserem Vorsprung an. Seine Reserve auf den zweitplatzierten Serben Novak Djokovic beträgt neu 3135 Punkte. Die Achtelfinal-Niederlage gegen den tschechischen Aufsteiger Tomas Berdych hat (vorerst) keine Folgen.</p>
+<p>Dem 16-fachen Grand-Slam-Champion kam zupass, dass in Key Biscayne (Florida) beim letzten Masters mit Djokovic und Andy Murray gleich zwei Verfolger ebenfalls früh (2. Runde) gescheitert waren. Der Spanier Rafael Nadal, in Miami Halbfinalist, rückte auf Position 3 vor.</p>
+<p>ATP-Weltrangliste per 5. April 2010: 1. (Position der Vorwoche: 1.) Roger Federer (Sz) 10#765 (Punktzahl der Vorwoche: 11#035). 2. Novak Djokovic (Ser) 7630 (8220). 3. (4.) Rafael Nadal (Sp) 6980 (6800). 4. (3.) Andy Murray (Gb) 5845 (6835). 5. (5.) Juan Martin Del Potro (Arg) 5735 (6095). 6. (6.) Nikolai Dawydenko (Russ) 5585. 7. (8.) Andy Roddick (USA) 4780. 8. (7.) Robin Söderling (Sd) 4595. 9. (9.) Marin Cilic (Kro) 2980. 10. (10.) Jo-Wilfried Tsonga (Fr) 2915. -- Ferner die weiteren Schweizer: 23. (23.) Stanislas Wawrinka (Sz) 1630. 59. (57.) Marco Chiudinelli 766. 140. (143.) Stéphane Bohli 357. 201. (203.) Michael Lammer 223. 345. (349.) Alexander Sadecky 110.</p>
+<p>WTA-Weltrangliste per 5. April 2010: 1. (1.) Serena Williams (USA) 7946. 2. (2.) Caroline Wozniacki (Dä) 6375. 3. (3.) Dinara Safina (Russ) 6150. 4. (5.) Venus Williams (USA) 5876. 5. (4.) Swetlana Kusnezowa (Russ) 5620. 6. (6.) Jelena Dementjewa (Russ) 4965. 7. (8.) Jelena Jankovic (Ser) 4900. 8. (9.) Agnieszka Radwanska (Pol) 4190. 9. (7.) Viktoria Asarenka (WRuss) 4070. 10. (16.) Kim Clijsters (Be) 3860. -- Ferner die Schweizerinnen: 49. (46.) Patty Schnyder 1371. 50. (54.) Timea Bacsinszky 1342. 69. (66.) Stefanie Vögele 935. 315. (316.) Nicole Riner 130. 353. (374.) Amra Sadikovic 109.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

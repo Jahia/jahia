@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T114957+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brd003</NewsItemId>
+<RevisionId PreviousRevision="4" Update="N">5</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brd003:5N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T040428+0200</FirstCreated>
+<ThisRevisionCreated>20100408T114957+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7314"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7345"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Opposition in Kirgistan erklärt Sieg der Volksrevolution</HeadLine>
+<DateLine>Bischkek</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Opposition kontrolliert Kirgistan</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Kirgistan</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+<Party FormalName="rtd"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+<Property FormalName="author" Value="ne"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="KG"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Meldung aktualisiert, ein Bild neu</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Nach den blutigen Unruhen in der zentralasiatischen Republik Kirgistan mit Dutzenden Toten hat die Opposition eine Übergangsregierung gebildet. Die designierte Regierungschefin Rosa Otunbajewa sprach in Bischkek von einer siegreichen "Revolution".</p>
+<p>Sie versprach Präsidentschaftswahlen in sechs Monaten. Der "Volksaufstand" habe die "Repressionen, die Tyrannei und die Aggression" gegen die Menschen beendet, sagte die 59-Jährige Politikerin nach Angaben der Nachrichtenagentur Akipress. Otunbajewa gilt als eine Vorkämpferin der Menschenrechte in der Ex-Sowjetrepublik.</p>
+<p>In Bischkek präsentierte sich die neue Interimsregierung mit vielen früheren Spitzenpolitikern, die unter dem autoritären Präsidenten Kurmanbek Bakijew in der Opposition gearbeitet hatten. Die Opposition forderte Bakijew erneut auf, seine Niederlage offiziell einzugestehen.</p>
+<p>Während Otunbajewa dem Staatschef vorwarf, in seiner Heimat im Süden des Landes seine Anhänger zu sammeln, gaben die Behörden dort in Dschalal-Abad seinen Rücktritt bekannt. Über den Verbleib von Präsident Kurmanbek Bekijew gab es allerdings widersprüchliche Informationen. Gemäss früheren Angaben soll Bakijew ins Ausland geflohen sein.</p>
+<p>Das unter neue Führung gestellte Gesundheitsministerium teilte mit, dass bei den Protesten im Land mindestens 74 Menschen getötet worden sind. Mehr als 500 weitere wurden verletzt, rund 400 von ihnen wurden noch in Spitälern behandelt.</p>
+<p>Die UNO will schnell einen Sonderbeauftragten nach Kirgistan schicken. Er sei äusserst besorgt und alarmiert von der andauernden Gewalt im Land, sagte UNO-Generalsekretär Ban Ki Moon in Wien. Am Freitag werde der ehemalige slowakische Generalsekretär der Organisation für Sicherheit und Zusammenarbeit in Europa (OSZE), Jan Kubis, nach Kirgistan reisen.</p>
+<p>Hilfe versprach auch Russland: Regierungschef Wladimir Putin bot dem Bruderstaat aus gemeinsamen Sowjetzeiten "humanitäre Unterstützung" an, um die gegenwärtige Krise zu überwinden, meldete die Nachrichtenagentur Interfax. Chinas Regierung zeigte sich derweil "tief besorgt" über die Entwicklung in Kirgistan.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

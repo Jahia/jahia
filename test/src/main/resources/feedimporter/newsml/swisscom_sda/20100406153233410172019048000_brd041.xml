@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T153233+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="2"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd041</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd041:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T153233+0200</FirstCreated>
+<ThisRevisionCreated>20100406T153233+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="2"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7152"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7151"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Ärzte: Opfer der Schweizer Schläger hätte sterben können</HeadLine>
+<DateLine>München/Zürich</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Angeklagte Schläger schweigen eisern</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Münchner Schlägerprozess</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="eh"/>
+<Property FormalName="author" Value="ah"/>
+<Property FormalName="author" Value="fos"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<Subject FormalName="02000000"/>
+<SubjectMatter FormalName="02008000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der Geschäftsmann, der im Juni 2009 in München von drei Jugendlichen aus dem Kanton Zürich zusammengeschlagen wurde, hätte genausogut tot sein können. Dies sagten seine Ärzte im Münchner Schlägerprozess vor Gericht aus.</p>
+<p>"Er hat Glück, dass er nicht blind ist, er hat Glück, dass er noch hören kann, er hat Glück, dass er noch lebt", fasste Gerichtssprecherin Margarete Nötzel die Aussagen der Mediziner zusammen.</p>
+<p>Noch heute, fast ein Jahr nach der Tat, machen die Verletzungen dem Opfer schwer zu schaffen. "Das ganze Gesicht war verschoben in mehreren Ebenen", sagte Nötzel. "Die letzte Operation war im Januar - es kann sein, dass es noch weitere wird geben müssen."</p>
+<p>Der Mann hatte zeitweise um sein Augenlicht fürchten müssen. Als Folge des Überfalls ist er schwerhörig. Die Ärzte gingen laut Nötzel aber davon aus, dass die Verletzungen so ausheilten, dass er wieder vollständig werde sehen und hören können.</p>
+<p>Die drei damals 16-jährigen Berufsschüler weilten am 30. Juni 2009 auf Schulabschlussreise in München. Innert zehn Minuten schlugen sie grundlos fünf zufällig ausgewählte Passanten brutal zusammen, darunter den Geschäftsmann und Familienvater aus Norddeutschland.</p>
+<p>Das Trio muss sich seit Anfang März wegen des Vorwurfs des versuchten Mordes und der gefährlichen Körperverletzung verantworten. Die Angeklagten schweigen eisern. "Sie sitzen auf der Anklagebank, hören zu und äussern sich nicht", sagte Nötzel.</p>
+<p>Die Justizsprecherin bezeichnete dies erneut als ungewöhnlich, namentlich bei Jugendlichen. Grundsätzlich habe ein Angeklagter ein Bedürfnis, "den Vorwürfen die eigene Sicht der Dinge entgegenzusetzen", sagte sie. "Je jünger die Menschen sind, desto stärker ist der Drang, etwas zu sagen."</p>
+<p>Das Gericht will weitere Zeugen hören. Unter anderem sollen die Mütter von zwei Jugendlichen in den Zeugenstand treten. Vorgesehen sind ferner Befragungen von Sachverständigen des Instituts für Rechtsmedizin und des psychiatrischen Gutachters.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

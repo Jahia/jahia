@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T075215+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd008</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd008:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T060443+0200</FirstCreated>
+<ThisRevisionCreated>20100405T075215+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7024"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7023"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Rettung von 90 überlebenden Bergleuten in China erwartet</HeadLine>
+<DateLine>Peking</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Viele Überlebende bei Minenunglück in China</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Minenunglück</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<SubjectMatter FormalName="03013000"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Zahlen aktualisiert</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Möglicherweise mehr als 90 Bergleute haben das schwere Grubenunglück vor einer Woche in Nordchina überlebt. 38 Kumpel wurden bis anhin bereits aus der überfluteten Kohlegrube in der Provinz Shanxi gerettet.</p>
+<p>Die Bergungsmannschaften rechneten damit, mehr als 90 Kumpel retten zu können, berichtete die amtliche chinesische Nachrichtenagentur Xinhua.</p>
+<p>153 Bergarbeiter waren am Sonntag vergangener Woche durch einen Wassereinbruch im Wangjialing-Bergwerk in der Provinz Shanxi eingeschlossen worden. Seitdem kämpfen die Rettungskräfte darum, die überfluteten Schächte mit Pumpen trockenzulegen und die Arbeiter zu befreien. Insgesamt halfen 3000 Menschen bei den Rettungsarbeiten.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

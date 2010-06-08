@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T172039+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd052</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd052:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T172039+0200</FirstCreated>
+<ThisRevisionCreated>20100406T172039+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7175"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7176"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Liebeskomödien verführen Deutschschweizer und Tessiner</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>"Bounty Hunter" vor "Alice in Wonderland"</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Schweizer Kinocharts</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="ku"/>
+<Property FormalName="author" Value="fy"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="01000000"/>
+<SubjectMatter FormalName="01005000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Miese Kritiken für den Film "The Bounty Hunter" haben die Deutschschweizer am Osterwochenende nicht abgeschreckt: Für die Liebeskomödie mit Jennifer Aniston und Gerard Butler wurden fast 34'000 Tickets gelöst.</p>
+<p>Damit setzte sich der Film vor den 3D-Werken "Alice in Wonderland" (18'400 Eintritte) und "How To Train Your Dragon" (16'300) an die Spitze der Charts des grössten Landesteils, wie aus der Statistik des Filmverleiherverbandes SFV hervorgeht.</p>
+<p>In der Romandie und im Tessin, wo "The Bounty Hunter" noch nicht gestartet ist, gab es kaum Bewegung auf den Spitzenrängen. Die Geschichte des kleinen Drachenbändigers kam in der Romandie nicht an gegen Alice und landete auch im Tessin auf dem zweiten Platz - hinter "It's Complicated", einer weiteren Liebeskomödie.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

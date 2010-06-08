@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T103327+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brz005</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brz005:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T103327+0200</FirstCreated>
+<ThisRevisionCreated>20100408T103327+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd9579"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd9580"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Fünf Spielsperren gegen Guerrero</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Saisonende für den Flaschenwerfer</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Deutschland</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="int"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15054000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Für Paolo Guerrero ist die Bundesliga-Saison aller Voraussicht nach zu Ende.</p>
+<p>Das Sportgericht des Deutschen Fussball-Bundes (DFB) belegte den Peruaner nach seinem Flaschenwurf gegen einen Zuschauer mit fünf Spielsperren. Zusätzlich wurde der Stürmer des Hamburger SV, der bereits von seinem Verein mit dem höchsten Betrag in die Vereinskasse (zwischen 50 000 und 100 000 Euro) abgestraft worden ist, mit 20 000 Euro gebüsst.</p>
+<p>Das DFB-Sportgericht sperrte Guerrero "wegen einer Tätlichkeit gegen einen Zuschauer nach einer vorausgegangenen verbalen Provokation". Dem 26-jährigen Südamerikaner waren nach dem Ende der Partie HSV - Hannover (0:0) am Sonntag die Sicherungen durchgebrannt, worauf er dem Provokateur eine gefüllte Plastik-Trinkflasche genau an den Kopf warf. Der HSV hat 24 Stunden Zeit, Einsprache gegen die Spielsperren zu erheben. Tut er dies nicht, so ist die Saison und womöglich auch die Karriere Guerreros in Hamburg (auslaufender Vertrag) vorbei. Zu spielen sind in der Bundesliga noch fünf Runden.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

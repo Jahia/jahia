@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T154714+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brz008</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brz008:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T154714+0200</FirstCreated>
+<ThisRevisionCreated>20100405T154714+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9481"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9482"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Lausanne schaltet nach YB auch St. Gallen aus</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Lausannes grosse Coup in Unterzahl</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>St. Gallen - Lausanne 1:2</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="unknown"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15054000"/>
+<SubjectMatter FormalName="15073000"/>
+<SubjectDetail FormalName="15073022"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">40 Minuten lang spielte Lausanne-Sport in St. Gallen in Unterzahl - und schaffte dennoch die grosse Überraschung</p>
+<p>Nach den Young Boys im Viertelfinal schalteten die Waadtländer im Halbfinal auch St. Gallen mit 2:1 aus und erreichte zum 17. Mal in der Vereinsgeschichte den Cupfinal.</p>
+<p>Als Verteidiger und Ausgleichstorschütze Guillaume Katz in der 63. Minute nach seiner zweiten gelben Karte vom ausgezeicnet arbitrierenden Massimo Bussaca des Feldes verwiesen wurde, stand der FC St. Gallen vor 17 '797 Zuschauern mit einem Bein im Cupfinal. Doch er irrte sich und hatte nicht mit dem Ehrgeiz und der Kampfkraft der Welschen gerechnet. Statt selbst das wohl erlösende 2:1 zu schiessen, liefen die Ostschweizer in der 79. Minute in einen Konter, den der Brasilianer Gaspar mit einem Lob über Torhüter Germano Vailati zum unerwarteten Siegestreffer der taktisch hervorragend eingestellten Lausanner verwertete. St. Gallen scheiterte wie vor sechs Jahren gegen Wil wieder in der Cup-Vorschlussrunde und muss sich wegen mangelndem Ideenreichtum und ungenügender Effizienz im Abschluss an der eigenen Nase nehmen.</p>
+<p>Lausanne war von Beginn weg kein Kanonenfutter. Der Challenge-League-Verein begann auch in St. Gallen selbstbewusst und mutig und gelangte durch Tosi und Hélin zu den ersten Chancen. St. Gallen tat sich gegen die aufsässigen, schnellen und konterstarken Waadtländer schwer, ehe ein Energieanfall von Moreno Merenda die Führung brachte. Der für den verletzten Mario Frick bereits in der 12. Minute eingewechselte Goalgetter startete zu einem solo und schüttelte zwei Gegenspieler ab. Seinen Schuss vermochte Anthony Favre nur abzuklatschen, der Portugiese Zé Vitor verwertete den Nachschuss. Wenig später lenkte Favre einen Kopfball des starken Merenda nach einer Flanke von Adrian Winter an den Pfosten. Kurz vor der Pause glückte dem neunfachen Cupsieger Lausanne der Ausgleich. Marc Zellweger verlor ein Kopfball-Duell, Nicolas Marazzi bediente den aufgerückten Aussenverteidiger Guillaume Katz, der aus abseitsverdächtiger Position dem St. Galler Torhüter Germano Vailati keine Abwehrchance liess.</p>
+<p>St. Gallen - Lausanne-Sport 1:2 (1:1)</p>
+<p>AFG-Arena. - 17'197 Zuschauer. - SR Busacca. - Tore: 22. Zé Vitor 1:0. 40. Katz 1:1. 79. Gaspar 1:2.</p>
+<p>St. Gallen: Vailati; Zellweger, Koubsky, Schenkel, Fernando; Winter (82. Pa Modou), Imhof (82. Owona), Costanzo, Zé Vitor; Frick (12. Merenda), Frei.</p>
+<p>Lausanne: Favre; Katz, Buntschu, Meoli, Sonnerat; Ndzomo, Nicolas Marazzi; Hélin (65. Borges), Tosi, Pimenta (69. Carrupt); Gaspar (83. Vandenbossche).</p>
+<p>Bemerkungen: St. Gallen ohne Nushi und Lang (beide gesperrt), Muntwiler, Knöpfel, Oehri, Ciccone und Haas (alle verletzt). Lausanne ohne Geiser (verletzt). 26. Kopfball von Merenda an den Pfosten. 63. Gelb-Rote Karte gegen Katz (Foul). Verwarnungen: 28. Favre, 49.(beide Foul), 79. Gaspar (Unsportlichkeit, Trikot ausgezogen). Zuschauer schleuderte Sackmesser auf das Feld. --&gt; Meteo/Online</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

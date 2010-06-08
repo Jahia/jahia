@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T115719+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd029</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd029:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T115719+0200</FirstCreated>
+<ThisRevisionCreated>20100406T115719+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Identität der zweiten Attentäterin von Moskau bekannt</HeadLine>
+<DateLine>Moskau</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Zweite Attentäterin von Moskau identifiziert</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Russland</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="gb"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="RU"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Russische Ermittler haben nach eigenen Angaben die zweite Selbstmordattentäterin der Doppelanschläge auf die Moskauer Metro identifiziert. Auch sie stammt demnach aus der Kaukasusrepublik Dagestan.</p>
+<p>"Bei der Terroristin, die sich an der Station Lubjanka in die Luft gesprengt hat, handelt es sich um Mariam Tscharipowa", sagte ein Sprecher des russischen Inlandgeheimdienstes FSB der Nachrichtenagentur AFP.</p>
+<p>Sie sei 1982 geboren worden und stamme wie die bereits identifizierte 17-jährige Attentäterin Dschennet Abdurachmanowa aus Dagestan. Die Metro-Station Lubjanka befindet sich in unmittelbarer Nähe zum Hauptquartier des FSB in der russischen Hauptstadt.</p>
+<p>Wie die Nachrichtenagentur Interfax unter Berufung auf eine Mitteilung des russischen Anti-Terror-Ausschusses berichtete, stammte Tscharipowa aus dem Dorf Balchani in Dagestan und war mit Magomedali Wagapow, einem Rebellenchef der Region, verheiratet.</p>
+<p>Die oppositionelle Zeitung "Nowaja Gaseta" hatte am Freitag bereits ein Interview mit ihrem Vater veröffentlicht, in dem dieser angab, seine Tochter auf einem der im Internet veröffentlichten Fotos der Selbstmordattentäterinnen erkannt zu haben. Tscharipowa war demnach Lehrerin an einer Schule in Dagestan.</p>
+<p>Bei den Selbstmordanschlägen während des morgendlichen Berufsverkehrs waren am 29. März an den Metro-Stationen Lubjanka und Park Kultury 40 Menschen getötet worden. Zu den Taten bekannte sich eine Rebellengruppe aus dem Nordkaukasus, das sogenannte Kaukasus-Emirat von Doku Umarow.</p>
+<p>In den Teilrepubliken Dagestan, Tschetschenien und Inguschetien im nördlichen Kaukasus kämpfen seit Jahren radikalislamische Rebellen für die Unabhängigkeit von Moskau.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

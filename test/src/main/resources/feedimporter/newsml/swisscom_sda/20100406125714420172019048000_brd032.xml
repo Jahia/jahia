@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T125714+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="2"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd032</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd032:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T125714+0200</FirstCreated>
+<ThisRevisionCreated>20100406T125714+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="2"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7138"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7137"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Bis zu 100'000 Menschen erfreuen sich über Ostern an Jungbären</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Bären begeistern über Ostern 100'000 Leute</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Berner Bärenpark</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="sr"/>
+<Property FormalName="author" Value="sa"/>
+<Property FormalName="author" Value="fos"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04014000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="BE"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Seit im Berner Bärenpark die putzigen Jungtiere Urs und Berna regelmässig ihre Geburtshöhle verlassen, ist das Besucherinteresse explodiert. Übers Osterwochenende dürften gegen 100'000 Personen die im vergangenen Oktober eröffnete Anlage besucht haben.</p>
+<p>60'000 Personen zählte eine Lichtschranke, die sich bei den bisherigen Bärengräben befindet. Dazu kommen bis zu 40'000 Menschen, welche sich die Bären vom Spazierweg unten an der Aare aus anschauten und die von keiner Zählanlage erfasst wurden, wie der Berner Tierparkdirektor Bernd Schildger auf Anfrage sagte.</p>
+<p>Zu Zwischenfällen kam es trotz der Zuschauermassen nicht. Die Berner Kantonspolizei sperrte aufgrund des überfüllten Trottoirs am Karfreitag während zwei Stunden die Nydeggbrücke, welche von der Altstadt zu den Bärengraben führt, für den Verkehr. Bei dieser einen Sperrung blieb es, wie eine Sprecherin der Kantonspolizei auf Anfrage sagte.</p>
+<p>Schildger geht davon aus, dass das grosse Interesse an den Berner Bären weiter anhält, auch wenn die drolligen Jungtiere, welche die Besucher mit ihrem Spieltrieb bestens unterhalten, mit der Zeit grösser werden. Deshalb werden weiterhin Securitas-Angestellte zur Kanalisierung der Menschenmassen eingesetzt. Zudem sind kleinere bauliche Anpassungen geplant.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

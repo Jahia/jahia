@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T195258+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brz012</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brz012:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T191905+0200</FirstCreated>
+<ThisRevisionCreated>20100407T195258+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9559"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9560"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Doumbia für ein Spiel gesperrt</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Ein Spiel Sperre für Doumbia</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Axpo Super League</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="nag"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15073000"/>
+<SubjectDetail FormalName="15073031"/>
+<SubjectMatter FormalName="15054000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">update</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">YB muss in der Axpo Super League am kommenden Samstag gegen den Tabellenvorletzten Bellinzona ohne Seydou Doumbia auskommen.</p>
+<p>Die Swiss Football League (SFL) belegte den Berner Topskorer (27 Tore) nach dessen Unsportlichkeit gegen den Aarauer Martin Stoll mit einer Spielsperre.</p>
+<p>Die mehrtägige juristische Auswertung der TV-Bilder ergab, dass Doumbias Ellbogeneinsatz keine Tätlichkeit oder grobe Unsportlichkeit gewesen sein soll. Der Spieler habe versucht, sich in einem Zweikampf um den Ball zu lösen - allerdings mit einem gezielten Schlag. Mildernd hat sich ausgewirkt, dass der stellvertretende Disziplinarrichter der SFL, Roy Maybud, von einer Provokation Stolls ausgegangen ist.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

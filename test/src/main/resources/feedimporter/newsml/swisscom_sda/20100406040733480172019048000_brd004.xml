@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T040733+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="2"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd050</NewsItemId>
+<RevisionId PreviousRevision="2" Update="N">3</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd050:3N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T182516+0200</FirstCreated>
+<ThisRevisionCreated>20100406T040733+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="2"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7103"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7104"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Ein Jahr danach: L'Aquila erinnert an Erdbeben</HeadLine>
+<DateLine>L'Aquila</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Kritik an Wiederaufbau in l'Aquila</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Jahrestag</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<SubjectMatter FormalName="03002000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="IT"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">neu: Meldung nach Beginn der Umzüge aktualisiert</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Ein Jahr nach dem verheerenden Erdbeben hat die italienische Stadt L'Aquila der Opfer der Naturkatastrophe gedacht. Auf dem Domplatz versammelten sich am Morgen um 3.32 Uhr - der Uhrzeit des Bebens - rund 25'000 Menschen mit Kerzen und Fackeln zu einer Schweigeminute.</p>
+<p>Dabei wurden die Namen der 308 Todesopfer vorgelesen. Das Erdbeben der Stärke 6,3 auf der Richterskala hatte am 6. April 2009 die Gegend in und um die Stadt in Mittelitalien zerstört und 1600 Menschen verletzt. 120'000 Bewohner von L'Aquila und den umliegenden Dörfern verloren ihr Dach über dem Kopf.</p>
+<p>Das mittelalterliche Zentrum der Stadt liegt weiter unter Trümmern, die meisten Ruinen sind unbewohnbar. Mehr als 52'000 Menschen sind noch immer in Hotels an der Adriaküste oder in Kasernen untergebracht und erhalten staatliche Unterstützung.</p>
+<p>Vor den Umzügen hatten sich hunderte Einwohner L'Aquilas zu einer ausserordentlichen Gemeindeversammlung in einem grossen Zelt zusammengefunden. Die Reden der offiziellen Vertreter der Stadt wurden mehrfach durch Pfiffe unterbrochen, vor allem als eine Grussbotschaft von Ministerpräsident Silvio Berlusconi vorgelesen wurde.</p>
+<p>Beifall erntete dagegen ein Schreiben von Giorgio Napolitano, in dem der Staatspräsident "den beispiellosen Tatendrang und die Grosszügigkeit" beim Wiederaufbau der Stadt lobte.</p>
+<p>Kritisiert wurde auch der Bürgermeister der Stadt, Massimo Cialente. "Die Stadt ist noch immer wie erstarrt und ausgestorben", sagte eine Einwohnerin, die sich jüngst auch an den sonntäglichen Demonstrationen beteiligt hatte.</p>
+<p>Cialente selbst rief dazu auf, "nach vorn zu blicken" und bat die Regierung um eine "Solidaritätssteuer", um die Folgen des Erdbebens in den Griff zu bekommen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T092621+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd012</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd012:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T092621+0200</FirstCreated>
+<ThisRevisionCreated>20100407T092621+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7222"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7221"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Demonstranten in Thailand dringen auf Parlamentsgelände vor</HeadLine>
+<DateLine>Bangkok</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Rothemden stürmen Parlament in Bangkok</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Thailand</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="kr"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="TH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">In Thailand haben die Regierungsgegner das Parlament in der Hauptstadt Bangkok gestürmt. Hunderte Demonstranten drangen auf das Gelände vor, wie der Generalsekretär des Repräsentantenhauses, Pitoon Pumhiran, sagte.</p>
+<p>Sie hatten demnach mit einem Lastwagen die Absperrung vor dem Parlamentsgebäude durchbrochen. Eine Sitzung des Parlaments war zuvor vertagt worden, nachdem mehrere Abgeordnete angesichts der Proteste das Gebäude verlassen hatten. Weil zu wenige Parlamentarier anwesend waren, schloss Parlamentspräsident Chai Chidchob die Sitzung.</p>
+<p>Regierungschef Abhisit Vejjajiva hatte das Gebäude nach Angaben aus Regierungskreisen zu diesem Zeitpunkt bereits verlassen. Angesichts der Proteste sagte er zudem eine Reise zum geplanten Washingtoner Gipfel zur Atomsicherheit Mitte April ab, wie Regierungssprecher Panitan Wattanayagorn sagte. An einem Gipfeltreffen der Südostasiatischen Staatengemeinschaft (ASEAN) in Vietnam in dieser Woche will er nur verkürzt teilnehmen.</p>
+<p>Am Dienstag hatten sich die Demonstranten in Bangkok heftige Zusammenstösse mit der Polizei geliefert. Zehntausende Regierungsgegner, die seit Samstag ein auch bei Touristen beliebtes Geschäftsviertel von Bangkok lahmlegten, setzten sich über ein Demonstrationsverbot für elf der Hauptverkehrsadern hinweg.</p>
+<p>Zu Tausenden überwanden sie Polizeiabsperrungen und bewarfen Sicherheitskräfte mit Plastikflaschen, vor der Parteizentrale von Abhisit explodierte eine Granate.</p>
+<p>Die Rothemden sind Anhänger des 2006 gestürzten Regierungschefs Thaksin Shinawatra. Sie stammen zumeist aus den ländlichen, ärmlichen Gegenden im Norden Thailands und verlangen den Rücktritt von Ministerpräsident Abhisit, dem sie vorwerfen, nur mit Unterstützung der Armee und im Interesse der Eliten zu regieren. Sie wollen ihre Proteste erst stoppen, wenn Abhisit zurücktritt und unverzüglich Neuwahlen angesetzt werden.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

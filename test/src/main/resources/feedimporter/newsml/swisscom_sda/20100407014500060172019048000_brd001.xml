@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T014500+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd001</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd001:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T014500+0200</FirstCreated>
+<ThisRevisionCreated>20100407T014500+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7208"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7207"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Demonstranten in Kirgistan stürmen Sitz von Provinzregierung</HeadLine>
+<DateLine>Talas</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Unruhige Lage in Kirgistan</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Kirgistan</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="KG"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Im Nordwesten Kirgistans haben sich Regierungsgegner heftige Auseinandersetzungen mit der Polizei geliefert. In der Stadt Talas stürmten Demonstranten den Sitz der Provinzregierung, verwüsteten das Gebäude und hielten es besetzt.</p>
+<p>Viele von ihnen bewarfen die Sicherheitskräfte mit Steinen und forderten den Rücktritt von Präsident Kurmanbek Bakijew. Die Sicherheitskräfte setzten Tränengas und Gummigeschosse ein, um den Gouverneur der Region aus der Gewalt der Regierungsgegner zu befreien. Das Innenministerium sprach von mehreren Verletzten unter den Polizisten.</p>
+<p>In der Hauptstadt Bischkek nahm die Polizei Regierungsgegnern zufolge mehrere Oppositionspolitiker fest, darunter auch den Vorsitzenden der wichtigsten Oppositionspartei. Menschenrechtler sprachen von einer gespannten Lage in der Ex-Sowjetrepublik an der Grenze zu China.</p>
+<p>Regierungschef Danijar Ussenow warnte die Opposition davor, die Lage zu destabilisieren: "Alle destruktiven Versuche werden hart bestraft".</p>
+<p>Das zentralasiatische Land wird seit Anfang März von Unruhen erschüttert. Die Opposition wirft Bakijew ein hartes Vorgehen gegen Kritiker und Einschränkung der Meinungsfreiheit vor. Auch während des Besuchs von UNO-Generalsekretär Ban Ki Moon vor wenigen Tagen kam es zu gewaltsamen Auseinandersetzungen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

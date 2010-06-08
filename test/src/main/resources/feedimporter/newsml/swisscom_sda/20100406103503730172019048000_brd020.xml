@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T103503+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd006</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd006:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T044712+0200</FirstCreated>
+<ThisRevisionCreated>20100406T103503+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7107"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7108"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Aus dem Frachter auf Barrier Reef soll Öl abgepumpt werden</HeadLine>
+<DateLine>Sydney</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Frachter auf Barrier Reef sitzt weiter fest</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Umweltkatastrophe</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<SubjectMatter FormalName="03010000"/>
+<SubjectDetail FormalName="03010004"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="AU"/>
+<Property FormalName="Country" Value="CN"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">meldung ergänzt, catchline angepasst</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der am Great Barrier Reef vor Australien auf Grund gelaufene Kohlefrachter sitzt weiter fest. Neues Öl ist nach einem ersten Augenschein der Rettungskräfte nicht ausgelaufen, berichteten die Behörden.</p>
+<p>Aus dem Kohlefrachter, der auf dem Great Barrier Reef vor Australien auf Grund lief, soll das Öl abgepumpt und damit ein weiteres Auslaufen des Treibstoffes verhindern werden. Dies teilte die Regierungschefin des Bundeslandes Queensland, Anna Bligh, mit.</p>
+<p>Das 230 Meter lange Schiff schrammt zwar durch den Wellengang weiter über die Korallenbänke, doch gehen Experten davon aus, dass der Rumpf intakt bleibt. Einen Tag nach dem Unglück waren am Sonntag etwa vier Tonnen Öl ausgelaufen. Der Treibstoff wurde mit Chemikalien besprüht und zersetzte sich.</p>
+<p>An Bord des chinesischen Frachters "Shen Neng 1" befinden sich rund 950 Tonnen Öl - Treibstoff, den das Schiff für die geplante Reise nach China braucht. Wenn das Öl abgepumpt ist, soll ein neuer Versuch gemacht werden, den Frachter mit seiner Ladung von 65'000 Tonnen Kohle vom Riff zu ziehen.</p>
+<p>Die Küstenbewohner sind empört, dass ein so grosses Schiff offenbar ohne einen ortskundigen Lotsen an Bord in den Gewässern in Küsten- und Korallenriffnähe unterwegs sein durfte. Der Unfall passierte mitten in einer Schutzzone, fernab der Schifffahrtsstrasse. Experten spekulierten, der Kapitän könnte versucht haben, eine Abkürzung auf das offene Meer hinaus zu nehmen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

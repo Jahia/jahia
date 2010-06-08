@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T133559+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-People"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>dpp002</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:dpp002:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T133559+0200</FirstCreated>
+<ThisRevisionCreated>20100406T133559+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7142"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7141"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Xenia Tchoumitcheva findet Fussball erotischer als Eishockey</HeadLine>
+<DateLine>Zürich</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Tchoumitcheva möchte keinen Fussballer</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Sexyness</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="efe"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Model Xenia Tchoumitcheva fiel im März die Ehre zu, den neuen Schweizer Dress unserer Fussball-Nati zu präsentieren. Eine gute Gelegenheit, der schönen Blonden ein paar Fragen zum Thema zu stellen. Die meisten Namen der Schweizer Spieler kann sie sich nicht merken, wie Xenia dem Magazin "GOAL" gesteht.</p>
+<p>Und das "obwohl ich schon ans eine oder andere Länderspiel eingeladen war. Ich kenne halt vor allem Valon Behrami von Lugano her persönlich." Die 20-Jährige erzählt weiter:" Witzig ist, dass wir uns kürzlich völlig zufällig in London auf der Strasse begegnet sind."</p>
+<p>Behrami sei vom Aussehen her aber nicht ihr Typ, verrät die Wirtschaftsstudentin. "Ich stand früher sehr auf Gigi Buffon. Gattuso sieht auch sehr cool aus. Heute aber finde ich Fernando Torres am schönsten. Den würde ich gerne mal kennenlernen."</p>
+<p>Erfahrungen mit Fussballern hat die gebürtige Russin jedoch noch nicht gesammelt: "Ich war noch nie mit einem Fussballer zusammen - und denke auch nicht, dass das die Typen Männer sind, mit denen ich mich unbedingt einlassen wollte." Trotzdem findet sie Fussball viel sexyer als Eishockey: "Das liegt wahrscheinlich daran, dass die Fussballer im Einsatz mehr Haut zeigen und nicht all ihre Vorzüge verbergen so wie die Hockeyspieler."</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

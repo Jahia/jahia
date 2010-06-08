@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T064431+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="5"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brz001</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brz001:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T064431+0200</FirstCreated>
+<ThisRevisionCreated>20100408T064431+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="5"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd9573"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd9574"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Honduras wird vom Parlament unterstützt</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Finanzspritze für Schweizer WM-Gruppengegner</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Fussball</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="int"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15054000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Das Nationalteam des Schweizer Fussball-WM-Gruppengegners Honduras hat vom nationalen Kongress eine finanzielle Unterstützung zugesprochen erhalten.</p>
+<p>Die aktuellen WM-Vorbereitungen werden mit einem Betrag von umgerechnet knapp 57 000 Franken unterstützt. "Wir möchten damit unsere Verbundenheit mit dem Team demonstrieren", sagte Parlaments-Präsident Juan Orlando Hernandez.</p>
+<p>Der Fussball-Verband ist den Spielern immer noch die Zahlung der WM-Qualifikations-Prämien schuldig. Der ausstehende Betrag übersteigt die eine Million Lempiras, die nun in die Kassen des Verbandes fliessen. Honduras zählt zu den ärmsten Ländern Mittelamerikas.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

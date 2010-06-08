@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T125054+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd033</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd033:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T125054+0200</FirstCreated>
+<ThisRevisionCreated>20100407T125054+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7245"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7246"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Rekordgewinn bei Swiss Lotto Plus abgeholt</HeadLine>
+<DateLine>Basel</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Lotto-Rekordgewinn ausbezahlt</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Mehrfacher Millionär</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="su"/>
+<Property FormalName="author" Value="fy"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11006000"/>
+<SubjectDetail FormalName="11006001"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Die Person, die am 10. März bei Swiss Lotto Plus die Rekordsumme von 35,8 Millionen Franken gewonnen hat, hat ihren dicken Jackpot abgeholt. Ausbezahlt werden indes nur rund 23,3 Millionen Franken. Der Rest geht als Verrechnungssteuer an die Eidg. Steuerverwaltung.</p>
+<p>Der Glückspilz machte sich mit sechs Richtigen, der richtigen Zusatzzahl und auch der richtigen Pluszahl zum Multimillionär. Ob es sich um einen Mann oder um eine Frau handelt, gab Willy Mesmer, Mediensprecher von Swisslos, am Mittwoch nicht bekannt. Die Person habe absolute Anonymität verlangt, sagte er.</p>
+<p>Vom Rekord-Jackpot erhält der Gewinner vorderhand 65 Prozent - das sind rund 23,2 Millionen Franken - ausbezahlt. Die übrigen 35 Prozent gehen als Verrechnungssteuer an den Bund, wie Mesmer ausführte.</p>
+<p>Wird der Rekordgewinn in einem Kanton versteuert, holt sich dieser die Verrechnungssteuer ab und erstellt eine endgültige Abrechnung. Wie viel vom Gewinn dem Glückspilz bleibt, hängt nach Angaben des Swisslos-Sprechers von den lokalen Steuervorschriften ab. Massgebend wird sein, wo der Gewinner am 31. Dezember 2010 wohnt.</p>
+<p>Es handelte sich um den höchsten Jackpot seit der Gründung von Swiss Lotto im Jahr 1970. Der bisher höchste Gewinn betrug 19,2 Millionen Franken. Die Gewinnchancen liegen beim Spielmodus Swiss Lotto Plus bei 1 zu rund 24 Millionen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

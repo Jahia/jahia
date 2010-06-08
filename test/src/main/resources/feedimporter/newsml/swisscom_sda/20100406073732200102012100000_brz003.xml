@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T073732+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="5"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brz003</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brz003:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T073732+0200</FirstCreated>
+<ThisRevisionCreated>20100406T073732+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="5"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd9503"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd9504"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>"Alter" Dreikampf mit "neuen" Einzelwertungen</HeadLine>
+<DateLine>Triathlon</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>WM-Serie will Disziplinen-Efforts würdigen</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Triathlon</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="unknown"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15066000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">In der Triathlon-WM-Serie über die olympische Distanz werden neu Wertungen in den drei Einzeldisziplinen Schwimmen, Radfahren und Laufen eingeführt.</p>
+<p>5000 Dollar erhält der Gesamtsieger der jeweiligen Disziplin, 3000 Dollar der Zweite und 2000 Dollar der Drittklassierte.</p>
+<p>Die entsprechende Abrechnung erfolgt nach dem Grand Final 2010 von Mitte September in Budapest. In allen sieben WM-Rennen erhalten die Top 10 jeder Disziplin eine entsprechende Anzahl Punkte. Um in die Wertung zu kommen, müssen die Athleten den Wettkampf aber beenden.</p>
+<p>Die WM-Serie 2010 beginnt am Sonntag in Sydney. Vor zehn Jahren hatte Triathlon gleichenorts vor dem Opernhaus eine eindrucksvolle Olympia-Premiere gefeiert. Die Schweiz holte damals Gold und Bronze bei den Frauen durch Brigitte McMahon und Magali Di Marco sowie ein Olympia-Diplom durch Reto Hug.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

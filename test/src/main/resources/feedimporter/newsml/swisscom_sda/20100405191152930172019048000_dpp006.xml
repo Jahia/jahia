@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T191152+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-People"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>dpp006</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:dpp006:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T191152+0200</FirstCreated>
+<ThisRevisionCreated>20100405T191152+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7089"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7090"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Familie Obama veranstaltet Ostereierrollen vor dem Weissen Haus</HeadLine>
+<DateLine>Washington</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Alljährliches Ostereierrollen mit den Obamas</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Tradition</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Ostern auf Amerikanisch: Während hierzulande der Osterhase die bunten Eier in Haus und Garten versteckt, werden im Weissen Haus die Eier über den Rasen gerollt. Seit mehr als 130 Jahren wird mit der Veranstaltung der Frühlingsbeginn gefeiert.</p>
+<p>30'000 Kinder samt Eltern waren am Ostermontag bei strahlendem Sonnenschein zum traditionellen Easter Egg Roll auf dem südlichen Rasen vor dem Weissen Haus, dem South Lawn, geladen. "Ist das nicht der perfekte Tag für das Ostereierrollen? Danken wir Mutter Natur", rief Präsidentengattin Michel Obama ihren Gästen zu. Natürlich waren auch ihre beiden Töchter Malia (11) und Sasha (8) sowie "First Dog" Bo dabei.</p>
+<p>Das Ostereierrollen hat eine lange Tradition in Washington. Bei dem Wettkampf müssen die Kinder hartgekochte Eier mit einer Art Löffel von Start bis Ziel rollen. "Wir haben den South Lawn in einen Spielplatz verwandelt", sagte die First Lady. Aber es ging nicht nur um Spass, sondern auch um Aufklärung. So gab es auf dem Rasen auch Kochstationen, um den Kids beizubringen, wie man lecker, aber gleichzeitig gesund essen kann.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T113652+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brd024</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brd024:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T113652+0200</FirstCreated>
+<ThisRevisionCreated>20100408T113652+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7349"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7348"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Bestes erstes Quartal der Unternehmensgeschichte für Audi</HeadLine>
+<DateLine>Ingolstadt</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Rekordergebnis im ersten Quartal für Audi</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Autoindustrie</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="ti"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04013000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="DE"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Audi startet wieder durch: Das erste Quartal 2010 war für den Autohersteller das beste der Unternehmensgeschichte, wie die VW-Tochter mitteilte. Die Auslieferungen stiegen um mehr als ein Viertel auf rund 264'100 Autos.</p>
+<p>Auch der März brachte Audi mit 110'400 Verkäufen ein Rekordergebnis. "Für das zweite Quartal 2010 erwarten wir weiteres Wachstum gegenüber dem Vorjahr", sagte Vertriebschef Peter Schwarzenbauer. Im Gesamtjahr wollen die Ingolstädter wie schon 2008 die Eine-Million-Marke knacken.</p>
+<p>Wachstumstreiber waren im März sowie im gesamten ersten Quartal erneut der chinesische Markt sowie die gesamte Region Asien-Pazifik. Aber auch die im vergangenen Jahr besonders schwachen europäischen Länder Grossbritannien und Spanien zeigten wieder zweistellige Zuwachsraten.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

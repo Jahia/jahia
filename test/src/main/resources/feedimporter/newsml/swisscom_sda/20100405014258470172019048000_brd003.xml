@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T014258+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd003</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd003:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T014258+0200</FirstCreated>
+<ThisRevisionCreated>20100405T014258+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Schweizer-philippinischer Geschäftsmann auf Mindanao entführt</HeadLine>
+<DateLine>Manila</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Schweizer auf Philippinen entführt</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Entführung</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<Subject FormalName="02000000"/>
+<SubjectMatter FormalName="02001000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="Country" Value="PH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Auf den Philippinen ist ein Geschäftsmann mit Schweizer und philippinischem Pass entführt worden. Der 73-Jährige sei vor seinem Haus in Zamboanga City gekidnappt worden, teilte die Polizei gemäss der französischen Nachrichtenagentur AFP und lokalen Medien mit.</p>
+<p>Bewaffnete hätten den Mann und seinen Leibwächter angegriffen, als er an einem Privatstrand zusammen mit deutschen Freunden etwas getrunken habe. Dem Leibwächter sei jedoch die Flucht gelungen.</p>
+<p>Der Mann sei von seinen Kidnappern auf ein Boot gezerrt und weggebracht worden, erklärte Polizeichef Edwin de Ocampo gegenüber lokalen Medien. Der Entführte ist in Zamboanga ein bekannter Geschäftsmann und Präsident des Rotary-Clubs der Stadt.</p>
+<p>Zamboanga City ist eine wohlhabende Stadt an der Südspitze der gleichnamigen Halbinsel. Diese liegt im Westen der südphilippinischen Insel Mindanao.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T024850+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd004</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd004:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T024850+0200</FirstCreated>
+<ThisRevisionCreated>20100405T024850+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7018"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7017"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Somalische Piraten kapern US-Öltanker mit 24 Mann an Bord</HeadLine>
+<DateLine>Seoul</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Somalische Piraten kapern US-Öltanker</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Piraten</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04015000"/>
+<SubjectDetail FormalName="04015004"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="SO"/>
+<Property FormalName="Country" Value="US"/>
+<Property FormalName="Country" Value="KR"/>
+<Property FormalName="Country" Value="PH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Vor Ostafrika haben somalische Piraten einen Öltanker in ihre Gewalt gebracht. Die "Samho Dream" aus Südkorea sei auf dem Weg vom Irak in die USA gekapert worden, teilte das Aussenministerium in Seoul mit.</p>
+<p>Das Schiff habe Öl im Wert von 170 Millionen Dollar transportiert. Die 24 Besatzungsmitglieder - fünf Südkoreaner und 19 Philippinos - würden als Geiseln festgehalten. Der 333 Meter lange 320'000-Tonnen-Tanker gehört dem US-Ölkonzern Valero Energy.</p>
+<p>Eine Seefahrer-Organisation mit Sitz in Nairobi sagte, das Schiff sei von somalischen Piraten gekapert worden. Aus Kreisen der Piraten hiess es, die "Samho Dream" sei nun auf dem Weg zum von Piraten kontrollierten Hafen Haradheere in Somalia.</p>
+<p>Dort liegen bereits zahlreiche andere Schiffe, die Piraten in den vergangenen Monaten in ihre Gewalt gebracht haben. Die Entführung eines so grossen Tankers sehen Experten als Zeichen dafür, dass die Piraten jetzt nach grösserer Beute aus sind.</p>
+<p>Die Piraterie am Horn von Afrika gilt als Folge der Anarchie in Somalia. Ende 2009 hatten somalische Piraten dem International Maritime Bureau (IMB) zufolge mindestens zwölf Schiffe mit 263 Besatzungsmitgliedern in ihrer Gewalt.</p>
+<p>Oft werden die Schiffe nach der Zahlung von Lösegeld wieder freigegeben. Anfang 2010 konnte der Öltanker "Maran Centaurus" mit seiner Besatzung nach der Zahlung einer Summe zwischen 5,5 und 7,0 Millionen Dollar wieder abfahren. Der unter griechischer Flagge fahrende Tanker war mit zwei Millionen Barrel Öl beladen und am 29. November 2009 entführt worden.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

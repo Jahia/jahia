@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T200747+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="2"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd007</NewsItemId>
+<RevisionId PreviousRevision="3" Update="N">4</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd007:4N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T051552+0200</FirstCreated>
+<ThisRevisionCreated>20100406T200747+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="2"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7191"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7192"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>US-Regierung will Atomwaffen nur gegen Iran und Nordkorea einsetzen</HeadLine>
+<DateLine>Washington</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>USA schränken Einsatz von Atomwaffen ein</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>USA</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+<Property FormalName="author" Value="efe"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11001000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="US"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Meldung aktualisiert; Bilder neu</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">US-Präsident Barack Obama schränkt den möglichen Einsatz von Atomwaffen ein. Solche sollen nur gegen Staaten eingesetzt werden, die selber über Atomwaffen verfügen. Damit bricht Obama mit der Militärdoktrin seines Amtsvorgängers.</p>
+<p>Diese hatte einen atomaren Vergeltungsschlag auch für Angriffe mit biologischen und chemischen Waffen vorgesehen. Künftig sollen US-Atomwaffen aber nur noch im "Extremfall" eingesetzt werden, wie es im Bericht zur Überprüfung der Nukleardoktrin heisst, den Verteidigungsminister Robert Gates und Aussenministerin Hillary Clinton offiziell vorgestellt haben.</p>
+<p>Dessen Kern - eine geringere Bedeutung der Atomwaffen und eine stärkere Rolle des konventionellen Arsenals - hatte Obama bereits in Zeitungsinterviews dargelegt. Auch biologischen und chemischen Angriffen könnten mit anderen Optionen begegnet werden, sagte der Friedensnobelpreisträger gegenüber der "New York Times".</p>
+<p>Eine solche konventionelle Antwort werde aber vernichtend ausfallen, sagte Gates an die Adresse möglicher Angreifer. Zudem gilt die Einschränkung eines Kernwaffeneinsatzes nur für jene Länder, die den Atomwaffensperrvertrag einhalten. Damit bleiben der Iran und Nordkorea weiter potenzielle Ziele amerikanischer Atombomben.</p>
+<p>Eine besondere Bedeutung räumt Obama auch der Bedrohung durch Terroristen ein, die versuchen könnten, in den Besitz von Atomwaffen zu gelangen. Diese stellten heute eine grössere Bedrohung für die USA und die globale Sicherheit dar als ein nuklearer Schlagabtausch zwischen Nationen.</p>
+<p>Mit der überarbeiteten Doktrin knüpft Obama an seine Vision einer atomwaffenfreien Welt an, die er bei der Entgegennahme des Friedensnobelpreises im Dezember 2009 beschworen hatte. Dabei hatte er die Überwindung des Denkens in den Kategorien des Kalten Krieges als Ziel formuliert.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

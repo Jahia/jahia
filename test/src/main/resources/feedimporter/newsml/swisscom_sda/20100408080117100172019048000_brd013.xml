@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T080117+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brd006</NewsItemId>
+<RevisionId PreviousRevision="2" Update="N">3</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brd006:3N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T050503+0200</FirstCreated>
+<ThisRevisionCreated>20100408T080117+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7325"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7326"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Rauchender Diplomat verursacht Fehlalarm auf US-Inlandsflug</HeadLine>
+<DateLine>Washington</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Raucher in US-Flugzeug sorgt für Bombenalarm</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Missverständnis</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+<Party FormalName="afd"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+<Property FormalName="author" Value="ne"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="US"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Meldung aktualisiert und ausgebaut</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Wegen des Verdachts auf Vorbereitung eines Anschlags haben US-Polizisten auf einem Inlandsflug einen Diplomaten aus Katar überwältigt. Was nach einem Anschlagsversuch aussah könnte aber lediglich das Rauchen einer Zigarette auf der Toilette gewesen sein.</p>
+<p>Flugbegleiter gingen nach Informationen der US-Behörden davon aus, dass der Diplomat, der auf der Bordtoilette geraucht hatte, einen Sprengsatz zünden könnte. Die Maschine wurde von Kampfjets nach Denver eskortiert, wo kein Sprengsatz gefunden wurde.</p>
+<p>Vize-Konsul Mohammed el Modadi wurde am Mittwochabend auf einem Flug der Gesellschaft United Airlines von Washington nach Denver überwältigt. Ein Mitarbeiter der US-Sicherheitsbehörden sagte, der Zugriff der bewaffneten Flugbegleiter sei möglicherweise auf ein "massives Missverständnis" zurückzuführen.</p>
+<p>Modadi hatte sich zuvor auf der Flugzeugtoilette aufgehalten und dort geraucht, was verboten ist. Die Flugbegleiter waren von einem Mitglied der Crew eingeschaltet worden, das Rauch aus der Toilettenkabine kommen sah.</p>
+<p>In ersten Fernsehberichten hatte es geheissen, der Fluggast sei überwältigt worden, als er in seinen Schuhen verborgenen Sprengstoff zünden wollte. Diese Berichte beruhten offenbar auf einem kurzen Gespräch zwischen dem Diplomaten und den Sicherheitsbeamten.</p>
+<p>Als diese den Diplomaten darauf ansprachen, was er in der Toilette angezündet habe, habe dieser geantwortet "Ich setze meine Schuhe in Brand", berichtete der Sender ABC News. Diese "sarkastische" Aussage sei von den Flugbegleitern für bare Münze genommen worden.</p>
+<p>Der Vorfall rief Erinnerungen an einen versuchten Sprengstoffanschlag auf eine US-Maschine an Weihnachten wach. Damals hatte ein 23-jähriger Nigerianer versucht, eine US-Linienmaschine mit 290 Menschen an Bord im Landeanflug auf Detroit in die Luft zu sprengen. Der Versuch schlug fehl, weil Fluggäste und Besatzung den Mann überwältigten.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

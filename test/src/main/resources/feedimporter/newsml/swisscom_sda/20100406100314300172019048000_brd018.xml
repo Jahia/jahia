@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T100314+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd018</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd018:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T100314+0200</FirstCreated>
+<ThisRevisionCreated>20100406T100314+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7118"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7117"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Mitglieder-Run auf Sterbehilfe-Organisation Exit</HeadLine>
+<DateLine>Zürich</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Rund 2000 neue Mitglieder für Exit im 2009</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Sterbehilfe</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="eh"/>
+<Property FormalName="author" Value="bk"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Rund 2000 neue Mitglieder haben sich im vergangenen Jahr der Sterbehilfeorganisation Exit angeschlossen. Dies sei ein aussergewöhnlicher Zuwachs, schreibt der Verein in einer Mitteilung zum Jahresbericht 2009.</p>
+<p>Der Run entspringe möglicherweise einer "jetzt erst recht"-Reaktion auf den "Angriff des Bundesrates auf das Selbstbestimmungsrecht", heisst es in der Mitteilung. Insgesamt wies Exit Ende 2009 53'000 Mitglieder in der Deutschschweiz und im Tessin aus.</p>
+<p>Die Schwesterorganisation Exit Romandie hat rund 17'000 Mitglieder, wie Exit-Vorstandsmitglied Bernhard Sutter auf Anfrage sagte.</p>
+<p>217 Menschen begleitete Exit im Berichtsjahr in den Freitod. 2008 waren es 167 gewesen, im Jahr zuvor 179. Bei 377 Mitgliedern wurden Abklärungen an die Hand genommen. Erfahrungsgemäss beanspruchen laut Sutter "etwas mehr als die Hälfte" von ihnen dann tatsächlich Freitod-Begleitung.</p>
+<p>Das Durchschnittsalter der Begleiteten lag laut Jahresbericht bei 76 Jahren. Weitaus am häufigsten sei nach wie vor eine Krebserkrankung als Grunddiagnose.</p>
+<p>In ihrer Stiftung palliacura mache sich Exit seit über 20 Jahren auch für Palliativpflege stark, schreibt der Verein. Die begleiteten Suizide entsprächen zwar klar einem Bedürfnis. Insgesamt seien sie aber selten angesichts von jährlich rund 63'000 Todesfällen in der Schweiz.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

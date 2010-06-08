@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T220236+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brz002</NewsItemId>
+<RevisionId PreviousRevision="1" Update="A">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brz002:2A</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T063113+0200</FirstCreated>
+<ThisRevisionCreated>20100407T220236+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9538"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9539"/>
+<Instruction FormalName="Delete">
+<RevisionStatus>
+<Status FormalName="Canceled"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Spannende Affichen in den letzten beiden Viertelfinal-Rückspielen</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>ManU als Englands letzte Hoffnung</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Champions League</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="int"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15054000"/>
+<SubjectDetail FormalName="15073020"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">delete</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Bayern München könnte erstmals seit dem Gewinn der Champions League 2001 gegen Valencia wieder die Halbfinals der Champions League erreichen.</p>
+<p>Das versucht Manchester United nach dem 1:2 aus dem Hinspiel zu verhindern -- im Old Trafford (ab 20.45 Uhr) allerdings ohne Topskorer Wayne Rooney.</p>
+<p>Während die Bundesliga mit einem Erfolg der Bayern seit neun Jahren wieder unter den Top 4 der Champions League vertreten wäre und bei einem Out von Manchester United der Final erstmals seit 2004 ohne englisches Team stattfinden würde, kann Frankreich mit Sicherheit einen Vertreter in den letzten Vier einplanen. Die besseren Karten für einen Halbfinal-Platz hat Lyon, das im Hinspiel Meister Bordeaux 3:1 besiegte.</p>
+<p>Nach dem Last-Minute-Sieg (2:1) vor einer Woche in München, als Ivica Olic in der 92. Minute den Siegtreffer für die Bayern gegen Manchester United erzielte, reicht dem Team von Louis van Gaal nun im Old Trafford ein Remis. Mit Ausnahme des legendären Champions-League-Finals 1999, als ManU in letzter Sekunde den Bayern noch den Titel wegschnappte, haben die Deutschen keinen der sieben Vergleiche gegen die "Red Devils" verloren.</p>
+<p>Unterschiedlich verliefen auch die Hauptproben der beiden Kontrahenten. Während Manchester United mit einem 1:2 zuhause gegen Chelsea die Tabellen-Führung in der englischen Premier League abgab, sitzt Bayern München nach dem 2:1 auf Schalke wieder auf dem Bundesliga-Thron. "Natürlich sind wir zuversichtlich, aber ManU ist immer noch Favorit, weil es zuhause spielt", warnte Bayer-Captain Mark van Bommel und verwies auf die Heimstärke des Teams von Sir Alex Ferguson. In zuletzt 26 Europacup-Heimspielen hat Manchester United nur eine Partie verloren und blieb 15 Mal ohne Gegentreffer.</p>
+<p>Die Frage nach einem Blitz-Comeback des verletzten ManU-Topskorers Wayne Rooney ist ebenfalls geklärt. Ferguson erstickte die Hoffnungen der englischen Medien nach einer Rückkehr des 24-jährigen Stürmers im Keim: "Es besteht keine Chance, dass Wayne spielen wird." Rooney, der in dieser Saison 34 Treffer für Manchester United erzielt hat, vestauchte sich im Hinspiel in München den Mittelfuss. Weil auch Michael Owen bis zum Saisonende verletzt ist und der Italiener Federico Macheda nach einer Leistenverletzung erst seit kurzem wieder schmerzfrei trainiert, wird wohl Dimitar Berbatow zum Einsatz kommen. Der Bulgare, der für 30,75 Millionen Euro verpflichtet worden war, vermochte bisher nicht zu überzeugen und wird "bald auf der Koppel für Sündenböcke grasen", wie die Zeitung "The Guardian" bildhaft beschrieb.</p>
+<hl2>Bordeaux in der Krise</hl2>
+<p>Der aktuelle Ligue-1-Leader Lyon will endlich seinen Viertelfinal-Fluch besiegen. Seit zehn Jahren in Folge ist Lyon bereits in der "Königsklasse" dabei, viermal war die Runde der letzten acht Endstation. Trainer Claude Puel muss im Rückspiel gegen Girondins Bordeaux (20.45 Uhr) auf die Offensiv-Kräfte Lisandro Lopez und Syndey Govou wegen Sperren verzichten. Lopez erzielte beim 3:1-Sieg im Hinspiel zwei Treffer.</p>
+<p>Während Lyon mit einem scheinbar beruhigenden Vorsprung zum Rückspiel in Bordeaux antritt, befindet sich der Gegner in der Krise. Meister Bordeaux verlor erstmals unter Laurent Blanc dreimal in Folge -- neben dem 1:3 im Hinspiel gegen Lyon setzte es auch eine Niederlage im Ligacup-Final gegen Olympique Marseille sowie in der Ligue 1 gegen Nancy ab. Zudem müssen die Girondins ohne den verletzten Argentinier Fernando auskommen, eine ihrer Schlüsselfiguren im Mittelfeld. Die Statistik spricht ebenfalls nicht für Bordeaux. Für ein Weiterkommen benötigen sie einen 2:0-Erfolg oder einen Sieg mit drei Toren Vorsprung.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

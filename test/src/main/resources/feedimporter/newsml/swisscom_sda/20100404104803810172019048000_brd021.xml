@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T104803+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brd021</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brd021:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T104803+0200</FirstCreated>
+<ThisRevisionCreated>20100404T104803+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6965"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6966"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Steuersünder zögern bei der Legalisierung von Schwarzgeld</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Kaum reuige Steuersünder in der Schweiz</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Mini-Steueramnestie</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="tr"/>
+<Property FormalName="author" Value="tp"/>
+<Property FormalName="author" Value="og"/>
+<Property FormalName="author" Value="tm"/>
+<Property FormalName="author" Value="vr"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Background"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11006000"/>
+<SubjectDetail FormalName="11006001"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Seit Anfang Jahr können sich reuige Steuersünder oder deren Erben in der Schweiz selbst anzeigen und kommen ohne Strafe davon. Genutzt wurde die Mini-Amnestie aber in den ersten drei Monaten erst zögerlich - und die nachdeklarierten Beträge sind eher tief.</p>
+<p>Überrannt werden die kantonalen Steuerbehörden nicht von Selbstanzeigern, wie eine Umfrage der Nachrichtenagentur SDA bei einer Auswahl von Kantonen zeigte. 22 Fälle behandelt etwa der Kanton Luzern, wie Felix Muff, Leiter des Steueramtes, sagte. Meist gehe es um kleinere Beträge, nur einzelne seien etwas grösser.</p>
+<p>Im Kanton Bern seien derzeit 110 Fälle hängig, sagte Yvonne von Kauffungen, Sprecherin der Steuerverwaltung. Fast alle würden natürliche Personen betreffen und in 80 Prozent gehe es um nicht deklariertes Vermögen.</p>
+<p>133 Selbstanzeigen sind per Mitte März in Zürich eingegangen, wie der Sprecher der Finanzdirektion, Roger Keller, sagte. Zum Vergleich: Bevor die Selbstanzeige straflos wurde, gingen auch 250 bis 300 Selbstanzeigen pro Jahr ein. Die 56 bereits erledigten Fälle haben zu Nachzahlungen auf Staats- und Gemeindeebene von rund acht Millionen Franken geführt.</p>
+<p>Beim Kanton Jura, der bevölkerungsmässig rund 20 Mal kleiner ist als Zürich, gingen dagegen schon knapp 50 Selbstanzeigen ein. Im Gegensatz zu anderen Kantonen "vermarktet" Jura die Mini-Amnestie aber offensiv. So bietet der Kanton eine generelle Amnestie für Beträge unter 51'000 Franken an. Zudem ist das Verfahren einfacher.</p>
+<p>In den anderen Kantonen entfällt zwar die Busse, die sich auf einen Fünftel des hinterzogenen Betrags beläuft. Jedoch sind happige Nachzahlungen fällig: Wer Schwarzgeld oder Einkommen regularisieren will, muss für die letzten zehn Jahre auf dem ganzen Betrag Steuern nachzahlen, inklusive Verzugszinsen. Besser kommen Erben weg: Sie zahlen nur für die letzten drei Jahre.</p>
+<p>Die letzte Steueramnestie in der Schweiz liegt über 40 Jahre zurück. Mit der Amnestie, die das Volk damals in einer Abstimmung guthiess, tauchten 1969 rund 11,5 Milliarden Franken wieder auf. Teuerungsbereinigt entspricht dies heute rund 35,4 Milliarden Franken. Zuvor gab es 1945 und 1940 allgemeine Steueramnestien.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

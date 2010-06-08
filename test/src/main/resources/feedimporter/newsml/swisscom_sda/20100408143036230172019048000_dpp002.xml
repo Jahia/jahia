@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T143036+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-People"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>dpp002</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:dpp002:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T143036+0200</FirstCreated>
+<ThisRevisionCreated>20100408T143036+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7358"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7357"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Pedro Lenz hat seine eigene Definition vom Erwachsen werden</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Pedro Lenz über das Erwachsen werden</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Lebensfragen</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="ne"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Erwachsen werden - für Autor Pedro Lenz (45) beinhaltet dieser Prozess vor allem das Begreifen, dass man das eigene Wohlbefinden nicht auf andere delegieren kann: "Sprich, wenn ich jemanden gefunden habe, der mich liebt, gehts mir deswegen noch lange nicht gut."</p>
+<p>Im Interview mit der "Berner Zeitung" spricht Lenz über sein Mundart-Romandebüt "Der Goalie bin ig". In letzterem schreibt er über den Alltag eines Langenthaler Ex-Junkies. Erwachsen werden ist dabei ein zentrales Thema - aber auch die Liebe.</p>
+<p>Über das Erobern von Frauen, mit welchem der redselige Protagonist seines Buches so seine Mühe hat, sagt Lenz: "Früher dachte ich, wenn ich einer Frau imponieren will, muss ich ihr meine zehn besten Geschichten erzählen. Aber vielleicht hätte ich lieber mal nachgefragt, wie es ihr geht."</p>
+<p>Auf die Frage, ob seiner Meinung nach Frauen lieber einen soliden Typen wollten als einen Abenteurer, antwortet der in Langenthal aufgewachsene Schriftsteller: "Nach meiner Erfahrung, suchen Frauen für eine Partnerschaft einen Mann, der weiss, was er will." Die anfängliche Exotik eines Bohémiens verleide Frauen schnell.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

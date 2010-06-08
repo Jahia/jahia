@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T173040+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-People"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>dpp011</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:dpp011:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T173040+0200</FirstCreated>
+<ThisRevisionCreated>20100406T173040+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7179"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7180"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>US-Popstar Madonna legt Grundstein für Mädchenschule in Malawi</HeadLine>
+<DateLine>Chinkhota</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Madonna will Mädchen in Malawi helfen</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Hilfsprojekt</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">US-Popstar Madonna hat in Malawi den Grundstein für eine Mädchenschule gelegt. "Es war schon immer mein Traum, Frauen auszubilden, die bei der Entwicklung ihres Landes helfen können", sagte die 51-Jährige in dem Dorf Chinkhota, rund 15 Kilometer von der Hauptstadt Lilongwe entfernt.</p>
+<p>Madonna hat einen Jungen und ein Mädchen aus dem südostafrikanischen Staat adoptiert. Der Sängerin war damals vorgeworfen worden, ihren Ruhm und Reichtum auszunutzen, um die Adoptionsverfahren zu beschleunigen.</p>
+<p>Die Mädchenschule soll 500 Kinder aus sehr armen Verhältnissen aufnehmen. Der Baubeginn hatte sich wegen eines Streits zwischen der Stiftung der Sängerin und 200 Dorfbewohnern verzögert. Sie hatten sich nicht ausreichend für die Nutzung ihres Landes entschädigt gefühlt. Von der Regierung wurden sie daraufhin gewaltsam umgesiedelt.</p>
+<p>Bildungsminister George Chaponda lobte Madonnas Projekt. Die Schule entsteht nach dem Vorbild einer Einrichtung in Südafrika, die von US-Talkstar Oprah Winfrey initiiert wurde. In Malawi müssen mehr als die Hälfte der 13 Millionen Einwohner von weniger als einem Dollar pro Tag leben.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

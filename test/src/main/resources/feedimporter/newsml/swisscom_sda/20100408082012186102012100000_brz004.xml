@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T082012+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="5"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brz004</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brz004:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T082012+0200</FirstCreated>
+<ThisRevisionCreated>20100408T082012+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="5"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd9577"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd9578"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Nach 19 NHL-Saisons hört Keith Tkachuk auf</HeadLine>
+<DateLine>Eishockey</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>NHL-Topspieler tritt zurück</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Eishockey</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="int"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15031000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Mit Keith Tkachuk (38/St. Louis Blues) hat ein NHL-Topspieler seinen Rücktritt bekanntgegeben. Der bullige Stürmer (188 cm/105 kg) war zuletzt durch diverse Verletzungen zurückgeworfen worden.</p>
+<p>Der Amerikaner erzielte in 19 NHL-Saisons 1063 NHL-Skorerpunkte (538 Tore/525 Assists). Der 1990 von Winnipeg als Overall-Nummer 17 gedraftete Tkachuk spielte in der NHL auch noch für Phoenix und Atlanta. Der je vierfache NHL-Allstar und Olympia-Teilnehmer gewann mit den USA 2002 in Salt Lake City Olympia-Silber.</p>
+<p>National Hockey League (NHL). In der Nacht auf Donnerstag: New York Rangers - Toronto Maple Leafs 5:1. Detroit Red Wings - Columbus Blue Jackets 4:3. Chicago Blackhawks - St. Louis Blues 6:5. Edmonton Oilers - Colorado Avalanche 5:4 n.V. Phoenix Coyotes - Nashville Predators 5:2.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

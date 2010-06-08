@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T193343+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="2"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brd020</NewsItemId>
+<RevisionId PreviousRevision="4" Update="N">5</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brd020:5N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T102745+0200</FirstCreated>
+<ThisRevisionCreated>20100404T193343+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="2"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd7001"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd7002"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Ranghöchster Kardinal bezeichnet Kritik an Papst als Geschwätz</HeadLine>
+<DateLine>Jerusalem</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Papst geht nicht auf Missbrauchsskandale ein</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Vatikan</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="kp"/>
+<Property FormalName="author" Value="zy"/>
+<Property FormalName="author" Value="mue"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="12000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="IL"/>
+<Property FormalName="Country" Value="PS"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Bilder neu</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Vor zehntausenden Gläubigen hat Papst Benedikt XVI. vom Balkon des Petersdoms den traditionellen Ostersegen "Urbi et Orbi" erteilt. In seiner Osterbotschaft ging der Papst nicht direkt auf die Missbrauchsskandale in der katholischen Kirche ein.</p>
+<p>Er mahnte aber eine "geistige und moralische" Umkehr an. Dafür hatte der ranghöchste Kardinal Angelo Sodano die Ostermesse im Vatikan zu einer ungewöhnlichen Solidaritätsbekundung mit dem Papst genutzt.</p>
+<p>Zum Auftakt des Gottesdienstes ergriff der Vorsitzende des Kardinalskollegiums das Wort und erklärte demonstrativ, Benedikt XVI. könne sich des Rückhalts der Gemeinde sicher sein.</p>
+<p>"Heiliger Vater, das Volk Gottes ist mit Dir und wird sich nicht von dem unbedeutenden Geschwätz dieser Tage beeinflussen lassen", sagte Angelo Sodano unter dem Jubel der Anhänger des Papstes, die trotz des regnerischen Wetters auf den Petersplatz gekommen waren.</p>
+<p>Sodano würdigte Benedikt als einen Fels, der die Kirche aufrecht halte. "Die Kirche ist mit Dir", sagte der Kardinal.</p>
+<p>Beobachter interpretierten dies als eindeutigen Versuch der Klarstellung, dass lediglich eine kleine Minderheit Kinder missbraucht habe. Die Leiterin des US-Opferverbands SNAP, Barbara Blaine, bezeichnete Sodanos Rede als beleidigend. Den Opfern gehe es um Trost und Heilung. Ihre Aussagen sollten nicht als "unbedeutendes Geschwätz" abgetan werden.</p>
+<p>Die römisch-katholische Kirche steckt in einer ihrer schwersten Krisen, seitdem in zahlreichen Ländern immer mehr Vorwürfe der Misshandlung und des sexuellen Missbrauchs Minderjähriger durch Kirchenvertreter sowie der Vertuschung dieser Taten laut werden. Auch Benedikt wurde wegen seines Umgangs mit der Affäre kritisiert.</p>
+<p>Der Vatikan hat zuletzt mehrfach die Medien wegen ihrer Berichterstattung über den Missbrauchsskandal kritisiert. So hiess es in der offiziellen Vatikan-Zeitung "Osservatore Romano" am Samstag, der Papst sei Ziel einer "verabscheuungswürdigen Verleumdungskampagne" geworden.</p>
+<p>Benedikt selbst sprach in seiner Osterbotschaft diverse politische Konflikte an, bevor er seinen traditionellen Segen "Urbi et Orbi" spendete. Zu den Missbrauchsvorwürfen äusserte er sich aber wie schon bei den vorangegangenen Osterfeierlichkeiten nicht.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

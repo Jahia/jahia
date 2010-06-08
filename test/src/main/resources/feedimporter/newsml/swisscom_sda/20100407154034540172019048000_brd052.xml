@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T154034+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd044</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd044:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T144927+0200</FirstCreated>
+<ThisRevisionCreated>20100407T154034+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7259"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7260"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Prozess gegen Schweizer Schläger dauert bis mindestens Ende Juni</HeadLine>
+<DateLine>München/Zürich</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Langes Warten auf Urteil im Schlägerprozess</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Münchner Schlägerprozess</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="eh"/>
+<Property FormalName="author" Value="sd"/>
+<Property FormalName="author" Value="zy"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="Country" Value="DE"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">meldung ausgebaut</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Mit dem Urteil gegen die drei Schweizer Schläger, die in München vor Gericht stehen, ist nicht vor dem Sommer zu rechnen. Die Jugendkammer des Landgerichts München I gab weitere Verhandlungstermine bekannt.</p>
+<p>Das Gericht setzte fünf weitere Verhandlungstermine fest, wie Gerichtssprecherin Margarete Nötzel vor den Medien sagte. Bestimmt seien der 28. April, der 12. Mai, der 2., der 16. und der 23. Juni. Ein Urteil an diesem letzten Datum sei angesichts des Terminplanes des Gerichts aber nicht wahrscheinlich.</p>
+<p>Am 16. Juni sollen zwei damalige Mitschüler der Angeklagten per Videokonferenz als Zeugen befragt werden. Sie hatten im Juni 2009 auch an der Abschlussreise der Weiterbildungs- und Berufsfachschule Küsnacht ZH nach München teilgenommen. Nach der Tat waren sie kurzzeitig auch festgenommen worden. Die Verfahren wegen Beihilfe und unterlassene Hilfeleistung wurden jedoch eingestellt.</p>
+<p>Zu einer Zeugenvernehmung im März waren die beiden nicht erschienen. Sie hatten auf die damit verbundene schwere psychische Belastung hingewiesen.</p>
+<p>Am Dienstag standen die Mütter von zwei der Jugendlichen vor Gericht. Sie machten als Zeuginnen Angaben zur den persönlichen Verhältnissen. "Die beiden sind angehört worden, mehr ist dazu nicht zu sagen", erklärte Gerichtssprecherin Nötzel. Die anderen Elternteile hätten keine Aussagen machen wollen. Als Angehörige der Angeklagten haben sie dazu das Recht.</p>
+<p>Erst wenn die Beweisaufnahme abgeschlossen ist, kommen auch der psychiatrische Gutachter und der psychologische Gutachter zu Wort. Nach ursprünglichem Programm hätten sie bereits befragt werden sollen.</p>
+<p>Die drei damals 16-jährigen Berufsschüler aus Küsnacht an der Zürcher Goldküste haben am 30. Juni 2009 in der Münchner Innenstadt fünf Menschen brutal zusammengeschlagen und teils lebensgefährlich verletzt. Die Staatsanwaltschaft wirft ihnen versuchten Mord und schwere Körperverletzung vor.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

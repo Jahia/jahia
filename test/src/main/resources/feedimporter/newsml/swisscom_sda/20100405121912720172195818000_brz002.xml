@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T121912+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brz002</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brz002:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T121912+0200</FirstCreated>
+<ThisRevisionCreated>20100405T121912+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9469"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9470"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Sefoloshas Höhenflug mit Oklahoma</HeadLine>
+<DateLine>Basketball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Sefoloshas Höhenflug mit Oklahoma</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>NBA</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="sv"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15008000"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Thabo Sefolosha reiht mit Oklahoma City Thunder in der NBA einen Sieg an den anderen. Der Westschweizer besiegte am Tag nach der erstmaligen Playoff-Qualfikation mit seiner Equipe die Minnesota Timberwolves zu Hause 116:108. Er kam dabei während über 35 Minuten zum Einsatz und erreichte neun Punkte.</p>
+<p>NBA. Sonntag: Boston Celtics - Cleveland Cavaliers 117:113. Los Angeles Lakers - San Antonio Spurs 81:100. Indiana Pacers - Houston Rockets 133:102. Orlando Magic - Memphis Grizzlies 107:92. Toronto Raptors - Golden State Warriors 112:113. Washington Wizards - New Jersey Nets 109:99. Oklahoma City Thunder - Minnesota Timberwolves 116:108. Los Angeles Clippers - New York Knicks 107:113.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

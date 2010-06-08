@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T155358+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brd047</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brd047:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T155358+0200</FirstCreated>
+<ThisRevisionCreated>20100408T155358+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Bruderer für mehr Zusammenarbeit zwischen Parlamenten</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Bruderer wünscht engere Kontakte zum Ausland</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Konferenz</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="wl"/>
+<Property FormalName="author" Value="su"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11009000"/>
+<SubjectMatter FormalName="11006000"/>
+<SubjectDetail FormalName="11006001"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Nationalratspräsidentin Pascale Bruderer wünscht sich engere Kontakte zu Parlamenten anderer Länder. Nur durch Zusammenarbeit könnten Parlamente die globalen Herausforderungen meistern, sagte Bruderer vor Wissenschaftlern in Bern.</p>
+<p>Die Nationalratspräsidentin empfing im Bundeshaus rund 400 Verwaltungswissenschaftler aus 40 Ländern. Diese debattieren an einer viertägigen Konferenz in Bern über die Frage, wie der Staat auf die Weltwirtschaftskrise reagieren kann und welche Lehren bislang gezogen worden sind.</p>
+<p>Bruderer hob in ihrer Ansprache die Rolle der Parlamente hervor. Die Zusammenarbeit zwischen Parlamenten gewinne an Bedeutung, sagte sie laut Redetext. Künftig sollten Parlamente auch in internationale Verhandlungen einbezogen werden.</p>
+<p>Schweizer Parlamentarierinnen und Parlamentarier pflegten seit Jahren Kontakte zu Parlamentsmitgliedern anderer Länder, sagte die Nationalratspräsidentin. Dies trage dazu bei, dass die Schweiz im expandierenden Europa nicht isoliert werde. Die parlamentarische Diplomatie habe sich auch in der Krise als nützlich erwiesen.</p>
+<p>Stephen Osborne, der die Konferenz in Bern präsidiert, vertritt die These, dass die Wirtschaftskrise die Rolle des Staates verändert hat. Die Konsequenzen der staatlichen Rettungsaktionen würden erst in einigen Jahren richtig sichtbar werden, schreibt der Wirtschaftsprofessor aus Edinburgh zur Konferenz.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

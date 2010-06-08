@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T003732+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd002</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd002:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T003732+0200</FirstCreated>
+<ThisRevisionCreated>20100405T003732+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7013"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7015"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Organisiertes Verbrechen in Mexiko fordert 19 Todesopfer</HeadLine>
+<DateLine>Torreon</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>19 Tote im mexikanischenn Drogenkrieg</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Drogenkrieg</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<Subject FormalName="02000000"/>
+<SubjectMatter FormalName="02001000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="MX"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Dem organisierten Verbrechen in Mexiko sind am Wochenende insgesamt 19 Menschen zum Opfer gefallen. Nach Angaben der Polizei erschoss ein Kommando in Torreon im nördlichen Bundesstaat Coahuila sechs Männer zwischen 18 und 29 Jahren vor dem Haus eines der Opfer.</p>
+<p>Dabei wurde zudem ein Mann durch einen Kopfschuss schwer verletzt. In Mier im Bundesstaat Tamaulipas im Nordosten des Landes wurden bei Zusammenstössen zwischen Soldaten und bewaffneten Zivilisten zudem drei Menschen getötet. Mier liegt an der Grenze zu den USA.</p>
+<p>Im ebenfalls an der Grenze zu den USA gelegenen Stadt Ciudad Juárez wurden nach Angaben der örtlichen Behörden weitere zehn Menschen ermordet. Zwei von ihnen wurden demnach erschossen, als sie gerade an einer Beerdigung teilnahmen. Ciudad Juárez gilt als die Stadt mit der höchsten Kriminalitätsrate Mexikos.</p>
+<p>Im Norden Mexikos machen sich mehrere Rauschgiftkartelle die Schmuggelrouten für Drogen in die USA streitig. Seit dem Amtsantritt von Präsident Felipe Calderón Ende 2006 kamen nach Behördenangaben landesweit mehr als 15'000 Menschen im Drogenkrieg ums Leben.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

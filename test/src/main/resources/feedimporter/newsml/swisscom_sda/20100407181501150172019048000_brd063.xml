@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T181502+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd023</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd023:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T111437+0200</FirstCreated>
+<ThisRevisionCreated>20100407T181502+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7294"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7296"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>US-Raumfähre "Discovery" dockt an Internationaler Raumstation an</HeadLine>
+<DateLine>Washington</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>"Discovery" an ISS angedockt</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Raumfahrt</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="zy"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="US"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">meldung ausgebaut, bilder neu, prio erhöht</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Zwei Tage nach ihrem Bilderbuchstart ist die US-Raumfähre "Discovery" ans Ziel gelangt. Der Space-Shuttle dockte am Morgen um 9.44 Uhr MESZ an der Internationalen Raumstation ISS an, wie die US-Weltraumbehörde NASA mitteilte.</p>
+<p>Die Raumfähre mit sieben Astronauten an Bord bringt Material zum weiteren Ausbau der Station ins All, dazu zahlreiche Forschungsexperimente für die Laboratorien der ISS.</p>
+<p>Allerdings ist es eine Mission mit Hindernissen: Kurz nach dem Start war eine wichtige Antenne des Orbiters ausgefallen, die auch Teil des für das Andockmanöver nötigen Radarsystems ist. Es stehe aber ausreichender technischer Ersatz zur Verfügung, beruhigte die NASA. Der Erfolg der Mission sei nicht gefährdet.</p>
+<p>Insgesamt befinden sich nach der Shuttle-Ankunft 13 Raumfahrer auf dem "Aussenposten der Menschheit". Bei dem Einsatz dominiert Frauenpower: Drei weibliche "Discovery"-Mitglieder treffen in der ISS auf ihre Kollegin Tracy Caldwell-Dyson. Erstmals in der Geschichte der Raumfahrt sind damit vier Frauen zur gleichen Zeit im All.</p>
+<p>Und noch eine Premiere: Erstmals arbeiten zwei japanische Astronauten im Orbit zusammen. Viel Zeit hat die "Discovery"-Crew nicht. Insgesamt sind drei Ausseneinsätze geplant - der erste am Freitag.</p>
+<p>Dann sollen während eines sechseinhalbstündigen Ausstiegs die Astronauten Rick Mastracchio und Clayton Anderson sich auch um die Installation eines Ammoniak-Tanks kümmern und eine japanische Experiment-Vorrichtung an der Aussenverkleidung der ISS abbauen.</p>
+<p>Die "Discovery" war am Ostermontag zur ISS gestartet und soll am 18. April zur Erde zurückkehren. Nach dieser Mission wird es nur noch drei weitere Shuttle-Starts geben, bevor die Raumfähren nach rund einem Vierteljahrhundert abgewrackt werden. Nach bisherigen Planungen der NASA ist der letzte Start am 16. September 2010 vorgesehen - dann ist die Shuttle-Ära zu Ende.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

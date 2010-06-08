@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T142239+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd037</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd037:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T142239+0200</FirstCreated>
+<ThisRevisionCreated>20100406T142239+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7145"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7146"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Maoisten-Angriff fordert in Zentralindien mindestens 70 Tote</HeadLine>
+<DateLine>Neu Delhi</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>70 Polizisten bei Maoisten-Angriff getötet</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Indien</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="gb"/>
+<Property FormalName="author" Value="kr"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="IN"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Schwer bewaffnete maoistische Rebellen haben laut Polizeiangaben in Zentralindien eine Einheit der paramilitärischen Bundespolizei attackiert und mindestens 70 Sicherheitskräfte getötet. Schon am Ostersonntag hatten Rebellen elf Polizisten ermordet.</p>
+<p>Nach indischen Medienberichten zündeten die Maoisten in einem Waldgebiet im Bundesstaat Chhattisgarh zunächst mehrere Sprengsätze und eröffneten dann von umliegenden Hügeln das Feuer auf die zum Stehen gekommenen Fahrzeuge. Insgesamt hätten 120 Sicherheitskräfte zu der Einheit gehört. Den Angaben zufolge wurden sie von mehr als 350 Bewaffneten in der Region Dantewada angegriffen.</p>
+<p>Innenminister Palaniappan Chidamabaram sagte dem Sender NDTV, die Bundespolizisten seien auf dem Rückweg von einem mehrtägigen Einsatz gegen die Maoisten in der Region gewesen. Dabei sei die Einheit offensichtlich in eine von den "Rebellen gestellte Falle getappt". "Irgendetwas ist schiefgelaufen", sagte Chidambaram weiter.</p>
+<p>Erst am Ostersonntag hatten maoistische Rebellen im benachbarten Bundesstaat Orissa elf Sicherheitskräfte getötet. Nach offiziellen Angaben operieren die Bewaffneten in 200 der 626 indischen Distrikte und kontrollieren 34 davon, einige davon in Chhattisgarh.</p>
+<p>Sie kämpfen nach eigener Aussage für die Rechte der verarmten Landbevölkerung. Mitte März nannte Innenminister Chidamabaram die Bedrohung durch Maoisten grösser als die durch den radikal-islamischen Terrorismus.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

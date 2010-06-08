@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T161411+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd054</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd054:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T161411+0200</FirstCreated>
+<ThisRevisionCreated>20100407T161411+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7268"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7267"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Starke Regenfälle in Rio haben über 100 Menschen das Leben gekostet</HeadLine>
+<DateLine>Rio de Janeiro</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Regen stürzt Rio de Janeiro ins Chaos</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Wetter</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+<Property FormalName="author" Value="bu"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<SubjectMatter FormalName="03005000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="BR"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Die stärksten Regenfälle seit über vier Jahrzehnten haben Rio de Janeiro ins Chaos gestürzt und mehr als 100 Menschen das Leben gekostet. Die meisten starben bei Erdrutschen in den Armenvierteln der brasilianischen Metropole und umliegenden Orten.</p>
+<p>Schlamm- und Geröllmassen rissen die oft provisorisch und illegal an Hängen errichteten Häuser und ihre Bewohner mit in die Tiefe. Zwar liess der Regen nach. In der Stadt am Zuckerhut und benachbarten Orten wie Niterói und São Gonçalo herrschte aber höchste Alarmbereitschaft.</p>
+<p>Tausende Feuerwehrleute waren im Einsatz, denn noch immer wurden Menschen vermisst. In einigen Stadtteilen Rios bot sich den Helfern ein Bild der Verwüstung.</p>
+<p>Die Feuerwehr gab die Zahl der Todesopfer in Rio de Janeiro und umliegenden Orten mit 103 an. Die Zivilschutzbehörden sprachen dagegen zunächst von 98 Toten. Bürgermeister Eduardo Paes ordnete für Mittwoch (Ortszeit) die Schliessung der Schulen an und bat die Cariocas, die Einwohner Rios, nur absolut notwendige Fahrten zu unternehmen.</p>
+<p>Dadurch sollten die Strassen für Rettungs- und Aufräumfahrzeuge freigehalten werden. Am Dienstag war der Verkehr in der Stadt völlig zusammengebrochen. Umgestürzte Bäume blockierten Strassen und Kreuzungen, Tunnel waren bis zur Decke überflutet und zahllose Autos standen bis zum Dach im Wasser.</p>
+<p>Nach Worten von Bürgermeister Paes wurde Rio vom heftigsten Regen seit 1966 heimgesucht. In nur 24 Stunden fielen 288 Liter Regen auf einen Quadratmeter; 1966 waren es 245 Liter. Leidtragende sind meist die Ärmsten der Armen, die ihre Häuser illegal und trotz Warnungen der Behörden an die Hänge bauen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

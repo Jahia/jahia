@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T154523+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="5"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brz009</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brz009:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T154523+0200</FirstCreated>
+<ThisRevisionCreated>20100407T154523+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="5"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9554"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9555"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Begehren von Christian Constantin abgelehnt</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Keine Indizien für mögliche Manipulation</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Axpo Super League</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="mk"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15054000"/>
+<SubjectDetail FormalName="15073031"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Die Bundesanwaltschaft (BA) wird wegen möglicher Manipulation des Spiels Grasshoppers - FC Sion vom 17. März kein Verfahren eröffnen. Sie tritt auf das Begehren des Sittener Präsidenten Christian Constantin nicht ein.</p>
+<p>Sie habe keinen Zusammenhang mit den laufenden Ermittlungen betreffend internationalem Wettbetrug festgestellt, teilte die BA mit. Die Abklärungen hätten keinerlei konkrete Hinweise auf ein strafbares Verhalten ergeben.</p>
+<p>Für solches war der Sion-Mittelfeldspieler Geoffrey Serey Die von seinem Präsidenten Christian Constantin verdächtigt worden. "CC" hatte seinen ivorischen Angestellten mit gezielt zweideutigen Aussagen in die Ecke der Wettbetrüger gestellt.</p>
+<p>Constantin verdächtigte Serey Die, die Rote Karte im Auswärtsspiel gegen GC absichtlich provoziert zu haben. Vertrauensleute in London hätten ihn darauf hingewiesen, dass ungewohnt hohe Beträge auf eine Niederlage Sions in Zürich gesetzt worden seien. Den Platzverweis gegen Serey Die hatte Constantin darauf in diesen Zusammenhang gestellt und die BA eingeschaltet. "Wenn ich einen Spieler von mir wegen einer Manipulation kontaktieren müsste, es wäre Serey Die", so der Architekt aus Martigny.</p>
+<p>Noch bevor die Ermittlungen der BA im Abklärungsstadium beendet wurden, hatte Constantin seinen Spieler intern (milde) abgestraft. Der Afrikaner muss sich in den nächsten Tagen in der Nachwuchsarbeit einbringen, "um sich seiner Verantwortung gegenüber den jungen Fussballern im Verein bewusst zu werden."</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

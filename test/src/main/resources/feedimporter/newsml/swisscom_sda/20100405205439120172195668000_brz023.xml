@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T205439+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brz011</NewsItemId>
+<RevisionId PreviousRevision="2" Update="N">3</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brz011:3N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T160608+0200</FirstCreated>
+<ThisRevisionCreated>20100405T205439+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9484"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9483"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Schweizer Curler bezwingen Deutschland und Frankreich</HeadLine>
+<DateLine>Curling</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Karnusians Curler im Aufwärtstrend</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Curling</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="plh"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15018000"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">ersetzt</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">An der Curling-WM der Männer in Cortina d'Ampezzo zeigt die Leistungskurve der Schweizer um Skip Stefan Karnusian steil nach oben.</p>
+<p>Niederlagen gegen Dänemark, USA und Kanada liessen sie zwei Siege gegen Deutschland (4:3) und Frankreich (5:4) folgen. Gegen die zweimaligen WM-Zweiten aus Deutschland (Andy Kapp) reichte es dann aber zu einem besonders schönen ersten Erfolgserlebnis.</p>
+<p>Rolf Iseli, Robert Hürlimann, Christof Schwaller und Stefan Karnusian liefen gegen die Füssener fast während des ganzen Spiels einem Rückstand hinterher. Just mit dem letzten Stein im zehnten End brachte Karnusian einen Bigshot an. Der 46-jährige Gstaader, der seine erste WM als Skip bestreitet, spielte mit einem schwierigen, prächtig gelungenen Doppel-Takeout zwei deutsche Steine vom Zentrum weg, so dass schliesslich zwei gültige Schweizer Steine liegenblieben: vom 2:3 zum 4:3!</p>
+<p>Gleich anschliessend mussten die Schweizer gegen die von Thomas Dufour angeführten Franzosen antreten, den Schweizer WM-Angstgegner der letzten Jahre. Vom Erfolg gegen Deutschland beflügelt, steigerten sich die St. Moritzer auf die Spitzenquote von 91 Prozent an gelungenen Steinen. Die Franzosen spielten ihrerseits mit 82 Prozent gut, mussten sich aber geschlagen geben. Während des zehnten Ends gaben sie auf.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

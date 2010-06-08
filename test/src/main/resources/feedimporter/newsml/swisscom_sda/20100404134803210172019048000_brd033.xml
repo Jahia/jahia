@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T134803+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brd016</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brd016:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T075841+0200</FirstCreated>
+<ThisRevisionCreated>20100404T134803+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6951"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6952"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Regierung in Bangkok fordert Ende der Proteste</HeadLine>
+<DateLine>Bangkok</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Zwangsräumung in Bangkok angedroht</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Thailand</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+<Property FormalName="author" Value="zy"/>
+<Property FormalName="author" Value="mue"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11006000"/>
+<SubjectMatter FormalName="11010000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="TH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Meldung durchgehend aktualisiert</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Drei Wochen nach Beginn der Massenproteste gegen die thailändische Regierung in Bangkok hat sich die Lage am Osterwochenende verschärft. Die Polizei erklärte die jüngste Blockadeaktion der Regierungsgegner für illegal.</p>
+<p>Nachdem die Regierung die Demonstranten drei Wochen gewähren liess, schaltete sie mit dem möglichen Millionenverlust der Geschäfte und Hotels vor Augen eine härtere Gangart ein. Sie drohte denjenigen, die sich dem Räumungsbefehl widersetzen, mit Arrest.</p>
+<p>Die Polizei werde Haftbefehle gegen die Anführer der Demonstranten beantragen, sagte ein Regierungsvertreter. Regierungschef Abhisit Vejjajiva rief im Fernsehen zur Ruhe auf. Die Regierung hatte rund 50'000 Soldaten und Polizisten zusammengezogen, um die Lage unter Kontrolle zu halten.</p>
+<p>Zehntausende sogenannte Rothemden hatten sich am Wochenende im Viertel versammelt, in dem sich auch viele Luxushotels für Touristen und Geschäftsreisende befinden. Die Proteste lösten Verkehrsstörungen aus und zwangen mehrere Einkaufszentren und Geschäfte, vorübergehend zu schliessen.</p>
+<p>Die Touristen liessen sich durch die Kundgebungen, die mit Live-Musik und Tanz an ein Volksfest erinnerten, jedoch offenbar kaum stören.</p>
+<p>Das Oppositionsbündnis UDD gab sich weiterhin kompromisslos. Der Regierungschef werde es nicht wagen, der Polizei den Einsatzbefehl zu geben, sagte Jatuporn Promphan nach Angaben der Zeitung "The Nation". "Wenn der Regierungschef einen solchen Befehl gäbe, wäre das, als würde er seine eigene Gurgel durchschneiden", zitierte die Zeitung ihn.</p>
+<p>Die Demonstranten verlangen den Rücktritt der Regierung bis zum 12. April.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

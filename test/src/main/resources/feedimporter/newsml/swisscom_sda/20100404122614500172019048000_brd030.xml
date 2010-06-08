@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T122614+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brd030</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brd030:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T122614+0200</FirstCreated>
+<ThisRevisionCreated>20100404T122614+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6974"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6975"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Elton John begeistert in mexikanischer Maya-Stätte</HeadLine>
+<DateLine>Mexiko-Stadt</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>"Konzert der Nachtsonne" mit Elton John</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Tourismusförderung</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="kp"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="01000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="MX"/>
+<Property FormalName="Country" Value="GB"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Vor der Pyramidenkulisse der mexikanischen Maya-Stätte Chichén Itzá hat der britische Popstar Elton John am Samstag 5000 Besucher bei einem Konzert begeistert. Mit den Konzerten will die Regierung des Bundesstaates Yucatán den Tourismus fördern.</p>
+<p>Das "Konzert der Nachtsonne" war zuvor in Gefahr geraten, nachdem am Mittwochabend das Dach einer vor der Pyramide Kukulkan aufgebauten Tribüne eingestürzt und drei Arbeiter verletzt worden waren.</p>
+<p>Es war das erste Popkonzert in Chichén Itzá, wo zuvor Sänger der klassischen Musik wie Luciano Pavarotti, Sarah Brighton und Placido Domingo aufgetreten waren. 2011 ist ein Konzert des Ex-Beatles Paul McCartney geplant.</p>
+<p>Chichén Itzá ist eine der bedeutendsten Stätten der Mayakultur in Mittelamerika. Sie liegt gerade mal 200 Kilometer westlich der mexikanischen Touristenhochburg Cancún und 120 Kilometer östlich der Hauptstadt von Yucatán, Merida. 2007 wurde Chichén Itzá, auch dank entsprechender Promotion durch die mexikanische Regierung, zu einem der Weltwunder der Neuzeit gewählt.</p>
+<p>Gegen die Konzerte hat sich vor allem das Nationale Institut für Anthropologie und Geschichte (INAH) ausgesprochen. Vergeblich versuchte das INAH 2008, das Konzert von Domingo verbieten zu lassen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

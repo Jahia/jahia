@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T001855+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brd001</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brd001:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T000427+0200</FirstCreated>
+<ThisRevisionCreated>20100404T001855+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6935"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6934"/>
+<Instruction FormalName="Rectify">
+<RevisionStatus>
+<Status FormalName="Canceled"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>US-Kardinal Levada liess pädophilen Priester versetzen</HeadLine>
+<DateLine>Washington</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>US-Kirche versetzte pädophilen Priester nur</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Missbrauch</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="12000000"/>
+<Subject FormalName="02000000"/>
+<SubjectMatter FormalName="02001000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="VA"/>
+<Property FormalName="Country" Value="US"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Berichtigt: Levada war nicht Oberhaupt der katholischen Kirche in den USA (wird in Abschnitt 1 nach dem Lead neu als Geistlicher bezeichnet).</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der US-Kardinal William Levada hat Mitte der 1990er Jahre einen pädophilen Priester versetzt, ohne die Mitglieder der betroffenen Gemeinde über den Kindesmissbrauch durch den Geistlichen zu informieren.</p>
+<p>Wie von Seiten einer Opfer-Anwältin aus dem Bundesstaat Oregon bekannt wurde, machte der Geistliche im Jahr 2006 unter Eid seine Aussagen zum Fall.</p>
+<p>In seiner Zeit als Erzbischof von Portland habe er sich dafür entschieden, den Priester, nachdem sich dieser einer Therapie unterzogen hatte, zu versetzen, hiess es in einer Aufzeichnung seiner Aussage, die der Nachrichtenagentur AFP vorlag.</p>
+<p>"Die Missbrauchsvorwürfe lagen 20 Jahre zurück, die Therapeuten versicherten, dass er für niemanden mehr eine Gefahr sei und dass es klüger sei, ihm einen neuen Posten zu geben", sagte Levada demnach.</p>
+<p>Die Mitglieder der betroffenen Gemeinde habe er über die Missbrauchsvorwürfe gegen den Geistlichen nicht informiert. Er habe es für das Beste gehalten, alle Informationen dem verantwortlichen Priester der neuen Gemeinde zu geben und diesen anzuhalten, das Verhalten des Geistlichen genau zu beobachten.</p>
+<p>Levada wurde 2005 von Papst Benedikt XVI. zum neuen Präfekten der Glaubenskongregation ernannt. Mehrfach verteidigte er den Papst vehement gegen die Vorwürfe im Zusammenhang mit den Missbrauchsfällen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

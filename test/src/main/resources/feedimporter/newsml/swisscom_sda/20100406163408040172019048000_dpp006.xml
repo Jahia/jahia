@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T163409+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-People"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>dpp006</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:dpp006:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T163409+0200</FirstCreated>
+<ThisRevisionCreated>20100406T163409+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7162"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7161"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Angelina Jolie und Brad Pitt statten Montenegro Kurzbesuch ab</HeadLine>
+<DateLine>Podgorica</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Jolie und Pitt besuchen Montenegro</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Besuch</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Das US-Schauspielerpaar Angelina Jolie und Brad Pitt hat nach Bosnien auch Montenegro einen Kurzbesuch abgestattet. Die beiden Hollywoodstars besuchten die mittelalterliche Hafenstadt Budva, wie der Besitzer des Hotels "Splendid" nahe Budva der Nachrichtenagentur AFP sagte.</p>
+<p>Pitt habe ihm erklärt, er habe seiner Frau Montenegro zeigen wollen, weil er gute Erinnerungen an die Städte Perast, Sveti Stefan und Kotor habe, wo er einen seiner ersten Filme gedreht habe, sagte Hotelbesitzer Zarko Radulovic.</p>
+<p>Möglicherweise komme das Paar ein weiteres Mal mit den Kindern, um Urlaub zu machen, "weil es ihnen gefällt und die Natur schön ist", fügte Radulovic hinzu. Über Ostern hatten Jolie und Pitt Unterkünfte und Anlagen des UN-Flüchtlingshilfswerks UNHCR in Bosnien besichtigt. Jolie engagiert sich als UNHCR-Botschafterin für die Belange von Flüchtlingen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

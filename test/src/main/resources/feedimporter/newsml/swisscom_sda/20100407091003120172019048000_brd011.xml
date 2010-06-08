@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T091003+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd011</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd011:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T091003+0200</FirstCreated>
+<ThisRevisionCreated>20100407T091003+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7219"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7220"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Kooperation von Daimler mit Renault-Nissan bestätigt</HeadLine>
+<DateLine>Tokio/München</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Nissan bestätigt Zusammenarbeit mit Daimler</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Autoindustrie</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+</Source>
+<Property FormalName="author" Value="ti"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="04000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="DE"/>
+<Property FormalName="Country" Value="JP"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der Autohersteller Daimler arbeitet wie erwartet künftig mit dem französischen Hersteller Renault und dessen japanischem Kompagnon Nissan zusammen. Die Konzerne kooperierten bei Elektroautos, Pkw und leichten Nutzfahrzeugen, wie Nissan mitteilte.</p>
+<p>Gemeinsam sollen Dieselmotoren für Daimlers Kleinwagenmarke Smart und andere Modelle entwickelt werden sowie eine einheitliche Plattform für den Smart und Renaults Twingo. Zudem liefere Daimler Benzin- und Dieselmotoren für Nissans Oberklassemarke Infiniti.</p>
+<p>Wie es in der Mitteilung weiter hiess, beteiligt sich Daimler zudem mit jeweils 3,1 Prozent an Renault und Nissan. Der französische Konzern übernimmt im Gegenzug 1,55 Prozent am deutschen Unternehmen.</p>
+<p>Zudem will der Autohersteller Nissan nun auch im Heimmarkt Japan Autos zurückrufen. Grund sind defekte Gaspedale. Betroffen sind insgesamt 25'000 Wagen der Modelle Cefiro, Bluebird, Sunny, Primera und Tino, die von 1998 bis 2002 in Japan hergestellt und verkauft wurden.</p>
+<p>Bei den Autos kehren die Gaspedale möglicherweise verzögert in die Ausgangsstellung zurück. Nach Angaben des Verkehrsministeriums sind wegen des Fehlers 43 Beschwerden eingegangen. Zudem soll der Mangel demnach Ursache für mindestens einen Unfall sein, bei dem im Februar ein Mensch leicht verletzt wurde.</p>
+<p>Im März hatte Nissan bereits weltweit knapp 540'000 Autos zurückgerufen, die meisten davon in den USA. Grund waren unter anderem Probleme mit den Bremsen. In den vergangenen Monaten hatte auch Nissans japanischer Konkurrent Toyota wegen verschiedener Mängel weltweit mehr als acht Millionen Wagen zurück in die Werkstätten beordern müssen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

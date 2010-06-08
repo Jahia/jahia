@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T103923+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd021</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd021:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T103923+0200</FirstCreated>
+<ThisRevisionCreated>20100406T103923+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7122"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7123"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Erneuter Rückruf von Toyota wegen lockeren Fussmatten</HeadLine>
+<DateLine>Seoul</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Toyota ruft in Südkorea 13'000 Autos zurück</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Autoindustrie</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+</Source>
+<Property FormalName="author" Value="ti"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04013000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="US"/>
+<Property FormalName="Country" Value="KR"/>
+<Property FormalName="Country" Value="JP"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der japanische Autohersteller Toyota ruft nun auch in Südkorea Tausende Fahrzeuge wegen lockerer Fussmatten zurück. Dabei handelt es sich um rund 13'000 Fahrzeuge der Modelle Lexus ES350, Camry und Camry Hybrid.</p>
+<p>Bei den Autos könnten die Matten verrutschen und das Gaspedal einklemmen, teilte das Verkehrsministerium in Seoul am Dienstag mit. Toyota sprach von einem freiwilligen Rückruf, um Unfälle zu vermeiden. Der Weltmarktführer steht seit längerem wegen Sicherheitsmängeln an seinen Fahrzeugen in der Kritik.</p>
+<p>In den USA forderten die Verkehrssicherheitsbehörden am Montag die Höchststrafe von 16,4 Mio. Dollar, weil der Konzern mindestens vier Monate lang Informationen über Probleme mit Gaspedalen zurückgehalten habe. Toyota hat weltweit mehr als 8,5 Millionen Pkw wegen klemmender Gaspedale, rutschender Fussmatten und defekter Bremsen zurückgerufen.</p>
+<p>In den USA waren es mehr als zwei Millionen Autos. In der Schweiz hat das Unternehmen rund 28'000 der 320'000 immatrikulierten Toyotas für Kontrollen und Reparaturen in die Garage zurückgerufen. Unfälle wegen möglichen Funktionsmängel sind hierzulande keine bekannt.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

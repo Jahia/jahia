@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T133609+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-People"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>dpp004</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:dpp004:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T133609+0200</FirstCreated>
+<ThisRevisionCreated>20100404T133609+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6976"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6977"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Nelly Wenger fühlt sich wieder gesund</HeadLine>
+<DateLine>Zürich</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Nelly Wenger ist wieder zurück</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>"Madame Expo"</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="zy"/>
+<Property FormalName="author" Value="mue"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Als Expo-Chefin war Nelly Wenger fast täglich in den Medien präsent. Auch als Chefin von Nestlé Schweiz, als sie mit der Plastic-Verpackung der Cailler-Schokolade eine Polemik ausgelöst hatte, wurde über die 54-Jährige viel berichtet. Dann wurde es ruhig um sie.</p>
+<p>Bei der ehemaligen "Madame Expo" wurde 2006 Brustkrebs diagnostiziert. Damals verschwand sie lange aus dem Rampenlicht der Medien. Nun ist sie zurück. Nach ihrer Krebserkrankung befragt, sagte sie gegenüber der "NZZ am Sonntag": "Oh, das liegt schon so lange zurück." Nun lebt sie bewusster und setzt ihre Prioritäten besser. "Alle mit meiner Erfahrung sagen das Gleiche, aber es ist nun einmal wahr."</p>
+<p>Aber auch nachdem Wenger lange Zeit "abwesend" war, ist und bleibt sie wohl weiterhin in vielen Köpfen als "Madame Expo" präsent. Stets gehen nämlich Menschen auf sie zu, die von ihren Erinnerungen an die Landesausstellung erzählen wollen. "Es war eine herrliche Erfahrung", sagt Wenger über diese intensive Phase ihres Lebens. "Dass sie so lange in der Bevölkerung nachwirken würde, hätte ich nicht gedacht."</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T181643+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brz015</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brz015:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T181024+0200</FirstCreated>
+<ThisRevisionCreated>20100405T181643+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9485"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd9486"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Genève-Servette zum zweiten Mal im Playoff-Final</HeadLine>
+<DateLine>Eishockey</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Playoff-Final-Paarung steht fest</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Zug - Servette</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="bi"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15031000"/>
+<SubjectMatter FormalName="15073000"/>
+<SubjectDetail FormalName="15073031"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">update</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Zum zweiten Mal nach 2008 (Niederlage gegen die ZSC Lions) steht der Genève-Servette HC im Playoff-Final. Die Genfer setzten sich im sechsten Halbfinal gegen Zug mit 7:2 (3:0, 2:1, 2:1) durch.</p>
+<p>Blitzstarts entschieden über Ostern die Serie. Schon am Samstag in Spiel 5 war Servette in den ersten vier Minuten durch zwei Tore von Jeff Toms 2:0 in Führung gegangen. Am Ostermontag fehlte Toms krankheitshalber, dafür sprang Juraj Kolnik in die Bresche. Der Slowake erzielte zum 6:1-Sieg seine ersten vier Playofftore in dieser Saison (!). Mit zwei Toren in den ersten 196 Sekunden brachte Kolnik sein Team früh auf die Gewinnerstrasse. Tony Salmelainen erhöhte schon nach neun Minuten auf 3:0 für Servette. Zugs Goalie Jussi Markkanen liess drei der ersten vier Schüsse auf sein Tor passieren.</p>
+<p>Zu einer Reaktion sahen sich die Zuger nicht im Stande. Die Tore der Innerschweizer erzielten Fabian Schnyder in der 39. Minute zum 1:5 und Damien Brunner kurz vor Schluss zum 2:6. Bejubelt wurden diese Treffer nur noch halbherzig. Damit wird in der Zuger Herti-Allmend das Eis geschmolzen und das Stadion abgerissen. Die nächste Saison bestreitet Zug in einem neuen Stadion.</p>
+<p>Die Finalserie zwischen Qualifikationssieger Bern und Genève-Servette (2.) beginnt nächsten Samstag in der Berner PostFinance-Arena. Bern und Servette stehen sich zum vierten Mal in einer Playoff-Serie gegenüber, der SCB gewann alle bisherigen Serien (mit 4:2, 4:1 und 4:1 Siegen).</p>
+<hl2>Telegramm:</hl2>
+<hl2>Zug - Genève-Servette 2:7 (0:3, 1:2, 1:2)</hl2>
+<p>Herti. -- 5524 Zuschauer. -- SR Kurmann/Reiber, Wehrli/Wirth. -- Tore: 1. (0:57) Kolnik (Florian Conz) 0:1. 4. Kolnik (Savary) 0:2. 10. Salmelainen 0:3. 28. Kolnik (Savary, Salmelainen/Strafe angezeigt) 0:4. 34. Kolnik (Gobbi, Déruns/Ausschluss Steinmann) 0:5. 39. Fabian Schnyder (McTavish, Holden) 1:5. 50. Florian Conz (Trachsler, Kolnik/Ausschluss Suri!) 1:6. 56. Damien Brunner (McTavish, Holden/Ausschluss Hürlimann) 2:6. 58. Rubin (Déruns) 2:7. -- Strafen: 4mal 2 Minuten gegen Zug, 6mal 2 Minuten gegen Genève-Servette. -- PostFinance-Topskorer: Holden; Salmelainen. -- Zug: Markkanen; Patrick Fischer II, Diaz; Boumedienne, Oppliger; Blaser, Snell; Schefer; Damien Brunner, Holden, Fabian Schnyder; Di Pietro, Duri Camichel, McTavish; Christen, Steinmann, Corsin Camichel; Rüfenacht, Bodemann, Fabian Lüthi. -- Genève-Servette: Tobias Stephan; Gobbi, Jonathan Mercier; Vukovic, Malik; Höhener, Breitbach; Goran Bezina; Déruns, Savary, Salmelainen; Rivera, Trachsler, Suri; Florian Conz, Rubin, Kolnik; Maurer, Hürlimann, Pivron. -- Bemerkungen: Zug ohne Kress (verletzt) und Dupont (überzähliger Ausländer), Genève-Servette ohne Cadieux (verletzt) und Toms (krank). Patrick Fischer II verletzt ausgeschieden (17.). -- Pfostenschüsse: Christen (26.); Florian Conz (15.).</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

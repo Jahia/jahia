@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T114729+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd028</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd028:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T114729+0200</FirstCreated>
+<ThisRevisionCreated>20100406T114729+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Schweizer Rheinsalinen lieferten 190'000 Tonnen Salz</HeadLine>
+<DateLine>Pratteln BL</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Rheinsalinen will zusätzlichen Lagerplatz</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Harter Winter</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="lr"/>
+<Property FormalName="author" Value="sa"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04015000"/>
+<SubjectDetail FormalName="04015003"/>
+<Subject FormalName="06000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="RGBS"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Im schneereichen Winter 2009/2010 haben die Schweizer Rheinsalinen insgesamt 190'000 Tonnen Auftausalz ausgeliefert, wie sie mitteilten. Die knapp gewordenen Lagerkapazitäten sollen bis 2011 von 130'000 Tonnen auf 230'000 Tonnen ausgebaut werden.</p>
+<p>Die zwischen Dezember 2009 und März 2010 ausgelieferte Salzmenge liege etwa beim Doppelten der Mengen der 80er- und 90er-Jahre. Da seither der Bedarf gestiegen und die Schwankungen stärker geworden sind, haben die Rheinsalinen die Lagerkapazität bereits erheblich aufgestockt. Dennoch kam es heuer wieder zu temporären Engpässen.</p>
+<p>Darum wollen die Salinen in Riburg AG nun zusätzlichen Lagerplatz für 100'000 Tonnen Auftausalz bauen. Stimmt der Verwaltungsrat in der zweiten Aprilhälfte der Investition zu, so soll der Bau in diesem Sommer begonnen werden. Bereit stehen sollen die Hallen für loses Salz und Säcke dann ab Sommer 2011, wie es weiter hiess.</p>
+<p>An Spitzentagen haben im auslaufenden Winter rund 7000 Tonnen Salz die Rheinsalinen-Lager verlassen - hergestellt werden pro Tag indes nur maximal 2200 Tonnen. Im Sommer kann die Kundschaft ihre eigenen Lager billiger auffüllen als im Winter. Die Rheinsalinen versorgen alle Schweizer Kantone ausser der Waadt mit Auftausalz.</p>
+<p>Die Rheinsalinen hatten 2005 eine 80'000 Tonnen grosse neue Salzlagerhalle namens "Saldome" eingeweiht; 2009 kam ein Sacklager für 5000 Tonnen dazu. Knapp geworden war das Streusalz zuletzt 2005 und 2003; im Winter 1999 hatte es sogar vorübergehend gar keines mehr gegeben.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

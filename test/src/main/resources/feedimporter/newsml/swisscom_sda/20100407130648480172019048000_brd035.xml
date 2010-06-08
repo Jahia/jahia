@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T130648+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd035</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd035:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T130648+0200</FirstCreated>
+<ThisRevisionCreated>20100407T130648+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Zwei 7-Jährige müssen als Strafe Arbeitseinsätze leisten</HeadLine>
+<DateLine>Oberrohrdorf AG</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Arbeitseinsätze nach Verwüstung von Friedhof</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Strafe</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="ga"/>
+<Property FormalName="author" Value="sa"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="AG"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Nach ihrem Vandalenakt auf dem Friedhof im aargauischen Oberrohrdorf müssen zwei 7-jährige Schüler als erzieherische Massnahme mehrere Arbeitseinsätze leisten. Sie verwüsteten im März rund 40 Gräber, drückten Grabsteine schräg und rissen Holzkreuze aus.</p>
+<p>Die Arbeitseinsätze in den Frühlingsferien haben die Schweizer Schüler an je zwei Nachmittagen zu Gunsten der Friedhofsverwaltung und der Schule zu leisten, wie die Schulpflege Oberrohrdorf mitteilte. Auf diese Strafe einigten sich die Eltern der Knaben und die Schulpflege.</p>
+<p>Die Schüler müssen sich zudem schriftlich oder persönlich bei den geschädigten Personen entschuldigen. Weil die beiden Knaben noch keine zehn Jahre alt sind, sind sie von Gesetzes wegen nicht strafmündig.</p>
+<p>Die Knaben waren sich gemäss Schulpflege nicht bewusst gewesen, welches Leid und welche Trauer ihre Tat bei den Angehörigen auslösen würde. Die Sachbeschädigungen seien nicht entschuldbar. Das sei den beiden Knaben im Gespräch auch selber klar geworden.</p>
+<p>Einen Tag nach dem Vandalenakt Anfang März hatte die Mutter einer der beiden Knaben bei der Polizei eine Selbstanzeige gemacht. Die Schüler hatten auf dem Friedhof rund 40 Gräber verwüstet sowie wahllos Grabschmuck wie Kerzen, Laternen und Figuren mit Fusstritten ausgerissen und fortgeschleudert.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

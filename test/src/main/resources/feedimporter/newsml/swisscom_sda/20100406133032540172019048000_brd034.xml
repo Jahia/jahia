@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T133032+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd034</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd034:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T133032+0200</FirstCreated>
+<ThisRevisionCreated>20100406T133032+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Gordon Brown setzt Parlamentswahl für 6. Mai an</HeadLine>
+<DateLine>London</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Grossbritannien wählt am 6. Mai</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Grossbritannien</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="kr"/>
+<Property FormalName="author" Value="gb"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11003000"/>
+<SubjectMatter FormalName="11009000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="GB"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der Startschuss für die Wahl in Grossbritannien ist gefallen: Premierminister Gordon Brown setzte nach monatelangen Spekulationen die Parlamentswahl für den 6. Mai an. Dabei bat er die Queen um die Auflösung des Parlaments und eröffnete somit offiziell den Wahlkampf.</p>
+<p>Um den Termin für die Unterhaus-Wahl, den der Premier in Grossbritannien selbst festlegen darf, war seit Browns Amtsantritt im Juni vor drei Jahren debattiert worden.</p>
+<p>Der Ausgang der Wahl gilt als ungewiss wie seit langem nicht mehr, da Browns sozialdemokratische Labour-Partei nach einer langen Talfahrt in den Umfragen zuletzt stark aufgeholt hat.</p>
+<p>Es wird daher ein äusserst spannendes Rennen erwartet, das die Herrschaft der Labour-Partei nach 13 Jahren beenden und die konservativen Tories zurück an die Macht bringen könnte. Vor Brown holte Tony Blair für Labour drei Wahlsiege in Folge; Brown selbst musste sich dem Votum der Wähler bisher nicht stellen, da er 2007 nach Blairs Rücktritt das Amt direkt übernommen hatte.</p>
+<p>Im Mittelpunkt des Wahlkampfes dürfte die Wirtschaftskrise stehen, die die Briten besonders hart getroffen hat. "Grossbritannien ist auf dem Weg der Erholung, und wir dürfen diese Erholung auf keinen Fall riskieren", sagte Brown vor seinem Amtssitz in der Downing Street.</p>
+<p>Vor der Wahl, die traditionell an einem Donnerstag stattfindet, wird es - erstmals in der Geschichte Grossbritanniens - mehrere TV- Duelle geben. Dabei stellen sich die Chefs der drei grössten Parteien den drängenden Fragen der Wähler. Das erste Duell findet am 15. April statt.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

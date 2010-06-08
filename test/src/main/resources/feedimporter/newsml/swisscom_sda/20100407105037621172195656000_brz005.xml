@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T105037+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brz003</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brz003:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T073130+0200</FirstCreated>
+<ThisRevisionCreated>20100407T105037+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9540"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd9541"/>
+<Instruction FormalName="Rectify">
+<RevisionStatus>
+<Status FormalName="Canceled"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>New York Islanders und Anaheim Ducks vor Saisonende</HeadLine>
+<DateLine>Eishockey</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Keine NHL-Playoffs für Schweizer Topspieler</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>National Hockey League</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="int"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15031000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">ergänzt</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Die Playoffs der National Hockey League (NHL) werden ohne die Klubs der beiden Schweizer Nationalspieler Mark Streit und Jonas Hiller ausgetragen.</p>
+<p>Sowohl die New York Islanders als auch die Anaheim Ducks können drei beziehungsweise vier Spiele vor Ende der Regular Season die Endausmarchung um den Stanley Cup nicht mehr erreichen. Der Rückstand der Islanders auf die achtklassierten Boston Bruins beträgt bei noch drei ausstehenden Spielen bereits sieben Punkte. Mark Streit ist damit auch in der zweiten Saison bei den "Isles" in den Playoffs Zuschauer.</p>
+<p>Die Islanders kamen gegen die Montreal Canadiens nach einem 2:3-Rückstand immerhin noch zu einem 4:3-Heimsieg nach Penaltyschiessen. Der Däne Frans Nielsen hatte zwei Minuten vor Spielende mit dem Treffer zum 3:3 die Verlängerung erzwungen, und er entschied auch das Penaltyschiessen für die Islanders. Mark Streit erreichte eine ausgeglichene Bilanz. Er stand bei den Gastgebern über 31 Minuten (!) auf dem Eis; der meistbeschäftigte Spieler von Montreal erhielt rund sieben Minuten weniger Eiszeit.</p>
+<p>Die Anaheim Ducks mussten alle Playoff-Hoffnungen begraben, weil Colorado in Vancouver 4:3 nach Penaltyschiessen gewann und dadurch als achtes und letztes Team im Westen den Playoff-Einzug realisierte. Die Ducks erfuhren noch während der Partie vom Endergebnis aus Vancouver, brachen in der eigenen Partie gegen die Los Angeles Kings nach einem 4:1-Vorsprung prompt noch ein und verloren 4:5 nach Penaltyschiessen. Der Appenzeller Goalie Jonas Hiller fehlte Anaheim wegen seiner Rückenbeschwerden zum fünften Mal in Folge. Dafür dürfte nun der neue Schweizer Nationaltrainer Sean Simpson mit ihm planen können.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

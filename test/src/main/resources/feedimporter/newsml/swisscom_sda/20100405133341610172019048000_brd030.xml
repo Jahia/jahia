@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T133341+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd030</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd030:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T133341+0200</FirstCreated>
+<ThisRevisionCreated>20100405T133341+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7049"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7051"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Blinde erhalten von IV weniger Geld für ihre Hunde</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>IV kürzt Blinden das Geld für ihre Hunde</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Sparen</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="vr"/>
+<Property FormalName="author" Value="sc"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11006000"/>
+<SubjectDetail FormalName="11006001"/>
+<SubjectMatter FormalName="11014000"/>
+<Subject FormalName="07000000"/>
+<Subject FormalName="09000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Blinden wird von der IV das Hundegeld für Futter und Tierarztkosten von 190 auf 110 Franken pro Monat gekürzt. Matthias Bütikofer, Geschäftsführer des Zentralvereins für das Blindenwesen, bestätigte am Montag einen entsprechenden Bericht des "SonntagsBlick".</p>
+<p>Die Verordnung sei hinter verschlossenen Türen beschlossen worden, sagte Bütikofer auf Anfrage der Nachrichtenagentur SDA. Die Kürzung des Hundegeldes sei mit dem Dachverband der Blindenorganisationen nicht besprochen worden.</p>
+<p>"Damit spart die Invalidenversicherung ungefähr 10'000 Franken pro Hund auf sein ganzes Führerhundeleben gerechnet", kritisiert Bütikofer den Entscheid der IV. Er nennt ihn "kleinlich und willkürlich - nicht nachvollziehbar" und vermisst eine Gesamtschau.</p>
+<p>Die Hunde dienten den Blinden als Mobilitätshilfe, nicht als Plüschtier. Die Vierbeiner erlaubten ihnen eine selbständige Orientierung im Raum.</p>
+<p>Es sei kein Problem, wenn die Blinden einen Teil der Kosten für Futter und Gesundheit der Hunde selbst tragen müssten. Nun müssten die Blinden aber noch mehr selbst berappen, denn ein Hunde koste monatlich rund 300 Franken - "250 Franken mindestens", sagte Bütikofer.</p>
+<p>Anders die Sicht des Bundesamtes für Sozialversicherung. Laut Jean-Marc Crevoisier, Sprecher des Eidg. Departementes des Inneren, habe die IV gemeinsam mit den Blindenverbänden Kosten für Kauf, Ausbildung und Unterhalt insgesamt neu ausgehandelt. Weitere Details waren vom Bundesamt über das Osterwochenende nicht zu erfahren.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

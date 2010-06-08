@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T161950+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-People"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>dpp005</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:dpp005:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T161950+0200</FirstCreated>
+<ThisRevisionCreated>20100408T161950+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7377"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7378"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Keiner will Mindestpreis für Villa von Nicolas Cage zahlen</HeadLine>
+<DateLine>Los Angeles</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Niemand will Villa von Nicolas Cage kaufen</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Luxusvilla</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="dpa"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="US"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Hollywoodstar Nicolas Cage (46), der dem Fiskus Millionen schuldet, hat keinen Käufer für seine Luxusvilla in Bel Air gefunden. Wie die "Los Angeles Times" berichtete, wollte bei einer Zwangsversteigerung niemand den Mindestpreis von 10,4 Millionen Dollar zahlen.</p>
+<p>Cage hatte zuvor versucht, die Villa mit sechs Schlafzimmern, neun Badezimmern und einem riesigen Swimming-Pool für 35 Millionen Dollar zu verkaufen. Das Anwesen, das einst dem Sänger Dean Martin gehörte, geht nun an den Gläubiger über. Ein Häusermakler beschrieb das Haus als "faszinierend und bizarr".</p>
+<p>Der hoch verschuldete Schauspieler hatte im Herbst gegen seinen früheren Manager Samuel J. Levin Klage eingereicht. Er warf ihm vor, ihn durch "grobe Nachlässigkeit, falsches Management und berufliches Versagen" in den finanziellen Ruin getrieben zu haben. In einer Gegenklage hielt Levin seinem früheren Klienten vor, er habe trotz Warnungen über Jahre hinweg beim Kauf von Immobilien, Luxusautos, Schmuck und Kunstgegenständen Millionen verschleudert.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

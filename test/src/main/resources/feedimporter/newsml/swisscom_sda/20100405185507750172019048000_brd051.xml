@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T185507+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd051</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd051:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T185507+0200</FirstCreated>
+<ThisRevisionCreated>20100405T185507+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7086"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7088"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Wieder ein Insasse aus Massnahmenzentrum St. Johannsen entwichen</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>St. Johannsen vermisst erneut einen Insassen</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Strafvollzug</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="nh"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="02000000"/>
+<SubjectMatter FormalName="02001000"/>
+<SubjectMatter FormalName="02002000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="BE"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Aus dem bernischen Massnahmenzentrum St. Johannsen ist am Samstagabend ein Insasse entwichen. Der 58-jährige Mann, der wegen Brandstiftung verurteilt worden war, kehrte aus dem Hafturlaub nicht zurück, wie die kantonale Polizei- und Militärdirektion mitteilte.</p>
+<p>Er befindet sich seit acht Jahren in St. Johannsen zum Vollzug einer stationären Massnahme. St. Johannsen war letzten Herbst in die Schlagzeilen geraten. Damals war bekannt geworden, dass ein entwichener Sexualstraftäter am Ufer des Bielersees ein junges Mädchen missbraucht hatte.</p>
+<p>Weil aus dem Massnahmenzentrum in letzter Zeit mehrere Personen entwichen sind, wurden bauliche und betriebliche Massnahmen beschlossen. Von den 78 Insassen wurden aber keiner vom offenen Massnahmenvollzug in eine geschlossene Anstalt versetzt. Derzeit untersucht der Zürcher Jurist Andreas Werren den Massnahmenvollzug in St. Johannsen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

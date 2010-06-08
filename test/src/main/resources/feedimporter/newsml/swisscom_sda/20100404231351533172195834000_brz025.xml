@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T231351+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="5"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brz024</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brz024:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T231307+0200</FirstCreated>
+<ThisRevisionCreated>20100404T231351+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="5"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd9466"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd9465"/>
+<Instruction FormalName="Rectify">
+<RevisionStatus>
+<Status FormalName="Canceled"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Nur Remis für Auxerre und Grichting</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Auxerre verpasst Sprung an Tabellenspitze</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Frankreich</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="int"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15054000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">ergänzt</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Auxerre hat am Ostersonntagabend die Chance verpasst, nach der 31. Runde an die Tabellenspitze zu rücken.</p>
+<p>Die Burgunder trennten sich von PSG trotz der frühen Führung durch den Rumänen Daniel Niculae nur 1:1. Stéphane Grichting begann als linker Verteidiger, rückte in der zweiten Halbzeit aber in die Abwehrmitte. Auxerre stellt weiterhin die beste Abwehr der Liga.</p>
+<p>Der Kampf um den Meistertitel spitzt sich sieben Runden vor Schluss zu. Durch die Niederlage von Bordeaux kam es an der Spitze zum grossen Zusammenschluss. Lyon übernahm dank dem 2:1 in Rennes die Tabellenspitze vor den punktgleichen Auxerre und Montpellier, das gegen Monaco nicht über ein torloses Remis hinauskam. Auch Lille (drei Punkte zuirück) hat noch Titelambitionen. Die beste Ausgangslage haben Bordeaux und Marseille, die zwei Spiele weniger als die Konkurrenz ausgetragen haben und nur einen Punkt hinter dem Spitzentrio zurückliegen.</p>
+<hl2>Kurztelegramme:</hl2>
+<hl2>Auxerre - Paris St-Germain 1:1 (1:1)</hl2>
+<p>Abbé-Deschamps. - 16 000 Zuschauer. - Tore: 11. Niculae 1:0. 16. Sankharé 1:1. - Bemerkungen: Auxerre mit Grichting. 91. Pl±Latzverweis für PSG-Trainer Kombouaré.</p>
+<hl2>Olympique Marseille - Lens 1:0 (1:0)</hl2>
+<p>Vélodrome. - 55 000 Zuschauer. - Tor: 22. Brandao 1:0. - Bemerkung: 74. Rote Karte gegen Mbia (Marseille) wegen übertriebener Härte.</p>
+<hl2>Boulogne - Toulouse 1:1 (1:0)</hl2>
+<p>Stade de la Libération. - 10 000 Zuschauer. - Tore: 36. Kapo 1:0. 88. Braaten 1:1.</p>
+<p>Rangliste: 1. Lyon 31/57 (51:32). 2. Montpellier 31/57 (41:34). 3. Auxerre 31/57 (31:25). 4. Bordeaux 29/56 (47:25). 5. Marseille 29/56 (51:30). 6. Lille 31/54. 7. Rennes 31/49 (46:31). 8. Lorient 31/49 (46:32). 9. Monaco 31/46. 10. Valenciennes 30/44. 11. Nancy 31/42. 12. Paris St-Germain 31/41. 13. Toulouse 31/39. 14. Sochaux 29/37. 15. Nice 31/36. 16. Lens 31/35. 17. St. Etienne 31/32. 18. Boulogne 31/24. 19. Le Mans 30/21. 20. Grenoble 31/15.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

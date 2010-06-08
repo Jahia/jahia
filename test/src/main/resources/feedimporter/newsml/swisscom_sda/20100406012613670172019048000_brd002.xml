@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T012613+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd002</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd002:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T012613+0200</FirstCreated>
+<ThisRevisionCreated>20100406T012613+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7099"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7100"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Spiessrutenlauf für Michael Jacksons Arzt vor Gerichtstermin</HeadLine>
+<DateLine>Los Angeles/New York</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Demonstrationen gegen Jacksons Ex-Privatarzt</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Michael Jackson</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="US"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Ein Gerichtstermin ist für den ehemaligen Privatarzt von Michael Jackson zum Spiessrutenlauf geworden. Vor dem Justizgebäude in Los Angeles warteten aufgebrachte Fans des toten Popsängers auf den Arzt, Dr. Conrad Murray.</p>
+<p>Auf Plakaten und in Sprechchören forderten sie "Gerechtigkeit für Michael", berichtete die "Los Angeles Times". Im Gerichtssaal hatten sich mehrere Mitglieder der Familie Jackson eingefunden, unter ihnen Michaels Vater Joe, seine Mutter Katherine und Schwester Janet Jackson.</p>
+<p>Das Internetportal tmz.com schickte Kurznachrichten aus dem Gerichtssaal. Demnach wurde das noch vorprozessuale Verfahren gegen den Kardiologen Murray einem neuen Vorsitzenden übergeben, dem Richter Michael Pastor.</p>
+<p>Er bestimmte, dass die Entscheidung über Murrays berufliche Zukunft erst bei der nächsten Anhörung am 14. Juni entschieden wird. Die Staatsanwaltschaft verlangt, ihm die Zulassung als Arzt für Kalifornien zu entziehen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

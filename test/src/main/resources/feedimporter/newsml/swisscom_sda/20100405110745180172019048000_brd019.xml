@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T110745+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd008</NewsItemId>
+<RevisionId PreviousRevision="2" Update="N">3</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd008:3N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T060443+0200</FirstCreated>
+<ThisRevisionCreated>20100405T110745+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7024"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7038"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Mindestens 114 Bergleute überleben Grubenunglück in Nordchina</HeadLine>
+<DateLine>Peking</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Viele Überlebende bei Minenunglück in China</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Unglück</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<SubjectMatter FormalName="03013000"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Meldung ganz umgeschrieben, ein Bild neu</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">In Nordchina haben über 100 Bergleute das schwere Grubenunglück vor gut einer Woche überlebt. In einer dramatischen Rettungsaktion wurden die Kumpel aus der überfluteten Kohlegrube nahe der Stadt Xiangning in der Provinz Shanxi geborgen.</p>
+<p>Dies teilte die amtliche chinesische Nachrichtenagentur Xinhua mit. "Es ist ein Wunder", sagte ein Mitglied der Rettungsmannschaften. Der Chef der staatliche Werkschutzbehörde, Luo Lin, ging zunächst von insgesamt 114 Überlebenden aus.</p>
+<p>Bergungstrupps suchen weiter nach rund 40 Verschütteten in der Wangjialing-Grube. "Die Rettungsarbeiten sind sehr schwer", sagte der Gouverneur der Provinz, Wang Jun.</p>
+<p>Die geborgenen Bergarbeiter wurden in umliegende Spitäler verteilt. Sie litten unter Unterkühlung, Austrocknung und Hautausschlag oder seien unter Schock, sagte ein Arzt im chinesischen Fernsehen.</p>
+<p>Auf Bahren wurden die geretteten Bergleute nach und nach aus dem Grubeneingang zu Krankenwagen gebracht. Mitglieder der Bergungstrupps begrüssten sie mit lautem Beifall.</p>
+<p>Nach der langen Zeit in der Dunkelheit unter Tage hatten die geretteten Bergleute Kleider um die Augen gewickelt, um sie vor dem Tageslicht zu schützen. Einige Kumpel waren mit Armeemänteln zugedeckt.</p>
+<p>Am Samstag waren Rettungsteams mit Tauchern in die Grube vorgedrungen, nachdem am Freitag erstmals Klopfzeichen von Bergleute gehört worden waren. Die ersten neun Verschütteten wurden am Sonntagabend (Ortszeit) gerettet.</p>
+<p>Hunderte Arbeiter hatten seit Tagen versucht, das Wasser aus der Grube abzupumpen, aber nur langsam Fortschritte gemacht. Wie die Bergungsmannschaften berichteten, haben so viele Bergleute das Unglück überlebt, weil sie auf Plattformen in Schächten arbeiteten, die nicht überflutet waren.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

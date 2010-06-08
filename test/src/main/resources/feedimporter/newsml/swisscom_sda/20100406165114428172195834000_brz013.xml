@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T165114+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brz013</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brz013:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T165114+0200</FirstCreated>
+<ThisRevisionCreated>20100406T165114+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd9523"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd9522"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Freispruch für Stocker, Sperren für Dudar</HeadLine>
+<DateLine>Fussball</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Keine Folgen im "Fall Stocker"</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Axpo Super League</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="nag"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15073000"/>
+<SubjectDetail FormalName="15073031"/>
+<SubjectMatter FormalName="15054000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der Einzelrichter der Fussball-Liga sprach den Basler Valentin Stocker vom Vorwurf frei, gegen St. Gallens Marc Zellweger eine Tätlichkeit begangen zu haben.</p>
+<p>YB-Verteidiger Emiliano Dudar hingegen wurde in der Axpo Super League für drei Spiele gesperrt.</p>
+<p>"TV-Richter" Urs Studer schaute sich im Falle Stockers gleich zwei Video-Sequenzen an. Er kam zweimal zum Schluss, dass keine Sanktionen auszusprechen sind. Die "Landung" auf dem Oberschenkel von Marc Zellweger qualifizierte Studer nicht als vorsätzlichen Tritt.</p>
+<p>In einer zweiten Aktion "befreite" sich Stocker gemäss Studer "mit einer schnellen Armbewegung" von seinem Gegenspieler. "Ein absichtlicher, gezielter Schlag ist nicht gegeben", begründete der Jurist im Communiqué den Entscheid.</p>
+<p>Wesentlich härter wird Dudar bestraft. Der Berner sah im Spiel in Aarau (5:1) wegen Nachtretens gegen David Marazzi direkt Rot. Das Verdikt ist klar: drei Sperren. Der Ellbogenschlag von Teamkollege Seydou Doumbia - ebenfalls in der Partie gegen Aarau passiert - dürfte ebenfalls Folgen haben. Roy Maybud, der stellvertretende Disziplinar-Richter, eröffnete ein Verfahren gegen den Topskorer. Da anders als im "Fall Stocker" kein Ausstandsbegehren zu erwarten ist, könnte das Urteil bereits in den nächsten Tagen gefällt werden.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

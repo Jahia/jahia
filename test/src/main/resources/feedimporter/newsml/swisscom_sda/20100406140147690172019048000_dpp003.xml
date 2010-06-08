@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T140147+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-People"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>dpp003</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:dpp003:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T140147+0200</FirstCreated>
+<ThisRevisionCreated>20100406T140147+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7143"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7144"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Stefanie Heinzmann hat hart für ihr Comeback nach der OP trainiert</HeadLine>
+<DateLine>Zürich</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Stefanie Heinzmann ist zurück auf der Bühne</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Comeback</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="efe"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08003000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Stefanie Heinzmann hat am vergangenen Wochenende auf 2500 Metern über Meer ihr Comeback gegeben. Eine Operation an ihren Stimmbändern zwang zu einer Pause. Jetzt ist sie zurück auf der Bühne und sagt: "Ich hatte so viel Spass, und mir wurde bewusst, wie sehr ich das vermisst habe."</p>
+<p>"Bei voller Belastung merke ich jedoch, dass mir die Routine noch etwas fehlt", gesteht die Walliserin der "Schweizer Illustrierten". Deshalb hat sie während den letzten Monaten intensiv mit einem Stimmtrainer geübt. "Vor meiner Operation habe ich sozusagen um die Knoten auf den Stimmbändern herumgesungen und viel Druck im Hals aufgebaut. Diese Technik musste ich mir abgewöhnen."</p>
+<p>Eine eiserne Disziplin hat die 21-Jährige zurück ins Rampenlicht gebracht. Selbst dem Berliner Nachtleben konnte sie widerstehen. "Ich war nur zweimal aus. In den meisten Lokalen ist es laut, und man schreit beim Sprechen. Das wollte ich meiner Stimme nicht antun."</p>
+<p>Das Intensivtraining hat sich ausbezahlt, Stefanie Heinzmann gibt wieder Konzerte in der Schweiz. Das Lampenfieber konnte sie sich jedoch nicht abtrainieren: "Ich glaube, für die Konzentration braucht es das."</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

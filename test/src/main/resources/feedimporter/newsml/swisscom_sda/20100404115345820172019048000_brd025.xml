@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T115345+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brd025</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brd025:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T115345+0200</FirstCreated>
+<ThisRevisionCreated>20100404T115345+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Mindestens 15 Tote bei drei Bombenanschlägen im Bagdad</HeadLine>
+<DateLine>Bagdad</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Serie von Bombenanschlägen in Bagdad</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Irak</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="kp"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="IQ"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Bei mehreren Anschlägen in der irakischen Hauptstadt Bagdad sind mindestens 15 Menschen ums Leben gekommen und 35 weitere verletzt worden. Drei Autobomben seien im Abstand von nur wenigen Minuten detoniert, sagte ein Vertreter des irakischen Innenministeriums.</p>
+<p>Eine der Explosionen ereignete sich den Angaben zufolge in der Nähe der deutschen Botschaft im westlichen Stadtteil Mansur, fast zeitgleich detonierte im Viertel ein zweiter Sprengsatz. Wenig später explodierte eine Bombe vor der iranischen Botschaft im Viertel Salhijeh im Zentrum von Bagdad.</p>
+<p>Vor dem iranischen Botschaftsgebäude entwickelte sich dichter Rauch, wie Reporter der Nachrichtenagentur AFP berichteten. Sicherheitskräfte schossen in die Luft.</p>
+<p>Im Irak wird nach der Parlamentswahl Anfang März derzeit um die Regierungsbildung gerungen. Das Wahlbündnis von Ex-Regierungschef Ijad Allawi hatte den Urnengang mit einem knappen Vorsprung gewonnen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T063340+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="2"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd005</NewsItemId>
+<RevisionId PreviousRevision="2" Update="N">3</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd005:3N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T025745+0200</FirstCreated>
+<ThisRevisionCreated>20100405T063340+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="2"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7020"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7019"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Ein Toter und 100 Verletzte bei starkem Erdbeben in Mexiko</HeadLine>
+<DateLine>Tijuana</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Starkes Erdbeben in Mexiko</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Erdbeben</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="rtd"/>
+<Party FormalName="dpa"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<SubjectMatter FormalName="03002000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="MX"/>
+<Property FormalName="Country" Value="US"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Neu: mehr Verletzte, Notstand / ganze Meldung</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Ein schweres Erdbeben der Stärke 7,2 hat den mexikanischen Bundesstaat Baja California am Pazifik erschüttert. In Mexicali starb beim Einsturz eines Gebäudes ein Mensch, sagte ein Sprecher des Zivilschutzes.</p>
+<p>Rund einhundert Menschen wurden demnach verletzt. In den Städten und Dörfern im Erdbebengebiet Mexikos liefen die Menschen in Panik auf die Strassen.</p>
+<p>In Mexicali, der Hauptstadt von Baja California, wurden zahlreiche Häuser beschädigt. Auch die Strom- und Wasserversorgung war zeitweise unterbrochen. Die Stadt liegt nur 18 Kilometer vom Epizentrum des Bebens entfernt.</p>
+<p>Dieses lag nach Angaben der US-Erdbebenwarte in zehn Kilometern Tiefe. Dem Hauptbeben folgten in schneller Folge weitere Erdstösse mit Stärken von bis zu 5,4.</p>
+<p>Die Regierung von Baja California rief für Mexicali den Notstand aus. In der Stadt nahe der Grenze zu den USA leben rund 900'000 Menschen. Der Direktor des mexikanischen Erdbebeninstituts rechnete mit schweren Schäden in der Region.</p>
+<p>Aus dem Küstenort Ensenada berichtete der örtliche Chef der Feuerwehr, Jaime Nieto, drei Menschen seien in einer Eisfabrik durch ausströmendes Amoniakgas verletzt worden.</p>
+<p>Die Erschütterungen waren auch in den US-Bundesstaaten Kalifornien und Arizona zu spüren. Von dort gab es zunächst keine Berichte über Verletzte oder grosse Schäden.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

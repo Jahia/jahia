@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T153628+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="2"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd051</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd051:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T153628+0200</FirstCreated>
+<ThisRevisionCreated>20100407T153628+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="2"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7266"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7265"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Gerüchte über Sarkozys Privatleben werden zur Staatsaffäre</HeadLine>
+<DateLine>Paris</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Dati sucht Gespräch mit Sarkozy</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Frankreich</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="bu"/>
+<Property FormalName="author" Value="zy"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11006000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="FR"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Aus den Gerüchten über die Ehe des französischen Präsidenten Nicolas Sarkozy wird langsam eine Staatsaffäre. Ein Regierungssprecher widersprach Presseberichten, wonach die ehemalige Justizministerin Rachida Dati, die als Urheberin der Gerüchte verdächtigt wird, abgehört werde.</p>
+<p>Dati wehrte sich gegen die Anschuldigungen und kündigte an, sie werde ein Gespräch mit Sarkozy suchen. Der Präsident hat Dati aber zumindest zwischenzeitlich mit einer Art Hausverbot belegt, wie der Generalsekretär des Präsidialamtes, Claude Guéant, einräumte.</p>
+<p>Er habe am Dienstag einem Journalisten gesagt, dass Sarkozy die heutige Europapolitikerin "derzeit nicht mehr sehen" wolle, sagte Guéant der Nachrichtenagentur AFP. Er habe dies "gestern" gesagt, betonte Sarkozys wichtigster Mitarbeiter - aber "die Wahrheit von gestern ist vielleicht nicht die Wahrheit von heute".</p>
+<p>Es sei "äusserst skandalös", dass sie für die Gerüchte über Sarkozys Privatleben verantwortlich gemacht werde, sagte Dati im Radiosender RTL. Sie habe "vor nichts Angst", die Beschuldigungen gegen sie müssten aber aufhören.</p>
+<p>Sarkozy hatte Dati vor drei Jahren als erste Ministerin aus einer Einwandererfamilie in seine Regierung geholt. Vergangenes Jahr drängte er die inzwischen in Ungnade gefallene Politikerin aus dem Amt. Sie ist heute einfache Europaabgeordnete.</p>
+<p>Regierungssprecher Luc Chatel sagte im Radiosender Europe 1, es könne "keine Rede" davon sein, dass Dati abgehört werde, wie in der französischen Presse teils berichtet worden war. Sarkozy habe derartige Praktiken stets verurteilt. Gerüchte seien "unerträglich" und beschmutzten die Demokratie; ihnen müsse "der Garaus" gemacht werden.</p>
+<p>Die Gerüchte über Sarkozys Privatleben waren Anfang März über einen anonymen Blog-Eintrag auf der Website der Wochenzeitung "Le Journal du Dimanche" verbreitet worden. Während die heimische Presse schwieg, griffen ausländische Medien die Gerüchte über aussereheliche Affären des Präsidenten und seiner Frau Carla ausführlich auf.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

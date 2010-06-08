@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T215024+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brz014</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brz014:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T171220+0200</FirstCreated>
+<ThisRevisionCreated>20100404T215024+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd9451"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd9464"/>
+<Instruction FormalName="Rectify">
+<RevisionStatus>
+<Status FormalName="Canceled"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Weitere Niederlagen für Schweizer Curler</HeadLine>
+<DateLine>Curling</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Schweizer für Steigerung nicht belohnt</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Curling</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="fin"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15018000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">ersetzt</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Nach dem 3:9 gegen Dänemark verloren die Schweizer Curler um Skip Stefan Karnusian zwei weitere Partien der Männer-WM in Cortina d'Ampezzo.</p>
+<p>Auf die schwache Leistung im Auftaktmatch reagierten die Schweizer mit einer deutlichen Leistungssteigerung, verloren jedoch sowohl gegen die USA (5:7) als auch gegen den ersten Titelanwärter Kanada (5:9).</p>
+<p>Die Schweizer mussten auch den zweiten WM-Match gegen die USA ohne den Vorteil des letzten Steins beginnen, sie machten das Handicap aber bis zum fünften End wett und gingen 4:3 in Führung. Verhängnisvoll war hierauf das siebte End, in dem die als Medaillenkandidaten zu handelnden Amerikaner (Skip Pete Fenson), die Olympia-Dritten von 2006, das einzige Dreierhaus zur vorentscheidenden 6:4-Führung realisierten. Rolf Iseli, Robert Hürlimann, Christof Schwaller und Stefan Karnusian wussten darauf keine Antwort mehr.</p>
+<p>Gegen das von WM-Neuling Kevin Koe angeführte kanadische Team aus Edmonton gingen die Schweizer mit einem Dreierhaus im siebten End 5:4 in Führung. Bis dorthin zeigten sie sehr gutes Curling, danach allerdings unterliefen ihnen einige Fehler, welche die Kanadier zum Sieg nutzten.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

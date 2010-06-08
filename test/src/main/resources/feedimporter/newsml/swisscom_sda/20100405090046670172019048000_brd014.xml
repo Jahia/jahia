@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T090046+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd014</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd014:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T090046+0200</FirstCreated>
+<ThisRevisionCreated>20100405T090046+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Erneut Tote bei Anschlägen im Nordkaukasus</HeadLine>
+<DateLine>Moskau</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Tote bei zwei Anschlägen in Inguschetien</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Russland</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="kp"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="16000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="RU"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Bei zwei Terroranschlägen in der russischen Teilrepublik Inguschetien im Nordkaukasus sind am Morgen mindestens zwei Polizisten getötet worden. Ein Selbstmordattentäter sprengte sich nach Angaben des Innenministeriums vor einer Polizeiwache der Stadt Karabulak in die Luft.</p>
+<p>Kurz darauf explodierte an der Stelle noch ein Sprengsatz in einem Auto. Das meldete die Nachrichtenagentur Interfax nach Polizeiangaben. Die Zahl der Verletzten ist noch unklar. Im Hof der Polizeiwache seien viele Menschen gewesen, hiess es.</p>
+<p>Vor einer Woche hatten sich in der Moskauer Metro zwei Selbstmordattentäterinnen aus dem Nordkaukasus in die Luft gesprengt und dabei mindestens 40 Menschen mit in den Tod gerissen.</p>
+<p>Seither hat auch der Terror in dem Konfliktgebiet weiter zugenommen. In den vergangenen Tagen war fast ausschliesslich die Republik Dagestan betroffen. Dort starben seit vergangenem Dienstag mehr als zehn Menschen. Am Sonntag war nach einem Anschlag auf eine Bahnstrecke ein Güterzug entgleist.</p>
+<p>In den Teilrepubliken im Nordkaukasus, wo auch das frühere Kriegsgebiet Tschetschenien liegt, kämpfen islamistische Rebellen für Unabhängigkeit.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

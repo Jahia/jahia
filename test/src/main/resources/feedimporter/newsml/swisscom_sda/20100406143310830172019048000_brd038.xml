@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T143310+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd038</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd038:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T143310+0200</FirstCreated>
+<ThisRevisionCreated>20100406T143310+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7147"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7148"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>US-Regierung will Toyota für Pannenserie hart bestrafen</HeadLine>
+<DateLine>Washington</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>US-Regierung stellt Toyota an den Pranger</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Zivilstrafe</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="tm"/>
+<Property FormalName="author" Value="fos"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="04000000"/>
+<Subject FormalName="02000000"/>
+<SubjectMatter FormalName="02002000"/>
+<Subject FormalName="07000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="US"/>
+<Property FormalName="Country" Value="JP"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Washington will Toyota für den Umgang mit seiner Pannenserie zur Rechenschaft ziehen. Der Autohersteller soll eine Rekordstrafe von 16,4 Mio. Dollar zahlen. "Sie haben einen gefährlichen Defekt für Monate wissentlich vor den US-Behörden geheim gehalten", sagte Verkehrsminister Ray LaHood.</p>
+<p>"Sie haben nichts unternommen, um Millionen Fahrer und ihre Familien zu schützen." LaHood wirft Toyota vor, das Problem der klemmenden Gaspedale vier Monate lang verschwiegen zu haben. Spätestens Ende September 2009 habe der Hersteller davon gewusst, so der Vorwurf.</p>
+<p>Dies belegten Reparaturanweisungen, die Toyota an seine Vertriebspartner in Europa und Kanada versandt habe. Der Rückruf wegen der festhängenden Pedale startete in den USA im Januar.</p>
+<p>"Wir haben nun die Beweise dafür, dass Toyota seine rechtlichen Verpflichtungen verletzt hat", sagte LaHood. Laut Gesetz muss ein Autohersteller die US-Behörde für Verkehrssicherheit binnen fünf Tagen über gefährliche Defekte informieren. "Wegen dieser Gründe streben wir die höchstmögliche Strafe an." Niemals zuvor hatte die Regierung die Maximalstrafe für einen Autohersteller gefordert.</p>
+<p>Viele Politiker äusserten überdies Zweifel daran, dass es sich bei dem ungewollten Beschleunigen um ein rein mechanisches Problem handelt. Sie haben vielmehr die Elektronik der modernen Autos im Verdacht.</p>
+<p>Toyota hat nun zwei Wochen Zeit, zu den Vorwürfen Stellung zu nehmen. Der Hersteller liess in einer ersten Reaktion wissen, dass ihm das Schreiben des Verkehrsministeriums noch nicht vorliege und verwies zugleich auf seine angestossene Qualitätsoffensive.</p>
+<p>Die Strafe selbst dürfte ohnehin das geringste Problem für den weltgrössten Autohersteller sein. Die Signalwirkung könnte indes verheerend sein. In den USA rollt eine Klagewelle auf Toyota zu. Durch die drastischen Worte des Verkehrsministers könnte sie neue Nahrung erhalten.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

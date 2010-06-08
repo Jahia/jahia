@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T141416+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd032</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd032:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T141416+0200</FirstCreated>
+<ThisRevisionCreated>20100405T141416+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7053"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7054"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>"Clash of the Titans" schlägt 3D-Konkurrenz in den USA</HeadLine>
+<DateLine>New York</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Amerikaner mögen "Clash of the Titans"</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>US-Kinocharts</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="iw"/>
+<Property FormalName="author" Value="zas"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="01000000"/>
+<SubjectMatter FormalName="01005000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="US"/>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Und nun auch die Titanen in 3D: Nach den blauhäutigen Ausserirdischen ("Avatar"), dem Fantasymärchen "Alice" und dem kleinen Wikinger Hiccup ("How to Train Your Dragon") begeistert der "Clash of the Titans" Amerikas Kinopublikum.</p>
+<p>Das Remake von 1981 setzte sich am Wochenende mit 61,4 Millionen Dollar als Bestverdiener an die Spitze der nordamerikanischen Kinocharts. Gleichzeitig stellte die Warner-Brothers-Produktion nach Angaben des Internetportals "Hollywood.com" einen neuen Oster-Rekord auf: So viel Geld hatte noch kein anderer Film an dem in den USA nur zweitägigen Feiertagswochenende in die Kassen gespült.</p>
+<p>Kritiker bemängeln den neuen Titanenkampf von Regisseur Louis Leterrier als reinen Abklatsch des Originals von Ray Harryhausen, in dem unter anderem "Ursi National" Andress als Aphrodite mitwirkte.</p>
+<p>Anders als "Avatar" wurde "Clash of the Titans" nicht in 3D gedreht, sondern nachträglich konvertiert. Das tut den Effekten erheblich Abbruch, schrieb unter anderen die "New York Times". Schweizer Kinogänger können sich ab Dienstag selber ein Bild machen.</p>
+<p>Der für seinen derben Klamauk bekannte Tyler Perry setzte sich mit "Why Did I Get Married Too" auf Platz zwei der US-Charts. Der Film über vier Ehepaare, die gemeinsam auf Karibikurlaub gehen, beginnt als Komödie und endet melodramatisch.</p>
+<p>Ihm folgt dicht auf den Fersen die 3D-Animation "How to Train your Dragon", die trotz der massiven Konkurrenz nur etwa ein Drittel seiner Premiereneinnahmen vom Vorwochenende einbüsste.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T064608+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd010</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd010:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T064608+0200</FirstCreated>
+<ThisRevisionCreated>20100405T064608+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7026"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7025"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Kaninchenjagd an Ostern - 23'000 erschossen</HeadLine>
+<DateLine>Wellington</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Neuseeland bläst Ostern zur Kaninchenjagd</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Ostern</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<Subject FormalName="06000000"/>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04001000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="NZ"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Osterhasen haben in Neuseeland schlechte Karten: jedes Jahr bläst die Provinz Otago zur Osterjagd, um der Kaninchenplage Herr zu werden. In diesem Jahr wurden 23'064 Tiere erschossen - die zweithöchste Bilanz in 19 Jahren, berichtete die "Southland Times".</p>
+<p>"Wir haben die Zahlen einigermassen reduziert, aber es besteht kein Zweifel, dass wir nächstes Jahr wieder jede Menge haben werden", sagte Organisator Dave Ramsay. Die Bauern in der Region betrachten die Kaninchen als Pest, weil sie Kühen und Schafen das Gras wegfressen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

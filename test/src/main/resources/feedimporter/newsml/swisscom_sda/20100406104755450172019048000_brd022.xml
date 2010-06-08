@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T104755+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd022</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd022:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T104755+0200</FirstCreated>
+<ThisRevisionCreated>20100406T104755+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Grossangelegts Spionagenetz aus China späht Indiens Regierung aus</HeadLine>
+<DateLine>Toronto/Peking</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Neue Cyber-Spionage aus China aufgedeckt</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>China</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+</Source>
+<Property FormalName="author" Value="gb"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04003000"/>
+<Subject FormalName="02000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CN"/>
+<Property FormalName="Country" Value="IN"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Experten haben nach Angaben nordamerikanischer Forscher ein grossangelegtes Spionagenetz im Internet entdeckt, das Indiens Regierung und Sicherheitsorgane sowie den Dalai Lama ausgespäht hat. Die Cyber-Attacken sollen ihren Ursprung in Chengdu in Südwestchina haben.</p>
+<p>Betroffen seien auch andere Länder und die Vereinten Nationen. Ausserdem seien vertrauliche Informationen über Reisetätigkeiten unter anderem in Afghanistan ausgekundschaftet worden.</p>
+<p>Das berichteten amerikanische und kanadische Forscher der Gruppe Information Warfare Monitor an der Universität von Toronto und internationale Sicherheitsexperten der Shadowserver Stiftung in einem Dienstag veröffentlichten Bericht "Shadows in the Cloud" (Schatten in den Wolken).</p>
+<p>In ihrer achtmonatigen Untersuchung seien die Fachleute auf ein "komplexes System von Cyber-Spionage" gestossen, das als "Schattennetzwerk" bezeichnet wurde. Aus dem Büro des religiösen Oberhauptes der Tibeter seien 1500 E-Mails aus der Zeit zwischen Januar und November 2009 ausgekundschaftet worden.</p>
+<p>Bei der Verfolgung der Spione entdeckten die Forscher Dokumente der indischen Regierung, die als "geheim" oder "vertraulich" eingestuft waren. Es sei um Einschätzungen der Sicherheitslage in indischen Bundesstaaten gegangen oder Beziehungen Indiens zu anderen Ländern.</p>
+<p>Die Forscher bauten auf ihren Untersuchungen auf, die im März 2009 zur Enthüllung eines "Ghostnet" (Geisternetz) genannten Spionagerings geführt hatten. Von den damaligen Angriffen, die vor allem auf die exiltibetische Gemeinde abzielte, waren Computer von Behörden und Organisationen in 103 Ländern betroffen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

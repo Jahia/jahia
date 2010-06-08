@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T161420+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd044</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd044:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T161420+0200</FirstCreated>
+<ThisRevisionCreated>20100406T161420+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7158"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7156"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Trotz Finanzkrise fast durchgehend Überschüsse bei den Kantonen</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Kantone: Abschwung zeigt sich erst 2011/2012</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Staatsrechnungen</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="rs"/>
+<Property FormalName="author" Value="fy"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11006000"/>
+<SubjectDetail FormalName="11006001"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Noch klingeln die Kassen der Kantone. Trotz der Wirtschaftskrise schliessen nahezu alle Staatsrechnungen 2009 positiv ab. In fast allen Kantonen übersteigen die Erträge die Erwartungen, zum Teil sehr deutlich. Der Abschwung wird erst ab 2011 sichtbar werden.</p>
+<p>Es gebe eine Zeitverzögerung, sagte Andreas Huber, Sekretär der Konferenz der kantonalen Finanzdirektoren, auf Anfrage der SDA. "Man sieht hier immer noch die Auswirkungen der guten Jahre. Der Wirtschaftsabschwung wird sich erst 2011, 2012 bemerkbar machen."</p>
+<p>Es sei flächendeckend mit einem Einnahmenrückgang zu rechnen, sagte Huber. Namentlich werde dies bei den Unternehmenssteuern der Fall sein. Zu den konjunkturellen kämen auch strukturelle Faktoren. So werde die neue Spital- und Pflegefinanzierung ab 2011 ebenfalls auf die Rechnungen der Kantone durchschlagen.</p>
+<p>Ökonom Alexis Körber vom Konjunkturforschungsinstitut BAK Basel Economics sprach auf Anfrage der SDA von einem "nachgelagerten Wirtschaftsboom". "Wir hatten zwar eine ziemliche Wirtschaftskrise", ergänzte BAK-Ökonom Martin Eichler. "Sie fiel aber wesentlich weniger massiv aus als erwartet wurde."</p>
+<p>Zudem hätten die Kantone auf der Ausgabenseite so stark wie möglich eine Haushaltdisziplin verfolgt, sagte Eichler. Gleichzeitig warnte er, man dürfe jetzt nicht in eine Euphorie verfallen. "Die Auswirkungen der Wirtschaftskrise werden schon noch kommen." Die teilweise tiefroten Budgets 2010 untermauern Eichlers Prognose.</p>
+<p>In den Staatsrechnungen 2009 aber finden sich kaum Spuren der Krise. So schloss der Kanton Waadt das vergangene Jahr mit einem Überschuss von 378,7 Millionen Franken ab. Nur der Kanton Neuenburg musste ein Defizit von 15,4 Mio. bekannt geben, der Kanton Schwyz ein solches von 14,5 Mio. Franken.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

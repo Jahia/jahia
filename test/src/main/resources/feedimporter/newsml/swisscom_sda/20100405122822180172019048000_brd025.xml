@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T122822+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd025</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd025:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T122822+0200</FirstCreated>
+<ThisRevisionCreated>20100405T122822+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Grünliberale und Piratenpartei bilden erste Fraktion in Winterthur</HeadLine>
+<DateLine>Winterthur</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Fraktion mit einzigem "Piraten" gebildet</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Gemeindeparlament</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="sc"/>
+<Property FormalName="author" Value="vr"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11010000"/>
+<SubjectMatter FormalName="11009000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="ZH"/>
+<Property FormalName="CountryArea" Value="ZH"/>
+<Property FormalName="CountryArea" Value="RGZH"/>
+<Property FormalName="CountryArea" Value="ZH"/>
+<Property FormalName="CountryArea" Value="RGZH"/>
+<Property FormalName="CountryArea" Value="ZH"/>
+<Property FormalName="CountryArea" Value="RGZH"/>
+<Property FormalName="CountryArea" Value="ZH"/>
+<Property FormalName="CountryArea" Value="RGZH"/>
+<Property FormalName="City" Value="WIN"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Erstmals bilden Grünliberale mit der Piratenpartei eine gemeinsame Fraktion in einem Schweizer Gemeindeparlament. In Winterthur wird die Fraktion mit sieben Gemeinderätinnen und Gemeinderäten neben der FDP die drittstärkste Kraft im Grossen Gemeinderat sein.</p>
+<p>Das Zusammengehen in Winterthur sei nach der Listenverbindung bei den Grossratswahlen im Kanton Bern "eine konsequente Weiterführung des freundschaftlichen Verhältnisses", schreiben die beiden Parteien in einem gemeinsamen Communiqué. Die Fraktion wird sich aus sechs grünliberalen Politikerinnen und Politikern und einem Vertreter der Piratenpartei zusammensetzen.</p>
+<p>Mit dem 39-jährigen Software-Entwickler Marc Wäckerlin zog der erste und bislang einzige "Pirat" vor gerade mal einem Monat in ein schweizerisches Parlament ein. Wäckerlin freut sich gemäss Communiqué auf die Zusammenarbeit mit den Grünliberalen Ratskolleginnen und -kollegen.</p>
+<p>Die Piratenpartei Schweiz (PPS) wurde im Juli 2009 gegründet und zählt über 800 Mitglieder. Sie sieht sich als Vertreterin der "digitalen Generation" und setzt sich nach eigenen Angaben für die Stärkung der Bürgerrechte und der Privatsphäre, für den freien Zugang zu Wissen und Kultur, für einen transparenten Staat und die Bekämpfung von Medienverboten und Zensur ein.</p>
+<p>Weltweit gibt es inzwischen mehr als 15 Piratenparteien. Die erste wurde 2006 in Schweden gegründet. Ob die PPS im Kanton Zürich bei den Kantonswahlen im Frühling 2011 antreten wird, ist noch nicht entschieden.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T001519+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brd002</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brd002:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T001519+0200</FirstCreated>
+<ThisRevisionCreated>20100404T001519+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6937"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd6936"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>400 Festnahmen bei Demo an mutmasslichem Lager von US-Atomwaffen</HeadLine>
+<DateLine>Brüssel</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Festnahmen bei Demo gegen Atom-Waffen</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Ostermärsche</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="dk"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11001000"/>
+<SubjectMatter FormalName="11010000"/>
+<SubjectMatter FormalName="11014000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="BE"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">In Belgien sind mehr als 400 Friedensaktivisten vorübergehend festgenommen worden. Die Demonstranten wollten auf das Gelände eines vermutlich mit US-Atomwaffen ausgestatteten Fliegerhorstes eindringen.</p>
+<p>Nach Angaben der belgischen Nichtregierungsorganisation Action pour la Paix reisten rund 300 Demonstranten aus allen Landesteilen mit Bussen zum Armee-Stützpunkt in Kleine Brogel. 800 weitere Aktivisten hätten sich der Militärzone durch den Wald genähert und versucht, auf das Gelände zu gelangen. Nach Angaben des Verteidigungsministeriums wurden 431 Menschen vorübergehend in Gewahrsam genommen.</p>
+<p>Am Einsatz waren laut Behörden 900 Soldaten und 250 Polizisten beteiligt. Einige Anti-Atomwaffen-Demonstranten wurden Ministeriumsangaben zufolge in unmittelbarer Nähe des Stützpunktes von Polizisten festgenommen; die Soldaten hätten diejenigen ergriffen, die über den Stacheldrahtzaun auf das Gelände des Fliegerhorstes geklettert seien.</p>
+<p>Der Protest im Rahmen des Europäischen Tages gegen Atomwaffen war vor mehreren Tagen angekündigt worden und verlief "gewaltfrei", wie eine Sprecherin des Verteidigungsministeriums sagte. Ihren Angaben zufolge kostete der Einsatz der Sicherheitskräfte rund 150'000 Euro.</p>
+<p>Die Friedensaktivisten wollten mit ihrer Aktion nach eigenen Angaben auf Druck auf die NATO ausüben, die ihr strategisches Konzept überarbeiten will. Die Allianz war einst das Verteidigungsbollwerk des Westens gegen den von der Sowjetunion dominierten Warschauer Pakt.</p>
+<p>Seit dem Ende des Kalten Krieges hat sie sich zunehmend zu einem weltweit tätigen Bündnis entwickelt, das etwa in Afghanistan im Kampf gegen die radikalislamischen Taliban und den internationalen Terrorismus im Einsatz ist. Aus der Zeit des Kalten Krieges sollen heute noch etwa 240 US-Atombomben in Europa lagern.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

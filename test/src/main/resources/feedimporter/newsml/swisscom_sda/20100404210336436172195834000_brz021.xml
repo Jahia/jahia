@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100404T210336+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100404</DateId>
+<NewsItemId>brz021</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100404:brz021:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100404T210336+0200</FirstCreated>
+<ThisRevisionCreated>20100404T210336+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd9461"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100404:phd9462"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Andy Roddick siegte auf Key Biscayne</HeadLine>
+<DateLine>Tennis</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Roddick krönte fast perfekten Monat</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>ATP Key Biscayne</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="fin"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15065000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Ein Routinier triumphierte am Masters-Series-Turnier von Key Biscayne.</p>
+<p>Andy Roddick krönte mit dem 7:5, 6:4-Finalerfolg über Tomas Berdych einen fast perfekten Monat und gewann zum zweiten Mal in Miami nach 2004. Vor zwei Wochen in Indian Wells hatte sich der 27-jährige Texander erst im Final von Ivan Ljubicic schlagen lassen (6:7, 6:7). In Key Biscayne holte Roddick endlich den ersten Masters-Series-Titel seit Cincinnati im Sommer 2006, den fünften insgesamt.</p>
+<p>Die Vorentscheidung im Final fiel kurz vor Ablauf der ersten Stunde. Andy Roddick schaffte zum 6:5 im ersten Satz und zum 1:0 im zweiten Durchgang innerhalb von zehn Minuten die zwei wegweisenden Breaks. Diesen Vorsprung gab Roddick nicht mehr aus der Hand. Insgesamt gelangen ihm 13 Asse; Berdych erspielte sich nicht eine Breakmöglichkeit.</p>
+<p>Innerhalb von gut drei Wochen ergatterte Roddick auf den amerikanischen Hartplätzen 900 000 Dollar Preisgeld und 1600 Weltranglistenpunkte ein - das sind fast so viele wie es für einen Grand-Slam-Titel gibt. Mit einer Matchbilanz von 26:4 Siegen ist Roddick der erfolgreichste Spieler der ersten drei Monate der Saison.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

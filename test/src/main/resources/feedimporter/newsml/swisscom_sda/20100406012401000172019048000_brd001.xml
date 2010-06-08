@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T012401+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd050</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd050:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T182516+0200</FirstCreated>
+<ThisRevisionCreated>20100406T012401+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7083"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7082"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Gedenken mit Fackelzügen an Erdbeben in den Abruzzen vor einem Jahr</HeadLine>
+<DateLine>L'Aquila</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Kritik an Aufräumarbeiten in L'Aquila</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Jahrestag</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="afd"/>
+</Source>
+<Property FormalName="author" Value="gt"/>
+<Property FormalName="author" Value="ceg"/>
+<Property FormalName="author" Value="lt"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<SubjectMatter FormalName="03002000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="IT"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">neu: Meldung aktualisiert</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Mit Fackelzügen haben am Abend tausende Menschen im italienischen L'Aquila der Opfer des schweren Erdbebens in den Abruzzen vor einem Jahr gedacht. An den Umzügen nahmen auch Mitglieder des Zivilschutzes, des Roten Kreuzes und andere Helfer teil.</p>
+<p>Um exakt 03.32 Uhr, der Zeit, als vor einem Jahr in den Abruzzen die Erde bebte, sollten in L'Aquila die Glocken läuten. Danach sollte eine Messe unter freiem Himmel stattfinden.</p>
+<p>Vor den Umzügen hatten sich hunderte Einwohner L'Aquilas zu einer ausserordentlichen Gemeindeversammlung in einem grossen Zelt zusammengefunden. Dabei wurde der Bürgermeister der Stadt, Massimo Cialente, scharf kritisiert.</p>
+<p>"Die Stadt ist noch immer wie erstarrt und ausgestorben", sagte eine Einwohnerin, die sich jüngst auch an den sonntäglichen Demonstrationen beteiligt hatte. Cialente selbst rief dazu auf, "nach vorn zu blicken" und bat die Regierung um eine "Solidaritätssteuer", um die Folgen des Erdbebens in den Griff zu bekommen.</p>
+<p>Bei dem Beben mit der Stärke 6,3 waren am 6. April vergangenen Jahres 308 Menschen ums Leben gekommen, 120'000 Bewohner von L'Aquila und den umliegenden Dörfern verloren ihr Dach über dem Kopf. Das mittelalterliche Zentrum der Stadt liegt weiter unter Trümmern, die meisten Ruinen sind unbewohnbar.</p>
+<p>Mehr als 52'000 Menschen sind noch immer in Hotels an der Adriaküste oder in Kasernen untergebracht und erhalten staatliche Unterstützung. Am Dienstag wollten die Einwohner mit einer Prozession den Jahrestag begehen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

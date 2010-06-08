@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100407T125239+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100407</DateId>
+<NewsItemId>brd021</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100407:brd021:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100407T110324+0200</FirstCreated>
+<ThisRevisionCreated>20100407T125239+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7234"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100407:phd7235"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Handel mit Aktie "Lotti" erfolgreich</HeadLine>
+<DateLine>Avegno (TI)</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Handel mit "Kuh-Aktien" floriert</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Landwirtschaft</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="og"/>
+<Property FormalName="author" Value="ti"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04001000"/>
+<SubjectMatter FormalName="04006000"/>
+<Subject FormalName="06000000"/>
+<Subject FormalName="08000000"/>
+<SubjectMatter FormalName="08002000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="TI"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Priorität erhöht</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Von einer solchen Rendite träumt wohl jeder Anleger: Man investiert 2'500 Franken und erhält während zehn Jahren einen garantierten jährlichen Profit im Wert von 350 Franken. Möglich wird dies, wenn man in Hochlandrinder investiert, die im Tessin weiden.</p>
+<p>Promotor dieses Kuhhandels ist der Landwirt Guido Leutenegger, der im Centovalli, Val Colla und Maggiatal mit Hochlandrindern über 2000 Hektaren Alpfläche bewirtschaftet.</p>
+<p>Er hat in den letzten Wochen in der Deutschschweizer Presse Inserate geschaltet, in denen er für "eine Aktie namens Lotti" die Werbetrommel rührte.</p>
+<p>Mit dem Echo ist er sehr zufrieden, wie er auf Anfrage der Nachrichtenagentur SDA sagte. Bisher hätten rund 60 Personen "Aktien" gezeichnet.</p>
+<p>Die Investoren erhalten als Gegenleistung während zehn Jahren Öko-Alpfleisch im Wert von insgesamt 3500 Franken. Die Bestellliste reicht von Hackfleisch über Braten und Trockenfleisch bis hin zu Entrecôte.</p>
+<p>Die langfristig Kundenbindung und die Planungssicherheit sei der grosse Vorteil des Kuhinvestments. "Wir wissen so, dass ein Teil des Umsatzes auf Jahre hinaus gebucht ist", sagt Leutenegger.</p>
+<p>Die Idee für dieses Projekt stamme nicht vom ihm, räumt der ehemalige Präsident des Thurgauer Naturschutzbundes ein. In anderer Form gebe es dies auch in Frankreich oder Deutschland.</p>
+<p>Einmalig sei das Kuhinvestment insofern, so Leutenegger, als dass es sich um Hochlandrinder handle. Diese Rinder werden zwischen 20 und 25 Jahre alt.</p>
+<p>Leuteneggers Tiere weiden mehr als sieben Monate im Jahr auf der Alp. Dabei ernähren sie sich ausschliesslich vom natürlichen Futter der alpinen Weiden und von Quellwasser.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

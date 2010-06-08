@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T152049+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brd045</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brd045:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T152049+0200</FirstCreated>
+<ThisRevisionCreated>20100408T152049+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Drei Hunde jagen Hirsch in Lugano und ziehen den Kürzeren</HeadLine>
+<DateLine>Lugano</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Halbverhungerte Hunde hetzen Hirsch in See</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Tierdrama</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="og"/>
+<Property FormalName="author" Value="om"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="08000000"/>
+<Subject FormalName="06000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="TI"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der Tierschutzverein Bellinzona (SPAB) hat drei halb verhungerte Schäferhunde aus dem Luganersee gefischt. Die ausgesetzten Tiere hatten im Wasser einen Hirschen gejagt, beim Kampf mit diesem aber den Kürzeren gezogen.</p>
+<p>Der Hirsch wehrte in der Nähe der Cantine di Gandria den Angriff eines Hundes, der ihn in den Rücken beissen wollte, mit seinem Geweih ab. Dabei verletzte sich der Hund an der Schnauze. Der Hirsch floh anschliessend in den Wald.</p>
+<p>Passagiere eines Linienschiffes beobachteten den Kampf und alarmierten die SPAB. Die Tierschützer fingen die Hunde zusammen mit Jagdaufsehern und der Seepolizei ein und brachten sie zu einem Veterinär nach Giubiasco, wie die SPAB am Donnerstag mitteilte.</p>
+<p>Es stellte sich heraus, dass die Hunde offenbar ausgesetzt worden waren; sie trugen keine Mikrochips und erwiesen sich als zahm. Bei zweien der Tiere handelt es sich gemäss SPAB um Weibchen, die viel Muttermilch produzieren würden.</p>
+<p>Die Verantwortlichen der SPAB vermuten daher, dass irgendwo in der Region von Caprino Welpen auf ihre Mutter warten. Werden die Jungen nicht gefunden, muss die Produktion der Muttermilch mittels Medikamenten gestoppt werden, da den Weibchen sonst eine Infektion droht.</p>
+<p>Ein Aussetzen der Tiere am Fundort kommt wegen des Tierschutzgesetzes nicht infrage. Überdies bestünde die Gefahr, dass dann ein Rudel wilder Hunde entsteht, das sich irgendwie ernähren müsste, "mit den Konsequenzen, die man sich vorstellen kann", wie die SPAB schreibt.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

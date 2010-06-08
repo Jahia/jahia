@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T122019+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd030</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd030:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T122019+0200</FirstCreated>
+<ThisRevisionCreated>20100406T122019+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7134"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7133"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Mehr Militärpolizisten auf Bahnhöfen und in Zügen</HeadLine>
+<DateLine>Bern</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Armee will Soldaten disziplinieren</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Zugfahren</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="wl"/>
+<Property FormalName="author" Value="om"/>
+<Property FormalName="author" Value="fos"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11001000"/>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04015000"/>
+<SubjectDetail FormalName="04015002"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Die Armee will härter gegen betrunkene, kiffende oder pöbelnde Soldaten vorgehen: Auf Bahnhöfen und in Zügen stehen künftig mehr Militärpolizisten im Einsatz. Die Militärische Sicherheit erhöhe ihre Präsenz, teilten das Verteidigungsdepartement (VBS) und die SBB mit.</p>
+<p>Ziel sei es, auf das Erscheinungsbild der Armee Einfluss zu nehmen und Straftatbestände zu ahnden. Als Stichworte nennt das VBS Disziplin, Betäubungsmittel und Munitionsbefehl.</p>
+<p>Armeechef André Blattmann hatte vor rund einem Jahr verstärkte Kontrollen angekündigt. Die Armee müsse die Ordnung durchsetzen und die Soldaten erziehen, sagte Blattmann damals. Rekruten in Zivil reisen zu lassen, sei der falsche Weg.</p>
+<p>Nun hat Blattmann die Militärische Sicherheit beauftragt, die Kontrollen zu verstärken. Neben Routinekontrollen soll es Grosskontrollen an Knotenpunkten und in Zügen mit vielen Soldaten geben, wie das VBS schreibt.</p>
+<p>Wie viele Militärpolizisten genau zum Einsatz kommen, wollte Armeesprecher Christoph Brunner auf Anfrage nicht sagen. Bewaffnet sind die Militärpolizisten laut Brunner mit Pistole, Schlagstock und Pfefferspray.</p>
+<p>Gegenüber Zivilpersonen schreiten die Militärpolizisten nur dann ein, wenn "eine unmittelbare Gefährdung offensichtlich oder die Betriebssicherheit des Bahnverkehrs augenfällig gestört ist". Nach der Intervention werden Zivilisten laut Brunner den zivilen Behörden übergeben.</p>
+<p>Die Kontrollen würden mit der Transportpolizei der SBB sowie den kantonalen und städtischen Polizeikorps koordiniert, schreibt das VBS. So könnten Mehrfachkontrollen vermieden und das territoriale Zuständigkeitsprinzip gewahrt werden.</p>
+<p>Auch in der Ausbildung soll der Kontakt mit der Transportpolizei intensiviert werden. Gemischte Patrouillen wird es hingegen keine geben.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

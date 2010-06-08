@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T191252+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="Si-Online D"/>
+<Priority FormalName="5"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brz018</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brz018:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T191252+0200</FirstCreated>
+<ThisRevisionCreated>20100406T191252+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="5"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd9529"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd9528"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Zweiter Etappensieg für Valverde</HeadLine>
+<DateLine>Rad</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Valverde doppelt nach</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Rad</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="si"/>
+</Provider>
+<Source>
+<Party FormalName="si"/>
+</Source>
+<Property FormalName="author" Value="nag"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="15000000"/>
+<SubjectMatter FormalName="15019000"/>
+<SubjectDetail FormalName="15019011"/>
+</SubjectCode>
+<Location/>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Alejandro Valverde hat auch die 2. Etappe der Baskenland-Rundfahrt gewonnen.</p>
+<p>Nachdem der Spanier zum Auftakt am Grünen Tisch auf Platz eins gesetzt und sein Landsmann Oscar Freire zurückgestuft worden war, gewann Valverde am Dienstag in Viana erneut. Nach 217 km verwies er den dreifachen Weltmeister Freire auf Rang zwei und verteidigte die Gesamtführung.</p>
+<p>Auch in Frankreich geben die Spanier den Ton an: Luis Leon Sanchez gewann die Auftakt-Etappe der Sarthe-Rundfahrt, an der auch Lance Armstrong teilnimmt. Sanchez konnte sich auf der 184-km-Etappe wenige Meter vor dem Ziel aus dem Hauptfeld lösen und den Sprintern einen Strich durch die Rechnung machen. Armstrong, der sich nach dem am Freitag zu Ende gehenden Circuit de la Sarthe für einen Monat zum Training nach Texas zurückziehen wird, erreichte das Ziel im Hauptfeld.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

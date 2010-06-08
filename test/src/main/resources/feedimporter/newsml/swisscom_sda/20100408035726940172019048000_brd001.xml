@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T035726+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="3"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brd001</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brd001:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T035726+0200</FirstCreated>
+<ThisRevisionCreated>20100408T035726+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="3"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7320"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7321"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Erneut bis zu 60 Einwohner in Rio verschüttet</HeadLine>
+<DateLine>Rio de Janeiro</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Zahl der Toten in Rio steigt weiter an</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Brasilien</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+<Party FormalName="dpa"/>
+<Party FormalName="rtd"/>
+</Source>
+<Property FormalName="author" Value="lt"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="03000000"/>
+<SubjectMatter FormalName="03005000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="BR"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Bei den schweren Unwettern in der Umgebung der brasilianischen Metropole Rio de Janeiro sind in der Trabantenstadt Niterói erneut bis zu 60 Menschen verschüttet worden. Durch den Erdrutsch wurden rund 40 Gebäude von Schlamm und Geröll überspült.</p>
+<p>Dies berichtete ein lokaler TV-Sender in der Nacht zum Donnerstag. Die Zahl der Opfer sei noch unklar. Nach den heftigsten Regenfällen seit fast einem halben Jahrhundert versinkt die Gegend um Rio in den vergangenen Tagen in Fluten von Wasser, Geröll und Schlamm.</p>
+<p>In der jüngsten Bilanz des Zivilschutzes wurde die Zahl der geborgenen Leichen mit 133 angegeben. Die Stadtverwaltung warnte die Bewohner vor neuen Erdrutschen.</p>
+<p>Auf dem Stadtgebiet von Rio wurden 43 Tote gezählt, in Niterói auf der gegenüberliegenden Seite der Bucht von Rio waren es bis zum Mittwoch mindestens 54. Vielfach wurden von den Überschwemmungen die Bewohner der planlos errichteten Favelas getroffen.</p>
+<p>Staatschef Luiz Inacio Lula da Silva hatte bereits am Dienstag jahrelanges Missmanagement der Baubehörden für die vielen Opfer verantwortlich gemacht.</p>
+<p>Die Behörden hätten zu lange die Entstehung immer neuer Viertel ohne Baugenehmigungen geduldet, sogar in den Hügeln um Rio de Janeiro, die als stark erdrutschgefährdet gelten, sagte er. Der Präsident kündigte an, künftig höhere Baustandards durchzusetzen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

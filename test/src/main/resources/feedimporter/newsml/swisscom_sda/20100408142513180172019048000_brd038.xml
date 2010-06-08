@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100408T142513+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100408</DateId>
+<NewsItemId>brd020</NewsItemId>
+<RevisionId PreviousRevision="1" Update="N">2</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100408:brd020:2N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100408T104524+0200</FirstCreated>
+<ThisRevisionCreated>20100408T142513+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7336"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100408:phd7335"/>
+<Instruction FormalName="Update">
+<RevisionStatus Revision="1">
+<Status FormalName="Usable"/>
+</RevisionStatus>
+</Instruction>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Ringier kann nicht an Rekordjahr 2008 anknüpfen</HeadLine>
+<DateLine>Zürich</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Massiver Gewinneinbruch bei Ringier im 2009</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Medien</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="kl"/>
+<Property FormalName="author" Value="wk"/>
+<Property FormalName="author" Value="efe"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<Subject FormalName="04000000"/>
+<SubjectMatter FormalName="04010000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Comment FormalName="Editorial Note">Prio tiefer, Meld. ergänzt</Comment>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Der Medienkonzern Ringier hat im Krisenjahr 2009 trotz einem starken Umsatzrückgang noch schwarze Zahlen geschrieben. Der Gewinn sank um 72 Prozent auf 17,2 Millionen Franken.</p>
+<p>Das in zehn Ländern Europas und Asien tätige Unternehmen erwirtschaftete einen Umsatz von 1,3 Milliarden Franken, wie es an der Jahresmedienkonferenz in Zürich hiess. Das bedeutet gegenüber dem Rekordjahr 2008 einen Rückgang um 15,6 Prozent.</p>
+<p>"Nicht viele Unternehmen verkraften einen solchen Umsatzrückgang", sagte Konzernchef Christian Unger. Er ist deshalb trotz Gewinneinbruch "hoch zufrieden". Dank frühzeitig eingeleiteten Sparprogrammen sei die Gewinnschwelle gehalten worden. Die Aufwendungen gingen um 13,4 Prozent zurück.</p>
+<p>Weltweit hat Ringier 681 Stellen abgebaut, allein in der Schweiz 328. Laut Verwaltungsratspräsident Michael Ringier wird die Zahl der journalistischen Arbeitsplätze nun eher wieder steigen. Das Unternehmen beschäftigt noch 7448 Mitarbeitendende, 3082 davon in der Schweiz.</p>
+<p>Die grossen Investitionen von 97 Millionen Franken - unter anderem in den Newsroom - zeigten, dass das Unternehmen an die Zukunft der Printmedien glaubt. Investiert werde auch in die Qualität des Journalismus, versicherte Ringier.</p>
+<p>Auf dem Schweizer Markt musste Ringier im letzten Jahr einen Umsatzrückgang von 9,5 Prozent hinnehmen. In Osteuropa ging der Umsatz um 20,5 Prozent, in Asien um 25,9 Prozent zurück. Besonders schlecht lief das Geschäft in Rumänien. Am besten behaupten konnte sich jenes in Serbien.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

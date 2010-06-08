@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100405T084905+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="2"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100405</DateId>
+<NewsItemId>brd013</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100405:brd013:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100405T084905+0200</FirstCreated>
+<ThisRevisionCreated>20100405T084905+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="2"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7028"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100405:phd7029"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Cannabis Droge Nummer eins bei Verkehrsteilnehmern - Kokain legt zu</HeadLine>
+<DateLine>Lausanne</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Kokain bei Verkehrsteilnehmern im Vormarsch</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Drogen am Steuer</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="uc"/>
+<Property FormalName="author" Value="sk"/>
+<Property FormalName="author" Value="mr"/>
+<Property FormalName="author" Value="zy"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Cannabis ist die klar häufigste Droge im Strassenverkehr. Doch immer mehr Auto-, Töff- und Velofahrer scheinen mit Kokain aufgeputscht zu sein. Das zeigt die erste schweizweite Studie über Drogen und illegale Substanzen im Strassenverkehr.</p>
+<p>Auf den 1. Januar 2005 hat die Schweiz im Strassenverkehr nicht nur die 0,5 Promille-Grenze für Alkohol eingeführt. Für eine Reihe von illegalen Drogen gilt seit diesem Zeitpunkt auf der Strasse eine Nulltoleranz. Die Schweizerische Gesellschaft für Rechtsmedizin hat nun für das Bundesamt für Gesundheit die ersten Übertretungsfälle untersucht.</p>
+<p>Maria-Cristina Senna vom Universitätsspital Lausanne analysierte dazu alle Drogenverdachtsfälle des Jahres 2005, die in einem der acht schweizweiten, vom Bund anerkannten Laboratorien abgeklärt wurden. Fälle, in denen die Polizei einzig auf Alkohol testete, wurden nicht berücksichtigt.</p>
+<p>Wie Senna und ihre Kollegen im Fachmagazin "Forensic Science International" berichten, gab es 4794 Verdachtsfälle - 4243 bei Männern und 543 bei Frauen. Das Durchschnittsalter der Auto-, Lastwagen-, Töff-, Töffli- und Velofahrer betrug 31 Jahre. 35 Prozent der Tests veranlasste die Polizei nach Verkehrsunfällen.</p>
+<p>In 89 Prozent der Fälle fanden sich eine oder mehrere psychoaktive Substanzen im Blut. Die häufigste war Cannabis (48 Prozent) vor Alkohol (35 %), Kokain (25 %), Opiaten (10 %), Amphetaminen wie Speed, Crank oder Crystal (7 %), den als Beruhigungs- und Schlafmitteln benutzten Benzodiazepinen (6 %) und Methadon (5 %).</p>
+<p>Ähnliche Werte fand eine frühere, aber viel weniger umfassende Studie aus den Jahren 2002 und 2003. Einzige Ausnahme: Die Häufigkeit von Kokain verdoppelte sich von etwa 13 auf 25 Prozent.</p>
+<p>Viele Verkehrsteilnehmer hatten gleich mehrere Drogen aufs Mal intus. Nur 23 Prozent der Kokain-Positiven konsumierten die Droge allein. Bei 17 Prozent fand sich auch Alkohol, bei 16 Prozent auch Cannabis, bei 9 Prozent auch Opiate. 7 Prozent konsumierten zudem Cannabis und Alkohol, 4 Prozent auch Methadon und Opiate.</p>
+<p>89 Prozent der Drogensünder am Steuer waren Männer. Ihr Durchschnittsalter betrug 30 Jahre, jenes der Frauen 37 Jahre. Wie erwartet fuhren die Jungen eher unter Drogeneinfluss, während ältere Personen häufiger positiv auf Medikamente getestet wurden.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

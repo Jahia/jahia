@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE NewsML PUBLIC "urn:newsml:iptc.org:20031010:NewsMLv1.2.dtd:1"
+"NewsML-1.2.dtd"
+[<!ENTITY % nitf SYSTEM "nitf-3-0.dtd"> %nitf; ]>
+<NewsML>
+<Catalog Href="www.sda.ch/newsml/topics/SDACatalog.xml"/>
+<NewsEnvelope>
+<DateAndTime>20100406T212154+0200</DateAndTime>
+<NewsService FormalName="SDA-ATS News Service"/>
+<NewsProduct FormalName="sda-Online D"/>
+<Priority FormalName="4"/>
+</NewsEnvelope>
+<NewsItem>
+<Identification>
+<NewsIdentifier>
+<ProviderId>www.sda-ats.ch</ProviderId>
+<DateId>20100406</DateId>
+<NewsItemId>brd067</NewsItemId>
+<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+<PublicIdentifier>urn:newsml:www.sda-ats.ch:20100406:brd067:1N</PublicIdentifier>
+</NewsIdentifier>
+</Identification>
+<NewsManagement>
+<NewsItemType FormalName="News"/>
+<FirstCreated>20100406T212154+0200</FirstCreated>
+<ThisRevisionCreated>20100406T212154+0200</ThisRevisionCreated>
+<Status FormalName="Usable"/>
+<Urgency FormalName="4"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7200"/>
+<AssociatedWith NewsItem="urn:newsml:www.sda-ats.ch:20100406:phd7199"/>
+</NewsManagement>
+<NewsComponent>
+<NewsLines>
+<HeadLine>Bundesrat genehmigt Einschränkungen im Bündner Ferienwohnungsbau</HeadLine>
+<DateLine>Chur</DateLine>
+<NewsLine>
+<NewsLineType FormalName="CatchLine"/>
+<NewsLineText>Bern segnet Limitierung von kalten Betten ab</NewsLineText>
+</NewsLine>
+<NewsLine>
+<NewsLineType FormalName="CatchWord"/>
+<NewsLineText>Kalte Betten</NewsLineText>
+</NewsLine>
+</NewsLines>
+<AdministrativeMetadata>
+<Provider>
+<Party FormalName="sda"/>
+</Provider>
+<Source>
+<Party FormalName="sda"/>
+</Source>
+<Property FormalName="author" Value="fy"/>
+<Property FormalName="author" Value="lm"/>
+<Property FormalName="author" Value="ceg"/>
+</AdministrativeMetadata>
+<DescriptiveMetadata>
+<Language FormalName="DE"/>
+<Genre FormalName="Current"/>
+<SubjectCode>
+<Subject FormalName="11000000"/>
+<SubjectMatter FormalName="11006000"/>
+</SubjectCode>
+<Location>
+<Property FormalName="Country" Value="CH"/>
+<Property FormalName="CountryArea" Value="GR"/>
+</Location>
+</DescriptiveMetadata>
+<NewsComponent>
+<ContentItem>
+<Format Scheme="IptcFormat" FormalName="NITF"/>
+<Characteristics>
+<Property FormalName="FormatVersion" Value="3.0"/>
+</Characteristics>
+<DataContent>
+<nitf>
+<body>
+<body.content>
+<p lede="true">Ferienwohnungen mit so genannten "kalten Betten" können im Kanton Graubünden nur noch beschränkt gebaut werden. Der Bundesrat hat die Ergänzung im kantonalen Richtplan mit der Limitierung von unvermieteten Zweitwohnungen genehmigt.</p>
+<p>Der Bündner Richtplan verpflichtet 35 Tourismusgemeinden, bis Mitte 2013 Massnahmen zur Förderung des Erstwohnungsbaus und zur Lenkung des Zweitwohnungsbaus zu erlassen, wie das Bündner Volkswirtschaftsdepartement mitteilte. Vermietete Zweitwohnungen ("warme Betten") sind von den Änderungen nicht betroffen.</p>
+<p>Kernstück des Richtplans ist die Begrenzung neuer, unvermieteter Zweitwohnungen in Tourismusgemeinden. In bestehenden Bauzonen wird der Bau von Ferienwohnungen auf 30 bis 50 Prozent limitiert. Bei Neueinzonungen dürfen maximal 30 Prozent für Zweitwohnungen genutzt werden.</p>
+<p>Die kantonalen Vorgaben müssen umgesetzt werden einerseits in den Hauptzentren der grossen Tourismusräume Oberengadin, Flims/Laax, Lenzerheide/Arosa, Klosters/Davos und Scoul/Samnaun. Andererseits sind sie verbindlich für Zentrumsgemeinden der übrigen Tourismusräume wie Disentis, Obersaxen, Brigels, Splügen, Savognin, Tujetsch oder Mesocco.</p>
+<p>Mit der kantonalen Richtplanung sei es gelungen, die Diskussion um den Zweitwohnungsbau zu versachlichen, schreibt das Volkswirtschaftsdepartement. Es sei aufgezeigt worden, dass Zweitwohnungen an sich nichts Negatives seien. Vielmehr müsse differenziert werden zwischen förderungswürdigen bewirtschafteten und lenkungsbedürftigen unbewirtschaftenen Wohnungen.</p>
+</body.content>
+</body>
+</nitf>
+</DataContent>
+</ContentItem>
+</NewsComponent>
+</NewsComponent>
+</NewsItem>
+</NewsML>

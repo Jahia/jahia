@@ -255,7 +255,7 @@
                 </property>
             </activation>
             <modules>
-                <module>deployments</module>
+                <module>package</module>
             </modules>
         </profile>
 

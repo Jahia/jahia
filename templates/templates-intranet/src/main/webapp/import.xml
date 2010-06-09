@@ -166,46 +166,61 @@
                         </wrappercontent>
                     </wrapper-1>
                 </docspace>
-				<wiki jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:template" changefreq="monthly" priority="0.5">
-				  <j:translation_en jcr:title_en="Wiki" jcr:language="en" jcr:primaryType="jnt:translation"/>
-				  <pagecontent jcr:primaryType="jnt:contentList">
-					<row column="2col88" jcr:primaryType="jnt:row">
-					  <col2 j:subNodesTemplate="link" j:skin="skins.box5" jcr:mixinTypes="jmix:renderableList jmix:skinnable" jcr:primaryType="jnt:contentList">
-						<j:translation_en j:subNodesTemplate="link" j:skin="skins.box5" jcr:language="en" jcr:title_en="Create Wiki Pages" jcr:primaryType="jnt:translation"/>
-						<create-a-wiki-page jcr:primaryType="jnt:wikiPageFormCreation">
-						  <j:translation_en jcr:title_en="Create a wiki page" jcr:language="en" jcr:primaryType="jnt:translation"/>
-						</create-a-wiki-page>
-					  </col2>
-					  <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-						<j:translation_en j:skin="skins.box5style1" jcr:title_en="Latest Wiki Pages" jcr:language="en" jcr:primaryType="jnt:translation"/>
-						<latestContent j:criteria="lastModified" jcr:mixinTypes="jmix:renderable" j:template="linkList" j:type="jnt:wikiPage" j:nbOfResult="20" jcr:primaryType="jnt:latestContent" startNode="/templatesSet/templates-intranet/templates/wiki"/>
-					  </col1>
-					</row>
-				  </pagecontent>
-				  <wrapper j:template="default" jcr:primaryType="jnt:wrapper" j:key="wikiPageWrapper" j:applyOn="jnt:wikiPage">
-					<wrappercontent jcr:primaryType="jnt:contentList">
-					  <row column="2col124" jcr:primaryType="jnt:row">
-						<col1 jcr:primaryType="jnt:contentList">
-						  <tabularList jcr:primaryType="jnt:tabularList">
-							<content jcr:primaryType="jnt:contentList">
-							  <j:translation_en jcr:title_en="Content" jcr:language="en" jcr:primaryType="jnt:translation"/>
-							  <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="default"/>
-							</content>
-							<contribute jcr:primaryType="jnt:contentList">
-							  <j:translation_en jcr:language="en" jcr:title_en="Contribute" jcr:primaryType="jnt:translation"/>
-							  <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="contribute"/>
-							</contribute>
-							<history jcr:primaryType="jnt:contentList">
-							  <j:translation_en jcr:language="en" jcr:title_en="History" jcr:primaryType="jnt:translation"/>
-							  <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="history"/>
-							</history>
-						  </tabularList>
-						</col1>
-						<col2 jcr:primaryType="jnt:contentList"/>
-					  </row>
-					</wrappercontent>
-				  </wrapper>
-				</wiki>
+                <wiki jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:template" changefreq="monthly" priority="0.5">
+                    <j:translation_en jcr:title_en="Wiki" jcr:language="en" jcr:primaryType="jnt:translation"/>
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <row column="2col88" jcr:primaryType="jnt:row">
+                            <col2 j:subNodesTemplate="link" j:skin="skins.box5"
+                                  jcr:mixinTypes="jmix:renderableList jmix:skinnable" jcr:primaryType="jnt:contentList">
+                                <j:translation_en j:subNodesTemplate="link" j:skin="skins.box5" jcr:language="en"
+                                                  jcr:title_en="Create Wiki Pages" jcr:primaryType="jnt:translation"/>
+                                <create-a-wiki-page jcr:primaryType="jnt:wikiPageFormCreation">
+                                    <j:translation_en jcr:title_en="Create a wiki page" jcr:language="en"
+                                                      jcr:primaryType="jnt:translation"/>
+                                </create-a-wiki-page>
+                            </col2>
+                            <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable"
+                                  jcr:primaryType="jnt:contentList">
+                                <j:translation_en j:skin="skins.box5style1" jcr:title_en="Latest Wiki Pages"
+                                                  jcr:language="en" jcr:primaryType="jnt:translation"/>
+                                <latestContent j:criteria="lastModified" jcr:mixinTypes="jmix:renderable"
+                                               j:template="linkList" j:type="jnt:wikiPage" j:nbOfResult="20"
+                                               jcr:primaryType="jnt:latestContent"
+                                               startNode="/templatesSet/templates-intranet/templates/wiki"/>
+                            </col1>
+                        </row>
+                    </pagecontent>
+                    <wrapper j:template="default" jcr:primaryType="jnt:wrapper" j:key="wikiPageWrapper"
+                             j:applyOn="jnt:wikiPage">
+                        <wrappercontent jcr:primaryType="jnt:contentList">
+                            <row column="2col124" jcr:primaryType="jnt:row">
+                                <col1 jcr:primaryType="jnt:contentList">
+                                    <tabularList jcr:primaryType="jnt:tabularList">
+                                        <content jcr:primaryType="jnt:contentList">
+                                            <j:translation_en jcr:title_en="Content" jcr:language="en"
+                                                              jcr:primaryType="jnt:translation"/>
+                                            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay"
+                                                                 j:referenceTemplate="default"/>
+                                        </content>
+                                        <contribute jcr:primaryType="jnt:contentList">
+                                            <j:translation_en jcr:language="en" jcr:title_en="Contribute"
+                                                              jcr:primaryType="jnt:translation"/>
+                                            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay"
+                                                                 j:referenceTemplate="contribute"/>
+                                        </contribute>
+                                        <history jcr:primaryType="jnt:contentList">
+                                            <j:translation_en jcr:language="en" jcr:title_en="History"
+                                                              jcr:primaryType="jnt:translation"/>
+                                            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay"
+                                                                 j:referenceTemplate="history"/>
+                                        </history>
+                                    </tabularList>
+                                </col1>
+                                <col2 jcr:primaryType="jnt:contentList"/>
+                            </row>
+                        </wrappercontent>
+                    </wrapper>
+                </wiki>
                 <forum jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:template" changefreq="monthly" priority="0.5">
                     <j:translation_en jcr:title_en="Forum" jcr:language="en" jcr:primaryType="jnt:translation"/>
                     <pagecontent jcr:primaryType="jnt:contentList">
@@ -233,6 +248,43 @@
                         </wrappercontent>
                     </wrapper>
                 </forum>
+                <my-profile jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:template" changefreq="monthly"
+                            priority="0.5">
+                    <j:translation_en jcr:title_en="My Profile" jcr:language="en" jcr:primaryType="jnt:translation"/>
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <tabularList jcr:primaryType="jnt:tabularList">
+                            <my-profile jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="My Profile"
+                                                  jcr:language="en"/>
+                                <user-profile jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="myprofile"/>
+                            </my-profile>
+                            <my-content jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en"
+                                                  jcr:title_en="My Content"/>
+                                <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
+                                                    j:referenceTemplate="mycontent"/>
+                            </my-content>
+                            <my-docspaces jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="My Docspaces"
+                                                  jcr:language="en"/>
+                                <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
+                                                    j:referenceTemplate="mydocspaces"/>
+                            </my-docspaces>
+                            <my-tasks jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en"
+                                                  jcr:title_en="My Tasks"/>
+                                <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
+                                                    j:referenceTemplate="tasklist"/>
+                            </my-tasks>
+                            <my-bookmarks jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="My Bookmarks"
+                                                  jcr:language="en"/>
+                                <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
+                                                    j:referenceTemplate="bookmarks"/>
+                            </my-bookmarks>
+                        </tabularList>
+                    </pagecontent>
+                </my-profile>
             </templates>
             <sitewrapper j:template="intranet.bodywrapper" jcr:primaryType="jnt:wrapper" j:key="bodywrapper">
                 <logo jcr:primaryType="jnt:contentList"/>
@@ -254,41 +306,6 @@
                 </wrappercontent>
                 <pagetitle jcr:primaryType="jnt:contentList"/>
             </sitewrapper>
-            <userwrapper j:template="default" jcr:primaryType="jnt:wrapper" j:key="userwrapper" j:applyOn="jnt:user">
-                <wrappercontent jcr:primaryType="jnt:contentList">
-                    <tabularList jcr:primaryType="jnt:tabularList">
-                        <my-profile jcr:primaryType="jnt:contentList">
-                            <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="My Profile"
-                                              jcr:language="en"/>
-                            <user-profile jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="myprofile"/>
-                        </my-profile>
-                        <my-content jcr:primaryType="jnt:contentList">
-                            <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en"
-                                              jcr:title_en="My Content"/>
-                            <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
-                                                j:referenceTemplate="mycontent"/>
-                        </my-content>
-                        <my-docspaces jcr:primaryType="jnt:contentList">
-                            <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="My Docspaces"
-                                              jcr:language="en"/>
-                            <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
-                                                j:referenceTemplate="mydocspaces"/>
-                        </my-docspaces>
-                        <my-tasks jcr:primaryType="jnt:contentList">
-                            <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en"
-                                              jcr:title_en="My Tasks"/>
-                            <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
-                                                j:referenceTemplate="tasklist"/>
-                        </my-tasks>
-                        <my-bookmarks jcr:primaryType="jnt:contentList">
-                            <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="My Bookmarks"
-                                              jcr:language="en"/>
-                            <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
-                                                j:referenceTemplate="bookmarks"/>
-                        </my-bookmarks>
-                    </tabularList>
-                </wrappercontent>
-            </userwrapper>
             <search-results jcr:mixinTypes="jmix:templateInformation jmix:sitemap" j:template="default"
                             jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
                 <j:translation_en j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly"

@@ -46,6 +46,7 @@ div#navigationN1-1 ul.level_1 li div.box-inner {
 	-khtml-border-radius-bottomleft: 5px;
 	-webkit-border-bottom-left-radius: 5px;
 	border-bottom-left-radius: 5px;
+	z-index:999;
 }
 div#navigationN1-1 ul.level_1 li:hover div.box-inner { display: block; }
 div#navigationN1-1 ul.level_1 li div.box-inner a { display: inline; }

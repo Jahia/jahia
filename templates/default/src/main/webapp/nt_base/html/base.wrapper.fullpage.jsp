@@ -55,7 +55,6 @@
 				<template:addResources type="css" resources="${themeFile.url}"/>
 			</c:forEach>
 		</c:if>
-        <utility:applicationResources/>
 	</template:templateHead>
     <template:templateBody>
         ${wrappedContent}

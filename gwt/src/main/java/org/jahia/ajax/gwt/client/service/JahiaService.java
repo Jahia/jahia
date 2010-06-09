@@ -80,8 +80,6 @@ public interface JahiaService extends RemoteService {
     public GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString);
 
 
-    public GWTJahiaProcessJob getProcessJob(String name, String groupName);
-
     public List<GWTJahiaSite> getAvailableSites ();
     
 }

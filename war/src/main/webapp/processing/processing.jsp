@@ -37,11 +37,11 @@
 <html>
 <head>
     <title><internal:message key="label.processManager"/></title>
+    <internal:gwtGenerateDictionary/>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.pdisplay.ProcessDisplay"/>
 </head>
 <body>
 <internal:processDisplay state="max" windowHeight="450px" windowWidth="550px"/>
-<internal:gwtGenerateDictionary/>
 </body>
 </html>

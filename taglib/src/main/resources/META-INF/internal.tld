@@ -183,29 +183,6 @@
         </attribute>
     </tag>
 
-    <tag>
-        <description>Displays a catagories manager</description>
-        <name>categoryManager</name>
-        <tag-class>org.jahia.taglibs.internal.categories.CategoriesManagerTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>startPath</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <!-- pdisplay -->
-    <tag-file>
-        <description>create html struture for pdisplay</description>
-        <name>processDisplay</name>
-        <path>/META-INF/tags/ajax/processdisplay.tag</path>
-    </tag-file>
-    <tag-file>
-        <description>create html struture for job report</description>
-        <name>jobReport</name>
-        <path>/META-INF/tags/ajax/jobreport.tag</path>
-    </tag-file>
     <tag-file>
         <description>Displays the content manager engine</description>
         <name>contentManager</name>

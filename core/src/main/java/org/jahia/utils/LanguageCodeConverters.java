@@ -59,6 +59,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 public class LanguageCodeConverters {
 
+    private static List<Locale> availableBundleLocales;
     /**
      * Converts string such as
      *   en_US, fr_CH_unix, fr, en, _GB, fr__UNIX
@@ -326,8 +327,10 @@ public class LanguageCodeConverters {
     }
 
     public static List<Locale> getAvailableBundleLocales() {
-        return getAvailableBundleLocales(
-                JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null);
+        if (availableBundleLocales == null) {
+            availableBundleLocales = getAvailableBundleLocales(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null);
+        }
+        return availableBundleLocales;
     }
 
     public static List<Locale> getAvailableBundleLocalesSorted(

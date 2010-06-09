@@ -469,14 +469,6 @@
     </tag-file>
 
     <tag-file>
-        <description>Renders subscribe/unsubscribe link, which allows current user to subscribe/unsubscribe to the
-            notifications about changes in the content object.
-        </description>
-        <name>subscribeButton</name>
-        <path>/META-INF/tags/subscribeButton.tag</path>
-    </tag-file>
-    
-    <tag-file>
         <description>Renders the trigger link and the tree control to select an item.</description>
         <name>treeItemSelector</name>
         <path>/META-INF/tags/treeItemSelector.tag</path>

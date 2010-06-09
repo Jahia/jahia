@@ -1066,6 +1066,26 @@
                 </dependencies>
                 <executions>
                     <execution>
+                        <id>gwt-i18n-resources</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <tasks>
+                                <java classname="org.jahia.ajax.gwt.utils.GWTDictionaryBuilder">
+                                    <arg value="JahiaInternalResources"/>
+                                    <arg value="de,en,es,fr,it,pt"/>
+                                    <arg value="${project.build.directory}/${project.build.finalName}/gwt/resources/i18n"/>
+                                    <arg value="messages"/>
+                                    <classpath>
+                                        <path refid="maven.runtime.classpath"/>
+                                    </classpath>
+                                </java>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>generate-ddl</id>
                         <phase>generate-resources</phase>
                         <goals>

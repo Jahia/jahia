@@ -33,7 +33,6 @@ package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.analytics.GoogleAnalyticsService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -57,69 +56,6 @@ import java.util.*;
  *
  * @author Xavier Lawrence
  * @version 1.0
- * @jsp:tag name="templateBody" body-content="JSP" description="Defines the body part of a jahia template."
- * <p/>
- * <p><attriInfo>This tag simply delimits what is the body part of a Jahia template.
- * All templates MUST have a body part. It should be used together with the template and templateHead tags. The tag also
- * implements the dynamic attributes interface allowing to specify whatever attribute should be passed to the HTML
- * body tag of the generated page.
- * <p/>
- * <p><b>Example :</b>
- * <p/>
- * <%@ include file="common/declarations.jspf" %>
- * &nbsp;&nbsp;&nbsp;&nbsp; &lt;template:template&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;    &lt;template:templateHead&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;       &lt;%@ include file="common/template-head.jspf" %&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;       &lt;utility:applicationResources/&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;   &lt;/template:templateHead&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;   &lt;template:templateBody&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;       &lt;div id="header"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;           &lt;template:include page="common/header.jsp"/&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;       &lt;/div&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;       &lt;div id="pagecontent"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;           &lt;div class="content3cols"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;               &lt;div id="columnA"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;template:include page="common/loginForm.jsp"/&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;template:include page="common/box/box.jsp"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                       &lt;template:param name="name" value="columnA_box"/&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;/template:include&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;               &lt;/div&gt;
- * <p/>
- * &nbsp;&nbsp;&nbsp;&nbsp;               &lt;div id="columnC"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;template:include page="common/searchForm.jsp"/&gt;
- * <p/>
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;!-- in HomePage we display site main properties --&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;div class="properties"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                       &lt;utility:displaySiteProperties/&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;/div&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;template:include page="common/box/box.jsp"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                       &lt;template:param name="name" value="columnC_box"/&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;/template:include&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;               &lt;/div&gt;
- * <p/>
- * &nbsp;&nbsp;&nbsp;&nbsp;               &lt;div id="columnB"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;!--news--&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;template:include page="common/news/newsDisplay.jsp"/&gt;
- * <p/>
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;div&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                       &lt;a class="bottomanchor" href="#pagetop"&gt;&lt;utility:resourceBundle
- * &nbsp;&nbsp;&nbsp;&nbsp;                               resourceName='pageTop' defaultValue="Page Top"/&gt;&lt;/a&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;                   &lt;/div&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;               &lt;/div&gt;
- * <p/>
- * &nbsp;&nbsp;&nbsp;&nbsp;               &lt;br class="clear"/&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;           &lt;/div&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;           &lt;!-- end of content3cols section --&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;       &lt;/div&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;       &lt;!-- end of pagecontent section--&gt;
- * <p/>
- * &nbsp;&nbsp;&nbsp;&nbsp;       &lt;div id="footer"&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;           &lt;template:include page="common/footer.jsp"/&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;       &lt;/div&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp;   &lt;/template:templateBody&gt;
- * &nbsp;&nbsp;&nbsp;&nbsp; &lt;/template:template&gt;
- * </attriInfo>
  */
 @SuppressWarnings("serial")
 public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttributes {
@@ -127,21 +63,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     private final static transient Logger logger = Logger.getLogger(TemplateBodyTag.class);
 
     private transient Map<String, Object> attributes = new HashMap<String, Object>();
-    private String gwtScript;
     private boolean editDivOpen = false;
-
-    /**
-     * Allows the template developer to specify a specific GWT javascript file to use rather than the default one.
-     *
-     * @param gwtScript The GWT javascript file to use if the default one does not suit needs
-     * @jsp:attribute name="gwtScript" required="false" rtexprvalue="true"
-     * description="Allows the template developer to specify a specific GWT javascript file to use rather than the default one."
-     * <p><attriInfo>
-     * </attriInfo>"
-     */
-    public void setGwtScript(String gwtScript) {
-        this.gwtScript = gwtScript;
-    }
 
     public int doStartTag() {
         try {
@@ -171,16 +93,11 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                     }
 
                     pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
+                    pageContext.getOut().println(getGwtDictionaryInclude());
                     pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
 
                     pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" config=\""+renderContext.getEditModeConfigName() +"\" path=\"" + r.getNode().getPath() + "\" locale=\"" + r.getLocale() + "\" template=\"" + r.getResolvedTemplate() + "\">");
                     editDivOpen = true;
-                } else {
-//                    Resource r = (Resource) pageContext.getRequest().getAttribute("currentResource");
-//                    request.setAttribute("templateWrapper", "bodywrapper");
-//                    String out = RenderService.getInstance().render(r, renderContext);
-//                    pageContext.getOut().print(out);
-//                    return SKIP_BODY;
                 }
             }
 
@@ -191,6 +108,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     }
 
 
+    @SuppressWarnings("unchecked")
     public int doEndTag() {
         final StringBuilder buf = new StringBuilder();
 
@@ -204,17 +122,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
             }
 
-            // in edit mode, generate gwt dictionnary
-            if (renderContext != null && renderContext.isEditMode()) {
-                // Generate jahia_gwt_dictionnary
-                Map<String, String> dictionaryMap = getJahiaGwtDictionary();
-                if (dictionaryMap != null) {
-                    addMandatoryGwtMessages(renderContext.getUILocale(), renderContext.getRequest().getLocale());
-                    buf.append("<script type='text/javascript'>\n");
-                    buf.append(generateJahiaGwtDictionary());
-                    buf.append("</script>\n");
-                }
-            }
             if (editDivOpen) {
                 buf.append("</div>");
             }
@@ -227,10 +134,15 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         }
 
         // reset attributes
-        gwtScript = null;
+        resetState();
+        return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
         attributes = new HashMap<String, Object>();
         editDivOpen = false;
-        return EVAL_PAGE;
+        super.resetState();
     }
 
     /**

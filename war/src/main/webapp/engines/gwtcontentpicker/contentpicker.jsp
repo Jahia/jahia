@@ -36,11 +36,11 @@
 <html>
 	<head>
 		<title><internal:message key="label.documentManager"/></title>
+        <internal:gwtGenerateDictionary/>
 		<internal:gwtInit standalone="true"/>
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker" />
 	</head>
 	<body>
         <internal:contentPicker conf='${not empty param.type ? param.type : "filepicker"}' mimeTypes='${param["mime"]}' jahiaServletPath='/cms' jahiaContextPath='${pageContext.request.contextPath}'  callback='${param["CKEditorFuncNum"]}'/>    
-        <internal:gwtGenerateDictionary/>
 	</body>
 </html>

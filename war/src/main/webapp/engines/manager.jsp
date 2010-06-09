@@ -60,6 +60,7 @@ configToPermissionMapping.put("workflowmanager", "workflow-manager");
 <html>
 <head>
     <title><internal:message key="label.${param.conf}"/></title>
+    <internal:gwtGenerateDictionary/>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
     <c:if test="${param.conf == 'filemanager' || param.conf == 'contentmanager'}">
@@ -70,6 +71,5 @@ configToPermissionMapping.put("workflowmanager", "workflow-manager");
 </head>
 <body>
 <internal:contentManager conf="${param.conf}"/>
-<internal:gwtGenerateDictionary/>
 </body>
 </html>

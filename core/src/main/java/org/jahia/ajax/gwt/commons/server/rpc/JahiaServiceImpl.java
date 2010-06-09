@@ -107,16 +107,6 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
     }
 
 
-    public GWTJahiaProcessJob getProcessJob(String name, String groupName) {
-        try {
-            return ProcessDisplayHelper.getGWTJahiaProcessJob(ServicesRegistry.getInstance().getSchedulerService().getJobDetail(name, groupName),
-                    getLocale());
-        } catch (JahiaException e) {
-            logger.error("unable to get process job", e);
-        }
-        return null;
-    }
-
     public List<GWTJahiaSite> getAvailableSites() {
         final Iterator<JahiaSite> sites;
         final List<GWTJahiaSite> returnedSites = new ArrayList<GWTJahiaSite>();

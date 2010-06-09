@@ -31,45 +31,26 @@
  */
 package org.jahia.taglibs.internal.i18n;
 
-import org.jahia.services.render.RenderContext;
-import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.data.JahiaData;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.bin.Jahia;
-import org.apache.log4j.Logger;
-
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.ServletRequest;
 import java.io.IOException;
-import java.util.Locale;
+
+import javax.servlet.jsp.JspTagException;
+
+import org.jahia.taglibs.AbstractJahiaTag;
 
 /**
- * Create a resource bundle dictionary
+ * Create a resource bundle dictionary.
  */
 @SuppressWarnings("serial")
 public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
-    private static final transient Logger logger = Logger.getLogger(GWTGenerateDictionaryTag.class);
 
-    public int doStartTag() {
-        final JspWriter out = pageContext.getOut();
-        // print output
+    @Override
+    public int doStartTag() throws JspTagException {
         try {
-            ServletRequest request = pageContext.getRequest();
-            Locale currentLocale = request.getLocale();
-            RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
-            if (renderContext != null) {
-                addMandatoryGwtMessages(renderContext.getUILocale(), currentLocale);
-            } else {
-                // we fall back to JahiaData for the administration interface, where this tag is also used.
-                addMandatoryGwtMessages(currentLocale, currentLocale);
-            }
-            out.append("<script type='text/javascript'>\n");
-            out.append(generateJahiaGwtDictionary());
-            out.append("</script>\n");
+            pageContext.getOut().println(getGwtDictionaryInclude());            
         } catch (IOException e) {
-            logger.error(e, e);
+            throw new JspTagException(e);
         }
-        return EVAL_PAGE;
+        return SKIP_BODY;
     }
 
    

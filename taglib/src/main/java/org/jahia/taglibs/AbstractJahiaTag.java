@@ -33,7 +33,6 @@ package org.jahia.taglibs;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -42,6 +41,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +54,7 @@ import java.util.*;
 /**
  * This abstract Tag is the starting point for implementing any knew tags. In contains common attributes that should be
  * used in the implementation of the derived tags. For instance, the 'xhtmlCompliantHtml' is used to know if the tag
- * should render XHTML compliant html or simple basic html.</br>
+ * should render XHTML compliant HTML or simple basic HTML.</br>
  * The same is true regarding the 'resourceBundle' attribute. Instead of having to set the name of the resource bundle
  * file for all Jahia tags, it is much more convenient to set it once, at the beginning of the template, and then simply
  * fetching this set values.
@@ -239,129 +239,21 @@ public class AbstractJahiaTag extends BodyTagSupport {
     */
 
     /**
-     * @return jahia_gwt_dictionary as map
-     */
-    protected Map<String, String> getJahiaGwtDictionary() {
-        Map<String, String> dictionaryMap = (Map<String, String>) pageContext.getAttribute("org.jahia.ajax.gwt.dictionary", PageContext.REQUEST_SCOPE);
-        if (dictionaryMap == null) {
-            dictionaryMap = new HashMap<String, String>();
-            updateJahiaGwtDictionary(dictionaryMap);
-        }
-        return dictionaryMap;
-    }
-
-    /**
-     * Update jahia_gwt_dictionary
+     * Generate jahia_gwt_dictionary JavaScript include
      *
-     * @param dictionaryMap
+     * @return jahia_gwt_dictionary JavaScript include
      */
-    protected void updateJahiaGwtDictionary(Map<String, String> dictionaryMap) {
-        pageContext.setAttribute("org.jahia.ajax.gwt.dictionary", dictionaryMap, PageContext.REQUEST_SCOPE);
-    }
-
-    /**
-     * Generate jahia_gwt_dictionary
-     *
-     * @return
-     */
-    protected String generateJahiaGwtDictionary() {
-        Map<String, String> dictionaryMap = getJahiaGwtDictionary();
-        StringBuffer s = new StringBuffer();
-        s.append("var " + Messages.DICTIONARY_NAME + " = {\n");
-        if (dictionaryMap != null) {
-            Iterator<String> keys = dictionaryMap.keySet().iterator();
-            while (keys.hasNext()) {
-                String name = keys.next();
-                if (name != null && name.indexOf(".") < 0) {
-                    Object value = dictionaryMap.get(name);
-                    if (value != null) {
-                        s.append(name).append(":\"").append(value.toString()).append("\"");
-                        if (keys.hasNext()) {
-                            s.append(",");
-                        }
-                        s.append("\n");
-                    }
-                }else{
-                    logger.error(name+" is not allowed as gwt resource bundles key because it contains '.' .");
-                }
-            }
+    protected String getGwtDictionaryInclude() {
+        StringBuilder s = new StringBuilder();
+        s.append("<script type=\"text/javascript\" src=\"").append(
+                ((HttpServletRequest) pageContext.getRequest()).getContextPath())
+                .append("/gwt/resources/i18n/messages");
+        Locale locale = getUILocale();
+        if (LanguageCodeConverters.getAvailableBundleLocales().contains(locale)) {
+            s.append("_").append(locale.toString());
         }
-
-        s.append("};\n");
+        s.append(".js\"></script>");
         return s.toString();
-    }
-
-    /**
-     * add mandatory gwt messages
-     * @param uiLocale
-     * @param currentLocale
-     */
-    protected void addMandatoryGwtMessages(Locale uiLocale, Locale currentLocale) {
-        JahiaResourceBundle jrb = new JahiaResourceBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES,uiLocale);
-        Enumeration<String> keys = jrb.getKeys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            addGwtDictionaryMessage(key.replace('.','_'), getJahiaInternalResource(key, uiLocale, currentLocale).replace('"','\''));
-        }
-    }
-
-    private String getJahiaInternalResource(String resourceName, Locale uiLocale, Locale currentLocale) {
-        if (uiLocale != null) {
-            return JahiaResourceBundle.getJahiaInternalResource(resourceName, uiLocale);
-        } else {
-            // for any reason the jData wasn't loaded correctly
-            return JahiaResourceBundle.getJahiaInternalResource(resourceName, currentLocale);
-        }
-    }
-
-    /**
-     * Add a message into jahia_gwt_dictionary
-     *
-     * @param aliasName
-     * @param message
-     */
-    protected void addGwtDictionaryMessage(String aliasName, String message) {
-        if (aliasName != null) {
-            Map<String, String> dictionaryMap = getJahiaGwtDictionary();
-            dictionaryMap.put(aliasName, message);
-            updateJahiaGwtDictionary(dictionaryMap);
-        }
-    }
-
-    protected String extractDefaultValue(final String value) {
-        if (value.startsWith("<jahia-resource")) {
-            final int keyIndex = value.indexOf("default-value=");
-            final String tmp = value.substring(keyIndex + 15);
-            int whiteSpaceIndex = tmp.indexOf("\"");
-            if (whiteSpaceIndex < 0) {
-                whiteSpaceIndex = tmp.indexOf("'");
-            }
-            return tmp.substring(0, whiteSpaceIndex);
-
-        } else {
-            return value;
-        }
-    }
-
-    /**
-     * Simply utility method in order to extract the key value from a String
-     * made of a resource bundle marker.<br/> <p/> i.e: <br/> Extracts the value
-     * 'files' from the String below: <br/> <jahia-resource id="DEFAULT_V3_LANG"
-     * key="files" default-value="files"/>
-     */
-    protected String extractKey(final String value) {
-        if (value != null && value.startsWith("<jahia-resource")) {
-            final int keyIndex = value.indexOf("key=");
-            final String tmp = value.substring(keyIndex + 5);
-            int whiteSpaceIndex = tmp.indexOf("\"");
-            if (whiteSpaceIndex < 0) {
-                whiteSpaceIndex = tmp.indexOf("'");
-            }
-            return tmp.substring(0, whiteSpaceIndex);
-
-        } else {
-            return value;
-        }
     }
 
     protected void resetState() {
@@ -429,5 +321,18 @@ public class AbstractJahiaTag extends BodyTagSupport {
     protected final JahiaUser getUser() {
         RenderContext ctx = getRenderContext();
         return ctx != null ? ctx.getUser() : null;
+    }
+    
+    protected Locale getUILocale() {
+        RenderContext renderContext = getRenderContext();
+        Locale currentLocale = renderContext != null ? renderContext.getUILocale() : null;
+        if (currentLocale == null) {
+            currentLocale = renderContext != null ? renderContext.getFallbackLocale() : null;
+        }
+        if (currentLocale == null) {
+            currentLocale = pageContext.getRequest().getLocale();
+        }
+
+        return currentLocale;
     }
 }

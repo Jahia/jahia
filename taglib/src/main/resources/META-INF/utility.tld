@@ -340,11 +340,4 @@
         </attribute>                
     </tag>
 
-    <tag-file>
-        <description>add declaration of GWT common application resource bundles</description>
-        <name>applicationResources</name>
-        <path>/META-INF/tags/ajax/applicationresources.tag</path>
-    </tag-file>
-
-
 </taglib>

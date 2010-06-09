@@ -39,14 +39,12 @@
 <ui:loginPassword/>
 <ui:loginRememberMe/>
 <ui:loginUsername/>
-<utility:applicationResources/>
 <ui:folderSelector fieldId=""/>
 <ui:categorySelector fieldId=""/>
 <ui:fileSelector fieldId=""/>
 <ui:pageSelector fieldId=""/>
 <ui:treeItemSelector fieldId=""/>
 <ui:rssButton targetURL=""/>
-<ui:subscribeButton source=""/>
 <ui:userGroupSelector/>
 <s:date/>
 <s:created/>
@@ -69,7 +67,4 @@
 <s:termFields/>
 <s:termMatch/>
 <s:term/>
-<internal:processDisplay/>
-<internal:categoryManager/>
 <internal:contentPicker/>
-<internal:jobReport/>

@@ -28,7 +28,7 @@ Jahia Roles/Permissions Module
   Permissions are defined by the name, group and site (for site-level permissions).
   
   The persistence of roles and permissions is managed in the JCR repository in <default> workspace ("edit") and
-  do not undergo any publishing or versioning process.
-  They can be sees in the <Content Manager>:
+  does not undergo any publishing or versioning process.
+  They can be seen in the <Content Manager>:
   
 [./images/ui-content-manager.png]

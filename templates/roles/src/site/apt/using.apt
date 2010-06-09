@@ -15,6 +15,9 @@ Using roles/permissions
   <c:if test="${functions:isUserInRole('user-manager')}">
       Current user has 'user-manager' role and is authorized to perform users/groups management tasks
   </c:if>
+  <c:if test="${functions:isUserInRoleForSite('editor-in-chief', renderContext.site.siteKey)}">
+      Current user has 'editor-in-chief' role for the current site
+  </c:if>
 -------------
 
   * Checking permissions for current user
@@ -24,7 +27,7 @@ Using roles/permissions
       The user is allowed to manage password policies
   </c:if>
 
-  <c:if test="${functions:isUserPermitted('admin/site-languages', renderContext.site.siteKey)}">
+  <c:if test="${functions:isUserPermittedForSite('admin/site-languages', renderContext.site.siteKey)}">
       The user is authorized to manage languages for the current site
   </c:if>
 -------------

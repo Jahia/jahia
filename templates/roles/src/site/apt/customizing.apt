@@ -1,4 +1,6 @@
-Built-in roles/permissions
+Customizing built-in roles and permissions
+
+* Overview
 
   Jahia Roles/Permissions module provide a built-in set of roles and permission for the server and virtual site level.
 
@@ -6,7 +8,44 @@ Built-in roles/permissions
   These entries are imported during module first time deployment.
   
   Site level roles and permissions are defined in the <<</templates/roles/site-roles.xml>>> file also in the JCR document view format.
-  Those entries are imported (triggered using rules) on each new site creation.
+  Those entries are imported on each new site creation.
+
+* {Built-in} roles/permissions
+
+  Server-side roles and permission are dedicated to separate the server management activities
+  in Jahia Administration interface. They correspond to the items in the <Server Settings>
+  menu. The screenshot below shows the result of granting a site administrator
+  the support-manager and webmaster roles. This enables corresponding menu items:
+  
+[./images/customizing-built-in-server.png]
+
+
+  Site-level roles are split in multiple groups, covering several areas and allowing flexible
+  customization of the access and UI features:
+  
+  * <<<admin>>> group - access to different items in the <Site Settings> menu of Jahia Administration interface
+
+  * <<<actions>>> - general actions, like accessing edit or contribution mode or performing export/import
+
+  * <<<edit-mode>>> - all the tabs of the edit content and create content engine can be toggled using permissions of this group
+
+  * <<<managers>>> - access to different managers (document manager, mashup manager, content manager, etc.) can be granted using these permissions
+
+  * <<<selector>>> - the so called selector (left-side panel) in the edit mode can be customized using this permission group by showing/hiding different selector tabs
+
+  * <<<toolbar>>> - elements of the top toolbar in edit or studio mode can be toggled by granting/revoking permissions of this group 
+
+  * <<<wysiwyg-editor-toolbar>>> - using these permissions it is possible to distinguish between three build-in types of the WYSIWYG HTML Editor (CKEditor) toolbar: full, basic and light.
+
+  As an example here are the views of the edit content engine (tabs) for the user, having <<<site-administrator>>> role:
+  
+[./images/customizing-built-in-site-admin.png]
+
+  and the same engine for the user with only <<<editor>>> role:
+  
+[./images/customizing-built-in-site-editor.png]
+
+* {Customizing}
 
   Both built-in server and site level roles/permissions can be extended or adjusted.
 
@@ -21,32 +60,68 @@ Built-in roles/permissions
                     
     <permissions jcr:primaryType="jnt:permissions" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
-                                    j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
+            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace"
+                                              j:principal="g:administrators"
+                                              j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
         </j:acl>
-	 	<global jcr:primaryType="jnt:permissionGroup">
-	   		<virtual-sites jcr:primaryType="jnt:permission"/>
-	   		<categories jcr:primaryType="jnt:permission"/>
-	   		<portlets jcr:primaryType="jnt:permission"/>
-...	   		
-	   	</global>
-	 	<test jcr:primaryType="jnt:permissionGroup">
-	   		<my-permission-1 jcr:primaryType="jnt:permission"/>
-	   		<my-permission-2 jcr:primaryType="jnt:permission"/>
-	   		<my-permission-3 jcr:primaryType="jnt:permission"/>
-	   	</test>
+        <global jcr:primaryType="jnt:permissionGroup">
+            <virtual-sites jcr:primaryType="jnt:permission"/>
+            <portlets jcr:primaryType="jnt:permission"/>
+            <email-settings jcr:primaryType="jnt:permission"/>
+            <root-user jcr:primaryType="jnt:permission"/>
+            <server-and-cache jcr:primaryType="jnt:permission"/>
+            <server-permissions jcr:primaryType="jnt:permission"/>
+            <password-policy jcr:primaryType="jnt:permission"/>
+            <patches jcr:primaryType="jnt:permission"/>
+            <issue-tracking jcr:primaryType="jnt:permission"/>
+            <documentation jcr:primaryType="jnt:permission"/>
+            <about jcr:primaryType="jnt:permission"/>
+            <studio-mode jcr:primaryType="jnt:permission"/>
+            <users jcr:primaryType="jnt:permission"/>
+        </global>
     </permissions>
-    
+
     <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl" j:inherit="false">
-            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace" j:principal="g:administrators"
-                                    j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
+            <GRANT_jcr_write_g_administrators j:protected="true" jcr:primaryType="jnt:ace"
+                                              j:principal="g:administrators"
+                                              j:privileges="jcr:modifyAccessControl jcr:write" j:aceType="GRANT"/>
         </j:acl>
-	 	<contributor jcr:primaryType="jnt:role"/>
-	 	<content-editor jcr:primaryType="jnt:role"/>
-	 	<user-manager jcr:primaryType="jnt:role"/>
+        
+        <server-content-manager jcr:primaryType="jnt:role"
+            j:assignedPermissions="global/virtual-sites global/portlets global/server-and-cache"/>
+            
+        <security-advisor jcr:primaryType="jnt:role"
+            j:assignedPermissions="global/server-permissions global/password-policy"/>
+            
+        <support-manager jcr:primaryType="jnt:role"
+            j:assignedPermissions="global/issue-tracking global/documentation global/about"/>
+            
+        <webmaster jcr:primaryType="jnt:role"
+            j:assignedPermissions="global/email-settings global/root-user global/patches global/studio-mode"/>
     </roles>
 
 </content>
 -------------
+
+  In order to provide initial assignment of permissions to a particular role the <<<j:assignedPermissions>>>
+  attribute can be used (see example above) whose value should be a space-separated list of permissions, e.g.:
+  
+-------------
+        <support-manager jcr:primaryType="jnt:role"
+            j:assignedPermissions="global/issue-tracking global/documentation global/about"/>
+-------------
+
+  In a similar way a role can be initially granted to the specified principals (those must exist at the time of
+  initial import), e.g. the value of the attribute <<<j:grantToPrincipals>>> in the following site-level role example
+  (snapshot from <<<site-roles.xml>>>):
+
+-------------
+        <site-administrator jcr:primaryType="jnt:role"
+            j:assignedPermissions="actions/* admin/* edit-mode/* languages/* managers/* toolbar/* selector/* wysiwyg-editor-toolbar/*"
+            j:grantToPrincipals="g:administrators u:siteSupervisor"/>
+-------------
+  
+  indicates that the <<<site-administrator>>> role will be initially granted to the <<<administrators>>> group
+  and <<<siteSupervisor>>> user.
   

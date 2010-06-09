@@ -30,11 +30,6 @@ Roles/permissions management UI
 
 * Granting {roles} to principals
 
-  By selecting a particular role in the overview panel and switching to <Principal mapping> tab
-  the user/group role assignment takes place.
-  
-[./images/ui-granting-roles.png]
-
-  Besides the <Principal mapping> panel, roles can be granted in the user/group details view (accessed via <Manage Users>/<Manager Groups>):
+  Roles can be granted in the user/group details view (accessed via <Manage Users>/<Manager Groups>):
 
 [./images/ui-granting-roles-details.png]

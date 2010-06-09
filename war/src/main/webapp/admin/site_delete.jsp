@@ -106,7 +106,7 @@ usrProviders = new ArrayList();
                       </td>
                       <td>
                         &nbsp;
-                        <textarea class="input" name="siteDescr" rows="6" cols='45'><%=siteDescr %></textarea>
+                        <textarea class="input" name="siteDescr" rows="2" cols='45'><%=siteDescr %></textarea>
                       </td>
                     </tr>
                     <tr>

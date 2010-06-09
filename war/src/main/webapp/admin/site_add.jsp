@@ -154,7 +154,7 @@
                 <fmt:message key="org.jahia.admin.site.ManageSites.siteDesc.label"/>&nbsp;
             </td>
             <td>
-                &nbsp;<textarea class="input" name="siteDescr" rows="6" cols='45'><%=newJahiaSite.getDescr()%></textarea>
+                &nbsp;<textarea class="input" name="siteDescr" rows="2" cols='45'><%=newJahiaSite.getDescr()%></textarea>
             </td>
         </tr>
         <tr>

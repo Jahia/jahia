@@ -234,7 +234,8 @@ public final class UserPreferencesHelper {
      *         the list of available locales
      */
     public static Locale getPreferredLocale(JahiaUser user) {
-        String propValue = getPreference("preferredLanguage", user);
+        //String propValue = getPreference("preferredLanguage", user);
+        String propValue = user != null ? user.getProperty("preferredLanguage") : null;
         Locale locale = propValue != null ? LanguageCodeConverters
                 .languageCodeToLocale(propValue) : null;
 
@@ -256,7 +257,8 @@ public final class UserPreferencesHelper {
      *         the list of available locales
      */
     public static Locale getPreferredLocale(JahiaUser user, JahiaSite site) {
-        String propValue = getPreference("preferredLanguage", user);
+        //String propValue = getPreference("preferredLanguage", user);
+        String propValue = user != null ? user.getProperty("preferredLanguage") : null;
         Locale locale = propValue != null ? LanguageCodeConverters
                 .languageCodeToLocale(propValue) : null;
     

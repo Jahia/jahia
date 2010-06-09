@@ -43,7 +43,11 @@ import org.jahia.services.usermanager.*;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+
 import java.util.Properties;
 
 /**
@@ -166,6 +170,20 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
                             Property property = iterator.nextProperty();
                             if (!property.getDefinition().isMultiple()) {
                                 properties.put(property.getName(), property.getString());
+                            } else if (property.getType() == PropertyType.UNDEFINED) {
+                                Value[] vals = null;
+                                try {
+                                    vals = property.getValues();
+                                } catch (ValueFormatException e) {
+                                    try {
+                                        vals = new Value[] { property.getValue() };
+                                    } catch (ValueFormatException e1) {
+                                        // ignore
+                                    }
+                                }
+                                if (vals != null && vals.length == 1) {
+                                    properties.put(property.getName(), vals[0].getString());
+                                }
                             }
                         }
                         return properties;

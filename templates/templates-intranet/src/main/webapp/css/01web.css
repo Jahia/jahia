@@ -171,6 +171,7 @@ body {
 	display:inline;
 	padding:0 5px;
 	background: none;
+	line-height:normal
 }
 #bodywrapper #languages li.selected {
 	text-decoration:underline

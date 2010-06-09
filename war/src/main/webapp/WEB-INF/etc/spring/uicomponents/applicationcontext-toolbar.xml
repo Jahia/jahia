@@ -578,7 +578,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
-        <property name="titleKey" value="label.documentManager"/>
+        <property name="titleKey" value="label.filemanager"/>
         <property name="icon" value="fileManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
@@ -608,7 +608,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
-        <property name="titleKey" value="label.contentManager"/>
+        <property name="titleKey" value="label.contentmanager"/>
         <property name="icon" value="contentManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">

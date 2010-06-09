@@ -42,9 +42,9 @@ public class ChoiceListFacetsInitializers implements ModuleChoiceListInitializer
         final Set<ChoiceListValue> listValues = new HashSet<ChoiceListValue>();
         List<ExtendedPropertyDefinition> propertyDefs = new LinkedList<ExtendedPropertyDefinition>();
         try {
-            JCRNodeWrapper wrapper = (JCRNodeWrapper) context.get("contextNode");
+            JCRNodeWrapper wrapper = ((JCRNodeWrapper) context.get("contextNode")).getParent();
             if (wrapper != null && wrapper.hasProperty("j:bindedComponent")) {
-                JCRNodeWrapper node = (JCRNodeWrapper) ((JCRNodeWrapper) context.get("contextNode")).getProperty("j:bindedComponent").getNode();
+                JCRNodeWrapper node = (JCRNodeWrapper) wrapper.getProperty("j:bindedComponent").getNode();
                 List<String> l = new LinkedList<String>();
                 if (node.hasProperty("j:allowedTypes") && node.getProperty("j:allowedTypes").getValues().length > 0) {
                     for (Value v : node.getProperty("j:allowedTypes").getValues()) {

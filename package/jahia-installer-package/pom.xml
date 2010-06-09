@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <properties>
         <product.name>Jahia Community Edition</product.name>
-        <installer.filename>Jahia_CE_v${jahia.package.version}</installer.filename>
+        <installer.filename>Jahia_CE_v${jahia.package.version}_r${buildNumber}</installer.filename>
         <archivers.version>1.4</archivers.version>
         <configurators.version>1.8</configurators.version>
         <izpack.version>4.3.2</izpack.version>

@@ -57,5 +57,6 @@ div#navigationN1-1 ul.level_2  {
 div#navigationN1-1 ul.level_2 li {
 	border-right: 1px solid #fff;
 }
-div#navigationN1-1 ul.level_2 li:hover {background:none;}
+div#navigationN1-1 ul.level_2 li:hover,
+div#navigationN1-1 ul.level_2 li.selected {background:none;background-color:transparent;}
 

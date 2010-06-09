@@ -33,10 +33,10 @@ import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.params.FacetParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
-import org.apache.solr.common.util.SimpleOrderedMap;
 import org.jahia.services.search.facets.SimpleJahiaJcrFacets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +47,9 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
      * The logger instance for this class
      */
     private static final Logger log = LoggerFactory.getLogger(JahiaMultiColumnQueryResult.class);
+    
+    private static final String RANGEFROM_INCLUSIVE_PREFIX = ":["; 
+    private static final String RANGEFROM_EXCLUSIVE_PREFIX = ":{";
 
     /**
      * The result nodes including their score. This list is populated on a lazy basis while a client iterates through the results.
@@ -251,8 +254,8 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             // handle faceting
             if (result instanceof JahiaFilterMultiColumnQueryHits && hasFacetFunctions()
                     && !facetsResolved) {
-                extractFacetInfo(handleFacets(((JahiaFilterMultiColumnQueryHits) result)
-                        .getReader()));
+                handleFacets(((JahiaFilterMultiColumnQueryHits) result)
+                        .getReader());
                 facetsResolved = true;
             }
 
@@ -272,9 +275,8 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         }
     }
 
-    private NamedList<Object> handleFacets(IndexReader reader) {
+    private void handleFacets(IndexReader reader) {
         IndexSearcher searcher = new IndexSearcher(reader);
-        NamedList<Object> res = null;
         try {
             String facetFunctionPrefix = session.getJCRName(REP_FACET_LPAR);
             NamedList<Object> parameters = new NamedList<Object>();
@@ -342,7 +344,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                     ((JahiaQueryObjectModelImpl) queryImpl).getQomTree(), searcher,
                     transformToDocIdSet(allResultNodes, reader), SolrParams
                             .toSolrParams(parameters), index, session);
-            res = facets.getFacetCounts();
+            extractFacetInfo(facets.getFacetCounts());
         } catch (Exception ex) {
             log.warn("Problem creating facets: ", ex);
         } finally {
@@ -352,7 +354,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                 log.warn("Unable to close searcher: " + e);
             }
         }
-        return res != null ? res : new SimpleOrderedMap<Object>();
+        return;
     }
     
     private String getNodeTypeFromSelector(String selectorName,
@@ -651,9 +653,16 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
 
             long minsize = getTotalSize();
             for (Map.Entry<String, NamedList<Number>> facet : ff) {
-                FacetField f = new FacetField(facet.getKey());
+                String key = StringUtils.substringBeforeLast(facet.getKey(),
+                        SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
+                String fieldInIndex = StringUtils.substringAfterLast(facet.getKey(),
+                        SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
+                FacetField f = new FacetField(key);
                 for (Map.Entry<String, Number> entry : facet.getValue()) {
                     f.add(entry.getKey(), entry.getValue().longValue());
+                    f.getValues().get(f.getValueCount() - 1).setFilterQuery(
+                            ClientUtils.escapeQueryChars(fieldInIndex) + ":"
+                                    + ClientUtils.escapeQueryChars(entry.getKey()));
                 }
 
                 _facetFields.add(f);
@@ -674,11 +683,31 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                 NamedList<Object> values = facet.getValue();
                 String gap = (String) values.get("gap");
                 Date end = (Date) values.get("end");
-                FacetField f = new FacetField(facet.getKey(), gap, end);
+                FacetField f = new FacetField(StringUtils.substringBeforeLast(facet.getKey(),
+                        SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR), gap, end);
 
                 for (Map.Entry<String, Object> entry : values) {
                     try {
-                        f.add(entry.getKey(), Long.parseLong(entry.getValue().toString()));
+                        String key = StringUtils.substringBeforeLast(entry.getKey(),
+                                SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
+                        String query = StringUtils.substringAfterLast(entry.getKey(),
+                                SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);                                     
+                        f.add(key, Long.parseLong(entry.getValue().toString()));
+                        if (!StringUtils.isEmpty(query)) {
+                            String rangePrefix = null;
+                            if (query.contains(RANGEFROM_EXCLUSIVE_PREFIX)) {
+                                rangePrefix = RANGEFROM_EXCLUSIVE_PREFIX;
+                            } else if (query.contains(RANGEFROM_INCLUSIVE_PREFIX)) {
+                                rangePrefix = RANGEFROM_INCLUSIVE_PREFIX;
+                            }
+                            if (!StringUtils.isEmpty(rangePrefix)) {
+                                f.getValues().get(f.getValueCount() - 1).setFilterQuery(
+                                        ClientUtils.escapeQueryChars(StringUtils.substringBefore(
+                                                query, rangePrefix))
+                                                + rangePrefix
+                                                + StringUtils.substringAfter(query, rangePrefix));
+                            }
+                        }
                     } catch (NumberFormatException e) {
                         // Ignore for non-number responses which are already handled above
                     }

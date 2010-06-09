@@ -47,7 +47,7 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
     public QueryResult execute(long offset, long limit)
             throws RepositoryException {
 
-        LuceneQueryFactory factory = new LuceneQueryFactoryImpl(session,
+        LuceneQueryFactory factory = new JahiaLuceneQueryFactoryImpl(session,
                 index.getSortComparatorSource(),
                 index.getContext().getHierarchyManager(),
                 index.getNamespaceMappings(), index.getTextAnalyzer(),

@@ -97,6 +97,7 @@ import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.StaticOperandImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.UpperCaseImpl;
+import org.apache.jackrabbit.util.Text;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
@@ -878,6 +879,12 @@ public class QueryServiceImpl extends QueryService {
                     languageCodes = new ArrayList<String>();
                     languageCodes.add(currentLocale.toString());
                 }
+                boolean isFilter = false;
+                if (node instanceof FullTextSearch && StringUtils.startsWith(propertyName, "rep:filter(")) {
+                    propertyName = Text.unescapeIllegalJcrChars(propertyName.substring(
+                            "rep:filter(".length(), propertyName.lastIndexOf(")")));
+                    isFilter = true;
+                }
                 if (languageCodes != null && !languageCodes.isEmpty()) {
                     ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(selector.getNodeTypeName());
                     boolean isFulltextIncludingMultilingualProperties = (propertyName == null && node instanceof FullTextSearch) ? 
@@ -954,7 +961,7 @@ public class QueryServiceImpl extends QueryService {
                                         translationSelectorName, propertyName);
                             } else if (node instanceof FullTextSearch) {
                                 node = (AbstractQOMNode) qomFactory.fullTextSearch(
-                                        translationSelectorName, propertyName,
+                                        translationSelectorName, "rep:filter(" + propertyName + ")",
                                         ((FullTextSearch) node).getFullTextSearchExpression());
                             } else if (node instanceof PropertyExistence) {
                                 node = (AbstractQOMNode) qomFactory.propertyExistence(

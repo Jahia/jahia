@@ -26,6 +26,7 @@ import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.index.IndexReader;
@@ -158,7 +159,7 @@ public class SimpleJahiaJcrFacets {
         String[] facetQs = params.getParams(FacetParams.FACET_QUERY);
         if (null != facetQs && 0 != facetQs.length) {
             for (String q : facetQs) {
-                QueryParser qp = new QueryParser(FieldNames.FULLTEXT, new org.apache.lucene.analysis.KeywordAnalyzer());
+                QueryParser qp = new QueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
                 qp.setLowercaseExpandedTerms(false);
                 Query qobj = qp.parse(q);
                 res.add(q, OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj)),
@@ -169,9 +170,8 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
-    public NamedList<Object> getTermCounts(String field)
+    public NamedList<Object> getTermCounts(String field, ExtendedPropertyDefinition epd, String fieldNameInIndex)
             throws IOException, RepositoryException {
-        String fieldName = StringUtils.substringBeforeLast(field, PROPNAME_INDEX_SEPARATOR);
         int offset = params.getFieldInt(field, FacetParams.FACET_OFFSET, 0);
         int limit = params.getFieldInt(field, FacetParams.FACET_LIMIT, 100);
         if (limit == 0)
@@ -189,20 +189,16 @@ public class SimpleJahiaJcrFacets {
         String prefix = params.getFieldParam(field, FacetParams.FACET_PREFIX);
 
         NamedList<Object> counts;
-        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(
-                params.get("f." + field + ".facet.nodetype")).getPropertyDefinition(fieldName);
 
         if (epd.isMultiple() || epd.getIndex() == ExtendedPropertyDefinition.INDEXED_TOKENIZED
                 || epd.getRequiredType() == PropertyType.BOOLEAN) {
             // Always use filters for booleans... we know the number of values is very small.
-            counts = getFacetTermEnumCounts(searcher, docs, field, getFieldNameInIndex(fieldName,
-                    epd, params.getFieldParam(field, "facet.locale")), offset, limit, mincount,
+            counts = getFacetTermEnumCounts(searcher, docs, field, fieldNameInIndex, offset, limit, mincount,
                     missing, sort, prefix);
         } else {
             // TODO: future logic could use filters instead of the fieldcache if
             // the number of terms in the field is small enough.
-            counts = getFieldCacheCounts(searcher, docs, getFieldNameInIndex(fieldName, epd, params
-                    .getFieldParam(field, "facet.locale")), offset, limit, mincount, missing, sort,
+            counts = getFieldCacheCounts(searcher, docs, fieldNameInIndex, offset, limit, mincount, missing, sort,
                     prefix);
         }
 
@@ -223,7 +219,15 @@ public class SimpleJahiaJcrFacets {
         if (null != facetFs) {
             for (String f : facetFs) {
                 try {
-                    res.add(StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR), getTermCounts(f));
+                    String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
+                    ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(
+                            params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(
+                            fieldName);
+                    String fieldNameInIndex = getFieldNameInIndex(fieldName, epd, params
+                            .getFieldParam(f, "facet.locale"));
+                    res.add(StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR)
+                            + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex, getTermCounts(f, epd,
+                            fieldNameInIndex));
                 } catch (RepositoryException e) {
                     logger.error("Cant display facets for: " + f, e);
                 }
@@ -484,7 +488,7 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
-    private String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd, String langCode) {
+    public String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd, String langCode) {
         String fieldName = field;
         try {
             fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(session.getNamespaceURI(epd.getPrefix()),
@@ -522,11 +526,12 @@ public class SimpleJahiaJcrFacets {
         for (String f : fields) {
             final NamedList<Object> resInner = new SimpleOrderedMap<Object>();
             String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);            
-            resOuter.add(fieldName, resInner);
             ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+f+".facet.nodetype")).getPropertyDefinition(fieldName);
-
             String fieldNameInIndex = getFieldNameInIndex(fieldName, epd, params.getFieldParam(f,
                     "facet.locale"));
+            
+            resOuter.add(fieldName + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex, resInner);
+            
             if (!(epd.getRequiredType() == PropertyType.DATE)) {
                 throw new JahiaException("Can not date facet on a field which is not a DateField: "
                         + f, "Can not date facet on a field which is not a DateField: " + f,
@@ -585,7 +590,9 @@ public class SimpleJahiaJcrFacets {
                                 JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
                     }
                     final String highI = dateType.toInternal(high);
-                    resInner.add(label, rangeCount(fieldNameInIndex, lowI, highI, true, true));
+                    Query rangeQuery = getRangeQuery(fieldNameInIndex, lowI, highI, true, true);
+                    resInner.add(label + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(),
+                            rangeCount(rangeQuery));
                     low = high;
                 }
             } catch (java.text.ParseException e) {
@@ -617,16 +624,20 @@ public class SimpleJahiaJcrFacets {
                     boolean all = others.contains(FacetDateOther.ALL);
 
                     if (all || others.contains(FacetDateOther.BEFORE)) {
-                        resInner.add(FacetDateOther.BEFORE.toString(), rangeCount(fieldNameInIndex, null,
-                                startI, false, false));
+                        Query rangeQuery = getRangeQuery(fieldNameInIndex, null, startI, false,
+                                false);
+                        resInner.add(FacetDateOther.BEFORE.toString() + PROPNAME_INDEX_SEPARATOR
+                                + rangeQuery.toString(), rangeCount(rangeQuery));
                     }
                     if (all || others.contains(FacetDateOther.AFTER)) {
-                        resInner.add(FacetDateOther.AFTER.toString(), rangeCount(fieldNameInIndex, endI,
-                                null, false, false));
+                        Query rangeQuery = getRangeQuery(fieldNameInIndex, endI, null, false, false);
+                        resInner.add(FacetDateOther.AFTER.toString() + PROPNAME_INDEX_SEPARATOR
+                                + rangeQuery.toString(), rangeCount(rangeQuery));
                     }
                     if (all || others.contains(FacetDateOther.BETWEEN)) {
-                        resInner.add(FacetDateOther.BETWEEN.toString(), rangeCount(fieldNameInIndex,
-                                startI, endI, true, true));
+                        Query rangeQuery = getRangeQuery(fieldNameInIndex, startI, endI, true, true);
+                        resInner.add(FacetDateOther.BETWEEN.toString() + PROPNAME_INDEX_SEPARATOR
+                                + rangeQuery.toString(), rangeCount(rangeQuery));
                     }
                 }
             }
@@ -641,10 +652,13 @@ public class SimpleJahiaJcrFacets {
      * @see SolrIndexSearcher#numDocs
      * @see ConstantScoreRangeQuery
      */
-    protected int rangeCount(String field, String low, String high, boolean iLow, boolean iHigh)
-            throws IOException {
-        return (int) OpenBitSet.intersectionCount(getDocIdSetForHits(searcher
-                .search(new ConstantScoreRangeQuery(field, low, high, iLow, iHigh))), docs);
+    protected int rangeCount(Query rangeQuery) throws IOException {
+        return (int) OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(rangeQuery)),
+                docs);
+    }
+
+    protected Query getRangeQuery(String field, String low, String high, boolean iLow, boolean iHigh) {
+        return new ConstantScoreRangeQuery(field, low, high, iLow, iHigh);
     }
 
     /**

@@ -72,7 +72,7 @@ public class FacetField implements Serializable {
         }
 
         public String getAsFilterQuery() {
-            if (StringUtils.isEmpty(getFilterQuery())) {
+            if (!StringUtils.isEmpty(getFilterQuery())) {
                 return getFilterQuery();
             } else if (_ff.getName().equals("facet_queries")) {
                 return _name;

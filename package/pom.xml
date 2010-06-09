@@ -16,6 +16,18 @@
     </properties>
     <profiles>
         <profile>
+            <id>jboss-deployment</id>
+            <activation>
+                <property>
+                    <name>jahia.deploy.targetServerType</name>
+                    <value>jboss</value>
+                </property>
+            </activation>
+            <modules>
+                <module>deployments</module>
+            </modules>
+        </profile>
+        <profile>
               <id>qa-jboss</id>
               <modules>
                   <module>jahia-qa-package</module>

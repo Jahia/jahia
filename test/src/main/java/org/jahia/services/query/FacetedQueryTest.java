@@ -1,7 +1,7 @@
-package org.jahia.services.search;
+package org.jahia.services.query;
 
-import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -12,6 +12,11 @@ import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -21,6 +26,8 @@ import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import java.util.*;
 
+import static org.junit.Assert.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -28,11 +35,9 @@ import java.util.*;
  * Time: 5:03:27 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FacetedSearchTest extends TestCase {
-    private static Logger logger = Logger.getLogger(FacetedSearchTest.class);
-    private JahiaSite site;
-    private int i;
-
+public class FacetedQueryTest {
+    private static String DEFAULT_LANGUAGE = "fr";
+    
     private final static String TESTSITE_NAME = "jcrFacetTest";
     private static final String MEETING = "meeting";
     private static final String CONSUMER_SHOW = "consumerShow";
@@ -44,9 +49,9 @@ public class FacetedSearchTest extends TestCase {
     private static final String GENEVA = "geneva";
 
 
-    @Override
-    protected void setUp() throws Exception {
-        site = TestHelper.createSite(TESTSITE_NAME);
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
+        JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
         assertNotNull(site);
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
@@ -55,15 +60,26 @@ public class FacetedSearchTest extends TestCase {
         initContent(session);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
         TestHelper.deleteSite(TESTSITE_NAME);
     }
+    
+    @Before
+    public void setUp() {
 
+    }
+
+    @After
+    public void tearDown() {
+
+    }    
+    
+    @Test
     public void testSimpleFacets() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
         FacetField field;
         QueryResultWrapper res;
@@ -88,6 +104,11 @@ public class FacetedSearchTest extends TestCase {
             QueryResultWrapper resCheck = doFilteredQuery(session, "eventsType", count.getName());
             checkResultSize(resCheck, (int) count.getCount());
         }
+        
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(eventsType)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }        
 
         // test facet options : prefix
         res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&prefix=c)");
@@ -99,6 +120,11 @@ public class FacetedSearchTest extends TestCase {
 
         checkFacet(counts.next(), CONFERENCE, 5);
         checkFacet(counts.next(), CONSUMER_SHOW, 3);
+        
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(eventsType)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }                
 
         // test facet options : sort=false  - lexicographic order
         res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&sort=false)");
@@ -114,12 +140,19 @@ public class FacetedSearchTest extends TestCase {
         checkFacet(counts.next(), PRESS_CONFERENCE, 6);
         checkFacet(counts.next(), ROAD_SHOW, 4);
         checkFacet(counts.next(), SHOW, 7);
+        
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(eventsType)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }                
 
     }
+    
+    @Test    
     public void testDateFacets() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
         FacetField field;
         QueryResultWrapper res;
@@ -134,6 +167,11 @@ public class FacetedSearchTest extends TestCase {
         checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 14);
         checkFacet(counts.next(), "2000-02-01T00:00:00.000Z", 13);
         checkFacet(counts.next(), "2000-03-01T00:00:00.000Z", 0);
+        
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }
 
         res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1YEAR)");
         field = res.getFacetDate("startDate");
@@ -143,13 +181,18 @@ public class FacetedSearchTest extends TestCase {
 
         checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 27);
         checkFacet(counts.next(), "2001-01-01T00:00:00.000Z", 0);
-
+        
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }        
     }
-
+    
+    @Test
     public void testI18NFacets() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
         FacetField field;
         QueryResultWrapper res;
@@ -169,12 +212,17 @@ public class FacetedSearchTest extends TestCase {
             QueryResultWrapper resCheck = doFilteredQuery(session, "location", count.getName());
             checkResultSize(resCheck, (int) count.getCount());
         }
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(location)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }        
     }
-
+    
+    @Test
     public void testCategoryFacets() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
         FacetField field;
         QueryResultWrapper res;
@@ -195,19 +243,23 @@ public class FacetedSearchTest extends TestCase {
             QueryResultWrapper resCheck = doFilteredQuery(session, "j:defaultCategory", count.getName());
             checkResultSize(resCheck, (int) count.getCount());
         }
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(j:defaultCategory)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }        
     }
 
-
+    @Test
     public void testMultipleFacets() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
         FacetField field;
         QueryResultWrapper res;
 
         // check facets
-        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&key=1)", "startDate","rep:facet(facet.mincount=1&key=2)");
+        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&key=1)", "startDate","rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2000-03-01T00:00:00Z&date.gap=+1MONTH&key=2)");
         checkResultSize(res, 27);
         field = res.getFacetField("eventsType");
         assertNotNull("Facet field is null",field);
@@ -221,33 +273,74 @@ public class FacetedSearchTest extends TestCase {
         checkFacet(counts.next(), ROAD_SHOW, 4);
         checkFacet(counts.next(), CONSUMER_SHOW, 3);
         checkFacet(counts.next(), MEETING, 2);
+        
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(eventsType)", count.getAsFilterQuery());
+            checkResultSize(resCheck, (int) count.getCount());
+        }          
 
-        field = res.getFacetField("startDate");
+        field = res.getFacetDate("startDate");
         assertNotNull("Facet field is null",field);
         assertNotNull("Facet values are null",field.getValues());
-        assertEquals("Query did not return correct number of facet value", 9 ,field.getValues().size());
+        assertEquals("Query did not return correct number of facet values", 2, field.getValues().size());
+        counts = field.getValues().iterator();
+
+        checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 14);
+        checkFacet(counts.next(), "2000-02-01T00:00:00.000Z", 13);
+        
+        for (FacetField.Count count : field.getValues()) {
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery(), "eventsType", "rep:facet(facet.mincount=1&key=1)");
+            checkResultSize(resCheck, (int) count.getCount());
+            
+            FacetField nestedField = resCheck.getFacetDate("startDate");
+            
+            assertNull("Facet field is not null",nestedField);
+            
+            nestedField = resCheck.getFacetField("eventsType");
+            Iterator<FacetField.Count> nestedCounts = nestedField.getValues().iterator();
+            
+            if ("2000-01-01T00:00:00.000Z".equals(count.getName())) {
+                checkFacet(nestedCounts.next(), CONFERENCE, 5);
+                checkFacet(nestedCounts.next(), ROAD_SHOW, 4);
+                checkFacet(nestedCounts.next(), CONSUMER_SHOW, 3);
+                checkFacet(nestedCounts.next(), MEETING, 2);                
+            } else {
+                checkFacet(nestedCounts.next(), SHOW, 7);
+                checkFacet(nestedCounts.next(), PRESS_CONFERENCE, 6);                
+            }
+            
+            for (FacetField.Count nestedCount : nestedField.getValues()) {
+                QueryResultWrapper nestedResCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery(), "rep:filter(eventsType)", nestedCount.getAsFilterQuery());
+                checkResultSize(nestedResCheck, (int) nestedCount.getCount());                
+            }
+        }        
     }
 
+    @Test
     public void testQueryFacets() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-
-        FacetField field;
-        QueryResultWrapper res;
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
         // test i18n facets
-        res = doQuery(session, "eventsType", "rep:facet(facet.query=1\\:FACET\\:eventsType\\:[a TO p]&facet.query=1\\:FACET\\:eventsType\\:[p TO z])");
+        QueryResultWrapper res = doQuery(session, "eventsType", "rep:facet(facet.query=1\\:FACET\\:eventsType\\:[a TO p]&facet.query=1\\:FACET\\:eventsType\\:[p TO z])");
         Map<String,Long> queryFacet = res.getFacetQuery();
         assertNotNull("Query facet result is null",queryFacet);
         assertEquals("Query did not return correct number of facets", 2, queryFacet.size());
 
         assertEquals("Facet count is incorrect", 10, queryFacet.get("1\\:FACET\\:eventsType\\:[a TO p]").longValue());
         assertEquals("Facet count is incorrect", 17, queryFacet.get("1\\:FACET\\:eventsType\\:[p TO z]").longValue());
+        
+        
+        QueryResultWrapper resCheck = doQuery(session, "rep:filter()", "1\\:FACET\\:eventsType\\:[a TO p]");
+        checkResultSize(resCheck, 10);
+        resCheck = doQuery(session, "rep:filter()", "1\\:FACET\\:eventsType\\:[p TO z]");
+        checkResultSize(resCheck, 17);                
+
     }
 
-    private void initContent(JCRSessionWrapper session) throws RepositoryException {
-        i = 0;
+    private static void initContent(JCRSessionWrapper session) throws RepositoryException {
+        int i = 0;
         Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
 
         JCRNodeWrapper cats = session.getNode("/categories");
@@ -260,41 +353,42 @@ public class FacetedSearchTest extends TestCase {
         JCRNodeWrapper cat3 = cats.getNode("cat3");
 
         JCRNodeWrapper node = session.getNode("/sites/jcrFacetTest/contents");
-        createEvent(node, MEETING, PARIS, calendar, cat1);
-        createEvent(node, MEETING, GENEVA, calendar, cat1);
+        node.checkout();
+        createEvent(node, MEETING, PARIS, calendar, cat1, i++);
+        createEvent(node, MEETING, GENEVA, calendar, cat1, i++);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, CONSUMER_SHOW, PARIS, calendar, cat1);
-        createEvent(node, CONSUMER_SHOW, PARIS, calendar, cat1);
+        createEvent(node, CONSUMER_SHOW, PARIS, calendar, cat1, i++);
+        createEvent(node, CONSUMER_SHOW, PARIS, calendar, cat1, i++);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, CONSUMER_SHOW, GENEVA, calendar, cat1);
-        createEvent(node, ROAD_SHOW, PARIS, calendar, cat2);
+        createEvent(node, CONSUMER_SHOW, GENEVA, calendar, cat1, i++);
+        createEvent(node, ROAD_SHOW, PARIS, calendar, cat2, i++);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, ROAD_SHOW, PARIS, calendar, cat2);
-        createEvent(node, ROAD_SHOW, GENEVA, calendar, cat2);
+        createEvent(node, ROAD_SHOW, PARIS, calendar, cat2, i++);
+        createEvent(node, ROAD_SHOW, GENEVA, calendar, cat2, i++);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, ROAD_SHOW, GENEVA, calendar, cat2);
-        createEvent(node, CONFERENCE, PARIS, calendar, cat2);
+        createEvent(node, ROAD_SHOW, GENEVA, calendar, cat2, i++);
+        createEvent(node, CONFERENCE, PARIS, calendar, cat2, i++);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, CONFERENCE, PARIS, calendar, cat2);
-        createEvent(node, CONFERENCE, PARIS, calendar, cat3);
+        createEvent(node, CONFERENCE, PARIS, calendar, cat2, i++);
+        createEvent(node, CONFERENCE, PARIS, calendar, cat3, i++);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, CONFERENCE, GENEVA, calendar, cat3);
-        createEvent(node, CONFERENCE, GENEVA, calendar, cat3);
+        createEvent(node, CONFERENCE, GENEVA, calendar, cat3, i++);
+        createEvent(node, CONFERENCE, GENEVA, calendar, cat3, i++);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, SHOW, PARIS, calendar, cat3);
-        createEvent(node, SHOW, PARIS, calendar, cat3);
+        createEvent(node, SHOW, PARIS, calendar, cat3, i++);
+        createEvent(node, SHOW, PARIS, calendar, cat3, i++);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createEvent(node, SHOW, PARIS, calendar, cat3);
-        createEvent(node, SHOW, GENEVA, calendar, cat3);
-        createEvent(node, SHOW, GENEVA, calendar, cat3);
-        createEvent(node, SHOW, GENEVA, calendar, cat3);
-        createEvent(node, SHOW, GENEVA, calendar, cat3);
-        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3);
-        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3);
-        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3);
-        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3);
-        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar, cat3);
-        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar, cat3);
+        createEvent(node, SHOW, PARIS, calendar, cat3, i++);
+        createEvent(node, SHOW, GENEVA, calendar, cat3, i++);
+        createEvent(node, SHOW, GENEVA, calendar, cat3, i++);
+        createEvent(node, SHOW, GENEVA, calendar, cat3, i++);
+        createEvent(node, SHOW, GENEVA, calendar, cat3, i++);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3, i++);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3, i++);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3, i++);
+        createEvent(node, PRESS_CONFERENCE, PARIS, calendar, cat3, i++);
+        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar, cat3, i++);
+        createEvent(node, PRESS_CONFERENCE, GENEVA, calendar, cat3, i++);
 
         session.save();
     }
@@ -307,15 +401,22 @@ public class FacetedSearchTest extends TestCase {
         qomBuilder.andConstraint(factory.descendantNode("event", "/sites/jcrFacetTest"));
         for (int j = 0; j < facet.length; j++) {
             String prop = facet[j++];
-            String col = facet[j];
-            qomBuilder.getColumns().add(factory.column("event", prop, col));
+            String val = facet[j];
+            if (prop.startsWith("rep:filter(")) {
+                qomBuilder.andConstraint(factory.fullTextSearch("event", "rep:filter("
+                        + Text.escapeIllegalJcrChars(StringUtils
+                                .substringAfter(prop, "rep:filter(")), factory.literal(session
+                        .getValueFactory().createValue(val))));
+            } else {
+                qomBuilder.getColumns().add(factory.column("event", prop, val));                
+            }
         }
 
         QueryObjectModel qom = qomBuilder.createQOM();
         QueryResultWrapper res = (QueryResultWrapper) qom.execute();
         return res;
     }
-
+    
     private QueryResultWrapper doFilteredQuery(JCRSessionWrapper session, final String... constraints)
             throws RepositoryException {
         QueryObjectModelFactory factory = session.getWorkspace().getQueryManager().getQOMFactory();
@@ -354,10 +455,10 @@ public class FacetedSearchTest extends TestCase {
         assertEquals("Facet count is incorrect", count, c.getCount());
     }
 
-    private void createEvent(JCRNodeWrapper node, final String eventType, String location, Calendar calendar,
-                             JCRNodeWrapper category)
+    private static void createEvent(JCRNodeWrapper node, final String eventType, String location, Calendar calendar,
+                             JCRNodeWrapper category, int i)
             throws RepositoryException {
-        final String name = eventType + (i++);
+        final String name = eventType + i;
         final JCRNodeWrapper event = node.addNode(name, "jnt:event");
         event.setProperty("jcr:title", name);
         event.setProperty("eventsType", eventType);

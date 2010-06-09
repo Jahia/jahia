@@ -52,23 +52,6 @@
             </query:definition>
             <c:set var="renderOptions" value="before" scope="request"/>
         </c:if>
-        <c:if test="${!empty param.delPropName}">
-            <c:remove var="activeFacetsMapTmp" scope="request"/>
-            <jsp:useBean id="activeFacetsMapTmp" class="java.util.HashMap" scope="request"/>
-            <c:forEach items="${activeFacetsMap}" var="facet">
-                <c:if test="${!(facet.key eq param.delPropName)}">
-                    <c:set target="${activeFacetsMapTmp}" property="${facet.key}" value="${facet.value}"/>
-                </c:if>
-            </c:forEach>
-            <c:remove var="activeFacetsMap" scope="session"/>
-            <c:set var="activeFacetsMap" value="${activeFacetsMapTmp}" scope="session"/>
-        </c:if>
-        <c:if test="${!empty param.propName }">
-            <c:if test="${empty activeFacetsMap}">
-                <jsp:useBean id="activeFacetsMap" class="java.util.HashMap" scope="session"/>
-            </c:if>
-            <c:set target="${activeFacetsMap}" property="${param.propName}" value="${param.propValue}"/>
-        </c:if>
         <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
             <c:forEach items="${activeFacetsMap}" var="facet">
                 <query:equalTo value="${facet.value}" propertyName="${facet.key}"/>

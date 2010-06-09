@@ -1,6 +1,5 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jmix:facets] mixin
- extends = jmix:list 
- itemtype = options
+
+[jnt:facet] > jnt:content, jmix:siteComponentContent, jmix:bindedComponent
 - facets (string, choicelist[choicelistfacets]) multiple

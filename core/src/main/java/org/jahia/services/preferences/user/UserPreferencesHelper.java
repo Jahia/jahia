@@ -270,7 +270,8 @@ public final class UserPreferencesHelper {
             }
     
             if (siteLocales == null || siteLocales.size() == 0) {
-                return JCRSessionFactory.getInstance().getCurrentLocale();
+                return JCRSessionFactory.getInstance().getCurrentLocale()!=null?JCRSessionFactory.getInstance().getCurrentLocale():LanguageCodeConverters
+                .languageCodeToLocale(SettingsBean.getInstance().getDefaultLanguageCode());
             }
     
             List<Locale> availableBundleLocales = LanguageCodeConverters.getAvailableBundleLocales();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
-    <users jcr:uuid="73f8c9b1-184c-4fca-860a-95f3550595fc" jcr:mixinTypes="jmix:usersFolder jmix:shareable" j:usersFolderSkeleton="user.xml" jcr:created="2010-04-11T14:26:49.557+02:00" jcr:primaryType="jnt:systemNode" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/users" jcr:lastModified="2010-04-11T14:29:31.011+02:00">
+    <users>
         <author jcr:uuid="2d17f4fe-38cf-471c-af0e-82ae869f1496" j:published="true" jcr:created="2010-04-11T14:29:12.863+02:00" jcr:lastModifiedBy="author" j:lastPublishedBy=" system root" j:lastName="Mac Cormick" jcr:createdBy=" system " j:organization="ACME" j:firstName="John" j:password="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" jcr:mixinTypes="jmix:accessControlled" preferredLanguage="en" password.history.1242739225145="W6ph5Mm5Pz8GgiULbPgzG37mj9g=" email="" lastLoginDate="1233158564543" jcr:primaryType="jnt:user" j:external="false" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:fullpath="/users/author" j:checkinDate="2010-04-11T14:29:14.439+02:00" jcr:lastModified="2009-05-19T15:20:25.373+02:00">
             <j:addresses jcr:primaryType="jnt:addresses"></j:addresses>
             <j:phones jcr:primaryType="jnt:phoneNumbers"></j:phones>
@@ -141,7 +141,7 @@
             </tasks>
         </visitor>
     </users>
-    <categories jcr:uuid="3dabb102-150a-4e50-b59c-f75953acf982" jcr:mixinTypes="jmix:accessControlled" j:published="true" jcr:created="2010-04-11T14:26:49.634+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" j:lastPublished="2010-04-11T14:30:15.878+02:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " j:fullpath="/categories" j:checkinDate="2010-04-11T14:30:15.878+02:00" jcr:lastModified="2010-04-11T14:30:15.671+02:00">
+    <categories>
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_write_g_administrators j:privileges="jcr:write" j:protected="false" j:principal="g:administrators" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_jcr_write_g_administrators>
             <GRANT_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:principal="g:administrators" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_jcr_modifyAccessControl_g_guest>

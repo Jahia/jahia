@@ -42,44 +42,46 @@ public class ChoiceListFacetsInitializers implements ModuleChoiceListInitializer
         final Set<ChoiceListValue> listValues = new HashSet<ChoiceListValue>();
         List<ExtendedPropertyDefinition> propertyDefs = new LinkedList<ExtendedPropertyDefinition>();
         try {
-            JCRNodeWrapper node = (JCRNodeWrapper) ((JCRNodeWrapper) context.get("contextNode")).getProperty("j:bindedComponent").getNode();
-            List<String> l = new LinkedList<String>();
-            if (node.hasProperty("j:allowedTypes") && node.getProperty("j:allowedTypes").getValues().length > 0) {
-                 for (Value v : node.getProperty("j:allowedTypes").getValues()) {
-                     l.add(v.getString());
-                 }
-            } else {
-                l.add("jnt:content");
-            }
-            for (String str : l)  {
-                ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(str);
-                ExtendedNodeType[] supertypes = type.getDeclaredSupertypes();
-                propertyDefs.addAll(Arrays.asList(type.getPropertyDefinitions()));
-                Set<ExtendedNodeType> s =               new HashSet<ExtendedNodeType>(Arrays.asList(supertypes));
+            if (((JCRNodeWrapper) context.get("contextNode")).hasProperty("j:bindedComponent")) {
+                JCRNodeWrapper node = (JCRNodeWrapper) ((JCRNodeWrapper) context.get("contextNode")).getProperty("j:bindedComponent").getNode();
+                List<String> l = new LinkedList<String>();
+                if (node.hasProperty("j:allowedTypes") && node.getProperty("j:allowedTypes").getValues().length > 0) {
+                    for (Value v : node.getProperty("j:allowedTypes").getValues()) {
+                        l.add(v.getString());
+                    }
+                } else {
+                    l.add("jnt:content");
+                }
+                for (String str : l) {
+                    ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(str);
+                    ExtendedNodeType[] supertypes = type.getDeclaredSupertypes();
+                    propertyDefs.addAll(Arrays.asList(type.getPropertyDefinitions()));
+                    Set<ExtendedNodeType> s = new HashSet<ExtendedNodeType>(Arrays.asList(supertypes));
 
-                Set<ExtendedNodeType> nodeTypeSet = NodeTypeRegistry.getInstance().getMixinExtensions().get(NodeTypeRegistry.getInstance().getNodeType(str));
-                if(nodeTypeSet!=null)
-                s.addAll(nodeTypeSet);
-                if (s != null) {                    
-                    for (ExtendedNodeType nt : s) {
-                        propertyDefs.addAll(Arrays.asList(nt.getPropertyDefinitions()));
-                        Set<ExtendedNodeType> nts = NodeTypeRegistry.getInstance().getMixinExtensions().get(NodeTypeRegistry.getInstance().getNodeType(nt.getName()));
-                        if (nts != null) {
-                            for (ExtendedNodeType n : nts) {
-                                propertyDefs.addAll(Arrays.asList(n.getPropertyDefinitions()));
+                    Set<ExtendedNodeType> nodeTypeSet = NodeTypeRegistry.getInstance().getMixinExtensions().get(NodeTypeRegistry.getInstance().getNodeType(str));
+                    if (nodeTypeSet != null)
+                        s.addAll(nodeTypeSet);
+                    if (s != null) {
+                        for (ExtendedNodeType nt : s) {
+                            propertyDefs.addAll(Arrays.asList(nt.getPropertyDefinitions()));
+                            Set<ExtendedNodeType> nts = NodeTypeRegistry.getInstance().getMixinExtensions().get(NodeTypeRegistry.getInstance().getNodeType(nt.getName()));
+                            if (nts != null) {
+                                for (ExtendedNodeType n : nts) {
+                                    propertyDefs.addAll(Arrays.asList(n.getPropertyDefinitions()));
+                                }
                             }
-                        }  
+                        }
                     }
                 }
-            }
 
-            for (PropertyDefinition p : propertyDefs) {
-                ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) p;
-                if (ep.isFacetable()) {
-                    String displayName = ep.getLabel(locale);
-                    String value = p.getDeclaringNodeType().getName() + ";" + p.getName();
-                    listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(),
-                            new ValueImpl(value, PropertyType.STRING, false)));
+                for (PropertyDefinition p : propertyDefs) {
+                    ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) p;
+                    if (ep.isFacetable()) {
+                        String displayName = ep.getLabel(locale);
+                        String value = p.getDeclaringNodeType().getName() + ";" + p.getName();
+                        listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(),
+                                new ValueImpl(value, PropertyType.STRING, false)));
+                    }
                 }
             }
         } catch (Exception e) {

@@ -172,7 +172,7 @@ public class RoleBasedAccessControlManager {
             JahiaGroup grp = (JahiaGroup) principal;
             JCRGroup externalGroup = jcrGroupManagerProvider.lookupExternalGroup(grp.getGroupname());
             if (externalGroup == null && createExternalIfNeeded) {
-                externalGroup = jcrGroupManagerProvider.createExternalGroup(grp.getGroupKey(), grp.getProviderName());
+                externalGroup = jcrGroupManagerProvider.createExternalGroup(grp.getGroupname(), grp.getProviderName());
             }
             if (externalGroup != null) {
                 try {

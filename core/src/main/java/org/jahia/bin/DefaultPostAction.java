@@ -34,6 +34,7 @@ package org.jahia.bin;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -66,6 +67,9 @@ import java.util.*;
  *        Created : 11 mars 2010
  */
 public class DefaultPostAction implements Action {
+    
+    private static Logger logger = Logger.getLogger(DefaultPostAction.class);
+    
     public static final String ACTION_NAME = "default";
 
     private MetricsLoggingService loggingService;
@@ -179,6 +183,20 @@ public class DefaultPostAction implements Action {
             }
             newNode = node.addNode(nodeName, nodeType);
         }
+        
+        String template = parameters.containsKey("j:sourceTemplate") ? parameters.get("j:sourceTemplate").get(0) : null;
+        if (Constants.JAHIANT_PAGE.equals(nodeType) && template != null) {
+            // we will use the provided template
+            JCRNodeWrapper templateNode = null;
+            try {
+                templateNode = session.getNodeByIdentifier(template);
+                templateNode.copy(newNode.getParent(), nodeName, true, true);
+            } catch (RepositoryException e) {
+                logger.warn("Unable to use template node '" + template + ". Skip using template for new page.", e);
+            }
+
+        }
+        
         if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
             for (Object o : ((ArrayList) parameters.get(Constants.JCR_MIXINTYPES))) {
                 String mixin = (String) o;
@@ -205,6 +223,7 @@ public class DefaultPostAction implements Action {
                 }
             }
         }
+        
         return newNode;
     }
 }

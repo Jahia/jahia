@@ -1067,7 +1067,7 @@
                 <executions>
                     <execution>
                         <id>gwt-i18n-resources</id>
-                        <phase>compile</phase>
+                        <phase>process-classes</phase>
                         <configuration>
                             <tasks>
                                 <java classname="org.jahia.ajax.gwt.utils.GWTDictionaryBuilder">

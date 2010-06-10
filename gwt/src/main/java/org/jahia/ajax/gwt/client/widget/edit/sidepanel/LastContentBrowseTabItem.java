@@ -41,7 +41,6 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
 
     public LastContentBrowseTabItem(final GWTSidePanelTab config) {
         super(config);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.tabBrowseContent());
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(l);

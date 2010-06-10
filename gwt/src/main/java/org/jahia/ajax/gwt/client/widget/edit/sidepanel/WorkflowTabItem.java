@@ -48,7 +48,6 @@ public class WorkflowTabItem extends SidePanelTabItem {
 
     public WorkflowTabItem(GWTSidePanelTab c) {
         super(c);
-        setIconStyle("gwt-toolbar-icon-workflowaction-min");
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());

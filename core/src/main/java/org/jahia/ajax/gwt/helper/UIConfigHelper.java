@@ -678,6 +678,7 @@ public class UIConfigHelper {
                 gwtSidePanel.setMimeTypes(sidePanelTab.getMimeTypes());
                 gwtSidePanel.setPaths(sidePanelTab.getPaths());
                 gwtSidePanel.setNodeTypes(sidePanelTab.getNodeTypes());
+                gwtSidePanel.setIcon(sidePanelTab.getIcon());
                 // add table columns
                 for (Column item : sidePanelTab.getTableColumns()) {
                     if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {

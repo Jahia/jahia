@@ -6,6 +6,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -30,6 +31,7 @@ public class SidePanelTabItem extends TabItem {
     public SidePanelTabItem(GWTSidePanelTab config) {
         super("&nbsp;");
         this.config = config;
+        setIcon(ToolbarIconProvider.getInstance().getIcon(config.getIcon()));
         getHeader().setToolTip(config.getName());
     }
 

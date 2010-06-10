@@ -8,6 +8,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeTree;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -27,7 +28,6 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     CreateContentTabItem(GWTSidePanelTab config) {
         super(config);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.tabAddContent());
         setLayout(new FitLayout());
 
         contentTypeTree = new ContentTypeTree(null, 400, 0, 25);

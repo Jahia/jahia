@@ -319,6 +319,7 @@
     <!-- side tabs-->
     <bean id="sidePanelTab.templates" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="templates"/>
+        <property name="icon" value="tab-templates"/>
         <property name="paths">
             <list>
                 <value>$site</value>
@@ -392,6 +393,7 @@
 
     <bean id="sidePanelTab.pages" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="pages"/>
+        <property name="icon" value="tab-pages"/>
         <property name="paths">
             <list>
                 <value>/sites/*</value>
@@ -452,6 +454,7 @@
 
     <bean id="sidePanelTab.createContent" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="createContent"/>
+        <property name="icon" value="tab-createcontent"/>
         <property name="visibility" value="$site/selector/create"/>
     </bean>
 
@@ -459,6 +462,7 @@
         <property name="key" value="categories"/>
         <property name="folderTypes" value="jnt:category"/>
         <property name="paths" value="/categories"/>
+        <property name="icon" value="tab-categories"/>
         <property name="params">
             <map>
                 <entry key="limit" value="500"/>
@@ -469,6 +473,7 @@
 
     <bean id="sidePanelTab.content" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="content"/>
+        <property name="icon" value="tab-content"/>
         <property name="paths">
             <list>
                 <value>/shared/contents</value>
@@ -522,6 +527,7 @@
 
     <bean id="sidePanelTab.filesimages" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="filesimages"/>
+        <property name="icon" value="tab-filesimages"/>
         <property name="paths">
             <list>
                 <value>/shared/files</value>
@@ -579,6 +585,7 @@
     </bean>
     <bean id="sidePanelTab.mashups" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="mashups"/>
+        <property name="icon" value="tab-mashups"/>
         <property name="paths">
             <list>
                 <value>/shared/mashups</value>
@@ -632,6 +639,7 @@
 
     <bean id="sidePanelTab.search" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="search"/>
+        <property name="icon" value="tab-search"/>
         <property name="params">
             <map>
                 <entry key="numberResults" value="20"/>
@@ -642,11 +650,13 @@
 
     <bean id="sidePanelTab.workflow" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="workflow"/>
+        <property name="icon" value="tab-workflow"/>
         <property name="visibility" value="$site/selector/workflow"/>
     </bean>
 
     <bean id="sidePanelTab.lastContent" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="lastContent"/>
+        <property name="icon" value="tab-lastcontent"/>
         <property name="params">
             <map>
                 <entry key="search" value="select * from [jnt:content] as content order by content.['jcr:lastModified'] desc"/>

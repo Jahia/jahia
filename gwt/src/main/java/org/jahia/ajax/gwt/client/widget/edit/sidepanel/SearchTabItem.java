@@ -58,9 +58,6 @@ class SearchTabItem extends SidePanelTabItem {
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());
-
-        setIcon(StandardIconsProvider.STANDARD_ICONS.query());
-
         final FormPanel searchForm = new FormPanel();
         searchForm.setHeaderVisible(false);
         searchForm.setBorders(false);

@@ -38,40 +38,14 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 public interface StandardIconsImageBundle extends ImageBundle {
 
 
-    @Resource("tab_addContent.png")
-    public AbstractImagePrototype tabAddContent();
-
-    @Resource("tab_browseContent.png")
-    public AbstractImagePrototype tabBrowseContent();
-
-    @Resource("tab_browseByCategory.png")
-    public AbstractImagePrototype tabBrowseByCategory();
-
-    @Resource("tab_documents.png")
-    public AbstractImagePrototype tabDocuments();
-
-
-    @Resource("icon-query.png")
-    public AbstractImagePrototype tabQuery();
-
     @Resource("search.png")
     public AbstractImagePrototype search();
 
     @Resource("icon-img.png")
     public AbstractImagePrototype img();
     
-
-    @Resource("icon-mashup.png")
-    public AbstractImagePrototype mashup();
-
-    @Resource("tab_pages.png")
-    public AbstractImagePrototype tabPages();
-
     @Resource("lock.png")
     public AbstractImagePrototype lock();
-
-    @Resource("icon-query.png")
-    public AbstractImagePrototype query();
 
     @Resource("minus.png")
     public AbstractImagePrototype minusRound();
@@ -88,24 +62,6 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("logo-jahia.gif")
     public AbstractImagePrototype engineLogoJahia();
 
-    @Resource("engine-tab-content.png")
-    public AbstractImagePrototype engineTabContent();
-
-    @Resource("engine-tab-metadata.png")
-    public AbstractImagePrototype engineTabMetadata();
-
-    @Resource("engine-tab-layout.png")
-    public AbstractImagePrototype engineTabLayout();
-
-    @Resource("engine-tab-classification.png")
-    public AbstractImagePrototype engineTabClassification();
-
-    @Resource("engine-tab-options.png")
-    public AbstractImagePrototype engineTabOption();
-
-    @Resource("engine-tab-publication.png")
-    public AbstractImagePrototype engineTabPublication();
-    
     @Resource("text_tree.png")
     public AbstractImagePrototype navMenu();
 

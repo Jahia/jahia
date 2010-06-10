@@ -42,7 +42,6 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
 
     public FileImagesBrowseTabItem(GWTSidePanelTab config) {
         super(config);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.tabDocuments());
 
         contentContainer = new LayoutContainer();
         contentContainer.setId("images-view");

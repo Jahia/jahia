@@ -39,7 +39,6 @@ class ContentBrowseTabItem extends BrowseTabItem {
 
     public ContentBrowseTabItem(GWTSidePanelTab config) {
         super(config);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.tabBrowseContent());
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);

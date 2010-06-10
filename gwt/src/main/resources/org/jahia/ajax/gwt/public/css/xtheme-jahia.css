@@ -38,7 +38,7 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
     color:#000 !important;
 }
 .x-viewport-studiomode .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
 /*Edit Mode*/
 .x-viewport-editmode .x-toolbar-first{
@@ -66,7 +66,7 @@ background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
     color:#000 !important;
 }
 .x-viewport-contentmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
 /*Document Manager*/
 .x-viewport-filemanager .x-toolbar-first {
@@ -87,7 +87,7 @@ background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
     color:#000 !important;
 }
 .x-viewport-filemanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
 /*Mashup Manager */
 .x-viewport-mashupmanager .x-toolbar-first {
@@ -108,7 +108,7 @@ background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
     color:#000 !important;
 }
 .x-viewport-mashupmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
 
 /*Category Manager */
@@ -130,7 +130,7 @@ background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
     color:#000 !important;
 }
 .x-viewport-categorymanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
 /*Tag Manager */
 .x-viewport-tagmanager .x-toolbar-first {
@@ -151,7 +151,7 @@ background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
     color:#000 !important;
 }
 .x-viewport-tagmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 } 
 
 /*Remote Publication Manager */
@@ -173,7 +173,7 @@ background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
     color:#000 !important;
 }
 .x-viewport-remotepublicationmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 } 
 
 /*Site Manager */
@@ -195,7 +195,7 @@ background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
     color:#000 !important;
 }
 .x-viewport-sitemanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
 /*Workflow Manager  */
 .x-viewport-workflowmanager .x-toolbar-first {
@@ -216,7 +216,7 @@ background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
     color:#000 !important;
 }
 .x-viewport-workflowmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(./images/xtheme-jahia-andromeda/header/button/arrow.gif);
+background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
 /****************************************************************************/
 

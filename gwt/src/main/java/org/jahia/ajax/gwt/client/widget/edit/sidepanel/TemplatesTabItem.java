@@ -40,8 +40,6 @@ public class TemplatesTabItem extends BrowseTabItem {
 
     public TemplatesTabItem(GWTSidePanelTab config) {
         super(config);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.tabPages());
-
         this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
             @Override
             protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {

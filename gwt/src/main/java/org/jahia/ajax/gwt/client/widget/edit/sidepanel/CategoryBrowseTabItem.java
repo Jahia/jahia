@@ -37,7 +37,6 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
 
     public CategoryBrowseTabItem(final GWTSidePanelTab config) {
         super(config);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.tabBrowseByCategory());
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);

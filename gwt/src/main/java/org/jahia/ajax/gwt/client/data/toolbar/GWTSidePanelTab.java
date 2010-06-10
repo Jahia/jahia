@@ -31,6 +31,7 @@ public class GWTSidePanelTab  implements Serializable {
 
     private List<GWTColumn> tableColumns;
     private List<String> tableColumnKeys;
+    private String icon;
 
     public GWTSidePanelTab() {
         treeColumns = new ArrayList<GWTColumn>();
@@ -163,4 +164,11 @@ public class GWTSidePanelTab  implements Serializable {
         return treeColumnKeys;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 }

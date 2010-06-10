@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -192,7 +193,7 @@ public class ContentRepositoryTabs extends LeftComponent {
 
         createSearchPanel();
         searchTabITem.setLayout(new FitLayout());
-        searchTabITem.setIcon(StandardIconsProvider.STANDARD_ICONS.tabQuery());
+        searchTabITem.setIcon(ToolbarIconProvider.getInstance().getIcon("search"));
         searchTabITem.add(contentSearchForm);
         m_component.add(searchTabITem);
 

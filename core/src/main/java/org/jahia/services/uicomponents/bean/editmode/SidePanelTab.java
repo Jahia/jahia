@@ -31,6 +31,7 @@ public class SidePanelTab implements Serializable, BeanNameAware {
     private List<String> mimeTypes = new ArrayList<String>();
     private List<Column> treeColumns;
     private List<Column> tableColumns;
+    private String icon;
 
     public SidePanelTab() {
         tableColumns = new ArrayList<Column>();
@@ -145,5 +146,12 @@ public class SidePanelTab implements Serializable, BeanNameAware {
         this.treeColumns = treeColumns;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 }
 

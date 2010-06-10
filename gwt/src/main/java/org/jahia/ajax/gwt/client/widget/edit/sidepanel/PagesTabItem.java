@@ -44,7 +44,6 @@ public class PagesTabItem extends SidePanelTabItem {
 
     public PagesTabItem(GWTSidePanelTab config) {
         super(config);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.tabPages());
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         setLayout(new FitLayout());

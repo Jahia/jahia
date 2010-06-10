@@ -39,7 +39,6 @@ class MashupBrowseTabItem extends BrowseTabItem {
 
     public MashupBrowseTabItem(GWTSidePanelTab config) {
         super(config);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.mashup());
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);

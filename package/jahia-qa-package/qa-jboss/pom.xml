@@ -78,24 +78,6 @@
                                     <outputDirectory>${project.build.directory}/jboss-${jahia.jboss.version}/server/default/deploy/${jahia.deploy.war.dirName}</outputDirectory>
                                     <excludes>**/WEB-INF/etc/config/log4j.xml,**/WEB-INF/lib/jboss-j2ee-*.jar,**/WEB-INF/lib/jstl-*.jar,**/WEB-INF/lib/standard-*.jar,**/WEB-INF/lib/ojdbc5-*.jar,**/WEB-INF/lib/orai18n-*.jar,**/WEB-INF/lib/sqljdbc-*.jar,**/WEB-INF/lib/mysql-connector-java-*.jar,**/WEB-INF/lib/derby-*.jar,**/WEB-INF/lib/derbyclient-*.jar,**/WEB-INF/lib/postgresql-*.jar</excludes>
                                 </artifactItem>
-                                <artifactItem>
-						            <groupId>org.jahia.prepackagedsites</groupId>
-						            <artifactId>webtemplates</artifactId>
-						            <version>${jahia.package.version}</version>
-						            <type>zip</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/prepackagedSites</outputDirectory>
-                                    <includes>ACME.zip</includes>
-                                </artifactItem>
-                                <artifactItem>
-						            <groupId>org.jahia.prepackagedsites</groupId>
-						            <artifactId>testSite</artifactId>
-						            <version>${jahia.package.version}</version>
-						            <type>zip</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/prepackagedSites</outputDirectory>
-                                    <includes>testSite.zip</includes>
-                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>

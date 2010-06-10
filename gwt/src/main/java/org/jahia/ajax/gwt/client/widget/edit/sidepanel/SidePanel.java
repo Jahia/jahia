@@ -65,10 +65,10 @@ public class SidePanel extends ContentPanel {
             else {
                 continue;
             }
+            tabItem.getHeader().addStyleName("x-tab-strip-iconOnly");
             tabs.add(tabItem);
         }
         TabPanel tabPanel = new TabPanel();
-
         for (TabItem tab : tabs) {
             tabPanel.add(tab);
         }

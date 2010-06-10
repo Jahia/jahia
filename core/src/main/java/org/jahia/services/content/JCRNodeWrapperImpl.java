@@ -31,6 +31,8 @@
  */
 package org.jahia.services.content;
 
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
@@ -565,9 +567,37 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a lazy map for accessing node properties with string values.
+     * 
+     * @return a lazy map for accessing node properties with string values
      */
-    public Map<String, String> getPropertiesAsString() throws RepositoryException {
+    @SuppressWarnings("unchecked")
+    public Map<String, String> getPropertiesAsString() {
+        if (propertiesAsString == null) {
+            Map<String, String> res = Collections.emptyMap();
+            if (checkValidity()) {
+                res = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
+                    public Object transform(Object input) {
+                        String name = (String) input;
+                        try {
+                            if (hasProperty(name)) {
+                                Property p = getProperty(name);
+                                return p.getString();
+                            }
+                        } catch (RepositoryException e) {
+                            logger.error("Repository error while retrieving property " + name, e);
+                        }
+                        return null;
+                    }
+                });
+            }
+            propertiesAsString = res;
+        }
+
+        return propertiesAsString;
+    }
+
+    public Map<String, String> getAllPropertiesAsString() throws RepositoryException {
         if (propertiesAsString == null) {
             Map<String, String> res = new HashMap<String, String>();
             if (checkValidity()) {
@@ -599,8 +629,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         return propertiesAsString;
-    }
-
+    }    
     /**
      * {@inheritDoc}
      */
@@ -974,17 +1003,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getPropertyAsString(String name) {
-        if (checkValidity()) {
-            try {
-                if (hasProperty(name)) {
-                    Property p = getProperty(name);
-                    return p.getString();
-                }
-            } catch (RepositoryException e) {
-                logger.error("Repository error", e);
-            }
-        }
-        return null;
+        return getPropertiesAsString().get(name);
     }
 
     /**
@@ -2317,7 +2336,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String[] getAllowedLifecycleTransistions() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new String[0];
     }
 
     public JCRNodeWrapper clone(JCRNodeWrapper sharedNode, String name) throws ItemExistsException, VersionException,
@@ -2332,7 +2351,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             try {
                 final String path = sharedNode.getCorrespondingNodePath("live");
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback() {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper n = session.getNode(path);
                         n.checkout();
@@ -2368,12 +2387,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public boolean checkValidity() {
         final JCRSessionWrapper jcrSessionWrapper = getSession();
-        final Locale locale = jcrSessionWrapper.getLocale();
         try {
             if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName())) {
 // todo : need to find more consistent way to check i18n validity
 //                final boolean translated = objectNode.hasNode("j:translation");
-                if (locale != null) {
+                if (jcrSessionWrapper.getLocale() != null) {
 //                    if (jcrSessionWrapper.getFallbackLocale() == null && translated) {
 //                        getI18N(locale, false);
 //                    }
@@ -2400,7 +2418,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             while (true) {
                 if (current.isNodeType("jnt:virtualsite")) {
-                    String sitename = current.getName();
                     return (JCRSiteNode) current;
                 }
                 current = current.getParent();

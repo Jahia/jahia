@@ -74,8 +74,8 @@ public class JCRTagUtils {
      * @param locale current locale
      * @return the node or property display name depending on the locale
      */
-    public static String label(Object nodeObject, Locale local) {
-        return JCRContentUtils.getDisplayLabel(nodeObject, local);
+    public static String label(Object nodeObject, Locale locale) {
+        return JCRContentUtils.getDisplayLabel(nodeObject, locale);
     }
 
     /**

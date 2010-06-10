@@ -12,6 +12,10 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 /*fix jahia-gxt sep height*/
 .x-menu-sep{height:1px}
 
+/*Tabs left panel icon only*/
+.x-tab-strip .x-tab-strip-iconOnly span.x-tab-strip-text {
+	padding-left:9px;
+}
 /******************************************************************************
 * Header 
 ******************************************************************************/

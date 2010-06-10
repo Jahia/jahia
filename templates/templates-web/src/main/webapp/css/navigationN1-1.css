@@ -1,11 +1,11 @@
 div#navigationN1-1  {
 	float: left;
-	width: 960px;
+	width: 100%;
 }
 div#navigationN1-1 ul.level_1  {
 	margin: 0; padding: 0;
 	float: left;
-	width: 960px;
+	width: 100%;
 	list-style: none;
 	position: relative;
 	font-size: 1em;
@@ -34,7 +34,7 @@ div#navigationN1-1 ul.level_1 li div.box-inner {
 	position: absolute;
 	left: 0; top:35px;
 	display: none;
-	width: 960px;
+	width: 100%;
 	background: #1376c9;
 	color: #fff;
 	-moz-border-radius-bottomright: 5px;

@@ -585,7 +585,7 @@ public class RoleBasedAccessControlManager {
             if (principalNode.hasProperty(JCRUser.J_EXTERNAL)
                     && principalNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                 // lookup external group node
-                principal = jcrGroupManagerProvider.lookupExternalGroup(principalNode.getName());
+                principal = groupManager.lookupGroup(principalNode.getName());
             } else {
                 int siteId = 0;
                 String siteKey = StringUtils.substringBetween(principalNode.getPath(), "/sites/", "/");

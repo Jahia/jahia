@@ -29,19 +29,14 @@
     </c:choose>
     <template:include template="hidden.load" />
 
+    <c:if test="${empty currentList and not empty listQuerySql}">
+        <jcr:sql var="result" sql="${listQuerySql}"/>
+        <c:set var="currentList" value="${result.nodes}" scope="request"/>
+        <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
+        <c:set var="listTotalSize" value="${end}" scope="request"/>
+    </c:if>
+    
     <c:if test="${empty currentList and not empty listQuery}">
-        <%-- move that to jmix:orderedList hidden.init tpl --%>
-        <%--<c:if test="${jcr:isNodeType(currentNode, 'jmix:orderedList')}">--%>
-            <%--<query:definition var="listQuery" qomBeanName="listQuery" scope="request" >--%>
-                <%--<c:forTokens var="prefix" items="first,second,third" delims=",">--%>
-                    <%--<jcr:nodeProperty node="${currentNode}" name="${prefix}Field" var="sortPropertyName"/>--%>
-                    <%--<c:if test="${!empty sortPropertyName}">--%>
-                        <%--<jcr:nodeProperty node="${currentNode}" name="${prefix}Direction" var="order"/>--%>
-                        <%--<query:sortBy propertyName="${sortPropertyName.string}" order="${order.string}"/>--%>
-                    <%--</c:if>--%>
-                <%--</c:forTokens>--%>
-            <%--</query:definition>--%>
-        <%--</c:if>--%>
         <c:set var="renderOptions" value="before" />
         <c:if test="${jcr:isNodeType(currentNode, 'jmix:facets')}">
             <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >

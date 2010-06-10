@@ -174,7 +174,7 @@
                                                 <c:if test="${empty selectedPackage || empty selectedPackage.thumbnailUrls['thumbnail']}">
                                                     <td>&nbsp;</td>
                                                     <td>
-                                                        <fmt:message key="org.jahia.admin.site.ManageSites.NoTemplatePreview.label"/>
+                                                        <img src="<%=URL%>/images/pictureNotAvailable.jpg" width="200" height="200" alt="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>" title="<fmt:message key='org.jahia.admin.site.ManageSites.NoTemplatePreview.label'/>"/>
                                                     </td>
                                                 </c:if>
                                             </tr>

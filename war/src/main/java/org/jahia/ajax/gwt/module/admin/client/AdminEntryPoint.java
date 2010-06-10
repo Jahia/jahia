@@ -35,6 +35,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
@@ -109,6 +110,10 @@ public class AdminEntryPoint extends CommonEntryPoint {
                         }
                     });
                 }
+            }
+
+            public void addRoles(List<GWTJahiaRole> roles) {
+                //To change body of implemented methods use File | Settings | File Templates.
             }
         }, viewMode, "currentSite");
     }

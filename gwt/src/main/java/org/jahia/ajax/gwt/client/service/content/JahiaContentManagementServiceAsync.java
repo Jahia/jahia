@@ -298,5 +298,8 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void isValidSession(AsyncCallback<Integer> async)  throws GWTJahiaServiceException;
 
-    void getAllWrappers(String path, List<String> fields, AsyncCallback<ListLoadResult<GWTJahiaNode>> nodes);  
+    void getAllWrappers(String path, List<String> fields, AsyncCallback<ListLoadResult<GWTJahiaNode>> nodes);
+
+    void searchRolesInContext(String search, int offset, int limit, String context,
+                              AsyncCallback<PagingLoadResult<GWTJahiaRole>> asyncCallback);
 }

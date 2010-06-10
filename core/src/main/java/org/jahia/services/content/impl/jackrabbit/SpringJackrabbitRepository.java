@@ -35,12 +35,9 @@ import org.apache.jackrabbit.commons.AbstractRepository;
 import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
-import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.rbac.RoleIdentity;
+import org.jahia.services.usermanager.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.api.user.JahiaUserService;
@@ -292,6 +289,24 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
         public List getGroupMembers(String groupname) {
             return new ArrayList();
+        }
+
+        public boolean hasRole(String roleName, String principalName, String site) {
+            JahiaPrincipal user = userService.lookupUser(principalName);
+            JahiaSite s = null;
+            if (user == null) {
+                int siteId = 0;
+                try {
+                    s = sitesService.getSiteByKey(site);
+                    if (s != null) {
+                        siteId = s.getID();
+                    }
+                } catch (JahiaException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                user = groupService.lookupGroup(siteId, principalName);
+            }
+            return user != null && user.hasRole(new RoleIdentity(roleName, site));
         }
     }
 

@@ -48,6 +48,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -82,6 +83,7 @@ public class AclEditor {
     private boolean displayInheritanceColumn = true;
     private String addUsersLabel = getResource("org.jahia.engines.users.SelectUG_Engine.newUsers.label");
     private String addGroupsLabel = getResource("org.jahia.engines.users.SelectUG_Engine.newGroups.label");
+    private String addRolesLabel = getResource("org.jahia.engines.users.SelectUG_Engine.newRoles.label");
 
     public AclEditor(GWTJahiaNodeACL acl, String aclContext) {
         this.originalAcl = acl;
@@ -128,8 +130,19 @@ public class AclEditor {
         return addGroupsLabel;
     }
 
+    public String getAddRolesLabel() {
+        if (addRolesLabel == null) {
+            return getResource("org.jahia.engines.users.SelectUG_Engine.newRoles.label");
+        }
+        return addRolesLabel;
+    }
+
     public void setAddGroupsLabel(String addGroupsLabel) {
         this.addGroupsLabel = addGroupsLabel;
+    }
+
+    public void setAddRolesLabel(String addRolesLabel) {
+        this.addRolesLabel = addRolesLabel;
     }
 
     public ContentPanel renderNewAclPanel() {
@@ -350,6 +363,34 @@ public class AclEditor {
                     addTableItem(aclTable, ace, available);
                 }
             }
+
+            public void addRoles(List<GWTJahiaRole> roles) {
+                for (GWTJahiaRole role : roles) {
+                    GWTJahiaNodeACE ace = aceMap.get('r' + role.getName()+":"+role.getSite());
+                    if (ace == null) {
+                        ace = new GWTJahiaNodeACE();
+                        ace.setPrincipalType('r');
+                        ace.setPrincipal(role.getName());
+                        ace.setPrincipalKey(role.getName()+":"+role.getSite());
+                        ace.setPermissions(new HashMap<String, String>());
+                        boolean first = true;
+                        for (String s : available) {
+                            ace.getPermissions().put(s, first ? "GRANT" : "DENY");
+                            first = false;
+                        }
+                        ace.setInheritedPermissions(new HashMap<String, String>());
+                        ace.setInherited(false);
+                        acl.getAce().add(ace);
+                        aceMap.put('r' + role.getName()+":"+role.getSite(), ace);
+                    } else {
+                        if (acl.isBreakAllInheritance()) {
+                            ace.setInherited(false);
+                        }
+                    }
+                    setDirty();
+                    addTableItem(aclTable, ace, available);
+                }
+            }
         };
 
         ToolBar toolBar = new ToolBar();
@@ -369,6 +410,15 @@ public class AclEditor {
         addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, context);
+            }
+        });
+        toolBar.add(addUsersToolItem);
+        addUsersToolItem = new Button(getAddRolesLabel());
+        addUsersToolItem.setIconStyle("um-addrole");
+        addUsersToolItem.setEnabled(!readOnly);
+        addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_ROLES, context);
             }
         });
         toolBar.add(addUsersToolItem);

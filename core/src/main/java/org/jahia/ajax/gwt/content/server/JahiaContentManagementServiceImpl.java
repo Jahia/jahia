@@ -62,12 +62,15 @@ import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowTask;
 import org.jahia.tools.imageprocess.ImageProcess;
@@ -83,6 +86,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.security.Principal;
 import java.util.*;
 
 /**
@@ -1441,6 +1445,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context)
+            throws GWTJahiaServiceException {
+        return rolesPermissions.searchRolesInContext(search, offset,limit,context,getSite());
     }
 
     public Integer isValidSession() throws GWTJahiaServiceException {

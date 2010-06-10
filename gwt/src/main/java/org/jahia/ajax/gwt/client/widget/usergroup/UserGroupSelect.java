@@ -52,12 +52,15 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.SearchField;
 
 import java.util.ArrayList;
@@ -73,13 +76,16 @@ public class UserGroupSelect extends Window {
     public static final int VIEW_USERS = 1;
     public static final int VIEW_GROUPS = 2;
     public static final int VIEW_TABS = 3;
+    public static final int VIEW_ROLES = 4;
     private JahiaServiceAsync service = JahiaService.App.getInstance();
     private SearchField userSearchField;
     private SearchField groupSearchField;
+    private SearchField roleSearchField;
     private ListStore<GWTJahiaSite> sites;
     private String selectedSite;
     private Grid<GWTJahiaUser> userGrid;
     private Grid<GWTJahiaGroup> groupGrid;
+    private Grid<GWTJahiaRole> roleGrid;
     private final String aclContext;
     private boolean singleSelectionMode;
 
@@ -94,7 +100,7 @@ public class UserGroupSelect extends Window {
         setSize(500, 500);
         setLayout(new FitLayout());
         final UserManagerServiceAsync service = UserManagerService.App.getInstance();
-
+        final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
         switch (viewMode) {
             case VIEW_TABS:
                 ContentPanel userPanel = getUserPanel(target, service);
@@ -120,6 +126,9 @@ public class UserGroupSelect extends Window {
             case VIEW_GROUPS:
                 add(getGroupsPanel(target, service));
                 break;
+            case VIEW_ROLES:
+                add(getRolesPanel(target, async));
+                break;
         }
         ButtonBar buttons = new ButtonBar() ;
         Button add = new Button("Add", new SelectionListener<ButtonEvent>() {
@@ -129,6 +138,9 @@ public class UserGroupSelect extends Window {
                 }
                 if (groupGrid != null) {
                     target.addGroups(groupGrid.getSelectionModel().getSelectedItems());
+                }
+                if (roleGrid != null) {
+                    target.addRoles(roleGrid.getSelectionModel().getSelectedItems());
                 }
                 hide();
             }
@@ -332,5 +344,81 @@ public class UserGroupSelect extends Window {
             return siteMenu;
         }
         return null;
+    }
+
+    private ContentPanel getRolesPanel(final UserGroupAdder target, final JahiaContentManagementServiceAsync service) {
+        // data proxy
+        RpcProxy<PagingLoadResult<GWTJahiaRole>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaRole>>() {
+            @Override
+            protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaRole>> callback) {
+                String context = aclContext;
+                if ("siteSelector".equals(aclContext)) {
+                    context = "site:"+selectedSite;
+                }
+
+                if (roleSearchField.getText().length()==0)  {
+                    service.searchRolesInContext("*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
+                } else {
+                    service.searchRolesInContext(".*"+roleSearchField.getText()+".*",((PagingLoadConfig) pageLoaderConfig).getOffset(), ((PagingLoadConfig) pageLoaderConfig).getLimit(), context, callback);
+                }
+            }
+        };
+        final BasePagingLoader loader = new BasePagingLoader<PagingLoadResult<GWTJahiaRole>>(proxy);
+
+        roleSearchField = new SearchField("Search: ", false) {
+            public void onFieldValidation(String value) {
+                loader.load();
+            }
+
+            public void onSaveButtonClicked(String value) {
+
+            }
+        };
+        roleSearchField.setWidth(250) ;
+
+        loader.setLimit(15);
+        loader.load();
+        HorizontalPanel panel = new HorizontalPanel();
+        panel.add(roleSearchField);
+        if("siteSelector".equals(aclContext) ){
+            ComboBox<GWTJahiaSite> siteMenu = createMenu(loader);
+            panel.add(siteMenu);
+        }
+        ListStore<GWTJahiaRole> store = new ListStore<GWTJahiaRole>(loader);
+
+        List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+        columns.add(new ColumnConfig("name", "Role name", 240));
+        columns.add(new ColumnConfig("site", "Site name", 120));
+
+        ColumnModel cm = new ColumnModel(columns);
+
+        final PagingToolBar toolBar = new PagingToolBar(15);
+        toolBar.bind(loader);
+
+        roleGrid = new Grid<GWTJahiaRole>(store, cm);
+        if (singleSelectionMode) {
+            roleGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        }
+        roleGrid.setLoadMask(true);
+        roleGrid.setBorders(true);
+        roleGrid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
+            public void handleEvent(GridEvent event) {
+                target.addRoles(roleGrid.getSelectionModel().getSelectedItems());
+                if (singleSelectionMode) {
+                    hide();
+                }
+            }
+        });
+
+        ContentPanel groupsPanel = new ContentPanel();
+        groupsPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
+        groupsPanel.setIconStyle("icon-table");
+        groupsPanel.setHeading("Select a group");
+        groupsPanel.setLayout(new FitLayout());
+        groupsPanel.add(roleGrid);
+        groupsPanel.setSize(480, 350);
+        groupsPanel.setBottomComponent(toolBar);
+        groupsPanel.setTopComponent(panel);
+        return groupsPanel;
     }
 }

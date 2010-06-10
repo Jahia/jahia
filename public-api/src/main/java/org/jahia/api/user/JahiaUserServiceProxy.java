@@ -71,4 +71,8 @@ public class JahiaUserServiceProxy implements JahiaUserService, Serializable {
     public List getGroupMembers(String groupname) {
         return service.getGroupMembers(groupname);
     }
+
+    public boolean hasRole(String roleName, String principalName, String site) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

@@ -150,7 +150,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         permissions.put(Constants.JCR_WRITE_RIGHTS, Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT + Permission.LOCK_MNGMT + Permission.VERSION_MNGMT);
         permissions.put("jcr:getAccessControlPolicy", Permission.READ);
         permissions.put("jcr:setAccessControlPolicy", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY);
-        permissions.put("jcr:all", Permission.READ + Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT);
+        permissions.put("jcr:all", Permission.ALL);
     }
 
     public void close() throws Exception {
@@ -345,8 +345,16 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                                         if (principalName.equals(p.getName())) {
                                             return type.equals("GRANT");
                                         }
-                                    } else {
+                                    } else if (principal.charAt(0) == 'g') {
                                         if (principalName.equals("guest") || !p.isGuest() && service.isUserMemberOf(p.getName(), principalName, site)) {
+                                            if (!groups.contains(principalName)) {
+                                                result |= type.equals("GRANT");
+                                                groups.add(principalName);
+                                            }
+                                        }
+                                    } else if (principal.charAt(0) == 'r') {
+                                        boolean b = service.hasRole(principalName,p.getName(),site);
+                                        if (b) {
                                             if (!groups.contains(principalName)) {
                                                 result |= type.equals("GRANT");
                                                 groups.add(principalName);
@@ -369,13 +377,21 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                             for (int j = 0; j < privileges.length; j++) {
                                 Value privilege = privileges[j];
                                 if (match(permissions, privilege.getString())) {
-                                    String principalName = principal.substring(2);
+                                    final String principalName = principal.substring(2);
                                     if (principal.charAt(0) == 'u') {
                                         if (principalName.equals(p.getName())) {
                                             return type.equals("GRANT");
                                         }
-                                    } else {
+                                    } else if (principal.charAt(0) == 'g') {
                                         if (principalName.equals("guest") || !p.isGuest() && service.isUserMemberOf(p.getName(), principalName, site)) {
+                                            if (!groups.contains(principalName)) {
+                                                result |= type.equals("GRANT");
+                                                groups.add(principalName);
+                                            }
+                                        }
+                                    } else if (principal.charAt(0) == 'r') {
+                                        boolean b = service.hasRole(principalName,p.getName(),site);
+                                        if (b) {
                                             if (!groups.contains(principalName)) {
                                                 result |= type.equals("GRANT");
                                                 groups.add(principalName);

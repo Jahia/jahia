@@ -302,6 +302,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public ListLoadResult<GWTJahiaNode> getAllWrappers(String path, List<String> fields) throws GWTJahiaServiceException;
 
+    public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context) throws GWTJahiaServiceException;
+
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

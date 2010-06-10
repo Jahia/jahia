@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 
 import com.google.gwt.user.client.Element;
@@ -144,6 +145,13 @@ public class UserGroupSelectButton extends InlineHTML {
                         for (final GWTJahiaGroup group : groups) {
                             add(fieldId, callback, "g", group.getGroupKey(),
                                     group.getGroupname());
+                        }
+                    }
+
+                    public void addRoles(List<GWTJahiaRole> roles) {
+                        for (GWTJahiaRole role : roles) {
+                            add(fieldId, callback, "r", role.getName()+":"+role.getSite(),
+                                    role.getName());
                         }
                     }
 

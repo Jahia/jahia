@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.helper;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -11,9 +13,11 @@ import org.jahia.services.rbac.jcr.PermissionImpl;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.rbac.jcr.RoleImpl;
 import org.jahia.services.rbac.jcr.RoleService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 
 import javax.jcr.RepositoryException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +35,7 @@ public class RolesPermissionsHelper {
     private RoleBasedAccessControlService rbacService;
     private RoleService roleService;
     private JahiaUserManagerService userManagerService;
+    private JahiaSitesService sitesService;
 
     /**
      * Grants the specified permissions to a role.
@@ -173,7 +178,7 @@ public class RolesPermissionsHelper {
      *         not specified
      * @throws GWTJahiaServiceException in case of an error
      */
-    private List<GWTJahiaRole> getRoles(String site) throws GWTJahiaServiceException {
+    private List<GWTJahiaRole> getRoles(String site,String search) throws GWTJahiaServiceException {
         if (logger.isDebugEnabled()) {
             logger.debug("Retrieving roles for " + (site != null ? "site " + site : "server"));
         }
@@ -181,7 +186,11 @@ public class RolesPermissionsHelper {
         List<GWTJahiaRole> roles = new LinkedList<GWTJahiaRole>();
         try {
             for (RoleImpl role : roleService.getRoles(site)) {
-                roles.add(toRole(role));
+                if("*".equals(search))
+                    roles.add(toRole(role));
+                else if(role.getName().matches(search)){
+                    roles.add(toRole(role));
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -194,10 +203,10 @@ public class RolesPermissionsHelper {
     public List<GWTJahiaRole> getRoles(String siteKey, boolean isGroup, String principalKey)
             throws GWTJahiaServiceException {
         // get all roles for the site first
-        List<GWTJahiaRole> roles =  getRoles(siteKey);
+        List<GWTJahiaRole> roles =  getRoles(siteKey,"*");
         
         // add server-level roles
-        roles.addAll(getRoles(null));
+        roles.addAll(getRoles(null,"*"));
 
 
         for(GWTJahiaRole role: roles){
@@ -224,7 +233,7 @@ public class RolesPermissionsHelper {
         }
 
         GWTRolesPermissions rp = new GWTRolesPermissions();
-        rp.setRoles(getRoles(site));
+        rp.setRoles(getRoles(site,"*"));
         rp.setPermissions(getPermissions(site));
         return rp;
     }
@@ -398,5 +407,23 @@ public class RolesPermissionsHelper {
         gwtRole.setPermissions(gwtPermissions);
 
         return gwtRole;
+    }
+
+    public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context,
+                                                               JCRSiteNode currentSite)
+            throws GWTJahiaServiceException {
+        if (context != null) {
+            String site = null;
+            if (context.equals("currentSite")) {
+                site = currentSite.getSiteKey();
+            } else if (context.startsWith("site:")) {
+                site = context.substring(5);
+            }
+                List<GWTJahiaRole> result = getRoles(site,search);
+                int size = result.size();
+                result = new ArrayList<GWTJahiaRole>(result.subList(offset, Math.min(size, offset + limit)));
+                return new BasePagingLoadResult<GWTJahiaRole>(result, offset, size);
+        }
+        return null;
     }
 }

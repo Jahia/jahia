@@ -54,4 +54,5 @@ public interface JahiaUserService {
 
     public List getGroupMembers(String groupname);
 
+    boolean hasRole(String roleName, String principalName, String site);
 }

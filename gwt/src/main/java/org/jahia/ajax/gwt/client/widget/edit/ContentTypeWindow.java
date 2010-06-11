@@ -141,12 +141,6 @@ public class ContentTypeWindow extends Window {
         buttonBar.add(cancel);
         buttonsPanel.add(buttonBar);
 
-        // copyrigths
-        Text copyright = new Text(Messages.getResource("fm_copyright"));
-        ButtonBar container1 = new ButtonBar();
-        container1.setAlignment(Style.HorizontalAlignment.CENTER);
-        container1.add(copyright);
-        buttonsPanel.add(container1);
         setBottomComponent(buttonsPanel);
 
 

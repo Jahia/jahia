@@ -251,7 +251,6 @@ public class QueryServiceImpl extends QueryService {
                 }
             }  
         } catch (Exception e) {
-            logger.warn("Query modification initialization could not be done", e);
             throw new RepositoryException(e);
         }
         try {
@@ -272,7 +271,6 @@ public class QueryServiceImpl extends QueryService {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Check for query modification could not be done", e);            
             throw new RepositoryException(e);
         }
         if (info.isModificationNecessary()) {
@@ -318,7 +316,6 @@ public class QueryServiceImpl extends QueryService {
             info.setNewQueryObjectModel(info.getQueryObjectModelFactory().createQuery(newSource,
                     newConstraint, newOrderings, newColumns));
         } catch (Exception e) {
-            logger.warn("Query modification could not be done", e);            
             throw new RepositoryException(e);
         }
 
@@ -1010,14 +1007,19 @@ public class QueryServiceImpl extends QueryService {
 
             if (!Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
                 if (Constants.NT_BASE.equals(nodeType.getName())) {
-                    for (String commonNodeType : getNodeTypesPerSelector().get(selector.getSelectorName())) {
-                        nodeType = NodeTypeRegistry.getInstance().getNodeType(commonNodeType);
-                        propDef = nodeType.getPropertyDefinitionsAsMap().get(propertyName);
-                        if (propDef != null) {
-                            break;
+                    Set<String> nodeTypes = getNodeTypesPerSelector().get(
+                            selector.getSelectorName());
+                    if (nodeTypes != null) {
+                        for (String commonNodeType : nodeTypes) {
+                            nodeType = NodeTypeRegistry.getInstance().getNodeType(commonNodeType);
+                            propDef = nodeType.getPropertyDefinitionsAsMap().get(propertyName);
+                            if (propDef != null) {
+                                break;
+                            }
                         }
                     }
-                } else {
+                } 
+                if (propDef == null) {
                     propDef = nodeType.getPropertyDefinitionsAsMap().get(propertyName);
                 }
             }

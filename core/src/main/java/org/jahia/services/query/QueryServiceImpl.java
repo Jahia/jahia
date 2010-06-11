@@ -251,6 +251,7 @@ public class QueryServiceImpl extends QueryService {
                 }
             }  
         } catch (Exception e) {
+            logger.warn("Query modification initialization could not be done", e);
             throw new RepositoryException(e);
         }
         try {
@@ -271,6 +272,7 @@ public class QueryServiceImpl extends QueryService {
                 }
             }
         } catch (Exception e) {
+            logger.warn("Check for query modification could not be done", e);            
             throw new RepositoryException(e);
         }
         if (info.isModificationNecessary()) {
@@ -316,6 +318,7 @@ public class QueryServiceImpl extends QueryService {
             info.setNewQueryObjectModel(info.getQueryObjectModelFactory().createQuery(newSource,
                     newConstraint, newOrderings, newColumns));
         } catch (Exception e) {
+            logger.warn("Query modification could not be done", e);            
             throw new RepositoryException(e);
         }
 

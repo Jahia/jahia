@@ -44,7 +44,7 @@
 <head>
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
-    <title><fmt:message key="label.httpUnauthorized"/></title>
+    <title><fmt:message key="label.login"/></title>
 <script type="text/javascript">
 function autoFocus() {
     document.loginForm.username.focus();

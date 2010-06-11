@@ -87,7 +87,7 @@
  - j:inherit (boolean)
 
 [jmix:accessControlled] mixin
- + j:acl (jnt:acl) mandatory
+ + j:acl (jnt:acl) mandatory autocreated
 
 //---------------------------------------------------------
 // Role based access control

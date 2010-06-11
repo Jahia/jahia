@@ -39,6 +39,7 @@
 [consequence][]Assign permissions "{perms}" on the {node} to the user {user}=service.setPermissions({node},"u:" + {user} + ":{perms}", drools);
 [consequence][]Assign permissions "{perms}" on the {node} to the group {group}=service.setPermissions({node},"g:" + {group} + ":{perms}", drools);
 [consequence][]Assign permissions "{perms}" on the {node} to this group=service.setPermissions({node},"g:" + groupName + ":{perms}", drools);
+[consequence][]Assign permissions "{perms}" on the {node} to the role {role}=service.setPermissions({node},"r:" + {role}+ ":{perms}", drools);
 [consequence][]Assign permissions on the {node} from the property value=service.setPermissions({node},propertyValue, drools);
 [consequence][]Break all ACL inheritance on the {node}=service.setAclInheritanceBreak({node},true);
 [consequence][]Create a new folder {nodename} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", "jnt:folder", drools);insert ({nodename});

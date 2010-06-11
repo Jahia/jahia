@@ -49,3 +49,16 @@ rule "Create permission for site languages"
 		Grant permissions in group "languages" to role node.getPath() + "/roles/web-designer"
 end
 
+rule "Create init ACLs for new site"
+    when
+        A new node is created
+            - the node has the type jnt:virtualsite
+    then
+        Assign permissions "rew--" on the node to the role "editor"
+        Assign permissions "rewap" on the node to the role "editor-in-chief"
+        Assign permissions "rew-p" on the node to the role "publisher"
+        Assign permissions "rew--" on the node to the role "seo-manager"
+        Assign permissions "rewap" on the node to the role "site-administrator"
+        Assign permissions "rew--" on the node to the role "translator"
+        Assign permissions "rew--" on the node to the role "web-designer"     
+end

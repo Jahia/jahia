@@ -49,9 +49,9 @@
                         </p>
 
                         <p>
-                            <input type="reset" value="Reset" class="button" tabindex="3"/>
+                            <input type="reset" value="<fmt:message key='label.reset'/>" class="button" tabindex="3"/>
 
-                            <input type="submit" value="Submit" class="button" tabindex="4"/>
+                            <input type="submit" value="<fmt:message key='label.submit'/>" class="button" tabindex="4"/>
                         </p>
                     </fieldset>
                 </div>

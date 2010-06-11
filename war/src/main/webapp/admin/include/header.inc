@@ -46,13 +46,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
-<%!
-public String getAdminResource(String messageKey, HttpServletRequest request) {
-    ProcessingContext jParams = ((JahiaData) request.getAttribute("org.jahia.data.JahiaData")).getProcessingContext();
-    return JahiaResourceBundle.getJahiaInternalResource(messageKey, jParams.getUILocale());    
-}
-%>
-
+<fmt:message key="org.jahia.copyright" var="i18nCopyright"/>
 <%
 
     String  jahiaDisplayMessage  = (String) request.getAttribute("jahiaDisplayMessage");
@@ -75,12 +69,8 @@ public String getAdminResource(String messageKey, HttpServletRequest request) {
     
     boolean isMSIE = JahiaTools.isMSIExplorer(request);
     String copyright=Jahia.COPYRIGHT;
-    String c;
-    try {
-      	c=getAdminResource("org.jahia.copyright", request);
-    } catch (MissingResourceException e) {
-      	c="All rights reserved.";
-    }
+    String c = (String) pageContext.getAttribute("i18nCopyright");
+    c = c != null && c.indexOf("???") == -1 ? c : "All rights reserved.";
     if (copyright.indexOf("All rights")!=-1){
         int p= copyright.indexOf("All rights");
      	  copyright=copyright.substring(0,p)+c;

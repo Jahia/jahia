@@ -32,7 +32,6 @@
 package org.jahia.taglibs.query;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DataFormatException;
@@ -96,13 +95,14 @@ public class Functions {
         String facetValueFilter = builder.toString();
         if (!StringUtils.contains(queryString, facetValueFilter)) {
             builder = new StringBuilder(queryString.length() + facetValueFilter.length() + 1);
-            builder.append(queryString).append(queryString.isEmpty() ? "" : "|||").append(
+            builder.append(queryString).append(queryString.length() == 0 ? "" : "|||").append(
                     facetValueFilter);
         }
 
         return builder.toString();
     }
 
+    @SuppressWarnings("unchecked")
     public static String getDeleteFacetUrl(Object facetFilterObj, String queryString) {
         Map.Entry<String, KeyValue> facetFilter;
         try {
@@ -132,7 +132,10 @@ public class Functions {
             compresser.setInput(inputString.getBytes("UTF-8"));
             compresser.finish();
             int compressedDataLength = compresser.deflate(output);
-            return Base64.encodeBase64URLSafeString(Arrays.copyOf(output, compressedDataLength));            
+            byte[] copy = new byte[compressedDataLength];
+            System.arraycopy(output, 0, copy, 0,
+                             Math.min(output.length, compressedDataLength));
+            return Base64.encodeBase64URLSafeString(copy);            
         } catch (UnsupportedEncodingException e) {
             logger.warn("Not able to encode facet URL: " + inputString, e);
         }

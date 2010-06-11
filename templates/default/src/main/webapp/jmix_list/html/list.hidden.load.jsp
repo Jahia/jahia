@@ -4,9 +4,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:set var="renderOptionsOnChild" value="true" scope="request"/>
+<c:set var="facetParamVarName" value="N-${currentNode.name}"/>
 <%-- list mode --%>
 <c:choose>
-    <c:when test="${jcr:isNodeType(currentNode, 'jmix:facets')}">
+    <c:when test="${not empty param[facetParamVarName]}">
         <query:definition var="listQuery" scope="request">
             <query:selector nodeTypeName="nt:base"/>
             <query:childNode path="${currentNode.realNode.path}"/>

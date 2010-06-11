@@ -35,21 +35,20 @@
         <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
         <c:set var="listTotalSize" value="${end}" scope="request"/>
     </c:if>
-    
+    <c:set var="facetParamVarName" value="N-${currentNode.name}"/>
+    <c:set var="activeFacetMapVarName" value="afm-${currentNode.name}"/>    
+    <c:if test="${not empty param[facetParamVarName] and empty activeFacetVars[facetParamVarName]}">
+        <c:if test="${activeFacetVars == null}">
+           <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
+        </c:if>
+        <c:set target="${activeFacetsVars}" property="${facetParamVarName}" value="${query:decodeFacetUrlParam(param[facetParamVarName])}"/>
+        <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}" value="${query:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
+    </c:if>
     <c:if test="${empty currentList and not empty listQuery}">
         <c:set var="renderOptions" value="before" />
-        <c:if test="${jcr:isNodeType(currentNode, 'jmix:facets')}">
-            <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
-                <jcr:nodeProperty node="${currentNode}" name="facets" var="facets"/>
-                <c:forEach items="${facets}" var="facet">
-                    <query:column columnName="rep:facet(nodetype=${fn:substringBefore(facet.string, ';')}&column=${fn:substringAfter(facet.string, ';')}&facet.mincount=1)" propertyName="${fn:substringAfter(facet.string, ';')}"/>
-                </c:forEach>
-            </query:definition>
-            <c:set var="renderOptions" value="before" scope="request"/>
-        </c:if>
         <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
-            <c:forEach items="${activeFacetsMap}" var="facet">
-                <query:equalTo value="${facet.value}" propertyName="${facet.key}"/>
+            <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
+                <query:fullTextSearch propertyName="rep:filter(${query:escapeIllegalJCRChars(facet.key)})" searchExpression="${facet.value.value}"/>
             </c:forEach>
         </query:definition>
         <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>

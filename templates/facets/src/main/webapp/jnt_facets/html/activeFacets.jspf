@@ -12,38 +12,28 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-    <c:if test="${!empty param.delPropName}">
-        <c:remove var="activeFacetsMapTmp" scope="request"/>
-        <jsp:useBean id="activeFacetsMapTmp" class="java.util.HashMap" scope="request"/>
-        <c:forEach items="${activeFacetsMap}" var="facet">
-            <c:if test="${!(facet.key eq param.delPropName)}">
-                <c:set target="${activeFacetsMapTmp}" property="${facet.key}" value="${facet.value}"/>
-            </c:if>
-        </c:forEach>
-        <c:remove var="activeFacetsMap" scope="session"/>
-        <c:set var="activeFacetsMap" value="${activeFacetsMapTmp}" scope="session"/>
-    </c:if>
-    <c:if test="${!empty param.propName }">
-        <c:if test="${empty activeFacetsMap}">
-            <jsp:useBean id="activeFacetsMap" class="java.util.HashMap" scope="session"/>
-        </c:if>
-        <c:set target="${activeFacetsMap}" property="${param.propName}" value="${param.propValue}"/>
-    </c:if>
 
 <div class="filterList">
     <h3>Active Facets</h3>
     <ul>
-        <c:forEach items="${activeFacetsMap}" var="facet">
-            <li><a href="${url.mainResource}?delPropName=${facet.key}">
+        <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
+            <c:set var="facetKey" value="${query:getDeleteFacetUrl(facet, activeFacetsVars[facetParamVarName])}"/>
+            <c:url var="facetUrl" value="${url.mainResource}" context="/">
+                <c:if test="${not empty facetKey}">
+                    <c:param name="${facetParamVarName}" value="${query:encodeFacetUrlParam(facetKey)}"/>
+                </c:if>
+            </c:url>
+            <li>
                 <c:choose>
                     <c:when test="${facet.key == 'j:defaultCategory'}">
-                        <jcr:node var="category" uuid="${facet.value}"/>${category.name}
+                        <jcr:node var="category" uuid="${facet.value.key}"/>${category.name}
                     </c:when>
                     <c:otherwise>
-                        ${facet.value}
+                        ${facet.value.key}
                     </c:otherwise>
                 </c:choose>
-            </a></li>
+                &nbsp;<a href="${facetUrl}">remove</a>                
+            </li>
         </c:forEach>
     </ul>
 </div>

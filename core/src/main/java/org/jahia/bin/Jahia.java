@@ -138,9 +138,9 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     /** ... */
     static public final String COPYRIGHT =
-            "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
+            "&copy; Copyright 2002-2010  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
-    public final static String COPYRIGHT_TXT = "2009 Jahia Solutions Group SA" ;
+    public final static String COPYRIGHT_TXT = "2010 Jahia Solutions Group SA" ;
 
     /**
      * the lock name in the lock registry

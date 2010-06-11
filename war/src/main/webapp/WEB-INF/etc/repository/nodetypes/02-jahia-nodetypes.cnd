@@ -52,7 +52,7 @@
 [jmix:tagged] mixin
  extends = jnt:content, jnt:page
  itemtype = classification
- - j:tags (weakreference, category[autoSelectParent=false]) multiple
+ - j:tags (weakreference, category[autoSelectParent=false]) facetable multiple
  - j:newTag (string) hidden indexed=no
 
 [jmix:versionInfo] mixin

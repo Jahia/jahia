@@ -26,3 +26,6 @@
 [jnt:queryFacet] > jnt:facet
 - query (string) mandatory indexed=no
 - valueLabel (string) i18n indexed=no
+
+[jnt:tagCloud] > jnt:content, mix:title, jmix:siteComponentContent
+ - j:usageThreshold (long) = 1

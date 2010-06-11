@@ -14,6 +14,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.*;
 
@@ -40,48 +41,18 @@ public class ChoiceListFacetsInitializers implements ModuleChoiceListInitializer
                                                      String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         final Set<ChoiceListValue> listValues = new HashSet<ChoiceListValue>();
-        List<ExtendedPropertyDefinition> propertyDefs = new LinkedList<ExtendedPropertyDefinition>();
         try {
-            JCRNodeWrapper wrapper = ((JCRNodeWrapper) context.get("contextNode")).getParent();
-            if (wrapper != null && wrapper.hasProperty("j:bindedComponent")) {
-                JCRNodeWrapper node = (JCRNodeWrapper) wrapper.getProperty("j:bindedComponent").getNode();
-                List<String> l = new LinkedList<String>();
-                if (node.hasProperty("j:allowedTypes") && node.getProperty("j:allowedTypes").getValues().length > 0) {
-                    for (Value v : node.getProperty("j:allowedTypes").getValues()) {
-                        l.add(v.getString());
-                    }
-                } else {
-                    l.add("jnt:content");
-                }
-                for (String str : l) {
-                    ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(str);
-                    ExtendedNodeType[] supertypes = type.getDeclaredSupertypes();
-                    propertyDefs.addAll(Arrays.asList(type.getPropertyDefinitions()));
-                    Set<ExtendedNodeType> s = new HashSet<ExtendedNodeType>(Arrays.asList(supertypes));
-
-                    Set<ExtendedNodeType> nodeTypeSet = NodeTypeRegistry.getInstance().getMixinExtensions().get(NodeTypeRegistry.getInstance().getNodeType(str));
-                    if (nodeTypeSet != null)
-                        s.addAll(nodeTypeSet);
-                    if (s != null) {
-                        for (ExtendedNodeType nt : s) {
-                            propertyDefs.addAll(Arrays.asList(nt.getPropertyDefinitions()));
-                            Set<ExtendedNodeType> nts = NodeTypeRegistry.getInstance().getMixinExtensions().get(NodeTypeRegistry.getInstance().getNodeType(nt.getName()));
-                            if (nts != null) {
-                                for (ExtendedNodeType n : nts) {
-                                    propertyDefs.addAll(Arrays.asList(n.getPropertyDefinitions()));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for (PropertyDefinition p : propertyDefs) {
-                    ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) p;
+            NodeTypeIterator ntr = NodeTypeRegistry.getInstance().getAllNodeTypes();
+            while (ntr.hasNext()) {
+                ExtendedNodeType nt =(ExtendedNodeType) ntr.nextNodeType();
+                for (PropertyDefinition def : nt.getPropertyDefinitions()) {
+                    ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) def;
                     if (ep.isFacetable()) {
                         String displayName = ep.getLabel(locale);
-                        String value = p.getDeclaringNodeType().getName() + ";" + p.getName();
+                        displayName += nt.isMixin()?"":" (" + nt.getLabel(locale) + ")";
+                        String value = ep.getDeclaringNodeType().getName() + ";" + ep.getName();
                         listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(),
-                                new ValueImpl(value, PropertyType.STRING, false)));
+                                new ValueImpl(value, PropertyType.STRING , false)));
                     }
                 }
             }

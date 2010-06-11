@@ -12,4 +12,4 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-active facet : ${currentNode.properties.facet.string}
+active facet : ${currentNode.properties.field.string}

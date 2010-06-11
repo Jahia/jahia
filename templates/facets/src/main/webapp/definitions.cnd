@@ -4,4 +4,12 @@
 + * (jnt:facet)
 
 [jnt:facet] > jnt:content
-- facet (string, choicelist[choicelistfacets])
+- field (string, choicelist[choicelistfacets])
+- prefix (string)
+- sort (string)
+- limit (long)
+- offset (long)
+- mincount (long)
+- missing (boolean)
+- method (string, choicelist) = fc < fc, enum
+- minDf (long)

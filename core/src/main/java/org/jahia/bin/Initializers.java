@@ -42,6 +42,7 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
@@ -122,13 +123,18 @@ public class Initializers extends HttpServlet implements Controller {
         String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
         Locale locale = LanguageCodeConverters.languageCodeToLocale(StringUtils.defaultIfEmpty(
                 StringUtils.substringBefore(StringUtils.substringAfter(path, "/"), "/"), defaultLocale));
-        String nodePath = request.getParameter("path");
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-            JCRNodeWrapper node = session.getNode(nodePath);
-            if (node != null) {
+            String nodePath = request.getParameter("path");
+            JCRNodeWrapper node ;
+            if (nodePath != null) {
+                node = session.getNode(nodePath);
                 type = node.getPrimaryNodeType();
+            } else {
+                node = null;
+                type = NodeTypeRegistry.getInstance().getNodeType(request.getParameter("type"));
             }
+
             String initializersString = request.getParameter("initializers");
             String name = request.getParameter("name");
             if (type != null) {
@@ -158,7 +164,7 @@ public class Initializers extends HttpServlet implements Controller {
                                 String s = request.getParameter("q");
                                 for (ChoiceListValue listValue : listValues) {
                                     String displayName = listValue.getDisplayName();
-                                    if(displayName.toLowerCase().startsWith(s)) {
+                                    if(s == null || displayName.toLowerCase().startsWith(s)) {
                                     JSONObject value = new JSONObject();
                                     value.append("value",listValue.getValue().getString());
                                     value.append("name", displayName);

@@ -44,6 +44,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentManager;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 import org.jahia.ajax.gwt.client.util.DOMUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,13 +71,20 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
             final String mimeTypesString = DOM.getElementAttribute(panel.getElement(), "mimeTypes");
             final List<String> mimeTypes = mimeTypesString.length() > 0 ? Arrays.asList(mimeTypesString.split(",")) : null;
             final String config = DOMUtil.getRootAttr(panel, "config");
+            final String paths = DOMUtil.getRootAttr(panel, "selectedPaths");
+            final List<String> selectedPaths = new ArrayList<String>();
+            if (paths != null && paths.length() > 0) {
+                for (String path : paths.split(",")) {
+                    selectedPaths.add(path.trim());
+                }
+            }
 
             JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
                     if (embedded) {
-                        panel.add(new ContentManagerEmbedded(filters, mimeTypes, config));
+                        panel.add(new ContentManagerEmbedded(filters, mimeTypes, selectedPaths, config));
                     } else {
-                        panel.add(new ContentManager(filters, mimeTypes, config));
+                        panel.add(new ContentManager(filters, mimeTypes, selectedPaths, config));
                     }
                 }
 

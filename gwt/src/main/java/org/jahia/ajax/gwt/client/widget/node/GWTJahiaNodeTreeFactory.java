@@ -50,6 +50,7 @@ public class GWTJahiaNodeTreeFactory {
     public GWTJahiaNodeTreeFactory(final List<String> paths, List<String> fields) {
         this.paths = paths;
         this.fields = fields;
+        this.repository = paths.toString();
     }
 
     public GWTJahiaNodeTreeLoader getLoader() {

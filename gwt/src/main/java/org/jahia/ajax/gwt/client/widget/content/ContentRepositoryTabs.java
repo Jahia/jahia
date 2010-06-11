@@ -86,7 +86,7 @@ public class ContentRepositoryTabs extends LeftComponent {
      *
      * @param config the configuration to use (generated in ManagerConfigurationFactory)
      */
-    public ContentRepositoryTabs(GWTManagerConfiguration config) {
+    public ContentRepositoryTabs(GWTManagerConfiguration config, final List<String> selectedPaths) {
         this.config = config;
         m_component = new TabPanel();
         m_component.setBodyBorder(false);
@@ -96,7 +96,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         searchTabITem = new TabItem("Search");
 
         for (GWTRepository repo : config.getRepositories()) {
-            repositories.add(new RepositoryTab(this, repo, config));
+            repositories.add(new RepositoryTab(this, repo, selectedPaths, config));
         }
 
         ////////////////////////////

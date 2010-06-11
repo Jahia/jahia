@@ -77,7 +77,7 @@ public class RepositoryTab extends ContentPanel {
      * @param repo      the repository type (see constants)
      * @param config    the configuration to use
      */
-    public RepositoryTab(ContentRepositoryTabs container, GWTRepository repo, final GWTManagerConfiguration config) {
+    public RepositoryTab(ContentRepositoryTabs container, GWTRepository repo, final List<String> selectedPaths, final GWTManagerConfiguration config) {
         super(new FitLayout());
         setBorders(false);
         setBodyBorder(false);
@@ -92,6 +92,7 @@ public class RepositoryTab extends ContentPanel {
         factory.setMimeTypes(config.getMimeTypes());
         factory.setFilters(config.getFilters());
         factory.setFields(config.getTableColumnKeys());
+        factory.setSelectedPath(selectedPaths);
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();

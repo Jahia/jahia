@@ -10,7 +10,6 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 
 /**
@@ -37,7 +36,7 @@ public class RolesManager extends LayoutContainer {
 
         JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new BaseAsyncCallback<GWTManagerConfiguration>() {
             public void onSuccess(GWTManagerConfiguration config) {
-                final ContentManagerEmbedded cm = new ContentManagerEmbedded(null, null, config);
+                final ContentManagerEmbedded cm = new ContentManagerEmbedded(null, null, null, config);
                 final PermissionRolePanel pr = new PermissionRolePanel(siteKey);
                 cm.getLinker().registerExtraComponent(pr);
 

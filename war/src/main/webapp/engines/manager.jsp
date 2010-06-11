@@ -70,6 +70,6 @@ configToPermissionMapping.put("workflowmanager", "workflow-manager");
     </c:if>
 </head>
 <body>
-<internal:contentManager conf="${param.conf}"/>
+<internal:contentManager conf="${param.conf}" selectedPaths="${param.selectedPaths}"/>
 </body>
 </html>

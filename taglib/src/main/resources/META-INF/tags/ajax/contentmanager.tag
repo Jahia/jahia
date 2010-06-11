@@ -51,6 +51,7 @@
 <%@ attribute name="callback" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="selectedNodeUUIds" required="false" rtexprvalue="true" type="java.util.List" description="text" %>
 <%@ attribute name="multiple" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
+<%@ attribute name="selectedPaths" required="false" rtexprvalue="true" type="java.lang.String" description="Comma separated list of initially selected paths." %>
 <%
     final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
 %>
@@ -97,5 +98,5 @@ while (selectedNodeIter.hasNext()) {
 <template:gwtJahiaModule id="contentmanager" jahiaType="contentmanager" rootPath="<%=rootPath%>"
                          filters="<%=filters%>"
                          mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>"
-                         embedded="<%=embedded%>" multiple="<%=multiple%>"/>
+                         embedded="<%=embedded%>" multiple="<%=multiple%>" selectedPaths="${selectedPaths}"/>
 

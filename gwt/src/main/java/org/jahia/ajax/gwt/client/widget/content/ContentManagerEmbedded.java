@@ -49,7 +49,7 @@ import java.util.List;
 
 public class ContentManagerEmbedded extends TriPanelBrowserLayout {
 
-    public ContentManagerEmbedded(final List<String> filters, final List<String> mimeTypes, final GWTManagerConfiguration config) {
+    public ContentManagerEmbedded(final List<String> filters, final List<String> mimeTypes, List<String> selectedPaths, final GWTManagerConfiguration config) {
         // superclass constructor (define linker)
         super(config);
         setWidth("100%");
@@ -57,7 +57,7 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 500));
 
 
-        init(filters, mimeTypes, config);
+        init(filters, mimeTypes, selectedPaths, config);
     }
 
     /**
@@ -66,7 +66,7 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
      * @param mimeTypes
      * @param config
      */
-    private void init(final List<String> filters, final List<String> mimeTypes, final GWTManagerConfiguration config) {
+    private void init(final List<String> filters, final List<String> mimeTypes, final List<String> selectedPaths, final GWTManagerConfiguration config) {
         if (mimeTypes != null && mimeTypes.size() > 0) {
             config.getMimeTypes().addAll(mimeTypes);
         }
@@ -79,14 +79,14 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         Component leftTree = null;
 
         if(!config.isHideLeftPanel()){
-            tree = new ContentRepositoryTabs(config);
+            tree = new ContentRepositoryTabs(config, selectedPaths);
             leftTree = tree.getComponent();
         } else {
             tree = null;
             leftTree = null;
             DeferredCommand.addCommand(new Command() {
                 public void execute() {
-                    JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getPaths(), null,null,null,null,null,null,new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                    JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getPaths(), null,null,null,null,selectedPaths,null,new BaseAsyncCallback<List<GWTJahiaNode>>() {
                         public void onSuccess(List<GWTJahiaNode> gwtJahiaNode) {
                             linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode.get(0));
                             linker.refresh();

@@ -74,7 +74,6 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.ItemsGroup.EditStudioAction"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                     </list>
                 </property>
                 <property name="visibility" value="global/studio-mode"/>

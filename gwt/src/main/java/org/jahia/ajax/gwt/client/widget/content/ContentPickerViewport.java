@@ -162,13 +162,6 @@ public class ContentPickerViewport extends TriPanelBrowserViewport {
         buttonBar.add(cancel);
         buttonsPanel.add(buttonBar);
 
-        // copyrigths
-        Text copyright = new Text(Messages.getResource("fm_copyright"));
-        ButtonBar container = new ButtonBar();
-        container.setAlignment(Style.HorizontalAlignment.CENTER);
-        container.add(copyright);
-        buttonsPanel.add(container);
-
         return buttonsPanel;
     }
 

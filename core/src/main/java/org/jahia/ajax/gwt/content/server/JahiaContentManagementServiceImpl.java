@@ -260,8 +260,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             openPaths = getOpenPathsForRepository(paths.toString());
         }
 
-        logger.debug(new StringBuilder("retrieving open paths for ").append(paths).append(" :\n")
-                .append(openPaths).toString());
+        if (logger.isDebugEnabled()) {
+            logger.debug("retrieving open paths for " + paths + " :\n" + openPaths);
+        }
 
         return navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths,
                 getSite(), retrieveCurrentSession());

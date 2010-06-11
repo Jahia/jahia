@@ -178,6 +178,8 @@
                 <ref bean="Toolbar.Item.Unlock"/>
                 <ref bean="Toolbar.Item.Separator"/>
                 <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                <ref bean="Toolbar.Item.Separator"/>
+                <ref bean="Toolbar.Item.OpenInContentManager"/>
             </list>
         </property>
         <property name="visibility" value="$site/toolbar/edit"/>
@@ -205,6 +207,8 @@
                 <ref bean="Toolbar.Item.Separator"/>
                 <ref bean="Toolbar.Item.Lock"/>
                 <ref bean="Toolbar.Item.Unlock"/>
+                <ref bean="Toolbar.Item.Separator"/>
+                <ref bean="Toolbar.Item.OpenInContentManager"/>
                 <ref bean="Toolbar.Item.Separator"/>
                 <ref bean="Toolbar.Item.SaveAsSharedComponent"/>
                 <ref bean="Toolbar.Item.SwitchLockComponentInTemplate"/>
@@ -633,6 +637,27 @@
         </property>
     </bean>
 
+    <bean id="Toolbar.Item.OpenInContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.ContentManager">
+        <property name="titleKey" value="label.openInContentManager"/>
+        <property name="icon" value="contentManager"/>
+        <property name="properties">
+            <list>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="url"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=contentmanager&amp;site=$siteuuid&amp;selectedPaths=$nodepath"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="width"/>
+                    <property name="value" value="1020"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                    <property name="name" value="height"/>
+                    <property name="value" value="730"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    
     <!-- Mashup Manager -->
     <bean id="Toolbar.Item.MashupManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">

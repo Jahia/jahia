@@ -259,14 +259,14 @@ public class URLGenerator {
     }
 
     public String buildURL(JCRNodeWrapper node, String template, String templateType) {
-        return base + node.getPath() + (template != null ? "." + template : "") + "." + templateType;
+        return base + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
     }
 
     /**
      * Generates a complete URL for a site. Uses the site URL serverName to generate the URL *only* it is resolves in a DNS. Otherwise it
      * simply uses the current serverName and generates a URL with a /site/ parameter
      *
-     * @param theSite       the site agaisnt we build the url
+     * @param theSite       the site against we build the url
      * @param withSessionID a boolean that specifies whether we should call the encodeURL method on the generated URL. Most of the time we will
      *                      just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
      *                      since we are sending SESSION IDs to people that should not have them.

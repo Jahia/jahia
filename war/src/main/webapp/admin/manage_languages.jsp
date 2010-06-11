@@ -44,6 +44,7 @@
     <!--
 
     function sendForm() {
+    	    showWorkInProgress();
             document.mainForm.submit();
     }
 

@@ -533,8 +533,17 @@ public final class JCRContentUtils {
 
     public static NodeIterator getNodes(JCRNodeWrapper node, String type) {
         try {
-            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
-                                                                                  Query.JCR_SQL2).execute().getNodes();
+            List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
+            NodeIterator ni = node.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+                if (child.isNodeType(type)) {
+                    res.add(child);
+                }
+            }
+            return new NodeIteratorImpl(res.iterator(), res.size());
+//            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
+//                                                                                  Query.JCR_SQL2).execute().getNodes();
         } catch (InvalidQueryException e) {
             logger.error("Error while retrieving nodes", e);
         } catch (RepositoryException e) {

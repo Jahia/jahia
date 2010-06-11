@@ -589,6 +589,18 @@
         </example>
     </function>
     <function>
+        <description>
+            Returns an iterator with the descendant nodes of the current node, which match
+            the specified node type name.
+        </description>
+        <name>getDescendantNodes</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>javax.jcr.NodeIterator getDescendantNodes(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+        <example>
+            ${jcr:getDescendantNodes(currentNode,'jnt:page,jnt:folder')}
+        </example>
+    </function>
+    <function>
         <description>Returns childNodes of a certain type</description>
         <name>getNodes</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>

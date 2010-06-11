@@ -33,27 +33,20 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.apache.lucene.util.ToStringUtils;
 import org.drools.util.StringUtils;
-import org.hibernate.PropertyNotFoundException;
-import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.NodeIteratorImpl;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -122,24 +115,7 @@ public class JCRTagUtils {
     }
 
     public static NodeIterator getNodes(JCRNodeWrapper node, String type) {
-        try {
-            List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
-            NodeIterator ni = node.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-                if (child.isNodeType(type)) {
-                    res.add(child);
-                }
-            }
-            return new NodeIteratorImpl(res.iterator(), res.size());
-//            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
-//                                                                                  Query.JCR_SQL2).execute().getNodes();
-        } catch (InvalidQueryException e) {
-            logger.error("Error while retrieving nodes", e);
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving nodes", e);
-        }
-        return NodeIteratorImpl.EMPTY;
+        return JCRContentUtils.getNodes(node, type);
     }
 
     /**
@@ -184,28 +160,20 @@ public class JCRTagUtils {
      *         the specified node type name
      */
     public static NodeIterator getChildrenOfType(JCRNodeWrapper node, String type) {
-        NodeIterator children = null;
-        if (type.contains(",")) {
-            String[] typesToCheck = StringUtils.split(type, ',');
-            List<Node> matchingChildren = new LinkedList<Node>();
-            try {
-                for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
-                    Node child = iterator.nextNode();
-                    for (String matchType : typesToCheck) {
-                        if (child.isNodeType(matchType)) {
-                            matchingChildren.add(child);
-                            break;
-                        }
-                    }
-                }
-            } catch (RepositoryException e) {
-                logger.warn(e.getMessage(), e);
-            }
-            children = new NodeIteratorImpl(matchingChildren.iterator(), matchingChildren.size());
-        } else {
-            children = getNodes(node, type);
-        }
-        return children;
+        return JCRContentUtils.getChildrenOfType(node, type);
+    }
+
+    /**
+     * Returns an iterator with the descendant nodes of the current node, which match
+     * the specified node type name.
+     * 
+     * @param node current node whose descendants will be queried
+     * @param type the node type name to match
+     * @return an iterator with the descendant nodes of the current node, which match
+     *         the specified node type name
+     */
+    public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
+        return JCRContentUtils.getDescendantNodes(node, type);
     }
 
     public static Map<String, String> getPropertiesAsStringFromNodeNameOfThatType(JCRNodeWrapper nodeContainingProperties,JCRNodeWrapper nodeContainingNodeNames, String type) {

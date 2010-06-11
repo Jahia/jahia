@@ -31,57 +31,18 @@
  */
 package org.jahia.services.content;
 
-import javax.jcr.RangeIterator;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+
+import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
 
 /**
  * Jahia's wrapper of the JCR <code>javax.jcr.RangeIterator</code>.
  * 
- * @author toto 
+ * @author toto
  */
-public class RangeIteratorImpl implements RangeIterator {
-
-    private long size;
-    private long pos=0;
-    private Iterator<?> iterator;
+public class RangeIteratorImpl extends RangeIteratorAdapter {
 
     public RangeIteratorImpl(Iterator<?> iterator, long size) {
-        this.iterator = iterator;
-        this.size = size;
-    }
-
-    public void skip(long l) {
-        if ((pos + l + 1) > size) {
-            throw new NoSuchElementException("Tried to skip past " + l +
-                    " elements, which with current pos (" + pos +
-                    ") brings us past total size=" + size);
-        }
-        for (int i=0; i < l; i++) {
-            next();
-        }
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public long getPosition() {
-        return pos;
-    }
-
-
-    public boolean hasNext() {
-        return iterator.hasNext();
-    }
-
-    public Object next() {
-        pos += 1;
-        return iterator.next();
-    }
-
-    public void remove() {
-        iterator.remove();
-        size -= 1;
+        super(iterator, size);
     }
 }

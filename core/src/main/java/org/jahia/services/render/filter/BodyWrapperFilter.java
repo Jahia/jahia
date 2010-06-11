@@ -83,7 +83,10 @@ public class BodyWrapperFilter extends AbstractFilter {
                                 ok = false;
                                 Value[] values = wrapper.getProperty("j:applyOn").getValues();
                                 for (Value value : values) {
-                                    ok |= node.isNodeType(value.getString());
+                                    if (node.isNodeType(value.getString())) {
+                                        ok = true;
+                                        break;
+                                    }
                                 }
                                 if (values.length == 0) {
                                     ok = true;

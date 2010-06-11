@@ -688,6 +688,16 @@
     </function>    
     
     <function>
+        <description>Check whether a facet value is currently applied to the query</description>
+        <name>isFacetValueApplied</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>boolean isFacetValueApplied(java.lang.Object, java.util.Map)
+        </function-signature>
+        <example>
+        </example>
+    </function>    
+    
+    <function>
         <description>Create the drill down URL for a facet value</description>
         <name>getFacetDrillDownUrl</name>
         <function-class>org.jahia.taglibs.query.Functions</function-class>
@@ -701,7 +711,7 @@
         <description>Create the URL to remove the facet from value the filter</description>
         <name>getDeleteFacetUrl</name>
         <function-class>org.jahia.taglibs.query.Functions</function-class>
-        <function-signature>String getDeleteFacetUrl(java.lang.Object, java.lang.String)
+        <function-signature>String getDeleteFacetUrl(java.lang.Object, org.apache.commons.collections.KeyValue, java.lang.String)
         </function-signature>
         <example>
         </example>

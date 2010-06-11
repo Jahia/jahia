@@ -46,7 +46,9 @@
         <c:set var="renderOptions" value="before" />
             <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
             <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
-                <query:fullTextSearch propertyName="rep:filter(${query:escapeIllegalJCRChars(facet.key)})" searchExpression="${facet.value.value}"/>
+                <c:forEach items="${facet.value}" var="facetValue">            
+                    <query:fullTextSearch propertyName="rep:filter(${query:escapeIllegalJCRChars(facet.key)})" searchExpression="${facetValue.value}"/>
+                </c:forEach>    
             </c:forEach>
         </query:definition>
         <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>

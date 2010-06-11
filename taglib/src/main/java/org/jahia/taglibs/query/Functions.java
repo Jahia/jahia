@@ -32,7 +32,11 @@
 package org.jahia.taglibs.query;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -42,6 +46,8 @@ import javax.jcr.nodetype.PropertyDefinition;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.KeyValue;
+import org.apache.commons.collections.MultiHashMap;
+import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
@@ -57,21 +63,25 @@ public class Functions {
 
     private static final Logger logger = Logger.getLogger(Functions.class);    
     
-    public static Map<String, KeyValue> getAppliedFacetFilters(String filterString) {
-        Map<String, KeyValue> appliedFacetFilters = new HashMap<String, KeyValue>();        
+    public static Map<String, List<KeyValue>> getAppliedFacetFilters(String filterString) {
+        Map<String, List<KeyValue>> appliedFacetFilters = new LinkedHashMap<String, List<KeyValue>>();        
         if (!StringUtils.isEmpty(filterString)) {
             for (String filterInstance : filterString.split("\\|\\|\\|")) {
                 String[] filterTokens = filterInstance.split("###");
                 if (filterTokens.length == 3) {
-                    appliedFacetFilters.put(filterTokens[0], new DefaultKeyValue(filterTokens[1],
-                            filterTokens[2]));
+                    List<KeyValue> filterList = appliedFacetFilters.get(filterTokens[0]);
+                    if (filterList == null) {
+                        filterList = new ArrayList<KeyValue>();
+                        appliedFacetFilters.put(filterTokens[0], filterList);
+                    }
+                    filterList.add(new DefaultKeyValue(filterTokens[1], filterTokens[2]));
                 }
             }
         }
         return appliedFacetFilters;
     }
     
-    public static boolean isFacetApplied(String facetName, Map<String, KeyValue> appliedFacets,
+    public static boolean isFacetApplied(String facetName, Map<String, List<KeyValue>> appliedFacets,
             PropertyDefinition propDef) {
         boolean facetApplied = false;
         if (appliedFacets != null && appliedFacets.containsKey(facetName)) {
@@ -80,6 +90,30 @@ public class Functions {
             }
         }
         return facetApplied;
+    }
+    
+    public static boolean isFacetValueApplied(Object facetValueObj,
+            Map<String, List<KeyValue>> appliedFacets) {
+        boolean facetValueApplied = false;
+        if (facetValueObj != null) {
+            FacetField.Count facetValue;
+            try {
+                facetValue = (FacetField.Count) facetValueObj;
+            } catch (ClassCastException e) {
+                throw new IllegalArgumentException(
+                        "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count",
+                        e);
+            }
+            if (appliedFacets != null && appliedFacets.containsKey(facetValue.getFacetField().getName())) {
+                for (KeyValue facet : appliedFacets.get(facetValue.getFacetField().getName())) {
+                    if (facet.getKey().equals(facetValue.getName())) {
+                        facetValueApplied = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return facetValueApplied;
     }
     
     public static String getFacetDrillDownUrl(Object facetValueObj, String queryString) {
@@ -103,20 +137,24 @@ public class Functions {
     }
 
     @SuppressWarnings("unchecked")
-    public static String getDeleteFacetUrl(Object facetFilterObj, String queryString) {
-        Map.Entry<String, KeyValue> facetFilter;
+    public static String getDeleteFacetUrl(Object facetFilterObj, KeyValue facetValue, String queryString) {
+        Map.Entry<String, List<KeyValue>> facetFilter;
         try {
-            facetFilter = (Map.Entry<String, KeyValue>)facetFilterObj;
+            facetFilter = (Map.Entry<String, List<KeyValue>>)facetFilterObj;
         } catch (ClassCastException e) {
             throw new IllegalArgumentException("Passed parameter is not of type java.util.Map.Entry", e);
         } 
         StringBuilder builder = new StringBuilder();
-        builder.append(facetFilter.getKey()).append("###").append(facetFilter.getValue().getKey())
-                .append("###").append(facetFilter.getValue().getValue());
+        builder.append(facetFilter.getKey()).append("###").append(facetValue.getKey())
+                .append("###").append(facetValue.getValue());
         String facetValueFilter = builder.toString();
-        
-        if (StringUtils.contains(queryString, facetValueFilter)) {
-            queryString = queryString.replace(facetValueFilter, "");
+        int index = StringUtils.indexOf(queryString, facetValueFilter);
+        if (index != -1) {
+            queryString = queryString.replace(
+                    (index >= "|||".length()
+                            && queryString.regionMatches(index - "|||".length(), "|||", 0, "|||"
+                                    .length()) ? "|||" : "")
+                            + facetValueFilter, "");
         }
         return queryString;
     }
@@ -126,7 +164,7 @@ public class Functions {
             return inputString;
         }
         // Compress the bytes
-        byte[] output = new byte[300];
+        byte[] output = new byte[2048];
         Deflater compresser = new Deflater();
         try {
             compresser.setInput(inputString.getBytes("UTF-8"));
@@ -151,7 +189,7 @@ public class Functions {
         // Decompress the bytes
         Inflater decompresser = new Inflater();
         decompresser.setInput(input, 0, input.length);
-        byte[] result = new byte[300];
+        byte[] result = new byte[2048];
         String outputString = "";
         try {
             int resultlength = decompresser.inflate(result);

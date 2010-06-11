@@ -4,12 +4,25 @@
 + * (jnt:facet)
 
 [jnt:facet] > jnt:content
-- field (string, choicelist[choicelistfacets])
-- prefix (string)
-- sort (string)
-- limit (long)
-- offset (long)
-- mincount (long)
-- missing (boolean)
-- method (string, choicelist) = fc < fc, enum
-- minDf (long)
+- facet (string) mandatory indexed=no
+- label (string) i18n indexed=no
+- field (string, choicelist[choicelistfacets]) indexed=no
+
+[jnt:fieldFacet] > jnt:facet
+- mincount (long) = 1 indexed=no
+- sort (string, choicelist[resourceBundle]) indexed=no < true,false 
+- prefix (string) indexed=no
+- limit (long) = 100 indexed=no
+- offset (long) = 0 indexed=no
+- missing (boolean) indexed=no
+
+[jnt:dateFacet] > jnt:facet
+- start (string) mandatory indexed=no
+- end (string) mandatory indexed=no
+- gap (string) mandatory indexed=no
+- hardend (string) indexed=no
+- other (string, choicelist[resourceBundle]) indexed=no < before,after,between,none,all
+
+[jnt:queryFacet] > jnt:facet
+- query (string) mandatory indexed=no
+- valueLabel (string) i18n indexed=no

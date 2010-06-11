@@ -38,16 +38,44 @@
         <query:childNode path="${bindedComponent.path}"/>
 
         <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
-            <jcr:nodeProperty node="${facet}" name="facet" var="currentFacet"/>
-            <c:set var="facetNodeTypeName" value="${fn:substringBefore(currentFacet.string, ';')}"/>
-            <c:set var="facetPropertyName" value="${fn:substringAfter(currentFacet.string, ';')}"/>            
-            <jcr:nodeType name="${facetNodeTypeName}" var="facetNodeType"/>
-            <c:if test="${not empty currentFacet and not query:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
-                <query:column columnName="rep:facet(nodetype=${facetNodeTypeName}&key=${facetPropertyName}&facet.mincount=1)" propertyName="${facetPropertyName}"/>
-            </c:if>
+            <jcr:nodeProperty node="${facet}" name="group" var="currentFacetGroup"/>        
+            <jcr:nodeProperty node="${facet}" name="field" var="currentField"/>
+            <c:set var="facetNodeTypeName" value="${fn:substringBefore(currentField.string, ';')}"/>
+            <c:set var="facetPropertyName" value="${fn:substringAfter(currentField.string, ';')}"/>        
+            <c:choose>
+                <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet')}">
+                    <jcr:nodeType name="${facetNodeTypeName}" var="facetNodeType"/>
+                    <c:if test="${not empty currentField and not query:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
+                        <c:set var="facetQuery" value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}"/>
+                        <c:choose>
+                            <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">                        
+                                <c:set var="facetPrefix" value="date."/>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="facetPrefix" value=""/>
+                            </c:otherwise>                  
+                        </c:choose>      
+                        <c:forEach items="${facet.primaryNodeType.declaredPropertyDefinitions}" var="propertyDefinition">
+                            <jcr:nodeProperty node="${facet}" name="${propertyDefinition.name}" var="facetPropValue"/>
+                            <c:if test="${not empty facetPropValue.string}">
+                                <c:set var="facetQuery" value="${facetQuery}&${facetPrefix}${propertyDefinition.name}=${facetPropValue.string}"/>
+                            </c:if>
+                        </c:forEach>              
+                        <query:column columnName="rep:facet(${facetQuery})" propertyName="${facetPropertyName}"/>
+                    </c:if>
+                </c:when>
+                <c:otherwise>
+                    <jcr:nodeProperty node="${facet}" name="query" var="currentFacetQuery"/>            
+                    <c:if test="${not empty currentFacetQuery and not query:isFacetApplied(currentFacetGroup, activeFacetsVars[activeFacetMapVarName], null)}">
+                        <query:column columnName="rep:facet(key=${facet.name}&facet.query=${currentfacetQuery})" propertyName="${facetPropertyName}"/>
+                    </c:if>            
+                </c:otherwise>
+            </c:choose>
         </c:forEach>
         <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
-            <query:fullTextSearch propertyName="rep:filter(${query:escapeIllegalJCRChars(facet.key)})" searchExpression="${facet.value.value}"/>
+            <c:forEach items="${facet.value}" var="facetValue">
+                <query:fullTextSearch propertyName="rep:filter(${query:escapeIllegalJCRChars(facet.key)})" searchExpression="${facetValue.value}"/>
+            </c:forEach>
         </c:forEach>
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
@@ -59,19 +87,21 @@
             <h4>${currentFacet.name}</h4>
             <ul>
                 <c:forEach items="${currentFacet.values}" var="facetValue">
-                    <c:url var="facetUrl" value="${url.mainResource}" context="/">
-                        <c:param name="${facetParamVarName}" value="${query:encodeFacetUrlParam(query:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
-                    </c:url>
-                    <li><a href="${facetUrl}">
-                        <c:choose>
-                            <c:when test="${currentFacet.name == 'j:defaultCategory'}">
-                                <jcr:node var="category" uuid="${facetValue.name}"/>${category.name}
-                            </c:when>
-                            <c:otherwise>
-                                ${facetValue.name}
-                            </c:otherwise>
-                        </c:choose>
-                    </a> (${facetValue.count})<br/></li>
+                    <c:if test="${not query:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
+                        <c:url var="facetUrl" value="${url.mainResource}" context="/">
+                            <c:param name="${facetParamVarName}" value="${query:encodeFacetUrlParam(query:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
+                        </c:url>
+                        <li><a href="${facetUrl}">
+                            <c:choose>
+                                <c:when test="${currentFacet.name == 'j:defaultCategory'}">
+                                    <jcr:node var="category" uuid="${facetValue.name}"/>${category.name}
+                                </c:when>
+                                <c:otherwise>
+                                    ${facetValue.name}
+                                </c:otherwise>
+                            </c:choose>
+                        </a> (${facetValue.count})<br/></li>
+                    </c:if>
             </c:forEach>
         </ul>
     </c:forEach>
@@ -82,6 +112,6 @@
     <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
         <template:module node="${facet}"/>
     </c:forEach>
-    <template:area path="${currentNode.path}/facets" nodeTypes="jnt:facet" editable="true"/>
+    <template:area path="${currentNode.path}/facets" nodeTypes="jnt:fieldFacet,jnt.dateFacet,jnt:queryFacet" editable="true"/>
     <template:linker path="*"/>
 </c:if>

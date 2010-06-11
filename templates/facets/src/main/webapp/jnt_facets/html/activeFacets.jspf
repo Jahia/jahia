@@ -17,23 +17,25 @@
     <h3>Active Facets</h3>
     <ul>
         <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
-            <c:set var="facetKey" value="${query:getDeleteFacetUrl(facet, activeFacetsVars[facetParamVarName])}"/>
-            <c:url var="facetUrl" value="${url.mainResource}" context="/">
-                <c:if test="${not empty facetKey}">
-                    <c:param name="${facetParamVarName}" value="${query:encodeFacetUrlParam(facetKey)}"/>
-                </c:if>
-            </c:url>
-            <li>
-                <c:choose>
-                    <c:when test="${facet.key == 'j:defaultCategory'}">
-                        <jcr:node var="category" uuid="${facet.value.key}"/>${category.name}
-                    </c:when>
-                    <c:otherwise>
-                        ${facet.value.key}
-                    </c:otherwise>
-                </c:choose>
-                &nbsp;<a href="${facetUrl}">remove</a>                
-            </li>
+            <c:forEach items="${facet.value}" var="facetValue">        
+                <c:set var="facetParam" value="${query:getDeleteFacetUrl(facet, facetValue, activeFacetsVars[facetParamVarName])}"/>
+                <c:url var="facetUrl" value="${url.mainResource}" context="/">
+                    <c:if test="${not empty facetParam}">
+                        <c:param name="${facetParamVarName}" value="${query:encodeFacetUrlParam(facetParam)}"/>
+                    </c:if>
+                </c:url>
+                <li>
+                    <c:choose>
+                        <c:when test="${facet.key == 'j:defaultCategory'}">
+                            <jcr:node var="category" uuid="${facetValue.key}"/>${category.name}
+                        </c:when>
+                        <c:otherwise>
+                            ${facetValue.key}
+                        </c:otherwise>
+                    </c:choose>
+                    &nbsp;<a href="${facetUrl}">remove</a>                
+                </li>
+            </c:forEach>    
         </c:forEach>
     </ul>
 </div>

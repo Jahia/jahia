@@ -666,4 +666,74 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+
+    <function>
+        <description>Get a list of applied facets</description>
+        <name>getAppliedFacetFilters</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>java.util.Map getAppliedFacetFilters(java.lang.String)
+        </function-signature>
+        <example>
+        </example>
+    </function>
+    
+    <function>
+        <description>Check whether a facet is currently applied to the query</description>
+        <name>isFacetApplied</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>boolean isFacetApplied(java.lang.String, java.util.Map, javax.jcr.nodetype.PropertyDefinition)
+        </function-signature>
+        <example>
+        </example>
+    </function>    
+    
+    <function>
+        <description>Create the drill down URL for a facet value</description>
+        <name>getFacetDrillDownUrl</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>java.lang.String getFacetDrillDownUrl(java.lang.Object, java.lang.String)
+        </function-signature>
+        <example>
+        </example>
+    </function>
+
+    <function>
+        <description>Create the URL to remove the facet from value the filter</description>
+        <name>getDeleteFacetUrl</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String getDeleteFacetUrl(java.lang.Object, java.lang.String)
+        </function-signature>
+        <example>
+        </example>
+    </function>    
+    
+    <function>
+        <description>Encode facet filter URL parameter</description>
+        <name>encodeFacetUrlParam</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String encodeFacetUrlParam(java.lang.String)
+        </function-signature>
+        <example>
+        </example>
+    </function>    
+    
+    <function>
+        <description>Decode facet filter URL parameter</description>
+        <name>decodeFacetUrlParam</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String decodeFacetUrlParam(java.lang.String)
+        </function-signature>
+        <example>
+        </example>
+    </function>    
+    
+    <function>
+        <description>Escapes illegal JCR chars</description>
+        <name>escapeIllegalJCRChars</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String escapeIllegalJCRChars(java.lang.String)
+        </function-signature>
+        <example>
+        </example>
+    </function>    
 </taglib>

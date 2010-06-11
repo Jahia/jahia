@@ -31,28 +31,22 @@
  */
 package org.jahia.api.user;
 
-import java.util.List;
+import org.jahia.jaas.JahiaPrincipal;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 12 nov. 2007
  * Time: 12:16:35
- * To change this template use File | Settings | File Templates.
  */
 public interface JahiaUserService {
 
-    public boolean checkPassword(String username, String password);
+    boolean checkPassword(String username, String password);
 
-    public boolean isServerAdmin(String username);
+    boolean isServerAdmin(String username);
 
-    public boolean isAdmin(String username, String site);
+    boolean isAdmin(String username, String site);
 
-    public boolean isUserMemberOf(String username, String groupname, String site);
+    boolean isUserMemberOf(String username, String groupname, String site);
 
-    public List getUserMembership(String username);
-
-    public List getGroupMembers(String groupname);
-
-    boolean hasRole(String roleName, String principalName, String site);
+    boolean hasRole(String roleName, JahiaPrincipal principal, String site);
 }

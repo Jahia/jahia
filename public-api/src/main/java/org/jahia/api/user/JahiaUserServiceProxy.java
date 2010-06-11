@@ -34,6 +34,8 @@ package org.jahia.api.user;
 import java.io.Serializable;
 import java.util.List;
 
+import org.jahia.jaas.JahiaPrincipal;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -64,15 +66,7 @@ public class JahiaUserServiceProxy implements JahiaUserService, Serializable {
         return service.isUserMemberOf(username, groupname, site);
     }
 
-    public List getUserMembership(String username) {
-        return service.getUserMembership(username);
-    }
-
-    public List getGroupMembers(String groupname) {
-        return service.getGroupMembers(groupname);
-    }
-
-    public boolean hasRole(String roleName, String principalName, String site) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean hasRole(String roleName, JahiaPrincipal principal, String site) {
+        return false;
     }
 }

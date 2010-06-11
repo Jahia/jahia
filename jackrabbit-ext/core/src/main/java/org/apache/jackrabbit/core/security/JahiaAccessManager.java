@@ -353,7 +353,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                                             }
                                         }
                                     } else if (principal.charAt(0) == 'r') {
-                                        boolean b = service.hasRole(principalName,p.getName(),site);
+                                        boolean b = service.hasRole(principalName,p,site);
                                         if (b) {
                                             if (!groups.contains(principalName)) {
                                                 result |= type.equals("GRANT");
@@ -390,7 +390,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                                             }
                                         }
                                     } else if (principal.charAt(0) == 'r') {
-                                        boolean b = service.hasRole(principalName,p.getName(),site);
+                                        boolean b = service.hasRole(principalName,p,site);
                                         if (b) {
                                             if (!groups.contains(principalName)) {
                                                 result |= type.equals("GRANT");

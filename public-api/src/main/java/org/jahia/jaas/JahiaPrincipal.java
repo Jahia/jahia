@@ -32,20 +32,22 @@
 package org.jahia.jaas;
 
 import java.security.Principal;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Jahia principal for JCR.
  * User: toto
  * Date: 9 nov. 2007
  * Time: 17:16:55
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaPrincipal implements Principal {
     private boolean isSystem = false;
     private boolean isGuest = false;
 
     private String name;
+    
+    private Map<String, Map<String, Boolean>> roleCache = new HashMap<String, Map<String, Boolean>>();
 
     public JahiaPrincipal(String name, boolean system, boolean guest) {
         this.name = name;
@@ -69,4 +71,8 @@ public class JahiaPrincipal implements Principal {
         return isGuest;
     }
 
+    public Map<String /* siteKey */, Map<String /* role */, Boolean /* evaluation */>> getRoleCache() {
+        return roleCache;
+    }
+    
 }

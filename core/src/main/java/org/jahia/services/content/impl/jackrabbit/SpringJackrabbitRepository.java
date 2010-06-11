@@ -49,15 +49,13 @@ import org.springframework.core.io.Resource;
 import javax.jcr.*;
 import javax.servlet.ServletContext;
 import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Feb 9, 2009
  * Time: 11:21:20 AM
- * To change this template use File | Settings | File Templates.
  */
 public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository, ServletContextAware {
     private static org.apache.log4j.Logger logger =
@@ -283,16 +281,19 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
             return (user != null) && (group != null) && group.isMember(user);
         }
 
-        public List getUserMembership(String username) {
-            return new ArrayList();
-        }
-
-        public List getGroupMembers(String groupname) {
-            return new ArrayList();
-        }
-
-        public boolean hasRole(String roleName, String principalName, String site) {
-            JahiaPrincipal user = userService.lookupUser(principalName);
+        public boolean hasRole(String roleName, org.jahia.jaas.JahiaPrincipal principal, String site) {
+            long timer = System.currentTimeMillis();
+            Boolean cachedResult = null;
+            String siteCachKey = site != null ? site : "_server_";
+            Map<String, Boolean> roles = principal.getRoleCache().get(siteCachKey); 
+            if (roles != null) {
+                cachedResult = roles.get(roleName);
+            }
+            if (cachedResult != null) {
+                return cachedResult;
+            }
+            
+            JahiaPrincipal user = userService.lookupUser(principal.getName());
             JahiaSite s = null;
             if (user == null) {
                 int siteId = 0;
@@ -304,9 +305,17 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
                 } catch (JahiaException e) {
                     logger.error(e.getMessage(), e);
                 }
-                user = groupService.lookupGroup(siteId, principalName);
+                user = groupService.lookupGroup(siteId, principal.getName());
             }
-            return user != null && user.hasRole(new RoleIdentity(roleName, site));
+            boolean hasRole = user != null && user.hasRole(new RoleIdentity(roleName, site));
+            if (roles == null) {
+                roles = new HashMap<String, Boolean>();
+                principal.getRoleCache().put(siteCachKey, roles);
+            }
+            roles.put(roleName, Boolean.valueOf(hasRole));
+            
+            logger.info("Checking role " + roleName + " for " + principal.getName() + " in site " + site + " took " + (System.currentTimeMillis() - timer) + " ms");
+            return hasRole;
         }
     }
 

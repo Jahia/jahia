@@ -1,5 +1,3 @@
-<%@ page import="org.apache.jackrabbit.commons.json.JsonParser" %>
-<%@ page import="org.json.JSONObject" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -18,6 +16,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:if test="${not omitFormatting}"><div id="${currentNode.UUID}"></c:if>
     <c:remove var="listQuery" scope="request"/>
+    <c:remove var="listQuerySql" scope="request"/>
     <c:remove var="currentList" scope="request"/>
     <c:choose>
         <c:when test="${jcr:isNodeType(currentNode, 'jmix:pager')}">
@@ -28,7 +27,6 @@
         </c:otherwise>
     </c:choose>
     <template:include template="hidden.load" />
-
     <c:if test="${empty currentList and not empty listQuerySql}">
         <jcr:sql var="result" sql="${listQuerySql}"/>
         <c:set var="currentList" value="${result.nodes}" scope="request"/>
@@ -46,7 +44,7 @@
     </c:if>
     <c:if test="${empty currentList and not empty listQuery}">
         <c:set var="renderOptions" value="before" />
-        <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
+            <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
             <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
                 <query:fullTextSearch propertyName="rep:filter(${query:escapeIllegalJCRChars(facet.key)})" searchExpression="${facet.value.value}"/>
             </c:forEach>
@@ -72,6 +70,7 @@
     <c:if test="${empty editable}">
         <c:set var="editable" value="false"/>
     </c:if>
+
     <c:if test="${not empty paginationActive}">
         <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
     </c:if>

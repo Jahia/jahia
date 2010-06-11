@@ -60,5 +60,9 @@ rule "Create init ACLs for new site"
         Assign permissions "rew--" on the node to the role "seo-manager"
         Assign permissions "rewap" on the node to the role "site-administrator"
         Assign permissions "rew--" on the node to the role "translator"
-        Assign permissions "rew--" on the node to the role "web-designer"     
+        Assign permissions "rew--" on the node to the role "web-designer"
+        Grant permission "start" from workflow "jBPM:1-step-publication" to role "editor-in-chief"  for type "nt:base" on the node
+        Grant permission "review" from workflow "jBPM:1-step-publication" to role "editor-in-chief"  for type "nt:base" on the node
+        Grant permission "start" from workflow "jBPM:1-step-publication" to role "editor"  for type "nt:base" on the node
+        Grant permission "review" from workflow "jBPM:1-step-publication" to role "publisher"  for type "nt:base" on the node     
 end

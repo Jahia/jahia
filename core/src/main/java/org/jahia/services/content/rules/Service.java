@@ -677,6 +677,14 @@ public class Service extends JahiaService {
         WorkflowService.getInstance().startProcess(nodeWrapper, processKey, provider, new HashMap<String, Object>());
     }
 
+    public void defineWorkflowRule(AddedNodeFact node, String wfName,String task,String role,String nodeType, KnowledgeHelper drools) {
+        try {
+            WorkflowService.getInstance().addWorkflowRule(node.getNode(), nodeType, wfName, task,role);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
     public void setTaggingService(TaggingService taggingService) {
         this.taggingService = taggingService;
     }

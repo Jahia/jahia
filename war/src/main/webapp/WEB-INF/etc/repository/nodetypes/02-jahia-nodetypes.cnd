@@ -153,9 +153,9 @@
  + * (jnt:workflowRule)
 
 [jnt:workflowRule] > nt:base
- - j:node (weakreference) nofulltext
  - j:nodeType (string,choicelist[nodetypes=nt:base,resourceBundle]) nofulltext
- - j:availableWorkflows (string,choicelist[workflow]) multiple nofulltext
+ - j:workflow (string,choicelist[workflow]) nofulltext
+ + * (jnt:ace) = jnt:ace
 
 //---------------------------------------------------------
 // Query

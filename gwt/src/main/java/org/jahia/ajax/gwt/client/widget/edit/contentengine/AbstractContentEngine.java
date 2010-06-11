@@ -94,13 +94,6 @@ public abstract class AbstractContentEngine extends Window implements NodeHolder
         initFooter();
 
         buttonsPanel.add(buttonBar);
-
-        // copyrigths
-        //Text copyright = new Text(Messages.getResource("fm_copyright"));
-        //ButtonBar container = new ButtonBar();
-        //container.setAlignment(Style.HorizontalAlignment.CENTER);
-        //container.add(copyright);
-        //buttonsPanel.add(container);
         setBottomComponent(buttonsPanel);
 
         setFooter(true);

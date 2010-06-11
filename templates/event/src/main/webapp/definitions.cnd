@@ -2,7 +2,7 @@
 
 [jnt:event] > jnt:content, jmix:editorialContent, mix:title
  - startDate (date) facetable
- - endDate (date)
+ - endDate (date) facetable
  - location (string) i18n facetable
  - eventsType (string, choicelist[resourceBundle]) facetable  < meeting,consumerShow,roadShow,conference,show,pressConference
  - body (string, richtext) i18n

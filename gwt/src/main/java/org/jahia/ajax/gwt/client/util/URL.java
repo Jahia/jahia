@@ -32,7 +32,6 @@
 package org.jahia.ajax.gwt.client.util;
 
 import com.google.gwt.core.client.GWT;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
@@ -185,7 +184,7 @@ public class URL {
             value = value.replace("$lang", JahiaGWTParameters.getLanguage());
         }
         if (linker.getSelectedNode() != null && value.contains("$nodepath")) {
-            value = value.replace("$nodepath", linker.getSelectedNode().getPath());
+            value = value.replace("$nodepath", com.google.gwt.http.client.URL.encodeComponent(linker.getSelectedNode().getPath()));
         }
         return value;
     }

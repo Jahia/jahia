@@ -35,14 +35,17 @@ package org.jahia.data.viewhelper.principal;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.JahiaString;
 import org.jahia.utils.JahiaTools;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.ServletRequest;
@@ -320,8 +323,7 @@ public class PrincipalViewHelper implements Serializable {
             final JahiaUser user = (JahiaUser) p;
             // Find a displayable user property
             if (user.getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
-                properties.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.users.guest.label",
-                        JCRSessionFactory.getInstance().getCurrentLocale()));
+                properties.append(getI18n("org.jahia.engines.users.guest.label", "guest"));
                 return JahiaString.adjustStringSize(properties.toString(), size);
             } else {
                 final String firstname = user.getProperty("j:firstName");
@@ -344,12 +346,10 @@ public class PrincipalViewHelper implements Serializable {
                 return JahiaString.adjustStringSize(properties.toString(), size);
             }
         } else if (p instanceof UsersGroup) {
-            properties.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.groups.users.label",
-                    JCRSessionFactory.getInstance().getCurrentLocale()));
+            properties.append(getI18n("org.jahia.engines.groups.users.label", "users"));
             return JahiaString.adjustStringSize(properties.toString(), size);
         } else if (p instanceof GuestGroup) {
-            properties.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.groups.guest.label",
-                    JCRSessionFactory.getInstance().getCurrentLocale()));
+            properties.append(getI18n("org.jahia.engines.groups.guest.label", "guest"));
             return JahiaString.adjustStringSize(properties.toString(), size);
         } else {
             final JahiaGroup group = (JahiaGroup) p;
@@ -650,5 +650,21 @@ public class PrincipalViewHelper implements Serializable {
             }
         }
         return groups;
+    }
+    
+    private static String getI18n(String key, String defaultValue) {
+        Locale locale = JCRSessionFactory.getInstance().getCurrentLocale();
+        if (locale == null) {
+            // we are in Jahia Administration perhaps
+            locale = Jahia.getThreadParamBean() != null ? Jahia.getThreadParamBean().getUILocale() : null;
+        }
+        if (locale == null) {
+            locale = LanguageCodeConverters.languageCodeToLocale(SettingsBean.getInstance().getDefaultLanguageCode());
+        }
+        if (locale == null) {
+            locale = Locale.ENGLISH;
+        }
+
+        return JahiaResourceBundle.getJahiaInternalResource(key, locale, defaultValue);
     }
 }

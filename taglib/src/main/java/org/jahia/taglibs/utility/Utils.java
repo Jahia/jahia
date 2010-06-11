@@ -34,17 +34,9 @@ package org.jahia.taglibs.utility;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import org.jahia.exceptions.JahiaBadRequestException;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaPageNotFoundException;
-import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.gui.GuiBean;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.params.ProcessingContext;
-import org.jahia.params.ProcessingContextFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.utils.JahiaConsole;
 

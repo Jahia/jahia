@@ -33,8 +33,8 @@ package org.jahia.taglibs.utility.i18n;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.render.RenderContext;
+import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -43,7 +43,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
-import javax.servlet.jsp.tagext.TagSupport;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -54,38 +53,37 @@ import java.util.ResourceBundle;
  * Time: 16:34:03
  */
 @SuppressWarnings("serial")
-public class SetBundleTag extends TagSupport {
+public class SetBundleTag extends AbstractJahiaTag {
     
     private static final transient Logger logger = Logger.getLogger(SetBundleTag.class);
     
     private String basename;
     private String var;
-    private int scope;
+    private int scope = PageContext.PAGE_SCOPE;
     private boolean useUiLocale = false;
 
-    public SetBundleTag() {
-        super();
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void resetState() {
         basename = null;
         useUiLocale = false;
         scope = PageContext.PAGE_SCOPE;
+        var = null;
+        super.resetState();
     }
 
     @Override
     public int doStartTag() throws JspException {
         // Position localisationContext
         if (basename != null && !"".equals(basename)) {
-            RenderContext context = null;
-            Locale locale = null;
-            try {
-                context = Utils.getRenderContext(pageContext);
-                locale = context != null ? (useUiLocale ? context.getUILocale() : context.getMainResourceLocale()) : pageContext.getRequest().getLocale();
-            } catch (Exception e) {
-                logger.debug(e.getMessage(), e);
-                locale = pageContext.getRequest().getLocale();
+            RenderContext context = getRenderContext();
+            Locale locale = useUiLocale ? getUILocale() : null;
+            if (locale == null) {
+                try {
+                    locale = context != null ? context.getMainResourceLocale() : pageContext.getRequest().getLocale();
+                } catch (Exception e) {
+                    logger.debug(e.getMessage(), e);
+                    locale = pageContext.getRequest().getLocale();
+                }
             }
             ResourceBundle resourceBundle = null;
             try {
@@ -94,7 +92,7 @@ public class SetBundleTag extends TagSupport {
                         context != null && context.getSite() != null && context.getSite().getSession().isLive() ? context
                                 .getSite().getTemplatePackageName() : null);
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.warn(e.getMessage(), e);
             }
             LocalizationContext locCtxt = new LocalizationContext(resourceBundle, locale);
             if (var != null) {
@@ -105,7 +103,7 @@ public class SetBundleTag extends TagSupport {
         } else {
             logger.warn("Provided 'basename' for the tag is either null or empty");
         }
-        return EVAL_BODY_INCLUDE;
+        return SKIP_BODY;
     }
 
     public void setBasename(String basename) {

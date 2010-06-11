@@ -41,6 +41,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -149,46 +150,6 @@ public class AbstractJahiaTag extends BodyTagSupport {
         return getMessage(key, "???" + key + "???");
     }
 
-    protected String getJahiaInternalResourceValue(String key) {
-        return getJahiaInternalResourceValue(key, true);
-    }
-
-    protected String getJahiaInternalResourceValue(String key, boolean useUILocale) {
-        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        // JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-
-        Locale currentLocale = request.getLocale();
-        HttpSession session = pageContext.getSession();
-        if (session != null) {
-            if (session.getAttribute(useUILocale ? ProcessingContext.SESSION_UI_LOCALE
-                    : ProcessingContext.SESSION_LOCALE) != null) {
-                currentLocale = (Locale) session
-                        .getAttribute(useUILocale ? ProcessingContext.SESSION_UI_LOCALE
-                                : ProcessingContext.SESSION_LOCALE);
-            }
-        }
-
-        String resValue = null;
-
-        try {
-
-            if (getRenderContext() != null) {
-                resValue = JahiaResourceBundle.getJahiaInternalResource(key,
-                        useUILocale ? getRenderContext()
-                                .getUILocale() : getRenderContext().getMainResourceLocale());
-            } else {
-                // for any reason the jData wasn't loaded correctly
-                resValue = JahiaResourceBundle.getJahiaInternalResource(key, currentLocale);
-            }
-        } catch (MissingResourceException mre) {
-            logger.error(mre.toString(), mre);
-        }
-        if (resValue == null) {
-            resValue = key;
-        }
-        return resValue;
-    }
-
     /**
      * Retrieve the parent resource bundle if any and if the current one is null.
      * This has to be called in subtags of TemplateTag (any tag within a template should do actually).
@@ -213,7 +174,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
      * @return an instance of the current {@link RenderContext}
      */
     protected final RenderContext getRenderContext() {
-        return (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+        return Utils.getRenderContext(pageContext);
     }
 
     /**
@@ -326,6 +287,13 @@ public class AbstractJahiaTag extends BodyTagSupport {
     protected Locale getUILocale() {
         RenderContext renderContext = getRenderContext();
         Locale currentLocale = renderContext != null ? renderContext.getUILocale() : null;
+        HttpSession session = pageContext.getSession();
+        if (session != null) {
+            if (session.getAttribute(ProcessingContext.SESSION_UI_LOCALE) != null) {
+                currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+            }
+        }
+
         if (currentLocale == null) {
             currentLocale = renderContext != null ? renderContext.getFallbackLocale() : null;
         }

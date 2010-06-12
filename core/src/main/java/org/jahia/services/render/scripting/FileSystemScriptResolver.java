@@ -45,24 +45,24 @@ public class FileSystemScriptResolver implements ScriptResolver {
         this.scriptExtensionsOrdering = scriptExtensionsOrdering;
     }
 
-    protected Template resolveTemplate(Resource resource, final RenderContext context) throws RepositoryException {
+    protected Template resolveTemplate(Resource resource, final RenderContext context, ArrayList<String> searchedLocations) throws RepositoryException {
         if (resource.getResourceNodeType() != null) {
             ExtendedNodeType nt = resource.getResourceNodeType();
             List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
-            return resolveTemplate(resource, context, nodeTypeList);
+            return resolveTemplate(resource, context, nodeTypeList, searchedLocations);
         }
 
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
         List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
 
-        Template res = resolveTemplate(resource, context, nodeTypeList);
+        Template res = resolveTemplate(resource, context, nodeTypeList, searchedLocations);
         if (res != null) {
             return res;
         }
 
         List<ExtendedNodeType> mixinNodeTypes = Arrays.asList(resource.getNode().getMixinNodeTypes());
         if (mixinNodeTypes.size() > 0) {
-            res = resolveTemplate(resource, context, mixinNodeTypes);
+            res = resolveTemplate(resource, context, mixinNodeTypes, searchedLocations);
             if (res != null) {
                 return res;
             }
@@ -81,12 +81,12 @@ public class FileSystemScriptResolver implements ScriptResolver {
         return nodeTypeList;
     }
 
-    private Template resolveTemplate(Resource resource, RenderContext context, List<ExtendedNodeType> nodeTypeList) {
+    private Template resolveTemplate(Resource resource, RenderContext context, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations) {
         for (String template : resource.getTemplates()) {
             for (ExtendedNodeType st : nodeTypeList) {
                 SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
                         st.getAlias().replace(":", "_"), context);
-                Template res = resolveTemplate(resource, context, template, st, sortedPackages);
+                Template res = resolveTemplate(resource, context, template, st, sortedPackages, searchedLocations);
                 if (res != null) {
                     return res;
                 }
@@ -95,13 +95,13 @@ public class FileSystemScriptResolver implements ScriptResolver {
         return null;
     }
 
-    private Template resolveTemplate(Resource resource, RenderContext context, String template, ExtendedNodeType st, SortedSet<JahiaTemplatesPackage> sortedPackages) {
+    private Template resolveTemplate(Resource resource, RenderContext context, String template, ExtendedNodeType st, SortedSet<JahiaTemplatesPackage> sortedPackages, ArrayList<String> searchedLocations) {
         for (JahiaTemplatesPackage aPackage : sortedPackages) {
 //            if ("siteLayout".equals(aPackage.getModuleType()) && (context.getSite() == null || !aPackage.getName().equals(context.getSite().getTemplatePackageName()))) {
 //                continue;
 //            }
             String currentTemplatePath = aPackage.getRootFolderPath();
-            String templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath);
+            String templatePath = getTemplatePath(resource.getTemplateType(), template, st, currentTemplatePath, searchedLocations);
             if (templatePath != null) {
                 Template resolvedTemplate = new FileSystemTemplate(templatePath, template, aPackage, template);
                 return resolvedTemplate;
@@ -110,7 +110,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
         return null;
     }
 
-    private String getTemplatePath(String templateType, String template, ExtendedNodeType nt, String currentTemplatePath) {
+    private String getTemplatePath(String templateType, String template, ExtendedNodeType nt, String currentTemplatePath, ArrayList<String> searchedLocations) {
         String n = nt.getAlias();
         if (nt.getPrefix().length() > 0) {
             n = n.substring(nt.getPrefix().length() + 1);
@@ -120,6 +120,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
             String templatePath = n + (template.equals("default") ? "" : "." + template) + "." + currentFileExtension;
             String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':', '_') + "/" + templateType + "/" + templatePath;
             try {
+                searchedLocations.add(modulePath);
                 if (JahiaContextLoaderListener.getServletContext().getResource(modulePath) != null) {
                     return modulePath;
                 }
@@ -131,9 +132,10 @@ public class FileSystemScriptResolver implements ScriptResolver {
 
     public Script resolveScript(Resource resource, RenderContext context) throws TemplateNotFoundException {
         try {
-            Template resolvedTemplate = resolveTemplate(resource, context);
+            ArrayList<String> searchLocations = new ArrayList<String>();
+            Template resolvedTemplate = resolveTemplate(resource, context, searchLocations);
             if (resolvedTemplate == null) {
-                throw new TemplateNotFoundException("Unable to find the template for resource " + resource);
+                throw new TemplateNotFoundException("Unable to find the template for resource " + resource + " by looking in " + searchLocations);
             }
 
             // @todo remove this hardcoding of script instantiation and make it Spring-configured.

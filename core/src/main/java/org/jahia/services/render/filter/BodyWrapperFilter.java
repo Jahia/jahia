@@ -120,6 +120,11 @@ public class BodyWrapperFilter extends AbstractFilter {
             this.template = template;
             this.node = node;
         }
+
+        @Override
+        public String toString() {
+            return template + " for node " + node.getPath();
+        }
     }
 
 }

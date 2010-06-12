@@ -182,7 +182,13 @@ public class Resource {
 
     @Override
     public String toString() {
-        return "Resource{" + "node=" + node.getPath() + ", templateType='" + templateType + '\'' + ", template='" +
+        String primaryNodeTypeName = null;
+        try {
+            primaryNodeTypeName = node.getPrimaryNodeTypeName();
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving node primary node type name", e);
+        }
+        return "Resource{" + "node=" + node.getPath() + ", primaryNodeTypeName='" + primaryNodeTypeName + "', templateType='" + templateType + '\'' + ", template='" +
                 template + '\'' + ", forcedTemplate='" + forcedTemplate + '\'' + '}';
     }
 

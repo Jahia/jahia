@@ -6,17 +6,29 @@
 <template:addResources type="css" resources="metrics.css"/>
 <jcr:nodeProperty node="${currentNode}" name="j:nodeTypeFilter" var="nodeTypeFilter"/>
 <jcr:nodeProperty node="${currentNode}" name="j:recommendationLimit" var="recommendationLimit"/>
+<c:set var="bindedComponent" value="${currentNode.properties['j:bindedComponent'].node}"/>
+<c:if test="${not empty bindedComponent}">
+    <c:choose>
+        <c:when test="${jcr:isNodeType(bindedComponent, 'jnt:mainResourceDisplay')}">
+            <c:set var="bindedComponent" value="${renderContext.mainResource.node}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="bindedComponent" value="${bindedComponent}"/>
+        </c:otherwise>
+    </c:choose>
+
+
 <div class="metrics">
 <c:catch var="ex">
     <sql:setDataSource driver="com.mysql.jdbc.Driver" url="jdbc:mysql://127.0.0.1:3306/jahia-6.5" user="jahia"
                        password="jahia" var="ds"/>
 
     <c:if test="${not empty ex and renderContext.editMode}">
-        SELECT * FROM objxref WHERE leftpath='${currentNode.path}' and rightnodetype='${nodeTypeFilter.string}' order by counter desc limit ${recommendationLimit.long};
+        SELECT * FROM objxref WHERE leftpath='${bindedComponent.path}' and rightnodetype='${nodeTypeFilter.string}' order by counter desc limit ${recommendationLimit.long};
     </c:if>
 
     <sql:query var="refs" dataSource="${ds}">
-        SELECT * FROM objxref WHERE leftpath='${currentNode.path}' and rightnodetype='${nodeTypeFilter.string}' order by counter desc limit ${recommendationLimit.long};
+        SELECT * FROM objxref WHERE leftpath='${bindedComponent.path}' and rightnodetype='${nodeTypeFilter.string}' order by counter desc limit ${recommendationLimit.long};
     </sql:query>
     <p><!--fmt:message key="recommendationsIntro"/-->Users that have viewed this content have also viewed :</p>
     <ol>
@@ -36,3 +48,5 @@
     <p>For this module to work you need to parse metrics logs of jahia</p>
 </c:if>
 </div>
+</c:if>
+<template:linker path="*"/>

@@ -945,24 +945,22 @@ public class QueryServiceImpl extends QueryService {
                                         columnName = "rep:facet(locale=" + languageCodes.get(0)
                                                 + (facetOptions.trim().length() > 1 ? "&" : "")
                                                 + facetOptions;
-                                        node = (AbstractQOMNode) qomFactory.column(selector
-                                                .getSelectorName(), StringUtils.substringBefore(
-                                                propertyName, "_" + languageCodes.get(0)),
-                                                columnName);
-                                    } else {
-                                        node = (AbstractQOMNode) qomFactory.column(
-                                                translationSelectorName, propertyName, columnName);
-                                    }
+                                    } 
+                                    node = (AbstractQOMNode) qomFactory.column(
+                                            translationSelectorName, propertyName, columnName);
                                 }
+                            } else if (translationSelectorName != null && node instanceof Column) {
+                                node = (AbstractQOMNode) qomFactory.column(translationSelectorName, propertyName,
+                                        ((Column) node).getColumnName());                                
                             }
 
                             if (node instanceof PropertyValue) {
                                 node = (AbstractQOMNode) qomFactory.propertyValue(
                                         translationSelectorName, propertyName);
                             } else if (node instanceof FullTextSearch) {
-                                node = (AbstractQOMNode) qomFactory.fullTextSearch(
-                                        translationSelectorName, "rep:filter(" + propertyName + ")",
-                                        ((FullTextSearch) node).getFullTextSearchExpression());
+                                node = (AbstractQOMNode) qomFactory.fullTextSearch(translationSelectorName,
+                                        isFilter ? "rep:filter(" + Text.escapeIllegalJcrChars(propertyName) + ")"
+                                                : propertyName, ((FullTextSearch) node).getFullTextSearchExpression());
                             } else if (node instanceof PropertyExistence) {
                                 node = (AbstractQOMNode) qomFactory.propertyExistence(
                                         translationSelectorName, propertyName);

@@ -33,8 +33,6 @@ package org.jahia.taglibs.query;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +44,6 @@ import javax.jcr.nodetype.PropertyDefinition;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.KeyValue;
-import org.apache.commons.collections.MultiHashMap;
-import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
@@ -63,11 +59,14 @@ public class Functions {
 
     private static final Logger logger = Logger.getLogger(Functions.class);    
     
+    private static final String FACET_PARAM_DELIM = "###";
+    private static final String FACET_DELIM = "|||";
+    
     public static Map<String, List<KeyValue>> getAppliedFacetFilters(String filterString) {
         Map<String, List<KeyValue>> appliedFacetFilters = new LinkedHashMap<String, List<KeyValue>>();        
         if (!StringUtils.isEmpty(filterString)) {
             for (String filterInstance : filterString.split("\\|\\|\\|")) {
-                String[] filterTokens = filterInstance.split("###");
+                String[] filterTokens = filterInstance.split(FACET_PARAM_DELIM);
                 if (filterTokens.length == 3) {
                     List<KeyValue> filterList = appliedFacetFilters.get(filterTokens[0]);
                     if (filterList == null) {
@@ -96,17 +95,28 @@ public class Functions {
             Map<String, List<KeyValue>> appliedFacets) {
         boolean facetValueApplied = false;
         if (facetValueObj != null) {
-            FacetField.Count facetValue;
+            String facetKey = null;
+            String facetValue = null;
             try {
-                facetValue = (FacetField.Count) facetValueObj;
+                if (facetValueObj instanceof FacetField.Count) {
+                    FacetField.Count facetCount = (FacetField.Count) facetValueObj;
+                    facetKey = facetCount.getFacetField().getName();
+                    facetValue = facetCount.getName();
+                } else if (facetValueObj instanceof Map.Entry<?, ?>) {
+                    Map.Entry<String, Long> facetCount = (Map.Entry<String, Long>) facetValueObj;
+                    facetKey = facetCount.getKey();
+                    facetValue = facetCount.getValue().toString();
+                } else {
+                    throw new IllegalArgumentException(
+                            "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count");
+                }
             } catch (ClassCastException e) {
                 throw new IllegalArgumentException(
-                        "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count",
-                        e);
+                        "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count", e);
             }
-            if (appliedFacets != null && appliedFacets.containsKey(facetValue.getFacetField().getName())) {
-                for (KeyValue facet : appliedFacets.get(facetValue.getFacetField().getName())) {
-                    if (facet.getKey().equals(facetValue.getName())) {
+            if (appliedFacets != null && appliedFacets.containsKey(facetKey)) {
+                for (KeyValue facet : appliedFacets.get(facetKey)) {
+                    if (facet.getKey().equals(facetValue)) {
                         facetValueApplied = true;
                         break;
                     }
@@ -117,20 +127,27 @@ public class Functions {
     }
     
     public static String getFacetDrillDownUrl(Object facetValueObj, String queryString) {
-        FacetField.Count facetValue;
-        try {
-            facetValue = (FacetField.Count) facetValueObj;
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count", e);
-        } 
         StringBuilder builder = new StringBuilder();
-        builder.append(facetValue.getFacetField().getName()).append("###").append(
-                facetValue.getName()).append("###").append(facetValue.getAsFilterQuery());
+        try {
+            if (facetValueObj instanceof FacetField.Count) {
+                FacetField.Count facetValue = (FacetField.Count) facetValueObj;
+                builder.append(facetValue.getFacetField().getName()).append(FACET_PARAM_DELIM).append(facetValue.getName()).append(
+                        FACET_PARAM_DELIM).append(facetValue.getAsFilterQuery());
+            } else if (facetValueObj instanceof Map.Entry<?, ?>) {
+                Map.Entry<String, Long> facetValue = (Map.Entry<String, Long>) facetValueObj;
+                builder.append("").append(FACET_PARAM_DELIM).append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey());
+            } else {
+                throw new IllegalArgumentException(
+                        "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count");                
+            }
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(
+                    "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count", e);
+        }
         String facetValueFilter = builder.toString();
         if (!StringUtils.contains(queryString, facetValueFilter)) {
             builder = new StringBuilder(queryString.length() + facetValueFilter.length() + 1);
-            builder.append(queryString).append(queryString.length() == 0 ? "" : "|||").append(
-                    facetValueFilter);
+            builder.append(queryString).append(queryString.length() == 0 ? "" : FACET_DELIM).append(facetValueFilter);
         }
 
         return builder.toString();
@@ -145,15 +162,15 @@ public class Functions {
             throw new IllegalArgumentException("Passed parameter is not of type java.util.Map.Entry", e);
         } 
         StringBuilder builder = new StringBuilder();
-        builder.append(facetFilter.getKey()).append("###").append(facetValue.getKey())
-                .append("###").append(facetValue.getValue());
+        builder.append(facetFilter.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey())
+                .append(FACET_PARAM_DELIM).append(facetValue.getValue());
         String facetValueFilter = builder.toString();
         int index = StringUtils.indexOf(queryString, facetValueFilter);
         if (index != -1) {
             queryString = queryString.replace(
-                    (index >= "|||".length()
-                            && queryString.regionMatches(index - "|||".length(), "|||", 0, "|||"
-                                    .length()) ? "|||" : "")
+                    (index >= FACET_DELIM.length()
+                            && queryString.regionMatches(index - FACET_DELIM.length(), FACET_DELIM, 0, FACET_DELIM
+                                    .length()) ? FACET_DELIM : "")
                             + facetValueFilter, "");
         }
         return queryString;

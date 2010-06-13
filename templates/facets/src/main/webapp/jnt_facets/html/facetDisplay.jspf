@@ -1,0 +1,34 @@
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<%--@elvariable id="acl" type="java.lang.String"--%>
+<h4>${currentFacet.name}</h4>
+<ul>
+    <c:forEach items="${currentFacet.values}" var="facetValue">
+        <c:if test="${not query:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
+            <c:url var="facetUrl" value="${url.mainResource}" context="/">
+                <c:param name="${facetParamVarName}" value="${query:encodeFacetUrlParam(query:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
+            </c:url>
+            <li><a href="${facetUrl}">
+                <c:choose>
+                    <c:when test="${currentFacet.name == 'j:defaultCategory'}">
+                        <jcr:node var="category" uuid="${facetValue.name}"/>${category.name}
+                    </c:when>
+                    <c:otherwise>
+                        ${facetValue.name}
+                    </c:otherwise>
+                </c:choose>
+            </a> (${facetValue.count})<br/></li>
+        </c:if>
+    </c:forEach>
+</ul>

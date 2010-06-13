@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NamespaceException;
@@ -281,6 +283,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             String facetFunctionPrefix = session.getJCRName(REP_FACET_LPAR);
             NamedList<Object> parameters = new NamedList<Object>();
             int counter = 0;
+            Set<Integer> selectorIndexes = new HashSet<Integer>();
             for (Column column : columns.values()) {
                 if (isFacetFunction(column.getColumnName())) {
                     String facetOptions = StringUtils.substring(column.getColumnName(), StringUtils
@@ -336,13 +339,21 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                                     .getSelectorName(), column.getPropertyName()));
                         }
                     }
+                    int i = 0;
+                    for (String selectorName : getSelectorNames()) {
+                        if (selectorName.equals(column.getSelectorName())) {
+                            selectorIndexes.add(i);
+                            break;
+                        }
+                        i++;
+                    }
                     counter++;
                 }
             }
 
             SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(
                     ((JahiaQueryObjectModelImpl) queryImpl).getQomTree(), searcher,
-                    transformToDocIdSet(allResultNodes, reader), SolrParams
+                    transformToDocIdSet(allResultNodes, reader, selectorIndexes), SolrParams
                             .toSolrParams(parameters), index, session);
             extractFacetInfo(facets.getFacetCounts());
         } catch (Exception ex) {
@@ -369,15 +380,17 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         return foundSelector.getNodeTypeName();
     }
     
-    private OpenBitSet transformToDocIdSet(List<ScoreNode[]> scoreNodeArrays, IndexReader reader) {
+    private OpenBitSet transformToDocIdSet(List<ScoreNode[]> scoreNodeArrays, IndexReader reader, Set<Integer> selectorIndexes) {
         OpenBitSet docIds = null;
         try {
             BitSet bitset = new BitSet();
             for (ScoreNode[] scoreNodes : scoreNodeArrays) {
+                int i = 0;
                 for (ScoreNode node : scoreNodes) {
-                    if (node != null) {
+                    if (node != null && selectorIndexes.contains(i)) {
                         bitset.set(node.getDoc(reader));
                     }
+                    i++;
                 }
             }
             docIds = new OpenBitSetDISI(new DocIdBitSet(bitset).iterator(), bitset.size());

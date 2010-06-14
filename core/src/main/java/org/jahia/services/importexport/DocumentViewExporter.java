@@ -142,7 +142,7 @@ public class DocumentViewExporter {
             if (node.isNodeType("jmix:shareable")) {
 
                 if (exportedShareable.containsKey(node.getIdentifier())) {
-                    atts.addAttribute(Constants.JCR_NS,  "share", "j:share", CDATA, exportedShareable.get(node.getIdentifier()));
+                    atts.addAttribute(Constants.JAHIA_NS,  "share", "j:share", CDATA, exportedShareable.get(node.getIdentifier()));
                     String encodedName = ISO9075.encode(node.getName());
                     startElement(encodedName, atts);
                     endElement(encodedName);

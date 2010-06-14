@@ -29,9 +29,8 @@
 
 [jnt:rangeFacet] > jnt:facet
 - lowerBound (string) mandatory indexed=no
-- includeLowerBound (boolean) = true indexed=no
 - upperBound (string) mandatory indexed=no
-- includeUpperBound (boolean) = true indexed=no
+- includeBounds (boolean) = true indexed=no
 - valueLabel (string) i18n indexed=no
 
 [jnt:tagCloud] > jnt:content, mix:title, jmix:siteComponentContent

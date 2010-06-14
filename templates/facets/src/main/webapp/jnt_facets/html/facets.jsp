@@ -85,10 +85,9 @@
                     <c:choose>
                         <c:when test="${jcr:isNodeType(facet, 'jnt:rangeFacet')}">
                             <jcr:nodeProperty node="${facet}" name="lowerBound" var="lowerBound"/>            
-                            <jcr:nodeProperty node="${facet}" name="includeLowerBound" var="includeLowerBound"/>
                             <jcr:nodeProperty node="${facet}" name="upperBound" var="upperBound"/>                    
-                            <jcr:nodeProperty node="${facet}" name="includeUpperBound" var="includeUpperBound"/>
-                            <c:set var="currentFacetQuery" value="${includeLowerBound.boolean ? '[' : '{'}${lowerBound.string} TO ${upperBound.string}${includeUpperBound.boolean ? ']' : '}'}"/>                        
+                            <jcr:nodeProperty node="${facet}" name="includeBounds" var="includeBounds"/>
+                            <c:set var="currentFacetQuery" value="${includeBounds.boolean ? '[' : '{'}${lowerBound.string} TO ${upperBound.string}${includeBounds.boolean ? ']' : '}'}"/>                        
                         </c:when>
                         <c:when test="${jcr:isNodeType(facet, 'jnt:queryFacet')}">
                             <jcr:nodeProperty node="${facet}" name="query" var="currentFacetQuery"/>                        

@@ -59,7 +59,7 @@
     Integer daysLeft = (Integer) request.getAttribute("daysLeft");
 %>
 <div class="dex-TabBar">
-    <ul class="dex-TabBarItem-wrapper" style="width: 70%;">
+    <ul class="dex-TabBarItem-wrapper" style="width: 90%;">
         <li class="dex-TabBarFirst">
             <div>
                 &nbsp;
@@ -88,11 +88,11 @@
         </li>
         <%  }
         %>
-        <li class="dex-TabBarItem<% if (stretcherToOpen == 1) { %>-selected<% } %>">
+        <li class="dex-TabBarItem tabExit">
             <div>
                 <div>
           <span class="tab-icon ico-site">
-            <a href='<%=Jahia.getContextPath() + "/cms/studio/default/en/templatesSet/templates-intranet/home.html" %>'>Go to Studio</a>
+            <a href='<%=Jahia.getContextPath() + "/cms/studio/default/en/templatesSet/templates-intranet/home.html" %>'>Exit to Studio</a>
           </span>
                 </div>
             </div>
@@ -120,7 +120,7 @@
         </li>
     </ul>
     <!-- License expiration message -->
-    <ul class="dex-license-wrapper" style="width: 30%;">
+    <ul class="dex-license-wrapper" style="width: 10%;">
         <li>
             <% if (daysLeft != null) { %>
             <fmt:message key="org.jahia.admin.daysLeftWarning.label"/>&nbsp;:&nbsp;<%=daysLeft %>

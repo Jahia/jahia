@@ -937,6 +937,11 @@ li.section a:hover {
 .ico-site {
   background: url(images/andromeda/icons/window_gear.png) no-repeat  0 -1px;
 }
+
+.ico-studio {
+  background: url(../icons/studio.png) no-repeat  0 -1px;
+}
+
 .ico-quit {
   background: url(images/andromeda/logout.png) no-repeat 0 -1px;
 }

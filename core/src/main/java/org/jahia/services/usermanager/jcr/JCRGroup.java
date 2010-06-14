@@ -386,13 +386,10 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
         output.append("  - properties :");
 
         Properties properties = getProperties();
-        Iterator names = new EnumerationIterator(properties.propertyNames());
-        String name;
-        if (names.hasNext()) {
+        if (properties != null && !properties.isEmpty()) {
             output.append("\n");
-            while (names.hasNext()) {
-                name = (String) names.next();
-                output.append("       ").append(name).append(" -> [").append(properties.getProperty(name)).append(
+            for (Map.Entry<Object, Object> property : properties.entrySet()) {
+                output.append("       ").append(property.getKey()).append(" -> [").append(property.getValue()).append(
                         "]\n");
             }
         } else {

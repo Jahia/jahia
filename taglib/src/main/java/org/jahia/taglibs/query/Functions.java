@@ -84,7 +84,7 @@ public class Functions {
             PropertyDefinition propDef) {
         boolean facetApplied = false;
         if (appliedFacets != null && appliedFacets.containsKey(facetName)) {
-            if (propDef != null && !propDef.isMultiple()) {
+            if (propDef == null || (propDef != null && !propDef.isMultiple())) {
                 facetApplied = true;
             }
         }
@@ -135,7 +135,7 @@ public class Functions {
                         FACET_PARAM_DELIM).append(facetValue.getAsFilterQuery());
             } else if (facetValueObj instanceof Map.Entry<?, ?>) {
                 Map.Entry<String, Long> facetValue = (Map.Entry<String, Long>) facetValueObj;
-                builder.append("").append(FACET_PARAM_DELIM).append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey());
+                builder.append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey()).append(FACET_PARAM_DELIM).append(facetValue.getKey());
             } else {
                 throw new IllegalArgumentException(
                         "Passed parameter is not of type org.apache.solr.client.solrj.response.FacetField.Count");                

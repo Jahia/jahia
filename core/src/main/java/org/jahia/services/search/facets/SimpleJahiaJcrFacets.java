@@ -158,12 +158,22 @@ public class SimpleJahiaJcrFacets {
 
         String[] facetQs = params.getParams(FacetParams.FACET_QUERY);
         if (null != facetQs && 0 != facetQs.length) {
+            Integer mincount = params.getFieldInt("", FacetParams.FACET_MINCOUNT);
+            if (mincount == null) {
+                Boolean zeros = params.getFieldBool("", FacetParams.FACET_ZEROS);
+                // mincount = (zeros!=null && zeros) ? 0 : 1;
+                mincount = (zeros != null && !zeros) ? 1 : 0;
+                // current default is to include zeros.
+            }            
             for (String q : facetQs) {
                 QueryParser qp = new QueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
                 qp.setLowercaseExpandedTerms(false);
                 Query qobj = qp.parse(q);
-                res.add(q, OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj)),
-                        docs));
+                long count = OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj)),
+                        docs);
+                if (count >= mincount) {
+                    res.add(q, count);
+                }
             }
         }
 

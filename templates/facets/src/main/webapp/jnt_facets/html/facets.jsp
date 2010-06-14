@@ -94,7 +94,7 @@
                             <c:set var="currentFacetQuery" value="${currentFacetQuery.string}"/>
                         </c:when>
                     </c:choose>                    
-                    <c:if test="${not empty currentFacetQuery and not query:isFacetApplied(currentFacetGroup.string, activeFacetsVars[activeFacetMapVarName], null)}">
+                    <c:if test="${not empty currentFacetQuery and not query:isFacetApplied(currentFacetQuery, activeFacetsVars[activeFacetMapVarName], null)}">
                         <query:column columnName="rep:facet(nodetype=${facetNodeTypeName}&key=${facet.name}${minCountParam}&facet.query=${currentFacetQuery})" propertyName="${not empty facetPropertyName ? facetPropertyName : 'rep:facet()'}"/>
                     </c:if>            
                 </c:otherwise>

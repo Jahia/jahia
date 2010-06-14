@@ -1,6 +1,7 @@
 div#navigationN1-1  {
 	float: left;
 	width: 100%;
+
 }
 div#navigationN1-1 ul.level_1  {
 	margin: 0; padding: 0;
@@ -23,8 +24,10 @@ div#navigationN1-1 ul.level_1 li a {
 	color: #f0f0f0;
 	text-decoration: none;
 }
-div#navigationN1-1 ul.level_1 li.selected
+div#navigationN1-1 ul.level_1 li.selected,
+div#navigationN1-1 ul.level_1 li.inPath
  {background:#8ebde5 url(navigationN1-1/topnav_selected.gif) repeat-x; color:#333}
+ 
 div#navigationN1-1 ul.level_1 li:hover
  {background:#1376c9 url(navigationN1-1/topnav_active.gif) repeat-x;}
  
@@ -58,5 +61,7 @@ div#navigationN1-1 ul.level_2 li {
 	border-right: 1px solid #fff;
 }
 div#navigationN1-1 ul.level_2 li:hover,
-div#navigationN1-1 ul.level_2 li.selected {background:none;background-color:transparent;}
+div#navigationN1-1 ul.level_2 li.selected,
+div#navigationN1-1 ul.level_2 li.inPath {background:none;background-color:transparent;}
+div#navigationN1-1 ul.level_2 li.selected a{text-decoration: underline;}
 

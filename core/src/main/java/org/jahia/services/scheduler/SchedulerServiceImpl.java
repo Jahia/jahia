@@ -31,6 +31,7 @@
  */
  package org.jahia.services.scheduler;
 
+import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
@@ -41,6 +42,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jgroups.Address;
 import org.quartz.*;
+import org.quartz.listeners.SchedulerListenerSupport;
 import org.quartz.simpl.SimpleJobFactory;
 import org.quartz.spi.TriggerFiredBundle;
 
@@ -53,8 +55,7 @@ import java.util.*;
 
 public class SchedulerServiceImpl extends SchedulerService implements ClusterListener {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(SchedulerServiceImpl.class);
+    private static Logger logger = Logger.getLogger(SchedulerServiceImpl.class);
 
     private static SchedulerServiceImpl singletonInstance;
 
@@ -210,50 +211,14 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
             scheduler.addGlobalTriggerListener(triggerListener);
             ramscheduler.addGlobalTriggerListener(ramTriggerListener);
-            SchedulerListener schedulerListener = new SchedulerListener() {
+            scheduler.addSchedulerListener(new SchedulerListenerSupport() {
+                @Override
                 public void jobScheduled(Trigger trigger) {
                     if (!settingsBean.isProcessingServer()) {
                         clusterService.sendMessage(new ClusterMessage(new QueuedJobMessage(trigger)));
                     }
                 }
-
-                public void jobUnscheduled(String string, String string1) {
-                }
-
-                public void triggerFinalized(Trigger trigger) {
-                }
-
-                public void triggersPaused(String string, String string1) {
-                }
-
-                public void triggersResumed(String string, String string1) {
-                }
-
-                public void jobsPaused(String string, String string1) {
-                }
-
-                public void jobsResumed(String string, String string1) {
-                }
-
-                public void schedulerError(String string, SchedulerException schedulerException) {
-                }
-
-                public void schedulerShutdown() {
-                }
-
-                public void jobAdded(JobDetail jobDetail) {
-                }
-
-                public void jobDeleted(String jobName, String groupName) {
-                }
-
-                public void schedulerInStandbyMode() {
-                }
-
-                public void schedulerStarted() {
-                }
-            };
-            scheduler.addSchedulerListener(schedulerListener);
+            });
 
         } catch (SchedulerException se) {
             if (se.getUnderlyingException() != null) {

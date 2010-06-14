@@ -104,9 +104,11 @@
               dataType : 'json',
               data : "q=" + term + "&query=/jcr:root//element(*, jnt:user)[jcr:contains(.,'{$q}*')]&language=xpath",
               success: function(data) {
-                $.each(data.items, function(i,item){
+                alert(data);
+                $.each(data, function(i,item){
+                    alert(item);
                     $("<li/>").text(item).appendTo(".searchUsersResult");
-                    if ( i == 3 ) return false;
+                    if ( i == 10 ) return false;
                 });
               }
             });
@@ -137,8 +139,10 @@
 
     </form><br class="clear"/>
 
-    <div class="searchUsersResult">
+    <div >
+      <ul class="searchUsersResult">
 
+      </ul>
     </div>
 
     <h3 class="titleIcon">Friends<img title="" alt="" src="img-text/friends.png"/></h3>

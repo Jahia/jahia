@@ -1,6 +1,6 @@
 User agent specifc templates
 
-  It is possible to define dedicated templates for specifed user agents. If the system finds the request is coming from
+  It is possible to define dedicated templates for specific user agents. If the system finds the request is coming from
   a configured user agent, it can append a specific classifier to the template type, and will then look the template
   in another folder.
 

@@ -1,15 +1,15 @@
 Usage of User Profile
 
-  When the user access to his own profile, in live mode he could edit all his information directly from the page
+  When the user access to his own profile, in live mode he can edit all his information directly on the page
   without going to edit mode engines or content manager.
 
   This module mainly use {{{http://jquery.com/}jQuery}} and {{{http://www.appelsiini.net/projects/jeditable}Jeditable}}.
 
-  This is a good entry point to have example of how to use in line edition for editing small properties in live mode.
+  This is a good entry point to have example of how to use in-line edition for editing small properties in live mode.
 
   In this documentation we will show how to make edition of text, richtext, date, file, dropdown properties.
 
-  For each of those type of data we use the same principle a JavaScript function applied to a class that allow
+  For each of those type of data we use the same principle: a JavaScript function applied to a class that allow
   the edition of the content when the user clicks on it.
 
 * {Simple} Text

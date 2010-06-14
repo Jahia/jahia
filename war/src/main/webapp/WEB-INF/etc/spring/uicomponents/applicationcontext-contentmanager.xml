@@ -789,7 +789,13 @@
     <!-- sitemanager manager -->
     <bean id="sitemanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:page"/>
-        <property name="folderTypes" value="jnt:page"/>
+        <property name="folderTypes">
+            <list>
+                <value>jnt:virtualsitesFolder</value>
+                <value>jnt:virtualsite</value>
+                <value>jnt:page</value>
+            </list>
+        </property>
         <property name="enableTextMenu" value="true"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">

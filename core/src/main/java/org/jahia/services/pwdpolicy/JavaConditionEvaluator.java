@@ -43,7 +43,7 @@ import java.util.Map;
  */
 class JavaConditionEvaluator implements ConditionEvaluator {
 
-	private static Map evaluatorsCache = new HashMap();
+	private static Map<String, PasswordPolicyRuleCondition> evaluatorsCache = new HashMap<String, PasswordPolicyRuleCondition>();
 
 	public boolean evaluate(JahiaPasswordPolicyRule rule, EvaluationContext ctx) {
 		return getConditionClazz(rule.getCondition()).evaluate(
@@ -54,8 +54,7 @@ class JavaConditionEvaluator implements ConditionEvaluator {
 
 		PasswordPolicyRuleCondition condClazz = null;
 		if (evaluatorsCache.containsKey(condition)) {
-			condClazz = (PasswordPolicyRuleCondition) evaluatorsCache
-			        .get(condition);
+			condClazz = evaluatorsCache.get(condition);
 		} else {
 			synchronized (JavaConditionEvaluator.class) {
 				if (!evaluatorsCache.containsKey(condition)) {
@@ -70,8 +69,7 @@ class JavaConditionEvaluator implements ConditionEvaluator {
 						                + condition, ex);
 					}
 				} else {
-					condClazz = (PasswordPolicyRuleCondition) evaluatorsCache
-					        .get(condition);
+					condClazz = evaluatorsCache.get(condition);
 				}
 			}
 		}

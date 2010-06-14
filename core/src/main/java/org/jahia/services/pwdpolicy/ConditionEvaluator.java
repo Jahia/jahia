@@ -42,10 +42,10 @@ interface ConditionEvaluator {
 	 * Evaluates the specified rule condition depending on its type.
 	 * 
 	 * @param rule
-	 *            the policy rule, whuch condition needs to be avaluated
+	 *            the policy rule, which condition needs to be evaluated
 	 * @param ctx
 	 *            the current evaluation context
-	 * @return the result of the eveluation
+	 * @return the result of the evaluation
 	 */
 	boolean evaluate(JahiaPasswordPolicyRule rule, EvaluationContext ctx);
 }

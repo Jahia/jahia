@@ -55,7 +55,7 @@ public class FacetedQueryTest {
         assertNotNull(site);
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
         initContent(session);
     }

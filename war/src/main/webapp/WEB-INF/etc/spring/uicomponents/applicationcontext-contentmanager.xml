@@ -632,6 +632,7 @@
                                     <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
                                 </list>
                             </property>
+                            <property name="contextMenu" value="true"/>
                         </bean>
                     </list>
                 </property>
@@ -652,7 +653,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
                     <property name="key" value="portletDefinitionRepository"/>
-                    <property name="paths" value="/remotePublications"/>
+                    <property name="paths" value="/portletdefinitions"/>
                 </bean>
             </list>
         </property>
@@ -889,7 +890,7 @@
         </property>
     </bean>
 
-    <!-- file manager -->
+    <!-- role manager -->
     <bean id="rolesmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:role"/>
         <property name="toolbarSet">
@@ -929,7 +930,7 @@
         <!-- tabs -->
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <value>principalRolesMapping</value>
+                <value>rolePrincipals</value>
             </list>
         </property>
         <!-- table columns-->
@@ -941,7 +942,7 @@
     </bean>
 
 
-    <!-- file manager -->
+    <!-- site role manager -->
     <bean id="siterolesmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:role"/>
         <property name="toolbarSet">
@@ -977,7 +978,7 @@
         <!-- tabs -->
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <value>principalRolesMapping</value>
+                <value>rolePrincipals</value>
             </list>
         </property>
         <!-- table columns-->

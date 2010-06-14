@@ -14,7 +14,6 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
@@ -151,7 +150,7 @@ public class RolePrincipalPanel extends LayoutContainer {
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {
                         if (checkbox.getValue()) {
-                            contentService.grantRoleToUser(role,isGroup, principalKey, new BaseAsyncCallback() {
+                            contentService.grantRoleToUser(role,isGroup, principalKey, new BaseAsyncCallback<Object>() {
                                 public void onSuccess(Object o) {
                                     Log.debug("role granted");
                                 }
@@ -161,7 +160,7 @@ public class RolePrincipalPanel extends LayoutContainer {
                                 }
                             });
                         } else {
-                            contentService.removeRoleToPrincipal(role, isGroup, principalKey, new BaseAsyncCallback() {
+                            contentService.removeRoleToPrincipal(role, isGroup, principalKey, new BaseAsyncCallback<Object>() {
                                 public void onSuccess(Object o) {
                                     Log.debug("role revoked");
                                 }

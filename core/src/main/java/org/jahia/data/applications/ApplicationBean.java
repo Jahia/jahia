@@ -35,18 +35,13 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.apache.pluto.container.om.portlet.UserAttribute;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.ACLNotFoundException;
-import org.jahia.services.acl.ACLResourceInterface;
-import org.jahia.services.acl.JahiaBaseACL;
 
 /**
  * This object contains all the data relative to an application, notably the
- * context in which it should run, it's type (servlet or JSP) and additionnal
+ * context in which it should run, it's type (servlet or JSP) and additionally
  * information such as rights, etc...
  *
  * @author Serge Huber
@@ -56,8 +51,6 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
 
     private static final long serialVersionUID = -5886294839254670413L;
 
-    private static final transient Logger logger = Logger.getLogger(ApplicationBean.class);
-
     private String ID;
     private String name;
     private String context;
@@ -66,7 +59,6 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
     private String type;
     private List<EntryPointInstance> entryPointInstances;
     private List<UserAttribute> userAttributes;
-    private Map<String, List<String[]>> aclEntries;
 
     /**
      * Basic constructor

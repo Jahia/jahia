@@ -32,50 +32,40 @@
 package org.jahia.services.applications.pluto;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.pluto.container.PortletContainer;
-import org.apache.pluto.container.PortletWindow;
+import org.apache.log4j.Logger;
 import org.apache.pluto.container.PortletContainerException;
+import org.apache.pluto.container.PortletWindow;
 import org.apache.pluto.container.driver.PlutoServices;
 import org.apache.pluto.container.driver.PortletRegistryService;
 import org.apache.pluto.container.om.portlet.PortletDefinition;
-import org.apache.pluto.driver.AttributeKeys;
 import org.apache.pluto.driver.core.PortalRequestContext;
 import org.apache.pluto.driver.core.PortletWindowImpl;
 import org.apache.pluto.driver.services.portal.PortletWindowConfig;
 import org.apache.pluto.driver.url.PortalURL;
-import org.apache.pluto.container.impl.PortletContextImpl;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.data.applications.PortletEntryPointDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ParamBean;
 import org.jahia.services.applications.ApplicationsManagerProvider;
 import org.jahia.services.usermanager.JahiaUser;
-import org.springframework.web.context.ServletContextAware;
 
 /**
- * Created by IntelliJ IDEA.
+ * Pluto-based implementation of the {@link ApplicationsManagerProvider}.
  * User: Serge Huber
  * Date: 15 juil. 2008
  * Time: 15:54:24
  */
-public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProvider, ServletContextAware {
+public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProvider {
 
-    private PortletContainer portletContainer;
-    private ServletContext servletContext;
-
-    public ApplicationsManagerPlutoProvider() {
-
-    }
+    private static final Logger logger = Logger.getLogger(ApplicationsManagerPlutoProvider.class);
 
     /**
      * Create an entryPointInstance from the entryPointDefinition
@@ -109,7 +99,7 @@ public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProv
 
         JahiaContextRequest jahiaContextRequest = new JahiaContextRequest(jahiaUser, httpServletRequest);
 
-        PortalRequestContext portalContext = new PortalRequestContext(servletContext, jahiaContextRequest, httpServletResponse);
+        new PortalRequestContext(servletContext, jahiaContextRequest, httpServletResponse);
 
         PortletWindowConfig windowConfig = PortletWindowConfig.fromId(entryPointInstance.getContextName() + "." + entryPointInstance.getDefName() + "!" + windowID);
         windowConfig.setContextPath(entryPointInstance.getContextName());
@@ -119,7 +109,7 @@ public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProv
         PortalURL portalURL = portalEnv.getRequestedPortalURL();
         
         // Create the portlet window to render.
-        PortletWindow window = new PortletWindowImpl(portletContainer,windowConfig, portalURL);
+        PortletWindow window = new PortletWindowImpl(null,windowConfig, portalURL);
 
         return window;
     }
@@ -138,34 +128,23 @@ public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProv
 
         // get all portlet of the application bean
         try {
-            List<? extends PortletDefinition> portletList = portletRegistryService.getPortletApplication(appBean.getName()).getPortlets();
+            List<? extends PortletDefinition> portletList = portletRegistryService.getPortletApplication(appBean.getContext()).getPortlets();
             for (PortletDefinition portlet : portletList) {
                 PortletEntryPointDefinition portletEntryPointDefinition = new PortletEntryPointDefinition(appBean.getID(), appBean.getContext(), portlet);
                 result.add(portletEntryPointDefinition);
             }
         } catch (PortletContainerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
         return result;
     }
 
     public void start() throws JahiaInitializationException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     public void stop() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
-
-    }
-
-    private PortletContainer getPortletContainer() {
-        // Retrieve the portlet container from servlet context.
-        portletContainer = (PortletContainer)servletContext.getAttribute(AttributeKeys.PORTLET_CONTAINER);
-        return portletContainer;
+        // do nothing
     }
 }

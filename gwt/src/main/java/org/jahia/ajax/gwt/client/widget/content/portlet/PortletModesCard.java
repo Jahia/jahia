@@ -93,7 +93,7 @@ public class PortletModesCard extends MashupWizardCard {
                 }
             });
         } else {
-            add(new Label(Messages.getNotEmptyResource("mw_only_view_mode", "The selected portlets contains only view mode.")));
+            add(new Label(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modesperm.onlyViewMode", "The selected portlets contains only view mode.")));
         }
     }
 

@@ -33,6 +33,7 @@ package org.jahia.services.applications.pluto;
 
 import org.apache.pluto.driver.PortalDriverServlet;
 import org.apache.pluto.driver.services.impl.resource.RenderConfigServiceImpl;
+import org.apache.pluto.driver.services.impl.resource.ResourceConfig;
 import org.apache.pluto.driver.services.portal.PageConfig;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
@@ -49,12 +50,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: jahia
  * Date: 8 avr. 2009
  * Time: 16:12:17
  */
 public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
+
+    public JahiaRenderConfigServiceImpl(ResourceConfig config) {
+        super(config);
+    }
+
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaRenderConfigServiceImpl.class);
     private JCRSessionFactory sessionFactory;
     public final static String PAGE_CONFIG_ATTR = "org.jahia.services.applications.pluto.pageconfig";
@@ -71,7 +76,7 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
      * In case of Jahia, there is a portlet instances are jcr node. Each of this portlet instance has to
      * be handled by pluto. So we create a "fake" pluto-page that has all porlet instances.
      **/
-    public List getPages() {
+    public List<PageConfig> getPages() {
         List<PageConfig> pageConfigList = new ArrayList<PageConfig>();
         pageConfigList.add(getDefaultPage());
         return pageConfigList;

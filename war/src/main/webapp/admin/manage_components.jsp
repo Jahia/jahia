@@ -47,6 +47,7 @@
         appserverDeployerUrl: "<%=appserverDeployerUrl%>"
     }
 </script>
+<internal:gwtGenerateDictionary/>        
 <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" /><div id="topTitle">
     <h1>Jahia</h1>
 

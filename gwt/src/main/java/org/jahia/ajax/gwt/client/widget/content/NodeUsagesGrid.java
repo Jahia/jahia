@@ -18,6 +18,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 
@@ -30,7 +31,7 @@ public class NodeUsagesGrid {
     public static Grid<GWTJahiaNodeUsage> createUsageGrid(final List<GWTJahiaNode> nodes) {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig col = new ColumnConfig("pageUrl", "Page URL", 300);
+        ColumnConfig col = new ColumnConfig("pageUrl", Messages.get("label.pageUrl", "Page URL"), 300);
         col.setRenderer(new GridCellRenderer<GWTJahiaNodeUsage>() {
             public Object render(GWTJahiaNodeUsage gwtJahiaNodeUsage, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNodeUsage> gwtJahiaNodeUsageListStore, com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> gwtJahiaNodeUsageGrid) {
                 return "<a href=\"" + JahiaGWTParameters.getBaseUrl()+ gwtJahiaNodeUsage.getPageUrl() + "\" target=\"_blank\">" + JahiaGWTParameters.getBaseUrl()+ gwtJahiaNodeUsage.getPageUrl()+"<a>";
@@ -39,7 +40,7 @@ public class NodeUsagesGrid {
 
         columns.add(col);
 
-        col = new ColumnConfig("url", "URL", 300);
+        col = new ColumnConfig("url", Messages.get("label.url", "URL"), 300);
         columns.add(col);
         ColumnModel cm = new ColumnModel(columns);
         final ListStore<GWTJahiaNodeUsage> usageStore = new ListStore<GWTJahiaNodeUsage>(new BaseListLoader(

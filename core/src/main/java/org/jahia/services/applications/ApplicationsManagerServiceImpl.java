@@ -143,10 +143,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         this.jcrTemplate = jcrTemplate;
     }
 
-    public PlutoServices getPlutoServices() {
-        return plutoServices;
-    }
-
     public void setPlutoServices(PlutoServices plutoServices) {
         this.plutoServices = plutoServices;
     }
@@ -771,11 +767,11 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
      */
     private void syncPlutoWithDB() throws JahiaException {
         // here we will compare Pluto's memory state with the state of the database, and add any missing application.
-        PortletRegistryService portletRegistryService = PlutoServices.getServices().getPortletRegistryService();
+        PortletRegistryService portletRegistryService = plutoServices.getPortletRegistryService();
         Iterator<String> portletApplicationNames = portletRegistryService.getRegisteredPortletApplicationNames();
         while (portletApplicationNames.hasNext()) {
             String currentPortletApplicationName = portletApplicationNames.next();
-            String currentContext = "/" + currentPortletApplicationName;
+            String currentContext = !currentPortletApplicationName.startsWith("/") ? "/" + currentPortletApplicationName : currentPortletApplicationName;
             ApplicationBean app = applicationCache.get(APPLICATION_DEFINITION_CONTEXT + currentContext);
 
             if (app == null) {

@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.widget.security;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -12,7 +13,6 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPrincipal;
@@ -71,11 +71,12 @@ public class PrincipalRolePanel extends LayoutContainer {
         cp.setBorders(false);
         cp.setBodyBorder(false);
         ToolBar bar = new ToolBar();
-        Button addUser = new Button(Messages.getResource("org.jahia.engines.users.SelectUG_Engine.newUsers.label"));
+        Button addUser = new Button(Messages.getResource("label.addUsersToRole"));
         addUser.setIconStyle("um-adduser");
-        Button addGroup = new Button(Messages.getResource("org.jahia.engines.users.SelectUG_Engine.newGroups.label"));
+        Button addGroup = new Button(Messages.getResource("label.addGroupsToRole"));
         addGroup.setIconStyle("um-addgroup");
         bar.add(new FillToolItem());
+        bar.setAlignment(HorizontalAlignment.LEFT);
         bar.add(addUser);
         bar.add(addGroup);
         final UserGroupAdder userGroupAdder = new UserGroupAdder() {
@@ -87,7 +88,7 @@ public class PrincipalRolePanel extends LayoutContainer {
                     }
                 }
                 if (pList.size() > 0) {
-                    contentService.grantRoleToPrincipals(role, pList, new BaseAsyncCallback() {
+                    contentService.grantRoleToPrincipals(role, pList, new BaseAsyncCallback<Object>() {
                         public void onSuccess(Object o) {
                             Log.debug("Grant role to groups");
                             for (GWTJahiaPrincipal p : pList) {
@@ -116,7 +117,7 @@ public class PrincipalRolePanel extends LayoutContainer {
                     }
                 }
                 if (pList.size() > 0) {
-                    contentService.grantRoleToPrincipals(role, pList, new BaseAsyncCallback() {
+                    contentService.grantRoleToPrincipals(role, pList, new BaseAsyncCallback<Object>() {
                         public void onSuccess(Object o) {
                             Log.debug("Grant role to users");
                             for (GWTJahiaPrincipal p : pList) {
@@ -145,7 +146,7 @@ public class PrincipalRolePanel extends LayoutContainer {
         });
 
         cp.setTopComponent(bar);
-        cp.setButtonAlign(Style.HorizontalAlignment.CENTER);
+        cp.setButtonAlign(Style.HorizontalAlignment.LEFT);
         cp.setLayout(new FitLayout());
         cp.setSize(700, 300);
 
@@ -168,13 +169,13 @@ public class PrincipalRolePanel extends LayoutContainer {
 
         ColumnConfig column = new ColumnConfig();
         column.setId("name");
-        column.setHeader("Name");
+        column.setHeader(Messages.get("label.name", "Name"));
         column.setWidth(350);
         configs.add(column);
 
         column = new ColumnConfig();
         column.setId("siteName");
-        column.setHeader("siteName");
+        column.setHeader(Messages.get("org.jahia.admin.site.ManageSites.siteServerName.label", "Site"));
         column.setWidth(250);
         configs.add(column);
 
@@ -189,7 +190,7 @@ public class PrincipalRolePanel extends LayoutContainer {
                         final GWTJahiaPrincipal principal = (GWTJahiaPrincipal) buttonEvent.getButton().getData("associatedNode");
                         final List<GWTJahiaPrincipal> principalList = new ArrayList<GWTJahiaPrincipal>(1);
                         principalList.add(principal);
-                        contentService.removeRoleToPrincipals(role, principalList, new BaseAsyncCallback() {
+                        contentService.removeRoleToPrincipals(role, principalList, new BaseAsyncCallback<Object>() {
                             public void onSuccess(Object o) {
                                 Log.debug("Revoke role from principal " + principal.getKey());
                                 store.remove(principal);

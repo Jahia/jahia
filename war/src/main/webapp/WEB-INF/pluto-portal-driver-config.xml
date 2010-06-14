@@ -4,11 +4,11 @@
     xmlns="http://portals.apache.org/pluto/xsd/pluto-portal-driver-config.xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://portals.apache.org/pluto/xsd/pluto-portal-driver-config.xsd
-                        http://portals.apache.org/pluto/xsd/pluto-portal-driver-config.xsd"
+                        http://portals.apache.org/pluto/pluto-portal/2.0/pluto-portal-driver-config.xsd"
     version="1.1">
 
   <portal-name>pluto-portal-driver</portal-name>
-  <portal-version>2.0.0</portal-version>
+  <portal-version>2.0.2</portal-version>
   <container-name>Pluto Portal Driver</container-name>
 
   <supports>

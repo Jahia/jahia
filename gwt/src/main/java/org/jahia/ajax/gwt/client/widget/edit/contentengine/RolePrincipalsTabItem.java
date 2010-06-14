@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,46 +29,44 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bin.listeners;
 
-import org.apache.log4j.Logger;
-import org.apache.pluto.driver.PortalStartupListener;
-import org.jahia.services.applications.ApplicationsManagerServiceImpl;
-import org.jahia.settings.SettingsBean;
+package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
-import javax.servlet.ServletContextEvent;
-import java.net.MalformedURLException;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.security.PrincipalRolePanel;
 
 /**
- * Pluto Portal Driver startup listener.
- * User: Serge Huber
- * Date: 22 juil. 2008
- * Time: 17:03:45
+ * Represents a dedicated tab for viewing and managing role to principal assignment.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class JahiaPortalStartupListener extends PortalStartupListener {
-    
-    private static final transient Logger logger = Logger
-            .getLogger(JahiaPortalStartupListener.class);
-    
-    public void contextInitialized(ServletContextEvent event) {
-        try {
-            if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
-                super.contextInitialized(event);
-                // register listeners after the portal is started
-                ApplicationsManagerServiceImpl.getInstance().registerListeners();
-            }
-        } catch (MalformedURLException e) {
-            logger.error(e.getMessage(), e);
-        }
+public class RolePrincipalsTabItem extends EditEngineTabItem {
+
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param engine reference to the owner
+     */
+    public RolePrincipalsTabItem(NodeHolder engine) {
+        super(Messages.get("label.engineTab.rolePrincipals", "Principals"), engine);
     }
 
-    public void contextDestroyed(ServletContextEvent event) {
-        try {
-            if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
-                super.contextDestroyed(event);
-            }
-        } catch (MalformedURLException e) {
-            logger.error(e.getMessage(), e);
+    @Override
+    public void create(GWTJahiaLanguage locale) {
+        if (engine.getNode() == null || isProcessed()) {
+            return;
         }
+
+        String site = null;
+        String path = engine.getNode().getPath();
+        if (path.startsWith("/sites/")) {
+            site = path.substring("/sites/".length(), path.indexOf("/", "/sites/".length()));
+        }
+        GWTJahiaRole role = new GWTJahiaRole(engine.getNode().getName(), site);
+        add(new PrincipalRolePanel(role));
+        setProcessed(true);
     }
+
 }

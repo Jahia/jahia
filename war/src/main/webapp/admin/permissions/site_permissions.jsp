@@ -53,6 +53,7 @@
 
     <h2 class="edit"><fmt:message key="label.siteroles"/></h2>
 </div>
+<internal:gwtGenerateDictionary/>        
 <internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
 
 <div id="main">

@@ -45,6 +45,17 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
 
+    <bean id="PortletContainer" class="org.apache.pluto.container.impl.PortletContainerImpl"
+        init-method="init" scope="singleton">
+        <constructor-arg>
+            <bean factory-bean="DriverConfiguration"
+                factory-method="getPortalName" />
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="PortalDriverServices" />
+        </constructor-arg>
+    </bean>
+
 	<bean id="PlutoServices"
 	      class="org.apache.pluto.container.driver.PlutoServices"
           scope="singleton">
@@ -59,6 +70,23 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
       <constructor-arg><ref bean="EventCoordinationService"/></constructor-arg>
       <constructor-arg><ref bean="FilterManagerService"/></constructor-arg>
       <constructor-arg><ref bean="PortletURLListenerService"/></constructor-arg>
+        <constructor-arg>
+            <null />
+            <!--
+                <bean
+                class="org.apache.pluto.driver.container.DefaultOptionalContainerServices"/>
+            -->
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="PortletContextService" />
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="PortletContextService" />
+        </constructor-arg>
+        <constructor-arg>
+            <bean
+                class="org.apache.pluto.driver.container.DefaultPortalAdministrationService" />
+        </constructor-arg>
     </bean>
 
     <bean id="PortalContext"
@@ -76,7 +104,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 
       <!-- ===== Portal Services ===== -->
       <constructor-arg><ref bean="PortalURLParser"/></constructor-arg>
-      <constructor-arg><ref bean="PropertyConfigService"/></constructor-arg>
+      <constructor-arg><ref bean="ResourceConfigFactory"/></constructor-arg>
       <constructor-arg><ref bean="RenderConfigService"/></constructor-arg>
       <constructor-arg><ref bean="SupportedModesService"/></constructor-arg>
       <constructor-arg><ref bean="SupportedWindowStatesService"/></constructor-arg>
@@ -99,33 +127,56 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     <!-- ================================================ -->
     <!-- Portal Services injected into the Configuration  -->
     <!-- ================================================ -->
+    <bean id="ResourceConfigFactory"
+        class="org.apache.pluto.driver.services.impl.resource.StaticServletContextResourceConfigFactory"
+        factory-method="getResourceConfig">
+    </bean>
+    <!-- 
+    <bean id="ServletContextResourceConfigFactory" class="org.jahia.services.applications.pluto.ServletContextResourceConfigFactory"/>
+    <bean id="ResourceConfigFactory"
+        factory-bean="ServletContextResourceConfigFactory"
+        factory-method="getResourceConfig"
+        scope="singleton">
+    </bean>
+     -->
     <bean id="PortalURLParser"
           class="org.jahia.services.applications.pluto.JahiaPortalURLParserImpl"
           factory-method="getParser"
           scope="singleton">
     </bean>
 
-    <bean id="PropertyConfigService"
-          class="org.apache.pluto.driver.services.impl.resource.PropertyConfigServiceImpl"
-          scope="singleton">
-    </bean>
-
     <bean id="RenderConfigService"
           class="org.jahia.services.applications.pluto.JahiaRenderConfigServiceImpl"
           scope="singleton">
+        <constructor-arg>
+            <ref bean="ResourceConfigFactory" />
+        </constructor-arg>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 
     <bean id="SupportedModesService"
           class="org.apache.pluto.driver.services.impl.resource.SupportedModesServiceImpl"
           scope="singleton">
-          <constructor-arg><ref bean="PropertyConfigService"/></constructor-arg>
+        <constructor-arg>
+            <ref bean="ResourceConfigFactory" />
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="PortletContextService" />
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="PortletContextService" />
+        </constructor-arg>
     </bean>
 
     <bean id="SupportedWindowStatesService"
           class="org.apache.pluto.driver.services.impl.resource.SupportedWindowStateServiceImpl"
           scope="singleton">
-          <constructor-arg><ref bean="PropertyConfigService"/></constructor-arg>
+        <constructor-arg>
+            <ref bean="ResourceConfigFactory" />
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="PortletContextService" />
+        </constructor-arg>
     </bean>
 
     <!-- ================================================ -->
@@ -138,6 +189,12 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     <bean id="EventCoordinationService"
           class="org.apache.pluto.driver.services.container.EventCoordinationServiceImpl"
           scope="singleton">
+        <constructor-arg>
+            <ref bean="PortletContextService" />
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="PortletContextService" />
+        </constructor-arg>
     </bean>
     <bean id="FilterManagerService"
           class="org.apache.pluto.driver.services.container.FilterManagerServiceImpl"
@@ -146,6 +203,19 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     <bean id="PortletURLListenerService"
           class="org.apache.pluto.driver.services.container.PortletURLListenerServiceImpl"
           scope="singleton">
+    </bean>
+    <bean id="PortletContextService"
+        class="org.apache.pluto.driver.container.PortletContextManager">
+        <constructor-arg>
+            <ref bean="RequestDispatcherService" />
+        </constructor-arg>
+        <constructor-arg>
+            <bean
+                class="org.apache.pluto.container.impl.PortletAppDescriptorServiceImpl" />
+        </constructor-arg>
+    </bean>
+    <bean id="RequestDispatcherService"
+        class="org.apache.pluto.container.impl.RequestDispatcherServiceImpl">
     </bean>
 
 </beans>

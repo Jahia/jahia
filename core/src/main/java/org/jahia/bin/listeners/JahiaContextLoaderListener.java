@@ -32,13 +32,14 @@
 package org.jahia.bin.listeners;
 
 import org.apache.log4j.Logger;
+import org.apache.pluto.driver.PortalStartupListener;
 import org.jahia.bin.Jahia;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
 import org.jahia.settings.SettingsBean;
 import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.ContextLoaderListener;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContext;
@@ -53,7 +54,7 @@ import java.util.Locale;
  * Date: 22 juil. 2008
  * Time: 17:01:22
  */
-public class JahiaContextLoaderListener extends ContextLoaderListener {
+public class JahiaContextLoaderListener extends PortalStartupListener {
     
     private static final transient Logger logger = Logger
             .getLogger(JahiaContextLoaderListener.class);
@@ -76,6 +77,8 @@ public class JahiaContextLoaderListener extends ContextLoaderListener {
                 } catch (Exception e) {
                     logger.error("Error initializing Jahia modules Spring application context. Cause: " + e.getMessage(), e);
                 }
+                // register listeners after the portal is started
+                ApplicationsManagerServiceImpl.getInstance().registerListeners();
             }
             Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, configExists ? SettingsBean
                     .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());                

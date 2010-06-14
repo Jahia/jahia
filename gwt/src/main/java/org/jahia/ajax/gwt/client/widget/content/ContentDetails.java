@@ -141,6 +141,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 tabs.add(new SeoTabItem(this));
             } else if (tab.equals("analytics")) {
                 tabs.add(new AnalyticsTabItem(this));
+            } else if (tab.equals("rolePrincipals")) {
+                tabs.add(new RolePrincipalsTabItem(this));
+            } else if (tab.equals("portlets")) {
+                tabs.add(new PortletsTabItem(this));
             }
         }
         for (TabItem tabItem : tabs.getItems()) {
@@ -197,7 +201,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             m_component.setHeading(heading);
 
             if (selectedNodes.size() == 1) {
-                JahiaContentManagementService.App.getInstance().getProperties(selectedNodes.get(0).getPath(), JahiaGWTParameters.getLanguage(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
+                service.getProperties(selectedNodes.get(0).getPath(), JahiaGWTParameters.getLanguage(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
 
                     public void onSuccess(GWTJahiaGetPropertiesResult result) {
                         GWTJahiaNode node = result.getNode();
@@ -206,7 +210,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         language = result.getCurrentLocale();
 
                         //todo : do this in one pass
-                        JahiaContentDefinitionService.App.getInstance().getAvailableMixin(node, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+                        cDefService.getAvailableMixin(node, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                             public void onSuccess(List<GWTJahiaNodeType> result) {
                                 mixin = result;
                                 fillCurrentTab();

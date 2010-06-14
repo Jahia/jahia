@@ -326,10 +326,6 @@
     </listener>
 
     <listener>
-        <listener-class>org.jahia.bin.listeners.JahiaPortalStartupListener</listener-class>
-    </listener>
-
-    <listener>
         <listener-class>org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet</listener-class>
     </listener>
 

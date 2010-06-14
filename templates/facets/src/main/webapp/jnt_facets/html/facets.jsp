@@ -107,6 +107,6 @@
     <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
         <template:module node="${facet}"/>
     </c:forEach>
-    <template:area path="${currentNode.path}/facets" nodeTypes="jnt:fieldFacet,jnt.dateFacet,jnt:queryFacet" editable="true"/>
+    <template:module path="*"/>
     <template:linker path="*"/>
 </c:if>

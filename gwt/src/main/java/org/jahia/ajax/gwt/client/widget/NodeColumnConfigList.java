@@ -89,7 +89,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                                      ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
                     int state = node.getPublicationInfo() != null ? node.getPublicationInfo().getStatus() : 0;
                     String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
-                    return "<img src=\"../../gwt/resources/images/workflow/" + STATE_IMAGES[state] +
+                    return "<img src=\"../gwt/resources/images/workflow/" + STATE_IMAGES[state] +
                             ".png\" height=\"12\" width=\"12\" title=\"" + title + "\" alt=\"" + title + "\"/>";
                 }
             };

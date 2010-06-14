@@ -20,7 +20,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 public class ContentTabItem extends PropertiesTabItem {
     private boolean isNodeNameFieldDisplayed = false;
     private TextField<String> name = new TextField<String>();
-    protected LayoutContainer wrapperPanel;
 
     public TextField<String> getName() {
         return name;
@@ -28,7 +27,6 @@ public class ContentTabItem extends PropertiesTabItem {
 
     public ContentTabItem(NodeHolder engine) {
         super(Messages.get("label.content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
-        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
         setMultiLang(true);
     }
 
@@ -41,22 +39,15 @@ public class ContentTabItem extends PropertiesTabItem {
     public void attachPropertiesEditor() {
         // handle jcr:title property
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
-            if (wrapperPanel == null) {
-                wrapperPanel = new LayoutContainer(new RowLayout());
-                wrapperPanel.setScrollMode(Style.Scroll.AUTO);
-                add(wrapperPanel);
-            }
+                setLayout(new RowLayout());
             FieldSet fSet = new FieldSet();
             fSet.add(createNamePanel());
             isNodeNameFieldDisplayed = true;
             propertiesEditor.insert(fSet,0);
-            wrapperPanel.add(propertiesEditor);
         }
 
         // attach properties node
-        if (wrapperPanel == null) {
-            super.attachPropertiesEditor();
-        }
+        super.attachPropertiesEditor();
     }
 
 
@@ -96,10 +87,4 @@ public class ContentTabItem extends PropertiesTabItem {
         return isNodeNameFieldDisplayed;
     }
 
-    public void setProcessed(boolean processed) {
-        if (!processed) {
-            wrapperPanel = null;
-        }
-        super.setProcessed(processed);
-    }
 }

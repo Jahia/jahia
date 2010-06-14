@@ -28,12 +28,10 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class LayoutTabItem extends PropertiesTabItem {
-    private LayoutContainer wrapperPanel;
     private LayoutContainer htmlPreview;
 
     public LayoutTabItem(NodeHolder engine) {
         super(Messages.get("org.jahia.jcr.edit.layout.tab", "Layout"), engine, GWTJahiaItemDefinition.LAYOUT);
-        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabLayout());
     }
 
     @Override
@@ -65,17 +63,13 @@ public class LayoutTabItem extends PropertiesTabItem {
             }
 
 
-            if (wrapperPanel == null) {
-                wrapperPanel = new LayoutContainer(new RowLayout());
-                wrapperPanel.setScrollMode(Style.Scroll.AUTO);
-                add(wrapperPanel);
-            }
-            wrapperPanel.add(propertiesEditor);
+            setLayout(new RowLayout());
+            add(propertiesEditor);
 
             htmlPreview = new LayoutContainer(new FitLayout());
             htmlPreview.addStyleName("x-panel");
             htmlPreview.setScrollMode(Style.Scroll.AUTO);
-            wrapperPanel.add(htmlPreview);
+            add(htmlPreview);
         }
     }
 

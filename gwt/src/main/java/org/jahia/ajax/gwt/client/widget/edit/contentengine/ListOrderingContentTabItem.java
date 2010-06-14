@@ -38,13 +38,8 @@ public class ListOrderingContentTabItem extends ContentTabItem {
 
     @Override
     public void attachPropertiesEditor() {
-        if (wrapperPanel == null) {
-            wrapperPanel = new LayoutContainer(new RowLayout());
-            wrapperPanel.setScrollMode(Style.Scroll.AUTO);
-            add(wrapperPanel);
-        }
-        wrapperPanel.add(propertiesEditor);
-
+        setLayout(new RowLayout());
+        add(propertiesEditor);
         attachManualListOrderingEditor(propertiesEditor);
     }
 
@@ -112,7 +107,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
 
         fieldSet.add(useManualRanking);
         fieldSet.add(manualListOrderingEditor);
-        wrapperPanel.add(fieldSet);
+        add(fieldSet);
     }
 
     /**

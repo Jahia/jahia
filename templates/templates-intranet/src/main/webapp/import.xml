@@ -314,7 +314,7 @@
                                           j:bindedComponent="/templatesSet/templates-intranet/templates/events/pagecontent/row/col1/events"/>
                                 <facets jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:facets"
                                         j:bindedComponent="/templatesSet/templates-intranet/templates/events/pagecontent/row/col1/events">
-                                    <facet field="jnt:event;eventsType" jcr:primaryType="jnt:facet" facet="type">
+                                    <facet field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" facet="type">
                                         <j:translation_en field="jnt:event;eventsType" jcr:primaryType="jnt:translation"
                                                           jcr:language="en" facet="type" label_en="Event Type"/>
                                     </facet>

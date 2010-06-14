@@ -31,7 +31,7 @@ public class LayoutTabItem extends PropertiesTabItem {
     private LayoutContainer htmlPreview;
 
     public LayoutTabItem(NodeHolder engine) {
-        super(Messages.get("org.jahia.jcr.edit.layout.tab", "Layout"), engine, GWTJahiaItemDefinition.LAYOUT);
+        super(Messages.get("label.engineTab.layout", "Layout"), engine, GWTJahiaItemDefinition.LAYOUT);
     }
 
     @Override

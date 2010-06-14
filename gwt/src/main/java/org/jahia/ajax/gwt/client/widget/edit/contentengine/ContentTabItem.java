@@ -26,7 +26,7 @@ public class ContentTabItem extends PropertiesTabItem {
     }
 
     public ContentTabItem(NodeHolder engine) {
-        super(Messages.get("label.content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
+        super(Messages.get("label.engineTab.content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
         setMultiLang(true);
     }
 
@@ -47,8 +47,8 @@ public class ContentTabItem extends PropertiesTabItem {
         }
 
         // attach properties node
-        super.attachPropertiesEditor();
-    }
+            super.attachPropertiesEditor();
+        }
 
 
     /**

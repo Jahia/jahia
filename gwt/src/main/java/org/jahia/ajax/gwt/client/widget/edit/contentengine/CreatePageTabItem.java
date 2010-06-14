@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 
@@ -26,7 +27,7 @@ public class CreatePageTabItem extends PropertiesTabItem {
     protected ComboBox<GWTJahiaNode> combo;
 
     public CreatePageTabItem(NodeHolder engine) {
-        super("Page infos",engine, GWTJahiaItemDefinition.CONTENT);
+        super(Messages.get("label.engineTab.createPage", "Page infos"),engine, GWTJahiaItemDefinition.CONTENT);
         setMultiLang(true);
     }
 

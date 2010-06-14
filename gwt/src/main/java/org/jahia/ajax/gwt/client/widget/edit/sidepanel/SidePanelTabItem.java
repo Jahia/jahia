@@ -32,7 +32,7 @@ public class SidePanelTabItem extends TabItem {
         super("&nbsp;");
         this.config = config;
         setIcon(ToolbarIconProvider.getInstance().getIcon(config.getIcon()));
-        getHeader().setToolTip(config.getName());
+        getHeader().setToolTip(config.getTooltip());
     }
 
     public void initWithLinker(EditLinker linker) {

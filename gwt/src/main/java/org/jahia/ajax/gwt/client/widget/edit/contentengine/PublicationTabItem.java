@@ -12,7 +12,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class PublicationTabItem extends PropertiesTabItem {
     public PublicationTabItem(NodeHolder engine) {
-        super(Messages.get("label.publication", "Publication"), engine, GWTJahiaItemDefinition.CACHE);
+        super(Messages.get("label.engineTab.publication", "Publication"), engine, GWTJahiaItemDefinition.CACHE);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabPublication());
     }
 }

@@ -27,7 +27,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
     private GWTJahiaAnalyticsQuery lastQuery;
 
     public AnalyticsTabItem(NodeHolder engine) {
-        super(Messages.get("ece_analytics", "Analytics"), engine);
+        super(Messages.get("label.engineTab.analytics", "Analytics"), engine);
     }
 
     public AnalyticsTabItem(String title, AbstractContentEngine engine) {

@@ -22,7 +22,7 @@ public class ClassificationTabItem extends EditEngineTabItem {
     private ClassificationEditor classificationEditor;
 
     public ClassificationTabItem(NodeHolder engine) {
-        super(Messages.get("org.jahia.jcr.edit.classification.tab", "Classification"), engine);
+        super(Messages.get("label.engineTab.classification", "Classification"), engine);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabClassification());
     }
 

@@ -669,7 +669,7 @@ public class UIConfigHelper {
         for (SidePanelTab sidePanelTab : tabs) {
             if (checkVisibility(site, jahiaUser, locale, request, sidePanelTab.getVisibility())) {
                 final GWTSidePanelTab gwtSidePanel = new GWTSidePanelTab(sidePanelTab.getKey());
-                gwtSidePanel.setTooltip(getResources("label." + sidePanelTab.getKey() + "Tab", uiLocale, site));
+                gwtSidePanel.setTooltip(getResources("label.selectorTab." + sidePanelTab.getKey(), uiLocale, site));
                 gwtSidePanel.setTreeContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTreeContextMenu()));
                 gwtSidePanel.setTableContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTableContextMenu()));
                 gwtSidePanel.setParams(sidePanelTab.getParams());

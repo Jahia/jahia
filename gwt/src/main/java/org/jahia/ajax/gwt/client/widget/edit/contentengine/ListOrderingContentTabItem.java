@@ -30,6 +30,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
 
     public ListOrderingContentTabItem(AbstractContentEngine engine) {
         super(engine);
+        setTitle(Messages.get("label.engineTab.contentList", "Content"));
     }
 
     public ListOrderingContentTabItem(AbstractContentEngine engine, boolean multilangue) {

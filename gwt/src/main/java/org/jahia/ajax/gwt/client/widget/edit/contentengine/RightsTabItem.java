@@ -27,7 +27,7 @@ public class RightsTabItem extends EditEngineTabItem {
     private AclEditor rightsEditor;
 
     public RightsTabItem(NodeHolder engine) {
-        super(Messages.get("label.rights", "Rights"), engine);
+        super(Messages.get("label.engineTab.rights", "Rights"), engine);
     }
 
     @Override

@@ -3,13 +3,13 @@
 [jnt:facets] > jnt:content, jmix:siteComponentContent, jmix:bindedComponent
 + * (jnt:facet)
 
-[jnt:facet] > jnt:content
+[jnt:facet] > jnt:content abstract
 - facet (string) mandatory indexed=no
 - label (string) i18n indexed=no
 - field (string, choicelist[choicelistfacets]) indexed=no
+- mincount (long) = 1 indexed=no
 
 [jnt:fieldFacet] > jnt:facet
-- mincount (long) = 1 indexed=no
 - sort (string, choicelist[resourceBundle]) indexed=no < true,false 
 - prefix (string) indexed=no
 - limit (long) = 100 indexed=no
@@ -20,11 +20,18 @@
 - start (string) mandatory indexed=no
 - end (string) mandatory indexed=no
 - gap (string) mandatory indexed=no
-- hardend (string) indexed=no
-- other (string, choicelist[resourceBundle]) indexed=no < before,after,between,none,all
+- hardend (boolean) = false indexed=no
+- other (string, choicelist[resourceBundle]) multiple indexed=no < before,after,between,none,all
 
 [jnt:queryFacet] > jnt:facet
 - query (string) mandatory indexed=no
+- valueLabel (string) i18n indexed=no
+
+[jnt:rangeFacet] > jnt:facet
+- lowerBound (string) mandatory indexed=no
+- includeLowerBound (boolean) = true indexed=no
+- upperBound (string) mandatory indexed=no
+- includeUpperBound (boolean) = true indexed=no
 - valueLabel (string) i18n indexed=no
 
 [jnt:tagCloud] > jnt:content, mix:title, jmix:siteComponentContent

@@ -35,8 +35,8 @@
     </c:if>
     <c:set var="facetParamVarName" value="N-${currentNode.name}"/>
     <c:set var="activeFacetMapVarName" value="afm-${currentNode.name}"/>    
-    <c:if test="${not empty param[facetParamVarName] and empty activeFacetVars[facetParamVarName]}">
-        <c:if test="${activeFacetVars == null}">
+    <c:if test="${not empty param[facetParamVarName] and empty activeFacetsVars[facetParamVarName]}">
+        <c:if test="${activeFacetsVars == null}">
            <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
         </c:if>
         <c:set target="${activeFacetsVars}" property="${facetParamVarName}" value="${query:decodeFacetUrlParam(param[facetParamVarName])}"/>

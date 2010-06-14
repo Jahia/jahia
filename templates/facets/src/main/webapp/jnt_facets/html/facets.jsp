@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -25,8 +26,8 @@
     
     <c:set var="facetParamVarName" value="N-${bindedComponent.name}"/>
     <c:set var="activeFacetMapVarName" value="afm-${bindedComponent.name}"/>    
-    <c:if test="${not empty param[facetParamVarName] and empty activeFacetVars[facetParamVarName]}">
-        <c:if test="${activeFacetVars == null}">
+    <c:if test="${not empty param[facetParamVarName] and empty activeFacetsVars[facetParamVarName]}">
+        <c:if test="${activeFacetsVars == null}">
            <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
         </c:if>
         <c:set target="${activeFacetsVars}" property="${facetParamVarName}" value="${query:decodeFacetUrlParam(param[facetParamVarName])}"/>
@@ -41,12 +42,17 @@
             <jcr:nodeProperty node="${facet}" name="facet" var="currentFacetGroup"/>        
             <jcr:nodeProperty node="${facet}" name="field" var="currentField"/>
             <c:set var="facetNodeTypeName" value="${fn:substringBefore(currentField.string, ';')}"/>
-            <c:set var="facetPropertyName" value="${fn:substringAfter(currentField.string, ';')}"/>        
+            <c:set var="facetPropertyName" value="${fn:substringAfter(currentField.string, ';')}"/>
+            <jcr:nodeType name="${facetNodeTypeName}" var="facetNodeType"/>
+            <jcr:nodeProperty node="${facet}" name="mincount" var="minCount"/>
+            <c:set var="minCountParam" value=""/>            
+            <c:if test="${not empty minCount.string}">
+                <c:set var="minCountParam" value="&mincount=${minCount.string}"/>
+            </c:if>            
             <c:choose>
                 <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet')}">
-                    <jcr:nodeType name="${facetNodeTypeName}" var="facetNodeType"/>
                     <c:if test="${not empty currentField and not query:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
-                        <c:set var="facetQuery" value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}"/>
+                        <c:set var="facetQuery" value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}${minCountParam}"/>
                         <c:choose>
                             <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">                        
                                 <c:set var="facetPrefix" value="date."/>
@@ -57,17 +63,40 @@
                         </c:choose>      
                         <c:forEach items="${facet.primaryNodeType.declaredPropertyDefinitions}" var="propertyDefinition">
                             <jcr:nodeProperty node="${facet}" name="${propertyDefinition.name}" var="facetPropValue"/>
-                            <c:if test="${not empty facetPropValue.string}">
-                                <c:set var="facetQuery" value="${facetQuery}&${facetPrefix}${propertyDefinition.name}=${facetPropValue.string}"/>
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${functions:isIterable(facetPropValue)}">
+                                    <c:forEach items="${facetPropValue}" var="facetPropValueItem">
+                                        <c:if test="${not empty facetPropValueItem.string}">
+                                            <c:set var="facetQuery" value="${facetQuery}&${facetPrefix}${propertyDefinition.name}=${facetPropValueItem.string}"/>
+                                        </c:if>                                
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:if test="${not empty facetPropValue.string}">
+                                        <c:set var="facetQuery" value="${facetQuery}&${facetPrefix}${propertyDefinition.name}=${facetPropValue.string}"/>
+                                    </c:if>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>              
                         <query:column columnName="rep:facet(${facetQuery})" propertyName="${facetPropertyName}"/>
                     </c:if>
                 </c:when>
                 <c:otherwise>
-                    <jcr:nodeProperty node="${facet}" name="query" var="currentFacetQuery"/>            
+                    <c:choose>
+                        <c:when test="${jcr:isNodeType(facet, 'jnt:rangeFacet')}">
+                            <jcr:nodeProperty node="${facet}" name="lowerBound" var="lowerBound"/>            
+                            <jcr:nodeProperty node="${facet}" name="includeLowerBound" var="includeLowerBound"/>
+                            <jcr:nodeProperty node="${facet}" name="upperBound" var="upperBound"/>                    
+                            <jcr:nodeProperty node="${facet}" name="includeUpperBound" var="includeUpperBound"/>
+                            <c:set var="currentFacetQuery" value="${includeLowerBound.boolean ? '[' : '{'}${lowerBound.string} TO ${upperBound.string}${includeUpperBound.boolean ? ']' : '}'}"/>                        
+                        </c:when>
+                        <c:when test="${jcr:isNodeType(facet, 'jnt:queryFacet')}">
+                            <jcr:nodeProperty node="${facet}" name="query" var="currentFacetQuery"/>                        
+                            <c:set var="currentFacetQuery" value="${currentFacetQuery.string}"/>
+                        </c:when>
+                    </c:choose>                    
                     <c:if test="${not empty currentFacetQuery and not query:isFacetApplied(currentFacetGroup.string, activeFacetsVars[activeFacetMapVarName], null)}">
-                        <query:column columnName="rep:facet(key=${facet.name}&facet.query=${currentFacetQuery.string})" propertyName="${facetPropertyName}"/>
+                        <query:column columnName="rep:facet(nodetype=${facetNodeTypeName}&key=${facet.name}${minCountParam}&facet.query=${currentFacetQuery})" propertyName="${not empty facetPropertyName ? facetPropertyName : 'rep:facet()'}"/>
                     </c:if>            
                 </c:otherwise>
             </c:choose>

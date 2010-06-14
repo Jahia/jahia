@@ -29,7 +29,9 @@ import org.apache.jackrabbit.spi.commons.query.qom.ColumnImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.OrderingImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
+import org.apache.jackrabbit.util.Text;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.util.DocIdBitSet;
 import org.apache.lucene.util.OpenBitSet;
@@ -39,6 +41,8 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.params.FacetParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.search.facets.SimpleJahiaJcrFacets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -308,7 +312,17 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                                 .indexOf("facet.date.") >= 0) ? FacetParams.FACET_DATE
                                 : FacetParams.FACET_FIELD, propertyName);
                     }
-                    
+                    String facetKey = null;
+                    String nodeType = null;
+                    for (String option : StringUtils.split(facetOptions, "&")) {
+                        String key = StringUtils.substringBefore(option, "=");
+                        String value = StringUtils.substringAfter(option, "=");                        
+                        if ("key".equals(key)) {
+                            facetKey = value;
+                        } else if ("nodetype".equals(key)) {
+                            nodeType = value;
+                        }                        
+                    }
                     for (String option : StringUtils.split(facetOptions, "&")) {
                         String key = StringUtils.substringBefore(option, "=");
                         String value = StringUtils.substringAfter(option, "=");
@@ -323,6 +337,17 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                         }
                         String facetOption = FacetParams.FACET + "." + StringUtils.substring(key, index);
                         if (facetOption.equals(FacetParams.FACET_QUERY)) {           
+                            if (value.split("(?<!\\\\):").length == 1
+                                    && !StringUtils.isEmpty(column.getPropertyName())
+                                    && !StringUtils.isEmpty(nodeType)                                    
+                                    && !column.getPropertyName().equals("rep:facet()")) {
+                                ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(nodeType).getPropertyDefinition(column.getPropertyName());
+                                if (epd != null) {
+                                    String fieldNameInIndex = getFieldNameInIndex(propertyName,
+                                            epd, "");
+                                    value = QueryParser.escape(fieldNameInIndex) + ":" + value;
+                                }
+                            }
                             parameters.add(facetOption, value);                            
                         } else if (facetOption.equals(FacetParams.FACET_FIELD) || facetOption.equals(FacetParams.FACET_DATE)) {
                             parameters.add(facetOption, propertyName);                            
@@ -331,7 +356,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                                     + facetOption, value);
                         }                       
                     }
-                    if (!StringUtils.contains(facetOptions, FacetParams.FACET_QUERY)) {
+                    if (!StringUtils.isEmpty(propertyName)) {
                         String nodeTypeParam = FIELD_SPECIFIC_PREFIX + propertyName + "."
                                 + FacetParams.FACET + ".nodetype";
                         if (parameters.get(nodeTypeParam) == null) {
@@ -368,8 +393,27 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         return;
     }
     
+    public String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd, String langCode) {
+        String fieldName = field;
+        try {
+            fieldName = NamePathResolverImpl.create(index.getNamespaceMappings()).getJCRName(NameFactoryImpl.getInstance().create(session.getNamespaceURI(epd.getPrefix()),
+                    epd.getLocalName()));
+            int idx = fieldName.indexOf(':');
+            fieldName = fieldName.substring(0, idx + 1)
+                    + (epd != null && epd.isFacetable() ? JahiaNodeIndexer.FACET_PREFIX
+                            : FieldNames.FULLTEXT_PREFIX)
+                    + fieldName.substring(idx + 1)
+                    + (epd.isInternationalized() && !StringUtils.isEmpty(langCode) ? "_" + langCode
+                            : "");
+        } catch (RepositoryException e) {
+            // will never happen
+        }
+        return fieldName;
+    }    
+    
     private String getNodeTypeFromSelector(String selectorName,
             String propertyName) throws RepositoryException {
+        selectorName = StringUtils.removeEnd(selectorName, "translationAdded"); 
         Selector foundSelector = null;
         for (SelectorImpl selector : ((SourceImpl) ((JahiaQueryObjectModelImpl) queryImpl).getQomTree().getSource()).getSelectors()) {
             if (StringUtils.isEmpty(selectorName) || selectorName.equals(selector.getSelectorName())) {
@@ -653,8 +697,10 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         // Parse the queries
         _facetQuery = new HashMap<String, Long>();
         NamedList<Long> fq = (NamedList<Long>) info.get("facet_queries");
-        for (Map.Entry<String, Long> entry : fq) {
-            _facetQuery.put(entry.getKey(), entry.getValue());
+        if (fq != null) {
+            for (Map.Entry<String, Long> entry : fq) {
+                _facetQuery.put(entry.getKey(), entry.getValue());
+            }
         }
 
         // Parse the facet info into fields

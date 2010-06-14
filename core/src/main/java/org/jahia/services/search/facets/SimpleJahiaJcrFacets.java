@@ -225,9 +225,10 @@ public class SimpleJahiaJcrFacets {
                             params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(
                             StringUtils.removeEnd(fieldName, "_" + locale));
                     String fieldNameInIndex = getFieldNameInIndex(fieldName, epd, locale);
-                    res.add(StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR)
-                            + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex, getTermCounts(f, epd,
-                            fieldNameInIndex));
+                    res.add(StringUtils.removeEnd(StringUtils.substringBeforeLast(f,
+                            PROPNAME_INDEX_SEPARATOR), "_" + locale)
+                            + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
+                            getTermCounts(f, epd, fieldNameInIndex));
                 } catch (RepositoryException e) {
                     logger.error("Cant display facets for: " + f, e);
                 }
@@ -537,6 +538,14 @@ public class SimpleJahiaJcrFacets {
                         + f, "Can not date facet on a field which is not a DateField: " + f,
                         JahiaException.PARAMETER_ERROR, JahiaException.ERROR_SEVERITY);
             }
+            Integer mincount = params.getFieldInt(f, FacetParams.FACET_MINCOUNT);
+            if (mincount == null) {
+                Boolean zeros = params.getFieldBool(f, FacetParams.FACET_ZEROS);
+                // mincount = (zeros!=null && zeros) ? 0 : 1;
+                mincount = (zeros != null && !zeros) ? 1 : 0;
+                // current default is to include zeros.
+            }
+            
             final String startS = required.getFieldParam(f,
                     FacetParams.FACET_DATE_START);
             final Date start;
@@ -591,8 +600,11 @@ public class SimpleJahiaJcrFacets {
                     }
                     final String highI = dateType.toInternal(high);
                     Query rangeQuery = getRangeQuery(fieldNameInIndex, lowI, highI, true, true);
-                    resInner.add(label + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(),
-                            rangeCount(rangeQuery));
+                    int count = rangeCount(rangeQuery);
+                    if (count >= mincount) {
+                        resInner.add(label + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(),
+                                count);
+                    }
                     low = high;
                 }
             } catch (java.text.ParseException e) {
@@ -626,18 +638,27 @@ public class SimpleJahiaJcrFacets {
                     if (all || others.contains(FacetDateOther.BEFORE)) {
                         Query rangeQuery = getRangeQuery(fieldNameInIndex, null, startI, false,
                                 false);
-                        resInner.add(FacetDateOther.BEFORE.toString() + PROPNAME_INDEX_SEPARATOR
-                                + rangeQuery.toString(), rangeCount(rangeQuery));
+                        int count = rangeCount(rangeQuery);
+                        if (count >= mincount) {
+                            resInner.add(FacetDateOther.BEFORE.toString()
+                                    + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(), count);
+                        }
                     }
                     if (all || others.contains(FacetDateOther.AFTER)) {
                         Query rangeQuery = getRangeQuery(fieldNameInIndex, endI, null, false, false);
-                        resInner.add(FacetDateOther.AFTER.toString() + PROPNAME_INDEX_SEPARATOR
-                                + rangeQuery.toString(), rangeCount(rangeQuery));
+                        int count = rangeCount(rangeQuery);
+                        if (count >= mincount) {
+                            resInner.add(FacetDateOther.AFTER.toString() + PROPNAME_INDEX_SEPARATOR
+                                    + rangeQuery.toString(), count);
+                        }
                     }
                     if (all || others.contains(FacetDateOther.BETWEEN)) {
                         Query rangeQuery = getRangeQuery(fieldNameInIndex, startI, endI, true, true);
-                        resInner.add(FacetDateOther.BETWEEN.toString() + PROPNAME_INDEX_SEPARATOR
-                                + rangeQuery.toString(), rangeCount(rangeQuery));
+                        int count = rangeCount(rangeQuery);
+                        if (count >= mincount) {
+                            resInner.add(FacetDateOther.BETWEEN.toString()
+                                    + PROPNAME_INDEX_SEPARATOR + rangeQuery.toString(), count);
+                        }
                     }
                 }
             }

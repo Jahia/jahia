@@ -36,12 +36,10 @@ import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.RoleIdentity;
@@ -57,9 +55,6 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 public class Functions {
-
-    private static final Logger logger =
-            Logger.getLogger(Functions.class);
 
     public static String attributes(Map<String, Object> attributes) {
         StringBuilder out = new StringBuilder();
@@ -340,6 +335,26 @@ public class Functions {
         copy.addAll(list);
         Collections.reverse(copy);
         return copy;
+    }
+    
+    /**
+     * Checks if the current object is iterable so that it can be used in an c:forEach
+     * tag.
+     * 
+     * @param object the object to be checked if it is iterable
+     * @return if the current object is iterable return true otherwise false
+     */
+    public static Boolean isIterable(Object o) {
+        boolean isIt = false;
+        if (o instanceof Object[] || o instanceof boolean[] || o instanceof byte[]
+                || o instanceof char[] || o instanceof short[] || o instanceof int[]
+                || o instanceof long[] || o instanceof float[] || o instanceof double[]
+                || o instanceof Collection<?> || o instanceof Iterator<?>
+                || o instanceof Enumeration<?> || o instanceof Map<?, ?> || o instanceof String) {
+            isIt = true;
+        }
+
+        return isIt;
     }
 
 }

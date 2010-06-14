@@ -372,4 +372,19 @@
         <function-signature>java.util.List getPossibleFormats()</function-signature>
     </function>
     
+    <function>
+        <description>
+			Checks if the given object is iterable to be used with c:forEach
+        </description>
+        <name>isIterable</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.Boolean isIterable(java.lang.Object)</function-signature>
+        <example>
+            &lt;c:if test="${functions:isIterable(object)}"&gt;
+                &lt;c:forEach items="${object}" var="item"&gt;
+                    ${item}
+                &lt;/c:forEach&gt;
+            &lt;/c:if&gt;
+        </example>
+    </function>    
 </taglib>

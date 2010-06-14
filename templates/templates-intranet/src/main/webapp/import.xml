@@ -29,7 +29,7 @@
                         <col1 jcr:primaryType="jnt:contentList"/>
                         <col2 jcr:primaryType="jnt:contentList">
                             <login-to-jahia
-                                    jcr:share="/templatesSet/templates-intranet/contents/site_components/login-to-jahia"/>
+                                    j:share="/templatesSet/templates-intranet/contents/site_components/login-to-jahia"/>
                         </col2>
                     </row1>
                 </pagecontent>

@@ -142,7 +142,7 @@
     Home = default
     simple = simple
     double = simple
-    events = simple
+    events = events
     publication = simple
     news = simple
     people = simple

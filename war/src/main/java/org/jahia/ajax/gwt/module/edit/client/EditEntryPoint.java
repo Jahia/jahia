@@ -27,7 +27,9 @@ public class EditEntryPoint extends CommonEntryPoint {
         if (panel != null) {
             JahiaContentManagementService.App.getInstance().getEditConfiguration(DOM.getElementAttribute(panel.getElement(), "config"), new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
-                    panel.add(new EditPanelViewport(DOM.getInnerHTML(panel.getElement()),
+                    final String s = DOM.getInnerHTML(panel.getElement());
+                    DOM.setInnerHTML(panel.getElement(), "");
+                    panel.add(new EditPanelViewport(s,
                             DOM.getElementAttribute(panel.getElement(), "path"),
                             DOM.getElementAttribute(panel.getElement(), "template"),
                             DOM.getElementAttribute(panel.getElement(), "locale"), gwtEditConfiguration));

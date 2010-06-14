@@ -48,7 +48,7 @@ public class Hover {
 
     public void setMainModule(final MainModule m) {
         this.mainModule = m;
-        m.addScrollListener(new ScrollListener() {
+        m.getScrollContainer().addScrollListener(new ScrollListener() {
             @Override
             public void widgetScrolled(ComponentEvent ce) {
                 for (Map.Entry<Module, Box> boxEntry : boxes.entrySet()) {

@@ -4,14 +4,12 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Header;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -40,10 +38,11 @@ public class MainModule extends Module {
     private GWTEditConfiguration config;
 
     Map<Element, Module> m;
+    protected LayoutContainer scrollContainer;
 
     public MainModule(final String html, final String path, final String template, GWTEditConfiguration config) {
         super("main", path, template, null, null, null, null, new FlowLayout());
-        setScrollMode(Style.Scroll.AUTO);
+        setScrollMode(Style.Scroll.NONE);
 
         this.id = "main";
         this.originalHtml = html;
@@ -63,6 +62,10 @@ public class MainModule extends Module {
                 refresh(EditLinker.REFRESH_MAIN);
             }
         }));
+
+        scrollContainer = new LayoutContainer(new FlowLayout());
+        add(head);
+        add(scrollContainer);
 
         Hover.getInstance().setMainModule(this);
         Selection.getInstance().setMainModule(this);
@@ -129,7 +132,7 @@ public class MainModule extends Module {
                             public void onSuccess(GWTRenderResult result) {
                                 int i = getVScrollPosition();
                                 head.setText("Page : " + path);
-                                removeAll();
+
                                 Selection.getInstance().hide();
                                 Hover.getInstance().removeAll();
                                 display(result.getResult());
@@ -189,9 +192,10 @@ public class MainModule extends Module {
     }-*/;
 
     private void display(String result) {
-        add(head);
+        scrollContainer.removeAll();
+        scrollContainer.setScrollMode(Style.Scroll.AUTO);
         html = new HTML(result);
-        add(html);
+        scrollContainer.add(html);
         ModuleHelper.tranformLinks(html);
         ModuleHelper.initAllModules(this, html);
         ModuleHelper.buildTree(this);
@@ -207,6 +211,22 @@ public class MainModule extends Module {
         if (m != null) {
             ModuleHelper.move(m);
         }
+        scrollContainer.setHeight(getHeight() - head.getOffsetHeight());
+        scrollContainer.setWidth(getWidth());
+    }
+
+    protected void onResize(int width, int height) {
+        super.onResize(width, height);
+        scrollContainer.setHeight(getHeight() - head.getOffsetHeight());
+        scrollContainer.setWidth(getWidth());
+        if (editLinker.getSelectedModule() != null) {
+            Selection.getInstance().hide();
+            Selection.getInstance().show();
+        }
+    }
+
+    public LayoutContainer getScrollContainer() {
+        return scrollContainer;
     }
 
     public void parse() {

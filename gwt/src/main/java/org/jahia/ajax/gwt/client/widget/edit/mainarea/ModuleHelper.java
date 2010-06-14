@@ -195,7 +195,11 @@ public class ModuleHelper {
         for (Element divElement : m.keySet()) {
             Element moduleElement = m.get(divElement).getContainer().getElement();
             divElement.setInnerHTML("");
+//            Element oldParent = DOM.getParent(divElement);
+//            DOM.appendChild(DOM.clone(divElement, true), moduleElement);
+//            DOM.removeChild(oldParent, divElement);
             DOM.appendChild(divElement, moduleElement);
+
         }
         Log.info("Move : "+(System.currentTimeMillis() - start));
     }

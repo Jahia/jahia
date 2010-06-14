@@ -88,7 +88,7 @@ stretcherToOpen   = 0; %>
                           <fmt:message key="org.jahia.admin.passwordPolicies.active.label"/>
                         </th>
                         <th width="50%">
-                          <fmt:message key="label.in"/>
+                          <fmt:message key="label.name"/>
                         </th>
                         <th width="43%" class="lastCol">
                           <fmt:message key="label.parameters"/>

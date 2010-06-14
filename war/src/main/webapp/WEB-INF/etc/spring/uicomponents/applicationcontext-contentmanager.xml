@@ -184,6 +184,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
                     <property name="key" value="providerKey"/>
+                    <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"/>
                     <property name="visibility">
                         <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
                             <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
@@ -191,10 +192,10 @@
                         </bean>
                     </property>
                 </bean>
-                <value>icon,40</value>
-                <value>name,*</value>
-                <value>locked,60</value>
-                <value>size,140</value>
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
+                <value>locked,60,label.lock</value>
+                <value>size,140,label.size</value>
                 <value>mix:lastModified.jcr:lastModified,10</value>
             </list>
         </property>
@@ -267,8 +268,8 @@
         </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,*</value>
-                <value>locked,60</value>
+                <value>name,*,label.name</value>
+                <value>locked,60,label.lock</value>
                 <value>jcr:lastModified,100</value>
             </list>
         </property>
@@ -333,15 +334,15 @@
         <!-- table columns-->
         <property name="treeColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>displayName</value>
+                <value>displayName,*,label.title</value>
             </list>
         </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>icon,40</value>
-                <value>displayName,*</value>
-                <value>name,100</value>
-                <value>locked,60</value>
+                <value>icon,40,empty</value>
+                <value>displayName,*,label.title</value>
+                <value>name,100,label.name</value>
+                <value>locked,60,label.lock</value>
             </list>
         </property>
     </bean>
@@ -428,10 +429,10 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>icon,40</value>
-                <value>name,*</value>
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
                 <value>count,60</value>
-                <value>locked,60</value>
+                <value>locked,60,label.lock</value>
             </list>
         </property>
 
@@ -515,7 +516,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,*</value>
+                <value>name,*,label.name</value>
                 <value>remoteUrl,250</value>
                 <value>remotePath,250</value>
             </list>
@@ -599,7 +600,7 @@
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
-                <value>name,200</value>
+                <value>name,200,label.name</value>
                 <value>j:node,200</value>
                 <value>j:nodeType,200</value>
                 <value>j:availableWorkflows,*</value>
@@ -666,7 +667,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,*</value>
+                <value>name,*,label.name</value>
             </list>
         </property>
 
@@ -757,7 +758,7 @@
         <!-- table columns-->
         <property name="treeColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>displayName</value>
+                <value>displayName,*,label.title</value>
             </list>
         </property>
 
@@ -765,6 +766,7 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
                     <property name="key" value="providerKey"/>
+                    <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"/>
                     <property name="visibility">
                         <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
                             <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
@@ -773,10 +775,10 @@
                     </property>
                 </bean>
                 <value>index,23</value>
-                <value>icon,40</value>
-                <value>name,240</value>
-                <value>locked,60</value>
-                <value>size,140</value>
+                <value>icon,40,empty</value>
+                <value>name,240,label.name</value>
+                <value>locked,60,label.lock</value>
+                <value>size,140,label.size</value>
                 <value>mix:created.jcr:created,100</value>
                 <value>mix:created.jcr:createdBy,100</value>
             </list>
@@ -865,15 +867,15 @@
         <!-- columns -->
         <property name="treeColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>displayName</value>
+                <value>displayName,*,label.title</value>
             </list>
         </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>index,23</value>
-                <value>icon,40</value>
-                <value>displayName,*</value>
-                <value>name,100</value>
+                <value>icon,40,empty</value>
+                <value>displayName,*,label.title</value>
+                <value>name,100,label.name</value>
                 <value>mix:lastModified.jcr:lastModified,100</value>
                 <value>mix:lastModified.jcr:lastModifiedBy,100</value>
                 <value>publicationInfo,30</value>
@@ -927,7 +929,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,*</value>
+                <value>name,*,label.name</value>
             </list>
         </property>
     </bean>
@@ -975,7 +977,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,*</value>
+                <value>name,*,label.name</value>
             </list>
         </property>
 
@@ -1032,7 +1034,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,300</value>
+                <value>name,300,label.name</value>
             </list>
         </property>
     </bean>
@@ -1081,7 +1083,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,300</value>
+                <value>name,300,label.name</value>
             </list>
         </property>
 
@@ -1126,7 +1128,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,300</value>
+                <value>name,300,label.name</value>
             </list>
         </property>
 
@@ -1168,7 +1170,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>displayName</value>
+                <value>displayName,*,label.title</value>
             </list>
         </property>
     </bean>
@@ -1217,7 +1219,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,300</value>
+                <value>name,300,label.name</value>
             </list>
         </property>
 
@@ -1264,7 +1266,7 @@
         <!-- table columns-->
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>name,300</value>
+                <value>name,300,label.name</value>
             </list>
         </property>
 
@@ -1429,56 +1431,67 @@
     <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="globalRepository"/>
         <property name="paths" value="/"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"/>
     </bean>
 
     <bean id="repository.shared" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedRepository"/>
         <property name="paths" value="/shared/files"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"/>
     </bean>
 
     <bean id="repository.my" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myRepository"/>
         <property name="paths" value="$user/files"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"/>
     </bean>
 
     <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websiteRepository"/>
         <property name="paths" value="$site/files"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteRepository.label"/>
     </bean>
 
     <bean id="repository.myexternal" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myExternalRepository"/>
         <property name="paths" value="/mounts"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"/>
     </bean>
 
     <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedMashupRepository"/>
         <property name="paths" value="/shared/mashups"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedMashupRepository.label"/>
     </bean>
 
     <bean id="repository.websitemahsup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websiteMashupRepository"/>
         <property name="paths" value="$site/mashups"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteMashupRepository.label"/>
     </bean>
 
     <bean id="repository.mymashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myMashupRepository"/>
         <property name="paths" value="$user/mashups"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myMashupRepository.label"/>
     </bean>
 
     <bean id="repository.users" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="usersRepository"/>
         <property name="paths" value="/users"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.usersRepository.label"/>
     </bean>
 
     <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="categoryRepository"/>
         <property name="paths" value="/categories"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.categoryRepository.label"/>
     </bean>
 
     <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRepository"/>
         <property name="paths" value="/sites"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.siteRepository.label"/>
     </bean>
 
 </beans>

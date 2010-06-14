@@ -333,7 +333,7 @@
         </property>
         <property name="treeColumns">
             <list>
-                <value>displayName,*</value>
+                <value>displayName,*,label.title</value>
             </list>
         </property>
         <property name="treeContextMenu">
@@ -401,8 +401,8 @@
         <property name="folderTypes" value="jmix:navMenuItem"/>
         <property name="treeColumns">
             <list>
-                <value>displayName,*</value>
-                <value>author,100</value>
+                <value>displayName,*,label.title</value>
+                <value>author,100,versioning.author</value>
             </list>
         </property>
         <property name="treeContextMenu">
@@ -483,7 +483,7 @@
         <property name="folderTypes" value="jnt:contentList"/>
         <property name="treeColumns">
             <list>
-                <value>displayName,*</value>
+                <value>displayName,*,label.title</value>
             </list>
         </property>
         <property name="treeContextMenu">
@@ -542,7 +542,7 @@
         </property>
         <property name="treeColumns">
             <list>
-                <value>displayName,*</value>
+                <value>displayName,*,label.title</value>
             </list>
         </property>
         <property name="treeContextMenu">
@@ -595,7 +595,7 @@
         <property name="folderTypes" value="jnt:portletList"/>
         <property name="treeColumns">
             <list>
-                <value>displayName,*</value>
+                <value>displayName,*,label.title</value>
             </list>
         </property>
         <property name="treeContextMenu">

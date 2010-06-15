@@ -31,34 +31,39 @@
  */
 package org.jahia.admin.components;
 
+import static org.jahia.bin.JahiaAdministration.JSP_PATH;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.License;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Set;
+import org.jahia.utils.maven.plugin.deployers.ServerDeploymentFactory;
+import org.jahia.utils.maven.plugin.deployers.ServerDeploymentInterface;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.ServletRequestUtils;
 
 
 /**
@@ -76,19 +81,10 @@ import java.util.Set;
  */
 public class ManageComponents extends AbstractAdministrationModule {
 
-    /**
-     * logging
-     */
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ManageComponents.class);
-
-    private static final String CLASS_NAME = JahiaAdministration.CLASS_NAME;
-    private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
+    private static Logger logger = Logger.getLogger(ManageComponents.class);
 
     private JahiaSite site;
     private JahiaUser user;
-    private ServicesRegistry sReg;
-    private JCRStoreService jcr;
 
     private License coreLicense;
 
@@ -137,9 +133,6 @@ public class ManageComponents extends AbstractAdministrationModule {
         response.setContentType("text/html");
         String operation = request.getParameter("sub");
 
-        sReg = ServicesRegistry.getInstance();
-        jcr = sReg.getJCRStoreService();
-
         // check if the user has really admin access to this site...
         user = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
         site = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
@@ -150,22 +143,18 @@ public class ManageComponents extends AbstractAdministrationModule {
             jParams = jData.getProcessingContext();
         }
 
-        if (site != null && user != null && sReg != null) {
-            // set the new site id to administrate...
+        if (site != null && user != null) {
+            // set the new site id to administer...
             request.setAttribute("site", site);
             request.setAttribute("appserverDeployerUrl", SettingsBean.getInstance().getJahiaWebAppsDeployerBaseURL());
-            String serverType = SettingsBean.getInstance().getServer();
-            if (serverType != null && serverType.equalsIgnoreCase("Tomcat")) {
-                request.setAttribute("isTomcat", Boolean.TRUE);
-            } else {
-                request.setAttribute("isTomcat", Boolean.FALSE);
-            }
-
+            request.setAttribute("autoDeploySupported", Boolean.valueOf(SettingsBean.getInstance().getServerDeployer().isAutoDeploySupported()));
 
             if (operation.equals("display")) {
                 displayComponentList(request, response, session);
             } else if (operation.equals("prepareDeployPortlet")) {
                 prepareDeployPortlet(request, response, session);
+            } else if (operation.equals("getPreparedWar")) {
+                getPreparedWar(request, response, session);
             }
 
         } else {
@@ -178,6 +167,30 @@ public class ManageComponents extends AbstractAdministrationModule {
         }
     }
 
+
+    private void getPreparedWar(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
+        File war = null;
+        String fileName = null;
+        String warName = null;
+        try {
+            fileName = ServletRequestUtils.getRequiredStringParameter(request, "file");
+            warName = ServletRequestUtils.getStringParameter(request, "war", fileName);
+            war = new File(System.getProperty("java.io.tmpdir"), fileName);
+        } catch (ServletRequestBindingException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required parameter war is not found in the request");
+            return;
+        }
+        FileInputStream is = null;
+        try {
+            response.setContentType("application/zip");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + warName + "\"");
+
+            is = new FileInputStream(war);
+            IOUtils.copy(is, response.getOutputStream());
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
 
     /**
      * Display the list of components.
@@ -226,27 +239,27 @@ public class ManageComponents extends AbstractAdministrationModule {
                 String n = iterator.next();
                 String fileName = fileUpload.getFileSystemName(n);
                 File f = fileUpload.getFile(n);
+                File generatedFile = null;
 
                 try {
-                    File generatedFile = f;
+                    generatedFile = f;
                     if (doPrepare) {
                         generatedFile = processUploadedFile(f);
                     }
 
                     if (generatedFile != null) {
-                        // save it in the JCR
-                        String url = writeToDisk(user, generatedFile, SettingsBean.getInstance().getJahiaPreparePortletJCRPath(), fileName);
-
                         // deploy it
                         if (doDeploy) {
                             deployPortlet(generatedFile, fileName);
                         }
 
-
                         if (doPrepare && !doDeploy) {
+                            // save it in the JCR
+                            //String url = writeToDisk(user, generatedFile, SettingsBean.getInstance().getJahiaPreparePortletJCRPath(), fileName);
+                            String url = request.getContextPath() + "/administration/?do=sharecomponents&sub=getPreparedWar&war=" + URLEncoder.encode(fileName, "UTF-8") + "&file=" + generatedFile.getName();
+                            
                             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletReady", jParams.getLocale());
-                            String html = dspMsg + "<br/>" + JahiaResourceBundle.getJahiaInternalResource("label.download", jParams.getLocale()) + "<a href='" + url + "'> " + fileName + "</a>";
-                            response.getWriter().print(html);
+                            response.getWriter().append(dspMsg).append("<br/><br/>").append(JahiaResourceBundle.getJahiaInternalResource("label.download", jParams.getLocale())).append(":&nbsp;<a href='").append(url).append("'>").append(fileName).append("</a>");
                         } else {
                             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.components.ManageComponents.portletDeployed.label", jParams.getLocale());
                             response.getWriter().print(dspMsg);
@@ -258,6 +271,11 @@ public class ManageComponents extends AbstractAdministrationModule {
                     String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label", jParams.getLocale());
                     response.getWriter().print(dspMsg);
                     logger.error(e, e);
+                } finally {
+                    FileUtils.deleteQuietly(f);
+                    if (!doPrepare || doDeploy) {
+                        FileUtils.deleteQuietly(generatedFile);
+                    }
                 }
             }
 
@@ -277,8 +295,8 @@ public class ManageComponents extends AbstractAdministrationModule {
         String serverType = SettingsBean.getInstance().getServer();
         if (serverType != null && serverType.equalsIgnoreCase("Tomcat")) {
             String newName = SettingsBean.getInstance().getJahiaWebAppsDiskPath() + filename;
-            FileUtils.copyFile(file, new File(newName));
-            logger.info("Copy " + filename + " to " + SettingsBean.getInstance().getJahiaWebAppsDiskPath() + ". Waiting for tomcat. app deployment.");
+            FileUtils.moveFile(file, new File(newName));
+            logger.info("Move " + filename + " to " + SettingsBean.getInstance().getJahiaWebAppsDiskPath());
         } else {
             logger.debug("Server: " + serverType);
         }
@@ -292,62 +310,7 @@ public class ManageComponents extends AbstractAdministrationModule {
      * @throws Exception
      */
     private File processUploadedFile(File file) throws Exception {
-        AssemblerTask task = new AssemblerTask(getTempDir(), file);
-        return task.execute();
+        return new AssemblerTask(new File(System.getProperty("java.io.tmpdir")), file).execute();
     }
 
-    /**
-     * Write to disk
-     *
-     * @param user
-     * @param item
-     * @param location
-     * @param filename
-     * @return
-     * @throws IOException
-     */
-    private String writeToDisk(JahiaUser user, File item, String location, String filename) throws IOException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("item : " + item);
-            logger.debug("destination : " + location);
-            logger.debug("filename : " + filename);
-        }
-        if (item == null || location == null || filename == null) {
-            return null;
-        }
-
-
-        JCRNodeWrapper locationFolder = jcr.getFileNode(location, user);
-
-        locationFolder.getUrl();
-
-        if (!locationFolder.isWriteable() || locationFolder.isLocked()) {
-            logger.debug("destination is not writable for user " + user.getName());
-            return null;
-        }
-        JCRNodeWrapper result;
-        try {
-            InputStream is = new FileInputStream(item);
-            result = locationFolder.uploadFile(filename, is, "multipart/alternative");
-            is.close();
-            locationFolder.save();
-        } catch (RepositoryException e) {
-            logger.error("exception ", e);
-            return null;
-        }
-        return result.getUrl();
-    }
-
-    /**
-     * Get temp dir
-     *
-     * @return
-     * @throws IOException
-     */
-    private File getTempDir() throws IOException {
-        final File tempFile = File.createTempFile("DoesNotMatter", "generated-portlets");
-        tempFile.delete();
-        final File tempDir = tempFile.getParentFile();
-        return tempDir;
-    }
 }

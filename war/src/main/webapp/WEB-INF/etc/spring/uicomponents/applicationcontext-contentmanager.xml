@@ -621,6 +621,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
+                                    <ref bean="Toolbar.Item.Shortcuts.DeployPortlets"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
                                         <property name="layout" value="button"/>
                                         <property name="items">

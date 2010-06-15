@@ -33,22 +33,13 @@
 
 package org.jahia.utils.i18n;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.utils.JahiaTools;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.comparator.NumericStringComparator;
-import org.jahia.bin.Jahia;
 
 
 /**

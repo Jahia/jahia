@@ -83,7 +83,7 @@ public class TomcatUsersModifier
 
         try {
                 // get tomcat-users.xml path...
-                StringBuffer tomXMLPath = new StringBuffer( SettingsBean.getInstance().getServerHomeDiskPath() );
+                StringBuffer tomXMLPath = new StringBuffer( SettingsBean.getInstance().getServerHome() );
                 tomXMLPath.append( "conf" );
                 tomXMLPath.append( File.separator );
                 tomXMLPath.append( "tomcat-users.xml" );

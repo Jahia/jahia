@@ -60,7 +60,6 @@ public class JCRStoreService extends JahiaService  {
 
     private Map<String, String> decorators = new HashMap<String, String>();
 
-    private List<PropertyInterceptor> interceptors = new ArrayList<PropertyInterceptor>();
     private InterceptorChain interceptorChain;
 
     static private JCRStoreService instance = null;
@@ -109,7 +108,6 @@ public class JCRStoreService extends JahiaService  {
     }
 
     public void setInterceptors(List<PropertyInterceptor> interceptors) {
-        this.interceptors = interceptors;
         interceptorChain = new InterceptorChain();
         interceptorChain.setInterceptors(interceptors);
     }
@@ -188,13 +186,5 @@ public class JCRStoreService extends JahiaService  {
             logger.error("Error while decorating node", e);
         }
         return w;
-    }
-
-     /**
-     * @deprecated Use getCurrentUserSession().getNode()
-     */
-    public JCRNodeWrapper getFileNode(String path, JahiaUser user) {
-        throw new UnsupportedOperationException("getFileNode: "+path);
-//        // Todo Suppress this method
     }
 }

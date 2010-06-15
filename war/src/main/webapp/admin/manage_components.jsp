@@ -35,16 +35,12 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ include file="/admin/include/header.inc" %>
-<%
-    Boolean isTomcat = (Boolean) request.getAttribute("isTomcat");
-    String appserverDeployerUrl = (String) request.getAttribute("appserverDeployerUrl");
-
-    stretcherToOpen = 0; %>
+<% stretcherToOpen = 0; %>
 <script type="text/javascript">
     var portletDeployment =  {
         formActionUrl: "<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=prepareDeployPortlet")%>",
-        isTomcat: "<%=isTomcat%>",
-        appserverDeployerUrl: "<%=appserverDeployerUrl%>"
+        autoDeploySupported: "${autoDeploySupported}",
+        appserverDeployerUrl: "${appserverDeployerUrl}"
     }
 </script>
 <internal:gwtGenerateDictionary/>        

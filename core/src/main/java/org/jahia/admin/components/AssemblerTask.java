@@ -37,7 +37,7 @@ import org.apache.pluto.util.assemble.war.WarAssembler;
 import java.io.File;
 
 /**
- * Created by IntelliJ IDEA.
+ * .
  * User: jahia
  * Date: 15 avr. 2009
  * Time: 12:31:07
@@ -45,10 +45,6 @@ import java.io.File;
 public class AssemblerTask {
     private File webapp;
     private File tempDir;
-
-    public AssemblerTask(File webapp) {
-        this.webapp = webapp;
-    }
 
     public AssemblerTask(File tempDir, File webapp) {
         this.tempDir = tempDir;
@@ -59,16 +55,8 @@ public class AssemblerTask {
         return webapp;
     }
 
-    public void setWebapp(File webapp) {
-        this.webapp = webapp;
-    }
-
     public File getTempDir() {
         return tempDir;
-    }
-
-    public void setTempDir(File tempDir) {
-        this.tempDir = tempDir;
     }
 
     public File execute() throws Exception {

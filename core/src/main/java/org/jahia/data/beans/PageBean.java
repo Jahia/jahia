@@ -145,7 +145,7 @@ public class PageBean extends ContentBean {
     }
 
     public String getHighLightDiffTitle() {
-        return jahiaPage.getHighLightDiffTitle(this.processingContext);
+        throw new UnsupportedOperationException();
     }
 
     public int getDefinitionID() {

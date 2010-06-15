@@ -82,38 +82,6 @@
     </function>
 
     <function>
-        <description>Returns true if the specified user has a subscription entry for this specified content object.
-        </description>
-        <name>isSubscribed</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>boolean isSubscribed(java.lang.String, java.lang.String, java.lang.String, int)
-        </function-signature>
-        <example>
-            &lt;c:if
-            test="${functions:isSubscribed('ContentContainerList_19', 'contentPublished', ${jahia.requestInfo.currentUserName},
-            ${jahia.site.id})}"&gt;
-            The current user is subscribed to be notified on 'contentPublished' event for the container list
-            &lt;/c:if&gt;
-        </example>
-    </function>
-
-    <function>
-        <description>Returns true if the specified user has NO subscription entry for this specified content object.
-        </description>
-        <name>isNotSubscribed</name>
-        <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>boolean isNotSubscribed(java.lang.String, java.lang.String, java.lang.String, int)
-        </function-signature>
-        <example>
-            &lt;c:if
-            test="${functions:isNotSubscribed('ContentContainerList_19', 'contentPublished', ${jahia.requestInfo.currentUserName},
-            ${jahia.site.id})}"&gt;
-            The current user is NOT subscribed to be notified on 'contentPublished' event for the container list
-            &lt;/c:if&gt;
-        </example>
-    </function>
-
-    <function>
         <description>Returns true if the current user is member of the specified group name or comma-separated list of
             group names
         </description>

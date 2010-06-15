@@ -785,13 +785,24 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             if (app == null) {
                 // The app was not found in Jahia but is registered in Pluto, so we register it in Jahia.
                 logger.info("Registering portlet context " + currentPortletApplicationName + " in Jahia.");
-                ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().registerWebApps(currentContext);
+                registerWebApps(currentContext);
             }
         }
     }
 
+    private void registerWebApps(String context) throws JahiaException {
+        addDefinition(new ApplicationBean(
+                "", // id
+                !context.startsWith("/") ? context : context.substring(1),
+                context,
+                true,
+                "",
+                "portlet"
+        ));
+    }
+    
     /**
-     * Put in apllication cache
+     * Put in application cache
      *
      * @param app
      */

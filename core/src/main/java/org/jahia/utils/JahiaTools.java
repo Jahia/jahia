@@ -40,16 +40,35 @@
 
 package org.jahia.utils;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.io.FileCleaningTracker;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.DeferredFileOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.jexl.Expression;
 import org.apache.commons.jexl.ExpressionFactory;
 import org.apache.commons.jexl.JexlContext;
@@ -57,22 +76,10 @@ import org.apache.commons.jexl.JexlHelper;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.data.fields.ExpressionMarker;
 import org.jahia.data.fields.JahiaField;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.utils.i18n.ResourceBundleMarker;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.keygenerator.JahiaKeyGen;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.*;
 
 
 /**
@@ -100,10 +107,8 @@ public class JahiaTools {
     private static Map<String, Long> milliSecondsMultiplier;
 
     private static Logger logger = Logger.getLogger(JahiaTools.class);
-    private static HttpClient httpClient;
 
     private static List<String> structureHTMLTags = new ArrayList<String>();
-    private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
 
     /**************************************************************************
      * Debugging Tools
@@ -1266,88 +1271,6 @@ public class JahiaTools {
         }
         return buff.toString();
     }
-
-    public static InputStream makeJahiaRequest(URL url, JahiaUser user, String username, String password, int redirectContinue) throws IOException {
-        GetMethod method = null;
-        if (httpClient == null) {
-            MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-            connectionManager.getParams().setMaxTotalConnections(40);
-            connectionManager.getParams().setDefaultMaxConnectionsPerHost(10);
-            httpClient = new HttpClient(connectionManager);
-            httpClient.getParams().setConnectionManagerTimeout(SettingsBean.getInstance().getConnectionTimeoutForProductionJob());
-            //Set to COMPATIBILITY for it to work in as many cases as possible
-            httpClient.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-        }
-        for (; redirectContinue > 0; redirectContinue--) {
-            // Create an instance of HttpClient.
-
-            // Create a method instance.
-            method = new GetMethod(url.toString());
-            method.setFollowRedirects(false);
-            if (username != null && password != null) {
-                method.addRequestHeader("Authorization", "BASIC " + org.apache.axis.encoding.Base64.encode((username + ":" + password).getBytes("ISO-8859-1")));
-            }
-            // Execute the method.
-            int result = httpClient.executeMethod(method);
-            logger.debug("Response status code for [" + url + "] is : " + result);
-
-            //this is just in case we get a different host redirection or an error:
-            if (result == HttpStatus.SC_MOVED_TEMPORARILY) {
-                String redirectLocation;
-                Header locationHeader = method.getResponseHeader("location");
-                if (locationHeader != null) {
-                    redirectLocation = locationHeader.getValue();
-                    url = new URL(redirectLocation);
-                    method.releaseConnection();
-                    logger.info("Redirection to a different host [" + url + "]");
-                } else {
-                    method.releaseConnection();
-                    throw new IOException("No HTTP location Header in redirect send by request to [" + url + "]. HTTP status code [" + result + "]");
-                }
-            } else if (result != HttpStatus.SC_OK) {
-                method.releaseConnection();
-                throw new HttpException("Unsupported HTTP status code ["+result+" i.e. "+method.getStatusText()+"] for request to ["+url +"].");
-            } else {
-                DeferredFileOutputStream dfos =
-                        new DeferredFileOutputStream(1024 * 1024 * 10, File.createTempFile("temp", "httpclient"));
-                InputStream inputStream = new BufferedInputStream(new FileInputStream(dfos.getFile()));
-                fileCleaningTracker.track(dfos.getFile(), inputStream);
-                IOUtils.copy(method.getResponseBodyAsStream(), dfos);
-                method.releaseConnection();
-                if (dfos.isInMemory()) {
-                    inputStream.close();
-                    return new ByteArrayInputStream(dfos.getData());
-                }
-                return inputStream;
-            }
-        }
-
-        throw new IOException("Too many redirects for request to [" + url + "].");
-    }
-
-    public static String getConditionalInClauseFromBitSet(BitSet ids,
-                                                          String columnName, String valueOperator, String suffix) {
-        StringBuffer buff = new StringBuffer(1000);
-        if (ids.cardinality() <= org.jahia.settings.SettingsBean.getInstance()
-                .getDBMaxElementsForInClause()) {
-            if (valueOperator.indexOf("!=") != -1
-                    || valueOperator.indexOf("<>") != -1) {
-                buff.append(columnName).append(" NOT IN (");
-            } else if (valueOperator.indexOf("=") != -1) {
-                buff.append(columnName).append(" IN (");
-            }
-
-            for (int i = ids.nextSetBit(0); i >= 0; i = ids.nextSetBit(i + 1)) {
-                buff.append(String.valueOf(i));
-                if (ids.nextSetBit(i + 1) >= 0) {
-                    buff.append(",");
-                }
-            }
-            buff.append(") ").append(suffix);
-        }
-        return buff.toString();
-    }
-
 
     /**
      * The format of this is ' *w *d *h *m *s ' (representing weeks, days, hours and minutes - where * can be any number)

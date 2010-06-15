@@ -73,7 +73,6 @@ import org.jahia.security.license.LicenseConstants;
 import org.jahia.security.license.LicenseManager;
 import org.jahia.security.license.Limit;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.deamons.filewatcher.FileListSync;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -406,17 +405,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         // Initialize all the registered services.
         try {
             if (initServicesRegistry()) {
-                try {
-                    FileListSync.getInstance().start();
-                } catch (NullPointerException ex) {
-                    logger.fatal(
-                        "CRITICAL : Error while initializing one of the needed services!", ex);
-
-                    // init error, stop Jahia!
-                    mInitError = true;
-                    return;
-                }
-
                 ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
 
                 // Todo : Have a convenience way to add listeners from service

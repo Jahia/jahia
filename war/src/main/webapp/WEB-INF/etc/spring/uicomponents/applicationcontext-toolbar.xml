@@ -1395,4 +1395,13 @@
         <property name="icon" value="templateExport"/>
     </bean>
     <!-- end of new content action buttons -->
+
+    <bean id="Toolbar.Item.Shortcuts.DeployPortlets" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployPortletDefinitionActionItem"/>
+        </property>
+        <property name="layout" value="button"/>
+        <property name="titleKey" value="label.deployNewPortlet"/>
+        <property name="icon" value="add-application"/>
+    </bean>
 </beans>

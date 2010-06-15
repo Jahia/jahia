@@ -40,7 +40,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.usermanager.JahiaUser;
@@ -125,42 +124,6 @@ public class Functions {
         return buff.toString();
     }
 
-
-    /**
-     * Returns <code>true</code> if the subscriptions entry with the specified
-     * data exists.
-     *
-     * @param objectKey the key of the content object that is the source of events
-     * @param eventType the type of an event to be notified about
-     * @param username  the user to be notified
-     * @param siteId    the ID of the site owning the content object in question
-     * @return <code>true</code> if the subscriptions entry with the specified
-     *         data exists
-     */
-    public static boolean isSubscribed(String objectKey, String eventType,
-                                       String username, int siteId) {
-
-        return SubscriptionService.getInstance().isSubscribed(objectKey,
-                eventType, username, siteId);
-    }
-
-    /**
-     * Returns <code>true</code> if the subscriptions entry with the specified
-     * data does not exist.
-     *
-     * @param objectKey the key of the content object that is the source of events
-     * @param eventType the type of an event to be notified about
-     * @param username  the user to be notified
-     * @param siteId    the ID of the site owning the content object in question
-     * @return <code>true</code> if the subscriptions entry with the specified
-     *         data does not exist
-     */
-    public static boolean isNotSubscribed(String objectKey, String eventType,
-                                          String username, int siteId) {
-
-        return !SubscriptionService.getInstance().isSubscribed(objectKey,
-                eventType, username, siteId);
-    }
 
     public static String removeDuplicates(String initString, String separator) {
         final String[] fullString = initString.split(separator);

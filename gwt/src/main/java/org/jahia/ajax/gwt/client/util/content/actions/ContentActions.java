@@ -470,7 +470,7 @@ public class ContentActions {
             w.setResizable(false);
             w.setBodyBorder(false);
             w.setLayout(new FillLayout());
-            w.setWidth(500);
+            w.setWidth(700);
             w.add(new FormDeployPortletDefinition() {
                 public void closeParent() {
                     w.hide();

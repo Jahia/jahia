@@ -36,9 +36,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.ProcessingContextFactory;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
 import org.jahia.services.content.decorator.JCRFileContent;
@@ -69,7 +67,7 @@ public class FilesServlet extends HttpServlet {
 
     private static Logger logger = Logger.getLogger(FilesServlet.class);
 
-    public static Cache cache;
+    public static Cache<String, byte[]> cache;
 
     private int cacheThreshold = 64 * 1024;
 
@@ -79,17 +77,6 @@ public class FilesServlet extends HttpServlet {
         } catch (JahiaInitializationException e) {
             e.printStackTrace();
         }
-    }
-
-    protected static ProcessingContextFactory pcf;
-
-    private static ProcessingContextFactory getProcessingContextFactory() {
-        if (pcf == null) {
-            pcf = (ProcessingContextFactory) SpringContextSingleton
-                    .getInstance().getContext()
-                    .getBean(ProcessingContextFactory.class.getName());
-        }
-        return pcf;
     }
 
     public void init(ServletConfig config) throws ServletException {
@@ -102,7 +89,6 @@ public class FilesServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        JahiaUser jahiaUser = (JahiaUser) req.getSession().getAttribute(ProcessingContext.SESSION_USER);
         String p = req.getRequestURI();
         if (!req.getContextPath().equals("/") && p.startsWith(req.getContextPath())) {
             p = p.substring(req.getContextPath().length());
@@ -117,7 +103,7 @@ public class FilesServlet extends HttpServlet {
         try {
             n = JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(p);
         } catch (RepositoryException e) {
-            logger.error("Error accesing path : "+p+" for user "+jahiaUser,e);
+            logger.error("Error accesing path : "+p+" for user "+(JahiaUser) req.getSession().getAttribute(ProcessingContext.SESSION_USER),e);
             res.sendError(HttpServletResponse.SC_NOT_FOUND,e.getLocalizedMessage());
             return;
         }

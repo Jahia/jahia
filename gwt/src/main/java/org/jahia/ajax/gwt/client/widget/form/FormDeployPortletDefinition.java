@@ -66,21 +66,21 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         final com.extjs.gxt.ui.client.widget.form.FileUploadField portletDefinitionField = new com.extjs.gxt.ui.client.widget.form.FileUploadField();
         portletDefinitionField.setAllowBlank(false);
         portletDefinitionField.setName("portletDefinition");
-        portletDefinitionField.setFieldLabel(Messages.getNotEmptyResource("portlet_definition", "Portlet Definition"));
+        portletDefinitionField.setFieldLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.portletdef.label", "Portlet Definition"));
         add(portletDefinitionField);
 
-        final HiddenField preparePortlet = new HiddenField();
+        final HiddenField<Boolean> preparePortlet = new HiddenField<Boolean>();
         preparePortlet.setName("doPrepare");
         preparePortlet.setValue(false);
         add(preparePortlet);
 
 
-        final HiddenField deployPortlet = new HiddenField();
+        final HiddenField<Boolean> deployPortlet = new HiddenField<Boolean>();
         deployPortlet.setName("doDeploy");
         deployPortlet.setValue(false);
         add(deployPortlet);
 
-        Button prepareButton = new Button(Messages.getNotEmptyResource("label.portletPrepareWar", "Prepare"));
+        Button prepareButton = new Button(Messages.get("label.portletPrepareWar", "Prepare"));
         prepareButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -91,12 +91,12 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         });
         addButton(prepareButton);
 
-        final boolean isTomcat = isTomcat();
-        Button deployButton = new Button(Messages.getNotEmptyResource("label.deployNewPortlet", "Deploy"));
+        final boolean autoDeploySupported = autoDeploySupported();
+        Button deployButton = new Button(Messages.get("label.deployNewPortlet", "Deploy"));
         deployButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (isTomcat) {
+                if (autoDeploySupported) {
                     deployPortlet.setValue(true);
                     doCloseParent = true;
                     submitAfterValidation(portletDefinitionField);
@@ -108,8 +108,8 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         });
         addButton(deployButton);
 
-        if (isTomcat) {
-            Button prepareAndDeployButton = new Button(Messages.getNotEmptyResource("fm_portlet_prepareAndDeploywar", "Prepare and deploy"));
+        if (autoDeploySupported) {
+            Button prepareAndDeployButton = new Button(Messages.get("label.prepareAndDeployWar", "Prepare and deploy"));
             prepareAndDeployButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
@@ -147,7 +147,7 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
                 }
                 String html = formEvent.getResultHtml();
                 if (html != null) {
-                    MessageBox.info("", html, null);
+                    MessageBox.info(Messages.get("label.deployNewPortlet", "Deploy new portlets"), html, null);
                 }
                 WorkInProgress.hide();
             }
@@ -161,7 +161,7 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         if (portletDefinitionField.getValue() != null && portletDefinitionField.getValue().length() > 0) {
             submit();
         }else{
-             MessageBox.alert("", Messages.getNotEmptyResource("fm_portlet_select_war", "Please select a *.war file"), null);
+             MessageBox.alert(Messages.get("label.deployNewPortlet", "Deploy new portlets"), Messages.get("warning.selectFileForUpload", "Please select a *.war file"), null);
         }
     }
 
@@ -176,9 +176,9 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         }
     }
 
-    public static boolean isTomcat() {
+    public static boolean autoDeploySupported() {
         try {
-            return Boolean.valueOf(getPortletDeploymentParam("isTomcat"));
+            return Boolean.valueOf(getPortletDeploymentParam("autoDeploySupported"));
         } catch (Exception e) {
             return false;
         }

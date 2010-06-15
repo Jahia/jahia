@@ -33,20 +33,16 @@ package org.jahia.taglibs.uicomponents.image;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.TagSupport;
 
-import org.jahia.data.JahiaData;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
 
 
 /**
@@ -58,7 +54,7 @@ import org.jahia.services.usermanager.JahiaUser;
  * <p><attriInfo>
  * </attriInfo>"
  */
-public class RandomImageTag extends TagSupport {
+public class RandomImageTag extends AbstractJCRTag {
 
 
     /**
@@ -74,7 +70,6 @@ public class RandomImageTag extends TagSupport {
 
     public int doStartTag() throws JspException {
 
-        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         try {
             Object pageCPath = pageContext.getAttribute(getPath());
             if (pageCPath != null)
@@ -83,11 +78,11 @@ public class RandomImageTag extends TagSupport {
             throw new JspException("this tag is designed to be used in a JahiaContext only", e);
         }
 
-        List<JCRNodeWrapper> imagelist = null;
+        List<JCRNodeWrapper> imagelist = Collections.emptyList();
         try {
-            imagelist = getSortedImages(path, renderContext.getUser(), false);
-        } catch (NullPointerException e) {
-            logger.error("error", e);
+            imagelist = getSortedImages(path, false);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             return SKIP_BODY;
         }
 
@@ -134,11 +129,10 @@ public class RandomImageTag extends TagSupport {
         return EVAL_PAGE;
     }
 
-    private List<JCRNodeWrapper> getSortedImages(String webdavpath, JahiaUser jahiaUser, boolean thumbdisp) {
+    private List<JCRNodeWrapper> getSortedImages(String webdavpath, boolean thumbdisp) throws PathNotFoundException, RepositoryException {
 
 
-        JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRNodeWrapper node = jcr.getFileNode(webdavpath, jahiaUser);
+        JCRNodeWrapper node = getJCRSession().getNode(webdavpath);
 
         List<JCRNodeWrapper> images = new ArrayList<JCRNodeWrapper>();
         for (JCRNodeWrapper thefile : node.getChildren()) {

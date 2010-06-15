@@ -89,12 +89,6 @@
             </bean>
         </property>
     </bean>    
-    <bean id="JahiaWebAppsDeployerService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="${JahiaWebAppsDeployerService}" parent="jahiaServiceTemplate" factory-method="getInstance">
-            </bean>
-        </property>
-    </bean>
     <bean id="JahiaFileWatcherService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.deamons.filewatcher.JahiaFileWatcherBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -115,16 +109,9 @@
                 </property>
             </bean>
         </property>
-        <property name="fileWatcherService" ref="JahiaFileWatcherService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
 
-    <bean id="JahiaHtmlEditorsService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.htmleditors.HtmlEditorsBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-            </bean>
-        </property>
-    </bean>
     <bean id="CategoryService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.categories.CategoryServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -145,16 +132,6 @@
             <bean class="org.jahia.services.tags.TaggingService"/>
         </property>
     </bean>
-    <bean id="HtmlParserService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.htmlparser.HtmlParserBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="parserClassName" value="org.jahia.services.htmlparser.TidyHtmlParser" />
-                <!-- 
-                <property name="parserClassName" value="org.jahia.services.htmlparser.NekoHtmlParser" />
-                 -->
-            </bean>
-        </property>
-    </bean>
 
     <bean id="ImportExportService" parent="proxyTemplate">
         <property name="target">
@@ -173,7 +150,7 @@
 
    <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate" depends-on="jackrabbit">
         <property name="templatePackageDeployer">
-            <bean class="org.jahia.services.templates.TemplatePackageDeployer" depends-on="FileListSync">
+            <bean class="org.jahia.services.templates.TemplatePackageDeployer">
 		    	<property name="settingsBean" ref="settingsBean" />
 		      	<property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
 		      	<property name="importExportService" ref="ImportExportService" />

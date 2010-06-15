@@ -46,12 +46,8 @@ import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.fetchers.JahiaFetcherService;
 import org.jahia.services.fields.JahiaFieldService;
-import org.jahia.services.htmleditors.HtmlEditorsService;
-import org.jahia.services.htmlparser.HtmlParserService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.mail.MailService;
-import org.jahia.services.metadata.MetadataService;
-import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.preferences.JahiaPreferencesService;
@@ -66,7 +62,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.JahiaVersionService;
-import org.jahia.services.webapps_deployer.JahiaWebAppsDeployerService;
 import org.jahia.settings.SettingsBean;
 import org.springframework.context.ApplicationContext;
 
@@ -90,9 +85,6 @@ public class ServicesRegistry {
      */
     private static ServicesRegistry theObject = new ServicesRegistry();
 
-
-    // Jahia Files Services
-    private static final String TEXT_FILE_SERVICE = "JahiaTextFileService";
 
     /**
      * Jahia Page Services Name *
@@ -127,15 +119,8 @@ public class ServicesRegistry {
     private static final String JAHIA_SITE_USER_MANAGER_SERVICE =
             "JahiaSiteUserManagerService";
 
-    // Jahia ACL Manager Service
-    private static final String JAHIA_ACL_MANAGER_SERVICE = "JahiaACLManagerService";
-
     // Jahia Fetcher Service
     private static final String JAHIA_FETCHER_SERVICE = "JahiaFetcherService";
-
-    // Jahia WebApps Deployer Service
-    private static final String JAHIA_WEBAPPS_DEPLOYER_SERVICE =
-            "JahiaWebAppsDeployerService";
 
     // Jahia FileWatcher Service
     private static final String JAHIA_FILE_WATCHER_SERVICE = "JahiaFileWatcherService";
@@ -146,21 +131,12 @@ public class ServicesRegistry {
     // Jahia Versioning Service
     private static final String JAHIA_VERSION_SERVICE = "JahiaVersionService";
 
-    // Jahia Html Editors Service
-    private static final String JAHIA_HTMLEDITORS_SERVICE = "JahiaHtmlEditorsService";
-
     // Jahia Cache factory for every cache except the HTML one
     private static final String JAHIA_CACHE_SERVICE = "JahiaCacheService";
 
     private static final String MAIL_SERVICE = "MailService";
 
-    private static final String LOCK_SERVICE = "LockService";
-
     private static final String CATEGORY_SERVICE = "CategoryService";
-
-    private static final String HTML_PARSER_SERVICE = "HtmlParserService";
-
-    private static final String METADATA_SERVICE = "MetadataService";
 
     private static final String SCHEDULER_SERVICE = "SchedulerService";
 
@@ -171,8 +147,6 @@ public class ServicesRegistry {
     private static final String JCRVERSION_SERVICE = "jcrVersionService";
 
     private static final String IMPORTEXPORT_SERVICE = "ImportExportService";
-
-    private static final String PAGEUSERPROP_SERVICE = "JahiaPageUserPropService";
 
     private static final String PREFERENCES_SERVICE = "JahiaPreferencesService";
 
@@ -300,13 +274,6 @@ public class ServicesRegistry {
     }
 
     /**
-     * NK 24.01.2001
-     */
-    public JahiaWebAppsDeployerService getJahiaWebAppsDeployerService() {
-        return (JahiaWebAppsDeployerService) getService(JAHIA_WEBAPPS_DEPLOYER_SERVICE);
-    }
-
-    /**
      * NK 12.01.2001
      */
     public JahiaFileWatcherService getJahiaFileWatcherService() {
@@ -349,24 +316,12 @@ public class ServicesRegistry {
         return (CacheService) getService(JAHIA_CACHE_SERVICE);
     }
 
-    public HtmlEditorsService getHtmlEditorsService() {
-        return (HtmlEditorsService) getService(JAHIA_HTMLEDITORS_SERVICE);
-    }
-
     public MailService getMailService() {
         return (MailService) getService(MAIL_SERVICE);
     }
 
     public CategoryService getCategoryService() {
         return (CategoryService) getService(CATEGORY_SERVICE);
-    }
-
-    public HtmlParserService getHtmlParserService() {
-        return (HtmlParserService) getService(HTML_PARSER_SERVICE);
-    }
-
-    public MetadataService getMetadataService() {
-        return (MetadataService) getService(METADATA_SERVICE);
     }
 
     public SchedulerService getSchedulerService() {
@@ -418,10 +373,6 @@ public class ServicesRegistry {
         return (QueryService) getService("QueryService");
     }
 
-    public SubscriptionService getSubscriptionService() {
-        return (SubscriptionService) getService("SubscriptionService");
-    }
-    
     public SearchService getSearchService() {
         return (SearchService) getService("SearchService");
     }

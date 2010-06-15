@@ -51,9 +51,10 @@ package org.jahia.settings;
 
 import org.apache.commons.collections.FastHashMap;
 import org.apache.log4j.Logger;
-import org.jahia.admin.database.DatabaseScripts;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.PathResolver;
+import org.jahia.utils.maven.plugin.deployers.ServerDeploymentFactory;
+import org.jahia.utils.maven.plugin.deployers.ServerDeploymentInterface;
 import org.jahia.utils.properties.PropertiesManager;
 import org.springframework.core.io.Resource;
 
@@ -82,7 +83,8 @@ public class SettingsBean {
 
     // this is the list of jahia.properties server disk path and context path values...
     private String server;
-    private String serverHomeDiskPath;
+    private String serverVersion;
+    private String serverHome;
     private String jahiaHomeDiskPath;
     private String jahiaTemplatesDiskPath;
     private String jahiaWebAppsDiskPath;
@@ -96,7 +98,6 @@ public class SettingsBean {
     private String jahiaEnginesHttpPath;
     private String jahiaWebAppsDeployerBaseURL;
     private String jahiaJavaScriptDiskPath;
-    private String jahiaPreparePortletJCRPath;
     private String jahiaNewWebAppsDiskPath;
     private String jahiaImportsDiskPath;
     private String jahiaSharedTemplatesDiskPath;
@@ -114,8 +115,6 @@ public class SettingsBean {
 
     private String jahiaJavaScriptHttpPath;
     private String classDiskPath;
-    private String localAccessUri;
-
     // map containing all max_cached_*...
     private Map<String, Long> maxCachedValues;
     // map containing all max_cachedgroups_*...
@@ -164,43 +163,21 @@ public class SettingsBean {
 
     private int cacheMaxGroups = 10000;
 
-    private int maxAggregatedEvents = 5000;
-
     private boolean developmentMode = true;
-    private int connectionTimeoutForProductionJob;
-
-    // Core engine page generation queue configuration parameters
-    private int maxParallelProcessings = 40;
-    private long pageGenerationWaitTime = 30000; // in milliseconds
-    private long pageGenerationWaitTimeOnStartup = 10000; // in milliseconds
-    private int suggestedRetryTimeAfterTimeout = 60; // in seconds
-    private int suggestedRetryTimeAfterTimeoutOnStartup = 15; // in seconds
-
-    // The db max elements for SQL IN clause
-    private int dBMaxElementsForInClause = 1000;
-
     // Settings to control servlet response wrapper flushing
     private boolean wrapperBufferFlushingActivated = true;
 
 
     private static SettingsBean instance = null;
-    private boolean inlineEditingActivated = false;
-
-    private boolean portletAJAXRenderingActivated = false;
-    
-    private boolean gmailPasswordExported = true;
-
     private boolean considerPreferredLanguageAfterLogin;
     
     private boolean considerDefaultJVMLocale;
 
     private String ehCacheJahiaFile;
 
-    // preferences related settings
-    private int historySize;
-    private boolean historyUrlBased;
+    private boolean permanentMoveForVanityURL = true;
     
-    private boolean permanentMoveForVanityURL = true;    
+    private ServerDeploymentInterface serverDeployer = null;
 
     /**
      * Default constructor.
@@ -250,7 +227,11 @@ public class SettingsBean {
         try {
             // disk path, url's and context...
             server = getString("server");
-            serverHomeDiskPath = getString("serverHomeDiskPath");
+            serverVersion = getString("serverVersion", "");
+            serverHome = getString("serverHome", "");
+            ServerDeploymentFactory.setTargetServerDirectory(serverHome);
+            serverDeployer = ServerDeploymentFactory.getInstance().getImplementation(server + serverVersion);
+            
             jahiaTemplatesDiskPath = pathResolver.resolvePath (getString("jahiaTemplatesDiskPath"));
             jahiaJspDiskPath = pathResolver.resolvePath (getString("jahiaJspDiskPath"));
             jahiaEnginesDiskPath = pathResolver.resolvePath (getString("jahiaEnginesDiskPath"));
@@ -415,56 +396,11 @@ public class SettingsBean {
             clusterCacheMaxBatchSize = getInt("clusterCacheMaxBatchSize", 100000);
             cacheMaxGroups = getInt("cacheMaxGroups", 10000);
 
-            maxAggregatedEvents = getInt("maxAggregatedEvents", 5000);
-
-            localAccessUri = getString("localAccessUri", "http://localhost:8080");
             developmentMode = getBoolean("developmentMode",true);
-            connectionTimeoutForProductionJob = getInt("connectionTimeoutForProductionJob",60000);
-
-            // Maximum parallel heavy processing threads
-            maxParallelProcessings = getInt("maxParallelProcessings", maxParallelProcessings);
-            pageGenerationWaitTime = getLong("pageGenerationWaitTime", pageGenerationWaitTime);
-            suggestedRetryTimeAfterTimeout = getInt("suggestedRetryTimeAfterTimeout", suggestedRetryTimeAfterTimeout);
-            pageGenerationWaitTimeOnStartup = getLong("pageGenerationWaitTimeOnStartup", pageGenerationWaitTimeOnStartup);
-            suggestedRetryTimeAfterTimeoutOnStartup = getInt("suggestedRetryTimeAfterTimeoutOnStartup", suggestedRetryTimeAfterTimeoutOnStartup);
-
-            dBMaxElementsForInClause = getInt("db_max_elements_for_in_clause", dBMaxElementsForInClause);
 
             wrapperBufferFlushingActivated = getBoolean("wrapperBufferFlushingActivated", true);
 
-            inlineEditingActivated = getBoolean("inlineEditingActivated", false);
-            portletAJAXRenderingActivated = getBoolean("portletAJAXRenderingActivated", false);
-
-            gmailPasswordExported = getBoolean("gmailPasswordExported", true);
-
-            jahiaPreparePortletJCRPath = getString("prepare.portlet.jcr.path");
-            
             permanentMoveForVanityURL = getBoolean("permanentMoveForVanityURL", true);
-
-            try {
-                DatabaseScripts scriptsManager = new DatabaseScripts();
-                List<Map<String, String>> scriptsInfos = scriptsManager.getDatabaseScriptsInfos (
-                        scriptsManager.getDatabaseScriptsFileObjects (getJahiaDatabaseScriptsPath()), pathResolver);
-                for (Map<String, String> curDatabaseHash : scriptsInfos) {
-                    String database_script = curDatabaseHash.get("jahia.database.script");
-                    if (database_script.equals(getPropertiesFile().getProperty("db_script"))) {
-                        if (curDatabaseHash.get("jahia.database.max_elements_for_in_clause") != null){
-                            try {
-                                int val = dBMaxElementsForInClause = Integer.parseInt(((String)curDatabaseHash
-                                    .get("jahia.database.max_elements_for_in_clause")).trim());
-                                if ( val > 0 ){
-                                    dBMaxElementsForInClause = val;
-                                }
-                            } catch ( Exception t ){
-                            }
-                        }
-                        break;
-                    }
-                }
-            } catch ( Exception t ){
-                logger.debug("Error loading db scripts, db_max_elements_for_in_clause will be the default value:"
-                        + dBMaxElementsForInClause,t);
-            }
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -493,8 +429,6 @@ public class SettingsBean {
                 System.setProperty("cluster.tcp.ehcache.hibernate.nodes.ip_address",getString("cluster.tcp.ehcache.hibernate.nodes.ip_address"));
                 System.setProperty("cluster.tcp.ehcache.hibernate.port",getString("cluster.tcp.ehcache.hibernate.port"));
             }
-            historySize = getInt("historySize", 10);
-            historyUrlBased = getBoolean("historyUrlBased", false);
         } catch (NullPointerException npe) {
             logger.debug ("Properties file is not valid...!", npe);
         } catch (NumberFormatException nfe) {
@@ -725,8 +659,8 @@ public class SettingsBean {
      *
      * @return  The server home filesystem disk path.
      */
-    public String getServerHomeDiskPath() {
-        return serverHomeDiskPath;
+    public String getServerHome() {
+        return serverHome;
     } // end getServerHomeDiskPath
 
     /**
@@ -797,13 +731,6 @@ public class SettingsBean {
         return jahiaSharedTemplatesDiskPath;
     }
 
-
-    /**
-     * Url to make a local jahia request
-     */
-    public String getLocalAccessUri() {
-        return localAccessUri;
-    }
 
     /**
      * Used to get the templates http path.
@@ -1022,10 +949,6 @@ public class SettingsBean {
         return isSiteErrorEnabled;
     }
 
-    public int getConnectionTimeoutForProductionJob() {
-        return connectionTimeoutForProductionJob;
-    }
-
     public String getCacheClusterUnderlyingImplementation() {
 		return cacheClusterUnderlyingImplementation;
 	}
@@ -1043,45 +966,6 @@ public class SettingsBean {
         this.cacheMaxGroups = cacheMaxGroups;
     }
 
-    public int getMaxAggregatedEvents() {
-        return maxAggregatedEvents;
-    }
-
-    public void setMaxAggregatedEvents(int maxAggregatedEvents) {
-        this.maxAggregatedEvents = maxAggregatedEvents;
-    }
-
-    public long getPageGenerationWaitTime() {
-        return pageGenerationWaitTime;
-    }
-
-    public int getSuggestedRetryTimeAfterTimeout() {
-        return suggestedRetryTimeAfterTimeout;
-    }
-
-    public long getPageGenerationWaitTimeOnStartup() {
-        return pageGenerationWaitTimeOnStartup;
-    }
-
-    public int getSuggestedRetryTimeAfterTimeoutOnStartup() {
-        return suggestedRetryTimeAfterTimeoutOnStartup;
-    }
-
-    public int getMaxParallelProcessings() {
-        return maxParallelProcessings;
-    }
-
-
-    /**
-     * Returns the DB max elements for SQL IN clause, to limit the scope of returned row
-     * or for optimized sql query rewritting.
-     *
-     * @return
-     */
-    public int getDBMaxElementsForInClause() {
-        return dBMaxElementsForInClause;
-    }
-
     public boolean isWrapperBufferFlushingActivated() {
         return wrapperBufferFlushingActivated;
     }
@@ -1090,40 +974,8 @@ public class SettingsBean {
         this.wrapperBufferFlushingActivated = wrapperBufferFlushingActivated;
     }
 
-    public boolean isInlineEditingActivated() {
-        return inlineEditingActivated;
-    }
-
-    public void setInlineEditingActivated(boolean inlineEditingActivated) {
-        this.inlineEditingActivated = inlineEditingActivated;
-    }
-
-    public boolean isPortletAJAXRenderingActivated() {
-        return portletAJAXRenderingActivated;
-    }
-
-    public void setPortletAJAXRenderingActivated(boolean portletAJAXRenderingActivated) {
-        this.portletAJAXRenderingActivated = portletAJAXRenderingActivated;
-    }
-
-    public boolean isGmailPasswordExported() {
-        return gmailPasswordExported;
-    }
-
-    public void setGmailPasswordExported(boolean gmailPasswordExported) {
-        this.gmailPasswordExported = gmailPasswordExported;
-    }
-
     public String getEhCacheJahiaFile() {
         return ehCacheJahiaFile;
-    }
-
-    public String getJahiaPreparePortletJCRPath() {
-        return jahiaPreparePortletJCRPath;
-    }
-
-    public void setJahiaPreparePortletJCRPath(String jahiaPreparePortletJCRPath) {
-        this.jahiaPreparePortletJCRPath = jahiaPreparePortletJCRPath;
     }
 
     public boolean isConsiderDefaultJVMLocale() {
@@ -1143,22 +995,6 @@ public class SettingsBean {
         this.considerPreferredLanguageAfterLogin = considerPreferredLanguageAfterLogin;
     }
 
-    public int getHistorySize() {
-        return historySize;
-    }
-
-    public void setHistorySize(int historySize) {
-        this.historySize = historySize;
-    }
-
-    public boolean isHistoryUrlBased() {
-        return historyUrlBased;
-    }
-
-    public void setHistoryUrlBased(boolean historyUrlBased) {
-        this.historyUrlBased = historyUrlBased;
-    }
- 
     /**
      * Saves the current configuration back to files. 
      */
@@ -1196,5 +1032,19 @@ public class SettingsBean {
 
     public String getJahiaCkEditorDiskPath() {
         return jahiaCkEditorDiskPath;
+    }
+
+    /**
+     * @return the serverVersion
+     */
+    public String getServerVersion() {
+        return serverVersion;
+    }
+
+    /**
+     * @return the serverDeployer
+     */
+    public ServerDeploymentInterface getServerDeployer() {
+        return serverDeployer;
     }
 }

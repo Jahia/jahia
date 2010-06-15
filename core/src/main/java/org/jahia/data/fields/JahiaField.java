@@ -45,7 +45,6 @@ import org.jahia.services.fields.ContentField;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.textdiff.HunkTextDiffVisitor;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -556,71 +555,6 @@ public abstract class JahiaField implements Cloneable, Serializable,
         return contentField;
     }
 
-
-    /**
-     * Return the value with highlighted differences
-     *
-     * @param jParams
-     */
-    public String getHighLightDiffValue(ProcessingContext jParams) {
-        return getHighLightDiffValue(jParams.getDiffVersionID(), jParams);
-    }
-
-    /**
-     * Return the value with highlighted differences
-     *
-     * @param jParams
-     */
-    public String getHighLightDiffValue(int diffVersionID, ProcessingContext jParams) {
-
-        if (diffVersionID == 0) {
-            return this.getValue();
-        }
-
-        String oldValue = this.getValue();
-        if (oldValue==null){
-            oldValue = "";
-        }
-        String newValue = "";
-        String mergedValue = "";
-
-        try {
-            EntryLoadRequest loadVersion =
-                    EntryLoadRequest.getEntryLoadRequest(diffVersionID,
-                            this.languageCode);
-
-            JahiaField jahiaField = ServicesRegistry.getInstance()
-                    .getJahiaFieldService()
-                    .loadField(this.getID(), LoadFlags.ALL,
-                            jParams, loadVersion);
-
-            int newValueWorkflowState = this.getWorkflowState();
-            if (jahiaField != null) {
-                newValue = jahiaField.getValue();
-                newValueWorkflowState = jahiaField.getWorkflowState();
-            }
-
-            // Highlight text diff
-            DiffMatchPatch hunkTextDiffV = new DiffMatchPatch();
-            LinkedList<DiffMatchPatch.Diff> diffs;
-            if ( this.isForComparisonOnly() ){
-                // does not exists
-                return HunkTextDiffVisitor.getDeletedText(oldValue);
-            } else if ( this.getVersionID() == -1 && newValueWorkflowState==1){
-                // currently marked for delete compared with active
-                return HunkTextDiffVisitor.getDeletedText(oldValue);
-            } else if (this.getWorkflowState() < newValueWorkflowState) {
-                diffs = hunkTextDiffV.diff_main(oldValue, newValue);
-            } else {
-                diffs = hunkTextDiffV.diff_main(newValue, oldValue);
-            }
-            hunkTextDiffV.diff_cleanupSemantic(diffs);
-            mergedValue = hunkTextDiffV.diff_prettyHtml(diffs);
-        } catch (Exception t) {
-            logger.warn("Error getting highlight diff value", t);
-        }
-        return mergedValue;
-    }
 
     public void setOrder(int order) {
         this.order = order;

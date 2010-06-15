@@ -46,7 +46,6 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.importexport.ExtendedImportResult;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -90,7 +89,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     private CacheService cacheService;
 
     protected JahiaGroupManagerService groupService;
-    protected JahiaFileWatcherService fileWatcherService;
     protected JCRSessionFactory sessionFactory;
 
     public void setCacheService(CacheService cacheService) {
@@ -103,10 +101,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     public void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
-    }
-
-    public void setFileWatcherService(JahiaFileWatcherService fileWatcherService) {
-        this.fileWatcherService = fileWatcherService;
     }
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {

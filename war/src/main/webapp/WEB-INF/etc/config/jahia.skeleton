@@ -25,11 +25,8 @@ jahia.contextPath                                      =
 # Jahia instance.
 release                                                =
 server                                                 =
-# The server home disk path is application server specific, and is used
-# to deploy and configure new portlets, as well as other specific
-# adjustments such as Tomcat's in-memory realm automatic updating
-# (tomcat-users.xml files).
-serverHomeDiskPath                                     =
+serverVersion                                          =
+serverHome                                             =
 
 
 ######################################################################
@@ -64,7 +61,9 @@ jahiaTemplatesHttpPath                                 =
 jahiaEnginesHttpPath                                   =
 jahiaJavaScriptHttpPath                                =
 
-jahiaWebAppsDeployerBaseURL                            = http://127.0.0.1:8080/manager/html/
+# Uncomment this entry and provide your custom URL for the WAR deployer,
+# if you use non-standard one  
+#jahiaWebAppsDeployerBaseURL                            = http://127.0.0.1:8080/manager/html/
 
 # This parameter will control, that if vanity URLs exists for a node and if
 # it has been accessed with a non-default vanity URL, we inform the client that
@@ -96,10 +95,6 @@ mail_maxRegroupingOfPreviousException                  = 500
 # these can be found in the following file:
 # <jahia-web-app-dir>/META-INF/context.xml
 db_script                                              =   derby_embedded.script
-# The following setting is used to limit the number of in values passed
-# in SELECT * FROM XXX WHERE XXXX IN (VALUE_LIST) because some databases
-# have limitations. Normally you shouldn't need to modify this parameter.
-db_max_elements_for_in_clause                          =   1000
 # The DB dialect to be used by the Hibernate
 hibernate.dialect                                      =   @HIBERNATE_DIALECT@
 # Should nested transaction be allowed?
@@ -144,13 +139,6 @@ cacheClusterUnderlyingImplementation = jahiaReferenceCache
 cacheMaxGroups = 20000
 
 ######################################################################
-### Events       #####################################################
-######################################################################
-# Maximum number of events that can be delayed to the end of
-# processing jobs.
-maxAggregatedEvents                                    =   5000
-
-######################################################################
 ### Template set #####################################################
 ######################################################################
 # Default value for template set
@@ -183,32 +171,6 @@ jahiaFileUploadMaxSize                                  =  104857600
 templates.observer.interval                            =   5000
 
 ######################################################################
-### WebApps Deployment  ##############################################
-######################################################################
-# This setting is configured by the configuration wizard to use the
-# appropriate web applications deployer according to the application
-# server platform which Jahia is running on. We recommend you do not
-# modify this value unless it is false. Also currently only the Tomcat
-# implementation is fully tested and supported.
-JahiaWebAppsDeployerService                            =
-
-######################################################################
-### WebApps Preparing war  ##############################################
-######################################################################
-# In 'manager portlet' view, when you click on 'prepare war', it's saved in the filemanager
-# The following value specifies where it's saved.
-prepare.portlet.jcr.path       =   /content/shared/files
-
-######################################################################
-### Audit log  #######################################################
-######################################################################
-# Default values for amount of logs to be kept when flushing to a
-# limit. Note that this doesn't mean that the logs cannot be larger
-# than the amount specified, but simply that when limiting them, it
-# will default to this value.
-jahiaMaxLogs                                           =   500
-
-######################################################################
 ### Multilingual support   ###########################################
 ######################################################################
 # The fall-back language code after we have tried to resolve the
@@ -235,38 +197,6 @@ considerDefaultJVMLocale                               =   false
 # Language switch takes place only if the current site has entries
 # in the user's preferred language  
 considerPreferredLanguageAfterLogin                    =   false
-
-######################################################################
-### Tidy Configuration file ##########################################
-######################################################################
-# Tidy is an HTML parser that is one of the multiple ones that is
-# used to verify HTML validity.
-# this file must be located in <jahia>/WEB-INF/etc/config dir.
-tidyConfig                                             =   tidy.properties
-
-######################################################################
-### Concurrent processing options ####################################
-######################################################################
-#
-# This variable controls how many threads are allowed to do heavy weight
-# processing (page creation not served from the cache)
-maxParallelProcessings                                 = 40
-# This variable controls how long threads are waiting to be able to start
-# generating pages in heavy load situations (value in milliseconds)
-pageGenerationWaitTime                                 = 30000
-# This variable controls the setting of the HTTP Retry-After header, which is sent
-# back to the client with a HTTP status code 503 (Service temporarily unavailable).
-# It could be used also to trigger an automatic reload (value in seconds).
-suggestedRetryTimeAfterTimeout                         = 60
-# This variable controls how long threads are waiting to be able to start
-# generating pages, when load is coming during server startup
-# (value in milliseconds)
-pageGenerationWaitTimeOnStartup                        = 10000
-# This variable controls the setting of the HTTP Retry-After header, which is sent
-# back to the client with a HTTP status code 503 (Service temporarily unavailable),
-# when it was triggered during server startup. It could be used also to trigger
-# an automatic reload (value in seconds).
-suggestedRetryTimeAfterTimeoutOnStartup                = 15
 
 ######################################################################
 ### NTLM Authentication config #######################################
@@ -370,17 +300,6 @@ siteServerNameTestURLExpr                              = ${request.scheme}://${s
 # for the "Exit Administration" button, as explained above, you can choose to generate
 # relative URLs (e.g. /jahia/Jahia/site/mySite/pid/2) by uncommenting the option below:
 # useRelativeSiteURLs                                   = true
-
-# Url used by jahia to make HTTP request to itself.
-#localAccessUri                                          = http\://localhost\:8080
-
-# IP address of the server on the local network. The following two settings
-# are used by the file synchronization service when configured in cluster
-# to make sure that new templates and resources are properly deployed on
-# each node.
-localIp                                                  =
-# The HTTP port of the server on the local network
-localPort                                                = 8080
 
 # The following parameter allows for configuration of the connection timeout
 # when testing with the above URL. Don't set this too high as the connection
@@ -486,14 +405,6 @@ developmentMode                                         = true
 site.error.enabled 										= true
 
 ######################################################################
-### Connection Timeout For Production Job ############################
-######################################################################
-# This setting allows you to specify the timeout for connecting this
-# jahia instance to a distant jahia when using production job
-# The settings is in milliseconds
-connectionTimeoutForProductionJob                           = 60000
-
-######################################################################
 ### User and Group name validation ###################################
 ######################################################################
 # Pattern for the user name validation. The new user name will be
@@ -514,14 +425,6 @@ userManagementUserNamePattern                           = [0-9a-z_A-Z\\-\\{\\}\\
 userManagementGroupNamePattern                          = [0-9a-z_A-Z\\-\\{\\}]+
 
 ######################################################################
-### Portlets #########################################################
-######################################################################
-# the following parameter activates AJAX rendering of portlets. This
-# is available only for logged-in users and requires clients to
-# support Javascript.
-portletAJAXRenderingActivated = true
-
-######################################################################
 ### Servlet response wrapper behavior control ########################
 ######################################################################
 # The following setting controls whether a call to
@@ -531,36 +434,3 @@ portletAJAXRenderingActivated = true
 # if this control is not necessary, but we introduced it in order to
 # control this behavior at deployment time.
 wrapperBufferFlushingActivated = true
-
-######################################################################
-### Google analytics settings ########################################
-######################################################################
-# This version of Jahia allows to make sites trackable by google
-# analytics, analytic data can be viewed in jahia in a window inten-
-# ded for this purpose.
-# To get data from the google analytics server, the site should have
-# a preregistered properties such as the gmail account and password
-# used when the google analytics account has been created.
-# The following setting controls whether the gmail password will be
-# exported when a site export is triggered.
-# By default, it is set to true, if turned to false then the password
-# will not be exported. Security conscious users might want to turn
-# this off.
-gmailPasswordExported = true
-
-######################################################################
-### History (breadcrumbs) settings ###################################
-######################################################################
-# The history settings (aka breadcrumbs), allows users to be able to
-# quickly retrace their navigation in the Jahia web site. The settings
-# below allow system administrators to configure this subsystem.
-#
-# the following setting specifies the length of the history stored
-# in the session for each user, when the history toolbar is activated.
-historySize = 5
-# If the history tracking should be URL based, activate the setting
-# below, otherwise Jahia will reconstruct the page URLs on each request.
-# In general it is recommended to use the full URL based history
-# tracking, which will conserve edition mode and other URL-based
-# parameters.
-historyUrlBased = true

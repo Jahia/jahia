@@ -88,6 +88,11 @@
             <artifactId>jahia-gwt</artifactId>
             <version>${jahia.package.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>deployers</artifactId>
+            <version>1.4</version>
+        </dependency>
         <!-- Commons dependencies-->
         <dependency>
             <groupId>commons-beanutils</groupId>
@@ -99,11 +104,6 @@
             <artifactId>commons-betwixt</artifactId>
             <version>1.0-beta-1</version>
         </dependency>
-        <!--<dependency>
-            <groupId>commons-cli</groupId>
-            <artifactId>commons-cli</artifactId>
-            <version>1.1</version>
-        </dependency>-->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -141,11 +141,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--<dependency>
-            <groupId>commons-discovery</groupId>
-            <artifactId>commons-discovery</artifactId>
-            <version>0.4</version>
-        </dependency>-->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -166,18 +161,6 @@
             <artifactId>commons-io</artifactId>
             <version>1.4</version>
         </dependency>
-        <!-- htmllUnit dep. : commons-jelly-->
-        <!--<dependency>
-            <groupId>commons-jelly</groupId>
-            <artifactId>commons-jelly</artifactId>
-            <version>1.0</version>
-        </dependency>
-        --><!-- htmllUnit dep. : commons-jelly-tag-xml--><!--
-        <dependency>
-            <groupId>commons-jelly</groupId>
-            <artifactId>commons-jelly-tags-xml</artifactId>
-            <version>1.1</version>
-        </dependency>-->
         <dependency>
             <groupId>commons-jexl</groupId>
             <artifactId>commons-jexl</artifactId>
@@ -514,16 +497,6 @@
             </exclusions>
         </dependency>
 
-        <!--<dependency>
-            <groupId>jta</groupId>
-            <artifactId>jta</artifactId>
-            <version>1.0.1</version>
-        </dependency>-->
-        <dependency>
-            <groupId>jtidy</groupId>
-            <artifactId>jtidy</artifactId>
-            <version>4aug2000r7-dev</version>
-        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -531,12 +504,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>net.sourceforge.nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-            <version>1.9.14</version>
-        </dependency>
-        
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
@@ -825,33 +792,6 @@
             <artifactId>geronimo-jta_1.1_spec</artifactId>
             <version>1.1.1</version>
         </dependency>
-        <!-- ID3 tag extraction from MP3 files library -->
-        <!--<dependency>
-            <groupId>jid3</groupId>
-            <artifactId>jid3</artifactId>
-            <version>0.38</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>xml-writer</groupId>
-            <artifactId>xml-writer</artifactId>
-            <version>0.2</version>
-        </dependency>-->
-        <!-- todo: migrate to xmlrpc 3 Used in jahia.blogs -->
-        <!--<dependency>
-            <groupId>org.apache.xmlrpc</groupId>
-            <artifactId>xmlrpc-common</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlrpc</groupId>
-            <artifactId>xmlrpc-server</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlrpc</groupId>
-            <artifactId>xmlrpc-client</artifactId>
-            <version>3.1</version>
-        </dependency>-->
         <dependency>
             <groupId>xmlrpc</groupId>
             <artifactId>xmlrpc</artifactId>
@@ -1172,6 +1112,7 @@
 	      <artifactId>jsr305</artifactId>
 	      <version>1.0</version>
 	    </dependency>
+        
     </dependencies>
     <build>
 

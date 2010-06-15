@@ -556,11 +556,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>GetFile</servlet-name>
-        <servlet-class>org.jahia.bin.GetFile</servlet-class>
-    </servlet>
-
-    <servlet>
         <servlet-name>ValidateTicket</servlet-name>
         <servlet-class>org.jahia.bin.ValidateTicket</servlet-class>
     </servlet>
@@ -798,10 +793,6 @@
     <servlet-mapping>
         <servlet-name>JahiaAdministration</servlet-name>
         <url-pattern>/administration/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GetFile</servlet-name>
-        <url-pattern>/getFile</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ValidateTicket</servlet-name>

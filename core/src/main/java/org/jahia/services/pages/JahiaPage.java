@@ -53,7 +53,6 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.JahiaSaveVersion;
 import org.jahia.services.version.StateModificationContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.textdiff.HunkTextDiffVisitor;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -460,86 +459,6 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
             title = mContentPage.getTitle(mEntryLoadRequest);
         }
         return title;
-    }
-
-    /**
-     * Return the title with highlighted differences
-     *
-     * @param jParams
-     * @return
-     */
-    public String getHighLightDiffTitle(ProcessingContext jParams) {
-        return getHighLightDiffTitle(jParams.getDiffVersionID(),jParams);
-    }
-
-    /**
-     * Return the title with highlighted differences
-     *
-     * @param jParams
-     * @return
-     */
-    public String getHighLightDiffTitle(int diffVersionID, ProcessingContext jParams) {
-
-        if ( diffVersionID == 0 ){
-            return this.getTitle();
-        }
-        if ( isMoved() ){
-            String title = getTitle();
-            title =  HunkTextDiffVisitor.getDeletedText(title);
-            title += " (" + JahiaResourceBundle.getJahiaInternalResource("org.jahia.moved.label",
-                    Jahia.getThreadParamBean().getLocale()) + ")";
-            return title;
-        }
-        String oldValue = this.getTitle();
-        if ( oldValue == null ){
-            oldValue = "";
-        }
-        String newValue = "";
-        String mergedValue = "";
-
-        JahiaPageInfo currentPageInfo = this.mContentPage
-                .getPageInfoVersion(jParams.getEntryLoadRequest(),false,false);
-
-        EntryLoadRequest loadVersion =
-                EntryLoadRequest.getEntryLoadRequest(diffVersionID,
-                jParams.getLocale().toString());
-        int newValueWorkflowState = this.mEntryLoadRequest.getWorkflowState();
-        JahiaPageInfo pageInfo = this.mContentPage.getPageInfoVersion(loadVersion,false,false);
-        if ( pageInfo != null ){
-            newValue = pageInfo.getTitle();
-            newValueWorkflowState = pageInfo.getWorkflowState();
-        }
-
-        // Highlight text diff
-        DiffMatchPatch hunkTextDiffV = new DiffMatchPatch();
-            LinkedList<DiffMatchPatch.Diff> diffs;
-        if ( currentPageInfo == null ||
-                (currentPageInfo.getWorkflowState() == EntryLoadRequest.DELETED_WORKFLOW_STATE) ){
-            // does not exists
-            if ("".equals(oldValue)){
-                oldValue = newValue; // we should display something
-            }
-            return HunkTextDiffVisitor.getDeletedText(oldValue);
-        } else if ( currentPageInfo.getVersionID() == -1 && newValueWorkflowState==1){
-            // currently marked for delete compared with active
-            // does not exists
-            if ("".equals(oldValue)){
-                oldValue = newValue; // we should display something
-            }
-            return HunkTextDiffVisitor.getDeletedText(oldValue);
-        } else if ( currentPageInfo.getWorkflowState() < newValueWorkflowState ){
-            diffs = hunkTextDiffV.diff_main(oldValue,newValue);
-        } else {
-            if ( newValueWorkflowState == EntryLoadRequest.DELETED_WORKFLOW_STATE ){
-                // was deleted
-                newValue = "";
-            }
-            diffs = hunkTextDiffV.diff_main(newValue,oldValue);
-        }
-        hunkTextDiffV.diff_cleanupSemantic(diffs);
-        mergedValue = hunkTextDiffV.diff_prettyHtml(diffs);
-
-        return mergedValue;
     }
 
     //-------------------------------------------------------------------------

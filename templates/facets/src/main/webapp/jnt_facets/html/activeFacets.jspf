@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%@ taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -19,10 +19,10 @@
     <ul>
         <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
             <c:forEach items="${facet.value}" var="facetValue">        
-                <c:set var="facetParam" value="${query:getDeleteFacetUrl(facet, facetValue, activeFacetsVars[facetParamVarName])}"/>
+                <c:set var="facetParam" value="${facet:getDeleteFacetUrl(facet, facetValue, activeFacetsVars[facetParamVarName])}"/>
                 <c:url var="facetUrl" value="${url.mainResource}" context="/">
                     <c:if test="${not empty facetParam}">
-                        <c:param name="${facetParamVarName}" value="${query:encodeFacetUrlParam(facetParam)}"/>
+                        <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facetParam)}"/>
                     </c:if>
                 </c:url>
                 <li>

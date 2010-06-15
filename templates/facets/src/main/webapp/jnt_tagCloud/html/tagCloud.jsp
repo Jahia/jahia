@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%@ taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -53,7 +54,7 @@
                 <c:forEach items="${tags.values}" var="tag">
                     <c:url var="facetUrl" value="${url.mainResource}" context="/">
                         <c:param name="N-tag"
-                                 value="${query:encodeFacetUrlParam(query:getFacetDrillDownUrl(tag, activeFacetsVars['N-tag']))}"/>
+                                 value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(tag, activeFacetsVars['N-tag']))}"/>
                     </c:url>
                     <jcr:node var="tagName" uuid="${tag.name}"/>
                     <li><a href="${facetUrl}" class="tag${functions:round(10 * tag.count / totalUsages)}0"

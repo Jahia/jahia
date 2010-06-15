@@ -5,6 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%@ taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
@@ -39,15 +40,15 @@
         <c:if test="${activeFacetsVars == null}">
            <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
         </c:if>
-        <c:set target="${activeFacetsVars}" property="${facetParamVarName}" value="${query:decodeFacetUrlParam(param[facetParamVarName])}"/>
-        <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}" value="${query:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
+        <c:set target="${activeFacetsVars}" property="${facetParamVarName}" value="${facet:decodeFacetUrlParam(param[facetParamVarName])}"/>
+        <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}" value="${facet:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
     </c:if>
     <c:if test="${empty currentList and not empty listQuery}">
         <c:set var="renderOptions" value="before" />
             <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
             <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
                 <c:forEach items="${facet.value}" var="facetValue">            
-                    <query:fullTextSearch propertyName="rep:filter(${query:escapeIllegalJCRChars(facet.key)})" searchExpression="${facetValue.value}"/>
+                    <query:fullTextSearch propertyName="rep:filter(${jcr:escapeIllegalJcrChars(facet.key)})" searchExpression="${facetValue.value}"/>
                 </c:forEach>    
             </c:forEach>
         </query:definition>

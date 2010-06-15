@@ -32,6 +32,7 @@
 package org.jahia.taglibs.jcr.node;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.drools.util.StringUtils;
 import org.jahia.registries.ServicesRegistry;
@@ -336,4 +337,11 @@ public class JCRTagUtils {
             return false;
         }
     }
+    
+    /**
+     * @see org.apache.jackrabbit.util.Text#escapeIllegalJcrChars(String)
+     */    
+    public static String escapeIllegalJcrChars(String inputString) {
+        return Text.escapeIllegalJcrChars(inputString);
+    }     
 }

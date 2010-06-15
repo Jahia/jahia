@@ -700,4 +700,14 @@
             ${jcr:hasOrderableChildNodes(currentNode)}
         </example>
     </function>
+    <function>
+        <description>Escapes illegal JCR chars</description>
+        <name>escapeIllegalJcrChars</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>String escapeIllegalJcrChars(java.lang.String)
+        </function-signature>
+        <example>
+            ${jcr:escapeIllegalJcrChars(facet.key)}        
+        </example>
+    </function>      
 </taglib>

@@ -29,7 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.taglibs.query;
+package org.jahia.taglibs.facet;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -46,12 +46,11 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.response.FacetField;
 
 /**
- * Custom functions, which are exposed into the template scope.
+ * Custom facet functions, which are exposed into the template scope.
  * 
  * @author Benjamin Papez
  */
@@ -62,6 +61,12 @@ public class Functions {
     private static final String FACET_PARAM_DELIM = "###";
     private static final String FACET_DELIM = "|||";
     
+    /**
+     * Get a list of applied facets
+     * @param filterString the already decoded filter String from the query parameter
+     * @return a Map with the facet group as key and a KeyValue with the facet value as key and the query as value
+     * @see #decodeFacetUrlParam(String)
+     */
     public static Map<String, List<KeyValue>> getAppliedFacetFilters(String filterString) {
         Map<String, List<KeyValue>> appliedFacetFilters = new LinkedHashMap<String, List<KeyValue>>();        
         if (!StringUtils.isEmpty(filterString)) {
@@ -80,6 +85,13 @@ public class Functions {
         return appliedFacetFilters;
     }
     
+    /**
+     * Check whether a facet is currently applied to the query
+     * @param facetName the facet name to check 
+     * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
+     * @param propDef property definition if facet is a field/date facet
+     * @return true if facet is applied otherwise false
+     */
     public static boolean isFacetApplied(String facetName, Map<String, List<KeyValue>> appliedFacets,
             PropertyDefinition propDef) {
         boolean facetApplied = false;
@@ -91,6 +103,12 @@ public class Functions {
         return facetApplied;
     }
     
+    /**
+     * Check whether a facet value is currently applied to the query
+     * @param facetValueObj the facet value object to check
+     * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
+     * @return true if facet value is applied otherwise false
+     */
     public static boolean isFacetValueApplied(Object facetValueObj,
             Map<String, List<KeyValue>> appliedFacets) {
         boolean facetValueApplied = false;
@@ -126,6 +144,13 @@ public class Functions {
         return facetValueApplied;
     }
     
+    /**
+     * Create the drill down URL for a facet value
+     * @param facetValueObj either FacetField.Count or a Map.Entry for the facet value to create 
+     *        the URL for applying this facet value
+     * @param queryString the current facet filter URL query parameter
+     * @return the new facet filter URL query parameter
+     */
     public static String getFacetDrillDownUrl(Object facetValueObj, String queryString) {
         StringBuilder builder = new StringBuilder();
         try {
@@ -153,6 +178,13 @@ public class Functions {
         return builder.toString();
     }
 
+    /**
+     * Create the URL to remove the given facet from the facet filter query parameter
+     * @param facetFilterObj one Map.Entry in the applied facet filter Map corresponding to the value in the next paramter 
+     * @param facetValue the applied facet value, which need to be removed again
+     * @param queryString the current facet filter URL query parameter 
+     * @return the new facet filter URL query parameter
+     */
     @SuppressWarnings("unchecked")
     public static String getDeleteFacetUrl(Object facetFilterObj, KeyValue facetValue, String queryString) {
         Map.Entry<String, List<KeyValue>> facetFilter;
@@ -176,6 +208,11 @@ public class Functions {
         return queryString;
     }
     
+    /**
+     * Encode facet filter URL parameter
+     * @param inputString facet filter parameter 
+     * @return filter encoded for URL query parameter usage
+     */
     public static String encodeFacetUrlParam(String inputString) {
         if (StringUtils.isEmpty(inputString)) {
             return inputString;
@@ -198,6 +235,11 @@ public class Functions {
         return inputString;
     }
     
+    /**
+     * Decode facet filter URL parameter
+     * @param inputString enocded facet filter URL query parameter
+     * @return decoded facet filter parameter
+     */
     public static String decodeFacetUrlParam(String inputString) {
         if (StringUtils.isEmpty(inputString)) {
             return inputString;
@@ -219,8 +261,4 @@ public class Functions {
         }
         return outputString;
     }
-    
-    public static String escapeIllegalJCRChars(String inputString) {
-        return Text.escapeIllegalJcrChars(inputString);
-    }     
 }

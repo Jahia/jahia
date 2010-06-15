@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%@ taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
@@ -31,8 +32,8 @@
         <c:if test="${activeFacetsVars == null}">
            <jsp:useBean id="activeFacetsVars" class="java.util.HashMap" scope="request"/>
         </c:if>
-        <c:set target="${activeFacetsVars}" property="${facetParamVarName}" value="${query:decodeFacetUrlParam(param[facetParamVarName])}"/>
-        <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}" value="${query:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
+        <c:set target="${activeFacetsVars}" property="${facetParamVarName}" value="${facet:decodeFacetUrlParam(param[facetParamVarName])}"/>
+        <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}" value="${facet:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
     </c:if>
     
     <query:definition var="listQuery" scope="request">
@@ -52,7 +53,7 @@
             </c:if>            
             <c:choose>
                 <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet')}">
-                    <c:if test="${not empty currentField and not query:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
+                    <c:if test="${not empty currentField and not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
                         <c:set var="facetQuery" value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}${minCountParam}"/>
                         <c:choose>
                             <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">                        
@@ -95,7 +96,7 @@
                             <c:set var="currentFacetQuery" value="${currentFacetQuery.string}"/>
                         </c:when>
                     </c:choose>                    
-                    <c:if test="${not empty currentFacetQuery and not query:isFacetApplied(currentFacetQuery, activeFacetsVars[activeFacetMapVarName], null)}">
+                    <c:if test="${not empty currentFacetQuery and not facet:isFacetApplied(currentFacetQuery, activeFacetsVars[activeFacetMapVarName], null)}">
                         <query:column columnName="rep:facet(nodetype=${facetNodeTypeName}&key=${facet.name}${minCountParam}&facet.query=${currentFacetQuery})" propertyName="${not empty facetPropertyName ? facetPropertyName : 'rep:facet()'}"/>
                     </c:if>            
                 </c:otherwise>
@@ -103,7 +104,7 @@
         </c:forEach>
         <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
             <c:forEach items="${facet.value}" var="facetValue">
-                <query:fullTextSearch propertyName="rep:filter(${query:escapeIllegalJCRChars(facet.key)})" searchExpression="${facetValue.value}"/>
+                <query:fullTextSearch propertyName="rep:filter(${jcr:escapeIllegalJcrChars(facet.key)})" searchExpression="${facetValue.value}"/>
             </c:forEach>
         </c:forEach>
     </query:definition>
@@ -111,7 +112,7 @@
 
     <%@include file="activeFacets.jspf"%>
     <div class="archives">
-        <h3>Facets</h3>
+        <h3><fmt:message key="facets.facets"/></h3>
         <c:forEach items="${result.facetFields}" var="currentFacet">
             <%@include file="facetDisplay.jspf"%>
         </c:forEach>
@@ -120,9 +121,9 @@
         </c:forEach>
         <c:forEach items="${result.facetQuery}" var="facetValue">
             <ul>        
-                <c:if test="${not query:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
+                <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
                     <c:url var="facetUrl" value="${url.mainResource}" context="/">
-                        <c:param name="${facetParamVarName}" value="${query:encodeFacetUrlParam(query:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
+                        <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
                     </c:url>
                     <li><a href="${facetUrl}">${facetValue.key}</a> (${facetValue.value})<br/></li>
                 </c:if>

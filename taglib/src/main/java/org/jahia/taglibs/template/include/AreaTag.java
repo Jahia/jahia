@@ -58,10 +58,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
         this.areaType = areaType;
     }
 
-    public void setForceCreation(boolean forceCreation) {
-        this.forceCreation = forceCreation;
-    }
-
     @Override
     protected String getModuleType() throws RepositoryException {
         return "area";
@@ -70,7 +66,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
     @Override
     protected void missingResource(RenderContext renderContext, Resource currentResource) throws RepositoryException, IOException {
         try {
-            if (renderContext.isEditMode() || forceCreation) {
+            if (renderContext.isEditMode()) {
                 JCRSessionWrapper session = currentResource.getNode().getSession();
                 if (!path.startsWith("/")) {
                     JCRNodeWrapper nodeWrapper = currentResource.getNode();

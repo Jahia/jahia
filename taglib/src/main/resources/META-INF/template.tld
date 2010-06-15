@@ -225,12 +225,6 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>If used with a relative path in path attribute, a node of the specified type wil be automatically created at this path. Has no effect if path is not specified or if path is absolute.</description>
-            <name>autoCreateType</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <description>Name of the exported pageContext variable to hold the value specified in the action.</description>
             <name>var</name>
             <required>false</required>
@@ -665,13 +659,6 @@
             <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Force creation of the area even if not in edit mode</description>
-            <name>forceCreation</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
         </attribute>
     </tag>
 

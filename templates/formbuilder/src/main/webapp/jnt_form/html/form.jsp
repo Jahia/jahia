@@ -68,7 +68,7 @@
     <div class="addaction">
         <span>Add your action here</span>
         <c:set var="editable" value="${not empty actionNode.nodes}"/>
-        <template:area path="${currentNode.path}/action" nodeTypes="jnt:formAction" editable="${editable}"/>
+        <template:area path="action" areaType="jnt:actionList" editable="${editable}"/>
     </div>
 </c:if>
 <div class="Form FormBuilder">
@@ -86,7 +86,7 @@
         <div class="addfieldsets">
             <span>Add your new fieldsets here</span>
             </c:if>
-            <template:area path="${currentNode.path}/fieldsets" nodeTypes="jnt:fieldset" editable="true"/>
+            <template:area path="fieldsets" areaType="jnt:fieldsetstList" editable="true"/>
             <c:if test="${renderContext.editMode}">
         </div>
         </c:if>
@@ -94,7 +94,7 @@
             <c:if test="${renderContext.editMode}">
                 <span>Add your new form buttons here</span>
             </c:if>
-            <template:area path="${currentNode.path}/formButtons" nodeTypes="jnt:formButton" editable="true"/>
+            <template:area path="formButtons" areaType="jnt:formButtonsList" editable="true"/>
         </div>
 
         <c:if test="${not renderContext.editMode}">
@@ -106,6 +106,6 @@
 
 <div>
     <h2>Responses (<a href="<c:url value='${currentNode.path}.csv' context='${url.base}'/>" target="_blank">CSV</a>)</h2>
-    <template:area path="${currentNode.path}/responses" nodeTypes="jnt:responseToForm" editable="true" forceCreation="true"/>
+    <template:area path="responses" areaType="jnt:responsesList" editable="true" />
 </div>
 

@@ -97,7 +97,7 @@ function doVote(answers) {
                 <span>Add the answers here</span>
             </c:if>
 
-            <template:area path="${currentNode.path}/answers" nodeTypes="jnt:answer" editable="true"/>
+            <template:area path="answers" areaType="jnt:answersList" editable="true"/>
 
             <c:if test="${renderContext.editMode}">
                 </div>

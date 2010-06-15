@@ -76,13 +76,29 @@ orderable
 [jnt:defaultFormAction] > jnt:formAction
  - j:action (string) = 'default' autocreated hidden
 
+[jnt:actionList] > jnt:content, jmix:list
+ orderable
+ + * (jnt:formAction) = jnt:formAction version
+
+[jnt:fieldsetstList] > jnt:content, jmix:list
+ orderable
+ + * (jnt:fieldSet) = jnt:fieldSet version
+
+[jnt:formButtonsList] > jnt:content, jmix:list
+ orderable
+ + * (jnt:formButton) = jnt:formButton version
+
+[jnt:responsesList] > jnt:content, jmix:list
+ orderable
+ + * (jnt:responseToForm) = jnt:responseToForm version
+
 [jnt:form] > jnt:content, jmix:formContent, mix:title
  orderable
  - j:intro (string)
- + action (jnt:contentList)
- + fieldsets (jnt:contentList)
- + formButtons (jnt:contentList)
- + responses (jnt:contentList)
+ + action (jnt:actionList)
+ + fieldsets (jnt:fieldsetstList)
+ + formButtons (jnt:formButtonsList)
+ + responses (jnt:responsesList)
 
 [jnt:required] > jnt:formElementValidation
 

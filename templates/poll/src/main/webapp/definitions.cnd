@@ -4,9 +4,13 @@
  - label (string)
  - nbOfVotes (long) = 0  hidden autocreated
 
+[jnt:answersList] > jnt:content, jmix:list
+ orderable
+ + * (jnt:answer) = jnt:answer
+
 [jnt:poll] > jnt:content, mix:title, jmix:editorialContent
  - question (string) mandatory
- + answers (jnt:contentList)
+ + answers (jnt:answersList)
  - totalOfVotes (long) = 0  hidden autocreated
 
 

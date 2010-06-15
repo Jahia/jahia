@@ -52,6 +52,7 @@ import org.jbpm.pvm.internal.model.Activity;
 import org.jbpm.pvm.internal.model.ActivityImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.net.URL;
@@ -72,7 +73,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private RepositoryService repositoryService;
     private ExecutionService executionService;
     private HistoryService historyService;
-    private List<String> processes;
+    private Resource[] processes;
     private TaskService taskService;
     private static Map<String, String> participationRoles = new HashMap<String, String>();
     private static Map<String, String> participationRolesInverted = new HashMap<String, String>();
@@ -139,11 +140,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
      *                   as failure to set an essential property) or if initialization fails.
      */
     public void afterPropertiesSet() throws Exception {
-        if (processes != null && processes.size() > 0) {
+        if (processes != null && processes.length > 0) {
             List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
-            for (String process : processes) {
-                URL resource = Thread.currentThread().getContextClassLoader().getResource(process);
-                File file = new File(resource.toURI());
+            for (Resource process : processes) {
+                File file = process.getFile();
                 boolean needUpdate = true;
                 for (Deployment deployment : deploymentList) {
                     if(deployment.getName().equals(process) && deployment.getTimestamp()<=file.lastModified()) {
@@ -153,16 +153,16 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 }
                 if (needUpdate) {
                     NewDeployment newDeployment = repositoryService.createDeployment();
-                    newDeployment.addResourceFromClasspath(process);
+                    newDeployment.addResourceFromInputStream(process.getFilename(), process.getInputStream());
                     newDeployment.setTimestamp(file.lastModified());
-                    newDeployment.setName(process);
+                    newDeployment.setName(process.getFilename());
                     newDeployment.deploy();
                 }
             }
         }
     }
 
-    public void setProcesses(List<String> processes) {
+    public void setProcesses(Resource[] processes) {
         this.processes = processes;
     }
 

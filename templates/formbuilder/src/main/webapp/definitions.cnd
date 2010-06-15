@@ -82,7 +82,7 @@ orderable
 
 [jnt:fieldsetstList] > jnt:content, jmix:list
  orderable
- + * (jnt:fieldSet) = jnt:fieldSet version
+ + * (jnt:fieldset) = jnt:fieldset version
 
 [jnt:formButtonsList] > jnt:content, jmix:list
  orderable

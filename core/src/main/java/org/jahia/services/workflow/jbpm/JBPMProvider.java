@@ -331,8 +331,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
                             groupManager.lookupGroup(participation.getGroupId())));
                 } else {
-                    participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                            userManager.lookupUserByKey(participation.getUserId())));                    
+                    if (participation.getUserId() != null) {
+                        participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
+                                userManager.lookupUserByKey(participation.getUserId())));
+                    }
                 }
             }
             action.setParticipations(participations);

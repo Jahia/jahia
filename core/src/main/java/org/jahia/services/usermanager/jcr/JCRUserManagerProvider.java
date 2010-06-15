@@ -295,6 +295,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      */
     public JCRUser lookupUserByKey(String userKey) {
         try {
+            if (!userKey.startsWith("{")) {
+                logger.warn("Expected userKey with provider prefix {jcr}, defaulting to looking up by name instead... ");
+                return lookupUser(userKey);
+            }
             final String name = userKey.split("}")[1];
             if (cache == null) {
                 start();

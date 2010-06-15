@@ -91,11 +91,12 @@
 
     <category name="org.jahia.bin.errors">
         <priority value="warn"/>
-    </category>
+    </category>    
 
     <category name="org.apache.jackrabbit.core.state.ItemStateMap">
         <priority value="error"/>
     </category>
+
 
 
     <!-- (FH): changing the following level to DEBUG will generate a lot of logs,
@@ -122,7 +123,7 @@ think twice before changing it! -->
     </category>
 
     <category name="org.hibernate">
-        <priority value="info"/>
+        <priority value="error"/>
     </category>
 
     <category name="net.sf.ehcache">
@@ -164,7 +165,7 @@ think twice before changing it! -->
     <category name="org.jboss.cache.transaction.DummyTransactionManager">
         <priority value="fatal"/>
     </category>
-
+    
     <category name="org.jahia.utils.i18n">
         <priority value="error"/>
     </category>
@@ -172,38 +173,24 @@ think twice before changing it! -->
     <category name="org.quartz">
         <priority value="info"/>
     </category>
+    
+    <category name="org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl">
+        <priority value="info"/>
+    </category>    
 
     <category name="org.jahia.spring.aop.interceptor">
-        <!-- Set this to debug to activate JAMon monitoring -->
-        <priority value="debug"/>
-    </category>
-
-    <category name="accessLogger" additivity="false">
-        <appender-ref ref="hitAccess"/>
-    </category>
-
-    <category name="loggingService" additivity="false">
-        <priority value="trace"/>
-        <appender-ref ref="hitAccess"/>
-    </category>
-
-    <category name="profilerLoggingService" additivity="false">
-        <priority value="debug"/>
-        <appender-ref ref="profilerLogs"/>
-    </category>
-
-    <category name="org.jahia.services.render.filter.cache">
+        <!-- Set this to trace to activate JAMon monitoring -->
         <priority value="info"/>
     </category>
 
-    <category name="org.jahia.services.textextraction.TextExtractionService">
-        <priority value="info"/>
+    <category name="accessLogger">
+        <appender-ref ref="hitAccess"/>
     </category>
-    
+
     <root>
-        <level value="info"/>
-        <appender-ref ref="ROLL"/>
-        <appender-ref ref="Console"/>
+        <level value="info"></level>
+        <appender-ref ref="ROLL"></appender-ref>
+        <appender-ref ref="Console"></appender-ref>
     </root>
 
 </log4j:configuration>

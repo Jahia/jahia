@@ -61,50 +61,31 @@
     </logger>
 
 
-    <!--
-    Uncomment the following if you need to filter on categories,
-    such as class packages
-
-    <category name="org.jahia.engines.shared.BigText_Field">
-        <priority value="debug"/>
+    <category name="org.apache.commons">
+        <priority value="error"/>
     </category>
-
-    <category name="org.jahia.services.workflow">
-        <priority value="debug"/>
-    </category>
-
-    -->
-
-    <category name="org.jahia.bin.errors">
-        <priority value="warn"/>
-    </category>    
 
     <category name="org.apache.jackrabbit.core.state.ItemStateMap">
         <priority value="error"/>
     </category>
 
+    <category name="org.apache.jackrabbit.extractor">
+        <priority value="error"/>
+    </category>
 
+    <category name="org.apache.jsp">
+        <priority value="error"/>
+    </category>
 
-    <!-- (FH): changing the following level to DEBUG will generate a lot of logs,
-think twice before changing it! -->
+    <category name="org.apache.jasper.compiler.TagLibraryInfoImpl">
+        <priority value="error"/>
+    </category>
 
-    <category name="jsp.jahia.engines">
+    <category name="org.jahia.bin.errors">
         <priority value="warn"/>
-    </category>
-
-    <category name="org.apache.commons">
-        <priority value="error"/>
-    </category>
-
-    <category name="org.apache.struts.action.RequestProcessor">
-        <priority value="error"/>
-    </category>
+    </category>    
 
     <category name="org.springframework">
-        <priority value="error"/>
-    </category>
-
-    <category name="org.jahia.blogs">
         <priority value="error"/>
     </category>
 
@@ -120,18 +101,6 @@ think twice before changing it! -->
         <priority value="warn"/>
     </category>
 
-    <category name="org.apache.jsp">
-        <priority value="error"/>
-    </category>
-
-    <category name="org.apache.jackrabbit.extractor">
-        <priority value="error"/>
-    </category>
-
-    <category name="org.apache.jasper.compiler.TagLibraryInfoImpl">
-        <priority value="error"/>
-    </category>
-
     <category name="EventListener">
         <priority value="error"/>
     </category>
@@ -145,7 +114,7 @@ think twice before changing it! -->
     </category>
 
     <category name="org.jboss.cache">
-        <priority value="fatal"/>
+        <priority value="error"/>
     </category>
 
     <category name="org.jboss.cache.transaction.DummyTransactionManager">
@@ -165,7 +134,7 @@ think twice before changing it! -->
     </category>    
 
     <category name="org.jahia.spring.aop.interceptor">
-        <!-- Set this to debug to activate JAMon monitoring -->
+        <!-- Set this to trace to activate JAMon monitoring -->
         <priority value="info"/>
     </category>
 

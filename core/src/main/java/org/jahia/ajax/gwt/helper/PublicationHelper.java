@@ -149,7 +149,7 @@ public class PublicationHelper {
                     JCRNodeWrapper n = session.getNodeByUUID(uuid);
                     List<WorkflowDefinition> def = workflowService.getPossibleWorkflows(n, session.getUser(), "publish");
                     if (def.isEmpty()) {
-                        publicationService.publish(n.getPath(), session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
+                        return;
                     } else {
                         if (!m.containsKey(def.get(0))) {
                             m.put(def.get(0), new ArrayList<JCRNodeWrapper>());

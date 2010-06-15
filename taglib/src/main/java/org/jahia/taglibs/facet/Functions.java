@@ -105,7 +105,7 @@ public class Functions {
     
     /**
      * Check whether a facet value is currently applied to the query
-     * @param facetValueObj the facet value object to check
+     * @param facetValueObj the facet value object to check (either FacetField.Count or Map.Entry<String, Long>)
      * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
      * @return true if facet value is applied otherwise false
      */

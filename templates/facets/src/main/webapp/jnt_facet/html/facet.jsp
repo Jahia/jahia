@@ -13,4 +13,4 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<fmt:message key="facets.activeFacet"/> : ${currentNode.properties.field.string}
+<fmt:message key="facets.activeFacet"/> : ${currentNode.properties.facet.string} ${currentNode.properties.field.string}

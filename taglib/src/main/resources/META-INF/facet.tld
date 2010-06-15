@@ -86,4 +86,13 @@
             ${facet:decodeFacetUrlParam(param[facetParamVarName])}
         </example>
     </function>    
+    
+    <tag-file>
+        <name>facetLabel</name>
+        <path>/META-INF/tags/facet/facetLabel.tag</path>
+    </tag-file>    
+    <tag-file>
+        <name>facetValueLabel</name>
+        <path>/META-INF/tags/facet/facetValueLabel.tag</path>
+    </tag-file>    
  </taglib>    

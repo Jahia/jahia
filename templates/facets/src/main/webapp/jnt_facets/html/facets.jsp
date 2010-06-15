@@ -36,6 +36,10 @@
         <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}" value="${facet:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
     </c:if>
     
+    <jsp:useBean id="facetLabels" class="java.util.HashMap" scope="request"/>
+    <jsp:useBean id="facetValueLabels" class="java.util.HashMap" scope="request"/>    
+    <jsp:useBean id="facetValueFormats" class="java.util.HashMap" scope="request"/>    
+    
     <query:definition var="listQuery" scope="request">
         <query:selector nodeTypeName="nt:base"/>
         <query:childNode path="${bindedComponent.path}"/>
@@ -51,12 +55,22 @@
             <c:if test="${not empty minCount.string}">
                 <c:set var="minCountParam" value="&mincount=${minCount.string}"/>
             </c:if>            
+            
+            <jcr:nodeProperty node="${facet}" name="label" var="currentFacetLabel"/>
+            <c:if test="${not empty currentFacetLabel.string and not empty facetPropertyName}">
+                <c:set target="${facetLabels}" property="${facetPropertyName}" value="${currentFacetLabel.string}"/>
+            </c:if>
+            
             <c:choose>
                 <c:when test="${jcr:isNodeType(facet, 'jnt:fieldFacet') or jcr:isNodeType(facet, 'jnt:dateFacet')}">
                     <c:if test="${not empty currentField and not facet:isFacetApplied(facetPropertyName, activeFacetsVars[activeFacetMapVarName], facetNodeType.propertyDefinitionsAsMap[facetPropertyName])}">
                         <c:set var="facetQuery" value="nodetype=${facetNodeTypeName}&key=${facetPropertyName}${minCountParam}"/>
                         <c:choose>
-                            <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">                        
+                            <c:when test="${jcr:isNodeType(facet, 'jnt:dateFacet')}">
+                                <jcr:nodeProperty node="${facet}" name="format" var="currentFacetValueFormat"/>
+                                <c:if test="${not empty currentFacetValueFormat.string}">
+                                    <c:set target="${facetValueFormats}" property="${facetPropertyName}" value="${currentFacetValueFormat.string}"/>
+                                </c:if>                                                                            
                                 <c:set var="facetPrefix" value="date."/>
                             </c:when>
                             <c:otherwise>
@@ -97,6 +111,13 @@
                             <c:set var="currentFacetQuery" value="${currentFacetQuery.string}"/>
                         </c:when>
                     </c:choose>                    
+                    <jcr:nodeProperty node="${facet}" name="valueLabel" var="currentFacetValueLabel"/>
+                    <c:if test="${not empty currentFacetValueLabel.string and not empty currentFacetQuery}">
+                        <c:set target="${facetValueLabels}" property="${currentFacetQuery}" value="${currentFacetValueLabel.string}"/>
+                    </c:if>    
+                    <c:if test="${not empty currentFacetLabel.string and not empty currentFacetQuery}">
+                        <c:set target="${facetLabels}" property="${currentFacetQuery}" value="${currentFacetLabel.string}"/>
+                    </c:if>
                     <c:if test="${not empty currentFacetQuery and not facet:isFacetApplied(currentFacetQuery, activeFacetsVars[activeFacetMapVarName], null)}">
                         <query:column columnName="rep:facet(nodetype=${facetNodeTypeName}&key=${facet.name}${minCountParam}&facet.query=${currentFacetQuery})" propertyName="${not empty facetPropertyName ? facetPropertyName : 'rep:facet()'}"/>
                     </c:if>            
@@ -120,16 +141,28 @@
         <c:forEach items="${result.facetDates}" var="currentFacet">
             <%@include file="facetDisplay.jspf"%>
         </c:forEach>
+        <c:set var="currentFacetLabel" value=""/>
+        <c:set var="facetLabel" value=""/>
         <c:forEach items="${result.facetQuery}" var="facetValue">
-            <ul>        
-                <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
-                    <c:url var="facetUrl" value="${url.mainResource}" context="/">
-                        <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
-                    </c:url>
-                    <li><a href="${facetUrl}">${facetValue.key}</a> (${facetValue.value})<br/></li>
+            <facet:facetLabel currentActiveFacet="${facetValue}" facetLabels="${facetLabels}" display="false"/>
+            <c:if test="${facetLabel != currentFacetLabel}">
+                <c:set var="currentFacetLabel" value="${facetLabel}"/>
+                <c:if test="${not empty currentFacetLabel}">
+                    </ul>
                 </c:if>
-            </ul>    
-        </c:forEach>                        
+                <h4>${facetLabel}</h4>
+                <ul>        
+            </c:if>
+            <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
+                <c:url var="facetUrl" value="${url.mainResource}" context="/">
+                    <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
+                </c:url>
+                <li><a href="${facetUrl}"><facet:facetValueLabel currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/></a> (${facetValue.value})<br/></li>
+            </c:if>
+        </c:forEach>     
+        <c:if test="${not empty currentFacetLabel}">
+            </ul>
+        </c:if>                     
     </div>
 </c:if>
 <c:if test="${renderContext.editMode}">

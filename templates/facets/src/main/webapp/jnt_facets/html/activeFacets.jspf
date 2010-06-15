@@ -26,14 +26,7 @@
                     </c:if>
                 </c:url>
                 <li>
-                    <c:choose>
-                        <c:when test="${facet.key == 'j:defaultCategory'}">
-                            <jcr:node var="category" uuid="${facetValue.key}"/>${category.name}
-                        </c:when>
-                        <c:otherwise>
-                            ${facetValue.key}
-                        </c:otherwise>
-                    </c:choose>
+                    <facet:facetValueLabel currentActiveFacet="${facet}" currentActiveFacetValue="${facetValue}" facetValueLabels="${facetValueLabels}"/>
                     &nbsp;<a href="${facetUrl}"><fmt:message key="facets.remove"/></a>                
                 </li>
             </c:forEach>    

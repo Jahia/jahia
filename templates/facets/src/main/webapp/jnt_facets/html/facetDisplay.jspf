@@ -12,7 +12,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<h4>${currentFacet.name}</h4>
+<h4><facet:facetLabel currentFacetField="${currentFacet}" facetLabels="${facetLabels}"/></h4>
 <ul>
     <c:forEach items="${currentFacet.values}" var="facetValue">
         <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
@@ -20,14 +20,7 @@
                 <c:param name="${facetParamVarName}" value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(facetValue, activeFacetsVars[facetParamVarName]))}"/>
             </c:url>
             <li><a href="${facetUrl}">
-                <c:choose>
-                    <c:when test="${currentFacet.name == 'j:defaultCategory'}">
-                        <jcr:node var="category" uuid="${facetValue.name}"/>${category.name}
-                    </c:when>
-                    <c:otherwise>
-                        ${facetValue.name}
-                    </c:otherwise>
-                </c:choose>
+                <facet:facetValueLabel currentFacetField="${currentFacet}" facetValueCount="${facetValue}" facetValueLabels="${facetValueLabels}" facetValueFormats="${facetValueFormats}"/>
             </a> (${facetValue.count})<br/></li>
         </c:if>
     </c:forEach>

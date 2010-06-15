@@ -451,11 +451,10 @@
 
 [jnt:referenceInField] > nt:base
  - j:fieldName (string) nofulltext
- - j:id (long)
  - j:reference (weakreference)
 
 [jmix:referencesInField] mixin
- + j:referenceInField (jnt:referenceInField) multiple
+ + * (jnt:referenceInField)
 
 [jmix:bindedComponent] mixin
  - j:bindedComponent (weakreference) hidden

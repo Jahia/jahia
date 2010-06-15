@@ -47,12 +47,11 @@ public class InterceptorChain {
         Collections.reverse(revInterceptors);
     }
 
-    public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        if (node.getSession().isInterceptorsEnabled()) {
-            for (PropertyInterceptor interceptor : interceptors) {
-                if (interceptor.canApplyOnProperty(node, definition)) {
-                    interceptor.beforeRemove(node, name, definition);
-                }
+    public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition)
+            throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        for (PropertyInterceptor interceptor : interceptors) {
+            if (interceptor.canApplyOnProperty(node, definition)) {
+                interceptor.beforeRemove(node, name, definition);
             }
         }
     }
@@ -77,12 +76,13 @@ public class InterceptorChain {
      * @throws ConstraintViolationException
      * @throws RepositoryException
      */
-    public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        if (node.getSession().isInterceptorsEnabled()) {
-            for (PropertyInterceptor interceptor : interceptors) {
-                if (interceptor.canApplyOnProperty(node, definition)) {
-                    originalValue = interceptor.beforeSetValue(node, name, definition, originalValue);
-                }
+    public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition,
+                                Value originalValue)
+            throws ValueFormatException, VersionException, LockException, ConstraintViolationException,
+            RepositoryException {
+        for (PropertyInterceptor interceptor : interceptors) {
+            if (interceptor.canApplyOnProperty(node, definition)) {
+                originalValue = interceptor.beforeSetValue(node, name, definition, originalValue);
             }
         }
         return originalValue;
@@ -108,12 +108,13 @@ public class InterceptorChain {
      * @throws ConstraintViolationException
      * @throws RepositoryException
      */
-    public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value[] originalValues) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        if (node.getSession().isInterceptorsEnabled()) {
-            for (PropertyInterceptor interceptor : interceptors) {
-                if (interceptor.canApplyOnProperty(node, definition)) {
-                    originalValues = interceptor.beforeSetValues(node, name, definition, originalValues);
-                }
+    public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition,
+                                   Value[] originalValues)
+            throws ValueFormatException, VersionException, LockException, ConstraintViolationException,
+            RepositoryException {
+        for (PropertyInterceptor interceptor : interceptors) {
+            if (interceptor.canApplyOnProperty(node, definition)) {
+                originalValues = interceptor.beforeSetValues(node, name, definition, originalValues);
             }
         }
         return originalValues;
@@ -134,12 +135,12 @@ public class InterceptorChain {
      * @throws ValueFormatException
      * @throws RepositoryException
      */
-    public Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
-        if (property.getSession().isInterceptorsEnabled()) {
-            for (PropertyInterceptor interceptor : revInterceptors) {
-                if (interceptor.canApplyOnProperty(property.getParent(), (ExtendedPropertyDefinition) property.getDefinition())) {
-                    storedValue = interceptor.afterGetValue(property, storedValue);
-                }
+    public Value afterGetValue(JCRPropertyWrapper property, Value storedValue)
+            throws ValueFormatException, RepositoryException {
+        for (PropertyInterceptor interceptor : revInterceptors) {
+            if (interceptor
+                    .canApplyOnProperty(property.getParent(), (ExtendedPropertyDefinition) property.getDefinition())) {
+                storedValue = interceptor.afterGetValue(property, storedValue);
             }
         }
         return storedValue;
@@ -160,12 +161,12 @@ public class InterceptorChain {
      * @throws ValueFormatException
      * @throws RepositoryException
      */
-    public Value[] afterGetValues(JCRPropertyWrapper property, Value[] storedValues) throws ValueFormatException, RepositoryException {
-        if (property.getSession().isInterceptorsEnabled()) {
-            for (PropertyInterceptor interceptor : revInterceptors) {
-                if (interceptor.canApplyOnProperty(property.getParent(), (ExtendedPropertyDefinition) property.getDefinition())) {
-                    storedValues = interceptor.afterGetValues(property, storedValues);
-                }
+    public Value[] afterGetValues(JCRPropertyWrapper property, Value[] storedValues)
+            throws ValueFormatException, RepositoryException {
+        for (PropertyInterceptor interceptor : revInterceptors) {
+            if (interceptor
+                    .canApplyOnProperty(property.getParent(), (ExtendedPropertyDefinition) property.getDefinition())) {
+                storedValues = interceptor.afterGetValues(property, storedValues);
             }
         }
         return storedValues;

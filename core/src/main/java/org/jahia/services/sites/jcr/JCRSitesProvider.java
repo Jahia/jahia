@@ -236,8 +236,6 @@ public class JCRSitesProvider {
                                             .size()]));
                                     siteNode.setProperty("j:sourceTemplate", defaultSite);
                                     session.save();
-                                    session.getNode("/sites/"+ siteKey).clone(session.getNode("/users"), "users");
-                                    session.save();
                                     JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, false);
                                 }
                             }

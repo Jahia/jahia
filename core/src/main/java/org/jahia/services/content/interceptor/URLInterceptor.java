@@ -71,7 +71,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
 
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (node.isNodeType("jmix:referencesInField")) {
-            NodeIterator ni = node.getNodes("j:referenceInField");
+            NodeIterator ni = node.getNodes("j:referenceInField*");
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {
@@ -116,11 +116,11 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         }
 
         if (node.isNodeType("jmix:referencesInField")) {
-            NodeIterator ni = node.getNodes("j:referenceInField");
+            NodeIterator ni = node.getNodes("j:referenceInField*");
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {
-                    refs.put(ref.getProperty("j:reference").getString(), ref.getProperty("j:id").getLong());
+                    refs.put(ref.getProperty("j:reference").getString(), Long.valueOf(StringUtils.substringAfter(node.getName(), "_")));
                 }
             }
         }
@@ -156,7 +156,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
             if (logger.isDebugEnabled()) {
                 logger.debug("New references : "+newRefs);
             }
-            NodeIterator ni = node.getNodes("j:referenceInField");
+            NodeIterator ni = node.getNodes("j:referenceInField*");
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString()) && !newRefs.containsKey(ref.getProperty("j:reference").getString())) {
@@ -166,9 +166,8 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
 
             for (Map.Entry<String,Long> entry : newRefs.entrySet()) {
                 if (!refs.containsKey(entry.getKey())) {
-                    JCRNodeWrapper ref = node.addNode("j:referenceInField", "jnt:referenceInField");
+                    JCRNodeWrapper ref = node.addNode("j:referenceInField_"+entry.getValue(), "jnt:referenceInField");
                     ref.setProperty("j:fieldName",name);
-                    ref.setProperty("j:id", entry.getValue());
                     ref.setProperty("j:reference", entry.getKey());
                 }
             }
@@ -232,12 +231,16 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
 
         final Map<Long, String> refs = new HashMap<Long, String>();
 
-        if (property.getParent().isNodeType("jmix:referencesInField")) {
-            NodeIterator ni = property.getParent().getNodes("j:referenceInField");
+        JCRNodeWrapper parent = property.getParent();
+        if (parent.isNodeType("jnt:translation")) {
+            parent = parent.getParent();
+        }
+        if (parent.isNodeType("jmix:referencesInField")) {
+            NodeIterator ni = parent.getNodes("j:referenceInField*");
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (property.getDefinition().getName().equals(ref.getProperty("j:fieldName").getString())) {
-                    refs.put(ref.getProperty("j:id").getLong(), ref.getProperty("j:reference").getString());
+                    refs.put(Long.valueOf(StringUtils.substringAfter(ref.getName(), "_")), ref.getProperty("j:reference").getString());
                 }
             }
         }

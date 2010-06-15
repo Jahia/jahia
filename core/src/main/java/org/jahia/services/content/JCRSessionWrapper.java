@@ -85,7 +85,6 @@ public class JCRSessionWrapper implements Session {
     private JCRWorkspaceWrapper workspace;
     private boolean isLive = true;
     private Locale locale;
-    private boolean interceptorsEnabled = true;
     private List<String> tokens = new ArrayList<String>();
 
     private Map<JCRStoreProvider, Session> sessions = new HashMap<JCRStoreProvider, Session>();
@@ -112,10 +111,6 @@ public class JCRSessionWrapper implements Session {
         }
         this.locale = locale;
         this.fallbackLocale = fallbackLocale;
-        // disable interceptors 
-        if (locale == null) {
-            interceptorsEnabled = false;
-        }
         this.sessionFactory = sessionFactory;
     }
 
@@ -153,11 +148,7 @@ public class JCRSessionWrapper implements Session {
         return locale;
     }
 
-    public boolean isInterceptorsEnabled() {
-        return interceptorsEnabled;
-    }
-
-//    public void setInterceptorsEnabled(boolean interceptorsEnabled) {
+    //    public void setInterceptorsEnabled(boolean interceptorsEnabled) {
 //        this.interceptorsEnabled = interceptorsEnabled;
 //    }
 

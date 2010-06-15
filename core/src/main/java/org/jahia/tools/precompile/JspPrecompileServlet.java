@@ -286,7 +286,7 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
                                 + "&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
 
                         anOut.print(url);
-                        anOut.print("\">precompile site: " + files[i].getName()
+                        anOut.print("\">precompile module: " + files[i].getName()
                                 + "</a><br/>\r\n");
                     }
                 }

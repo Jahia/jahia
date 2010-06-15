@@ -104,10 +104,12 @@
                 dataType : 'json',
                 data : "q=" + term + "&query=/jcr:root//element(*, jnt:user)[jcr:contains(.,'{$q}*')]&language=xpath",
                 success: function(data) {
-                    alert(data);
                     $.each(data, function(i, item) {
-                        alert(item);
-                        $("<li/>").text(item).appendTo(".searchUsersResult");
+                        $("#searchUsersResult").append(
+                           $("<tr/>").append( $("<td/>").append($("<img/>").attr("src", item['j:picture'])) )
+                                   .append( $("<td/>").text(item['j:firstName'] + " " + item['j:lastName'] + " " + item['jcr:path']))
+                                   .append( $("<td/>").append( $("<a/>").attr("href", "").text("Add as friend") ) )
+                        );
                         if (i == 10) return false;
                     });
                 }
@@ -127,6 +129,8 @@
 
 <div class='grid_4 alpha'><!--start grid_4-->
 
+    <h3><fmt:message key="userSearch" /></h3>
+
     <form method="get" class="simplesearchform" action="../../../../../../default/src/main/webapp/jnt_user/html">
 
         <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
@@ -143,9 +147,18 @@
     <br class="clear"/>
 
     <div>
-        <ul class="searchUsersResult">
+        <table>
+            <thead>
+                <tr>
+                    <td><fmt:message key="userIcon"/></td>
+                    <td><fmt:message key="userInfo"/></td>
+                    <td><fmt:message key="userActions"/></td>
+                </tr>
+            </thead>
+            <tbody id="searchUsersResult">
 
-        </ul>
+            </tbody>
+        </table>
     </div>
 
     <jcr:sql var="userConnections"

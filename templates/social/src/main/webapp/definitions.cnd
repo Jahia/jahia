@@ -1,0 +1,18 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:userConnection] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+ - j:connectedFrom (weakreference) < jnt:user
+ - j:connectedTo (weakreference) < jnt:user
+ - j:type (string)
+ 
+[jnt:userActivity] > jnt:content
+ - j:from (weakreference) < jnt:user
+ - j:message (string)
+ - j:link (string)
+ - j:icon (weakreference) < jnt:image
+ - j:attribution (string)
+ - j:type (string)
+ - j:likes (long)
+ - j:caption (string)
+ - j:description (string)
+ - j:picture (weakreference) < jnt:image

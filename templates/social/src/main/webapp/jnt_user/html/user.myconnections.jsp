@@ -19,19 +19,19 @@
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle" var="title"/>
 <c:if test="${not empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
-<c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
+    <c:set var="person" value="${title.displayName} ${fields['j:firstName']} ${fields['j:lastName']}"/>
 </c:if>
 <c:if test="${empty title and not empty fields['j:firstName'] and not empty fields['j:lastName']}">
-<c:set var="person" value="${fields['j:firstName']} ${fields['j:lastName']}"/>
+    <c:set var="person" value="${fields['j:firstName']} ${fields['j:lastName']}"/>
 </c:if>
 <c:if test="${empty title and empty fields['j:firstName'] and not empty fields['j:lastName']}">
-<c:set var="person" value="${fields['j:lastName']}"/>
+    <c:set var="person" value="${fields['j:lastName']}"/>
 </c:if>
 <c:if test="${empty title and not empty fields['j:firstName'] and empty fields['j:lastName']}">
-<c:set var="person" value="${fields['j:firstName']}"/>
+    <c:set var="person" value="${fields['j:firstName']}"/>
 </c:if>
 <c:if test="${empty title and empty fields['j:firstName'] and empty fields['j:lastName']}">
-<c:set var="person" value=""/>
+    <c:set var="person" value=""/>
 </c:if>
 <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
 <c:if test="${not empty birthDate}">
@@ -78,16 +78,16 @@
             cacheLength: 1,
             parse: function parse(data) {
                 return $.map(data, function(row) {
-				    return {
-					    data: row,
-					    value: getText(row["node"]),
-					    result: getText(row["node"])
-				    }
-			    });
+                    return {
+                        data: row,
+                        value: getText(row["node"]),
+                        result: getText(row["node"])
+                    }
+                });
             },
             formatItem: function(item) {
-			    return format(item);
-		    },
+                return format(item);
+            },
             extraParams: {
                 query : "/jcr:root${renderContext.site.path}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
                 language : "xpath",
@@ -99,18 +99,18 @@
 
         function searchUsers(term) {
             $.ajax({
-              url: '${url.find}',
-              type: 'post',
-              dataType : 'json',
-              data : "q=" + term + "&query=/jcr:root//element(*, jnt:user)[jcr:contains(.,'{$q}*')]&language=xpath",
-              success: function(data) {
-                alert(data);
-                $.each(data, function(i,item){
-                    alert(item);
-                    $("<li/>").text(item).appendTo(".searchUsersResult");
-                    if ( i == 10 ) return false;
-                });
-              }
+                url: '${url.find}',
+                type: 'post',
+                dataType : 'json',
+                data : "q=" + term + "&query=/jcr:root//element(*, jnt:user)[jcr:contains(.,'{$q}*')]&language=xpath",
+                success: function(data) {
+                    alert(data);
+                    $.each(data, function(i, item) {
+                        alert(item);
+                        $("<li/>").text(item).appendTo(".searchUsersResult");
+                        if (i == 10) return false;
+                    });
+                }
             });
         }
 
@@ -127,58 +127,48 @@
 
 <div class='grid_4 alpha'><!--start grid_4-->
 
-    <form method="get" class="simplesearchform" action="">
+    <form method="get" class="simplesearchform" action="../../../../../../default/src/main/webapp/jnt_user/html">
 
-            <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
-            <c:if test="${not empty title.string}">
+        <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
+        <c:if test="${not empty title.string}">
             <label for="searchUsersTerm">${fn:escapeXml(title.string)}:&nbsp;</label>
-            </c:if>
-            <fmt:message key='search.startSearching' var="startSearching"/>
-               <input type="text" id="searchUsersTerm" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
-            <input class="searchsubmit" id="searchUsersSubmit" type="submit" title="<fmt:message key='search.submit'/>"/>
+        </c:if>
+        <fmt:message key='search.startSearching' var="startSearching"/>
+        <input type="text" id="searchUsersTerm" value="${startSearching}"
+               onfocus="if(this.value==this.defaultValue)this.value='';"
+               onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
+        <input class="searchsubmit" id="searchUsersSubmit" type="submit" title="<fmt:message key='search.submit'/>"/>
 
-    </form><br class="clear"/>
+    </form>
+    <br class="clear"/>
 
-    <div >
-      <ul class="searchUsersResult">
+    <div>
+        <ul class="searchUsersResult">
 
-      </ul>
+        </ul>
     </div>
+
+
+    <jcr:jqom var="userConnections">
+        <query:selector nodeTypeName="jnt:userConnection"/>
+        <query:descendantNode path="${currentNode.path}"/>
+    </jcr:jqom>
 
     <h3 class="titleIcon">Friends<img title="" alt="" src="img-text/friends.png"/></h3>
     <ul class="friends-list">
-<li>
-        <div class="thumbnail">
-          <a href="#"><img src="img-text/friend.png" alt="friend" border="0"/></a>            </div>
-        <h4><a href="#"> Follower</a></h4>
-<div class='clear'></div></li>
-<li><div class="thumbnail"><a href="#"><img src="img-text/friend.png" alt="friend" border="0"/></a></div>
+        <c:forEach items="${userConnections.nodes}" var="userConnection">
+        <li>
+            <div class="thumbnail">
+                <a href="user.myconnections.jsp#"><img src="img-text/friend.png" alt="friend" border="0"/></a></div>
+            <h4><a href="user.myconnections.jsp#">${userConnection.properties['j:connectedTo'].node.properties['jcr:title']}</a></h4>
 
-        <h4><a href="#">Follower</a></h4>
-        <div class='clear'></div></li>
-        <li><div class="thumbnail"><a href="#"><img src="img-text/friend.png" alt="friend" border="0"/></a></div>
-        <h4><a href="#">Follower</a></h4>
-        <div class='clear'></div></li>
-        <li><div class="thumbnail"><a href="#"><img src="img-text/friend.png" alt="friend" border="0"/></a></div>
-        <h4><a href="#">Follower</a></h4>
-
-        <div class='clear'></div></li>
-        <li><div class="thumbnail"><a href="#"><img src="img-text/friend.png" alt="friend" border="0"/></a></div>
-        <h4><a href="#">Follower</a></h4>
-        <div class='clear'></div></li>
-        <li><div class="thumbnail"><a href="#"><img src="img-text/friend.png" alt="friend" border="0"/></a></div>
-        <h4><a href="#">Follower</a></h4>
-        <div class='clear'></div></li>
-<li class="last">
-
-        <div class="thumbnail">
-        <a href="#"><img src="img-text/friend.png" alt="friend" border="0"/></a>            </div><h4><a href="#"> Follower</a></h4>
-        <div class='clear'></div></li>
+            <div class='clear'></div>
+        </li>
+        </c:forEach>
     </ul>
-    
+
 
     <div class='clear'></div>
-
 
 
 </div>

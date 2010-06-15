@@ -93,7 +93,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener {
         try {
             if (event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null) {
                 try {
-                    ((TemplatePackageApplicationContextLoader)ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader")).stop();
+                    if (ContextLoader.getCurrentWebApplicationContext() != null && ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader") != null) {
+                        ((TemplatePackageApplicationContextLoader)ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader")).stop();
+                    }
                 } catch (Exception e) {
                     logger.error("Error shutting down Jahia modules Spring application context. Cause: " + e.getMessage(), e);
                 }

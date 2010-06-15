@@ -16,7 +16,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
@@ -226,7 +225,7 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setForceSelection(true);
         ArrayList<String> list = new ArrayList<String>();
         list.add("nt:base");
-        JahiaContentDefinitionService.App.getInstance().getNodeSubtypes("jmix:editorialContent",
+        JahiaContentDefinitionService.App.getInstance().getSubNodetypes("jmix:editorialContent",
                 new BaseAsyncCallback<Map<GWTJahiaNodeType,List<GWTJahiaNodeType>>>() {
                     public void onSuccess(Map<GWTJahiaNodeType,List<GWTJahiaNodeType>> result) {
                         for (GWTJahiaNodeType key : result.keySet()) {

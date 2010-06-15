@@ -37,7 +37,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -65,14 +64,13 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
      * This will search for images named img/1col16.png inside the module containing the definition.
      *
      * @param epd
-     * @param realNodeType
      * @param param
      * @param values
      * @param locale
-     *@param context  @return
+     * @param context  @return
      */
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context
-    ) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
+                                                     Map<String, Object> context) {
         if (values != null && values.size() > 0) {
             final JahiaTemplatesPackage template = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
                     epd.getDeclaringNodeType().getSystemId());

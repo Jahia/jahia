@@ -62,8 +62,7 @@ public class ComponentLinkerChoiceListInitializer implements ChoiceListInitializ
         this.sessionFactory = sessionFactory;
     }
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType,
-                                                     String param, List<ChoiceListValue> values, Locale locale,
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         List<ChoiceListValue> choiceListValues = new ArrayList<ChoiceListValue>();
         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) context.get("contextNode");

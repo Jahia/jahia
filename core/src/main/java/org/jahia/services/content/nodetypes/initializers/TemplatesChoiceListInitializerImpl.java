@@ -43,7 +43,6 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -58,8 +57,7 @@ import java.util.*;
 public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer {
     private transient static Logger logger = Logger.getLogger(TemplatesChoiceListInitializerImpl.class);
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition,
-                                                     ExtendedNodeType realNodeType, String param,
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition, String param,
                                                      List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         if (context == null) {
@@ -67,6 +65,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         }
 
         JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
+        ExtendedNodeType realNodeType = (ExtendedNodeType) context.get("contextType");
+
         final List<String> nodeTypeList;
 
         if (node == null && realNodeType == null) {

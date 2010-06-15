@@ -47,5 +47,6 @@ import java.util.Map;
  *        Created : 17 nov. 2009
  */
 public interface ChoiceListInitializer {
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context);
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
+                                                     Map<String, Object> context);
 }

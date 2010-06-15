@@ -58,7 +58,7 @@ import java.util.List;
  * This class creates fields for a GXT form panel based on available jcr types and a specific mapping.
  */
 public class FormFieldCreator {
-    
+
 
     public static class Selector {
         public static final int SMALLTEXT = 1;
@@ -80,9 +80,11 @@ public class FormFieldCreator {
      *
      * @param definition
      * @param property
+     * @param initializerValues
      * @return
      */
-    public static Field createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property) {
+    public static Field createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
+                                    List<GWTJahiaValueDisplayBean> initializerValues) {
         Field field = null;
         if (definition.isHidden()) {
             return null;
@@ -176,7 +178,13 @@ public class FormFieldCreator {
 
                 case GWTJahiaNodeSelectorType.CHOICELIST:
                     ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
-                    store.add(propDefinition.getValueConstraints());
+                    if (initializerValues != null) {
+                        store.add(initializerValues);
+                    } else if (propDefinition.getValueConstraints() != null) {
+                        for (String s : propDefinition.getValueConstraints()) {
+                            store.add(new GWTJahiaValueDisplayBean(s,s));
+                        }
+                    }
                     if (propDefinition.isMultiple()) {
 
                         final CustomDualListField<GWTJahiaValueDisplayBean> lists =
@@ -196,16 +204,14 @@ public class FormFieldCreator {
                         combo.setTypeAhead(true);
                         combo.setTriggerAction(TriggerAction.ALL);
                         combo.setForceSelection(true);
-                        if (propDefinition.getValueConstraints().size() > 0 &&
-                                propDefinition.getValueConstraints().get(0).getPropertyNames().contains("image")) {
+                        if (propDefinition.getSelectorOptions() != null && (propDefinition.getSelectorOptions().containsKey("image") || propDefinition.getSelectorOptions().containsKey("moduleImage"))) {
                             combo.setTemplate(getComboTemplate());
                         }
                         field = combo;
                     }
 
                     // if there is no values, the field is hidden
-                    if (propDefinition.getValueConstraints() != null &&
-                            propDefinition.getValueConstraints().isEmpty()) {
+                    if (store.getModels().isEmpty()) {
                         field.setVisible(false);
                     }
 
@@ -306,32 +312,35 @@ public class FormFieldCreator {
             GWTJahiaPropertyDefinition propDefinition = (GWTJahiaPropertyDefinition) definition;
             if (propDefinition.getSelector() == GWTJahiaNodeSelectorType.CHOICELIST) {
                 List<GWTJahiaValueDisplayBean> selection = new ArrayList<GWTJahiaValueDisplayBean>();
-                final List<GWTJahiaValueDisplayBean> displayBeans = propDefinition.getValueConstraints();
                 if (propDefinition.isMultiple()) {
+                    final CustomDualListField<GWTJahiaValueDisplayBean> list =
+                            (CustomDualListField<GWTJahiaValueDisplayBean>) field;
+                    final List<GWTJahiaValueDisplayBean> displayBeans = new ArrayList<GWTJahiaValueDisplayBean>(list.getFromList().getStore().getModels());
+
                     for (GWTJahiaNodePropertyValue jahiaNodePropertyValue : values) {
                         String val = jahiaNodePropertyValue.getString();
                         if (val != null && val.length() > 0) {
                             for (GWTJahiaValueDisplayBean displayBean : displayBeans) {
                                 if (displayBean.getValue().equals(val)) {
                                     selection.add(displayBean);
-                                    ((CustomDualListField<GWTJahiaValueDisplayBean>) field).getFromList().getStore()
+                                    list.getFromList().getStore()
                                             .remove(displayBean);
                                 }
                             }
                         }
                     }
-                    final ListStore<GWTJahiaValueDisplayBean> store =
-                            ((DualListField<GWTJahiaValueDisplayBean>) field).getToList().getStore();
+                    final ListStore<GWTJahiaValueDisplayBean> store = list.getToList().getStore();
                     store.add(selection);
-                    ((CustomDualListField<GWTJahiaValueDisplayBean>) field).setCustomOriginalValue(selection);
+                    list.setCustomOriginalValue(selection);
                 } else {
+                    final ComboBox<GWTJahiaValueDisplayBean> combo = (ComboBox<GWTJahiaValueDisplayBean>) field;
                     String val = values.get(0).getString();
-                    for (GWTJahiaValueDisplayBean displayBean : displayBeans) {
+                    for (GWTJahiaValueDisplayBean displayBean : combo.getStore().getModels()) {
                         if (displayBean.getValue().equals(val)) {
                             selection.add(displayBean);
                         }
                     }
-                    ((ComboBox<GWTJahiaValueDisplayBean>) field).setSelection(selection);
+                    combo.setSelection(selection);
                 }
             } else {
                 switch (propDefinition.getRequiredType()) {

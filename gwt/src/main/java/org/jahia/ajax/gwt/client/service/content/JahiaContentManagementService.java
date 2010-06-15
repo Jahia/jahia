@@ -45,6 +45,7 @@ import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
@@ -299,6 +300,10 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     List<GWTJahiaNode> getTasksForUser() throws GWTJahiaServiceException;
 
     public Integer isValidSession()  throws GWTJahiaServiceException;
+
+    GWTJahiaCreateEngineInitBean initializeCreateEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
+
+    GWTJahiaEditEngineInitBean initializeEditEngine(String nodePath) throws GWTJahiaServiceException;
 
     public ListLoadResult<GWTJahiaNode> getAllWrappers(String path, List<String> fields) throws GWTJahiaServiceException;
 

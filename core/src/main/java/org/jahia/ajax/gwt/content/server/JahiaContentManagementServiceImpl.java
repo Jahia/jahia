@@ -62,15 +62,16 @@ import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowTask;
 import org.jahia.tools.imageprocess.ImageProcess;
@@ -80,13 +81,13 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.security.Principal;
 import java.util.*;
 
 /**
@@ -493,7 +494,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         // get node type
         final List<GWTJahiaNodeType> nodeTypes =
-                contentDefinition.getNodeTypes(node.getNodeTypes(), map, getUILocale());
+                contentDefinition.getNodeTypes(node.getNodeTypes(), getUILocale());
 
         // get properties
         final Map<String, GWTJahiaNodeProperty> props = properties.getProperties(path, retrieveCurrentSession(locale));
@@ -1481,4 +1482,71 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             return 0;
         }
     }
+
+    public GWTJahiaCreateEngineInitBean initializeCreateEngine(String typename, String parentpath) throws GWTJahiaServiceException{
+        try {
+            JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
+            JCRNodeWrapper parent = sessionWrapper.getNode(parentpath);
+
+            GWTJahiaCreateEngineInitBean result = new GWTJahiaCreateEngineInitBean();
+            result.setLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
+            final List<ExtendedNodeType> availableMixins = contentDefinition.getAvailableMixin(typename);
+
+            List<GWTJahiaNodeType> gwtMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
+
+            result.setMixin(gwtMixin);
+
+            List<ExtendedNodeType> allTypes = new ArrayList<ExtendedNodeType>();
+            allTypes.add(NodeTypeRegistry.getInstance().getNodeType(typename));
+            allTypes.addAll(availableMixins);
+
+            result.setInitializersValues(contentDefinition.getInitializersValues(allTypes, NodeTypeRegistry.getInstance().getNodeType(typename), null, parent, getUILocale()));
+            return result;
+        } catch (RepositoryException e) {
+            logger.error("Cannot get node", e);
+            throw new GWTJahiaServiceException("Cannot get node");
+        }
+    }
+
+
+    public GWTJahiaEditEngineInitBean initializeEditEngine(String nodepath) throws GWTJahiaServiceException {
+        try {
+            JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
+            JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
+
+            // get node type
+            final List<GWTJahiaNodeType> nodeTypes =
+                    contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
+
+            // get properties
+            final Map<String, GWTJahiaNodeProperty> props = properties.getProperties(nodepath, retrieveCurrentSession());
+
+            final GWTJahiaEditEngineInitBean result = new GWTJahiaEditEngineInitBean(nodeTypes, props);
+            final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
+            result.setNode(node);
+            result.setAvailabledLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
+            result.setCurrentLocale(languages.getCurrentLang(getLocale()));
+
+
+            final List<ExtendedNodeType> availableMixins = contentDefinition.getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName());
+
+            List<GWTJahiaNodeType> gwtMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
+
+            result.setMixin(gwtMixin);
+
+            List<ExtendedNodeType> allTypes = new ArrayList<ExtendedNodeType>();
+            allTypes.add(nodeWrapper.getPrimaryNodeType());
+            allTypes.addAll(Arrays.asList(nodeWrapper.getMixinNodeTypes()));
+            allTypes.addAll(availableMixins);
+
+            result.setInitializersValues(contentDefinition.getInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper, nodeWrapper.getParent(), getUILocale()));
+
+            return result;
+        } catch (RepositoryException e) {
+            logger.error("Cannot get node", e);
+            throw new GWTJahiaServiceException("Cannot get node");
+        }
+    }
+
+
 }

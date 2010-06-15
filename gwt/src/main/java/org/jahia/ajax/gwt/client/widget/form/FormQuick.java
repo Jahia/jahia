@@ -98,7 +98,7 @@ public abstract class FormQuick extends FormPanel {
                 add(nameField);
                 for(GWTJahiaItemDefinition def : gwtJahiaNodeType.getItems()) {
                     if (def instanceof GWTJahiaPropertyDefinition) {
-                        Field field = FormFieldCreator.createField(def,null);
+                        Field field = FormFieldCreator.createField(def,null, null);
                         add(field);
                         defs.put(def.getName(),def);
                     }

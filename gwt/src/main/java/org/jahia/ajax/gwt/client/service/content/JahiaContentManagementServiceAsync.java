@@ -40,6 +40,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
@@ -302,4 +303,10 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void searchRolesInContext(String search, int offset, int limit, String context,
                               AsyncCallback<PagingLoadResult<GWTJahiaRole>> asyncCallback);
+
+    void initializeCreateEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreateEngineInitBean> async);
+
+    void initializeEditEngine(String nodePath, AsyncCallback<GWTJahiaEditEngineInitBean> async);
+
+    
 }

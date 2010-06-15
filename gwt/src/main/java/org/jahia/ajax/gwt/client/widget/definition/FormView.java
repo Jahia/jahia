@@ -93,7 +93,7 @@ public class FormView extends TopRightComponent {
         for (GWTJahiaItemDefinition definition : nodeType.getItems()) {
             if (!definition.isNode()) {
                 Log.debug("prop..."+definition);
-                final Field field = FormFieldCreator.createField((GWTJahiaPropertyDefinition) definition, null) ;
+                final Field field = FormFieldCreator.createField((GWTJahiaPropertyDefinition) definition, null, null) ;
                 if (field != null) {
                     theForm.add(field) ;
                 }

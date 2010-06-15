@@ -31,20 +31,23 @@
  */
 package org.jahia.ajax.gwt.client.service.definition;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.List;
 import java.util.Map;
 
 /**
  * GWT remote service for retrieving JCR node type information.
- * 
+ *
  * @author Thomas Draier
- * Date: Aug 25, 2008
- * Time: 6:20:38 PM
+ *         Date: Aug 25, 2008
+ *         Time: 6:20:38 PM
  */
 public interface JahiaContentDefinitionServiceAsync {
 
@@ -53,15 +56,9 @@ public interface JahiaContentDefinitionServiceAsync {
 
     void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 
-    void getNodeSubtypes(String baseType, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
+    void getSubNodetypes(String baseType, AsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>> async);
 
     void getPageTemplates(AsyncCallback<List<GWTJahiaNode>> async);
-
-    void getAvailableMixin(GWTJahiaNodeType type, AsyncCallback<List<GWTJahiaNodeType>> async);
-
-    void getAvailableMixin(GWTJahiaNode node, AsyncCallback<List<GWTJahiaNodeType>> async);
-
-//    void getAvailableTemplates(AsyncCallback<List<GWTJahiaNode>> async);
 
     void getWFFormForNodeAndNodeType(GWTJahiaNode node, String formResourceName,
                                      AsyncCallback<GWTJahiaNodeType> asyncCallback);

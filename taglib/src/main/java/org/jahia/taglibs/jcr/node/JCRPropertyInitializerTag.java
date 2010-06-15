@@ -33,14 +33,12 @@
 package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -119,7 +117,7 @@ public class JCRPropertyInitializerTag extends AbstractJahiaTag {
                             for (Map.Entry<String, String> entry : map.entrySet()) {
                                 if (initializers.containsKey(entry.getKey())) {
                                     listValues = initializers.get(entry.getKey()).getChoiceListValues(
-                                            (ExtendedPropertyDefinition) definition, type, entry.getValue(), listValues,
+                                            (ExtendedPropertyDefinition) definition, entry.getValue(), listValues,
                                             getRenderContext().getMainResourceLocale(), context
                                     );
                                 }

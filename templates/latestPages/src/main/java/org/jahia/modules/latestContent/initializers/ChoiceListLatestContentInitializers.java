@@ -32,7 +32,8 @@ public class ChoiceListLatestContentInitializers implements ModuleChoiceListInit
         return key;
     }
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
+                                                     Map<String, Object> context) {
         final Set<ChoiceListValue> listValues = new HashSet<ChoiceListValue>();
         String displayName,value;
         ChoiceListValue myChoiceList;

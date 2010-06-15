@@ -50,7 +50,7 @@ public class GWTJahiaPropertyDefinition extends GWTJahiaItemDefinition implement
 
     private boolean multiple;
     private boolean constrained ;
-    private List<GWTJahiaValueDisplayBean> valueConstraints ;
+    private List<String> valueConstraints ;
     private List<GWTJahiaNodePropertyValue> defaultValues;
 
     public GWTJahiaPropertyDefinition() {
@@ -89,11 +89,11 @@ public class GWTJahiaPropertyDefinition extends GWTJahiaItemDefinition implement
         this.constrained = constrained;
     }
 
-    public List<GWTJahiaValueDisplayBean> getValueConstraints() {
+    public List<String> getValueConstraints() {
         return valueConstraints;
     }
 
-    public void setValueConstraints(List<GWTJahiaValueDisplayBean> valueConstraints) {
+    public void setValueConstraints(List<String> valueConstraints) {
         this.valueConstraints = valueConstraints;
     }
 

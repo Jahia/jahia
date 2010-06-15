@@ -34,8 +34,6 @@ package org.jahia.ajax.gwt.client.widget.content.wizard;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -86,15 +84,10 @@ public class ContentFormCard extends ContentWizardCard {
                         Map<String, GWTJahiaNodeProperty> defaultValues = new HashMap<String, GWTJahiaNodeProperty>();
 
                         formEditor =
-                                new PropertiesEditor(types, defaultValues, false, true, GWTJahiaItemDefinition.CONTENT,
-                                        null, null);
-                        if (formEditor != null) {
-                            setFormPanel(formEditor);
-                            layout();
-                        } else {
-                            add(new Label(Messages.get("org.jahia.engines.contentmanager.addContentWizard.formCard.error.props",
-                                    "Unable to load properties panel")));
-                        }
+                                new PropertiesEditor(types, defaultValues, GWTJahiaItemDefinition.CONTENT);
+                        formEditor.renderNewFormPanel();
+                        setFormPanel(formEditor);
+                        layout();
                     }
 
                 });

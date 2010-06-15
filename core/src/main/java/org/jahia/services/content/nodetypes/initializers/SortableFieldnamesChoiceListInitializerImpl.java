@@ -64,12 +64,14 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
 
     private boolean showProtected = true;
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition declaringPropertyDefinition, String param,
+                                                     List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         if (context == null) {
             return Collections.emptyList();
         }
 
         JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
+        ExtendedNodeType realNodeType = (ExtendedNodeType) context.get("contextType");
 
         ExtendedPropertyDefinition[] propertyDefs;
         try {

@@ -37,11 +37,10 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -69,7 +68,8 @@ public class EditContentEngine extends AbstractContentEngine {
 
     private Button ok;
     private String nodeName;
-    private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap = new HashMap<String, GWTJahiaGetPropertiesResult>();
+    private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
+            new HashMap<String, GWTJahiaGetPropertiesResult>();
 
 
     /**
@@ -83,18 +83,18 @@ public class EditContentEngine extends AbstractContentEngine {
         contentPath = node.getPath();
         nodeName = node.getName();
         heading = "Edit " + nodeName + " (" + node.getCurrentVersion() + ")";
-        loadNode(true);
+        loadEngine();
         init();
 
         //setTopComponent(toolBar);
     }
-    
-    public EditContentEngine(GWTJahiaNode node,GWTEngine engineConfig, Linker linker) {
-        super(engineConfig,linker);
+
+    public EditContentEngine(GWTJahiaNode node, GWTEngine engineConfig, Linker linker) {
+        super(engineConfig, linker);
         contentPath = node.getPath();
         nodeName = node.getName();
         heading = "Edit " + nodeName + " (" + node.getCurrentVersion() + ")";
-        loadNode(true);
+        loadEngine();
         init();
 
         //setTopComponent(toolBar);
@@ -102,7 +102,8 @@ public class EditContentEngine extends AbstractContentEngine {
 
     public static GWTEngine getEditConfig(GWTJahiaNode node, GWTEditConfiguration config) {
         for (GWTEngine engine : config.getEditEngines()) {
-            if (node.getNodeTypes().contains(engine.getNodeType()) || node.getInheritedNodeTypes().contains(engine.getNodeType())) {
+            if (node.getNodeTypes().contains(engine.getNodeType()) ||
+                    node.getInheritedNodeTypes().contains(engine.getNodeType())) {
                 return engine;
             }
         }
@@ -149,8 +150,7 @@ public class EditContentEngine extends AbstractContentEngine {
     /**
      * load node
      */
-    private void loadNode(final boolean updateAvailableLanguages) {
-
+    private void loadProperties() {
         contentService.getProperties(contentPath, getSelectedLanguageCode(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
@@ -167,23 +167,44 @@ public class EditContentEngine extends AbstractContentEngine {
                     langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguageCode(), result);
                 }
 
+                fillCurrentTab();
+                ok.setEnabled(true);
+            }
+        });
 
-                if (updateAvailableLanguages) {
-                    setAvailableLanguages(result.getAvailabledLanguages());
+    }
+
+    /**
+     * load node
+     */
+    private void loadEngine() {
+
+        contentService.initializeEditEngine(contentPath , new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+            public void onSuccess(GWTJahiaEditEngineInitBean result) {
+                node = result.getNode();
+                nodeTypes = result.getNodeTypes();
+                properties = result.getProperties();
+                defaultLanguageBean = result.getCurrentLocale();
+
+                // set selectedNode as processed
+                if (getSelectedLanguageCode() != null) {
+                    langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguageCode(), result);
                 }
 
-                //todo : do this in one pass
-                definitionService.getAvailableMixin(node, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-                    public void onSuccess(List<GWTJahiaNodeType> result) {
-                        mixin = result;
-                        fillCurrentTab();
-                    }
+                setAvailableLanguages(result.getAvailabledLanguages());
 
-                });
+                mixin = result.getMixin();
+                initializersValues = result.getInitializersValues();
+                fillCurrentTab();
 
                 fillCurrentTab();
                 ok.setEnabled(true);
             }
+
+            public void onApplicationFailure(Throwable throwable) {
+                Log.debug("Cannot get properties", throwable);
+            }
+
         });
 
     }
@@ -194,7 +215,7 @@ public class EditContentEngine extends AbstractContentEngine {
     protected void onLanguageChange() {
         GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguageCode());
         if (result == null) {
-            loadNode(false);
+            loadProperties();
         } else {
             node = result.getNode();
             nodeTypes = result.getNodeTypes();
@@ -221,7 +242,8 @@ public class EditContentEngine extends AbstractContentEngine {
             final List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
 
             // general properties
-            final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
+            final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties =
+                    new HashMap<String, List<GWTJahiaNodeProperty>>();
 
             // new acl
             GWTJahiaNodeACL newNodeACL = null;
@@ -256,14 +278,14 @@ public class EditContentEngine extends AbstractContentEngine {
                             nodeName = ((ContentTabItem) item).getName().getValue();
                         }
 
-               
+
                     }
 
                     // case od contentTabItem
                     if (item instanceof ListOrderingContentTabItem) {
 
                         // if the manual ranking was activated update new ranking
-                        orderedChildrenNodes =((ListOrderingContentTabItem)item).getNewManualOrderedChildrenList();
+                        orderedChildrenNodes = ((ListOrderingContentTabItem) item).getNewManualOrderedChildrenList();
                     }
 
 
@@ -277,25 +299,30 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
                 // case of classification
                 else if (item instanceof ClassificationTabItem) {
-                    ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(((ClassificationTabItem) item).getClassificationEditor(), properties, node.getNodeTypes());
+                    ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(
+                            ((ClassificationTabItem) item).getClassificationEditor(), properties, node.getNodeTypes());
                 } else if (item instanceof SeoTabItem) {
                     ((SeoTabItem) item).doSave();
                 }
             }
 
             // Ajax call to update values
-            JahiaContentManagementService.App.getInstance().saveNode(node,orderedChildrenNodes, newNodeACL, langCodeProperties, properties, new BaseAsyncCallback() {
-                public void onApplicationFailure(Throwable throwable) {
-                    com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") + throwable.getLocalizedMessage());
-                    Log.error("failed", throwable);
-                }
+            JahiaContentManagementService.App.getInstance()
+                    .saveNode(node, orderedChildrenNodes, newNodeACL, langCodeProperties, properties,
+                            new BaseAsyncCallback() {
+                                public void onApplicationFailure(Throwable throwable) {
+                                    com.google.gwt.user.client.Window
+                                            .alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") +
+                                                    throwable.getLocalizedMessage());
+                                    Log.error("failed", throwable);
+                                }
 
-                public void onSuccess(Object o) {
-                    Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
-                    EditContentEngine.this.hide();
-                    linker.refresh(Linker.REFRESH_MAIN);
-                }
-            });
+                                public void onSuccess(Object o) {
+                                    Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
+                                    EditContentEngine.this.hide();
+                                    linker.refresh(Linker.REFRESH_MAIN);
+                                }
+                            });
         }
 
     }

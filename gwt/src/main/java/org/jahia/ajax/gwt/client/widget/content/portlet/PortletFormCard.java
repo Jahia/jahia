@@ -40,8 +40,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.*;
@@ -93,13 +91,11 @@ public class PortletFormCard extends MashupWizardCard {
                     defaultValues.put("j:cacheScope", new GWTJahiaNodeProperty("j:cacheScope", value));
                 }
 
-                pe = new PropertiesEditor(list, defaultValues, false, true, null, null, Arrays.asList("jnt:portlet", "mix:createdBy", "mix:lastModified", "mix:created"));
-                if (pe != null) {
-                    setFormPanel(pe);
-                    layout();
-                } else {
-                    add(new Label(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.props.load.error.label","Unable to load properties panel")));
-                }
+                pe = new PropertiesEditor(list, defaultValues, null);
+                pe.setExcludedTypes(Arrays.asList("jnt:portlet", "mix:createdBy", "mix:lastModified", "mix:created"));
+                pe.renderNewFormPanel();
+                setFormPanel(pe);
+                layout();
             }
 
             public void onApplicationFailure(Throwable caught) {

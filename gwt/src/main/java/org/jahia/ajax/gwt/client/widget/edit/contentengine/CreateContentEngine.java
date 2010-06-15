@@ -8,13 +8,13 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -92,7 +92,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         nodeTypes.add(type);
         properties = new HashMap<String, GWTJahiaNodeProperty>(props);
         heading = "Create " + type.getLabel();
-        loadMixin();
+        loadEngine();
 
         init();
     }
@@ -149,28 +149,23 @@ public class CreateContentEngine extends AbstractContentEngine {
     /**
      * load mixin
      */
-    private void loadMixin() {
-        definitionService.getAvailableMixin(nodeTypes.iterator().next(), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-            public void onSuccess(List<GWTJahiaNodeType> result) {
-                mixin = result;
-                contentService.getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
-                    public void onSuccess(List<GWTJahiaLanguage> gwtJahiaLanguages) {
-                        if (gwtJahiaLanguages != null && !gwtJahiaLanguages.isEmpty()) {
-                            for (GWTJahiaLanguage gwtJahiaLanguage : gwtJahiaLanguages) {
-                                if (gwtJahiaLanguage.isCurrent()) {
-                                    defaultLanguageBean = gwtJahiaLanguage;
-                                    break;
-                                }
-                            }
-                            setAvailableLanguages(gwtJahiaLanguages);
-                        }
-                        fillCurrentTab();
-                    }
+    private void loadEngine() {
+        contentService.initializeCreateEngine(nodeTypes.iterator().next().getName(), parentNode.getPath(), new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
+            public void onSuccess(GWTJahiaCreateEngineInitBean result) {
+                mixin = result.getMixin();
+                initializersValues = result.getInitializersValues();
 
-                    public void onApplicationFailure(Throwable throwable) {
-                        Log.error("Unable to load avalibale mixin", throwable);
+                final List<GWTJahiaLanguage> languages = result.getLanguages();
+                if (languages != null && !languages.isEmpty()) {
+                    for (GWTJahiaLanguage gwtJahiaLanguage : languages) {
+                        if (gwtJahiaLanguage.isCurrent()) {
+                            defaultLanguageBean = gwtJahiaLanguage;
+                            break;
+                        }
                     }
-                });
+                    setAvailableLanguages(languages);
+                }
+                fillCurrentTab();
 
             }
 

@@ -109,8 +109,9 @@ public class Initializers extends HttpServlet implements Controller {
                 if (user != null) {
                     sb.append("] user=[").append(user.getUsername());
                 }
-                sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[").append(request.getSession(
-                        true).getId()).append("] in [").append(System.currentTimeMillis() - startTime).append("ms]");
+                sb.append("] ip=[").append(request.getRemoteAddr()).append("] sessionID=[")
+                        .append(request.getSession(true).getId()).append("] in [")
+                        .append(System.currentTimeMillis() - startTime).append("ms]");
                 logger.info(sb.toString());
             }
         }
@@ -121,14 +122,18 @@ public class Initializers extends HttpServlet implements Controller {
         ExtendedNodeType type = null;
         String path = StringUtils.substringAfter(request.getPathInfo().substring(1), "/");
         String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
-        Locale locale = LanguageCodeConverters.languageCodeToLocale(StringUtils.defaultIfEmpty(
-                StringUtils.substringBefore(StringUtils.substringAfter(path, "/"), "/"), defaultLocale));
+        Locale locale = LanguageCodeConverters.languageCodeToLocale(
+                StringUtils.defaultIfEmpty(StringUtils.substringBefore(StringUtils.substringAfter(path, "/"), "/"),
+                        defaultLocale));
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
             String nodePath = request.getParameter("path");
-            JCRNodeWrapper node ;
+            JCRNodeWrapper node;
             if (nodePath != null) {
                 node = session.getNode(nodePath);
+                type = node.getPrimaryNodeType();
+            } else if (request.getParameter("nodeuuid") != null) {
+                node = session.getNodeByUUID(request.getParameter("nodeuuid"));
                 type = node.getPrimaryNodeType();
             } else {
                 node = null;
@@ -142,21 +147,25 @@ public class Initializers extends HttpServlet implements Controller {
                 for (ExtendedItemDefinition definition : extendedItemDefinitionList) {
                     if (definition.getName().equals(name)) {
                         Map<String, String> map = new LinkedHashMap<String, String>();
+                        if (initializersString != null) {
                             String[] strings = initializersString.split(",");
                             for (String string : strings) {
                                 map.put(string, "");
                             }
+                        } else {
+                            map = definition.getSelectorOptions();
+                        }
+
                         if (map.size() > 0) {
-                            final Map<String, ChoiceListInitializer> initializers = ChoiceListInitializerService.getInstance().getInitializers();
+                            final Map<String, ChoiceListInitializer> initializers =
+                                    ChoiceListInitializerService.getInstance().getInitializers();
                             List<ChoiceListValue> listValues = null;
                             final HashMap<String, Object> context = new HashMap<String, Object>();
-                            context.put("contextNode",node);
+                            context.put("contextNode", node);
                             for (Map.Entry<String, String> entry : map.entrySet()) {
                                 if (initializers.containsKey(entry.getKey())) {
-                                    listValues = initializers.get(entry.getKey()).getChoiceListValues(
-                                            (ExtendedPropertyDefinition) definition, type, entry.getValue(), listValues, locale,
-                                            context
-                                    );
+                                    listValues = initializers.get(entry.getKey())
+                                            .getChoiceListValues((ExtendedPropertyDefinition) definition, entry.getValue(), listValues, locale, context);
                                 }
                             }
                             if (listValues != null) {
@@ -164,15 +173,26 @@ public class Initializers extends HttpServlet implements Controller {
                                 String s = request.getParameter("q");
                                 for (ChoiceListValue listValue : listValues) {
                                     String displayName = listValue.getDisplayName();
-                                    if(s == null || displayName.toLowerCase().startsWith(s)) {
-                                    JSONObject value = new JSONObject();
-                                    value.append("value",listValue.getValue().getString());
-                                    value.append("name", displayName);
-                                    results.put(value);
+                                    if (s == null || displayName.toLowerCase().startsWith(s)) {
+                                        JSONObject value = new JSONObject();
+                                        if (request.getParameter("gxt") != null) {
+                                            value.put("value", listValue.getValue().getString());
+                                            value.put("name", displayName);
+                                        } else {
+                                            value.append("value", listValue.getValue().getString());
+                                            value.append("name", displayName);
+                                        }
+                                        results.put(value);
                                     }
                                 }
-                                results.write(new PrintWriter(System.out));
-                                results.write(response.getWriter());
+                                if (request.getParameter("gxt") != null) {
+                                    JSONObject object = new JSONObject();
+                                    object.put("choicelist", results);
+                                    object.write(response.getWriter());
+                                } else {
+                                    results.write(new PrintWriter(System.out));
+                                    results.write(response.getWriter());
+                                }
                             }
                         }
                     }

@@ -33,8 +33,6 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.log4j.Logger;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.rules.BackgroundAction;
@@ -55,8 +53,7 @@ public class BackgroundActionChoiceListInitializerImpl implements ChoiceListInit
     private JahiaTemplateManagerService templateManagerService;
     private transient static Logger logger = Logger.getLogger(BackgroundActionChoiceListInitializerImpl.class);
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType,
-                                                     String param, List<ChoiceListValue> values, Locale locale,
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         final Map<String, BackgroundAction> map = templateManagerService.getBackgroundActions();
         List<ChoiceListValue> choiceListValues = new ArrayList<ChoiceListValue>();

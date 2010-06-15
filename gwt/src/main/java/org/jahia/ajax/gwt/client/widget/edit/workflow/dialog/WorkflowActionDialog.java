@@ -153,9 +153,10 @@ public class WorkflowActionDialog extends Window {
             contentDefinition.getWFFormForNodeAndNodeType(node,formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onSuccess(GWTJahiaNodeType result) {
                     final PropertiesEditor propertiesEditor = new PropertiesEditor(Arrays.asList(result),
-                                                                                   action.getVariables(), false, false,
-                                                                                   GWTJahiaItemDefinition.CONTENT, null,
-                                                                                   null);
+                                                                                   action.getVariables(),
+                            GWTJahiaItemDefinition.CONTENT);
+                    propertiesEditor.setViewInheritedItems(false);
+                    propertiesEditor.renderNewFormPanel();
                     actionPanel.add(propertiesEditor);
                     generateActionButtons(propertiesEditor, action, node, dialog, actionPanel);
                     dialog.layout();
@@ -217,9 +218,9 @@ public class WorkflowActionDialog extends Window {
             contentDefinition.getNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                 public void onSuccess(GWTJahiaNodeType result) {
                     final PropertiesEditor propertiesEditor = new PropertiesEditor(Arrays.asList(result),
-                                                                                   null, false, false,
-                                                                                   GWTJahiaItemDefinition.CONTENT, null,
-                                                                                   null);
+                                                                                   null, GWTJahiaItemDefinition.CONTENT);
+                    propertiesEditor.setViewInheritedItems(false);
+                    propertiesEditor.renderNewFormPanel();
                     panel.add(propertiesEditor);
                     generateStartWorkflowButton(propertiesEditor, wf, node, dialog, panel);
                     dialog.layout();

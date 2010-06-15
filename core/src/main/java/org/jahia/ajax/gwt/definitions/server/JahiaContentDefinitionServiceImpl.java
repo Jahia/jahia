@@ -31,6 +31,10 @@
  */
 package org.jahia.ajax.gwt.definitions.server;
 
+import com.extjs.gxt.ui.client.data.ModelData;
+import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.ContentDefinitionHelper;
@@ -58,11 +62,11 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
     }
 
     public GWTJahiaNodeType getNodeType(String name) throws GWTJahiaServiceException {
-        return contentDefinition.getNodeType(name, new HashMap<String, Object>(), getUILocale());
+        return contentDefinition.getNodeType(name, getUILocale());
     }
 
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException {
-        return contentDefinition.getNodeTypes(names, new HashMap<String, Object>(), getUILocale());
+        return contentDefinition.getNodeTypes(names, getUILocale());
     }
 
     /**
@@ -74,41 +78,25 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
      * @return a list of node types with name and label populated that are the
      *         sub-types of the specified base type
      */
-    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getNodeSubtypes(String baseTypes) throws GWTJahiaServiceException {
-        return contentDefinition.getNodeSubtypes(baseTypes, new HashMap<String, Object>(), getUILocale());
+    public Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> getSubNodetypes(String baseTypes) throws GWTJahiaServiceException {
+        return contentDefinition.getSubNodetypes(baseTypes, new HashMap<String, Object>(), getUILocale());
     }
 
     public List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException {
         return contentDefinition.getPageTemplates(retrieveCurrentSession(), getSite());
     }
 
-    public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNodeType type) throws GWTJahiaServiceException{
-        return contentDefinition.getAvailableMixin(type, new HashMap<String, Object>(), getUILocale());
-    }
-
-    public List<GWTJahiaNodeType> getAvailableMixin(GWTJahiaNode node) throws GWTJahiaServiceException {
-        try {
-            JCRNodeWrapper nodeWrapper = retrieveCurrentSession().getNode(node.getPath());
-            Map<String,Object> context = new HashMap<String,Object>();
-            context.put("contextNode", nodeWrapper);
-            final GWTJahiaNodeType nodeType = contentDefinition.getNodeType(node.getNodeTypes().iterator().next(), context, getUILocale());
-            return contentDefinition.getAvailableMixin(nodeType, context, getUILocale());
-        } catch (RepositoryException e) {
-            logger.error("Cannot get node", e);
-            throw new GWTJahiaServiceException(e.toString());
-        }
-    }
-
     public GWTJahiaNodeType getWFFormForNodeAndNodeType(GWTJahiaNode node, String formResourceName)
             throws GWTJahiaServiceException {
-        try {
-            JCRNodeWrapper nodeWrapper = retrieveCurrentSession().getNode(node.getPath());
-            Map<String,Object> context = new HashMap<String,Object>();
-            context.put("contextNode", nodeWrapper);
-            return contentDefinition.getNodeType(formResourceName, context, getUILocale());
-        } catch (RepositoryException e) {
-            logger.error("Cannot get node", e);
-            throw new GWTJahiaServiceException(e.toString());
-        }
+//        try {
+//            JCRNodeWrapper nodeWrapper = retrieveCurrentSession().getNode(node.getPath());
+//            Map<String,Object> context = new HashMap<String,Object>();
+//            context.put("contextNode", nodeWrapper);
+            return contentDefinition.getNodeType(formResourceName, getUILocale());
+//        } catch (RepositoryException e) {
+//            logger.error("Cannot get node", e);
+//            throw new GWTJahiaServiceException(e.toString());
+//        }
     }
+
 }

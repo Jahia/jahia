@@ -12,7 +12,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -120,8 +119,13 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
 
-                propertiesEditor = new PropertiesEditor(engine.getNode(),engine.getNodeTypes(), engine.getMixin(), engine.getProperties(), false, true, dataType, null, excludedTypes, !engine.isExistingNode() || engine.getNode().isWriteable(), true);
-
+                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType);                
+                propertiesEditor.setMixin(engine.getMixin());
+                propertiesEditor.setInitializersValues(engine.getInitializersValues());
+                propertiesEditor.setWriteable(!engine.isExistingNode() || engine.getNode().isWriteable());
+                propertiesEditor.setFieldSetGrouping(true);
+                propertiesEditor.setExcludedTypes(excludedTypes);
+                propertiesEditor.renderNewFormPanel();
                 setPropertiesEditorByLang(locale);
 
                 attachPropertiesEditor();

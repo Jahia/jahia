@@ -1,19 +1,14 @@
 package org.jahia.modules.facets.initializers;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
-import org.jahia.services.content.nodetypes.initializers.ComponentLinkerChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
-import javax.jcr.Value;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.*;
@@ -25,8 +20,8 @@ import java.util.*;
  * Time: 3:03:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ChoiceListFacetsInitializers implements ModuleChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(ChoiceListFacetsInitializers.class);
+public class FacetsChoiceListInitializers implements ModuleChoiceListInitializer {
+    private transient static Logger logger = Logger.getLogger(FacetsChoiceListInitializers.class);
     private String key;
 
     public void setKey(String key) {
@@ -37,8 +32,7 @@ public class ChoiceListFacetsInitializers implements ModuleChoiceListInitializer
         return key;
     }
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType,
-                                                     String param, List<ChoiceListValue> values, Locale locale,
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         final Set<ChoiceListValue> listValues = new HashSet<ChoiceListValue>();
         try {

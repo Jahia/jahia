@@ -33,7 +33,6 @@
 package org.jahia.modules.formbuilder.initializers;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
@@ -72,8 +71,8 @@ public class ChoiceListTypeInitializers implements ModuleChoiceListInitializer {
         return initializersMap;
     }
 
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context
-    ) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
+                                                     Map<String, Object> context) {
         Map<String, ChoiceListInitializer> map = ChoiceListInitializerService.getInstance().getInitializers();
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
         for (Map.Entry<String, String> initializer : initializersMap.entrySet()) {

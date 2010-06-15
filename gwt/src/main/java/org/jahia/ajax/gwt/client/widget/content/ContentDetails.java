@@ -40,11 +40,11 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -72,6 +72,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private TabPanel tabs;
     private List<GWTJahiaNodeType> types;
     private List<GWTJahiaNodeType> mixin;
+    private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
     private Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
     private GWTJahiaLanguage language;
 
@@ -79,7 +80,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
 
     private final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-    private final JahiaContentDefinitionServiceAsync cDefService = JahiaContentDefinitionService.App.getInstance();
 
 
     public ContentDetails(GWTManagerConfiguration config) {
@@ -148,7 +148,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             }
         }
         for (TabItem tabItem : tabs.getItems()) {
-            ((EditEngineTabItem)tabItem).setToolbarEnabled(true);
+            ((EditEngineTabItem) tabItem).setToolbarEnabled(true);
         }
     }
 
@@ -162,7 +162,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         m_component.setHeading("&nbsp;");
         selectedNodes = null;
         for (TabItem item : tabs.getItems()) {
-            ((EditEngineTabItem)item).setProcessed(false);
+            ((EditEngineTabItem) item).setProcessed(false);
             item.setEnabled(false);
         }
     }
@@ -201,32 +201,24 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             m_component.setHeading(heading);
 
             if (selectedNodes.size() == 1) {
-                service.getProperties(selectedNodes.get(0).getPath(), JahiaGWTParameters.getLanguage(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
-
-                    public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                        GWTJahiaNode node = result.getNode();
+                service.initializeEditEngine(selectedNodes.get(0).getPath(), new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+                    public void onSuccess(GWTJahiaEditEngineInitBean result) {
                         types = result.getNodeTypes();
                         properties = result.getProperties();
                         language = result.getCurrentLocale();
 
-                        //todo : do this in one pass
-                        cDefService.getAvailableMixin(node, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-                            public void onSuccess(List<GWTJahiaNodeType> result) {
-                                mixin = result;
-                                fillCurrentTab();
-                            }
-
-                        });
-
+                        mixin = result.getMixin();
+                        initializersValues = result.getInitializersValues();
                         fillCurrentTab();
                     }
                 });
+
                 for (TabItem item : tabs.getItems()) {
                     item.setEnabled(true);
                 }
             } else if (selectedNodes.size() > 1) {
                 for (TabItem item : tabs.getItems()) {
-                    if (((EditEngineTabItem)item).handleMultipleSelection()) {
+                    if (((EditEngineTabItem) item).handleMultipleSelection()) {
                         item.setEnabled(true);
                     }
                 }
@@ -256,6 +248,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
     public List<GWTJahiaNodeType> getMixin() {
         return mixin;
+    }
+
+    public Map<String, List<GWTJahiaValueDisplayBean>> getInitializersValues() {
+        return initializersValues;
     }
 
     public GWTJahiaNode getNode() {

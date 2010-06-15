@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -61,8 +60,6 @@ import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
-import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
-import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 
 import java.util.*;
 
@@ -507,7 +504,7 @@ public class ContentActions {
 
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent) {
         if (parent != null && !parent.isFile()) {
-            JahiaContentDefinitionService.App.getInstance().getNodeSubtypes(nodeTypes,
+            JahiaContentDefinitionService.App.getInstance().getSubNodetypes(nodeTypes,
                     new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
                         public void onApplicationFailure(Throwable caught) {
                             MessageBox.alert("Alert",

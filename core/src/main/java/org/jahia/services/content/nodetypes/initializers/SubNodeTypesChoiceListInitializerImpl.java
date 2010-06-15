@@ -24,7 +24,8 @@ public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitiali
     private transient static Logger logger = Logger.getLogger(SubNodeTypesChoiceListInitializerImpl.class);
 
     @SuppressWarnings("unchecked")
-    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, ExtendedNodeType realNodeType, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
+    public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
+                                                     Map<String, Object> context) {
         final SortedSet<ChoiceListValue> listValues = new TreeSet<ChoiceListValue>();
         if (StringUtils.isEmpty(param)) {
             param = "jmix:editorialContent";

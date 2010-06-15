@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -41,6 +42,7 @@ public abstract class AbstractContentEngine extends Window implements NodeHolder
     protected Linker linker = null;
     protected List<GWTJahiaNodeType> nodeTypes;
     protected List<GWTJahiaNodeType> mixin;
+    protected Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
     protected Map<String, GWTJahiaNodeProperty> properties;
     protected TabPanel tabs;
     protected boolean existingNode = true;
@@ -217,6 +219,10 @@ public abstract class AbstractContentEngine extends Window implements NodeHolder
 
     public List<GWTJahiaNodeType> getMixin() {
         return mixin;
+    }
+
+    public Map<String, List<GWTJahiaValueDisplayBean>> getInitializersValues() {
+        return initializersValues;
     }
 
     public Map<String, GWTJahiaNodeProperty> getProperties() {

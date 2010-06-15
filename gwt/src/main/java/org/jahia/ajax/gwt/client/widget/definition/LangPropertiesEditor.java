@@ -10,9 +10,10 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -34,7 +35,8 @@ import java.util.*;
  */
 public class LangPropertiesEditor extends LayoutContainer {
     private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
-    private static JahiaContentDefinitionServiceAsync definitionService = JahiaContentDefinitionService.App.getInstance();
+    private static JahiaContentDefinitionServiceAsync definitionService =
+            JahiaContentDefinitionService.App.getInstance();
 
     // ui vars
     private PropertiesEditor displayedPropertiesEditor;
@@ -45,6 +47,7 @@ public class LangPropertiesEditor extends LayoutContainer {
     private String dataType;
     private List<GWTJahiaNodeType> nodeTypes;
     private List<GWTJahiaNodeType> mixin;
+    private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
     private Map<String, GWTJahiaNodeProperty> properties;
     private GWTJahiaNode node;
     private ComboBox<GWTJahiaLanguage> languageSwitcher;
@@ -71,7 +74,7 @@ public class LangPropertiesEditor extends LayoutContainer {
         add(mainPanel);
 
         // update node info
-        updateNodeInfo(null);
+        loadEngine();
     }
 
 
@@ -121,7 +124,8 @@ public class LangPropertiesEditor extends LayoutContainer {
             PropertiesEditor langPropertiesEditor = getPropertiesEditorByLang(locale);
             if (langPropertiesEditor == null) {
                 if (addSharedLangLabel && node.isShared()) {
-                    Label label = new Label("Important : This is a shared node, editing it will modify its value for all its usages");
+                    Label label = new Label(
+                            "Important : This is a shared node, editing it will modify its value for all its usages");
                     label.setStyleAttribute("color", "rgb(200,80,80)");
                     label.setStyleAttribute("font-size", "14px");
                     add(label);
@@ -130,9 +134,13 @@ public class LangPropertiesEditor extends LayoutContainer {
 
 
                 //create and update properties editor
-                langPropertiesEditor = new PropertiesEditor(nodeTypes, mixin, properties, false, true, dataType, null, excludedTypes, editable && node.isWriteable(), true);
-                langPropertiesEditor.setBorders(false);
-                langPropertiesEditor.setBodyBorder(false);
+                langPropertiesEditor = new PropertiesEditor(nodeTypes, properties, dataType);
+                langPropertiesEditor.setMixin(mixin);
+                langPropertiesEditor.setInitializersValues(initializersValues);
+                langPropertiesEditor.setWriteable(editable && node.isWriteable());
+                langPropertiesEditor.setFieldSetGrouping(true);
+                langPropertiesEditor.setExcludedTypes(excludedTypes);
+                langPropertiesEditor.renderNewFormPanel();
                 setPropertiesEditorByLang(langPropertiesEditor, locale);
                 mainPanel.add(langPropertiesEditor);
             } else {
@@ -143,7 +151,8 @@ public class LangPropertiesEditor extends LayoutContainer {
             if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {
                 Map<String, Field<?>> fieldsMap = langPropertiesEditor.getFieldsMap();
                 for (GWTJahiaNodeProperty property : previousNon18nProperties) {
-                    FormFieldCreator.fillValue(fieldsMap.get(property.getName()), langPropertiesEditor.getGWTJahiaItemDefinition(property), property);
+                    FormFieldCreator.fillValue(fieldsMap.get(property.getName()),
+                            langPropertiesEditor.getGWTJahiaItemDefinition(property), property);
                 }
             }
 
@@ -213,21 +222,37 @@ public class LangPropertiesEditor extends LayoutContainer {
                     languageSwitcher.setSelection(selected);
                 }
 
-                //todo : do this in one pass.
-                if (mixin == null) {
-                    definitionService.getAvailableMixin(result.getNode(), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-                        public void onSuccess(List<GWTJahiaNodeType> result) {
-                            mixin = result;
-                            updatePropertiesComponent(locale);
-                        }
+                updatePropertiesComponent(locale);
+            }
 
-                        public void onApplicationFailure(Throwable caught) {
-                            Log.error("Cannot get available mixin", caught);
-                        }
-                    });
-                } else {
-                    updatePropertiesComponent(locale);
+            public void onApplicationFailure(Throwable throwable) {
+                Log.error("Cannot get properties", throwable);
+            }
+        });
+
+    }
+
+    /**
+     */
+    private void loadEngine() {
+        contentService.initializeEditEngine(node.getPath(), new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+            public void onSuccess(GWTJahiaEditEngineInitBean result) {
+                node = result.getNode();
+                nodeTypes = result.getNodeTypes();
+                properties = result.getProperties();
+
+                if (displayedLocale == null) {
+                    displayedLocale = result.getCurrentLocale();
+                    languageSwitcher.setVisible(true);
+                    List<GWTJahiaLanguage> selected = new ArrayList<GWTJahiaLanguage>();
+                    selected.add(result.getCurrentLocale());
+                    languageSwitcher.getStore().add(result.getAvailabledLanguages());
+                    languageSwitcher.setSelection(selected);
                 }
+
+                mixin = result.getMixin();
+                initializersValues = result.getInitializersValues();
+                updatePropertiesComponent(null);
             }
 
             public void onApplicationFailure(Throwable throwable) {
@@ -248,7 +273,7 @@ public class LangPropertiesEditor extends LayoutContainer {
         Iterator<String> langCodes = langPropertiesEditorMap.keySet().iterator();
         while (langCodes.hasNext()) {
             String langCode = langCodes.next();
-            mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties(true,false,true));
+            mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties(true, false, true));
         }
         return mapProperties;
     }

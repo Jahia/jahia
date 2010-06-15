@@ -117,18 +117,18 @@ public class ModuleHelper {
                 Log.error("Unable to get node with publication info due to:",caught);
             }
         });
-        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-            public void onSuccess(List<GWTJahiaNodeType> result) {
-                nodeTypes = new HashMap<String, GWTJahiaNodeType>();
-                for (GWTJahiaNodeType type : result) {
-                    nodeTypes.put(type.getName(), type);
-                }
-            }
-
-            public void onApplicationFailure(Throwable caught) {
-                Log.error("Unable to get nodetypes :",caught);
-            }
-        });
+//        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+//            public void onSuccess(List<GWTJahiaNodeType> result) {
+//                nodeTypes = new HashMap<String, GWTJahiaNodeType>();
+//                for (GWTJahiaNodeType type : result) {
+//                    nodeTypes.put(type.getName(), type);
+//                }
+//            }
+//
+//            public void onApplicationFailure(Throwable caught) {
+//                Log.error("Unable to get nodetypes :",caught);
+//            }
+//        });
         Log.info("Parsing : "+(System.currentTimeMillis() - start));
     }
 

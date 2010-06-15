@@ -657,6 +657,7 @@ public class NavigationHelper {
             if (site != null) {
                 n.setSiteUUID(site.getUUID());
                 n.setAclContext("site:" + site.getName());
+                n.setSiteKey(site.getSiteKey());
             } else {
                 n.setAclContext("sharedOnly");
             }

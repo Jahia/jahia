@@ -62,6 +62,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                     public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                         final GWTJahiaNode jahiaNode = event.getSelection().get(0);
                         JahiaGWTParameters.setSiteUUID(jahiaNode.getUUID());
+                        JahiaGWTParameters.setSiteKey(jahiaNode.getName());
                         ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
                         ((EditLinker) linker).getMainModule().goTo(jahiaNode.getPath()+"/home", null);
                     }

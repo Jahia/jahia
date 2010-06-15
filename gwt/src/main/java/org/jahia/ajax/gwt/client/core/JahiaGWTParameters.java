@@ -51,6 +51,7 @@ public class JahiaGWTParameters {
     public static final String UI_LANGUAGE = "uilang";
     public static final String LANGUAGE = "lang";
     public static final String SITE_UUID = "siteUuid";
+    public static final String SITE_KEY = "siteKey";
     public static final String WORKSPACE = "workspace";
     public static final String PATH_INFO = "pathInfo";
     public static final String CONTEXT_PATH = "contextPath";
@@ -66,6 +67,7 @@ public class JahiaGWTParameters {
     private static String baseUrl;
     private static String language;
     private static String siteUUID;
+    private static String siteKey;
     private static String workspace;
 
     public static String getServiceEntryPoint() {
@@ -124,6 +126,21 @@ public class JahiaGWTParameters {
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();
         }
+    }
+
+    public static String getSiteKey() {
+        if (siteKey == null) {
+            if (jahiaParamDictionary.keySet().contains(SITE_KEY)) {
+                siteKey = jahiaParamDictionary.get(SITE_KEY);
+            } else {
+                siteKey = "";
+            }
+        }
+        return siteKey;
+    }
+
+    public static void setSiteKey(String newSiteKey) {
+        siteKey = newSiteKey;
     }
 
     public static String getWorkspace() {

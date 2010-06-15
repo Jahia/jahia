@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,6 +17,7 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     protected String name;
     private List<GWTEngine> createEngines;
     private List<GWTEngine> editEngines;
+    private List<GWTJahiaPermission> permissions;
 
     public GWTConfiguration() {
     }
@@ -44,4 +46,11 @@ public class GWTConfiguration implements IsSerializable, Serializable {
         this.editEngines = editEngines;
     }
 
+    public List<GWTJahiaPermission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<GWTJahiaPermission> permissions) {
+        this.permissions = permissions;
+    }
 }

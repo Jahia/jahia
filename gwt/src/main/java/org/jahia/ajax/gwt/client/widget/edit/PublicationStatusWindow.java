@@ -20,6 +20,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
@@ -165,16 +166,20 @@ class PublicationStatusWindow extends Window {
                 hide();
             }
         });
-        ok = new Button(Messages.getResource("label.publish"));
-        noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
-        final ArrayList<String> uuids = new ArrayList<String>(infos.keySet());
-
-        ok.addSelectionListener(new ButtonEventSelectionListener(uuids, true));
-        noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids, false));
 
         setButtonAlign(Style.HorizontalAlignment.CENTER);
+
+        final ArrayList<String> uuids = new ArrayList<String>(infos.keySet());
+
+        ok = new Button(Messages.getResource("label.publish"));
+        ok.addSelectionListener(new ButtonEventSelectionListener(uuids, true));
         addButton(ok);
-        addButton(noWorkflow);
+        if (PermissionsUtils.isPermitted("edit-mode/publication", JahiaGWTParameters.getSiteKey())) {
+            noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
+            noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids, false));
+            addButton(noWorkflow);
+        }
+
         addButton(cancel);
     }
 

@@ -9,6 +9,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LoginBox;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
 
@@ -27,6 +28,7 @@ public class EditEntryPoint extends CommonEntryPoint {
         if (panel != null) {
             JahiaContentManagementService.App.getInstance().getEditConfiguration(DOM.getElementAttribute(panel.getElement(), "config"), new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
+                    PermissionsUtils.loadPermissions(gwtEditConfiguration.getPermissions());
                     final String s = DOM.getInnerHTML(panel.getElement());
                     DOM.setInnerHTML(panel.getElement(), "");
                     panel.add(new EditPanelViewport(s,

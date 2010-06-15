@@ -278,6 +278,7 @@ public class MainModule extends Module {
         }
         if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
             JahiaGWTParameters.setSiteUUID(node.getSiteUUID());
+            JahiaGWTParameters.setSiteKey(node.getSiteKey());
         }
     }
 

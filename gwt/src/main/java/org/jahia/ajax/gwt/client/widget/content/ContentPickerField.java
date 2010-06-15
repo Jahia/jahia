@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -116,6 +117,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         }
         JahiaContentManagementService.App.getInstance().getManagerConfiguration(configuration, new BaseAsyncCallback<GWTManagerConfiguration>() {
             public void onSuccess(GWTManagerConfiguration config) {
+                PermissionsUtils.loadPermissions(config.getPermissions());
                 final Window w = new Window();
                 w.setLayout(new FitLayout());
                 final ContentPicker contentPicker = new ContentPicker(selectionLabel, rootPath, selectorOptions, getValue(),

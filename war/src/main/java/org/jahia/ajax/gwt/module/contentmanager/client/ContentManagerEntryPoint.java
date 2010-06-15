@@ -40,6 +40,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.content.ContentManager;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
 import org.jahia.ajax.gwt.client.util.DOMUtil;
@@ -81,6 +82,7 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
 
             JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
+                    PermissionsUtils.loadPermissions(config.getPermissions());
                     if (embedded) {
                         panel.add(new ContentManagerEmbedded(filters, mimeTypes, selectedPaths, config));
                     } else {

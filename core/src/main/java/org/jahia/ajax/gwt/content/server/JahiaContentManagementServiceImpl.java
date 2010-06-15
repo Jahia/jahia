@@ -209,9 +209,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTManagerConfiguration getManagerConfiguration(String name) throws GWTJahiaServiceException {
-        return uiConfig
+        GWTManagerConfiguration config =  uiConfig
                 .getGWTManagerConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(),
                         name);
+        config.setPermissions(rolesPermissions.getGrantedPermissions(getSite(),getUser()));
+        return config;
     }
 
 
@@ -222,9 +224,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTEditConfiguration getEditConfiguration(String name) throws GWTJahiaServiceException {
-        return uiConfig
+        GWTEditConfiguration config =  uiConfig
                 .getGWTEditConfiguration(getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(), getRequest(),
                         name);
+        config.setPermissions(rolesPermissions.getGrantedPermissions(getSite(),getUser()));
+        return config;
     }
 
     /**
@@ -1547,6 +1551,5 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException("Cannot get node");
         }
     }
-
 
 }

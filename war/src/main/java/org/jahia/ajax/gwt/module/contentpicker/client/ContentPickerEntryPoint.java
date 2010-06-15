@@ -40,6 +40,7 @@ import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerViewport;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -93,6 +94,7 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
 
             JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
+                    PermissionsUtils.loadPermissions(config.getPermissions());
                     panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, selectionLabel, rootPath, selectorOptions, selectedNodes, filters, mimeTypes, config, multiple, callback));
                 }
 

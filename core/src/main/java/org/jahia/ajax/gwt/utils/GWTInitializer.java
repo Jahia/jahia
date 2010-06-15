@@ -136,6 +136,7 @@ public class GWTInitializer {
 
                 if (renderContext.getSite() != null) {
                     params.put(JahiaGWTParameters.SITE_UUID, renderContext.getSite().getIdentifier());
+                    params.put(JahiaGWTParameters.SITE_KEY, renderContext.getSite().getSiteKey());
                 }
             } else {
                 if (request.getParameter("site") != null) {

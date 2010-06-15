@@ -75,35 +75,16 @@
     </logger>
 
 
-    <!--
-    Uncomment the following if you need to filter on categories,
-    such as class packages
-
-    <category name="org.jahia.engines.shared.BigText_Field">
-        <priority value="debug"/>
-    </category>
-
-    <category name="org.jahia.services.workflow">
-        <priority value="debug"/>
-    </category>
-
-    -->
-
     <category name="org.jahia.bin.errors">
         <priority value="warn"/>
-    </category>    
+    </category>
 
     <category name="org.apache.jackrabbit.core.state.ItemStateMap">
         <priority value="error"/>
     </category>
 
-
-
-    <!-- (FH): changing the following level to DEBUG will generate a lot of logs,
-think twice before changing it! -->
-
-    <category name="jsp.jahia.engines">
-        <priority value="warn"/>
+    <category name="org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint">
+        <priority value="error"/>
     </category>
 
     <category name="org.apache.commons">
@@ -118,12 +99,8 @@ think twice before changing it! -->
         <priority value="error"/>
     </category>
 
-    <category name="org.jahia.blogs">
-        <priority value="error"/>
-    </category>
-
     <category name="org.hibernate">
-        <priority value="error"/>
+        <priority value="info"/>
     </category>
 
     <category name="net.sf.ehcache">
@@ -158,14 +135,6 @@ think twice before changing it! -->
         <priority value="info"/>
     </category>
 
-    <category name="org.jboss.cache">
-        <priority value="fatal"/>
-    </category>
-
-    <category name="org.jboss.cache.transaction.DummyTransactionManager">
-        <priority value="fatal"/>
-    </category>
-    
     <category name="org.jahia.utils.i18n">
         <priority value="error"/>
     </category>
@@ -173,24 +142,38 @@ think twice before changing it! -->
     <category name="org.quartz">
         <priority value="info"/>
     </category>
-    
-    <category name="org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl">
-        <priority value="info"/>
-    </category>    
 
     <category name="org.jahia.spring.aop.interceptor">
         <!-- Set this to trace to activate JAMon monitoring -->
         <priority value="info"/>
     </category>
 
-    <category name="accessLogger">
+    <category name="accessLogger" additivity="false">
         <appender-ref ref="hitAccess"/>
     </category>
 
+    <category name="loggingService" additivity="false">
+        <priority value="trace"/>
+        <appender-ref ref="hitAccess"/>
+    </category>
+
+    <category name="profilerLoggingService" additivity="false">
+        <priority value="debug"/>
+        <appender-ref ref="profilerLogs"/>
+    </category>
+
+    <category name="org.jahia.services.render.filter.cache">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.jahia.services.textextraction.TextExtractionService">
+        <priority value="info"/>
+    </category>
+    
     <root>
-        <level value="info"></level>
-        <appender-ref ref="ROLL"></appender-ref>
-        <appender-ref ref="Console"></appender-ref>
+        <level value="info"/>
+        <appender-ref ref="ROLL"/>
+        <appender-ref ref="Console"/>
     </root>
 
 </log4j:configuration>

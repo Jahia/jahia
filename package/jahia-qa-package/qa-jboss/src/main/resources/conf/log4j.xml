@@ -17,8 +17,7 @@
 
     <appender name="ROLL" class="org.apache.log4j.RollingFileAppender">
         <param name="File" value="${jboss.server.log.dir}/jahia.log"></param>
-        <param name="MaxFileSize" value="1MB"></param>
-        <param name="MaxBackupIndex" value="2"></param>
+        <param name="Threshold" value="debug"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d: %-5p [%t] %C{1}, %c: %m%n"></param>
             <!-- another useful pattern to see date time,class, lines
@@ -28,11 +27,22 @@
         </layout>
     </appender>
 
-    <appender name="hitAccess" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${jboss.server.log.dir}/jahia_access.log"></param>
-        <param name="Threshold" value="debug"></param>
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Threshold" value="debug"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d%m%n"></param>
+            <param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"/>
+            <!-- another useful pattern to see date time,class, lines
+            BUT cpu intensive
+            -->
+            <!--param name="ConversionPattern" value="(%r)%d %5p [%t] (%F:%L) - %m%n" /-->
+        </layout>
+    </appender>
+
+    <appender name="profilerLogs" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="jahia_profiler.log"/>
+        <param name="Threshold" value="debug"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %m%n"/>
         </layout>
         <filter class="org.apache.log4j.varia.LevelMatchFilter">
             <param name="LevelToMatch" value="debug"/>
@@ -42,55 +52,55 @@
 
     </appender>
 
-    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+    <appender name="hitAccess" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="jahia_access.log"/>
+        <param name="Threshold" value="trace"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"></param>
-            <!-- another useful pattern to see date time,class, lines
-            BUT cpu intensive
-            -->
-            <!--param name="ConversionPattern" value="(%r)%d %5p [%t] (%F:%L) - %m%n" /-->
+            <param name="ConversionPattern" value="%d %m%n"/>
         </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="trace"/>
+            <param name="AcceptOnMatch" value="true"/>
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter"/>
+
     </appender>
 
     <logger name="REQUEST">
-        <appender-ref ref="ROLL"></appender-ref>
+        <appender-ref ref="ROLL"/>
     </logger>
 
     <logger name="SysOut">
-        <appender-ref ref="Console"></appender-ref>
+        <appender-ref ref="Console"/>
     </logger>
 
 
-    <category name="org.apache.commons">
-        <priority value="error"/>
+    <category name="org.jahia.bin.errors">
+        <priority value="warn"/>
     </category>
 
     <category name="org.apache.jackrabbit.core.state.ItemStateMap">
         <priority value="error"/>
     </category>
 
-    <category name="org.apache.jackrabbit.extractor">
+    <category name="org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint">
         <priority value="error"/>
     </category>
 
-    <category name="org.apache.jsp">
+    <category name="org.apache.commons">
         <priority value="error"/>
     </category>
 
-    <category name="org.apache.jasper.compiler.TagLibraryInfoImpl">
+    <category name="org.apache.struts.action.RequestProcessor">
         <priority value="error"/>
     </category>
-
-    <category name="org.jahia.bin.errors">
-        <priority value="warn"/>
-    </category>    
 
     <category name="org.springframework">
         <priority value="error"/>
     </category>
 
     <category name="org.hibernate">
-        <priority value="error"/>
+        <priority value="info"/>
     </category>
 
     <category name="net.sf.ehcache">
@@ -99,6 +109,18 @@
 
     <category name="net.htmlparser.jericho">
         <priority value="warn"/>
+    </category>
+
+    <category name="org.apache.jsp">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.apache.jackrabbit.extractor">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.apache.jasper.compiler.TagLibraryInfoImpl">
+        <priority value="error"/>
     </category>
 
     <category name="EventListener">
@@ -113,14 +135,6 @@
         <priority value="info"/>
     </category>
 
-    <category name="org.jboss.cache">
-        <priority value="error"/>
-    </category>
-
-    <category name="org.jboss.cache.transaction.DummyTransactionManager">
-        <priority value="fatal"/>
-    </category>
-    
     <category name="org.jahia.utils.i18n">
         <priority value="error"/>
     </category>
@@ -128,24 +142,38 @@
     <category name="org.quartz">
         <priority value="info"/>
     </category>
-    
-    <category name="org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl">
-        <priority value="info"/>
-    </category>    
 
     <category name="org.jahia.spring.aop.interceptor">
         <!-- Set this to trace to activate JAMon monitoring -->
         <priority value="info"/>
     </category>
 
-    <category name="accessLogger">
+    <category name="accessLogger" additivity="false">
         <appender-ref ref="hitAccess"/>
     </category>
 
+    <category name="loggingService" additivity="false">
+        <priority value="trace"/>
+        <appender-ref ref="hitAccess"/>
+    </category>
+
+    <category name="profilerLoggingService" additivity="false">
+        <priority value="debug"/>
+        <appender-ref ref="profilerLogs"/>
+    </category>
+
+    <category name="org.jahia.services.render.filter.cache">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.jahia.services.textextraction.TextExtractionService">
+        <priority value="info"/>
+    </category>
+    
     <root>
-        <level value="info"></level>
-        <appender-ref ref="ROLL"></appender-ref>
-        <appender-ref ref="Console"></appender-ref>
+        <level value="info"/>
+        <appender-ref ref="ROLL"/>
+        <appender-ref ref="Console"/>
     </root>
 
 </log4j:configuration>

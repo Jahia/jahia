@@ -89,7 +89,8 @@
                             <jcr:nodeProperty node="${facet}" name="lowerBound" var="lowerBound"/>            
                             <jcr:nodeProperty node="${facet}" name="upperBound" var="upperBound"/>                    
                             <jcr:nodeProperty node="${facet}" name="includeBounds" var="includeBounds"/>
-                            <c:set var="currentFacetQuery" value="${includeBounds.boolean ? '[' : '{'}${lowerBound.string} TO ${upperBound.string}${includeBounds.boolean ? ']' : '}'}"/>                        
+                            <c:set var="closeBrace">}</c:set>
+                            <c:set var="currentFacetQuery" value="${includeBounds.boolean ? '[' : '{'}${lowerBound.string} TO ${upperBound.string}${includeBounds.boolean ? ']' : closeBrace}"/>
                         </c:when>
                         <c:when test="${jcr:isNodeType(facet, 'jnt:queryFacet')}">
                             <jcr:nodeProperty node="${facet}" name="query" var="currentFacetQuery"/>                        

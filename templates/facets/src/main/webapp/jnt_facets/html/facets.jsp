@@ -1,6 +1,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
@@ -118,7 +119,6 @@
             <%@include file="facetDisplay.jspf"%>
         </c:forEach>
         <c:forEach items="${result.facetQuery}" var="facetValue">
-            <h4></h4>
             <ul>        
                 <c:if test="${not query:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">
                     <c:url var="facetUrl" value="${url.mainResource}" context="/">
@@ -131,7 +131,7 @@
     </div>
 </c:if>
 <c:if test="${renderContext.editMode}">
-    facets set :
+    <fmt:message key="facets.facetsSet"/> :
     <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">
         <template:module node="${facet}"/>
     </c:forEach>

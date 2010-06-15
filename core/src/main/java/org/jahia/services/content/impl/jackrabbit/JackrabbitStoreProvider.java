@@ -128,24 +128,6 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     public void stop() {
     }
 
-    public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) throws RepositoryException{
-        final JCRNodeWrapperImpl w = new JackrabbitNodeWrapper(objectNode, null, session, this);
-        if(w.checkValidity()) {
-            return getService().decorate(w);
-        } else {
-            throw new PathNotFoundException("This node doesn't exist in this language "+objectNode.getPath());
-        }
-    }
-
-    public JCRNodeWrapper getNodeWrapper(Node objectNode, String path, JCRSessionWrapper session) throws RepositoryException{
-        final JCRNodeWrapperImpl w = new JackrabbitNodeWrapper(objectNode, path, session, this);
-        if(w.checkValidity()) {
-            return getService().decorate(w);
-        } else {
-            throw new PathNotFoundException("This node doesn't exist in this language "+objectNode.getPath());
-        }
-    }
-
     protected void registerCustomNodeTypes(Workspace ws) throws IOException, RepositoryException {
         NodeTypeIterator nti = NodeTypeRegistry.getInstance().getAllNodeTypes();
         registerCustomNodeTypes(nti, ws);

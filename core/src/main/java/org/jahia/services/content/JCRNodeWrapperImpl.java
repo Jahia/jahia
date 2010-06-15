@@ -36,7 +36,10 @@ import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
+import org.apache.jackrabbit.core.SessionImpl;
+import org.apache.jackrabbit.core.security.authorization.Permission;
 import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
@@ -130,14 +133,90 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public Map<String, List<String[]>> getAclEntries() {
-        return new HashMap<String, List<String[]>>();
+        try {
+            Map<String, List<String[]>> permissions = new HashMap<String, List<String[]>>();
+            Map<String, List<String[]>> inheritedPerms = new HashMap<String, List<String[]>>();
+
+            recurseonACPs(permissions, inheritedPerms, objectNode);
+            for (Map.Entry<String,List<String[]>> s : inheritedPerms.entrySet()) {
+                if (permissions.containsKey(s.getKey())) {
+                    List<String[]> l = permissions.get(s.getKey());
+                    l.addAll(s.getValue());
+                } else {
+                    permissions.put(s.getKey(), s.getValue());
+                }
+            }
+            return permissions;
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
     }
+
 
     /**
      * {@inheritDoc}
      */
     public Map<String, Map<String, String>> getActualAclEntries() {
-        return new HashMap<String, Map<String, String>>();
+        Map<String, Map<String, String>> actualACLs = new HashMap<String, Map<String, String>>();
+        Map<String, List<String[]>> allACLs = getAclEntries();
+        if (allACLs != null) {
+            for (Map.Entry<String, List<String[]>> entry : allACLs.entrySet()) {
+                Map<String, String> permissionsForUser = new HashMap<String, String>();
+                // filtering stuff (path, GRANT/DENY, jcr:perm)
+                for (String[] perms : entry.getValue()) {
+                    if (permissionsForUser.containsKey(perms[2])) {
+                        if (perms[0].equals(getPath())) {
+                            permissionsForUser.put(perms[2], perms[1]);
+                        }
+                    } else {
+                        permissionsForUser.put(perms[2], perms[1]);
+                    }
+                }
+                actualACLs.put(entry.getKey(), permissionsForUser);
+            }
+        }
+        return actualACLs;
+    }
+
+    private void recurseonACPs(Map<String, List<String[]>> results, Map<String, List<String[]>> inherited, Node n) throws RepositoryException {
+        try {
+            Map<String, List<String[]>> current = results;
+            while (true) {
+                if (n.hasNode("j:acl")) {
+                    Node acl = n.getNode("j:acl");
+                    NodeIterator aces = acl.getNodes();
+                    Map<String, List<String[]>> localResults = new HashMap<String, List<String[]>>();
+                    while (aces.hasNext()) {
+                        Node ace = aces.nextNode();
+                        if (ace.isNodeType("jnt:ace")) {
+                            String principal = ace.getProperty("j:principal").getString();
+                            String type = ace.getProperty("j:aceType").getString();
+                            Value[] privileges = ace.getProperty("j:privileges").getValues();
+
+                            if (!current.containsKey(principal)) {
+                                List<String[]> p = localResults.get(principal);
+                                if (p == null) {
+                                    p = new ArrayList<String[]>();
+                                    localResults.put(principal, p);
+                                }
+                                for (Value privilege : privileges) {
+                                    p.add(new String[]{n.getPath(), type, privilege.getString()});
+                                }
+                            }
+                        }
+                    }
+                    current.putAll(localResults);
+                    if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
+                        return;
+                    }
+                }
+                n = n.getParent();
+                current = inherited;
+            }
+        } catch (ItemNotFoundException e) {
+            logger.debug(e);
+        }
     }
 
     /**
@@ -170,14 +249,50 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean hasPermission(String perm) {
+        String ws = null;
+        int permissions = 0;
         try {
-            if (READ.equals(perm) || READ_LIVE.equals(perm)) {
-                if (objectNode != null) {
-                    return true;
+            if (READ.equals(perm)) {
+                permissions = Permission.READ;
+                ws = "default";
+            } else if (WRITE.equals(perm)) {
+                permissions = Permission.ADD_NODE;
+                ws = "default";
+            } else if (MODIFY_ACL.equals(perm)) {
+                permissions = Permission.MODIFY_AC;
+                ws = "default";
+            } else if (READ_LIVE.equals(perm)) {
+                permissions = Permission.READ;
+                ws = "live";
+            } else if (WRITE_LIVE.equals(perm)) {
+                permissions = Permission.ADD_NODE;
+                ws = "live";
+            }
+            if (ws == null) {
+                return false;
+            }
+            if (ws.equals(workspace.getName())) {
+                SessionImpl jrSession = (SessionImpl) session.getProviderSession(provider);
+                Path path = jrSession.getQPath(localPath).getNormalizedPath();
+                return jrSession.getAccessManager().isGranted(path, permissions);
+            } else {
+                SessionImpl jrSession = (SessionImpl) provider.getCurrentUserSession("live");
+                Node current = this;
+                while (true) {
+                    try {
+                        Path path = jrSession.getQPath(current.getCorrespondingNodePath(ws)).getNormalizedPath();
+                        return jrSession.getAccessManager().isGranted(path, permissions);
+                    } catch (ItemNotFoundException nfe) {
+                        // corresponding node not found
+                        try {
+                            current = current.getParent();
+                        } catch (AccessDeniedException e) {
+                            return false;
+                        } catch (ItemNotFoundException e) {
+                            return false;
+                        }
+                    }
                 }
-            } else if (WRITE.equals(perm) || WRITE_LIVE.equals(perm) || MODIFY_ACL.equals(perm)) {
-                session.getProviderSession(provider).checkPermission(objectNode.getPath(), "set_property");
-                return true;
             }
         } catch (AccessControlException e) {
             return false;
@@ -185,50 +300,92 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             logger.error("Cannot check perm ", re);
             return false;
         }
-
-        return false;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean changePermissions(String user, String perm) {
-        return false;
+        try {
+            changePermissions(objectNode, user, perm);
+        } catch (RepositoryException e) {
+            logger.error("Cannot change acl", e);
+            return false;
+        }
+
+        return true;
     }
+
 
     /**
      * {@inheritDoc}
      */
     public boolean changePermissions(String user, Map<String, String> perm) {
-        return false;
+        try {
+            changePermissions(objectNode, user, perm);
+        } catch (RepositoryException e) {
+            logger.error("Cannot change acl", e);
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean revokePermissions(String user) {
-        return false;
+        try {
+            revokePermission(objectNode, user);
+        } catch (RepositoryException e) {
+            logger.error("Cannot change acl", e);
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean revokeAllPermissions() {
+        try {
+            if (objectNode.hasNode("j:acl")) {
+                objectNode.getNode("j:acl").remove();
+                objectNode.removeMixin("jmix:accessControlled");
+                return true;
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         return false;
     }
+
 
     /**
      * {@inheritDoc}
      */
     public boolean getAclInheritanceBreak() {
-        return false;
+        try {
+            return getAclInheritanceBreak(objectNode);
+        } catch (RepositoryException e) {
+            logger.error("Cannot get acl", e);
+            return false;
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean setAclInheritanceBreak(boolean inheritance) {
-        return false;
+        try {
+            setAclInheritanceBreak(objectNode, inheritance);
+        } catch (RepositoryException e) {
+            logger.error("Cannot change acl", e);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -2427,6 +2584,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return null;
 //        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
     }
+
 
 
 }

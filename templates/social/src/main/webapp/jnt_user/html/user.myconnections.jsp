@@ -107,8 +107,8 @@
                     $.each(data, function(i, item) {
                         $("#searchUsersResult").append(
                            $("<tr/>").append( $("<td/>").append($("<img/>").attr("src", item['j:picture'])) )
-                                   .append( $("<td/>").text(item['j:firstName'] + " " + item['j:lastName'] + " " + item['jcr:path']))
-                                   .append( $("<td/>").append( $("<a/>").attr("href", "").text("Add as friend") ) )
+                                   .append( $("<td/>").text(item['j:firstName'] + " " + item['j:lastName']))
+                                   .append( $("<td/>").append( $("<a/>").attr("href", "").click(function () { requestConnection('${currentNode.path}.startWorkflow.do',item['jcr:path'], item['j:nodename']); return false; }).text("Add as friend") ) )
                         );
                         if (i == 10) return false;
                     });
@@ -122,6 +122,17 @@
             searchUsers(term);
             return false;
         });
+
+        function requestConnection(actionURL, toUserPath, toUserKey) {
+            $.ajax({
+                url : '${url.base}' + actionURL,
+                type : 'post',
+                data : 'process=jBPM:user-connection&to=' + toUserPath + '&userkey=' + toUserKey,
+                success : function (data) {
+                    alert("Request completed successfully!");
+                }
+            });
+        }
 
     });
 </script>
@@ -137,7 +148,7 @@
         <c:if test="${not empty title.string}">
             <label for="searchUsersTerm">${fn:escapeXml(title.string)}:&nbsp;</label>
         </c:if>
-        <fmt:message key='search.startSearching' var="startSearching"/>
+        <fmt:message key='userSearch' var="startSearching"/>
         <input type="text" id="searchUsersTerm" value="${startSearching}"
                onfocus="if(this.value==this.defaultValue)this.value='';"
                onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
@@ -147,12 +158,12 @@
     <br class="clear"/>
 
     <div>
-        <table>
+        <table width="100%" class="table">
             <thead>
                 <tr>
-                    <td><fmt:message key="userIcon"/></td>
-                    <td><fmt:message key="userInfo"/></td>
-                    <td><fmt:message key="userActions"/></td>
+                    <th><fmt:message key="userIcon"/></th>
+                    <th><fmt:message key="userInfo"/></th>
+                    <th><fmt:message key="userActions"/></th>
                 </tr>
             </thead>
             <tbody id="searchUsersResult">

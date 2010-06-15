@@ -1,18 +1,23 @@
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:userConnection] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+[jnt:userConnection] > jnt:content, jmix:sandboxContent
  - j:connectedFrom (weakreference) < jnt:user
  - j:connectedTo (weakreference) < jnt:user
  - j:type (string)
  
-[jnt:userActivity] > jnt:content
+[jnt:userActivity] > jnt:content, jmix:sandboxContent
  - j:from (weakreference) < jnt:user
  - j:message (string)
  - j:link (string)
- - j:icon (weakreference) < jnt:image
+ - j:icon (weakreference) < jmix:image
  - j:attribution (string)
  - j:type (string)
  - j:likes (long)
  - j:caption (string)
  - j:description (string)
- - j:picture (weakreference) < jnt:image
+ - j:picture (weakreference) < jmix:image

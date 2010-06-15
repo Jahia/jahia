@@ -148,12 +148,9 @@
         </ul>
     </div>
 
-
-    <jcr:jqom var="userConnections">
-        <query:selector nodeTypeName="jnt:userConnection"/>
-        <query:descendantNode path="${currentNode.path}"/>
-    </jcr:jqom>
-
+    <jcr:sql var="userConnections"
+         sql="select * from [jnt:userConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
+    
     <h3 class="titleIcon">Friends<img title="" alt="" src="img-text/friends.png"/></h3>
     <ul class="friends-list">
         <c:forEach items="${userConnections.nodes}" var="userConnection">

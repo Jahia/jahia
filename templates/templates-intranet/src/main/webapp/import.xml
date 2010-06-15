@@ -293,6 +293,12 @@
                                 <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
                                                     j:referenceTemplate="portal"/>
                             </my-portal>
+                            <my-connections jcr:primaryType="jnt:contentList">
+                                <j:translation_en jcr:title_en="My Connections" jcr:language="en"
+                                                  jcr:primaryType="jnt:translation"/>
+                                <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay"
+                                                    j:referenceTemplate="myconnections"/>
+                            </my-connections>
                         </tabularList>
                     </pagecontent>
                 </my-profile>

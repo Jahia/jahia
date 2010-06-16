@@ -1131,6 +1131,12 @@
         <property name="icon" value="newMashup"/>
     </bean>
 
+    <bean id="Toolbar.Item.NewMashupFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.NewFolder">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewMashupFolderActionItem"/>
+        </property>
+    </bean>
+
     <bean id="Toolbar.Item.NewRss" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRssActionItem"/>

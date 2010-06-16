@@ -602,8 +602,10 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.Item.NewFolder"/>
-                        <ref bean="Toolbar.Item.NewContent"/>
+                        <ref bean="Toolbar.Item.NewMashupFolder"/>
+                        <ref bean="Toolbar.Item.NewMashup"/>
+                        <ref bean="Toolbar.Item.NewRss"/>
+                        <ref bean="Toolbar.Item.NewGadget"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>

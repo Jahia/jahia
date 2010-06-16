@@ -218,7 +218,7 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="Toolbar.Item.NewFolder"/>
+                                                <ref bean="Toolbar.Item.NewMashupFolder"/>
                                                 <ref bean="Toolbar.Item.NewMashup"/>
                                                 <ref bean="Toolbar.Item.NewRss"/>
                                                 <ref bean="Toolbar.Item.NewGadget"/>
@@ -670,6 +670,7 @@
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>name,*,label.name</value>
+                <value>j:context,200,label.context</value>
             </list>
         </property>
 
@@ -1369,7 +1370,7 @@
                     <property name="layout" value="button"/>
                     <property name="items">
                         <list>
-                            <ref bean="Toolbar.Item.NewFolder"/>
+                            <ref bean="Toolbar.Item.NewMashupFolder"/>
                             <ref bean="Toolbar.Item.NewMashup"/>
                             <ref bean="Toolbar.Item.NewRss"/>
                             <ref bean="Toolbar.Item.NewGadget"/>

@@ -32,9 +32,7 @@
 
 package org.jahia.modules.roles.rules;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -52,6 +50,7 @@ import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.rbac.jcr.PermissionImpl;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.jahia.services.rbac.jcr.RoleImpl;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -263,6 +262,28 @@ public class RoleService {
         final Value[] languages = siteNode.getProperty("j:languages").getValues();
         for (Value language : languages) {
             roleService.savePermission(new PermissionIdentity(language.getString(), "languages", siteKey));
+        }
+    }
+
+    public void createTranslatorRole(final AddedNodeFact node, String name, String base, KnowledgeHelper drools) throws RepositoryException {
+        JCRNodeWrapper siteNode = node.getNode();
+        final String siteKey = siteNode.getName();
+        Set<PermissionImpl> perms = roleService.getRole(new RoleIdentity(base, siteKey)).getPermissions();
+        final Value[] languages = siteNode.getProperty("j:languages").getValues();
+        for (Value language : languages) {
+            final RoleImpl role = new RoleImpl(name.replace("*",language.getString()), siteKey);
+            if (roleService.getRole(role) != null) {
+                continue;
+            }
+            final Set<PermissionImpl> permissions = new HashSet<PermissionImpl>(perms);
+            for (PermissionImpl perm : perms) {
+                if (perm.getGroup().equals("languages")) {
+                    permissions.remove(perm);
+                }                                    
+            }
+            permissions.add(roleService.getPermission(new PermissionImpl(language.getString(), "languages", siteKey)));
+            role.setPermissions(permissions);
+            roleService.saveRole(role);
         }
     }
 

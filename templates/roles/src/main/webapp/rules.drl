@@ -40,6 +40,7 @@ rule "Create permission for site languages"
 			- the node has the type jnt:virtualsite
 	then
 		Update site language permissions for node
+		Create a role "translator-*" for each language based on role "translator" for node
 		Grant permissions in group "languages" to role node.getPath() + "/roles/editor"
 		Grant permissions in group "languages" to role node.getPath() + "/roles/editor-in-chief"
 		Grant permissions in group "languages" to role node.getPath() + "/roles/publisher"

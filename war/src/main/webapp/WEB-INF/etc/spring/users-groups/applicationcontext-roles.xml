@@ -11,6 +11,7 @@
 
 	<bean id="org.jahia.services.rbac.jcr.RoleBasedAccessControlManager" class="org.jahia.services.rbac.jcr.RoleBasedAccessControlManager">
 		<property name="roleManager" ref="org.jahia.services.rbac.jcr.RoleManager"/>
+    	<property name="userManager" ref="JahiaUserManagerService"/>
     	<property name="groupManager" ref="JahiaGroupManagerService"/>
     	<property name="JCRGroupManagerProvider" ref="JCRGroupManagerProvider"/>
     	<property name="JCRUserManagerProvider" ref="JCRUserManagerProvider"/>

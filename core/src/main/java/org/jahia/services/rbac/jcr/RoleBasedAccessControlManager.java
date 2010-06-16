@@ -69,10 +69,7 @@ import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.Role;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.*;
 import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRPrincipal;
@@ -95,6 +92,7 @@ public class RoleBasedAccessControlManager {
 
     private static final String PROPERTY_ROLES = "j:roles";
 
+    private JahiaUserManagerService userManager;
     private JahiaGroupManagerService groupManager;
 
     private JCRGroupManagerProvider jcrGroupManagerProvider;
@@ -529,6 +527,10 @@ public class RoleBasedAccessControlManager {
         this.groupManager = groupManager;
     }
 
+    public void setUserManager(JahiaUserManagerService userManager) {
+        this.userManager = userManager;
+    }
+
     /**
      * Injects the dependency to the {@link JCRGroupManagerProvider}.
      * 
@@ -570,7 +572,7 @@ public class RoleBasedAccessControlManager {
             if (principalNode.hasProperty(JCRUser.J_EXTERNAL)
                     && principalNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
                 // lookup external user node
-                user = jcrUserManagerProvider.lookupExternalUser(principalNode.getName());
+                user = userManager.lookupUser(principalNode.getName());
             } else {
                 // lookup internal user node
                 user = jcrUserManagerProvider.lookupUser(principalNode.getName());

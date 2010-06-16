@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.poi.hssf.record.formula.functions.T;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.bin.Edit;
@@ -76,7 +77,15 @@ public class TemplateHelper {
             JCRSiteNode site = node.resolveSite();
             renderContext.setSite(site);
             String res = renderService.render(r, renderContext);
-            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(renderContext.getStaticAssets()));
+            Map<String, Set<String>> map = renderContext.getStaticAssets();
+            Set<String> stringSet = map.get("css");
+            List<String> copy = new ArrayList<String>();
+            copy.addAll(stringSet);
+            Collections.reverse(copy);
+            stringSet = new LinkedHashSet<String>();
+            stringSet.addAll(copy);
+            map.put("css",stringSet);
+            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(map));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (RenderException e) {

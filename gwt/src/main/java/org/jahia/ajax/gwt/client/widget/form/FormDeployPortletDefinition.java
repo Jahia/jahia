@@ -169,7 +169,7 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         if (portletDefinitionField.getValue() != null && portletDefinitionField.getValue().length() > 0) {
             submit();
         }else{
-             MessageBox.alert(Messages.get("label.deployNewPortlet", "Deploy new portlets"), Messages.get("warning.selectFileForUpload", "Please select a *.war file"), null);
+             MessageBox.alert(Messages.get("label.deployNewPortlet", "Deploy new portlets"), Messages.get("message.selectFileForUpload", "Please select a *.war file"), null);
         }
     }
 

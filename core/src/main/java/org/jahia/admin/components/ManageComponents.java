@@ -157,7 +157,7 @@ public class ManageComponents extends AbstractAdministrationModule {
             }
 
         } else {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.generalError",
                     jParams.getUILocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
@@ -264,7 +264,7 @@ public class ManageComponents extends AbstractAdministrationModule {
 
                     }
                 } catch (Exception e) {
-                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label", jParams.getUILocale());
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.generalError", jParams.getUILocale());
                     response.getWriter().print(dspMsg);
                     logger.error(e, e);
                 } finally {

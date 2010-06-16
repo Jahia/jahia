@@ -158,7 +158,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
             }
 
         } else {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.generalError",
                     jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,

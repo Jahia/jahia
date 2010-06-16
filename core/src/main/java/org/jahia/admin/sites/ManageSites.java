@@ -266,7 +266,7 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (JahiaException ex) {
             logger.error("Error while retrieving site list", ex);
             jahiaDisplayMessage = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    .getJahiaInternalResource("message.generalError",
                             jParams.getLocale());
         }
         // set request attributes...
@@ -383,7 +383,7 @@ public class ManageSites extends AbstractAdministrationModule {
             logger.error("Error while retrieving number of site in database", je);
             // set request attributes...
             jahiaDisplayMessage = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    .getJahiaInternalResource("message.generalError",
                             jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", jahiaDisplayMessage);
             // redirect...

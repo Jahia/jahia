@@ -151,7 +151,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
 
         } else {
             String dspMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    .getJahiaInternalResource("message.generalError",
                             getLocale(request, jParams));
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "menu.jsp");

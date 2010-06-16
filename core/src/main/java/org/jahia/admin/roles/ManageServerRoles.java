@@ -96,7 +96,7 @@ public class ManageServerRoles extends AbstractAdministrationModule {
         try {
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "permissions/server_permissions.jsp");
         } catch (Exception je) {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.generalError",
                     jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,

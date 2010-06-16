@@ -142,15 +142,15 @@
             <%@include file="facetDisplay.jspf"%>
         </c:forEach>
         <c:set var="currentFacetLabel" value=""/>
-        <c:set var="facetLabel" value=""/>
-        <c:forEach items="${result.facetQuery}" var="facetValue">
+        <c:set var="mappedFacetLabel" value=""/>
+        <c:forEach items="${result.facetQuery}" var="facetValue" varStatus="iterationStatus">
             <facet:facetLabel currentActiveFacet="${facetValue}" facetLabels="${facetLabels}" display="false"/>
-            <c:if test="${facetLabel != currentFacetLabel}">
-                <c:set var="currentFacetLabel" value="${facetLabel}"/>
+            <c:if test="${iterationStatus.first or (mappedFacetLabel != currentFacetLabel and not empty mappedFacetLabel)}">
+                <c:set var="currentFacetLabel" value="${mappedFacetLabel}"/>
                 <c:if test="${not empty currentFacetLabel}">
                     </ul>
                 </c:if>
-                <h4>${facetLabel}</h4>
+                <h4>${mappedFacetLabel}</h4>
                 <ul>        
             </c:if>
             <c:if test="${not facet:isFacetValueApplied(facetValue, activeFacetsVars[activeFacetMapVarName])}">

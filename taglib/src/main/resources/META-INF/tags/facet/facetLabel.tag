@@ -38,6 +38,7 @@
 <%@ attribute name="currentActiveFacet" required="false" type="java.lang.Object" description="Alternatively the Map.Entry with KeyValue from the active facet filters variable." %>
 <%@ attribute name="facetLabels" required="true" type="java.util.Map" description="Mapping between facet name and label." %>
 <%@ variable name-given="facetLabel" scope="AT_END"%>
+<%@ variable name-given="mappedFacetLabel" scope="AT_END"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
@@ -48,23 +49,22 @@
     <c:when test="${not empty currentFacetField}">
         <c:set var="currentFacetName" value="${currentFacetField.name}"/>
         <c:if test="${not empty facetLabels and (not empty facetLabels[currentFacetName])}">
-            <c:set var="mappedLabel" value="${facetLabels[currentFacetName]}"/>        
+            <c:set var="mappedFacetLabel" value="${facetLabels[currentFacetName]}"/>        
         </c:if>        
     </c:when>
     <c:otherwise>
         <c:set var="currentFacetName" value="${currentActiveFacet != null ? currentActiveFacet.key : ''}"/>
         <c:if test="${not empty facetLabels}">
             <c:forEach items="${facetLabels}" var="currentFacetLabel">
-                <c:if test="${empty mappedLabel and fn:endsWith(currentFacetName, currentFacetLabel.key)}">
-                    <c:set var="mappedLabel" value="${currentFacetLabel.value}"/>
+                <c:if test="${empty mappedFacetLabel and fn:endsWith(currentFacetName, currentFacetLabel.key)}">
+                    <c:set var="mappedFacetLabel" value="${currentFacetLabel.value}"/>
                 </c:if>
             </c:forEach>
         </c:if>        
     </c:otherwise>
 </c:choose>  
 
-<c:set var="mappedLabel" value="${not empty mappedLabel ? mappedLabel : (not empty currentFacetField ? currentFacetName : '')}"/>
+<c:set var="facetLabel" value="${not empty mappedFacetLabel ? mappedFacetLabel : (not empty currentFacetField ? currentFacetName : '')}"/>
 <c:if test="${display}">
-    ${mappedLabel}
+    ${facetLabel}
 </c:if>
-<c:set var="facetLabel" value="${mappedLabel}"/>

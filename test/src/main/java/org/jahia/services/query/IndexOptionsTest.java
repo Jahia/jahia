@@ -108,14 +108,14 @@ public class IndexOptionsTest {
                 String query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'nonindexed')";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
-
-                assertTrue(queryResult.getNodes().getSize() == 0);
+                
+                assertEquals("Query did not return correct number of facets", 0, getResultSize(queryResult.getNodes()));
 
                 query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields where indexFields.nonIndexedSmallText like 'n%'";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
                 queryResult = q.execute();
 
-                assertTrue(queryResult.getNodes().getSize() == 0);
+                assertEquals("Query did not return correct number of facets", 0, getResultSize(queryResult.getNodes()));                
             }
 
         } catch (Exception ex) {
@@ -123,6 +123,18 @@ public class IndexOptionsTest {
         } finally {
             session.save();
         }
+    }
+    
+    private long getResultSize(NodeIterator nodes) {
+        long resultSize = nodes.getSize();
+        if (resultSize == -1) {
+            resultSize = 0;
+            for (NodeIterator it = nodes; it.hasNext(); ) {
+                it.next();
+                resultSize++;
+            }
+        }
+        return resultSize;
     }
     
     @Test
@@ -140,13 +152,13 @@ public class IndexOptionsTest {
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
 
-                assertTrue(queryResult.getNodes().getSize() == 0);
+                assertEquals("Query did not return correct number of facets", 0, getResultSize(queryResult.getNodes()));                
 
                 query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields where indexFields.nofulltextSmallText like 'ZXY%'";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
                 queryResult = q.execute();
 
-                assertTrue(queryResult.getNodes().getSize() > 0);
+                assertTrue(getResultSize(queryResult.getNodes()) > 0);
             }
 
         } catch (Exception ex) {

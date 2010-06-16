@@ -1,10 +1,10 @@
 Using roles/permissions
 
-  Jahia provides ways to utilize role/permission concept in JSP templates as well as in custom Java services.
+  Jahia provides ways to utilize the role/permission concept in JSP templates as well as in custom Java services.
   
 * {JSP} templates
 
-  By including two functions into the <Jahia functions> taglib (uri: <<<http://www.jahia.org/tags/functions>>>)
+  With functions included in the <Jahia functions> taglib (uri: <<<http://www.jahia.org/tags/functions>>>)
   template developers can restrict access to particular areas of their templates.
   
   Here are simple examples that show the usage of those functions:
@@ -35,7 +35,7 @@ Using roles/permissions
     
 * {Java} API
 
-  We provide a dedicated services and API to manage roles/permissions from creation and assignment
+  We provide dedicated services and API to manage roles/permissions from creation and assignment
   to applying different policies.
   
   Following services are provided:

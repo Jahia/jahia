@@ -2,7 +2,7 @@ Roles/permissions management UI
 
   Roles and permissions can be created on the server and on a virtual-site level.
   This allows having global roles/permissions for the server and more flexible access control
-  for a each virtual site.
+  for each virtual site.
 
   Management UI can be accessed via <Jahia Administration> -> <Server Settings> -> <Manager server roles> menu for the server-level
   and via <Jahia Administration> -> <Site settings> -> <Manage site roles> for a per-site role/permission management.

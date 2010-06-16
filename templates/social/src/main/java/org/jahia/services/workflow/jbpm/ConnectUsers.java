@@ -69,9 +69,9 @@ public class ConnectUsers implements ExternalActivityBehaviour {
             connectionsNode = fromUser.addNode("connections", "jnt:contentList");
         }
         JCRNodeWrapper userConnection = connectionsNode.addNode(fromUser.getName() + "-" + toUser.getName(), "jnt:userConnection");
-        userConnection.setProperty("connectedFrom", fromUser);
-        userConnection.setProperty("connectedTo", toUser);
-        userConnection.setProperty("type", "collegue");
+        userConnection.setProperty("j:connectedFrom", fromUser);
+        userConnection.setProperty("j:connectedTo", toUser);
+        userConnection.setProperty("j:type", "collegue");
         session.save();
         execution.takeDefaultTransition();
     }

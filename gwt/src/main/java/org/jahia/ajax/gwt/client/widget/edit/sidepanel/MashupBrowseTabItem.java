@@ -164,7 +164,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
     public native String getMashupTemplate() /*-{
     return ['<tpl for=".">',
         '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
-        '<div><div style="width: 140px; float: left; text-align: center;" class="thumb"><img src="{pathPreview}" title="{name}"></div>',
+        '<div><div style="width: 140px; float: left; text-align: center;" class="thumb">{nodeImg}</div>',
         '<div style="margin-left: 160px; " class="thumbDetails">',
         '<div><b>{nameLabel}: </b>{name}</div>',
         '<div><b>{authorLabel}: </b>{createdBy}</div>',

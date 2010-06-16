@@ -35,7 +35,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
         String s = model.getName();
         model.set("shortName", Format.ellipse(s, 14));
         model.set("nameLabel", Messages.get("label.name", "Name"));
-        model.set("authorLabel", Messages.get("versioning_author", "Auhor"));
+        model.set("authorLabel", Messages.get("versioning_author", "Author"));
         model.set("tagsLabel", Messages.get("org.jahia.jcr.edit.tags.tab", "tags"));
         String width = model.get("j:width");
         if (width != null) {
@@ -44,15 +44,14 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
             } else {
                 model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
             }
-            model.set("widthHTML", "<div><b>" + Messages.get("ece_width", "Width") + " </b>" + model.get("j:width") + " px</div>");
-            model.set("heightHTML", "<div><b>" + Messages.get("ece_height", "Height") + " </b>" + model.get("j:height") + " px</div>");
+            model.set("widthHTML", "<div><b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.width.label", "Width") + " </b>" + model.get("j:width") + " px</div>");
+            model.set("heightHTML", "<div><b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.height.label", "Height") + " </b>" + model.get("j:height") + " px</div>");
         } else if (model.getPreview() != null) {
             model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
         } else {
             model.set("nodeImg", ContentModelIconProvider.getInstance().getIcon(model, true).getHTML());
         }
 
-        // ugly due to the fact that if condition doesn't work in tpl.
         if (model.getTags() != null && model.getTags().length() > 0) {
             model.set("tagsHTML", "<div><b>" + model.get("tagsLabel") + ": </b>" + model.getTags() + "</div>");
         }

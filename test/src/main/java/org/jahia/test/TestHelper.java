@@ -80,8 +80,8 @@ public class TestHelper {
 
     static Logger logger = LoggerFactory.getLogger(TestHelper.class);
     public static final String TCK_TEMPLATES = "Jahia Test";
-    public static final String ACME_TEMPLATES = "Web templates";
-    public static final String INTRANET_TEMPLATES = "Jahia Intranet Templates";
+    public static final String ACME_TEMPLATES = "templates-web";
+    public static final String INTRANET_TEMPLATES = "templates-intranet";
 
     public static JahiaSite createSite(String name) throws Exception {
         return createSite(name, "localhost"+System.currentTimeMillis(), "templates-web", null);

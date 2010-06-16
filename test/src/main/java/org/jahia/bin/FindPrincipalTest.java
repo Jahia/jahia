@@ -18,6 +18,12 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -29,7 +35,7 @@ import java.io.IOException;
  *         Date: Jun 16, 2010
  *         Time: 12:03:19 PM
  */
-public class FindPrincipalTest extends TestCase {
+public class FindPrincipalTest {
 
     private static Logger logger = Logger.getLogger(FindPrincipalTest.class);
 
@@ -39,10 +45,8 @@ public class FindPrincipalTest extends TestCase {
 
     private JahiaSite site;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
-
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -60,6 +64,25 @@ public class FindPrincipalTest extends TestCase {
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
         }
+    }
+
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            if (session.nodeExists(SITECONTENT_ROOT_NODE)) {
+                TestHelper.deleteSite(TESTSITE_NAME);
+            }
+            session.save();
+
+            session.logout();
+        } catch (Exception ex) {
+            logger.warn("Exception during test tearDown", ex);
+        }
+    }
+
+    @Before
+    protected void setUp() throws Exception {
 
         // Create an instance of HttpClient.
         client = new HttpClient();
@@ -79,9 +102,8 @@ public class FindPrincipalTest extends TestCase {
         }
     }
 
-    @Override
+    @After
     protected void tearDown() throws Exception {
-        super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
 
         PostMethod logoutMethod = new PostMethod("http://localhost:8080/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
@@ -93,19 +115,9 @@ public class FindPrincipalTest extends TestCase {
 
         logoutMethod.releaseConnection();
 
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            if (session.nodeExists(SITECONTENT_ROOT_NODE)) {
-                TestHelper.deleteSite(TESTSITE_NAME);
-            }
-            session.save();
-
-            session.logout();
-        } catch (Exception ex) {
-            logger.warn("Exception during test tearDown", ex);
-        }
     }
 
+    @Test
     public void testFindUsers() throws IOException, JSONException, JahiaException {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/findPrincipal");
@@ -135,6 +147,7 @@ public class FindPrincipalTest extends TestCase {
 
     }
 
+    @Test
     public void testFindGroups() throws IOException, JSONException {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/findPrincipal");

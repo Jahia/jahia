@@ -245,6 +245,7 @@ public class JCRSitesProvider {
 
                         session.save();
                     } catch (PathNotFoundException e) {
+                        logger.warn(e.getMessage(), e);
                     }
                     return true;
                 }

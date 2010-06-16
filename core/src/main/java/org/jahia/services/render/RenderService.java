@@ -47,10 +47,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Service to render node
@@ -68,8 +65,18 @@ public class RenderService extends JahiaService {
             if (bean instanceof RenderServiceAware) {
                 ((RenderServiceAware) bean).setRenderService(getInstance());
             }
+            if(bean instanceof RenderFilter) {
+                getInstance().addFilter((RenderFilter)bean);
+            }
             return bean;
         }
+    }
+
+    private void addFilter(RenderFilter renderFilter) {
+        if(filters==null) {
+            filters = new LinkedList<RenderFilter>();
+        }
+        filters.add(renderFilter);
     }
 
     private static volatile RenderService instance;

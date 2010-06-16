@@ -30,6 +30,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  **/
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -67,7 +68,7 @@ public class UnpublishActionItem extends BaseActionItem {
         }
         if (gwtJahiaNode != null) {
             GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
-            setEnabled(info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED));
+            setEnabled(!gwtJahiaNode.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED));
         }
     }
 }

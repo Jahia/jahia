@@ -268,10 +268,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.lockAndStoreToken();
     }
 
-    public boolean forceUnlock() throws RepositoryException  {
-        return node.forceUnlock();
-    }
-
     public String getLockOwner() {
         return node.getLockOwner();
     }
@@ -606,6 +602,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean isLocked() {
         return node.isLocked();
+    }
+
+    public void unlock(boolean ignoreTranslations) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+        node.unlock(ignoreTranslations);
     }
 
     public boolean isLockable() {

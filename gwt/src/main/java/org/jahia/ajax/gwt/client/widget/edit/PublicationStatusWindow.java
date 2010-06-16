@@ -67,7 +67,7 @@ class PublicationStatusWindow extends Window {
 
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("title",Messages.getResource("label.path"),450);
+        ColumnConfig column = new ColumnConfig("title",Messages.getResource("label.path"),600);
         column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
             @Override
             public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
@@ -99,29 +99,37 @@ class PublicationStatusWindow extends Window {
         });
         configs.add(column);
 
-        column = new ColumnConfig("canPublish",Messages.getResource("org.jahia.jcr.publication.publicationAllowed"),150);
-        column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
-            @Override
-            public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-                return model.isCanPublish().toString();
-            }
-        });
-        configs.add(column);
+//        column = new ColumnConfig("canPublish",Messages.getResource("org.jahia.jcr.publication.publicationAllowed"),150);
+//        column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
+//            @Override
+//            public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
+//                return model.isCanPublish().toString();
+//            }
+//        });
+//        configs.add(column);
         column = new ColumnConfig("mainTitle", Messages.get("label.parentObject", "Parent object"), 150);
         column.setHidden(true);
         configs.add(column);
         GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
 
-        for (GWTJahiaPublicationInfo info : infos.values()) {
+        final ArrayList<String> uuids = new ArrayList<String>();
+        for (Map.Entry<String, GWTJahiaPublicationInfo> entry : infos.entrySet()) {
+            final GWTJahiaPublicationInfo info = entry.getValue();
             if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
                 info.set("mainTitle", info.getTitle());
                 store.add(info);
+                if (!uuids.contains(entry.getKey())) {
+                    uuids.add(entry.getKey());
+                }
             }
             for (ModelData data : info.getChildren()) {
                 GWTJahiaPublicationInfo subInfo = (GWTJahiaPublicationInfo) data;
                 if (subInfo.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
                     subInfo.set("mainTitle", info.getTitle());
                     store.add(subInfo);
+                    if (!uuids.contains(entry.getKey())) {
+                        uuids.add(entry.getKey());
+                    }
                 }
             }
         }
@@ -169,7 +177,6 @@ class PublicationStatusWindow extends Window {
 
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
-        final ArrayList<String> uuids = new ArrayList<String>(infos.keySet());
 
         ok = new Button(Messages.getResource("label.publish"));
         ok.addSelectionListener(new ButtonEventSelectionListener(uuids, true));
@@ -194,7 +201,9 @@ class PublicationStatusWindow extends Window {
 
         public void componentSelected(ButtonEvent event) {
             ok.setEnabled(false);
-            noWorkflow.setEnabled(false);
+            if (noWorkflow != null) {
+                noWorkflow.setEnabled(false);
+            }
             cancel.setEnabled(false);
             JahiaContentManagementService
                     .App.getInstance().publish(uuids, false, comments.getValue(), workflow, false, new BaseAsyncCallback() {

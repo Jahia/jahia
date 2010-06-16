@@ -13,6 +13,7 @@ import org.jahia.test.TestHelper;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
+import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.*;
 import java.io.ByteArrayInputStream;
@@ -337,10 +338,11 @@ public class ContentTest extends TestCase {
                 Lock lock = testFile.getLock();
                 assertNotNull("lock is null", lock);
 
-                result = testFile.forceUnlock();
-                testFile.save();
-
-                assertTrue("forceUnlock returned false", result);
+                try {
+                    testFile.unlock();
+                } catch (LockException e) {
+                    fail("unlock failed");
+                }
             }
 
             Lock lock = testFile.lock(false, false);

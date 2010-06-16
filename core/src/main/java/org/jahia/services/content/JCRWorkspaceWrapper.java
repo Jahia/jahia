@@ -341,11 +341,16 @@ public class JCRWorkspaceWrapper implements Workspace {
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNode(absPath);
-                    versionManager.checkout(node.getRealNode().getPath());
+                    if (!node.getRealNode().isLocked()) {
+                        versionManager.checkout(node.getRealNode().getPath());
+                    }
 
                     if (session.getLocale() != null) {
                         try {
-                            versionManager.checkout(node.getI18N(session.getLocale()).getPath());
+                            final Node i18n = node.getI18N(session.getLocale());
+                            if (!i18n.isLocked()) {
+                                versionManager.checkout(i18n.getPath());
+                            }
                         } catch (ItemNotFoundException e) {
                         }
                     }

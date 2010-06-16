@@ -26,7 +26,6 @@ public class Publish implements ExternalActivityBehaviour {
         Locale locale = (Locale) execution.getVariable("locale");
 
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-        JCRPublicationService.getInstance().unlockForPublication(node.getPath(), workspace, Collections.singleton(locale.toString()), true, false);
         JCRPublicationService.getInstance().publish(node.getPath(), workspace, Constants.LIVE_WORKSPACE, Collections.singleton(locale.toString()), true, false);
         execution.takeDefaultTransition();
     }

@@ -32,11 +32,19 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 
 /**
  * Represents a dedicated tab for viewing workflow status and history
@@ -45,6 +53,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  * @author Sergiy Shyrkov
  */
 public class WorkflowTabItem extends EditEngineTabItem {
+    private LayoutContainer container;
 
     private WorkflowHistoryPanel activePanel;
 
@@ -67,16 +76,26 @@ public class WorkflowTabItem extends EditEngineTabItem {
             return;
         }
 
+        if (container == null) {
+            container = new LayoutContainer(new RowLayout());
+
+//            AclEditor rightsEditor = new AclEditor(new GWTJahiaNodeACL(new ArrayList<GWTJahiaNodeACE>()), null);
+//
+//            container.add(rightsEditor.renderNewAclPanel(), new RowData(1,0.5));
+
+            add(container);
+        }
+
         WorkflowHistoryPanel next = getPanel(locale.getLanguage());
         if (activePanel != null) {
             if (activePanel == next) {
                 // same as current --> do nothing
                 return;
             }
-            activePanel.setVisible(false);
+            activePanel.removeFromParent();
         }
-        next.setVisible(true);
-        next.layout();
+        container.add(next,new RowData(1,0.5));
+
         activePanel = next;
 
         layout();
@@ -88,7 +107,6 @@ public class WorkflowTabItem extends EditEngineTabItem {
             panel = new WorkflowHistoryPanel(engine.getNode().getUUID(), locale);
             panel.setVisible(true);
             panelsByLanguage.put(locale, panel);
-            add(panel);
         }
         return panel;
     }

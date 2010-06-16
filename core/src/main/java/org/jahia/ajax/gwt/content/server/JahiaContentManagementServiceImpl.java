@@ -1084,11 +1084,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(tasks.size());
         for (WorkflowTask task : tasks) {
             try {
-                JCRNodeWrapper node = session.getNodeByUUID((String) task.getVariables().get("nodeId"));
-                GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node);
-                gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getUUID(), false));
-                gwtJahiaNode.setWorkflowInfo(getWorkflowInfo(gwtJahiaNode.getPath()));
-                nodes.add(gwtJahiaNode);
+                if (task.getVariables().get("locale").equals(session.getLocale())) {
+                    JCRNodeWrapper node = session.getNodeByUUID((String) task.getVariables().get("nodeId"));
+                    GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node);
+                    gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getUUID(), false));
+                    gwtJahiaNode.setWorkflowInfo(getWorkflowInfo(gwtJahiaNode.getPath()));
+                    nodes.add(gwtJahiaNode);
+                }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

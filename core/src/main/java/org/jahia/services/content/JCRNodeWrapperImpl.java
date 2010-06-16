@@ -1591,24 +1591,39 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean lockAndStoreToken() throws RepositoryException {
-
-        Lock lock = objectNode.lock(false, false);
-        if (lock.getLockToken() != null && isNodeType("jmix:lockable")) {
-            try {
-                objectNode.setProperty("j:locktoken", lock.getLockToken());
-                objectNode.getSession().removeLockToken(lock.getLockToken());
-            } catch (RepositoryException e) {
-                return true;
+        if (!objectNode.isLocked()) {
+            Lock lock = objectNode.lock(false, false);
+            if (lock.getLockToken() != null && isNodeType("jmix:lockable")) {
+                try {
+                    if (!objectNode.isCheckedOut()) {
+                        objectNode.checkout();
+                    }
+                    objectNode.setProperty("j:locktoken", (getSession().isSystem()?" system ":getSession().getUserID())+":"+lock.getLockToken());
+                    objectNode.getSession().removeLockToken(lock.getLockToken());
+                } catch (RepositoryException e) {
+                    logger.error("Cannot store token for "+getPath(),e);
+                    objectNode.unlock();
+                }
+            } else {
+                logger.error("Lost lock ! "+objectNode.getPath());
             }
-        } else {
-            logger.error("Lost lock ! "+objectNode.getPath());
         }
         if (session.getLocale() != null && !isNodeType("jnt:translation")) {
             Node trans = getOrCreateI18N(session.getLocale());
-            lock = trans.lock(false, false);
-            if (lock.getLockToken() != null) {
-                trans.setProperty("j:locktoken", lock.getLockToken());
-                trans.getSession().removeLockToken(lock.getLockToken());
+            if (!trans.isLocked()) {
+                Lock lock = trans.lock(false, false);
+                if (lock.getLockToken() != null) {
+                    try {
+                        if (!objectNode.isCheckedOut()) {
+                            objectNode.checkout();
+                        }
+                        trans.setProperty("j:locktoken", lock.getLockToken());
+                        trans.getSession().removeLockToken(lock.getLockToken());
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot store token for "+getPath(),e);
+                        trans.unlock();
+                    }
+                }
             }
         }
         objectNode.getSession().save();
@@ -1702,33 +1717,37 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
-        objectNode.unlock();
+        unlock(false);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean forceUnlock() throws RepositoryException {
+    public void unlock(boolean ignoreTranslations) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
         if (!isLocked()) {
-            return false;
+            throw new LockException("Node not locked");
+        }
+        // todo handle localized sessions
+        if (!ignoreTranslations && !isNodeType("jnt:translation") && !getLockedLocales().isEmpty()) {
+            throw new LockException("Translations still locked");
         }
 
-        if (!isNodeType("jnt:translation") && !getLockedLocales().isEmpty()) {
-            return false;
-        }
         if (hasProperty("j:locktoken")) {
             Property property = getProperty("j:locktoken");
             String v = property.getString();
-            session.addLockToken(v);
-            objectNode.unlock();
-            property.remove();
+            String owner = StringUtils.substringBefore(v,":");
+            String token = StringUtils.substringAfter(v,":");
+            if (getSession().isSystem() || getSession().getUserID().equals(owner)) {
+                session.addLockToken(token);
+                objectNode.unlock();
+                property.remove();
+                getSession().save();
+            } else {
+                throw new LockException("Not owner of lock");
+            }
         } else {
             objectNode.unlock();
         }
-
-        objectNode.refresh(true);
-        objectNode.getSession().save();
-        return true;
     }
 
     /**

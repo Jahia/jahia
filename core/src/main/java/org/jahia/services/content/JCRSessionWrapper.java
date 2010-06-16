@@ -32,14 +32,16 @@
 package org.jahia.services.content;
 
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
-import org.xml.sax.*;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -68,10 +70,10 @@ import java.util.*;
 /**
  * Jahia specific wrapper around <code>javax.jcr.Session</code> to be able to inject
  * Jahia specific actions and to manage sessions to multiple repository providers in
- * the backend. 
- * 
- * Jahia services should use this wrapper rather than the original session interface to 
- * ensure that we manipulate wrapped nodes and not the ones from the underlying 
+ * the backend.
+ * <p/>
+ * Jahia services should use this wrapper rather than the original session interface to
+ * ensure that we manipulate wrapped nodes and not the ones from the underlying
  * implementation.
  *
  * @author toto
@@ -92,8 +94,8 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
 
-    private Map<String, String> uuidMapping = new HashMap<String,String>();
-    private Map<String, String> pathMapping = new HashMap<String,String>();
+    private Map<String, String> uuidMapping = new HashMap<String, String>();
+    private Map<String, String> pathMapping = new HashMap<String, String>();
 
     private boolean isSystem;
 
@@ -159,7 +161,8 @@ public class JCRSessionWrapper implements Session {
     public JCRNodeWrapper getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
         for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
             if (!provider.isInitialized()) {
-                logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() + " is not yet initialized, skipping...");
+                logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() +
+                        " is not yet initialized, skipping...");
                 continue;
             }
             try {
@@ -169,15 +172,19 @@ public class JCRSessionWrapper implements Session {
             } catch (ItemNotFoundException ee) {
                 // All good
             } catch (UnsupportedRepositoryOperationException uso) {
-                logger.debug("getNodeByUUID unsupported by : " + provider.getKey() + " / " + provider.getClass().getName());
+                logger.debug(
+                        "getNodeByUUID unsupported by : " + provider.getKey() + " / " + provider.getClass().getName());
             } catch (RepositoryException ex) {
-                logger.warn("repository exception : " + provider.getKey() + " / " + provider.getClass().getName() + " : " + ex.getMessage());
+                logger.warn(
+                        "repository exception : " + provider.getKey() + " / " + provider.getClass().getName() + " : " +
+                                ex.getMessage());
             }
         }
         throw new ItemNotFoundException(uuid);
     }
 
-    public JCRNodeWrapper getNodeByUUID(String providerKey, String uuid) throws ItemNotFoundException, RepositoryException {
+    public JCRNodeWrapper getNodeByUUID(String providerKey, String uuid)
+            throws ItemNotFoundException, RepositoryException {
         JCRStoreProvider provider = sessionFactory.getProviders().get(providerKey);
         if (provider == null) {
             throw new ItemNotFoundException(uuid);
@@ -193,8 +200,7 @@ public class JCRSessionWrapper implements Session {
             if (path.startsWith(mp.getKey() + "/")) {
                 String localPath = path.substring(mp.getKey().length());
                 JCRStoreProvider provider = mp.getValue();
-                Item item = getProviderSession(provider).getItem(
-                        provider.getRelativeRoot() + localPath);
+                Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, localPath, this);
                 } else {
@@ -215,8 +221,7 @@ public class JCRSessionWrapper implements Session {
                     localPath = "/";
                 }
 //                Item item = getProviderSession(provider).getItem(localPath);
-                Item item = getProviderSession(provider).getItem(
-                        provider.getRelativeRoot() + localPath);
+                Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, localPath, this);
                 } else {
@@ -240,11 +245,15 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
-    public void move(String source, String dest) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+    public void move(String source, String dest)
+            throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException,
+            LockException, RepositoryException {
         getWorkspace().move(source, dest, true);
     }
 
-    public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
+    public void save()
+            throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
+            VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         JCRObservationManager.doWorkspaceWriteCall(this, JCRObservationManager.SESSION_SAVE, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper thisSession) throws RepositoryException {
                 for (Session session : sessions.values()) {
@@ -273,29 +282,35 @@ public class JCRSessionWrapper implements Session {
     public ValueFactory getValueFactory() {
         return ValueFactoryImpl.getInstance();
     }
-    
+
     /**
      * Normally determines whether this <code>Session</code> has permission to perform
      * the specified actions at the specified <code>absPath</code>.
      * This method is not supported.
-     * 
+     *
      * @param absPath an absolute path.
      * @param actions a comma separated list of action strings.
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
+     * @throws UnsupportedRepositoryOperationException
+     *          as long as Jahia doesn't support it
      */
     public void checkPermission(String absPath, String actions) throws AccessControlException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public ContentHandler getImportContentHandler(String s, int i) throws PathNotFoundException, ConstraintViolationException, VersionException, LockException, RepositoryException {
+    public ContentHandler getImportContentHandler(String s, int i)
+            throws PathNotFoundException, ConstraintViolationException, VersionException, LockException,
+            RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
 
-    public void importXML(String path, InputStream inputStream, int uuidBehavior) throws IOException, PathNotFoundException, ItemExistsException, ConstraintViolationException, VersionException, InvalidSerializedDataException, LockException, RepositoryException {
+    public void importXML(String path, InputStream inputStream, int uuidBehavior)
+            throws IOException, PathNotFoundException, ItemExistsException, ConstraintViolationException,
+            VersionException, InvalidSerializedDataException, LockException, RepositoryException {
         importXML(path, inputStream, uuidBehavior, false);
     }
 
-    public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot) throws IOException, InvalidSerializedDataException, RepositoryException {
+    public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot)
+            throws IOException, InvalidSerializedDataException, RepositoryException {
         JCRNodeWrapper node = null;
         node = getNode(path);
         try {
@@ -338,7 +353,8 @@ public class JCRSessionWrapper implements Session {
     }
 
     public String[] getNamespacePrefixes() throws RepositoryException {
-        Set<String> wsPrefixes = new HashSet<String>(Arrays.asList(getWorkspace().getNamespaceRegistry().getPrefixes()));
+        Set<String> wsPrefixes =
+                new HashSet<String>(Arrays.asList(getWorkspace().getNamespaceRegistry().getPrefixes()));
         wsPrefixes.addAll(prefixToNs.keySet());
         return wsPrefixes.toArray(new String[wsPrefixes.size()]);
     }
@@ -379,8 +395,8 @@ public class JCRSessionWrapper implements Session {
      *
      * @param token a lock token (a string).
      * @deprecated As of JCR 2.0, {@link LockManager#addLockToken(String)}
-     * should be used instead.
-     */    
+     *             should be used instead.
+     */
     public void addLockToken(String token) {
         tokens.add(token);
         for (Session session : sessions.values()) {
@@ -400,7 +416,8 @@ public class JCRSessionWrapper implements Session {
     }
 
     /**
-     * Get sessions from all providers used in this wrapper. 
+     * Get sessions from all providers used in this wrapper.
+     *
      * @return a <code>Collection</code> of <code>JCRSessionWrapper</code> objects
      */
     public Collection<Session> getAllSessions() {
@@ -413,11 +430,13 @@ public class JCRSessionWrapper implements Session {
 
             if (credentials instanceof SimpleCredentials) {
                 SimpleCredentials simpleCredentials = (SimpleCredentials) credentials;
-                JahiaLoginModule.Token t = JahiaLoginModule.getToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
+                JahiaLoginModule.Token t = JahiaLoginModule
+                        .getToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
 
                 s = provider.getSession(credentials, workspace.getName());
 
-                credentials = JahiaLoginModule.getCredentials(simpleCredentials.getUserID(), t != null ? t.deniedPath : null);
+                credentials =
+                        JahiaLoginModule.getCredentials(simpleCredentials.getUserID(), t != null ? t.deniedPath : null);
             } else {
                 s = provider.getSession(credentials, workspace.getName());
             }
@@ -465,17 +484,14 @@ public class JCRSessionWrapper implements Session {
      * @throws SAXException          if the SAX event handler failed
      * @throws RepositoryException   if another error occurs
      */
-    public void exportDocumentView(
-            String path, ContentHandler handler,
-            boolean skipBinary, boolean noRecurse)
+    public void exportDocumentView(String path, ContentHandler handler, boolean skipBinary, boolean noRecurse)
             throws PathNotFoundException, SAXException, RepositoryException {
-        DocumentViewExporter exporter =  new DocumentViewExporter(this, handler, skipBinary, noRecurse);
+        DocumentViewExporter exporter = new DocumentViewExporter(this, handler, skipBinary, noRecurse);
         Item item = getItem(path);
         if (item.isNode()) {
             exporter.export((JCRNodeWrapper) item);
         } else {
-            throw new PathNotFoundException(
-                    "XML export is not defined for properties: " + path);
+            throw new PathNotFoundException("XML export is not defined for properties: " + path);
         }
     }
 
@@ -491,19 +507,16 @@ public class JCRSessionWrapper implements Session {
      * @throws SAXException          if the SAX event handler failed
      * @throws RepositoryException   if another error occurs
      */
-    public void exportSystemView(
-            String path, ContentHandler handler,
-            boolean skipBinary, boolean noRecurse)
+    public void exportSystemView(String path, ContentHandler handler, boolean skipBinary, boolean noRecurse)
             throws PathNotFoundException, SAXException, RepositoryException {
 
         //todo implement our own system view .. ?
-        SystemViewExporter exporter =  new SystemViewExporter(this, handler, !noRecurse, !skipBinary);
+        SystemViewExporter exporter = new SystemViewExporter(this, handler, !noRecurse, !skipBinary);
         Item item = getItem(path);
         if (item.isNode()) {
             exporter.export((JCRNodeWrapper) item);
         } else {
-            throw new PathNotFoundException(
-                    "XML export is not defined for properties: " + path);
+            throw new PathNotFoundException("XML export is not defined for properties: " + path);
         }
     }
 
@@ -519,9 +532,7 @@ public class JCRSessionWrapper implements Session {
      * @throws IOException         if the SAX serialization failed
      * @throws RepositoryException if another error occurs
      */
-    public void exportDocumentView(
-            String absPath, OutputStream out,
-            boolean skipBinary, boolean noRecurse)
+    public void exportDocumentView(String absPath, OutputStream out, boolean skipBinary, boolean noRecurse)
             throws IOException, RepositoryException {
         try {
             ContentHandler handler = getExportContentHandler(out);
@@ -533,8 +544,7 @@ public class JCRSessionWrapper implements Session {
             } else if (exception instanceof IOException) {
                 throw (IOException) exception;
             } else {
-                throw new RepositoryException(
-                        "Error serializing document view XML", e);
+                throw new RepositoryException("Error serializing document view XML", e);
             }
         }
     }
@@ -551,9 +561,7 @@ public class JCRSessionWrapper implements Session {
      * @throws IOException         if the SAX serialization failed
      * @throws RepositoryException if another error occurs
      */
-    public void exportSystemView(
-            String absPath, OutputStream out,
-            boolean skipBinary, boolean noRecurse)
+    public void exportSystemView(String absPath, OutputStream out, boolean skipBinary, boolean noRecurse)
             throws IOException, RepositoryException {
         try {
             ContentHandler handler = getExportContentHandler(out);
@@ -565,8 +573,7 @@ public class JCRSessionWrapper implements Session {
             } else if (exception instanceof IOException) {
                 throw (IOException) exception;
             } else {
-                throw new RepositoryException(
-                        "Error serializing system view XML", e);
+                throw new RepositoryException("Error serializing system view XML", e);
             }
         }
     }
@@ -579,11 +586,9 @@ public class JCRSessionWrapper implements Session {
      * @return SAX content handler
      * @throws RepositoryException if an error occurs
      */
-    private ContentHandler getExportContentHandler(OutputStream stream)
-            throws RepositoryException {
+    private ContentHandler getExportContentHandler(OutputStream stream) throws RepositoryException {
         try {
-            SAXTransformerFactory stf = (SAXTransformerFactory)
-                    SAXTransformerFactory.newInstance();
+            SAXTransformerFactory stf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
             TransformerHandler handler = stf.newTransformerHandler();
 
             Transformer transformer = handler.getTransformer();
@@ -594,11 +599,9 @@ public class JCRSessionWrapper implements Session {
             handler.setResult(new StreamResult(stream));
             return handler;
         } catch (TransformerFactoryConfigurationError e) {
-            throw new RepositoryException(
-                    "SAX transformer implementation not available", e);
+            throw new RepositoryException("SAX transformer implementation not available", e);
         } catch (TransformerException e) {
-            throw new RepositoryException(
-                    "Error creating an XML export content handler", e);
+            throw new RepositoryException("Error creating an XML export content handler", e);
         }
     }
 
@@ -618,7 +621,9 @@ public class JCRSessionWrapper implements Session {
         return itemExists(absPath);
     }
 
-    public void removeItem(String absPath) throws VersionException, LockException, ConstraintViolationException, AccessDeniedException, RepositoryException {
+    public void removeItem(String absPath)
+            throws VersionException, LockException, ConstraintViolationException, AccessDeniedException,
+            RepositoryException {
         getItem(absPath).remove();
     }
 
@@ -632,15 +637,17 @@ public class JCRSessionWrapper implements Session {
 
     /**
      * Returns the access control manager for this <code>Session</code>.
-     * <p>
+     * <p/>
      * Jahia throws an <code>UnsupportedRepositoryOperationException</code>.
      *
      * @return the access control manager for this <code>Session</code>
-     * @throws UnsupportedRepositoryOperationException if access control
-     *         is not supported.
+     * @throws UnsupportedRepositoryOperationException
+     *          if access control
+     *          is not supported.
      * @since JCR 2.0
-     */    
-    public AccessControlManager getAccessControlManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+     */
+    public AccessControlManager getAccessControlManager()
+            throws UnsupportedRepositoryOperationException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
 
@@ -674,6 +681,7 @@ public class JCRSessionWrapper implements Session {
 
     /**
      * Performs check out of the specified node.
+     *
      * @param node the node to perform the check out
      * @see VersionManager#checkout(String) for details
      */
@@ -683,11 +691,11 @@ public class JCRSessionWrapper implements Session {
                 node = node.getParent();
             } else {
                 String absPath = node.getPath();
-        VersionManager versionManager = getWorkspace().getVersionManager();
-        if (!versionManager.isCheckedOut(absPath)) {
-            versionManager.checkout(absPath);
-        }
-    }
+                VersionManager versionManager = getWorkspace().getVersionManager();
+                if (!versionManager.isCheckedOut(absPath)) {
+                    versionManager.checkout(absPath);
+                }
+            }
         }
     }
 

@@ -731,10 +731,7 @@ public class ContentManagerHelper {
                                 .append(node.getLockOwner()).toString());
                     } else {
                         try {
-                            if (!node.forceUnlock()) {
-                                missedPaths.add(new StringBuilder(node.getName())
-                                        .append(": repository exception").toString());
-                            }
+                            node.unlock();
                         } catch (RepositoryException e) {
                             logger.error(e.toString(), e);
                             missedPaths

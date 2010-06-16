@@ -158,15 +158,20 @@ public class FacetedQueryTest {
         QueryResultWrapper res;
 
         // test date facets
-        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1MONTH)");
+        res = doQuery(session, "startDate", "rep:facet(date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1MONTH)");
         field = res.getFacetDate("startDate");
 
         assertEquals("Query did not return correct number of facets", 24, field.getValues().size());
+        
+        res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1MONTH)");
+        field = res.getFacetDate("startDate");
+
+        assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
+        
         Iterator<FacetField.Count> counts = field.getValues().iterator();
 
         checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 14);
         checkFacet(counts.next(), "2000-02-01T00:00:00.000Z", 13);
-        checkFacet(counts.next(), "2000-03-01T00:00:00.000Z", 0);
         
         for (FacetField.Count count : field.getValues()) {
             QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());
@@ -176,11 +181,10 @@ public class FacetedQueryTest {
         res = doQuery(session, "startDate", "rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2002-01-01T00:00:00Z&date.gap=+1YEAR)");
         field = res.getFacetDate("startDate");
 
-        assertEquals("Query did not return correct number of facets", 2, field.getValues().size());
+        assertEquals("Query did not return correct number of facets", 1, field.getValues().size());
         counts = field.getValues().iterator();
 
         checkFacet(counts.next(), "2000-01-01T00:00:00.000Z", 27);
-        checkFacet(counts.next(), "2001-01-01T00:00:00.000Z", 0);
         
         for (FacetField.Count count : field.getValues()) {
             QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery());

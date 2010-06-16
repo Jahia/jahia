@@ -382,6 +382,57 @@ Server:Apache-Coyote/1.1
 
 ** Example
 
+*** HTTP GET Request (formatted for legibility)
+
+---------------------------------------
+http://localhost:8080/cms/findPrincipal?principalType=users&wildcardTerm=steve
+---------------------------------------
+
+
+*** HTTP Response
+
+---------------------------------------
+[
+	{
+		"userProperties": "{j:published=true, j:nodename=sjobs, j:originWS=default, jcr:createdBy= system , j:external=false, j:firstName=Steve, jcr:primaryType=jnt:user, j:lastPublished=2010-06-16T16:13:34.094+02:00, j:email=, j:password=943+/myvMchk4TM1T11nKHx2u7g=, j:lastName=Jobs, jcr:baseVersion=164174a4-1ba0-4e3b-8143-119c9546be6c, j:lastPublishedBy= system root, jcr:created=2010-06-16T16:13:33.698+02:00, jcr:versionHistory=d17e5352-4909-48ef-94ef-e5957f741512, jcr:uuid=662cdfed-e674-4dff-85ee-dadb19243f5e, j:fullpath=/users/sjobs, jcr:isCheckedOut=true, j:checkinDate=2010-06-16T16:13:34.094+02:00, jcr:lastModified=2010-06-16T16:14:01.670+02:00, jcr:lastModifiedBy= system , j:organization=}",
+		"homepageID": -1,
+		"username": "sjobs",
+		"providerName": "jcr",
+		"userKey": "{jcr}sjobs",
+		"root": false,
+		"external": false,
+		"name": "sjobs",
+		"class": "class org.jahia.services.usermanager.jcr.JCRUser",
+		"properties": {
+			"j:firstName": "Steve",
+			"jcr:created": "2010-06-16T16:13:33.698+02:00",
+			"j:external": "false",
+			"j:originWS": "default",
+			"j:published": "true",
+			"jcr:lastModified": "2010-06-16T16:14:01.670+02:00",
+			"j:lastPublishedBy": " system root",
+			"j:checkinDate": "2010-06-16T16:13:34.094+02:00",
+			"jcr:createdBy": " system ",
+			"j:nodename": "sjobs",
+			"jcr:versionHistory": "d17e5352-4909-48ef-94ef-e5957f741512",
+			"jcr:lastModifiedBy": " system ",
+			"jcr:uuid": "662cdfed-e674-4dff-85ee-dadb19243f5e",
+			"preferredLanguage": "en", 
+			"jcr:baseVersion": "164174a4-1ba0-4e3b-8143-119c9546be6c",
+			"j:lastName": "Jobs",
+			"jcr:isCheckedOut": "true",
+			"j:password": "943+/myvMchk4TM1T11nKHx2u7g=",
+			"j:lastPublished": "2010-06-16T16:13:34.094+02:00",
+			"j:organization": "",
+			"jcr:primaryType": "jnt:user",
+			"j:fullpath": "/users/sjobs",
+			"j:email": ""
+		},
+		"identifier": "662cdfed-e674-4dff-85ee-dadb19243f5e",
+		"passwordReadOnly": false
+	}
+]
+---------------------------------------
 
 * Debugging
 

@@ -36,6 +36,7 @@ public class URLGenerator {
     private String contribute;
     private String studio;
     private String find;
+    private String findPrincipal;
     private String logout;
     private String initializers;
     private String captcha;
@@ -114,6 +115,7 @@ public class URLGenerator {
             studio += ".html";
         }
         find = getContext() + Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+        findPrincipal = getContext() + FindPrincipal.getFindPrincipalServletPath();
         logout = getContext() + Logout.getLogoutServletPath();
         initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         toPDF = getContext() + ToPDFServlet.getToPDFServletPath() + "/" + resource.getWorkspace();
@@ -177,6 +179,10 @@ public class URLGenerator {
 
     public String getFind() {
         return find;
+    }
+
+    public String getFindPrincipal() {
+        return findPrincipal;
     }
 
     public String getLogout() {

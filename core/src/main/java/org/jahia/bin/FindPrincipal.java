@@ -241,4 +241,10 @@ public class FindPrincipal extends HttpServlet implements Controller {
         return null;
     }
 
+    public static String getFindPrincipalServletPath() {
+        // TODO move this into configuration
+        return "/cms/findPrincipal";
+    }
+
+
 }

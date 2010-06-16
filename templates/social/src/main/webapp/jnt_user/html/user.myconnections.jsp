@@ -73,7 +73,7 @@
             return getText(result["node"]);
         }
 
-        $("#searchTerm").autocomplete("${url.find}", {
+        $("#searchUsersTerm").autocomplete("${url.findPrincipal}", {
             dataType: "json",
             cacheLength: 1,
             parse: function parse(data) {
@@ -89,26 +89,24 @@
                 return format(item);
             },
             extraParams: {
-                query : "/jcr:root${renderContext.site.path}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
-                language : "xpath",
-                propertyMatchRegexp : "{$q}.*",
-                removeDuplicatePropValues : "true"
+                principalType : "users"
             }
         });
 
 
         function searchUsers(term) {
             $.ajax({
-                url: '${url.find}',
+                url: '${url.findPrincipal}',
                 type: 'post',
                 dataType : 'json',
-                data : "q=" + term + "&query=/jcr:root//element(*, jnt:user)[jcr:contains(.,'{$q}*')]&language=xpath",
+                data : "principalType=users&wildcardTerm=" + term,
                 success: function(data) {
+                    $("#searchUsersResult").html("No results.");
                     $.each(data, function(i, item) {
                         $("#searchUsersResult").append(
-                           $("<tr/>").append( $("<td/>").append($("<img/>").attr("src", item['j:picture'])) )
-                                   .append( $("<td/>").text(item['j:firstName'] + " " + item['j:lastName']))
-                                   .append( $("<td/>").append( $("<a/>").attr("href", "").click(function () { requestConnection('${currentNode.path}.startWorkflow.do',item['jcr:path'], item['j:nodename']); return false; }).text("Add as friend") ) )
+                           $("<tr/>").append( $("<td/>").append($("<img/>").attr("src", item.properties.['j:picture'])) )
+                                   .append( $("<td/>").text(item.properties.['j:firstName'] + " " + item.properties['j:lastName']))
+                                   .append( $("<td/>").append( $("<a/>").attr("href", "").click(function () { requestConnection('${currentNode.path}.startWorkflow.do',item.properties['jcr:path'], item['userKey']); return false; }).text("Add as friend") ) )
                         );
                         if (i == 10) return false;
                     });

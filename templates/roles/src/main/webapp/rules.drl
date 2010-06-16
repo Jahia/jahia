@@ -49,7 +49,7 @@ rule "Create permission for site languages"
 		Grant permissions in group "languages" to role node.getPath() + "/roles/web-designer"
 end
 
-rule "Create init ACLs for new site"
+rule "Init ACLs for new site"
     when
         A new node is created
             - the node has the type jnt:virtualsite

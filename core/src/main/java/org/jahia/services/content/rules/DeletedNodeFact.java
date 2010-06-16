@@ -37,11 +37,10 @@ import org.jahia.services.content.JCRSessionWrapper;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represents a deleted node fact.
  * User: toto
  * Date: 17 janv. 2008
  * Time: 15:17:58
- * To change this template use File | Settings | File Templates.
  */
 public class DeletedNodeFact {
     private String path;

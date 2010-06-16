@@ -472,8 +472,13 @@ public class ContentActions {
             w.setLayout(new FillLayout());
             w.setWidth(600);
             w.add(new FormDeployPortletDefinition() {
+                @Override
                 public void closeParent() {
                     w.hide();
+                }
+                @Override
+                public void refreshParent() {
+                    linker.refresh(Linker.REFRESH_ALL);
                 }
             });
             w.setScrollMode(Style.Scroll.AUTO);

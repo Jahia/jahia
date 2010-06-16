@@ -257,7 +257,6 @@
             <bean class="org.jahia.services.content.rules.Service" factory-method="getInstance">
             	<property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
                 <property name="userManager" ref="JahiaUserManagerService"/>
-                <property name="siteUserManager" ref="JahiaSiteUserManagerService"/>
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="schedulerService" ref="SchedulerService" />
                 <property name="sitesService" ref="JahiaSitesService" />

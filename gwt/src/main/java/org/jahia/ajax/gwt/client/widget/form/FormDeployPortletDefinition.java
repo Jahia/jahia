@@ -151,7 +151,11 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
                 }
                 String html = formEvent.getResultHtml();
                 if (html != null) {
-                    MessageBox.info(Messages.get("label.deployNewPortlet", "Deploy new portlets"), html, null);
+                    MessageBox.info(Messages.get("label.deployNewPortlet", "Deploy new portlets"), html, new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            refreshParent();
+                        }
+                    });
                 }
                 WorkInProgress.hide();
             }
@@ -198,6 +202,6 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
 
     public abstract void closeParent();
 
-
+    public abstract void refreshParent();
 }
 

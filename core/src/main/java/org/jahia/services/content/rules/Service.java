@@ -44,6 +44,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
+import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportAction;
@@ -54,7 +55,6 @@ import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.tags.TaggingService;
-import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowService;
@@ -63,7 +63,6 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
 import javax.jcr.*;
-import javax.jcr.query.Query;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.text.ParseException;
@@ -74,7 +73,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Helper class for accessing Jahia service in rules.
+ * Helper class for accessing Jahia services in rules.
  * User: toto
  * Date: 8 janv. 2008
  * Time: 12:04:29
@@ -85,7 +84,6 @@ public class Service extends JahiaService {
 
     private TaggingService taggingService;
     private JahiaSitesService sitesService;
-    private JahiaSiteUserManagerService siteUserManager;
     private SchedulerService schedulerService;
     private CacheService cacheService;
     private JahiaUserManagerService userManager;
@@ -673,7 +671,6 @@ public class Service extends JahiaService {
 
     public void startWorkflowOnNode(AddedNodeFact node,String processKey, String provider,KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
-        final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
         WorkflowService.getInstance().startProcess(nodeWrapper, processKey, provider, new HashMap<String, Object>());
     }
 
@@ -685,16 +682,27 @@ public class Service extends JahiaService {
         }
     }
 
+    public void flushCache(String cacheId, KnowledgeHelper drools) {
+        Cache<?, ?> cache = cacheService.getCache(cacheId);
+        if (cache != null) {
+            cache.flush();
+            logger.info("Cache '" + cacheId + "' flushed.");
+        } else {
+            logger.warn("No cache found for name '" + cacheId + "'. Skip flushing.");
+        }
+    }
+
+    public void flushAllCaches(KnowledgeHelper drools) {
+        cacheService.flushAllCaches();
+        logger.info("All caches flushed.");
+    }
+
     public void setTaggingService(TaggingService taggingService) {
         this.taggingService = taggingService;
     }
 
     public void setSitesService(JahiaSitesService sitesService) {
         this.sitesService = sitesService;
-    }
-
-    public void setSiteUserManager(JahiaSiteUserManagerService siteUserManager) {
-        this.siteUserManager = siteUserManager;
     }
 
     public void setSchedulerService(SchedulerService schedulerService) {
@@ -711,9 +719,11 @@ public class Service extends JahiaService {
 
     @Override
     public void start() throws JahiaInitializationException {
+        // do nothing
     }
 
     @Override
     public void stop() throws JahiaException {
+        // do nothing
     }
 }

@@ -106,7 +106,7 @@ public class ManageComponents extends AbstractAdministrationModule {
         if (coreLicense == null) {
             // set request attributes...
             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicense.label",
-                    jParams.getLocale());
+                    jParams.getUILocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
@@ -158,7 +158,7 @@ public class ManageComponents extends AbstractAdministrationModule {
 
         } else {
             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams.getLocale());
+                    jParams.getUILocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -225,7 +225,7 @@ public class ManageComponents extends AbstractAdministrationModule {
         }
 
         if (!doDeploy && !doPrepare) {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.components.ManageComponents.deploy.help", jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.components.ManageComponents.deploy.help", jParams.getUILocale());
             response.getWriter().print(dspMsg);
             return;
         }
@@ -253,21 +253,18 @@ public class ManageComponents extends AbstractAdministrationModule {
                         }
 
                         if (doPrepare && !doDeploy) {
-                            // save it in the JCR
-                            //String url = writeToDisk(user, generatedFile, SettingsBean.getInstance().getJahiaPreparePortletJCRPath(), fileName);
-                            String url = request.getContextPath() + "/administration/?do=sharecomponents&sub=getPreparedWar&war=" + URLEncoder.encode(fileName, "UTF-8") + "&file=" + generatedFile.getName();
-                            
-                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletReady", jParams.getLocale());
-                            response.getWriter().append(dspMsg).append("<br/><br/>").append(JahiaResourceBundle.getJahiaInternalResource("label.download", jParams.getLocale())).append(":&nbsp;<a href='").append(url).append("'>").append(fileName).append("</a>");
+                            String url = JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=getPreparedWar&war=" + URLEncoder.encode(fileName, "UTF-8") + "&file=" + generatedFile.getName());
+                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletReady", jParams.getUILocale());
+                            response.getWriter().append(dspMsg).append("<br/><br/>").append(JahiaResourceBundle.getJahiaInternalResource("label.download", jParams.getUILocale())).append(":&nbsp;<a href='").append(url).append("'>").append(fileName).append("</a>");
                         } else {
-                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletDeployed", jParams.getLocale());
+                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletDeployed", jParams.getUILocale());
                             response.getWriter().print(dspMsg);
                         }
 
 
                     }
                 } catch (Exception e) {
-                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label", jParams.getLocale());
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label", jParams.getUILocale());
                     response.getWriter().print(dspMsg);
                     logger.error(e, e);
                 } finally {
@@ -292,8 +289,12 @@ public class ManageComponents extends AbstractAdministrationModule {
         ServerDeploymentInterface deployer = SettingsBean.getInstance().getServerDeployer();
         if (deployer.isAutoDeploySupported()) {
             File target = new File(deployer.getDeploymentBaseDir(), filename);
-            FileUtils.moveFile(file, target);
-            logger.info("Move " + filename + " to " + target);
+            try {
+                FileUtils.copyFile(file, target);
+            } finally {
+                FileUtils.deleteQuietly(file);
+            }
+            logger.info("Moved " + filename + " to " + target);
         } else {
             logger.info("Server " + SettingsBean.getInstance().getServer() + " "
                     + SettingsBean.getInstance().getServerVersion()

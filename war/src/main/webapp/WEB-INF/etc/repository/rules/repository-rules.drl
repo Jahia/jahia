@@ -138,3 +138,14 @@ rule "Move to split folder"
     then
         Move to split folder node
 end
+
+# Portlet rules
+rule "Portlet definition deleted"
+    when
+        A node is deleted
+        The node has a parent
+            - the parent has the type jnt:portletDefinitions
+    then
+        Flush ApplicationCache
+        Flush ApplicationContextCache
+end

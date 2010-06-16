@@ -32,9 +32,11 @@
 package org.jahia.services.query;
 
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.test.TestHelper;
+import org.jahia.utils.LanguageCodeConverters;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -95,27 +97,27 @@ public class QueryModificationTest {
 
     @Test
     public void testSortingModification() throws Exception {
-        JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession(null, Locale.ENGLISH);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                Locale.ENGLISH);
         try {
             QueryManager queryManager = session.getWorkspace().getQueryManager();
 
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]"));
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
 
                 query = "SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]"));
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) ORDER BY news.[jcr:createdBy], news.[jcr:title], news.[jcr:created] desc";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:createdBy], newstranslationAdded.[jcr:title_en], newstranslationAdded.[jcr:created] DESC"));
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:createdBy], newstranslationAdded.[jcr:title_en], newstranslationAdded.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:createdBy], newstranslationAdded.[jcr:title_en], newstranslationAdded.[jcr:created] DESC";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:createdBy], newstranslationAdded.[jcr:title_en], newstranslationAdded.[jcr:created] DESC"));                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:createdBy], newstranslationAdded.[jcr:title_en], newstranslationAdded.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
             }
 
         } catch (Exception ex) {
@@ -127,19 +129,19 @@ public class QueryModificationTest {
 
     @Test
     public void testPropertyComparison() throws Exception {
-        JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession(null, Locale.ENGLISH);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                Locale.ENGLISH);
         try {
             QueryManager queryManager = session.getWorkspace().getQueryManager();
 
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (length(news.[desc]) > 100 OR news.[date] > '+2001-01-01T01:02:03.000Z') ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(newstranslationAdded.desc_en) > 100 OR newstranslationAdded.date > '+2001-01-01T01:02:03.000Z') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]"));
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(newstranslationAdded.desc_en) > 100 OR newstranslationAdded.date > '+2001-01-01T01:02:03.000Z') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(newstranslationAdded.desc_en) > 100 OR newstranslationAdded.date > '+2001-01-01T01:02:03.000Z') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(newstranslationAdded.desc_en) > 100 OR newstranslationAdded.date > '+2001-01-01T01:02:03.000Z') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]"));                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISDESCENDANTNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND (LENGTH(newstranslationAdded.desc_en) > 100 OR newstranslationAdded.date > '+2001-01-01T01:02:03.000Z') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
             }
 
         } catch (Exception ex) {
@@ -151,43 +153,43 @@ public class QueryModificationTest {
 
     @Test
     public void testFulltextSearch() throws Exception {
-        JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession(null, Locale.ENGLISH);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                Locale.ENGLISH);        
         try {
             QueryManager queryManager = session.getWorkspace().getQueryManager();
 
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE contains(news.*, 'ACME') ORDER BY news.[date]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.*, 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date"));
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.*, 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.*, 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.*, 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date"));                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.*, 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
                 
                 query = "SELECT * FROM [jnt:news] as news WHERE contains(news.[jcr:title], 'ACME') ORDER BY news.[date]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date"));                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
                 
                 query = "SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date"));
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT * FROM [jnt:news] as news WHERE contains(news.[jcr:title], 'ACME') OR contains(news.[j:keywords], 'ACME') ORDER BY news.[date]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE (CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') OR CONTAINS(newstranslationAdded.[j:keywords], 'ACME')) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date"));                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE (CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') OR CONTAINS(newstranslationAdded.[j:keywords], 'ACME')) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
                 
                 query = "SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE (CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') OR CONTAINS(newstranslationAdded.[j:keywords], 'ACME')) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE (CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') OR CONTAINS(newstranslationAdded.[j:keywords], 'ACME')) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date"));
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE (CONTAINS(newstranslationAdded.[jcr:title_en], 'ACME') OR CONTAINS(newstranslationAdded.[j:keywords], 'ACME')) AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.date", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT * FROM [jmix:keywords] as node WHERE contains(node.[j:keywords], 'ACME')";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT node.* FROM [jmix:keywords] AS node WHERE CONTAINS(node.[j:keywords], 'ACME')"));                
+                assertEquals("SELECT node.* FROM [jmix:keywords] AS node WHERE CONTAINS(node.[j:keywords], 'ACME')", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
 
                 query = "SELECT * FROM [jmix:keywords] as node WHERE contains(node.*, 'ACME')";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT node.* FROM [jmix:keywords] AS node WHERE CONTAINS(node.*, 'ACME')"));                                
+                assertEquals("SELECT node.* FROM [jmix:keywords] AS node WHERE CONTAINS(node.*, 'ACME')", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                                
             }
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
@@ -198,19 +200,19 @@ public class QueryModificationTest {
 
     @Test
     public void testWithOtherLanguageSet() throws Exception {
-        JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession(null, Locale.ENGLISH);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                Locale.ENGLISH);
         try {
             QueryManager queryManager = session.getWorkspace().getQueryManager();
 
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND news.[jcr:language] = 'fr' ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'fr' ORDER BY newstranslationAdded.[jcr:title_fr]"));
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'fr' ORDER BY newstranslationAdded.[jcr:title_fr]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
 
                 query = "SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'fr' ORDER BY newstranslationAdded.[jcr:title_fr]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'fr' ORDER BY newstranslationAdded.[jcr:title_fr]"));                
+                assertEquals("SELECT news.* FROM [jnt:news] AS news INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "/home/page8/news]) AND newstranslationAdded.[jcr:language] = 'fr' ORDER BY newstranslationAdded.[jcr:title_fr]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
             }
 
         } catch (Exception ex) {
@@ -222,19 +224,19 @@ public class QueryModificationTest {
     
     @Test
     public void testWithJoins() throws Exception {
-        JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession(null, Locale.ENGLISH);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                Locale.ENGLISH);
         try {
             QueryManager queryManager = session.getWorkspace().getQueryManager();
 
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags)='test' ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON newstranslationAdded.[j.tags] = tags.[jcr:uuid] INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]"));
+                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON newstranslationAdded.[j.tags] = tags.[jcr:uuid] INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON newstranslationAdded.[j.tags] = tags.[jcr:uuid] INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON newstranslationAdded.[j.tags] = tags.[jcr:uuid] INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]"));                
+                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON newstranslationAdded.[j.tags] = tags.[jcr:uuid] INNER JOIN [jnt:translation] AS newstranslationAdded ON ISCHILDNODE(newstranslationAdded, news) WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND newstranslationAdded.[jcr:language] = 'en' ORDER BY newstranslationAdded.[jcr:title_en]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
             }
 
         } catch (Exception ex) {
@@ -246,19 +248,19 @@ public class QueryModificationTest {
     
     @Test
     public void testWithReferences() throws Exception {
-        JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession(null, Locale.ENGLISH);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                Locale.ENGLISH);
         try {
             QueryManager queryManager = session.getWorkspace().getQueryManager();
 
             if (queryManager != null) {
                 String query = "select press.* from [jnt:press] as press left outer join [nt:file] as file on press.pdfVersion = file.[jcr:uuid] inner join [nt:resource] as filecontent on ischildnode(filecontent, file) where contains(filecontent.*, 'ACME') or contains(press.*, 'ACME') order by press.[date] desc";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON presstranslationAdded.pdfVersion_en = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) INNER JOIN [jnt:translation] AS presstranslationAdded ON ISCHILDNODE(presstranslationAdded, press) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(presstranslationAdded.*, 'ACME')) AND presstranslationAdded.[jcr:language] = 'en' ORDER BY presstranslationAdded.date DESC"));
+                assertEquals("SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON presstranslationAdded.pdfVersion_en = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) INNER JOIN [jnt:translation] AS presstranslationAdded ON ISCHILDNODE(presstranslationAdded, press) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(presstranslationAdded.*, 'ACME')) AND presstranslationAdded.[jcr:language] = 'en' ORDER BY presstranslationAdded.date DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
                 
                 query = "SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON presstranslationAdded.pdfVersion_en = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) INNER JOIN [jnt:translation] AS presstranslationAdded ON ISCHILDNODE(presstranslationAdded, press) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(presstranslationAdded.*, 'ACME')) AND presstranslationAdded.[jcr:language] = 'en' ORDER BY presstranslationAdded.date DESC";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);
-                assertTrue(((QueryWrapper)q).getQueries().values().iterator().next().getStatement().equals("SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON presstranslationAdded.pdfVersion_en = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) INNER JOIN [jnt:translation] AS presstranslationAdded ON ISCHILDNODE(presstranslationAdded, press) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(presstranslationAdded.*, 'ACME')) AND presstranslationAdded.[jcr:language] = 'en' ORDER BY presstranslationAdded.date DESC"));                
+                assertEquals("SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON presstranslationAdded.pdfVersion_en = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) INNER JOIN [jnt:translation] AS presstranslationAdded ON ISCHILDNODE(presstranslationAdded, press) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(presstranslationAdded.*, 'ACME')) AND presstranslationAdded.[jcr:language] = 'en' ORDER BY presstranslationAdded.date DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
             }
 
         } catch (Exception ex) {

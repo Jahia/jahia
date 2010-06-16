@@ -202,15 +202,29 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         resp.setContentType(
                 renderContext.getContentType() != null ? renderContext.getContentType() : "text/html; charset=UTF-8");
         Source source = new Source(out);
-        final List<Element> elementList = source.getAllElements(HTMLElementName.HEAD);
         OutputDocument outputDocument = new OutputDocument(source);
-        for (Element element : elementList) {
+        if (renderContext.isAjaxRequest()) {
+            Element element = source.getFirstElement();
             final EndTag tag = element.getEndTag();
-            final String staticsAsset = RenderService.getInstance()
-                    .render(new Resource(resource.getNode(), "html", "html.statics.assets", "html.statics.assets",
-                            Resource.CONFIGURATION_INCLUDE), renderContext);
-            outputDocument.replace(tag.getBegin(), tag.getBegin() + 1,
-                    "\n" + AggregateCacheFilter.removeEsiTags(staticsAsset) + "\n<");
+            final String staticsAsset = RenderService.getInstance().render(new Resource(resource.getNode(), "html",
+                                                                                        "html.statics.assets",
+                                                                                        "html.statics.assets",
+                                                                                        Resource.CONFIGURATION_INCLUDE),
+                                                                           renderContext);
+            outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
+                    staticsAsset) + "\n<");
+        } else {
+            final List<Element> elementList = source.getAllElements(HTMLElementName.HEAD);
+            for (Element element : elementList) {
+                final EndTag tag = element.getEndTag();
+                final String staticsAsset = RenderService.getInstance().render(new Resource(resource.getNode(), "html",
+                                                                                            "html.statics.assets",
+                                                                                            "html.statics.assets",
+                                                                                            Resource.CONFIGURATION_INCLUDE),
+                                                                               renderContext);
+                outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
+                        staticsAsset) + "\n<");
+            }
         }
         PrintWriter writer = resp.getWriter();
         out = outputDocument.toString();

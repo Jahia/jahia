@@ -82,12 +82,14 @@ public class FindPrincipal extends HttpServlet implements Controller {
         this.jahiaSitesService = jahiaSitesService;
     }
 
-    protected String retrieveParameter(HttpServletRequest request, HttpServletResponse response, String parameterName) throws IOException {
-        String parameterValue = request.getParameter(PRINCIPALTYPE_PARAMNAME);
-        if (StringUtils.isEmpty(parameterValue)) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    "Mandatory parameter '"+PRINCIPALTYPE_PARAMNAME+"' is not found in the request");
-            return null;
+    protected String retrieveParameter(HttpServletRequest request, HttpServletResponse response, String parameterName, boolean mandatory) throws IOException {
+        String parameterValue = request.getParameter(parameterName);
+        if (mandatory) {
+            if (StringUtils.isEmpty(parameterValue)) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                        "Mandatory parameter '"+parameterName+"' is not found in the request");
+                throw new IOException("Mandatory parameter '"+parameterName+"' is not found in the request");
+            }
         }
         return parameterValue;
     }
@@ -162,17 +164,21 @@ public class FindPrincipal extends HttpServlet implements Controller {
             IOException, RepositoryException {
         URLResolver urlResolver = new URLResolver(request.getPathInfo());
         try {
-            String principalType = retrieveParameter(request, response, PRINCIPALTYPE_PARAMNAME);
+            String principalType = retrieveParameter(request, response, PRINCIPALTYPE_PARAMNAME, true);
             if (principalType == null) {
                 return;
             }
-            String wildcardTerm = retrieveParameter(request, response, WILDCARDTERM_PARAMNAME);
-            String escapeColonStr = retrieveParameter(request, response, ESCAPECOLON_PARAMNAME);
-            String siteKey = retrieveParameter(request, response, SITEKEY_PARAMNAME);
+            String wildcardTerm = retrieveParameter(request, response, WILDCARDTERM_PARAMNAME, false);
+            String escapeColonStr = retrieveParameter(request, response, ESCAPECOLON_PARAMNAME, false);
+            boolean siteKeyMandatory = false;
+            if ("groups".equals(principalType)) {
+                siteKeyMandatory = true;
+            }
+            String siteKey = retrieveParameter(request, response, SITEKEY_PARAMNAME, siteKeyMandatory);
             Map<String, String[]> otherRequestParameters = retrieveOtherParameters(request);
             Properties searchCriterias = buildSearchCriterias(wildcardTerm, otherRequestParameters);
             if (logger.isDebugEnabled()) {
-                logger.debug("Search for principal type " + principalType + " with criterias " + searchCriterias);
+                logger.debug("Searching for principal type " + principalType + " with criterias " + searchCriterias);
             }
 
             if ("users".equals(principalType)) {

@@ -82,7 +82,7 @@ public class FindPrincipalTest {
     }
 
     @Before
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
 
         // Create an instance of HttpClient.
         client = new HttpClient();
@@ -103,7 +103,7 @@ public class FindPrincipalTest {
     }
 
     @After
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
 
         PostMethod logoutMethod = new PostMethod("http://localhost:8080/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
@@ -122,7 +122,6 @@ public class FindPrincipalTest {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/findPrincipal");
         method.addParameter("principalType", "users");
-        method.addParameter("siteKey", TESTSITE_NAME);
         method.addParameter("wildcardTerm", "*root*");
 
         // Provide custom retry handler is necessary
@@ -152,6 +151,7 @@ public class FindPrincipalTest {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/findPrincipal");
         method.addParameter("principalType", "groups");
+        method.addParameter("siteKey", TESTSITE_NAME);
         method.addParameter("wildcardTerm", "*administrators*");
 
         // Provide custom retry handler is necessary

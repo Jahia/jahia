@@ -89,27 +89,38 @@
                 return format(item);
             },
             extraParams: {
-                principalType : "users"
+                principalType : "users",
+                wildcardTerm : "*"
             }
         });
-
 
         function searchUsers(term) {
             $.ajax({
                 url: '${url.findPrincipal}',
                 type: 'post',
                 dataType : 'json',
-                data : "principalType=users&wildcardTerm=" + term,
+                data : "principalType=users&wildcardTerm=" + term + "*",
                 success: function(data) {
-                    $("#searchUsersResult").html("No results.");
+                    $("#searchUsersResult").html("");
                     $.each(data, function(i, item) {
                         $("#searchUsersResult").append(
-                           $("<tr/>").append( $("<td/>").append($("<img/>").attr("src", item.properties.['j:picture'])) )
-                                   .append( $("<td/>").text(item.properties.['j:firstName'] + " " + item.properties['j:lastName']))
-                                   .append( $("<td/>").append( $("<a/>").attr("href", "").click(function () { requestConnection('${currentNode.path}.startWorkflow.do',item.properties['jcr:path'], item['userKey']); return false; }).text("Add as friend") ) )
+                           $("<tr/>").append( $("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])) )
+                                   .append( $("<td/>").text(item.properties['j:firstName'] + " " + item.properties['j:lastName']))
+                                   .append( $("<td/>").append( $("<a/>").attr("href", "").click(function () { requestConnection('${currentNode.path}.startWorkflow.do',item['userKey']); return false; }).text("Add as friend") ) )
                         );
                         if (i == 10) return false;
                     });
+                }
+            });
+        }
+
+        function requestConnection(actionURL, toUserKey) {
+            $.ajax({
+                url : '${url.base}' + actionURL,
+                type : 'post',
+                data : 'process=jBPM:user-connection&userkey=' + toUserKey,
+                success : function (data) {
+                    alert("Request completed successfully!");
                 }
             });
         }
@@ -121,17 +132,6 @@
             return false;
         });
 
-        function requestConnection(actionURL, toUserPath, toUserKey) {
-            $.ajax({
-                url : '${url.base}' + actionURL,
-                type : 'post',
-                data : 'process=jBPM:user-connection&to=' + toUserPath + '&userkey=' + toUserKey,
-                success : function (data) {
-                    alert("Request completed successfully!");
-                }
-            });
-        }
-
     });
 </script>
 
@@ -140,7 +140,7 @@
 
     <h3><fmt:message key="userSearch" /></h3>
 
-    <form method="get" class="simplesearchform" action="../../../../../../default/src/main/webapp/jnt_user/html">
+    <form method="get" class="simplesearchform" action="">
 
         <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
         <c:if test="${not empty title.string}">

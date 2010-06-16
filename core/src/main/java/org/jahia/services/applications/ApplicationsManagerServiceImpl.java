@@ -38,7 +38,6 @@ import org.apache.pluto.container.driver.PlutoServices;
 import org.apache.pluto.container.driver.PortletRegistryEvent;
 import org.apache.pluto.container.driver.PortletRegistryListener;
 import org.apache.pluto.container.driver.PortletRegistryService;
-import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
@@ -46,8 +45,6 @@ import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.data.applications.WebAppContext;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
@@ -234,7 +231,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     private ApplicationBean fromNodeToBean(JCRNodeWrapper wrapper) throws RepositoryException {
-        return new ApplicationBean(wrapper.getUUID(), wrapper.getPropertyAsString("j:name"),
+        return new ApplicationBean(wrapper.getIdentifier(), wrapper.getPropertyAsString("j:name"),
                 wrapper.getPropertyAsString("j:context"), wrapper.getProperty(
                         "j:isVisible").getBoolean(), wrapper.getPropertyAsString("j:description"),
                 wrapper.getPropertyAsString("j:type"));
@@ -363,7 +360,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     final JCRNodeWrapper parentNode = session.getNode("/portletdefinitions");
                     final String name = app.getName().replaceAll("/", "___");
-                    parentNode.checkout();
+                    session.checkout(parentNode);
                     final JCRNodeWrapper wrapper = parentNode.addNode(name, "jnt:portletDefinition");
                     wrapper.setProperty("j:context", app.getContext());
                     wrapper.setProperty("j:name", app.getName());
@@ -591,9 +588,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 final EntryPointInstance epInstance1 = epInstance;
                 JCRSessionWrapper session = jcrTemplate.getSessionFactory().getCurrentUserSession();
                 final JCRNodeWrapper parentNode = session.getNode(path);
-                if (!parentNode.isCheckedOut()) {
-                    parentNode.checkout();
-                }
+                session.checkout(parentNode);
                 final String name = epInstance1.getResKeyName() != null ? epInstance1.getResKeyName() : appBean.getName().replaceAll(
                         "/", "___") + Math.round(Math.random() * 1000000l);
                 final JCRPortletNode wrapper = (JCRPortletNode) parentNode.addNode(name, "jnt:portlet");

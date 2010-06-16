@@ -61,11 +61,14 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         setHeaderVisible(false);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setStyleAttribute("padding", "4");
+        setLabelWidth(200);
+        setFieldWidth(300);
 
 
         final com.extjs.gxt.ui.client.widget.form.FileUploadField portletDefinitionField = new com.extjs.gxt.ui.client.widget.form.FileUploadField();
         portletDefinitionField.setAllowBlank(false);
         portletDefinitionField.setName("portletDefinition");
+        portletDefinitionField.setWidth(290);
         portletDefinitionField.setFieldLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.portletdef.label", "Portlet Definition"));
         add(portletDefinitionField);
 
@@ -125,6 +128,7 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         }
 
         Button helpButton = new Button("?");
+        helpButton.setWidth(30);
         helpButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent buttonEvent) {
                 deployPortlet.setValue(false);

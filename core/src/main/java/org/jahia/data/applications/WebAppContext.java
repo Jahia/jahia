@@ -50,13 +50,10 @@ package org.jahia.data.applications;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jahia.services.applications.ServletIncludeRequestWrapper;
 import org.jahia.utils.InsertionSortedMap;
-import org.jahia.utils.JahiaConsole;
 
 
 
@@ -69,8 +66,6 @@ import org.jahia.utils.JahiaConsole;
 public class WebAppContext implements Serializable
 {
     private static final long serialVersionUID = 5206818081114734385L;
-
-    private static final String CLASS_NAME = WebAppContext.class.getName();
 
     /** the application display name **/
     private String displayName = "";
@@ -137,8 +132,12 @@ public class WebAppContext implements Serializable
         if ( descr != null ){
             this.descr = descr;
         }
-        addServlets(servlets);
-        setServletMappings(servletMappings);
+        if (servlets != null) {
+            addServlets(servlets);
+        }
+        if (servletMappings != null) {
+            setServletMappings(servletMappings);
+        }
         setRoles(roles);
         setWelcomeFiles(welcomeFiles);
     }
@@ -393,143 +392,6 @@ public class WebAppContext implements Serializable
      */
     public void setDescr(String val){
         descr = val;
-    }
-
-    //--------------------------------------------------------------------------
-    /**
-     * Find an exact servlet mapping pattern matching the given path if any
-     *
-     * @param path ( servlet pat + path info + querystring )
-     */
-    private String findServletExactMapping(String path){
-        if ( path == null ){
-            return null;
-        }
-
-        Iterator<String> iterator = servletMappings.keySet().iterator();
-        String pattern = null;
-        String result = "";
-        while ( iterator.hasNext() )
-        {
-            pattern = iterator.next();
-            if ( !pattern.equals("/")
-                 || !pattern.startsWith("*.")
-                 || !(pattern.startsWith("/") && pattern.endsWith("/*")) )
-            {
-                // we've got an exact mapping pattern
-
-                if ( path.startsWith(pattern) ){
-                    boolean match = false;
-                    if ( pattern.length() == path.length() ){
-                        match = true;
-                    } else if ( pattern.endsWith("/") ){
-                        match = true;
-                    } else if ( path.charAt(pattern.length())=='/' ) {
-                        match = true;
-                    }
-                    if ( match && (pattern.length() > result.length()) ){
-                        result = pattern;
-                    }
-                }
-            }
-        }
-
-        JahiaConsole.println(	CLASS_NAME+".findServletExactMapping",
-                                "result [" + result + "]");
-
-        if ( result.length() == 0 ){
-            return null;
-        }
-        return result;
-    }
-
-    //--------------------------------------------------------------------------
-    /**
-     * Find a servlet path mapping pattern matching the given path if any
-     *
-     * @param path ( servlet pat + path info + querystring )
-     */
-    private String findServletPathMapping(String path){
-        if ( path == null ){
-            return null;
-        }
-
-        Iterator<String> iterator = servletMappings.keySet().iterator();
-        String pattern = null;
-        String result = "";
-        while ( iterator.hasNext() )
-        {
-            pattern = iterator.next();
-            if ( pattern.startsWith("/") && pattern.endsWith("/*") )
-            {
-
-                // we've got a path mapping pattern
-                if ( path.startsWith(pattern.substring(0,pattern.length()-2)) ){
-                    String str = pattern.substring(0,pattern.length()-2);
-                    if ( (str.startsWith("/") || str.startsWith("?") || str.startsWith(";")
-                         || str.startsWith("#") || str.startsWith("&") ) && pattern.length() > result.length() ){
-                    result = pattern;
-                }
-            }
-        }
-        }
-
-        JahiaConsole.println(	CLASS_NAME+".findServletPathMapping",
-                                "result [" + result + "]");
-
-        if ( result.length() == 0 ){
-            return null;
-        }
-        return result;
-    }
-
-    //--------------------------------------------------------------------------
-    /**
-     * Find a servlet extension mapping pattern matching the given path if any
-     *
-     * @param path ( servlet pat + path info + querystring )
-     */
-    private String findServletExtensionMapping(String path){
-        if ( path == null ){
-            return null;
-        }
-
-        int pos = path.indexOf("?");
-        String str = path;
-
-        if ( pos != -1 ){
-            str = path.substring(0,pos);
-        }
-
-        pos = str.lastIndexOf("/");
-
-        Iterator<String> iterator = servletMappings.keySet().iterator();
-        String pattern = null;
-        String result = "";
-        int strPos = -1;
-        while ( iterator.hasNext() )
-        {
-            pattern = iterator.next();
-            if ( pattern.startsWith("*.") )
-            {
-                strPos = str.indexOf(pattern.substring(1));
-                // we've got a path mapping pattern
-                if ( strPos != -1 && pos < strPos
-                     && pattern.length() > result.length() )
-                {
-                    result = pattern;
-                }
-            }
-        }
-
-        JahiaConsole.println(	CLASS_NAME+".findServletExtensionMapping",
-                                "result [" + result + "]");
-
-        if ( result.length() == 0 ){
-            return null;
-        }
-
-        return result;
     }
 
 

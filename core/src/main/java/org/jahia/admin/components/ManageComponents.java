@@ -60,7 +60,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.maven.plugin.deployers.ServerDeploymentFactory;
 import org.jahia.utils.maven.plugin.deployers.ServerDeploymentInterface;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -261,7 +260,7 @@ public class ManageComponents extends AbstractAdministrationModule {
                             String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletReady", jParams.getLocale());
                             response.getWriter().append(dspMsg).append("<br/><br/>").append(JahiaResourceBundle.getJahiaInternalResource("label.download", jParams.getLocale())).append(":&nbsp;<a href='").append(url).append("'>").append(fileName).append("</a>");
                         } else {
-                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.components.ManageComponents.portletDeployed.label", jParams.getLocale());
+                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletDeployed", jParams.getLocale());
                             response.getWriter().print(dspMsg);
                         }
 
@@ -290,15 +289,15 @@ public class ManageComponents extends AbstractAdministrationModule {
      * @throws IOException
      */
     private void deployPortlet(File file, String filename) throws IOException {
-        // ugly: To do: rewrite deploy service with cargo.
-        // deploy: the easy way is to copy in tomcat/webapp.
-        String serverType = SettingsBean.getInstance().getServer();
-        if (serverType != null && serverType.equalsIgnoreCase("Tomcat")) {
-            String newName = SettingsBean.getInstance().getJahiaWebAppsDiskPath() + filename;
-            FileUtils.moveFile(file, new File(newName));
-            logger.info("Move " + filename + " to " + SettingsBean.getInstance().getJahiaWebAppsDiskPath());
+        ServerDeploymentInterface deployer = SettingsBean.getInstance().getServerDeployer();
+        if (deployer.isAutoDeploySupported()) {
+            File target = new File(deployer.getDeploymentBaseDir(), filename);
+            FileUtils.moveFile(file, target);
+            logger.info("Move " + filename + " to " + target);
         } else {
-            logger.debug("Server: " + serverType);
+            logger.info("Server " + SettingsBean.getInstance().getServer() + " "
+                    + SettingsBean.getInstance().getServerVersion()
+                    + " does not support auto deployment of WAR files. Skipping WAr deployment.");
         }
     }
 

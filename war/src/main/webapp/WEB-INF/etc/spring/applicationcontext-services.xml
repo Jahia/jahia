@@ -57,7 +57,6 @@
     </bean>
     <bean id="ServletContextManager" class="org.jahia.services.applications.ServletContextManager" factory-method="getInstance" init-method="start">
         <property name="cacheService" ref="JahiaCacheService"/>
-        <property name="settingsBean" ref="settingsBean"/>
     </bean>
     <bean id="QueryService" parent="proxyTemplate">
         <property name="target">

@@ -32,7 +32,6 @@
 package org.jahia.services.applications;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -48,7 +47,6 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.settings.SettingsBean;
 import org.springframework.web.context.ServletContextAware;
 
 
@@ -69,14 +67,11 @@ public class ServletContextManager implements ServletContextAware {
     /** The web.xml file * */
     private static final String WEB_XML_FILE = "/WEB-INF/web.xml";
 
-    /** Jahia-specific deployment-descriptor file */
-    private static final String JAHIA_XML_FILE = "/WEB-INF/jahia.xml";
-
     /** the instance * */
     private static ServletContextManager instance = null;
 
     /** the cache of application context beans * */
-    private Cache mRegistry;
+    private Cache<String, WebAppContext> mRegistry;
 
     /** The Server ServerContext * */
     private ServletContext mContext;
@@ -85,14 +80,8 @@ public class ServletContextManager implements ServletContextAware {
 
     private CacheService cacheService;
 
-    private SettingsBean settingsBean;
-
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
-    }
-
-    public void setSettingsBean(SettingsBean settingsBean) {
-        this.settingsBean = settingsBean;
     }
 
     public void setServletContext(ServletContext servletContext) {
@@ -171,23 +160,26 @@ public class ServletContextManager implements ServletContextAware {
     public WebAppContext getApplicationContext (ApplicationBean appBean)
             throws JahiaException {
 
-        logger.debug ("Requested for context : " + appBean.getContext());
+        if (logger.isDebugEnabled()) {
+            logger.debug ("Requested for context : " + appBean.getContext());
+        }
 
         if (appBean != null && appBean.getContext() == null) {
             return null;
         }
-        WebAppContext appContext = null;
-        synchronized (mRegistry) {
-            appContext = (WebAppContext) mRegistry.get (appBean.getContext());
-            if (appContext == null) {
-                // try to load from disk
-                appContext = loadContextInfoFromDisk (appBean.getID(), appBean.getContext());
+        WebAppContext appContext = mRegistry.get (appBean.getContext());
+        if (appContext == null) {
+            synchronized (mRegistry) {
+                if (appContext == null) {
+                    // try to load from disk
+                    appContext = loadContextInfoFromDisk (appBean.getID(), appBean.getContext());
+                    if (appContext == null) {
+                        // create a fake Application Context to avoid loading from disk the next time.
+                        appContext = new WebAppContext(appBean.getContext());
+                    }
+                    mRegistry.put (appBean.getContext(), appContext);
+                }
             }
-            if (appContext == null) {
-                // create a fake Application Context to avoid loading from disk the next time.
-                appContext = new WebAppContext(appBean.getContext());
-            }
-            mRegistry.put (appBean.getContext(), appContext);
         }
         return appContext;
     }
@@ -231,16 +223,16 @@ public class ServletContextManager implements ServletContextAware {
         appContext = new WebAppContext(context,
                 webXmlDoc.getDisplayName (),
                 webXmlDoc.getdesc (),
-                new ArrayList(),
+                null,
                 webXmlDoc.getServletMappings (),
-                new ArrayList(),
+                null,
                 webXmlDoc.getWelcomeFiles ());
 
-        List servlets = webXmlDoc.getServlets ();
+        List<Servlet_Element> servlets = webXmlDoc.getServlets ();
         Servlet_Element servlet;
         ServletBean servletBean;
         for (int i = 0; i < servlets.size (); i++) {
-            servlet = (Servlet_Element) servlets.get (i);
+            servlet = servlets.get (i);
             servletBean = new ServletBean (
                     applicationID,
                     servlet.getType (),
@@ -253,10 +245,10 @@ public class ServletContextManager implements ServletContextAware {
             appContext.addServlet (servletBean);
         }
 
-        List roles = webXmlDoc.getRoles ();
+        List<Security_Role> roles = webXmlDoc.getRoles ();
         Security_Role role;
         for (int i = 0; i < roles.size (); i++) {
-            role = (Security_Role) roles.get (i);
+            role = roles.get (i);
             appContext.addRole (role.getName ());
         }
 

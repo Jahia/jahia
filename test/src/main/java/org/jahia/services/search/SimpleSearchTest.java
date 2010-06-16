@@ -173,9 +173,8 @@ public class SimpleSearchTest {
 
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
-            assertTrue("Unexpected number of search results [" + hits.size()
-                    + " instead of " + 53 + "] for: " + criteria.toString(),
-                    hits.size() == 53);
+            assertEquals("Unexpected number of search results for: " + criteria.toString(),
+                    53, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -212,9 +211,8 @@ public class SimpleSearchTest {
 
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
-            assertTrue("Unexpected number of search results [" + hits.size()
-                    + " instead of " + 54 + "] for: " + criteria.toString(),
-                    hits.size() == 54);
+            assertEquals("Unexpected number of search results for: " + criteria.toString(),
+                    54, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -256,15 +254,13 @@ public class SimpleSearchTest {
 
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
-            assertTrue("Unexpected number of search results [" + hits.size()
-                    + " instead of " + 12 + "] for: " + criteria.toString(),
-                    hits.size() == 12);
+            assertEquals("Unexpected number of search results for: " + criteria.toString(),
+                    12, hits.size());
 
             criteria.setFileType("pdf");
             hits = searchService.search(criteria, context).getResults();
-            assertTrue("Unexpected number of search results [" + hits.size()
-                    + " instead of " + 10 + "] for: " + criteria.toString(),
-                    hits.size() == 10);
+            assertEquals("Unexpected number of search results for: " + criteria.toString(),
+                    10, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -302,39 +298,34 @@ public class SimpleSearchTest {
 
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
-            assertTrue("Unexpected number of search results [" + hits.size()
-                    + " instead of " + 1 + "] for: " + criteria.toString(),
-                    hits.size() == 1);
+            assertEquals("Unexpected number of search results for: " + criteria.toString(),
+                    1, hits.size());
 
             criteria.getTerms().get(0).setTerm("civil Polytech");
             criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
             hits = searchService.search(criteria, context).getResults();
-            assertTrue("Unexpected number of search results [" + hits.size()
-                    + " instead of " + 6 + "] for: " + criteria.toString(),
-                    hits.size() == 6);
+            assertEquals("Unexpected number of search results for: " + criteria.toString(),
+                    6, hits.size());
 
             criteria.getTerms().get(0).setTerm("civil engineering");
             criteria.getTerms().get(0).setMatch(MatchType.EXACT_PHRASE);
             hits = searchService.search(criteria, context).getResults();
-            assertTrue("Unexpected number of search results [" + hits.size()
-                    + " instead of " + 5 + "] for: " + criteria.toString(),
-                    hits.size() == 5);
+            assertEquals("Unexpected number of search results for: " + criteria.toString(),
+                    5, hits.size());
 
             criteria.getTerms().get(0).setTerm("civil -engineering");
             criteria.getTerms().get(0).setMatch(MatchType.AS_IS);
             hits = searchService.search(criteria, context).getResults();
-            assertTrue("Unexpected number of search results [" + hits.size()
-                    + " instead of " + 1 + "] for: " + criteria.toString(),
-                    hits.size() == 1);
+            assertEquals("Unexpected number of search results for: " + criteria.toString(),
+                    1, hits.size());
 
             criteria.getTerms().get(0).setTerm("civil");
             criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
             criteria.getTerms().get(1).setTerm("engineering");
             criteria.getTerms().get(1).setMatch(MatchType.WITHOUT_WORDS);
             hits = searchService.search(criteria, context).getResults();
-            assertTrue("Unexpected number of search results [" + hits.size()
-                    + " instead of " + 1 + "] for: " + criteria.toString(),
-                    hits.size() == 1);
+            assertEquals("Unexpected number of search results for: " + criteria.toString(),
+                    1, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -371,10 +362,8 @@ public class SimpleSearchTest {
 
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
-            assertTrue(
-                    "Unexpected number of search results [" + hits.size()
-                            + " instead of " + 53 * 2 + "] for: "
-                            + criteria.toString(), hits.size() == 53 * 2);
+            assertEquals("Unexpected number of search results for: "
+                            + criteria.toString(), 53 * 2, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }

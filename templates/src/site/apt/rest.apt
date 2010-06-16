@@ -194,7 +194,9 @@ Basic Jahia REST API
 * Find
 
  The find servlet can be used to query content inside the Jahia JCR repository. It provides a lightweight but very
- powerful interface to retrieve content anywhere inside the content repository.
+ powerful interface to retrieve content anywhere inside the content repository. Please note that if you need to
+ search for users or groups, you should use the findPrincipal servlet instead, since it integrates with external
+ principal repositories such as LDAP.
 
  URL : /cms/find/WORKSPACE/LANGUAGE
 
@@ -339,6 +341,47 @@ Server:Apache-Coyote/1.1
 
  * node contains all the node information, including the matchProperties array that indicates which properties have
    matched the propertyMatchingRegexp parameter.
+
+* Find users or groups
+
+ This servlet is dedicated to searching for users or groups, with the particularity of being able to search in external
+ principal repositories connected with Jahia, such as an LDAP repository. Note that the query and result formats are
+ quite different to the default find servlet, because they are not representing JCR nodes but principal data structures.
+
+ URL : /cms/findPrincipal
+
+ Method : POST or GET
+
+ Parameters :
+
+*---------------------------+-------------+----------------------------------------------------------------------+
+|Name                       |Mandatory    |Description                                                           |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|principalType              |yes          |The type of principal you wish to query for. The accepted values are  |
+|                           |             |"users" or "groups"                                                   |
+|                           |             |a request parameter called "paramName"                                |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|siteKey                    |yes (if      |If you have set the principalType parameter to "groups", you will be  |
+|                           |searching for|required to specify a value for the siteKey parameter, which is the   |
+|                           |groups       |site in which you want to search for the groups.                      |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|wildcardTerm               |no           |If this parameter is specified, it will be used to search for the     |
+|                           |             |value specified in any principal property. If you prefer to search    |
+|                           |             |for specific properties, you must specify them seperately in the HTTP |
+|                           |             |request parameters.                                                   |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|escapeColon                |no           |If set to true, the ':' in the node property name will be replaced    |
+|                           |             | '_'.                                                                 |
+|                           |             |Defaults to false.                                                    |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|any other parameter name   |no           |If you specify another other parameter other than the above reserved  |
+|                           |             |ones, the servlet will interpret them as property names that have to  |
+|                           |             |to be search for the specified values.                                |
+|                           |             |                                                                      |
+*---------------------------+-------------+----------------------------------------------------------------------+
+
+** Example
+
 
 * Debugging
 

@@ -68,7 +68,7 @@
 
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <!--start grid_${col.value}-->
-    <div class='grid_${col.value} <c:if test="${count.first}">alpha</c:if> <c:if test="${count.last}">omega</c:if>'>
+    <div class='grid_${col.value} <c:if test="${count.first}"> alpha</c:if> <c:if test="${count.last}"> omega</c:if>'>
         <template:area path="${col.key}"/>
         <div class='clear'></div>
     </div>

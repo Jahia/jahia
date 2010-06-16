@@ -44,6 +44,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.Column;
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.Ordering;
@@ -111,7 +112,7 @@ public class QueryManagerImpl implements QueryManager {
         public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
             Object result = method.invoke(underlying, args);
             if ("execute".equals(method.getName())) {
-                result = new QueryResultWrapper(underlying.execute(), provider, session);
+                result = new QueryResultWrapper((QueryResult)result, provider, session);
             }
             return result;
         }

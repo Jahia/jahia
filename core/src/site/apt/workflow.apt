@@ -1,0 +1,25 @@
+Workflow Integration
+
+ Jahia's workflow service uses an external back-end, by default the jBPM workflow implementation, but that can be replaced
+ by other implementations if need be. This document will therefore mostly document the default integration.
+
+* Configuration
+
+ The main configuration file for the workflow service is :
+
+-------------------------
+ WEB-INF/etc/spring/workflow/applicationcontext-workflow.xml
+-------------------------
+
+ The jBPM provider configuration file is the following :
+
+-------------------------
+ WEB-INF/etc/spring/workflow/applicationcontext-jBPM.xml
+-------------------------
+
+* Defining new workflows in modules
+
+ As you can see in the jBPM configuration file, we use a wildcard classpath lookup to search for the jPDL workflow
+ process definition files. This means that you can simply put in your module in the proper package (by default
+ org.jahia.services.workflow) a file with the extension jpdl.xml and it will be picked-up on Jahia's startup and made
+ available to use.

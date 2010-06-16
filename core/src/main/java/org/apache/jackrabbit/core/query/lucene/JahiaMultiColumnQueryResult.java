@@ -6,6 +6,7 @@ import java.util.BitSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -29,7 +30,6 @@ import org.apache.jackrabbit.spi.commons.query.qom.ColumnImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.OrderingImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
-import org.apache.jackrabbit.util.Text;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -260,8 +260,12 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             // handle faceting
             if (result instanceof JahiaFilterMultiColumnQueryHits && hasFacetFunctions()
                     && !facetsResolved) {
+                time = System.currentTimeMillis();                
                 handleFacets(((JahiaFilterMultiColumnQueryHits) result)
                         .getReader());
+                long r4 = IOCounters.getReads();                
+                log.debug("handle facets in {} ms ({})", System.currentTimeMillis() - time, r4
+                        - r3);                
                 facetsResolved = true;
             }
 
@@ -695,7 +699,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
 
     private void extractFacetInfo(NamedList<Object> info) {
         // Parse the queries
-        _facetQuery = new HashMap<String, Long>();
+        _facetQuery = new LinkedHashMap<String, Long>();
         NamedList<Long> fq = (NamedList<Long>) info.get("facet_queries");
         if (fq != null) {
             for (Map.Entry<String, Long> entry : fq) {

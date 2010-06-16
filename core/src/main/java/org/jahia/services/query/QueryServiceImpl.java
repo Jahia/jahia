@@ -949,11 +949,8 @@ public class QueryServiceImpl extends QueryService {
                                     node = (AbstractQOMNode) qomFactory.column(
                                             translationSelectorName, propertyName, columnName);
                                 }
-                            } else if (translationSelectorName != null && node instanceof Column) {
-                                node = (AbstractQOMNode) qomFactory.column(translationSelectorName, propertyName,
-                                        ((Column) node).getColumnName());                                
-                            }
-
+                            } 
+                            
                             if (node instanceof PropertyValue) {
                                 node = (AbstractQOMNode) qomFactory.propertyValue(
                                         translationSelectorName, propertyName);

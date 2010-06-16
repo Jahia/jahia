@@ -8,6 +8,6 @@
 
 <jcr:nodeProperty node="${currentNode}" name="maxNews" var="maxNews"/>
 <jcr:nodeProperty node="${currentNode}" name="filter" var="filter"/>
-<query:definition var="listQuery" statement="select * from [jnt:news] as news where news.[j:defaultCategory]='${filter.string}' order by news.[date] desc"
+<query:definition var="listQuery" statement="select * from [jnt:news] as news ${empty filter.string ? '' : 'where news.[j:defaultCategory]=filter.string'} order by news.[date] desc"
          limit="${maxNews.long}"  scope="request" />
 <c:set var="editable" value="false" scope="request" />

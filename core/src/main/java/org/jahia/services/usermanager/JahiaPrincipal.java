@@ -34,6 +34,7 @@ package org.jahia.services.usermanager;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.Set;
 
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.Role;
@@ -46,6 +47,18 @@ import org.jahia.services.rbac.Role;
  * @since 6.5
  */
 public interface JahiaPrincipal extends Principal, Serializable {
+
+    /**
+     * Returns a set of all roles this principal has also considering
+     * membership. An empty set is returned if this principal has no roles
+     * assigned.
+     * 
+     * @return a set of all roles this principal has also considering
+     *         membership; an empty set is returned if this principal has no
+     *         roles assigned
+     * @since 6.5
+     */
+    Set<Role> getRoles();
 
     /**
      * Returns {@code true} if this principal has the specified role, {@code

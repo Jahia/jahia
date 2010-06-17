@@ -32,6 +32,8 @@
 
 package org.jahia.services.usermanager;
 
+import java.util.Set;
+
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.Role;
@@ -53,6 +55,10 @@ public abstract class JahiaBasePrincipal implements JahiaPrincipal {
                     .getBean(RoleBasedAccessControlService.class.getName());
         }
         return service;
+    }
+    
+    public Set<Role> getRoles() {
+        return getRoleBasedAccessControlService().getRoles(this);
     }
 
     public boolean hasRole(Role role) {

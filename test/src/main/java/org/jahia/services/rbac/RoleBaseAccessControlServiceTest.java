@@ -39,6 +39,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -201,6 +202,64 @@ public class RoleBaseAccessControlServiceTest {
         if (group3 != null) {
             ServicesRegistry.getInstance().getJahiaGroupManagerService().deleteGroup(group3);
         }
+    }
+
+    @Test
+    public void testGetRolesDirect() throws Exception {
+
+        getRBACService().grantRole(user1, role1);
+        getRBACService().grantRole(group1, role1);
+        getRBACService().grantRole(group1, role2);
+        
+        Set<Role> roles = user1.getRoles();
+        assertEquals("user1 should have one role assigned", 1, roles.size());
+        assertTrue("role1 is not granted to the user1", roles.contains(role1));
+        // not assigned role
+        assertFalse("role3 is granted to the user1", roles.contains(role3));
+        roles = group1.getRoles();
+        assertEquals("group1 should have two roles assigned", 2, roles.size());
+        assertTrue("role1 is not granted to the group1", roles.contains(role1));
+        assertTrue("role2 is not granted to the group1", roles.contains(role2));
+        // not assigned role
+        assertFalse("role3 is granted to the group1", roles.contains(role3));
+    }
+
+    @Test
+    public void testGetRolesInherited() throws Exception {
+        getRBACService().grantRole(user1, role1);
+
+        getRBACService().grantRole(group1, role1);
+        getRBACService().grantRole(group1, role2);
+
+        getRBACService().grantRole(group2, role2);
+
+        getRBACService().grantRole(group3, role3);
+
+        group2.addMember(user1);
+
+        Set<Role> roles = user1.getRoles();
+        assertEquals("user1 should have two roles assigned", 2, roles.size());
+        assertTrue("role1 is not granted to the user1", roles.contains(role1));
+        assertTrue("role2 is not granted to the user1 (through membership)", roles.contains(role2));
+        assertFalse("role3 should not be granted to the user1 (through membership)", roles.contains(role3));
+
+        roles = group1.getRoles();
+        assertEquals("group1 should have two roles assigned", 2, roles.size());
+        assertTrue("role1 is not granted to the group1", roles.contains(role1));
+        assertTrue("role2 is not granted to the group1", roles.contains(role2));
+        
+        roles = group2.getRoles();
+        assertEquals("group2 should have one role assigned", 1, roles.size());
+        assertTrue("role2 is not granted to the group2", roles.contains(role2));
+        
+        roles = group3.getRoles();
+        assertEquals("group3 should have one role assigned", 1, roles.size());
+        assertTrue("role3 is not granted to the group3", roles.contains(role3));
+
+        group3.addMember(user1);
+        roles = user1.getRoles();
+        assertEquals("user1 should have three roles assigned", 3, roles.size());
+        assertTrue("role3 is not granted to the user1 (through membership)", roles.contains(role3));
     }
 
     @Test

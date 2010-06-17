@@ -32,8 +32,10 @@
 
 package org.jahia.services.rbac.jcr;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -47,6 +49,7 @@ import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.EnforcementPolicy.EnforcementPolicyResult;
 import org.jahia.services.rbac.EnforcementPolicy.GrantAllEnforcementPolicy;
+import org.jahia.services.usermanager.JahiaBasePrincipal;
 import org.jahia.services.usermanager.JahiaPrincipal;
 
 /**
@@ -95,6 +98,40 @@ public class RoleBasedAccessControlService {
                 return rbacManager.getPrincipalsInRole(role, session);
             }
         });
+    }
+
+    /**
+     * Returns a set of all roles this principal has also considering
+     * membership. An empty set is returned if this principal has no roles
+     * assigned.
+     * 
+     * @param principal principal to check roles
+     * @return a set of all roles this principal has also considering
+     *         membership; an empty set is returned if this principal has no
+     *         roles assigned
+     */
+    public Set<Role> getRoles(final JahiaBasePrincipal principal) {
+        EnforcementPolicyResult result = policy.enforce(principal);
+        if (result.isApplied()) {
+            return Collections.emptySet();
+        }
+
+        Set<Role> roles = null;
+        try {
+            roles = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Set<Role>>() {
+                public Set<Role> doInJCR(JCRSessionWrapper session) throws PathNotFoundException, RepositoryException {
+                    return rbacManager.getRoles(principal, session);
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        if (roles == null || roles.isEmpty()) {
+            roles = Collections.emptySet();
+        }
+        
+        return roles;
     }
 
     /**

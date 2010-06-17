@@ -32,6 +32,7 @@
 package org.jahia.services.usermanager;
 
 import java.util.Properties;
+import java.util.Set;
 
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.Role;
@@ -131,5 +132,9 @@ public class JahiaUserAliasing implements JahiaUser {
 
     public boolean isPermitted(Permission permission) {
         return getUser().isPermitted(permission);
+    }
+
+    public Set<Role> getRoles() {
+        return getUser().getRoles();
     }
 }

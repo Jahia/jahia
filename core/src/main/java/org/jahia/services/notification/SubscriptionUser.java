@@ -31,8 +31,10 @@
  */
 package org.jahia.services.notification;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.Role;
@@ -233,5 +235,9 @@ public class SubscriptionUser implements JahiaUser {
 
     public boolean isPermitted(String permission, String siteKey) {
         return false;
+    }
+
+    public Set<Role> getRoles() {
+        return Collections.emptySet();
     }    
 }

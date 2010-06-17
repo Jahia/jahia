@@ -35,6 +35,7 @@ package org.jahia.services.rbac.jcr;
 import static org.jahia.services.rbac.jcr.RoleManager.PROPERTY_PERMISSSIONS;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,6 +68,7 @@ import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.Role;
+import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
@@ -619,6 +621,61 @@ public class RoleBasedAccessControlManager {
 
         }
         return principal;
+    }
+
+    /**
+     * Returns a set of all roles this principal has also considering
+     * membership. An empty set is returned if this principal has no roles
+     * assigned.
+     * 
+     * @param principal principal to check roles
+     * @return a set of all roles this principal has also considering
+     *         membership; an empty set is returned if this principal has no
+     *         roles assigned
+     * @throws RepositoryException in case of an error
+     */
+    public Set<Role> getRoles(JahiaBasePrincipal principal, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper principalNode = getPrincipalNode(principal, session);
+        if (principalNode == null) {
+            logger.warn("Principal node not found for principal: " + principal + ". Skip checking roles.");
+            return Collections.emptySet();
+        }
+
+        Set<Role> roles = new HashSet<Role>();
+        Set<String> foundRoles = new HashSet<String>();
+
+        // check direct roles
+        JCRPropertyWrapper rolesProperty = null;
+        try {
+            rolesProperty = principalNode.isNodeType(JMIX_ROLE_BASED_ACCESS_CONTROLLED) ? principalNode
+                    .getProperty(PROPERTY_ROLES) : null;
+        } catch (PathNotFoundException ex) {
+            // no roles property found
+        }
+        Value[] roleValues = rolesProperty != null ? rolesProperty.getValues() : null;
+
+        if (roleValues != null && roleValues.length > 0) {
+            for (Value roleValue : roleValues) {
+                if (!foundRoles.contains(roleValue.getString())) {
+                    JCRNodeWrapper roleNode = ((JCRValueWrapper) roleValue).getNode();
+                    foundRoles.add(roleValue.getString());
+                    roles.add(new RoleIdentity(roleNode.getName(), JCRContentUtils.getSiteKey(roleNode.getPath())));
+                }
+            }
+        }
+
+        // check inherited roles
+        for (String groupKey : getMembership(principal)) {
+            JahiaGroup group = groupManager.lookupGroup(groupKey);
+            if (group != null) {
+                roles.addAll(group.getRoles());
+            } else {
+                logger.warn("Unable to find group for key '" + groupKey + "'");
+            }
+
+        }
+
+        return roles;
     }
 
 }

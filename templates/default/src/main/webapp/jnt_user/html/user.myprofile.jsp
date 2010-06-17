@@ -362,7 +362,7 @@
           </div>
   </div>--%><!--stop box -->
 
-    <h3 class="titleIcon"><a href="#"><fmt:message key="jnt_user.profile.groups"/><img title="" alt=""
+    <h3 class="user-profile-title-icon"><a href="#"><fmt:message key="jnt_user.profile.groups"/><img title="" alt=""
                                                                                        src="${url.currentModule}/images/groups.png"/></a>
     </h3>
     <ul class="group-list">
@@ -384,7 +384,7 @@
     <!--stop box -->
     <%--
 
-            <h3 class="titleIcon">Friends<img title="" alt="" src="img-text/friends.png"/></h3>
+            <h3 class="user-profile-title-icon">Friends<img title="" alt="" src="img-text/friends.png"/></h3>
             <ul class="friends-list">
     <li>
                 <div class="thumbnail">

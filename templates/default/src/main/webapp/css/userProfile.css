@@ -1,3 +1,17 @@
+/******************************************************************************
+* Title  with icon h3 
+******************************************************************************/
+#bodywrapper h3.user-profile-title-icon {
+	color:#333;
+	font-size:1.8em;
+	padding:0 40px 5px 2px;
+	position:relative;
+}
+#bodywrapper h3.user-profile-title-icon img {
+	position:absolute;
+	right:0;
+	top:-5px;
+}
 /*Template User profile*/
 #bodywrapper ul.twoCol{
 	float:left;

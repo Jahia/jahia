@@ -194,8 +194,8 @@ public class FormFieldCreator {
                         from.setDisplayField("display");
                         ListField<GWTJahiaValueDisplayBean> to = lists.getToList();
                         to.setDisplayField("display");
-                        store = new ListStore<GWTJahiaValueDisplayBean>();
-                        to.setStore(store);
+                        ListStore<GWTJahiaValueDisplayBean> tostore = new ListStore<GWTJahiaValueDisplayBean>();
+                        to.setStore(tostore);
                         field = lists;
                     } else {
                         ComboBox<GWTJahiaValueDisplayBean> combo = new ComboBox<GWTJahiaValueDisplayBean>();

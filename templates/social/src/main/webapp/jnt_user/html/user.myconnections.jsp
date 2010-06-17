@@ -106,7 +106,7 @@
                         $("#searchUsersResult").append(
                            $("<tr/>").append( $("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])) )
                                    .append( $("<td/>").text(item.properties['j:firstName'] + " " + item.properties['j:lastName']))
-                                   .append( $("<td/>").append( $("<a/>").attr("href", "").click(function () { requestConnection('${currentNode.path}.startWorkflow.do',item['userKey']); return false; }).text("Add as friend") ) )
+                                   .append( $("<td/>").append( $("<a/>").attr("href", "").click(function () { requestConnection('${currentNode.path}.startWorkflow.do',item['userKey']); return false; }).text("<fmt:message key='addAsFriend'/>") ) )
                         );
                         if (i == 10) return false;
                     });
@@ -173,19 +173,16 @@
     <jcr:sql var="userConnections"
          sql="select * from [jnt:userConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
     
-    <h3 class="titleIcon">Friends<img title="" alt="" src="img-text/friends.png"/></h3>
-    <ul class="friends-list">
+    <h3 class="user-profile-title-icon" class="titleIcon"><a href="#">Friends<img title="" alt="" src="${url.currentModule}/images/friends.png"/></a></h3>
+    <ul class="friends-list">                      
         <c:forEach items="${userConnections.nodes}" var="userConnection">
         <li>
-            <!--
-              From : ${userConnection.properties['j:connectedFrom'].node.properties['j:nodename'].string}
-              To : ${userConnection.properties['j:connectedTo'].node.properties['j:nodename'].string}
-              Type : ${userConnection.properties['j:type'].string}
-            -->
+            <c:set var="connectedUser" value="${userConnection.properties['j:connectedTo'].node}" />
             <div class="thumbnail">
-                <a href="user.myconnections.jsp#"><img src="img-text/friend.png" alt="friend" border="0"/></a></div>
-            <h4><a href="user.myconnections.jsp#">${userConnection.properties['j:connectedTo'].node.properties['j:firstName'].string} ${userConnection.properties['j:connectedTo'].node.properties['j:lastName'].string}</a></h4>
-
+                <a href="${url.base}${connectedUser.path}.html"><img src="${url.currentModule}/images/user_32.png" alt="friend" border="0"/></a>
+            </div>
+            <h4><a href="${usl.base}${connectedUser.path}.html">${userConnection.properties['j:connectedTo'].node.properties['j:firstName'].string} ${userConnection.properties['j:connectedTo'].node.properties['j:lastName'].string}</a></h4>
+            <a href="#"><fmt:message key="removeFriend"/></a>
             <div class='clear'></div>
         </li>
         </c:forEach>
@@ -197,5 +194,37 @@
 
 </div>
 <!--stop grid_4-->
+
+<div class='grid_12 omega'><!--start grid_12-->
+
+    <h3><fmt:message key="userActivities" /></h3>
+
+    <form name="statusUpdateForm" action="">
+        <textarea rows="2" cols="20" class="" onfocus="if(this.value==this.defaultValue)this.value='';"
+               onblur="if(this.value=='')this.value=this.defaultValue;"
+               name="statusUpdateText"><fmt:message key="statusUpdateDefaultText"/></textarea>
+        <input id="statusUpdateSubmit" type="submit" title="<fmt:message key='statusUpdateSubmit'/>"/>
+
+    </form>
+
+    <jcr:sql var="userConnections"
+         sql="select * from [jnt:userConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
+
+    <ul class="statusList">
+    <c:forEach items="${userConnections.nodes}" var="userConnection">
+        <c:set var="connectedUser" value="${userConnection.properties['j:connectedTo'].node}" />
+        <!-- Now we must query the users' activity list -->
+        <jcr:sql var="userActivities"
+             sql="select * from [jnt:userActivity] as uA where isdescendantnode(uA,['${connectedUser.path}'])"/>
+        <c:forEach items="${userActivities.nodes}" var="userActivity">
+        <li>
+            ${userActivity.properties['j:message'].string}
+        </li>
+        </c:forEach>
+    </c:forEach>
+    </ul>
+
+</div>
+<!--stop grid_12-->
 
 <div class='clear'></div>

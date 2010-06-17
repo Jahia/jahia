@@ -1,0 +1,9 @@
+Jahia Social Module documentation
+
+* Overview
+
+  You can find here the documentation related to Jahia's social module.
+
+  * Retrieving activities
+
+    It is possible in this module to {{{./getactivities.html} retrieve activities}} using a REST API. 

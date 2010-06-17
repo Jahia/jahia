@@ -1,0 +1,100 @@
+Retrieving activities
+
+ This module provides a way to retrieve activites for a user using a custom action. This document describes how to use
+ this action.
+
+
+ URL : /cms/render/WORKSPACE/LANGUAGE/USER_CONTENT_PATH.getactivities.do
+
+ Method : POST
+
+ Parameters : none
+
+* Example
+
+** HTTP Post request
+
+-------------
+http://localhost:8080/cms/render/default/en/users/sjobs.getactivities.do
+Headers:
+accept : application/json
+x-requested-with : XMLHttpRequest
+-------------
+
+** HTTP Post Response
+
+-------------
+{
+	"count": 2,
+	"items": [
+		{
+			"j:message": "First update",
+			"index": 1,
+			"jcr:created": "2010-06-17T12:43:14.165+02:00",
+			"j:originWS": "default",
+			"jcr:lastModified": "2010-06-17T12:43:14.352+02:00",
+			"jcr:createdBy": "shuber",
+			"j:nodename": "userActivity",
+			"jcr:versionHistory": "/files/default/jcr:system/jcr:versionStorage/1d/51/a2/1d51a2e0-9d93-4261-86db-94cee3668621",
+			"depth": 4,
+			"jcr:uuid": "1d51a2e0-9d93-4261-86db-94cee3668621",
+			"jcr:lastModifiedBy": "shuber",
+			"jcr:baseVersion": "/files/default/jcr:system/jcr:versionStorage/1d/51/a2/1d51a2e0-9d93-4261-86db-94cee3668621/jcr:rootVersion",
+			"jcr:isCheckedOut": "true",
+			"path": "/users/shuber/activities/userActivity",
+			"primaryNodeType": "jnt:userActivity",
+			"identifier": "1d51a2e0-9d93-4261-86db-94cee3668621",
+			"jcr:primaryType": "jnt:userActivity",
+			"j:fullpath": "/users/shuber/activities/userActivity"
+		},
+		{
+			"j:message": "Second update",
+			"index": 1,
+			"jcr:created": "2010-06-17T15:39:36.603+02:00",
+			"j:originWS": "default",
+			"jcr:lastModified": "2010-06-17T15:39:36.884+02:00",
+			"jcr:createdBy": "shuber",
+			"j:nodename": "userActivity-1",
+			"jcr:versionHistory": "/files/default/jcr:system/jcr:versionStorage/33/3c/32/333c32dd-a9b0-4423-8415-db16496a7634",
+			"depth": 4,
+			"jcr:uuid": "333c32dd-a9b0-4423-8415-db16496a7634",
+			"jcr:lastModifiedBy": "shuber",
+			"jcr:baseVersion": "/files/default/jcr:system/jcr:versionStorage/33/3c/32/333c32dd-a9b0-4423-8415-db16496a7634/jcr:rootVersion",
+			"jcr:isCheckedOut": "true",
+			"path": "/users/shuber/activities/userActivity-1",
+			"primaryNodeType": "jnt:userActivity",
+			"identifier": "333c32dd-a9b0-4423-8415-db16496a7634",
+			"jcr:primaryType": "jnt:userActivity",
+			"j:fullpath": "/users/shuber/activities/userActivity-1"
+		}
+	]
+}
+-------------
+
+** Example of request using JQuery :
+
+-------------
+        function loadActivities() {
+            $.ajax({
+                beforeSend: function(xhrObj) {
+                    xhrObj.setRequestHeader("Content-Type","application/json");
+                    xhrObj.setRequestHeader("Accept","application/json");
+                },
+                url: '${url.base}${currentNode.path}.getactivities.do',
+                type: 'post',
+                datatype : "json",
+                success : function (data) {
+                    $(".activitiesList").html("");
+                    alert(data.count + " activities loaded properly");
+                    $.each(data.items, function(i, item) {
+                        $("#activitiesList").append(
+                           $("<li/>").text("")
+                        );
+
+                    });
+                }
+
+            })
+        }
+
+-------------

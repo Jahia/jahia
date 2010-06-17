@@ -136,9 +136,10 @@
             $.ajax({
                 url: '${url.base}${currentNode.path}/activities/*',
                 type : 'post',
-                data : 'nodeType=jnt:userActivity&newNodeOutputFormat=html&j:message=' + updateText,
+                data : 'nodeType=jnt:userActivity&newNodeOutputFormat=html&j:message=' + updateText+"&j:from=${currentNode.identifier}",
                 success : function (data) {
-                    alert("Status update submitted successfully")
+                    alert("Status update submitted successfully");
+                    loadActivities();
                 }
             });
         }
@@ -151,7 +152,32 @@
             return false;
         });
 
+        function loadActivities() {
+            $.ajax({
+                beforeSend: function(xhrObj) {
+                    xhrObj.setRequestHeader("Content-Type","application/json");
+                    xhrObj.setRequestHeader("Accept","application/json");
+                },
+                url: '${url.base}${currentNode.path}.getactivities.do',
+                type: 'post',
+                datatype : "json", 
+                success : function (data) {
+                    $(".activitiesList").html("");
+                    alert(data.count + " activities loaded properly");
+                    $.each(data.items, function(i, item) {
+                        alert(item['j:message']);
+                        $("#activitiesList").append(
+                           $("<li/>").text("prout")
+                        );
 
+                    });
+                }
+
+            });
+            return false;
+        }
+
+        loadActivities();
     });
 </script>
 
@@ -233,6 +259,9 @@
              sql="select * from [jnt:userActivity] as uA where isdescendantnode(uA,['${currentNode.path}'])"/>
         <c:forEach items="${userActivities.nodes}" var="userActivity">
         <li>
+            <c:set var="activityDate" value="${userActivity.properties['jcr:created'].date.time}" />
+            <fmt:formatDate value="${activityDate}" pattern="dd/MM/yyyy HH:mm:ss.SSS"/>
+            ${userActivity.properties['j:from'].node.name}
             ${userActivity.properties['j:message'].string}
         </li>
         </c:forEach>
@@ -249,10 +278,17 @@
              sql="select * from [jnt:userActivity] as uA where isdescendantnode(uA,['${connectedUser.path}'])"/>
         <c:forEach items="${userActivities.nodes}" var="userActivity">
         <li>
+            <c:set var="activityDate" value="${userActivity.properties['jcr:created'].date.time}" />
+            <fmt:formatDate value="${activityDate}" pattern="dd/MM/yyyy HH:mm:ss.SSS"/>
+            ${userActivity.properties['j:from'].node.name}
             ${userActivity.properties['j:message'].string}
         </li>
         </c:forEach>
     </c:forEach>
+    </ul>
+
+    <ul class="activitiesList">
+        <li>Loading status...</li>
     </ul>
 
 </div>

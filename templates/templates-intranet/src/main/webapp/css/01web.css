@@ -556,6 +556,7 @@ body {
 	float:left;
 	font-size:0.85em;
 	color:#36393d;
+	padding:0.5em;
 }
 #bodywrapper .paginationNavigation {
 	float:right;

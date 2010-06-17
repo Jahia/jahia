@@ -288,7 +288,7 @@ public class ManageComponents extends AbstractAdministrationModule {
     private void deployPortlet(File file, String filename) throws IOException {
         ServerDeploymentInterface deployer = SettingsBean.getInstance().getServerDeployer();
         if (deployer.isAutoDeploySupported()) {
-            File target = new File(deployer.getDeploymentBaseDir(), filename);
+            File target = new File(new File(deployer.getTargetServerDirectory(), deployer.getDeploymentBaseDir()), filename);
             try {
                 FileUtils.copyFile(file, target);
             } finally {

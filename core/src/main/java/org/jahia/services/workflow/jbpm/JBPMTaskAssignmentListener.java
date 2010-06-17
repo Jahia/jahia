@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
@@ -77,6 +78,9 @@ public class JBPMTaskAssignmentListener implements AssignmentHandler {
                 assignable.addCandidateGroup(((JahiaGroup)principal).getGroupKey());
             } else if (principal instanceof JahiaUser) {
                 assignable.addCandidateUser(((JahiaUser)principal).getUserKey());
+            } else if (principal instanceof RoleIdentity) {
+                RoleIdentity roleIdentity = (RoleIdentity) principal;
+                assignable.addCandidateGroup("{role}"+roleIdentity.getName()+":"+roleIdentity.getSite());
             }
         }
         assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(0).getGroupKey());

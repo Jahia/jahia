@@ -93,8 +93,9 @@ public class JCRPublicationService extends JahiaService {
                 String name = p.getName().substring(0, p.getName().length() - lang.length() - 1);
                 definition = ((JCRNodeWrapper) start.getParent()).getApplicablePropertyDefinition(name);
             }
-            if ((definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) && !p.getName().startsWith(
-                    "jcr:")) {
+            if (definition!=null &&
+                (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE)
+                && !p.getName().startsWith("jcr:")) {
                 if (definition.isMultiple()) {
                     Value[] vs = p.getValues();
                     for (Value v : vs) {

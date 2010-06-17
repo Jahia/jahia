@@ -38,6 +38,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.*;
 
 import javax.jcr.Node;
@@ -214,7 +215,12 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
                         PropertyIterator iterator = getNode(session).getProperties();
                         for (; iterator.hasNext();) {
                             Property property = iterator.nextProperty();
-                            if (!property.getDefinition().isMultiple()) {
+                            if(property instanceof JCRUserNode.JCRUserProperty) {
+                                userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
+                                                                                                    property.getString(),
+                                                                                                    true));
+                            }
+                            else if (!property.getDefinition().isMultiple()) {
                                 userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
                                                                                                     property.getString(),
                                                                                                     false));

@@ -73,6 +73,7 @@
                        value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference"/>
                 <entry key="jnt:portletPreference"
                        value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
+                <entry key="jnt:user" value="org.jahia.services.content.decorator.JCRUserNode"/>
             </map>
         </property>
         <property name="listeners">

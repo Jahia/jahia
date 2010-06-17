@@ -231,8 +231,7 @@ public class WorkflowService {
                                     JahiaGroup group = groupService.lookupGroup(site.getID(), principalName);
                                     principals.add(group);
                                 } else if (principal.charAt(0) == 'r') {
-                                    principals.addAll(rbacService.getPrincipalsInRole(new RoleIdentity(principalName,
-                                                                                                       site.getSiteKey())));
+                                    principals.add(new RoleIdentity(principalName, site.getSiteKey()));
                                 }
                             }
                         }

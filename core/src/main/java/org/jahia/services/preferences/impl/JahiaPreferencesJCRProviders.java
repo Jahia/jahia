@@ -353,6 +353,9 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         try {
             JCRNodeWrapper preferences = getPreferencesNode(principal);
             if (!preferences.hasNode(getType())) {
+                if(!preferences.isCheckedOut()) {
+                    preferences.checkout();
+                }
                 Node p = preferences.addNode(getType(), "jnt:preferenceProvider");
                 preferences.save();
                 return p;
@@ -376,7 +379,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         } else {
             principalName = ((JahiaGroup) principal).getGroupname();
         }
-        return "/users/" + ISO9075.encode(principalName) + "/preferences";
+        return "/users/" + principalName + "/preferences";
     }
 
     private NodeIterator findPreferenceNodeByJahiaPreferenceSQL(Principal p, String sqlConstraint) {

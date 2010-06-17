@@ -1,6 +1,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.rbac.Role;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -12,6 +13,7 @@ import org.jbpm.pvm.internal.identity.spi.IdentitySession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Identity Manager for connecting jBPM to Jahia Users
@@ -79,6 +81,10 @@ public class JBPMIdentitySession implements IdentitySession {
             List<String> l = groupService.getUserMembership(user);
             for (String groupKey : l) {
                 results.add(findGroupById(groupKey));
+            }
+            Set<Role> roleSet = user.getRoles();
+            for (Role role : roleSet) {
+                results.add(new GroupImpl("{role}"+role.getName()+":"+role.getSite(),role.getName(),"jahia"));
             }
         }
         return results;

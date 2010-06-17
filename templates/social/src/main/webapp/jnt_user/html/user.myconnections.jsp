@@ -167,7 +167,7 @@
                     $.each(data['activities'], function(i, item) {
                         alert(item['j:message']);
                         $(".activitiesList").append(
-                           $("<li/>").text("prout")
+                           $("<li/>").text(item['j:message'])
                         );
 
                     });

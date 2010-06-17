@@ -166,7 +166,7 @@
                     alert(data.resultCount + " activities loaded properly");
                     $.each(data['activities'], function(i, item) {
                         alert(item['j:message']);
-                        $("#activitiesList").append(
+                        $(".activitiesList").append(
                            $("<li/>").text("prout")
                         );
 

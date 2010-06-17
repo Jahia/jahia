@@ -1,13 +1,9 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.log4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaLDAPUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUser;
@@ -17,7 +13,7 @@ import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;
 
 import javax.jcr.PathNotFoundException;
-import java.util.Collections;
+import javax.jcr.RepositoryException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,7 +32,7 @@ public class ConnectUsers implements ExternalActivityBehaviour {
     private static final long serialVersionUID = 1L;
 
     public void execute(ActivityExecution execution) throws Exception {
-        String id = (String) execution.getVariable("nodeId");
+        final String leftUserIdentifier = (String) execution.getVariable("nodeId");
         String workspace = (String) execution.getVariable("workspace");
         Locale locale = (Locale) execution.getVariable("locale");
         List<WorkflowVariable> userKeyList = (List<WorkflowVariable>) execution.getVariable("userkey");
@@ -54,25 +50,46 @@ public class ConnectUsers implements ExternalActivityBehaviour {
                 return;
             }
         }
+        final String rightUserIdentifier = jcrUser.getIdentifier();
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        JCRNodeWrapper fromUser = session.getNodeByUUID(id);
-        JCRNodeWrapper toUser = session.getNodeByUUID(jcrUser.getIdentifier());
-        // now let's connect this user's node to the target node.
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
-        JCRNodeWrapper connectionsNode = null;
-        try {
-            connectionsNode = fromUser.getNode("connections");
-            session.checkout(connectionsNode);
-        } catch (PathNotFoundException pnfe) {
-            session.checkout(fromUser);
-            connectionsNode = fromUser.addNode("connections", "jnt:contentList");
-        }
-        JCRNodeWrapper userConnection = connectionsNode.addNode(fromUser.getName() + "-" + toUser.getName(), "jnt:userConnection");
-        userConnection.setProperty("j:connectedFrom", fromUser);
-        userConnection.setProperty("j:connectedTo", toUser);
-        userConnection.setProperty("j:type", "collegue");
-        session.save();
+                JCRNodeWrapper leftUser = session.getNodeByUUID(leftUserIdentifier);
+                JCRNodeWrapper rightUser = session.getNodeByUUID(rightUserIdentifier);
+                // now let's connect this user's node to the target node.
+
+                JCRNodeWrapper leftConnectionsNode = null;
+                try {
+                    leftConnectionsNode = leftUser.getNode("connections");
+                    session.checkout(leftConnectionsNode);
+                } catch (PathNotFoundException pnfe) {
+                    session.checkout(leftUser);
+                    leftConnectionsNode = leftUser.addNode("connections", "jnt:contentList");
+                }
+                JCRNodeWrapper leftUserConnection = leftConnectionsNode.addNode(leftUser.getName() + "-" + rightUser.getName(), "jnt:userConnection");
+                leftUserConnection.setProperty("j:connectedFrom", leftUser);
+                leftUserConnection.setProperty("j:connectedTo", rightUser);
+                leftUserConnection.setProperty("j:type", "collegue");
+
+                // now let's do the connection in the other direction.
+                JCRNodeWrapper rightConnectionsNode = null;
+                try {
+                    rightConnectionsNode = rightUser.getNode("connections");
+                    session.checkout(rightConnectionsNode);
+                } catch (PathNotFoundException pnfe) {
+                    session.checkout(rightUser);
+                    rightConnectionsNode = rightUser.addNode("connections", "jnt:contentList");
+                }
+                JCRNodeWrapper rightUserConnection = rightConnectionsNode.addNode(rightUser.getName() + "-" + leftUser.getName(), "jnt:userConnection");
+                rightUserConnection.setProperty("j:connectedFrom", rightUser);
+                rightUserConnection.setProperty("j:connectedTo", leftUser);
+                rightUserConnection.setProperty("j:type", "collegue");
+
+                session.save();
+                return true;
+            }
+        });
         execution.takeDefaultTransition();
     }
 

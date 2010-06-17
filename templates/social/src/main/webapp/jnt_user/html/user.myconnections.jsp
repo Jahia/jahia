@@ -177,9 +177,14 @@
     <ul class="friends-list">
         <c:forEach items="${userConnections.nodes}" var="userConnection">
         <li>
+            <!--
+              From : ${userConnection.properties['j:connectedFrom'].node.properties['j:nodename'].string}
+              To : ${userConnection.properties['j:connectedTo'].node.properties['j:nodename'].string}
+              Type : ${userConnection.properties['j:type'].string}
+            -->
             <div class="thumbnail">
                 <a href="user.myconnections.jsp#"><img src="img-text/friend.png" alt="friend" border="0"/></a></div>
-            <h4><a href="user.myconnections.jsp#">${userConnection.properties['j:connectedTo'].node.properties['jcr:title']}</a></h4>
+            <h4><a href="user.myconnections.jsp#">${userConnection.properties['j:connectedTo'].node.properties['j:firstName'].string} ${userConnection.properties['j:connectedTo'].node.properties['j:lastName'].string}</a></h4>
 
             <div class='clear'></div>
         </li>

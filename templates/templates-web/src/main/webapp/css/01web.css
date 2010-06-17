@@ -929,12 +929,14 @@ background-color:#eaeaea
 	font-size:0.9em;
 
 }
+#bodywrapper .paginationNavigation a,
 #bodywrapper .paginationNavigation a:link,
 #bodywrapper .paginationNavigation a:visited,
 #bodywrapper .paginationNavigation a:hover,
 #bodywrapper .paginationNavigation a:active {
 	text-decoration:none;
 	padding:0.2em 0.5em;
+	cursor:pointer;
 }
 
 #bodywrapper .paginationNavigation a:hover {

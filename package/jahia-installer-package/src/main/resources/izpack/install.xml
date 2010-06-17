@@ -107,6 +107,11 @@
     <guiprefs height="480" resizable="yes" width="640">
         <modifier key="useFlags" value="yes"/>
         <modifier key="langDisplayType" value="native"/>
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="headingImageOnLeft" value="yes"/>
+        <modifier key="headingFontSize" value="2"/>
+        <modifier key="headingBackgroundColor" value="-65794"/>
+        <modifier key="headingForegroundColor" value="-1"/>
         <modifier key="headingPanelCounter" value="progressbar"/>
         <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
     </guiprefs>
@@ -122,7 +127,7 @@
         <res id="TargetPanel.dir.unix" src="unix-path.txt" />
         <res id="TargetPanel.dir.windows" src="windows-path.txt" />
         <res id="installer.langsel.img" src="../images/jahia-community.png"/>
-        <res id="Installer.image" src="../images/left-logo.png"/>
+        <res id="Heading.image" src="../images/top-logo.png"/>
         <res id="LicencePanel.licence" parse="no" src="../licenses/license.txt"/>
 
         <res id="ProcessPanel.Spec.xml" src="ProcessPanel.Spec.xml"/>

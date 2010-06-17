@@ -163,14 +163,17 @@
                 datatype : "json", 
                 success : function (data) {
                     $(".activitiesList").html("");
-                    alert(data.count + " activities loaded properly");
-                    $.each(data.items, function(i, item) {
+                    alert(data);
+                    alert(data.resultCount + " activities loaded properly");
+                    /*
+                    $.each(data['activities'], function(i, item) {
                         alert(item['j:message']);
                         $("#activitiesList").append(
                            $("<li/>").text("prout")
                         );
 
                     });
+                    */
                 }
 
             });

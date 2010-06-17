@@ -99,8 +99,8 @@ public class GetActivitiesAction implements Action {
         }
 
         JSONObject results = new JSONObject();
-        results.put("count", activitiesSet.size());
-        results.put("items", resultArray);
+        results.put("resultCount", activitiesSet.size());
+        results.put("activities", resultArray);
 
         return new ActionResult(HttpServletResponse.SC_OK, null, results);
     }

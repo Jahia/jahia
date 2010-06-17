@@ -106,6 +106,7 @@
 		<fmt:message key='search.startSearching' var="startSearching"/>
        	<s:term id="searchTerm" value="${startSearching}" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
        	<s:site value="${renderContext.site.name}" display="false"/>
+       	<s:language value="${renderContext.mainResource.locale}" display="false" />
     	<input class="searchsubmit" type="submit"  title="<fmt:message key='search.submit'/>"/>
 
 </s:form><br class="clear"/>

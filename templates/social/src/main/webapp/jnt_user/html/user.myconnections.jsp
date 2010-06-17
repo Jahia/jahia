@@ -160,12 +160,10 @@
                 },
                 url: '${url.base}${currentNode.path}.getactivities.do',
                 type: 'post',
-                datatype : "json", 
+                dataType : "json", 
                 success : function (data) {
                     $(".activitiesList").html("");
-                    alert(data);
                     alert(data.resultCount + " activities loaded properly");
-                    /*
                     $.each(data['activities'], function(i, item) {
                         alert(item['j:message']);
                         $("#activitiesList").append(
@@ -173,7 +171,6 @@
                         );
 
                     });
-                    */
                 }
 
             });

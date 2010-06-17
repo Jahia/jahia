@@ -129,7 +129,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
         return value.getDecimal();
     }
 
-    public Node getNode() throws ValueFormatException, IllegalStateException, RepositoryException {
+    public JCRNodeWrapper getNode() throws ValueFormatException, IllegalStateException, RepositoryException {
         if (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
             try {
                 return session.getNodeByUUID(value.getString());

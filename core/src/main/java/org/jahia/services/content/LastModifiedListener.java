@@ -115,6 +115,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (n.isNodeType(Constants.MIX_LAST_MODIFIED) && n.isCheckedOut()) {
                                     n.setProperty("jcr:lastModified",c);
                                     n.setProperty("jcr:lastModifiedBy",userId);
+                                    updateTranslationNodes(n, c);                                    
                                 }
                             } catch (PathNotFoundException e) {
                                 // node has been removed
@@ -128,6 +129,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                     if (n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
                                         n.setProperty("jcr:lastModified",c);
                                         n.setProperty("jcr:lastModifiedBy",userId);
+                                        updateTranslationNodes(n, c);
                                     }
                                 }
                             } catch (PathNotFoundException e) {
@@ -145,4 +147,16 @@ public class LastModifiedListener extends DefaultEventListener {
 
     }
 
+    private void updateTranslationNodes(JCRNodeWrapper node, Calendar c) throws RepositoryException {
+        NodeIterator ni = node.getNodes("j:translation*");
+
+        while (ni.hasNext()) {
+            Node translation = ni.nextNode();
+            if (!translation.isCheckedOut()) {
+                translation.checkout();
+            }
+            translation.setProperty(Constants.JCR_LASTMODIFIED, c);
+        }
+
+    }
 }

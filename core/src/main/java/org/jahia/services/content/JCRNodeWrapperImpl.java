@@ -1081,17 +1081,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } catch (RepositoryException e) {
             Node t = objectNode.addNode("j:translation_"+locale, "jnt:translation");
             t.setProperty("jcr:language", locale.toString());
-            PropertyIterator pi = objectNode.getProperties();
-            while (pi.hasNext()) {
-                Property property = (Property) pi.next();
-                if (!property.getDefinition().isProtected() && !property.getName().equals("jcr:language")) {
-                    if (property.isMultiple()) {
-                        t.setProperty(property.getName(), property.getValues());
-                    } else {
-                        t.setProperty(property.getName(), property.getValue());
-                    }
-                }
-            }
 
             i18NobjectNodes.put(locale, t);
             return t;

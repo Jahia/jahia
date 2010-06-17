@@ -143,22 +143,6 @@
                 <bean class="org.jahia.services.content.interceptor.URLInterceptor">
 					<constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
                 </bean>
-                <bean class="org.jahia.services.content.interceptor.I18NInterceptor">
-                	<property name="skippedProperties">
-                		<set>
-                			<value>jcr:language</value>
-                            <value>jcr:lastModified</value>
-                            <value>jcr:lastModifiedBy</value>
-                            <value>j:lastPublished</value>
-                            <value>j:lastPublishedBy</value>
-                            <value>j:templateLocked</value>
-                            <value>j:templateShared</value>
-                			<value>j:published</value>
-                			<value>j:tags</value>
-                			<value>j:locktoken</value>
-                		</set>
-                	</property>
-                </bean>
             </list>
         </property>
     </bean>

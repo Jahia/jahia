@@ -245,8 +245,7 @@
                         </bean>
                         <bean class="org.jahia.services.render.filter.BodyWrapperFilter" >
                             <property name="priority" value="17" />
-                            <property name="applyOnConfigurations" value="module,page,gwt"/>
-                            <property name="applyOnMainResource" value="true"/>
+                            <property name="applyOnConfigurations" value="wrappedcontent,page,gwt"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
                             <property name="priority" value="30" />
@@ -269,10 +268,6 @@
                             <property name="priority" value="40" />
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
-                        <!--<bean class="org.jahia.services.render.filter.OptionsFilter" >
-                            <property name="priority" value="50" />
-                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
-                        </bean>-->
                         <bean class="org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter">
                             <property name="applyOnNodeTypes" value="jmix:googleanalytics"/>
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>

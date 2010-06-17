@@ -51,6 +51,7 @@ public class Resource {
     public static final String CONFIGURATION_INCLUDE = "include";
     public static final String CONFIGURATION_WRAPPER = "wrapper";
     public static final String CONFIGURATION_OPTION = "option";
+    public static final String CONFIGURATION_WRAPPEDCONTENT = "wrappedcontent";
 
     private static Logger logger = Logger.getLogger(Resource.class);
     private JCRNodeWrapper node;

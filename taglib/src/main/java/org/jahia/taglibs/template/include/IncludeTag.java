@@ -27,4 +27,7 @@ public class IncludeTag extends ModuleTag {
         return EVAL_BODY_BUFFERED;
     }
 
+    protected String getConfiguration() {
+        return  Resource.CONFIGURATION_INCLUDE;
+    }
 }

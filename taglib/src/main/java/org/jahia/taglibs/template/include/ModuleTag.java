@@ -182,29 +182,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
             Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
 
-            if (nodeName != null) {
-                node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
-            } else if (path != null && currentResource != null) {
-                try {
-                    if (!path.startsWith("/")) {
-                        JCRNodeWrapper nodeWrapper = currentResource.getNode();
-                        if (!path.equals("*") && nodeWrapper.hasNode(path)) {
-                            node = (JCRNodeWrapper) nodeWrapper.getNode(path);
-                        } else {
-                            missingResource(renderContext, currentResource);
-                        }
-                    } else if (path.startsWith("/")) {
-                        JCRSessionWrapper session = currentResource.getNode().getSession();
-                        try {
-                            node = (JCRNodeWrapper) session.getItem(path);
-                        } catch (PathNotFoundException e) {
-                            missingResource(renderContext, currentResource);
-                        }
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
+            findNode(renderContext, currentResource);
+
             if (node != null) {
                 Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
                 try {
@@ -264,8 +243,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     templateType = currentResource.getTemplateType();
                 }
 
-                Resource resource = new Resource(node, templateType, template, forcedTemplate,
-                        parameters.get("isInclude") == null ? Resource.CONFIGURATION_MODULE : Resource.CONFIGURATION_INCLUDE);
+                Resource resource = new Resource(node, templateType, template, forcedTemplate, getConfiguration());
                 if (templateWrapper != null && templateWrapper.length() > 0) {
                     resource.pushWrapper(templateWrapper);
                 }
@@ -338,7 +316,37 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return EVAL_PAGE;
     }
 
-    private boolean canEdit(RenderContext renderContext, boolean templateLocked, boolean templateMode) {
+    protected void findNode(RenderContext renderContext, Resource currentResource) throws IOException {
+        if (nodeName != null) {
+            node = (JCRNodeWrapper) pageContext.findAttribute(nodeName);
+        } else if (path != null && currentResource != null) {
+            try {
+                if (!path.startsWith("/")) {
+                    JCRNodeWrapper nodeWrapper = currentResource.getNode();
+                    if (!path.equals("*") && nodeWrapper.hasNode(path)) {
+                        node = (JCRNodeWrapper) nodeWrapper.getNode(path);
+                    } else {
+                        missingResource(renderContext, currentResource);
+                    }
+                } else if (path.startsWith("/")) {
+                    JCRSessionWrapper session = currentResource.getNode().getSession();
+                    try {
+                        node = (JCRNodeWrapper) session.getItem(path);
+                    } catch (PathNotFoundException e) {
+                        missingResource(renderContext, currentResource);
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    protected String getConfiguration() {
+        return Resource.CONFIGURATION_MODULE;
+    }
+
+    protected boolean canEdit(RenderContext renderContext, boolean templateLocked, boolean templateMode) {
         return renderContext.isEditMode() && editable && (templateMode || !templateLocked) && !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"));
     }
 

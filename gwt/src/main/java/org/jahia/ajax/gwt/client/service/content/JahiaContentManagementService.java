@@ -303,6 +303,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     GWTJahiaCreateEngineInitBean initializeCreateEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
 
+    GWTJahiaCreateMashupInitBean initializeCreateMashupEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
+
     GWTJahiaEditEngineInitBean initializeEditEngine(String nodePath) throws GWTJahiaServiceException;
 
     public ListLoadResult<GWTJahiaNode> getAllWrappers(String path, List<String> fields) throws GWTJahiaServiceException;

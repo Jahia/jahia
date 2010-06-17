@@ -41,15 +41,13 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 
 /**
- * Created by IntelliJ IDEA.
+ * RSS mashup creating form.
  * User: jahia
  * Date: 27 f�vr. 2009
  * Time: 16:20:39
- * To change this template use File | Settings | File Templates.
  */
 public abstract class FormQuickRSS extends FormQuickMashup {
 
@@ -68,16 +66,16 @@ public abstract class FormQuickRSS extends FormQuickMashup {
         setStyleAttribute("padding", "4");
 
 
-        final TextField nameField = new TextField();
+        final TextField<String> nameField = new TextField<String>();
         nameField.setName("name");
-        nameField.setFieldLabel(Messages.getNotEmptyResource("name", "Name"));
+        nameField.setFieldLabel(Messages.get("label.name", "Name"));
         nameField.setAllowBlank(false);
         nameField.setMaxLength(200);
         add(nameField);
 
-        final TextField urlField = new TextField();
+        final TextField<String> urlField = new TextField<String>();
         urlField.setName("url");
-        urlField.setFieldLabel(Messages.getNotEmptyResource("rss_url", "Url"));
+        urlField.setFieldLabel(Messages.get("label.url", "Url"));
         urlField.setAllowBlank(false);
         urlField.setMaxLength(200);
         add(urlField);
@@ -87,18 +85,22 @@ public abstract class FormQuickRSS extends FormQuickMashup {
         Button saveButton = new Button(Messages.getResource("label.save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                JahiaContentManagementService.App.getInstance().createRSSPortletInstance(getFolderPath(),(String) nameField.getValue(), (String) urlField.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
+                if (nameField.getValue() == null || nameField.getValue().trim().length() == 0
+                        || urlField.getValue() == null || urlField.getValue().trim().length() == 0) {
+                    return;
+                }
+                JahiaContentManagementService.App.getInstance().createRSSPortletInstance(getFolderPath(), nameField.getValue(), urlField.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                         onMashupCreated();                        
                         if(getParent() instanceof Window){
-                            ((Window)getParent()).close();
+                            ((Window)getParent()).hide();
                         }
                     }
 
                     public void onApplicationFailure(Throwable throwable) {
                         Log.error("Unable to create rss portlet", throwable);
                         if(getParent() instanceof Window){
-                            ((Window)getParent()).close();
+                            ((Window)getParent()).hide();
                         }
                     }
                 });

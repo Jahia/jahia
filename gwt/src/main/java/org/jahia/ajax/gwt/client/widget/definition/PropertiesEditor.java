@@ -215,7 +215,7 @@ public class PropertiesEditor extends FormPanel {
 
 
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
-            List<GWTJahiaValueDisplayBean> values = initializersValues.get(definition.getDeclaringNodeType()+"."+definition.getName());
+            List<GWTJahiaValueDisplayBean> values = initializersValues != null ? initializersValues.get(definition.getDeclaringNodeType()+"."+definition.getName()) : null;
             final Field field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, values);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (definition.getName().equals("j:template")) {

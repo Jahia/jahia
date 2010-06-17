@@ -10,12 +10,11 @@ import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:58:30 PM
-* To change this template use File | Settings | File Templates.
-*/
+ * Action item for displaying new Google Gadget mashup creation form.
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:58:30 PM
+ */
 public class NewGadgetActionItem extends BaseActionItem   {
     public void onComponentSelection() {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
@@ -27,7 +26,7 @@ public class NewGadgetActionItem extends BaseActionItem   {
         }
         if (parent != null && !parent.isFile()) {
             com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.getNotEmptyResource("googlegadget_new", "New Google Gadget"));
+            w.setHeading(Messages.getNotEmptyResource("label.newGoogleGadgetMashup", "New Google Gadget"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);

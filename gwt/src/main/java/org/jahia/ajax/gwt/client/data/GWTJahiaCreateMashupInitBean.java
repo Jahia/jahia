@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,51 +29,40 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.content.portlet;
 
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
-import org.jahia.ajax.gwt.client.widget.Linker;
+package org.jahia.ajax.gwt.client.data;
+
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
 /**
- * User: ktlili
- * Date: 25 nov. 2008
- * Time: 10:28:28
+ * Initialization data for the "New Mashup" wizard.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class PortletWizardWindow extends AddContentWizardWindow {
-    private GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
+public class GWTJahiaCreateMashupInitBean extends GWTJahiaCreateEngineInitBean {
 
-    public PortletWizardWindow(Linker linker, GWTJahiaNode parentNode) {
-        super(linker, parentNode);
-        setWidth(750);
+    private static final long serialVersionUID = -2361660608693412906L;
+
+    private GWTJahiaNodeType nodeType;
+
+    /**
+     * Initializes an instance of this class.
+     */
+    public GWTJahiaCreateMashupInitBean() {
     }
 
-    public PortletWizardWindow() {
-        this(null, null);
+    /**
+     * @return the nodeType
+     */
+    public GWTJahiaNodeType getNodeType() {
+        return nodeType;
     }
 
-    protected void createCards() {
-        addCard(new PortletDefinitionCard()).addCard(new PortletFormCard())
-                .addCard(new PortletRoleCard()).addCard(new PortletModesCard())
-                .addCard(new PortletSaveAsCard());
+    /**
+     * @param nodeType the nodeType to set
+     */
+    public void setNodeType(GWTJahiaNodeType nodeType) {
+        this.nodeType = nodeType;
     }
 
-    public GWTJahiaNewPortletInstance getGwtJahiaNewPortletInstance() {
-        return gwtJahiaNewPortletInstance;
-    }
-
-    public void setGwtPortletInstanceWizard(GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance) {
-        this.gwtJahiaNewPortletInstance = gwtJahiaNewPortletInstance;
-    }
-
-    public void onPortletCreated() {
-    }
-
-    @Override
-    public String getHeaderTitle() {
-        return Messages.get("label.newMashup", "Add mashup");
-    }
-    
 }

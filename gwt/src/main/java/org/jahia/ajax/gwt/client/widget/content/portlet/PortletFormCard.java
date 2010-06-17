@@ -32,8 +32,11 @@
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.data.GWTJahiaCreateMashupInitBean;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -73,10 +76,10 @@ public class PortletFormCard extends MashupWizardCard {
 
     // laod form asyn
     private void createUIAsync() {
-        JahiaContentDefinitionService.App.getInstance().getNodeType(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType(), new BaseAsyncCallback<GWTJahiaNodeType>() {
-            public void onSuccess(GWTJahiaNodeType result) {
-                List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
-                list.add(result);
+        JahiaContentManagementService.App.getInstance().initializeCreateMashupEngine(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType(), getParentNode().getPath(), new BaseAsyncCallback<GWTJahiaCreateMashupInitBean>() {
+            public void onSuccess(GWTJahiaCreateMashupInitBean result) {
+                List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>(1);
+                list.add(result.getNodeType());
                 Map<String, GWTJahiaNodeProperty> defaultValues = new HashMap<String, GWTJahiaNodeProperty>();
 
                 GWTJahiaPortletDefinition definition = getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition();
@@ -91,9 +94,11 @@ public class PortletFormCard extends MashupWizardCard {
                     defaultValues.put("j:cacheScope", new GWTJahiaNodeProperty("j:cacheScope", value));
                 }
 
-                pe = new PropertiesEditor(list, defaultValues, null);
-                pe.setExcludedTypes(Arrays.asList("jnt:portlet", "mix:createdBy", "mix:lastModified", "mix:created"));
+                pe = new PropertiesEditor(list, defaultValues, GWTJahiaItemDefinition.CONTENT);
+                pe.setMixin(result.getMixin());
+                pe.setExcludedTypes(Arrays.asList("jnt:portlet", "mix:lastModified", "mix:created", "jmix:lastPublished"));
                 pe.renderNewFormPanel();
+                pe.setInitializersValues(result.getInitializersValues());
                 setFormPanel(pe);
                 layout();
             }

@@ -38,7 +38,6 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -46,11 +45,10 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
- * Created by IntelliJ IDEA.
+ * Form for creating new Google gadget mashup.
  * User: jahia
  * Date: 27 f�vr. 2009
  * Time: 16:43:07
- * To change this template use File | Settings | File Templates.
  */
 public abstract class FormQuickGoogleGadget extends FormQuickMashup {
 
@@ -68,16 +66,16 @@ public abstract class FormQuickGoogleGadget extends FormQuickMashup {
         setStyleAttribute("padding", "4");
 
 
-        final TextField nameField = new TextField();
+        final TextField<String> nameField = new TextField<String>();
         nameField.setName("name");
-        nameField.setFieldLabel(Messages.getNotEmptyResource("name", "Name"));
+        nameField.setFieldLabel(Messages.get("label.name", "Name"));
         nameField.setAllowBlank(false);
         nameField.setMaxLength(200);
         add(nameField);
 
-        final TextField scriptField = new TextArea();
+        final TextField<String> scriptField = new TextArea();
         scriptField.setName("gscript");
-        scriptField.setFieldLabel(Messages.getNotEmptyResource("gadget_script", "Gadget script"));
+        scriptField.setFieldLabel(Messages.get("lable.code", "Gadget script"));
         scriptField.setAllowBlank(false);
         add(scriptField);
 
@@ -86,16 +84,19 @@ public abstract class FormQuickGoogleGadget extends FormQuickMashup {
         Button saveButton = new Button(Messages.getResource("label.save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent componentEvent) {
-                JahiaContentManagementService.App.getInstance().createGoogleGadgetPortletInstance(getFolderPath(), (String) nameField.getValue(), (String) scriptField.getValue(),new BaseAsyncCallback<GWTJahiaNode>() {
+                if (nameField.getValue() == null || nameField.getValue().trim().length() == 0 || scriptField.getValue() == null || scriptField.getValue().trim().length() == 0) {
+                    return;
+                }
+                JahiaContentManagementService.App.getInstance().createGoogleGadgetPortletInstance(getFolderPath(), nameField.getValue(), scriptField.getValue(),new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                         onMashupCreated();
                         if (getParent() instanceof Window) {
-                            ((Window) getParent()).close();
+                            ((Window) getParent()).hide();
                         }
                     }
 
                     public void onApplicationFailure(Throwable throwable) {
-                        Log.error("Unable to create rss portlet", throwable);
+                        Log.error("Unable to create Google gadget portlet", throwable);
                         if (getParent() instanceof Window) {
                             ((Window) getParent()).hide();
                         }

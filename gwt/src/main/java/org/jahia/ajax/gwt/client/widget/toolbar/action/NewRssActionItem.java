@@ -11,12 +11,11 @@ import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:58:27 PM
-* To change this template use File | Settings | File Templates.
-*/
+ * Action item for showing RSS mashup creation form.
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:58:27 PM
+ */
 public class NewRssActionItem extends BaseActionItem   {
     public void onComponentSelection() {
         GWTJahiaNode parent = linker.getMainNode();
@@ -28,7 +27,7 @@ public class NewRssActionItem extends BaseActionItem   {
         }
         if (parent != null && !parent.isFile()) {
             com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.getNotEmptyResource("rss_new", "New RSS"));
+            w.setHeading(Messages.getNotEmptyResource("label.newRssMashup", "New RSS"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);

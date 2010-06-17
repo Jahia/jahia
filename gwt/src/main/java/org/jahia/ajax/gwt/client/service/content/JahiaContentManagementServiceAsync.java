@@ -306,6 +306,8 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void initializeCreateEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreateEngineInitBean> async);
 
+    void initializeCreateMashupEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreateMashupInitBean> async);
+
     void initializeEditEngine(String nodePath, AsyncCallback<GWTJahiaEditEngineInitBean> async);
 
     

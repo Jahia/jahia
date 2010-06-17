@@ -69,9 +69,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowTask;
 import org.jahia.tools.imageprocess.ImageProcess;
@@ -81,7 +79,6 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpSession;
@@ -305,7 +302,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths) throws GWTJahiaServiceException {
-        getSession().setAttribute(navigation.SAVED_OPEN_PATHS + repositoryType, paths);
+        getSession().setAttribute(NavigationHelper.SAVED_OPEN_PATHS + repositoryType, paths);
     }
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException {
@@ -1085,11 +1082,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         for (WorkflowTask task : tasks) {
             try {
                 if (task.getVariables().get("locale").equals(session.getLocale())) {
-                    JCRNodeWrapper node = session.getNodeByUUID((String) task.getVariables().get("nodeId"));
-                    GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node);
-                    gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getUUID(), false));
-                    gwtJahiaNode.setWorkflowInfo(getWorkflowInfo(gwtJahiaNode.getPath()));
-                    nodes.add(gwtJahiaNode);
+                JCRNodeWrapper node = session.getNodeByUUID((String) task.getVariables().get("nodeId"));
+                GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node);
+                gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getUUID(), false));
+                gwtJahiaNode.setWorkflowInfo(getWorkflowInfo(gwtJahiaNode.getPath()));
+                nodes.add(gwtJahiaNode);
                 }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
@@ -1514,6 +1511,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    public GWTJahiaCreateMashupInitBean initializeCreateMashupEngine(String typename, String parentpath)
+            throws GWTJahiaServiceException {
+        
+        GWTJahiaCreateEngineInitBean result = initializeCreateEngine(typename, parentpath);
+        GWTJahiaCreateMashupInitBean mashupInitBean = new GWTJahiaCreateMashupInitBean();
+        mashupInitBean.setInitializersValues(result.getInitializersValues());
+        mashupInitBean.setLanguages(result.getLanguages());
+        mashupInitBean.setMixin(result.getMixin());
+        mashupInitBean.setNodeType(contentDefinition.getNodeType(typename, getUILocale()));
+
+        return mashupInitBean;
+    }
 
     public GWTJahiaEditEngineInitBean initializeEditEngine(String nodepath) throws GWTJahiaServiceException {
         try {

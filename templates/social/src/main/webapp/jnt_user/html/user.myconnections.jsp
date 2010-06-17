@@ -132,6 +132,26 @@
             return false;
         });
 
+        function submitStatusUpdate(updateText) {
+            $.ajax({
+                url: '${url.base}${currentNode.path}/activities/*',
+                type : 'post',
+                data : 'nodeType=jnt:userActivity&newNodeOutputFormat=html&j:message=' + updateText,
+                success : function (data) {
+                    alert("Status update submitted successfully")
+                }
+            });
+        }
+
+        $("#statusUpdateSubmit").click(function() {
+            // validate and process form here
+            var updateText = $("textarea#statusUpdateText").val();
+            alert('Sending text' + updateText);
+            submitStatusUpdate(updateText);
+            return false;
+        });
+
+
     });
 </script>
 
@@ -199,13 +219,24 @@
 
     <h3><fmt:message key="userActivities" /></h3>
 
-    <form name="statusUpdateForm" action="">
+    <form name="statusUpdateForm" action="" method="post">
         <textarea rows="2" cols="20" class="" onfocus="if(this.value==this.defaultValue)this.value='';"
                onblur="if(this.value=='')this.value=this.defaultValue;"
-               name="statusUpdateText"><fmt:message key="statusUpdateDefaultText"/></textarea>
+               name="statusUpdateText" id="statusUpdateText"><fmt:message key="statusUpdateDefaultText"/></textarea>
         <input id="statusUpdateSubmit" type="submit" title="<fmt:message key='statusUpdateSubmit'/>"/>
 
     </form>
+
+
+    <ul class="statusList">
+        <jcr:sql var="userActivities"
+             sql="select * from [jnt:userActivity] as uA where isdescendantnode(uA,['${currentNode.path}'])"/>
+        <c:forEach items="${userActivities.nodes}" var="userActivity">
+        <li>
+            ${userActivity.properties['j:message'].string}
+        </li>
+        </c:forEach>
+    </ul>
 
     <jcr:sql var="userConnections"
          sql="select * from [jnt:userConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>

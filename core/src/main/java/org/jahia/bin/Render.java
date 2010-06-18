@@ -206,13 +206,17 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (renderContext.isAjaxRequest()) {
             Element element = source.getFirstElement();
             final EndTag tag = element.getEndTag();
-            final String staticsAsset = RenderService.getInstance().render(new Resource(resource.getNode(), "html",
-                                                                                        "html.statics.assets",
-                                                                                        "html.statics.assets",
-                                                                                        Resource.CONFIGURATION_INCLUDE),
-                                                                           renderContext);
-            outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
-                    staticsAsset) + "\n<");
+            if (tag == null ) {
+                logger.error("Couldn't find end tag for element " + element.getName() + " debugInfo=" + element.getDebugInfo() + " in markup [" + out + "]");
+            } else {
+                final String staticsAsset = RenderService.getInstance().render(new Resource(resource.getNode(), "html",
+                                                                                            "html.statics.assets",
+                                                                                            "html.statics.assets",
+                                                                                            Resource.CONFIGURATION_INCLUDE),
+                                                                               renderContext);
+                outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
+                        staticsAsset) + "\n<");
+            }
         } else {
             final List<Element> elementList = source.getAllElements(HTMLElementName.HEAD);
             for (Element element : elementList) {

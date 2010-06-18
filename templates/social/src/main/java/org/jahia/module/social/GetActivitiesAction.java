@@ -63,7 +63,8 @@ public class GetActivitiesAction implements Action {
 
             public int compare(JCRNodeWrapper activityNode1, JCRNodeWrapper activityNode2) {
                 try {
-                    return activityNode1.getProperty("jcr:created").getDate().compareTo(activityNode2.getProperty("jcr:created").getDate());
+                    // we invert the order to sort with most recent dates on top.
+                    return activityNode2.getProperty("jcr:created").getDate().compareTo(activityNode1.getProperty("jcr:created").getDate());
                 } catch (RepositoryException e) {
                     logger.error("Error while comparing creation date on two activities, returning them as equal", e);
                     return 0;
@@ -121,7 +122,11 @@ public class GetActivitiesAction implements Action {
                 }
             } else {
                 if (!propertyWrapper.isMultiple()) {
-                    jsonObject.put(name, propertyWrapper.getValue().getString());
+                    if (propertyWrapper.getType() == PropertyType.DATE) {
+                        jsonObject.put(name, Long.toString(propertyWrapper.getValue().getDate().getTimeInMillis()));
+                    } else {
+                        jsonObject.put(name, propertyWrapper.getValue().getString());
+                    }
                     // @todo this code is duplicated for multiple values, we need to clean this up.
                     if ((propertyMatchRegexp != null) && (propertyWrapper.getValue().getString().matches(propertyMatchRegexp))) {
                         if (alreadyIncludedPropertyValues != null) {
@@ -142,7 +147,11 @@ public class GetActivitiesAction implements Action {
                     JSONArray jsonArray = new JSONArray();
                     Value[] propValues = propertyWrapper.getValues();
                     for (Value propValue : propValues) {
-                        jsonArray.put(propValue.getString());
+                        if (propValue.getType() == PropertyType.DATE) {
+                            jsonArray.put(Long.toString(propValue.getDate().getTimeInMillis()));
+                        } else {
+                            jsonArray.put(propValue.getString());
+                        }
                         if ((propertyMatchRegexp != null) && (propValue.getString().matches(propertyMatchRegexp))) {
                             if (alreadyIncludedPropertyValues != null) {
                                 String nodeIdentifier = alreadyIncludedPropertyValues.get(propValue.getString());

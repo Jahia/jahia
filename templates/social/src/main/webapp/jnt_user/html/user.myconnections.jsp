@@ -15,6 +15,7 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery-ui.datepicker.min.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
+<template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle" var="title"/>
@@ -138,7 +139,7 @@
                 type : 'post',
                 data : 'nodeType=jnt:userActivity&newNodeOutputFormat=html&j:message=' + updateText+"&j:from=${currentNode.identifier}",
                 success : function (data) {
-                    alert("Status update submitted successfully");
+                    // alert("Status update submitted successfully");
                     loadActivities();
                 }
             });
@@ -147,34 +148,40 @@
         $("#statusUpdateSubmit").click(function() {
             // validate and process form here
             var updateText = $("textarea#statusUpdateText").val();
-            alert('Sending text' + updateText);
+            // alert('Sending text ' + updateText);
             submitStatusUpdate(updateText);
             return false;
         });
 
         function loadActivities() {
             $.ajax({
-                beforeSend: function(xhrObj) {
-                    xhrObj.setRequestHeader("Content-Type","application/json");
-                    xhrObj.setRequestHeader("Accept","application/json");
-                },
                 url: '${url.base}${currentNode.path}.getactivities.do',
                 type: 'post',
                 dataType : "json", 
                 success : function (data) {
                     $(".activitiesList").html("");
-                    alert(data.resultCount + " activities loaded properly");
+                    // alert(data.resultCount + " activities loaded properly");
                     $.each(data['activities'], function(i, item) {
-                        alert(item['j:message']);
+                        var activityDate = new Date();
+                        activityDate.setTime(item['jcr:created']);
                         $(".activitiesList").append(
-                           $("<li/>").text(item['j:message'])
+                                "<li>"+
+                                    "<p class='message'>" + item['j:message'] + "</p> "+
+                                    "<div class='author'>" + item['jcr:createdBy'] + "</div>" +
+                                    "<div class='timestamp'>" + activityDate.toUTCString() + "</div>" +
+                                "</li>"
                         );
 
                     });
+                    initCuteTime();
                 }
 
             });
             return false;
+        }
+
+        function initCuteTime() {
+            $('.timestamp').cuteTime({ refresh: 60000 });
         }
 
         loadActivities();
@@ -219,7 +226,7 @@
     <jcr:sql var="userConnections"
          sql="select * from [jnt:userConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
     
-    <h3 class="user-profile-title-icon" class="titleIcon"><a href="#">Friends<img title="" alt="" src="${url.currentModule}/images/friends.png"/></a></h3>
+    <h3 class="user-profile-title-icon titleIcon"><a href="#">Friends<img title="" alt="" src="${url.currentModule}/images/friends.png"/></a></h3>
     <ul class="friends-list">                      
         <c:forEach items="${userConnections.nodes}" var="userConnection">
         <li>
@@ -252,40 +259,6 @@
         <input id="statusUpdateSubmit" type="submit" title="<fmt:message key='statusUpdateSubmit'/>"/>
 
     </form>
-
-
-    <ul class="statusList">
-        <jcr:sql var="userActivities"
-             sql="select * from [jnt:userActivity] as uA where isdescendantnode(uA,['${currentNode.path}'])"/>
-        <c:forEach items="${userActivities.nodes}" var="userActivity">
-        <li>
-            <c:set var="activityDate" value="${userActivity.properties['jcr:created'].date.time}" />
-            <fmt:formatDate value="${activityDate}" pattern="dd/MM/yyyy HH:mm:ss.SSS"/>
-            ${userActivity.properties['j:from'].node.name}
-            ${userActivity.properties['j:message'].string}
-        </li>
-        </c:forEach>
-    </ul>
-
-    <jcr:sql var="userConnections"
-         sql="select * from [jnt:userConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
-
-    <ul class="statusList">
-    <c:forEach items="${userConnections.nodes}" var="userConnection">
-        <c:set var="connectedUser" value="${userConnection.properties['j:connectedTo'].node}" />
-        <!-- Now we must query the users' activity list -->
-        <jcr:sql var="userActivities"
-             sql="select * from [jnt:userActivity] as uA where isdescendantnode(uA,['${connectedUser.path}'])"/>
-        <c:forEach items="${userActivities.nodes}" var="userActivity">
-        <li>
-            <c:set var="activityDate" value="${userActivity.properties['jcr:created'].date.time}" />
-            <fmt:formatDate value="${activityDate}" pattern="dd/MM/yyyy HH:mm:ss.SSS"/>
-            ${userActivity.properties['j:from'].node.name}
-            ${userActivity.properties['j:message'].string}
-        </li>
-        </c:forEach>
-    </c:forEach>
-    </ul>
 
     <ul class="activitiesList">
         <li>Loading status...</li>

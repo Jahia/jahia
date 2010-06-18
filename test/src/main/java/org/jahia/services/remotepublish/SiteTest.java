@@ -46,8 +46,6 @@ import org.jahia.utils.LanguageCodeConverters;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 /**
  * Unit test for remote publishing
@@ -89,7 +87,7 @@ public class SiteTest extends TestCase {
         page3.setProperty("jcr:title","Page3");
         session.save();
         JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
-                                                    Constants.LIVE_WORKSPACE, null, false, true);
+                                                    Constants.LIVE_WORKSPACE, null, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                                                                                               LanguageCodeConverters.languageCodeToLocale(
@@ -102,7 +100,7 @@ public class SiteTest extends TestCase {
         TestHelper.deleteSite("targetSite");
         TestHelper.createSite("targetSite");
         JCRPublicationService.getInstance().publish("/sites/targetSite/home", Constants.EDIT_WORKSPACE,
-                                                    Constants.LIVE_WORKSPACE, null, false, true);
+                                                    Constants.LIVE_WORKSPACE, null, true);
         RemotePublicationService.getInstance().replayLog(liveSession.getNode("/sites/targetSite"),
                                                          new FileInputStream(tmp));
 

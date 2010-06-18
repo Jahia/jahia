@@ -90,8 +90,7 @@ public class LogGenerationTest extends TestCase {
         Calendar now = new GregorianCalendar();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -120,8 +119,7 @@ public class LogGenerationTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home/source", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                        false, true);
+                .publish("/sites/jcrRPTest/home/source", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         RemotePublicationService.getInstance().generateLog(source, now, new FileOutputStream(tmp));
 
@@ -142,8 +140,7 @@ public class LogGenerationTest extends TestCase {
 
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         Calendar now = new GregorianCalendar();
         source.checkout();
@@ -152,8 +149,7 @@ public class LogGenerationTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -184,8 +180,7 @@ public class LogGenerationTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         Calendar now = new GregorianCalendar();
         source.checkout();
@@ -193,8 +188,7 @@ public class LogGenerationTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -231,8 +225,7 @@ public class LogGenerationTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
 
         source.checkout();
@@ -240,8 +233,7 @@ public class LogGenerationTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         Calendar now = new GregorianCalendar();
 
@@ -250,8 +242,7 @@ public class LogGenerationTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -281,8 +272,7 @@ public class LogGenerationTest extends TestCase {
         JCRNodeWrapper source = session.getNode("/sites/jcrRPTest/files");
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/files", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
-                        true);
+                .publish("/sites/jcrRPTest/files", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         Calendar now = new GregorianCalendar();
 
@@ -298,7 +288,7 @@ public class LogGenerationTest extends TestCase {
 
         JCRPublicationService.getInstance()
                 .publish("/sites/jcrRPTest/files/test.txt", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                        false, true);
+                        true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));

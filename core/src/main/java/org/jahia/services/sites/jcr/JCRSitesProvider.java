@@ -8,7 +8,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.*;
@@ -236,7 +235,8 @@ public class JCRSitesProvider {
                                             .size()]));
                                     siteNode.setProperty("j:sourceTemplate", defaultSite);
                                     session.save();
-                                    JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, false);
+                                    JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                                            false);
                                 }
                             }
                         } catch (IOException e) {
@@ -328,7 +328,8 @@ public class JCRSitesProvider {
                     return null;
                 }
             });
-            JCRPublicationService.getInstance().publish("/sites/"+site.getSiteKey(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, false);
+            JCRPublicationService.getInstance().publish("/sites/"+site.getSiteKey(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                    false);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

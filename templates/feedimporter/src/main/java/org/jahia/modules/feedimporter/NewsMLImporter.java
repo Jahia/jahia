@@ -4,16 +4,10 @@ import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.workflow.Workflow;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
@@ -28,7 +22,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import javax.jcr.*;
-import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.io.IOException;
@@ -380,7 +373,8 @@ public class NewsMLImporter {
         if (mustPublish) {
             newsMLItemNode = session.getNodeByIdentifier(newsMLItemNodeIdentifier);
             logger.info("Publishing news item " + newsMLItemNode.getPath());
-            JCRPublicationService.getInstance().publish(newsMLItemNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+            JCRPublicationService.getInstance().publish(newsMLItemNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                    true);
         } else if (mustUpdate) {
             newsMLItemNode = session.getNodeByIdentifier(newsMLItemNodeIdentifier);
             final JCRSessionWrapper jcrSessionWrapper = newsMLItemNode.getSession();

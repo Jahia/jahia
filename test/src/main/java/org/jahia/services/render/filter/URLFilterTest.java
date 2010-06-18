@@ -437,7 +437,7 @@ public class URLFilterTest {
         languages.add("en");
         ServicesRegistry.getInstance().getJCRPublicationService().publish(
                 SITECONTENT_ROOT_NODE, Constants.EDIT_WORKSPACE,
-                Constants.LIVE_WORKSPACE, languages, true, true);
+                Constants.LIVE_WORKSPACE, languages, true);
         
         urlResolver = new URLResolver("/render/live/testpage");
         resolvedNode = urlResolver.getNode();

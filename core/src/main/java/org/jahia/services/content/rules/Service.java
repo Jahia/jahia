@@ -666,7 +666,7 @@ public class Service extends JahiaService {
         JCRPublicationService.getInstance().publish(nodeWrapper.getPath(), jcrSessionWrapper.getWorkspace().getName(),
                                                     Constants.LIVE_WORKSPACE,
                                                     Collections.singleton(jcrSessionWrapper.getLocale().toString()),
-                                                    true, false);
+                false);
     }
 
     public void startWorkflowOnNode(AddedNodeFact node,String processKey, String provider,KnowledgeHelper drools) throws RepositoryException {

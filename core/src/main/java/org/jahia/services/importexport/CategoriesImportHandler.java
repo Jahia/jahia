@@ -37,7 +37,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
-import org.jahia.services.pages.ContentPage;
 import org.jahia.utils.LanguageCodeConverters;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -150,7 +149,8 @@ public class CategoriesImportHandler extends DefaultHandler {
     @Override
     public void endDocument() throws SAXException {
         try {
-            ServicesRegistry.getInstance().getJCRPublicationService().publish("/categories", Constants.EDIT_WORKSPACE,  Constants.LIVE_WORKSPACE, null, true, true);
+            ServicesRegistry.getInstance().getJCRPublicationService().publish("/categories", Constants.EDIT_WORKSPACE,  Constants.LIVE_WORKSPACE, null,
+                    true);
         } catch (RepositoryException e) {
             logger.error("Cannot publish categories ",e);
         }

@@ -183,12 +183,14 @@ public class AddedNodeFact implements Updateable {
     }
 
     public void addType(String type, KnowledgeHelper drools) throws RepositoryException {
+        node.checkout();
         node.addMixin(type);
         drools.insert(new ChangedPropertyFact(this, node.getProperty(Constants.JCR_MIXINTYPES)));
         //        drools.update(this);
     }
 
     public void removeType(String type, KnowledgeHelper drools) throws RepositoryException {
+        node.checkout();
         node.removeMixin(type);
         drools.insert(new ChangedPropertyFact(this, node.getProperty(Constants.JCR_MIXINTYPES)));
         //        drools.update(this);

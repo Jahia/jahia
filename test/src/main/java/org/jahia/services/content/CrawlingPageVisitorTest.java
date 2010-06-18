@@ -130,8 +130,7 @@ public class CrawlingPageVisitorTest extends TestCase {
                                             ACME_SITECONTENT_ROOT_NODE
                                                     + "/home").getPath(),
                                             Constants.EDIT_WORKSPACE,
-                                            Constants.LIVE_WORKSPACE, null,
-                                            true, true);
+                                            Constants.LIVE_WORKSPACE, null, true);
                                 } catch (Exception e) {
                                     logger.error("Cannot "
                                             + (defaultSiteCreated ? "publish"

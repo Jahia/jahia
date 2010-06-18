@@ -2,7 +2,6 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
@@ -120,9 +119,11 @@ public class PublicationHelper {
     public void publish(String path, Set<String> languages, boolean allSubTree, boolean reverse, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
             if (reverse) {
-                publicationService.publish(path, Constants.LIVE_WORKSPACE, session.getWorkspace().getName(), languages, false, allSubTree);
+                publicationService.publish(path, Constants.LIVE_WORKSPACE, session.getWorkspace().getName(), languages,
+                        allSubTree);
             } else {
-                publicationService.publish(path, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
+                publicationService.publish(path, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages,
+                        allSubTree);
             }
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
@@ -172,9 +173,11 @@ public class PublicationHelper {
                 for (String uuid : uuids) {
                     JCRNodeWrapper n = session.getNodeByUUID(uuid);
                     if (reverse) {
-                        publicationService.publish(n.getPath(), Constants.LIVE_WORKSPACE, session.getWorkspace().getName(), languages, false, allSubTree);
+                        publicationService.publish(n.getPath(), Constants.LIVE_WORKSPACE, session.getWorkspace().getName(), languages,
+                                allSubTree);
                     } else {
-                        publicationService.publish(n.getPath(), session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages, false, allSubTree);
+                        publicationService.publish(n.getPath(), session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages,
+                                allSubTree);
                     }
                 }
             }

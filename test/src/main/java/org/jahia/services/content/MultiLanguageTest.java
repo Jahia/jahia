@@ -12,7 +12,6 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.junit.*;
 
 import javax.jcr.PathNotFoundException;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -73,7 +72,8 @@ public class MultiLanguageTest extends TestCase {
 
         englishEditSession.save();
 
-        jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, currentLanguages, false, false);
+        jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, currentLanguages,
+                false);
 
         JCRSessionWrapper frenchEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, frenchLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         JCRNodeWrapper frenchTextNode = frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/text1");

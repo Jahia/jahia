@@ -17,7 +17,6 @@ import org.jahia.services.content.VersionInfo;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -123,7 +122,7 @@ public class RenderTest extends TestCase {
         editSession.save();
 
         // publish it
-        jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
             editSession.checkout(stagedSubPage);
@@ -131,7 +130,7 @@ public class RenderTest extends TestCase {
             editSession.save();
 
             // each time the node i published, a new version should be created
-            jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
+            jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false);
         }
 
         // now let's do a little system versioning ourselves...

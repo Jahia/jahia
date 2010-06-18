@@ -16,9 +16,6 @@ import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionHistory;
-import javax.jcr.version.VersionIterator;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -93,7 +90,7 @@ public class VersioningTest extends TestCase {
             editSession.save();
 
             // publish it
-            jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+            jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
             for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
 
@@ -103,7 +100,8 @@ public class VersioningTest extends TestCase {
                     mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + updateNumber);
                     mainContent.setProperty("body", MAIN_CONTENT_BODY + updateNumber);
                     editSession.save();
-                    jcrService.publish(mainContent.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+                    jcrService.publish(mainContent.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                            true);
                 }
 
                 editSession.checkout(stagedSubPage);
@@ -111,12 +109,14 @@ public class VersioningTest extends TestCase {
                 editSession.save();
 
                 // each time the node i published, a new version should be created
-                jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
+                jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                        false);
 
                 editSession.checkout(stagedSubSubPage);
                 stagedSubSubPage.setProperty("jcr:title", "subtitle" + i);
                 editSession.save();
-                jcrService.publish(stagedSubSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, false);
+                jcrService.publish(stagedSubSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                        false);
             }
 
             // now let's do a little system versioning ourselves...

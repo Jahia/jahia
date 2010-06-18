@@ -66,7 +66,8 @@ public class GetFeedActionTest extends TestCase {
         node.addNode("feeds","jnt:contentList");
         session.save();
 
-        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/contents", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/contents", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                true);
 
         testFeed("testSDAFeed", "res:feedimporter/newsml/newsml_1_2_sda", "2_textwithphotoreference.xml");
         testFeed("testKoreanPicturesFeed", "res:feedimporter/newsml/koreanpictures_iptc", "2002-09-23T000051Z_01_BER04D_RTRIDSP_0_GERMANY.XML");
@@ -92,7 +93,8 @@ public class GetFeedActionTest extends TestCase {
         sdaFeedNode.setProperty("url", feedURL);
 
         session.save();
-        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/contents/feeds/" + nodeName, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, true);
+        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/contents/feeds/" + nodeName, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                true);
 
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);

@@ -7,6 +7,16 @@
   <version>6.5-SNAPSHOT</version>
   <packaging>pom</packaging>
   <inceptionYear>2004</inceptionYear>
+  <!-- 
+  <licenses>
+      <license>
+        <name>GNU General Public License</name>
+        <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</url>
+        <distribution>repo</distribution>
+        <comments>Jahia Community Edition is licensed under the terms of the GNU General Public License v2</comments>
+      </license>
+  </licenses>
+   -->
   <organization>
     <name>Jahia Solutions Group SA</name>
     <url>http://www.jahia.org</url>
@@ -47,75 +57,112 @@
   			<name>Anna Afshar</name>
   			<email>anna.afshar@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
   		</developer>
         <developer>
             <name>Benjamin Papež</name>
             <email>benjamin.papez@jahia.com</email>
             <organization>Jahia Solutions GmbH</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
         <developer>
             <name>Cédric Mailleux</name>
             <email>cedric.mailleux@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Charles Flond</name>
+            <email>charles.flond@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
         <developer>
             <name>Clément Egger</name>
             <email>clement.egger@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Damien Saulnier</name>
+            <email>damien.saulnier@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
         <developer>
             <name>David Griffon</name>
             <email>david.griffon@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
         <developer>
             <name>Fabrice Cantegrel</name>
             <email>fabrice.cantegrel@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Islam El-Sayed</name>
+            <organization>Crédit Agricole (Suisse) SA</organization>
+            <organizationUrl>http://www.ca-suisse.com/</organizationUrl>
         </developer>
         <developer>
             <name>Khaled Tlili</name>
-            <email>khaled.tlili@jahia.com</email>
+        </developer>
+        <developer>
+            <name>Khue Nguyen</name>
+        </developer>
+        <developer>
+            <name>Philippe Vollenweider</name>
+            <email>philippe.vollenweider@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
         <developer>
             <name>Régis Mora</name>
             <email>regis.mora@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Romain Felden</name>
+            <organization>ELCA Informatique SA</organization>
+            <organizationUrl>http://www.elca.ch/</organizationUrl>
         </developer>
         <developer>
             <name>Serge Huber</name>
             <email>serge.huber@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
         <developer>
             <name>Sergiy Shyrkov</name>
             <email>sergiy.shyrkov@jahia.com</email>
             <organization>Jahia Solutions GmbH</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
         <developer>
             <name>Stéphanie Rouaud</name>
             <email>stephanie.rouaud@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
         <developer>
             <name>Thomas Draier</name>
             <email>thomas.draier@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.org</organizationUrl>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
-    </developers>
+        <developer>
+            <name>Xavier Lawrence</name>
+            <organization>ELCA Informatique SA</organization>
+            <organizationUrl>http://www.elca.ch/</organizationUrl>
+        </developer>
+  </developers>
+  <issueManagement>
+      <system>Jira</system>
+      <url>http://jira.jahia.org/</url>
+  </issueManagement>       
   <repositories>
     <repository>
       <releases>
@@ -309,7 +356,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>2.1</version>
+                <version>2.1.1</version>
             </plugin>
             <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we
  need to force the version of the plugin to version 2.1-beta-1 -->

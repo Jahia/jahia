@@ -133,7 +133,10 @@ public class JCRUserNode extends JCRNodeDecorator {
         private UserPropertyIterator(JCRNodeWrapper node) {
             this.node = node;
             properties = user.getProperties();
-            stringPropertyNames = properties.stringPropertyNames();
+            stringPropertyNames = new HashSet<String>();
+            for (Object key : properties.keySet()) {
+                stringPropertyNames.add((String) key);
+            }
             iterator = stringPropertyNames.iterator();
         }
 

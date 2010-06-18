@@ -80,7 +80,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     protected JCRFileContent fileContent = null;
     protected Map<Locale, Node> i18NobjectNodes = null;
 
-    protected String[] defaultPerms = {Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS, Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE};
+    protected static String[] defaultPerms = {Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS, Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE};
+    protected static Map<String,List<String>> defaultDependencies;
+    
+    static {
+        defaultDependencies = new HashMap<String, List<String>>();
+        defaultDependencies.put(Constants.JCR_READ_RIGHTS, Arrays.asList(Constants.JCR_READ_RIGHTS_LIVE));
+        defaultDependencies.put(Constants.JCR_WRITE_RIGHTS, Arrays.asList(Constants.JCR_READ_RIGHTS));
+        defaultDependencies.put(Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Arrays.asList(Constants.JCR_WRITE_RIGHTS));
+        defaultDependencies.put(Constants.JCR_WRITE_RIGHTS_LIVE, Arrays.asList(Constants.JCR_READ_RIGHTS_LIVE));
+    }
 
     private static final String J_PRIVILEGES = "j:privileges";
 
@@ -224,6 +233,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public Map<String, List<String>> getAvailablePermissions() {
         return Collections.singletonMap("default", Arrays.asList(defaultPerms));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, List<String>> getPermissionsDependencies() {
+        return defaultDependencies;
     }
 
     /**
@@ -2557,6 +2573,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 // todo : need to find more consistent way to check i18n validity
 //                final boolean translated = objectNode.hasNode("j:translation");
                 if (jcrSessionWrapper.getLocale() != null) {
+                    for (ExtendedPropertyDefinition def : getPrimaryNodeType().getPropertyDefinitionsAsMap().values()) {
+                        def.
+                    }
 //                    if (jcrSessionWrapper.getFallbackLocale() == null && translated) {
 //                        getI18N(locale, false);
 //                    }

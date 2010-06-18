@@ -46,7 +46,7 @@ public class GWTJahiaNodeACL implements Serializable {
     private List<GWTJahiaNodeACE> ace;
     private Map<String,List<String>> availablePermissions;
     private Map<String,String> permissionLabels;
-    private Map<String,List<String>> aclDependencies;
+    private Map<String,List<String>> permissionsDependencies;
     private boolean breakAllInheritance = false;
     public GWTJahiaNodeACL() {
     }
@@ -79,12 +79,12 @@ public class GWTJahiaNodeACL implements Serializable {
         this.permissionLabels = permissionLabels;
     }
 
-    public Map<String,List<String>> getAclDependencies() {
-        return aclDependencies;
+    public Map<String,List<String>> getPermissionsDependencies() {
+        return permissionsDependencies;
     }
 
-    public void setAclDependencies(Map<String, List<String>> aclDependencies) {
-        this.aclDependencies = aclDependencies;
+    public void setPermissionsDependencies(Map<String, List<String>> permissionsDependencies) {
+        this.permissionsDependencies = permissionsDependencies;
     }
 
     public boolean isBreakAllInheritance() {
@@ -100,7 +100,7 @@ public class GWTJahiaNodeACL implements Serializable {
         List<GWTJahiaNodeACE> aceClone = new ArrayList<GWTJahiaNodeACE>();
         clone.setAvailablePermissions(getAvailablePermissions());
         clone.setPermissionLabels(getPermissionLabels());
-        clone.setAclDependencies(getAclDependencies());
+        clone.setPermissionsDependencies(getPermissionsDependencies());
         for (GWTJahiaNodeACE nodeACE : ace) {
             aceClone.add(nodeACE.cloneObject());
         }

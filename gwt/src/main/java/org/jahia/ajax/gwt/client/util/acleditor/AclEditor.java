@@ -32,14 +32,15 @@
 package org.jahia.ajax.gwt.client.util.acleditor;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.table.*;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.Style;
@@ -73,7 +74,8 @@ public class AclEditor {
     private List<String> items;
     private SaveButton saveButton;
     private RestoreButton restoreButton;
-    private Table aclTable;
+    private Grid<ModelData> aclTable;
+    private ListStore<ModelData> store;
     private boolean saved = false;
     private boolean canBreakInheritance = false;
     private Button breakinheritanceItem;
@@ -146,10 +148,23 @@ public class AclEditor {
     }
 
     public ContentPanel renderNewAclPanel() {
-        final List<TableColumn> columns = new ArrayList<TableColumn>();
+        final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
         // im. representing the principal
-        TableColumn col = new TableColumn("", .05f);
+        ColumnConfig col = new ColumnConfig("icon", 30);
+        col.setRenderer(new GridCellRenderer() {
+            public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
+                                 ListStore listStore, final Grid grid) {
+                GWTJahiaNodeACE ace = model.get("ace");
+                Html html = new Html("&nbsp;");
+                if (ace.getPrincipalType() == 'u') {
+                    html.setStyleName("um-user");
+                } else {
+                    html.setStyleName("um-group");
+                }
+                return html;
+            }
+        });
         columns.add(col);
 
         if (aclGroup == null) {
@@ -162,7 +177,7 @@ public class AclEditor {
         }
 
         // name of the princial
-        col = new TableColumn(getResource("label.user"), .2f);
+        col = new ColumnConfig("principal",getResource("label.user"), 140);
         columns.add(col);
 
         // add a column per available permission
@@ -175,12 +190,12 @@ public class AclEditor {
             } else {
                 columnName = s;
             }
-            float size = columnName.length() * .02f;
-            col = new TableColumn(s, columnName, size);
+            col = new ColumnConfig(s, columnName, 80);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
-            col.setRenderer(new CellRenderer<TableItem>() {
-                public String render(final TableItem item, final String perm, final Object value) {
-                    final GWTJahiaNodeACE ace = (GWTJahiaNodeACE) value;
+            col.setRenderer(new GridCellRenderer() {
+                public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
+                                     ListStore listStore, final Grid grid) {
+                    final GWTJahiaNodeACE ace = model.get("ace");
                     String permValue = ace.getPermissions().get(perm);
                     CheckBox chb = new CheckBox();
                     chb.setTitle(columnName);
@@ -192,10 +207,11 @@ public class AclEditor {
                             boolean checked = ((CheckBox) sender).isChecked();
                             ace.getPermissions().put(perm, checked ? "GRANT" : "DENY");
                             if (checked) {
-                                List<String> toCheck = acl.getAclDependencies().get(perm);
+                                grid.getView().getRow(rowIndex);
+                                List<String> toCheck = acl.getPermissionsDependencies().get(perm);
                                 if (toCheck != null) {
                                     for (String s1 : toCheck) {
-                                        CheckBox checkBox = (CheckBox) item.getValue(available.indexOf(s1) + 2);
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(s1) + 2);
                                         if (!checkBox.isChecked()) {
                                             checkBox.setChecked(true);
                                             checkBox.onBrowserEvent(Event.getCurrentEvent());
@@ -203,30 +219,34 @@ public class AclEditor {
                                     }
                                 }
                             } else {
-                                Set<String> toCheck = acl.getAclDependencies().keySet();
+                                Set<String> toCheck = acl.getPermissionsDependencies().keySet();
                                 for (String s1 : toCheck) {
-                                    if (acl.getAclDependencies().get(s1).contains(perm)) {
-                                        CheckBox checkBox = (CheckBox) item.getValue(available.indexOf(s1) + 2);
+                                    if (acl.getPermissionsDependencies().get(s1).contains(perm)) {
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(s1) + 2);
                                         if (checkBox.isChecked()) {
                                             checkBox.setChecked(false);
                                             checkBox.onBrowserEvent(Event.getCurrentEvent());
                                         }
                                     }
                                 }
-
                             }
                             // update inheritance column
                             if (!ace.getInheritedPermissions().isEmpty()) {
                                 if (ace.getPermissions().equals(ace.getInheritedPermissions()) && !acl.isBreakAllInheritance()) {
                                     if (displayInheritanceColumn) {
-                                        ((Widget) item.getValue(available.size() + 2)).removeFromParent();
-                                        item.setValue(available.size() + 2, buildInheritanceLabel(ace));
+                                        LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex, available.size() + 2);
+                                        ctn.removeAll();
+                                        ctn.add(buildInheritanceLabel(ace));
+                                        ctn.layout();
                                     }
                                     ace.setInherited(true);
                                 } else {
                                     if (ace.isInherited()) {
                                         if (displayInheritanceColumn) {
-                                            item.setValue(available.size() + 2, buildLocalRestoreButton(item, ace));
+                                            LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(rowIndex, available.size() + 2);
+                                            ctn.removeAll();
+                                            ctn.add(buildLocalRestoreButton(model, ace));
+                                            ctn.layout();
                                         }
                                         ace.setInherited(false);
                                     }
@@ -234,8 +254,7 @@ public class AclEditor {
                             }
                         }
                     });
-                    item.setWidget(i, chb);
-                    return "";
+                    return chb;
                 }
             });
 
@@ -244,23 +263,25 @@ public class AclEditor {
 
         // column break in heritance
         if (displayInheritanceColumn) {
-            col = new TableColumn("local", "", 0.4f);
+            col = new ColumnConfig("inheritance", "", 100);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
-            col.setRenderer(new CellRenderer<TableItem>() {
-                public String render(final TableItem item, final String property, final Object value) {
-                    final GWTJahiaNodeACE ace = (GWTJahiaNodeACE) value;
+            col.setRenderer(new GridCellRenderer<ModelData>() {
+                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
+                                     ListStore<ModelData> modelDataListStore, Grid<ModelData> modelDataGrid) {
+                    final GWTJahiaNodeACE ace = (GWTJahiaNodeACE) model.get("ace");
+                    LayoutContainer widget = new LayoutContainer();
                     if (!readOnly) {
                         if (!ace.getInheritedPermissions().isEmpty() && !acl.isBreakAllInheritance()) {
                             if (!ace.getPermissions().equals(ace.getInheritedPermissions())) {
-                                item.setWidget(available.size() + 2, buildLocalRestoreButton(item, ace));
+                                widget.add(buildLocalRestoreButton(model, ace));
                             } else {
-                                item.setValue(available.size() + 2, buildInheritanceLabel(ace));
+                                widget.add(buildInheritanceLabel(ace));
                             }
                         } else {
-                            item.setWidget(available.size() + 2, buildRemoveButton(item, ace));
+                            widget.add(buildRemoveButton(model, ace));
                         }
                     }
-                    return "";
+                    return widget;
                 }
             });
             columns.add(col);
@@ -268,28 +289,31 @@ public class AclEditor {
 
 
         // create the table
-        aclTable = new Table(new TableColumnModel(columns));
-        aclTable.setBulkRender(false);
-        aclTable.sort(1, Style.SortDir.ASC);
+        store = new ListStore<ModelData>();
+        aclTable = new Grid<ModelData>(store, new ColumnModel(columns));
+
+//        aclTable.setBulkRender(false);
+        store.sort("name", Style.SortDir.ASC);
         items = new ArrayList<String>();
         aceMap = new HashMap<String, GWTJahiaNodeACE>();
         List<GWTJahiaNodeACE> l = acl.getAce();
 
         // populate table
         for (GWTJahiaNodeACE ace : l) {
-            addTableItem(aclTable, ace, available);
+            addTableItem(store, ace, available);
             aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
         }
 
         restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 reinitAcl();
-                aclTable.removeAll();
+//                aclTable.removeAll();
+                store.removeAll();
                 items.clear();
                 aceMap.clear();
                 List<GWTJahiaNodeACE> l = acl.getAce();
                 for (GWTJahiaNodeACE ace : l) {
-                    addTableItem(aclTable, ace, available);
+                    addTableItem(store, ace, available);
                     aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
                 }
                 setBreakInheritanceLabel();
@@ -332,7 +356,7 @@ public class AclEditor {
                         }
                     }
                     setDirty();
-                    addTableItem(aclTable, ace, available);
+                    addTableItem(store, ace, available);
                 }
             }
 
@@ -360,7 +384,7 @@ public class AclEditor {
                         }
                     }
                     setDirty();
-                    addTableItem(aclTable, ace, available);
+                    addTableItem(store, ace, available);
                 }
             }
 
@@ -388,7 +412,7 @@ public class AclEditor {
                         }
                     }
                     setDirty();
-                    addTableItem(aclTable, ace, available);
+                    addTableItem(store, ace, available);
                 }
             }
         };
@@ -432,7 +456,7 @@ public class AclEditor {
                     acl.setBreakAllInheritance(!acl.isBreakAllInheritance());
                     setDirty();
                     setBreakInheritanceLabel();
-                    aclTable.removeAll();
+                    store.removeAll();
                     items.clear();
                     List<GWTJahiaNodeACE> list = new ArrayList<GWTJahiaNodeACE>(acl.getAce());
                     for (GWTJahiaNodeACE ace : list) {
@@ -441,7 +465,7 @@ public class AclEditor {
                                 ace.setInherited(true);
                             }
                         }
-                        addTableItem(aclTable, ace, available);
+                        addTableItem(store, ace, available);
                     }
                 }
             });
@@ -462,7 +486,7 @@ public class AclEditor {
      * @param ace
      * @return
      */
-    private Button buildRemoveButton(final TableItem item, final GWTJahiaNodeACE ace) {
+    private Button buildRemoveButton(final ModelData item, final GWTJahiaNodeACE ace) {
         Button button = new Button();
         button.setIconStyle("gwt-icons-delete");
         button.setBorders(false);
@@ -473,7 +497,7 @@ public class AclEditor {
                 setDirty();
                 String o = ace.getPrincipalType() + ace.getPrincipal();
                 items.remove(o);
-                aclTable.remove(item);
+                store.remove(item);
                 if (ace.getInheritedPermissions().isEmpty()) {
                     aceMap.remove(ace.getPrincipalType() + ace.getPrincipalKey());
                     acl.getAce().remove(ace);
@@ -514,7 +538,7 @@ public class AclEditor {
      * @param ace
      * @return
      */
-    private Button buildLocalRestoreButton(final TableItem item, final GWTJahiaNodeACE ace) {
+    private Button buildLocalRestoreButton(final ModelData item, final GWTJahiaNodeACE ace) {
         Button button = new Button();
         button.setIconStyle("gwt-icons-restore");
         button.setToolTip(getResource("org.jahia.engines.rights.ManageRights.restoreInheritance.label"));
@@ -525,16 +549,18 @@ public class AclEditor {
                 Log.debug("restore" + ace.getPermissions());
                 ace.getPermissions().clear();
                 ace.getPermissions().putAll(ace.getInheritedPermissions());
-                Object[] o = item.getValues();
-                for (int i = 2; i < o.length - 1; i++) {
-                    CheckBox chb = (CheckBox) o[i];
+                int row = store.indexOf(item);
+                for (int i = 2; i < available.size() + 2; i++) {
+                    CheckBox chb = (CheckBox) aclTable.getView().getWidget(row,i);
                     String perm = aclTable.getColumnModel().getColumn(i).getId();
                     String v = ace.getPermissions().get(perm);
                     chb.setChecked("GRANT".equals(v));
                 }
                 ace.setInherited(true);
-                //event.getComponent().removeFromParent(); // TODO verify
-                item.setValue(available.size() + 2, buildInheritanceLabel(ace));
+                LayoutContainer ctn = (LayoutContainer) aclTable.getView().getWidget(row,available.size() + 2);
+                ctn.removeAll();
+                ctn.add(buildInheritanceLabel(ace));
+                ctn.layout();
             }
         });
         return button;
@@ -573,12 +599,12 @@ public class AclEditor {
     public void setSaved() {
         this.originalAcl = acl.cloneObject();
         reinitAcl();
-        aclTable.removeAll();
+        store.removeAll();
         items.clear();
         aceMap.clear();
         List<GWTJahiaNodeACE> l = acl.getAce();
         for (GWTJahiaNodeACE ace : l) {
-            addTableItem(aclTable, ace, available);
+            addTableItem(store, ace, available);
             aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
         }
         setBreakInheritanceLabel();
@@ -598,37 +624,24 @@ public class AclEditor {
     /**
      * Add ace to acl table
      *
-     * @param tbl
+     * @param store
      * @param ace
      * @param available
      */
-    private void addTableItem(Table tbl, GWTJahiaNodeACE ace, List<String> available) {
+    private void addTableItem(ListStore<ModelData> store, GWTJahiaNodeACE ace, List<String> available) {
         if (ace.isInherited() && acl.isBreakAllInheritance()) {
             return;
         }
-        Object[] values = new Object[3 + available.size()];
-        Html html = new Html("&nbsp;");
-        if (ace.getPrincipalType() == 'u') {
-            html.setStyleName("um-user");
-        } else {
-            html.setStyleName("um-group");
-        }
-        values[0] = html;
-        values[1] = ace.getPrincipal();
+        BaseModelData value = new BaseModelData();//Object[3 + available.size()];
+        value.set("principal", ace.getPrincipal());
 
         String o = ace.getPrincipalType() + ace.getPrincipal();
         if (!items.contains(o)) {
             items.add(o);
+            value.set("ace",ace);
 
-            int i = 2;
-            for (String s : available) {
-                values[i++] = ace;
-            }
-            values[i] = ace;
-
-            TableItem item = new TableItem(values);
-            tbl.add(item);
-            tbl.sort(1, Style.SortDir.ASC);
+            store.add(value);
+            store.sort("principal", Style.SortDir.ASC);
         }
     }
 

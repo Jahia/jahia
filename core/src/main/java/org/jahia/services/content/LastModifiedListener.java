@@ -115,7 +115,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (n.isNodeType(Constants.MIX_LAST_MODIFIED) && n.isCheckedOut()) {
                                     n.setProperty("jcr:lastModified",c);
                                     n.setProperty("jcr:lastModifiedBy",userId);
-                                    updateTranslationNodes(n, c);                                    
+                                    updateTranslationNodes(n, c, userId);                                    
                                 }
                             } catch (PathNotFoundException e) {
                                 // node has been removed
@@ -129,7 +129,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                     if (n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
                                         n.setProperty("jcr:lastModified",c);
                                         n.setProperty("jcr:lastModifiedBy",userId);
-                                        updateTranslationNodes(n, c);
+                                        updateTranslationNodes(n, c, userId);
                                     }
                                 }
                             } catch (PathNotFoundException e) {
@@ -147,7 +147,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
     }
 
-    private void updateTranslationNodes(JCRNodeWrapper node, Calendar c) throws RepositoryException {
+    private void updateTranslationNodes(final JCRNodeWrapper node, final Calendar c, final String userId) throws RepositoryException {
         NodeIterator ni = node.getNodes("j:translation*");
 
         while (ni.hasNext()) {
@@ -156,6 +156,7 @@ public class LastModifiedListener extends DefaultEventListener {
                 translation.checkout();
             }
             translation.setProperty(Constants.JCR_LASTMODIFIED, c);
+            translation.setProperty("jcr:lastModifiedBy",userId);            
         }
 
     }

@@ -5,10 +5,10 @@ How to code a template using JSON and JQUERY
 
 * First step define the resources
 
-  Our templates will need some resources mostly CSS and Javascript. The css files must be put under the css directory,
-  javascript files must be under the javascript directory
+  Our templates will need some resources mostly CSS and JavaScript. The CSS files must be put under the css directory,
+  JavaScript files must be under the javascript directory
 
-------------------------------------
++------------------------------------
 rating
 |-css
 |-javascript
@@ -16,7 +16,7 @@ rating
 |---html
 |-resources
 |-WEB-INF
-------------------------------------
++------------------------------------
 
 * Import the resources in the rendered HTML
 
@@ -26,10 +26,10 @@ rating
 
   Here an example of how to use it :
 
-------------------------------------
-<template:addResources type="css" resources="uni-form.css,ui.stars.css" nodetype="jmix:rating"/>
-<template:addResources type="javascript" resources="jquery.min.js,ui.core.min.js,ui.stars.js" nodetype="jmix:rating"/>
-------------------------------------
++------------------------------------
+<template:addResources type="css" resources="uni-form.css,ui.stars.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,ui.core.min.js,ui.stars.js"/>
++------------------------------------
 
   This tag allows you define the order of your resources which can be very important for css or javascript.
 
@@ -37,11 +37,11 @@ rating
 
   Here the goal is to submit the vote made by the user in AJAX, and update the results displayed on page based on its vote.
 
-  We will first show you the javascript code (if you are not familiar with JQuery then look at their {{{http://docs.jquery.com}documentation}} first).
+  We will first show you the JavaScript code (if you are not familiar with JQuery then look at their {{{http://docs.jquery.com}documentation}} first).
 
   For the full code look into the file rating.hidden.average.jsp
 
-------------------------------------
++------------------------------------
 // Send request to the server using POST method
 $.post("${url.base}${currentNode.path}",
 {'j:lastVote': value, redirectTo:"${url.base}${renderContext.mainResource.node.path}",newNodeOutputFormat:"html",methodToCall:"put"},
@@ -61,7 +61,7 @@ $.post("${url.base}${currentNode.path}",
 	$("#messages").fadeOut(1000, function(){ui.enable();});
 	}, 2000);
 }, "json");
-------------------------------------
++------------------------------------
 
   * The first argument for the method post is the destination url of the request, here we update our current node.
 

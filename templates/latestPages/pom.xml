@@ -42,9 +42,9 @@
     </parent>
     <groupId>org.jahia.templates</groupId>
     <artifactId>latestPages</artifactId>
-    <name>latestPages</name>
+    <name>Jahia Latest Pages</name>
     <packaging>war</packaging>
-    <description>These are the custom module (latestPages) for running on a Jahia server.</description>
+    <description>These is a custom module (latestPages) for running on a Jahia server.</description>
     <repositories>
         <repository>
             <id>jahiaRepository</id>
@@ -85,6 +85,25 @@
                                 </buildCommand>
                             </additionalBuildcommands>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>module-docs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

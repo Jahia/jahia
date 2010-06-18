@@ -9,7 +9,7 @@ Customization of User Dashboard
   As an example we will show you how the module docspace define a view for the user listing all the docspaces he can
   access, the path of the template is (docspace/jnt_user/html/user.mydocspaces.jsp).
 
-----
++----
 <template:addResources type="css" resources="docspace.css"/>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <div id="${currentNode.identifier}">
@@ -43,4 +43,4 @@ Customization of User Dashboard
     <template:displayPagination nbItemsList="5,10,20,40,60,80,100,200"/>
     <template:removePager id="${currentNode.identifier}"/>
 </div>
-----
++----

@@ -18,7 +18,7 @@ Usage
   
   An external resource is declared as:
   
-------------------------------------------------
++------------------------------------------------
   <%-- Declaring dependency to timepicker JS and CSS --%>
   <template:addResources type="javascript" resources="timepicker.js"/>
   <template:addResources type="css" resources="timepicker.css"/>
@@ -26,11 +26,11 @@ Usage
   <%-- Declaring multiple dependencies --%>
   <template:addResources type="javascript"
     resources="jquery.min.js,jquery-ui.core.min.js,jquery-ui.datepicker.min.js,jquery-ui.slider.min.js"/>
-------------------------------------------------
++------------------------------------------------
    
   For inline resources the body of the <<<<template:addResources/>>>> tag is utilized: 
 
-------------------------------------------------
++------------------------------------------------
   <template:addResources type="inlineJavaScript">
     $(document).ready(function() { alert('document loaded'); });
   </template:addResources>
@@ -42,7 +42,7 @@ Usage
     overflow: auto;
   }
   </template:addResources>
-------------------------------------------------
++------------------------------------------------
 
 * Asset lookup
 
@@ -50,9 +50,9 @@ Usage
   asset type and the current template module.
   The asset <<<ui/xyz.js>>> (of type <<<javascript>>>), declared as follows:
 
-------------------------------------------------
++------------------------------------------------
   <template:addResources type="javascript" resources="ui/xyz.js"/>
-------------------------------------------------
++------------------------------------------------
 
    is searched in the following locations in that order:
   
@@ -99,7 +99,7 @@ Usage
   The <<<<template:includeResources/>>>> tag is used to perform the inclusion of all
   assets declared in the templates into the HTML document's <<<head>>> section:
 
-------------------------------------------------
++------------------------------------------------
   <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
   
   <template:template>
@@ -113,7 +113,7 @@ Usage
           ${wrappedContent}
       </template:templateBody>
   </template:template>
-------------------------------------------------
++------------------------------------------------
 
   If you build your wrappers manually or need higher control, please, take a look at the code of the
   <<<includeResources.tag>>> tag file for details.

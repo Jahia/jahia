@@ -4,7 +4,7 @@ Using rules
   The following example, included into Jahia News module, shows the usage of these consequences for automatic generation of
   URL mappings for news items based on their title.
 
--------------
++-------------
 ###############################################################################
 package org.jahia.modules.seo.rules
 
@@ -32,6 +32,6 @@ rule "Add generated URL mapping for news item"
         Remove URL mappings for node parent and language node.getProperty("jcr:language").getStringValue()
         Add URL mapping "/news/" + jcrUtils.generateNodeName(propertyValueAsString, 70) for node parent and language node.getProperty("jcr:language").getStringValue()
 end
--------------
++-------------
 
   The <Remove URL mappings for node...> action deletes current URL mappings for the language, where as the second action - <Add URL mapping...> assigns a new mapping, generating it from the title value (<propertyValueAsString> in the rule above). 

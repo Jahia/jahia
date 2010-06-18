@@ -31,7 +31,7 @@ Jahia Rating Module
 	     in a place it has no impact on your design and then call <<<\<template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/\>>>>
 	     where you want to display the rating.>
 
--------------------------------------------------------------------------------------------------
++-------------------------------------------------------------------------------------------------
 <template:option node="${currentNode}" template="hidden.plusone_minorone_form" nodetype="jmix:rating"/>
 <span class="forum-corners-top"><span></span></span>
 
@@ -41,4 +41,4 @@ Jahia Rating Module
             <li class="forum-report-icon"><a title="<fmt:message key='report.post'/>" href="#"><span><fmt:message key='report.post'/></span></a></li>
             <li><template:option node="${currentNode}" template="hidden.plusone_minorone" nodetype="jmix:rating"/></li>
         </c:if>
---------------------------------------------------------------------------------------------------
++--------------------------------------------------------------------------------------------------

@@ -11,12 +11,12 @@ Jahia Static Assets
   The dependency to this module can be also specified explicitly in the module's deployment descriptor
   (e.g. <<<my-custom-module/META-INF/MANIFEST.MF>>>, by including it into <<<depends>>> attribute:
   
-------------------------------------------------
++------------------------------------------------
   ...
   package-name: My Custom Module
   depends: Jahia Static Assets
   ...
-------------------------------------------------
++------------------------------------------------
    
 
   Following sections describe module features in more details:

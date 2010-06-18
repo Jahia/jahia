@@ -6,28 +6,28 @@ Jahia Crazy Jane - Templates Module
 
 	* Dynamic Modules
 
-	  General instructions on how to create a new {{{dynamic_module.html} dynamic module}}.
+	  General instructions on how to create a new {{{./dynamic_module.html} dynamic module}}.
 
 	* Render filters
 
-	  How to use and develop {{{filter.html} rendering filters}}.
+	  How to use and develop {{{./filter.html} rendering filters}}.
 
 	* Module rules
 
-	  How to use and develop {{{rules.html} rules in a module}}.
+	  How to use and develop {{{./rules.html} rules in a module}}.
 
 	* Areas
 
-	  How to use and develop {{{areas.html} areas in a module}}.
+	  How to use and develop {{{./areas.html} areas in a module}}.
 
 	* JQuery
 
-	  Recommendations about {{{jquery.html} JQuery usages}}.
+	  Recommendations about {{{./jquery.html} JQuery usages}}.
 
 	* REST API
 
-	  Information on how to use Jahia's REST API is available in the {{{rest.html}REST API documentation page}}.
+	  Information on how to use Jahia's REST API is available in the {{{./rest.html}REST API documentation page}}.
 
 	* Auto-completion
 
-	  How to integrate {{{autocompletion.html}auto-completion}} into your templates.
+	  How to integrate {{{./autocompletion.html}auto-completion}} into your templates.

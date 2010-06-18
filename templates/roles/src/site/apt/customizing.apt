@@ -51,7 +51,7 @@ Customizing built-in roles and permissions
 
   An example of the server-level roles/permissions is given below:
   
--------------
++-------------
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0"
                     xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
@@ -102,25 +102,25 @@ Customizing built-in roles and permissions
     </roles>
 
 </content>
--------------
++-------------
 
   In order to provide initial assignment of permissions to a particular role the <<<j:assignedPermissions>>>
   attribute can be used (see example above) whose value should be a space-separated list of permissions, e.g.:
   
--------------
++-------------
         <support-manager jcr:primaryType="jnt:role"
             j:assignedPermissions="global/issue-tracking global/documentation global/about"/>
--------------
++-------------
 
   In a similar way a role can be initially granted to the specified principals (those must exist at the time of
   initial import), e.g. the value of the attribute <<<j:grantToPrincipals>>> in the following site-level role example
   (snapshot from <<<site-roles.xml>>>):
 
--------------
++-------------
         <site-administrator jcr:primaryType="jnt:role"
             j:assignedPermissions="actions/* admin/* edit-mode/* languages/* managers/* toolbar/* selector/* wysiwyg-editor-toolbar/*"
             j:grantToPrincipals="g:administrators u:siteSupervisor"/>
--------------
++-------------
   
   indicates that the <<<site-administrator>>> role will be initially granted to the <<<administrators>>> group
   and <<<siteSupervisor>>> user.

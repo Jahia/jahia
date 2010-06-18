@@ -33,7 +33,7 @@ Crazy Jane - Jahia Templates - Reusable components
 
   For example this import file will create two reusable components for type jnt:navBar :
 
-------------------------------
++------------------------------
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0"
                     xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
@@ -54,4 +54,4 @@ Crazy Jane - Jahia Templates - Reusable components
         </jnt_navBar>
     </reusableComponents>
 </content>
-------------------------------
++------------------------------

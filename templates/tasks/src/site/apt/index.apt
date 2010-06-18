@@ -29,7 +29,7 @@ Jahia Tasks Module
   A task can be created by using the "Create task" consequence in a rule file - for example, the following rule create
   a new task when a new user is created :
 
---------------------------------
++--------------------------------
 rule "A welcome task for the new user"
    when
        A new node is created
@@ -38,4 +38,4 @@ rule "A welcome task for the new user"
        Log "Creating welcome task for new user: " + node.getName()
        Create task "Welcome to Jahia!" with description "We are glad to have you in our platform." for user node.getName()
 end
---------------------------------
++--------------------------------

@@ -12,13 +12,13 @@ Jahia Wiki module
 
   The wiki feature is a jahia module that defines a set of nodes representing a wiki page
 
--------------------------------------
++-------------------------------------
 [jnt:wikiPage] > jnt:content, mix:title
  - lastComment (string)
  - text (string, richtext) i18n
--------------------------------------
++-------------------------------------
 
- and a set of jsps allowing diplaying and creating new wiki pages.
+ and a set of jsps allowing displaying and creating new wiki pages.
 
  The wiki content can be written thanks to a simplified markup language.
 
@@ -27,12 +27,12 @@ Jahia Wiki module
 
   It's handled by a RenderFilter that wraps the framework XWiki (http://www.xwiki.org/).
 
-* How XWiki is intergrated into Jahia?
+* How XWiki is integrated into Jahia?
 
- The jars of xwiki are already available into Jahia. To handle internLink ([[a sub page]] syntax), a custom XHMLLinker has been implemented. Basically, it checks if a pages is available or not. Depending on that, a "create" or a "view" page link is displayed.
- This LinkRenderer works like the XHTMLLinkrenderer classes provided by default by Xwiki and gives access to jahia object like the RenderContext.
+ The jars of XWiki are already available into Jahia. To handle internLink ([[a sub page]] syntax), a custom XHMLLinker has been implemented. Basically, it checks if a pages is available or not. Depending on that, a "create" or a "view" page link is displayed.
+ This LinkRenderer works like the XHTMLLinkrenderer classes provided by default by XWiki and gives access to jahia object like the RenderContext.
 
--------------------------------------
++-------------------------------------
 
 public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable {
 ...
@@ -45,7 +45,7 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
     }
 ...
 }
--------------------------------------
++-------------------------------------
 
 
 * What's the default markup language?
@@ -56,7 +56,7 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
 
  It corresponds to the property inputSyntax defined in wiki.xml file :
 
--------------------------------------
++-------------------------------------
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -80,7 +80,7 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
     <bean id="defaultSyntaxFactory" class="org.xwiki.rendering.internal.parser.DefaultSyntaxFactory"/>
     <bean name="NewWikiPageHandler" class="org.jahia.modules.wiki.errors.NewWikiPageHandler"/>
 </beans>
--------------------------------------
++-------------------------------------
 
  Supported markup are the ones supported by xwiki:
   
@@ -104,16 +104,16 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
 
 * How do I generate a table of content?
 
--------------------------------------
++-------------------------------------
   {{toc /}}
--------------------------------------
++-------------------------------------
 
 
 * How do I generate a decorated table of content (TOC)?
 
--------------------------------------
++-------------------------------------
   {{box cssClass="summary box-inner box-inner-border" title="===Content==="}}{{toc start=2}}{{/box}}
--------------------------------------
++-------------------------------------
 
 
 * Where can I found more documentation about TOC?
@@ -121,11 +121,11 @@ public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable
   http://code.xwiki.org/xwiki/bin/view/Macros/TocMacro20
 
 
-* Where can I found documentation about Xwiki?
+* Where can I found documentation about XWiki?
 
    http://code.xwiki.org/xwiki/bin/view/Modules/RenderingModule
 
-* What is the version of xwiki ?
+* What is the version of XWiki ?
 
   2.0.4
 

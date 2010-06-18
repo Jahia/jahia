@@ -14,24 +14,24 @@ Jahia Script Languages Examples
 
  So in effect we have the following template structure :
 
-----------------------------------------
++----------------------------------------
    FULL_NODETYPE_NAME / html / NODETYPENAME.TEMPLATE_LANGUAGE_EXTENSION
-----------------------------------------
++----------------------------------------
 
  So for example for Javascript, we have the following :
 
  In definitions.cnd :
 
-----------------------------------------
++----------------------------------------
 [jnt:javascriptNode] > jnt:content, mix:title, jmix:editorialContent
-- javascriptText (string) i18n
++- javascriptText (string) i18n
 ----------------------------------------
 
- And the Javascript template file will therefore be located, once deployed,  in :
+ And the JavaScript template file will therefore be located, once deployed,  in :
 
-----------------------------------------
++----------------------------------------
    templates/scriptlanguages/jnt_javascriptNode/html/javascriptNode.js
-----------------------------------------
++----------------------------------------
 
  The file extension is the important part, it will be used to resolve the engine that will be called to render the
  template file.
@@ -39,7 +39,7 @@ Jahia Script Languages Examples
  Jahia will therefore look for template languages using an order specified in it's configuration. This configuration
  can be found in the WEB-INF/etc/spring/applicationcontext-services.xml file, in the following section :
 
-----------------------------------------
++----------------------------------------
     <bean id="RenderService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -60,7 +60,7 @@ Jahia Script Languages Examples
                         </bean>
                     </list>
                 </property>
-----------------------------------------
++----------------------------------------
 
  By default Jahia will look for JSP, then Groovy, then Javascript, PHP, Velocity and finally FreeMarker template files.
  Note that this default configuration is not recommended for production, because resolving all these different
@@ -71,13 +71,13 @@ Jahia Script Languages Examples
 
  Here below we will show examples of how to display the content of a JCR node using different scripting languages.
 
-** Javascript
+** JavaScript
 
-----------------------------------------
-out.println('This is an example of a template using Javascript.<br/>');
++----------------------------------------
+out.println('This is an example of a template using JavaScript.<br/>');
 
 out.println(currentNode.getProperty('javascriptText').getValue().getString());
-----------------------------------------
++----------------------------------------
 
 ** PHP
 
@@ -90,7 +90,7 @@ out.println(currentNode.getProperty('javascriptText').getValue().getString());
  implementation. You can find more information concerning the commercial implementation's advanced features here :
  {{http://www.caucho.com/products/quercus/}}
 
-----------------------------------------
++----------------------------------------
 <?php
 echo "This is a PHP module ! Here below we are displaying a JCR node in PHP...<br/>";
 
@@ -101,23 +101,23 @@ try {
 }
 
 ?>
-----------------------------------------
++----------------------------------------
 
 ** Velocity
 
-----------------------------------------
++----------------------------------------
 This is an example of templating with Velocity.<br/>
 
 $currentNode.getProperty('velocityText').getValue().getString()
-----------------------------------------
++----------------------------------------
 
 ** FreeMarker
 
-----------------------------------------
++----------------------------------------
 This is an example of a template using FreeMarker.<br/>
 
 ${currentNode.getProperty('freeMarkerText').getValue().getString()}
-----------------------------------------
++----------------------------------------
 
 * Bindings
 

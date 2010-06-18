@@ -56,6 +56,25 @@
           </plugins>
         </build>
       </profile>
+        <profile>
+            <id>all-templates-docs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>stage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <modules>
@@ -106,6 +125,4 @@
         <module>tabularList</module>
         <module>social</module>
     </modules>
-
-
 </project>

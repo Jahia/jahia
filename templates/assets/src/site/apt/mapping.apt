@@ -10,7 +10,7 @@ Asset Mapping
   Mapping is configured in a module's Spring configuration file by using
   <<<org.jahia.services.render.StaticAssetMapping>>> class as follows:
   
-------------------------------------------------
++------------------------------------------------
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -27,7 +27,7 @@ Asset Mapping
     </bean>
 
 </beans>
-------------------------------------------------
++------------------------------------------------
 
   The key of the map entry is the original resolved asset. Under resolved, we mean the full context
   related path of the resource (context path is not included).
@@ -45,7 +45,7 @@ Asset Mapping
   Following Spring configuration file snapshot shows the mapping from local resources to
   their CDN-hosted versions:
   
-------------------------------------------------
++------------------------------------------------
   ...
   <bean class="org.jahia.services.render.StaticAssetMapping">
       <property name="mapping">
@@ -61,7 +61,7 @@ Asset Mapping
       </property>
   </bean>
   ...
-------------------------------------------------
++------------------------------------------------
 
 * {Development} mode
 
@@ -70,7 +70,7 @@ Asset Mapping
   
   It can be achieved by mapping the minified version of the resource to the non-minified one:
   
-------------------------------------------------
++------------------------------------------------
   ...
   <bean class="org.jahia.services.render.StaticAssetMapping">
       <property name="mapping">
@@ -82,7 +82,7 @@ Asset Mapping
       </property>
   </bean>
   ...
-------------------------------------------------
++------------------------------------------------
   
   The benefit of using mappings in this case is that no changes needs to be done in the template
   themselves. After the development phase is finished, removing the corresponding mapping will
@@ -97,7 +97,7 @@ Asset Mapping
   Following mapping "tells" asset mapping service to use single jQuery UI file instead
   of several components (Core, Datepicker and Slider):
 
-------------------------------------------------
++------------------------------------------------
   ...
   <bean class="org.jahia.services.render.StaticAssetMapping">
       <property name="mapping">
@@ -112,11 +112,11 @@ Asset Mapping
         </property>
     </bean>
   ...
-------------------------------------------------
++------------------------------------------------
 
   Similar configuration can be done for CSS files:
 
-------------------------------------------------
++------------------------------------------------
   ...
   <bean class="org.jahia.services.render.StaticAssetMapping">
       <property name="mapping">
@@ -131,5 +131,5 @@ Asset Mapping
         </property>
     </bean>
   ...
-------------------------------------------------
++------------------------------------------------
 

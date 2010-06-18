@@ -41,7 +41,7 @@ Usage of Jahia Top Stories Module
   An example from this module that will remove the jmix:topStory mixin from a content when a date is reached,
   based on the j:endDate property of this mixin.
 
----------------------------------------
++---------------------------------------
 rule "Put Content in Top Stories"
    when
        A property j:endDate has been set on a node
@@ -57,4 +57,4 @@ rule "Remove From Top Stories"
    then
        Remove the type jmix:topStory
 end
----------------------------------------
++---------------------------------------

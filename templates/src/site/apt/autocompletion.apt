@@ -3,7 +3,7 @@ Integration of auto-completion in templates
  This document explains how to integrate auto-completion in templates, in order to help users populate text fields,
  avoid typos, making input faster and help search scenarios.
 
- Auto-completion uses the JQuery auto-completion plugin and integrates it with {{{rest.html}Jahia's Find REST servlet}}, to perform
+ Auto-completion uses the JQuery auto-completion plugin and integrates it with {{{./rest.html}Jahia's Find REST servlet}}, to perform
  queries and format the results so that the user can select a value. As you will see the query can be quite simple or
  quite complex.
 
@@ -13,7 +13,7 @@ Integration of auto-completion in templates
  auto-completion integration into tag input. You can find the full source code in the following location in Jahia's
  source code at templates/default/src/main/webapp/jmix_tagged/html/tagged.hidden.addTag.jsp.
 
----------------------------------------
++---------------------------------------
 <template:addResources type="css" resources="jquery.autocomplete.css" />
 <template:addResources type="css" resources="thickbox.css" />
 <template:addResources type="javascript" resources="jquery.ajaxQueue.js" />
@@ -62,7 +62,7 @@ Integration of auto-completion in templates
         <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"
                onclick="addNewTag(this.form, '${currentNode.identifier}', '${separator}'); return false;"/>
     </form>
----------------------------------------
++---------------------------------------
 
  The first part is quite trivial, we include the needed resources (CSS, Javascript) that the JQuery Autocompletion plugin
  requires. Then we have a few helper methods, that help with the formatting of the results and that could be
@@ -72,7 +72,7 @@ Integration of auto-completion in templates
 
  The first important (and specific) part, is the "parse" function :
 
----------------------------------------
++---------------------------------------
             parse: function parse(data) {
                 return $.map(data, function(row) {
 				    return {
@@ -82,16 +82,16 @@ Integration of auto-completion in templates
 				    }
 			    });
             },
----------------------------------------
++---------------------------------------
 
  This method extracts the relevant data from the JSON reply and sets it up in a format that the Autocomplete plugin
  can understand.
 
  The next important part are the additional parameters passed to the AJAX request. First is the query :
 
----------------------------------------
++---------------------------------------
 query : "/jcr:root${renderContext.site.path}/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename",
----------------------------------------
++---------------------------------------
 
  Note that we insert the path to the site dynamically, since it might change depending where the component is used. Also
  we have a reference to the "q" request parameter for search the name. The query is here in XPath format, and we
@@ -99,19 +99,19 @@ query : "/jcr:root${renderContext.site.path}/tags//element(*, jnt:tag)[jcr:conta
 
  The propertyMatchRegexp used to match again the properties since the JCR back-end unfortunately doesn't indicate which
  properties have matched. For more information about this parameter and the next one (removeDuplicatePropValues), please
- refer to the {{{rest.html}REST API documentation}}.
+ refer to the {{{./rest.html}REST API documentation}}.
 
  * Request example
 
  The example below is an example of a GET request that is passed to Jahia's Find servlet. Please note that it is possible
  to use either GET or POST methods to submit queries. For more information about the parameters, please consult the
- {{{rest.html}REST API}} document.
+ {{{./rest.html}REST API}} document.
 
----------------------------------------
++---------------------------------------
 http://localhost:8080/cms/find/default/en?q=t&limit=10&timestamp=1267191098007&query=%2Fjcr%3Aroot%2Fsites%2FmySite%2F
 tags%2F%2Felement(*%2C+jnt%3Atag)%5Bjcr%3Acontains(.%2C'%7B%24q%7D*')%5D%2F%40j%3Anodename&language=xpath
 &escapeColon=false&propertyMatchRegexp=%7B%24q%7D.*&removeDuplicatePropValues=false
----------------------------------------
++---------------------------------------
 
  * Response example
 
@@ -123,7 +123,7 @@ tags%2F%2Felement(*%2C+jnt%3Atag)%5Bjcr%3Acontains(.%2C'%7B%24q%7D*')%5D%2F%40j%
  of the result, and also the complete dump of the node, and other columns that may vary depending on the request that
  was executed.
 
----------------------------------------
++---------------------------------------
 Content-Length:1721
 Content-Type:application/json;charset=UTF-8
 Date:Fri, 26 Feb 2010 13:31:38 GMT
@@ -186,7 +186,7 @@ Server:Apache-Coyote/1.1
 		"jcr:path": "/sites/mySite/tags/tag2"
 	}
 ]
----------------------------------------
++---------------------------------------
 
 * Full-text search auto-completion
 
@@ -197,13 +197,13 @@ Server:Apache-Coyote/1.1
  will again use XPath in this example, but it would also be possible (although slower at the time of this writing) to
  use SQL-2 syntax :
 
----------------------------------------
++---------------------------------------
 query : "/jcr:root${renderContext.site.path}//element(*, nt:base)[jcr:contains(.,'{$q}*')]",
 language : "xpath",
 escapeColon : "false",
 propertyMatchRegexp : "{$q}.*",
 removeDuplicatePropValues : "true"
----------------------------------------
++---------------------------------------
 
  Another different is that we have activated the removal of duplicate property values, since we expect duplicates will
  be returned, and we only want one value to be returned.
@@ -213,7 +213,7 @@ removeDuplicatePropValues : "true"
  is built by the Find servlet. We can use this array to choose a property to display as is illustrated in the code
  below :
 
----------------------------------------
++---------------------------------------
  /**
   * As any property can match the query, we try to intelligently display properties that either matched or make
   * sense to display.
@@ -232,7 +232,7 @@ removeDuplicatePropValues : "true"
          return node["j:nodename"];
      }
  }
----------------------------------------
++---------------------------------------
 
  In the getText(node) method we have also added a fallback to usual JCR properties in case the matchingProperties was
  not available.
@@ -240,12 +240,12 @@ removeDuplicatePropValues : "true"
  You can find the whole source code for full-search text auto-completion in the following location (in the deployed
  Jahia) :
 
----------------------------------------
++---------------------------------------
 webapps/ROOT/templates/search/jnt_simpleSearchForm/html/simpleSearchForm.jsp
----------------------------------------
++---------------------------------------
 
  Or in Jahia's source code at :
 
----------------------------------------
++---------------------------------------
 templates/search/src/main/webapp/jnt_simpleSearchForm/html/simpleSearchForm.jsp
----------------------------------------
++---------------------------------------

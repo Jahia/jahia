@@ -16,7 +16,7 @@ Usage of User Profile
 
   Here the JavaScript example of how to edit a simple text :
 
------------------------------------------------
++-----------------------------------------------
 <script type="text/javascript">
 $(document).ready(function() {
         $(".edit").editable(function (value, settings) {
@@ -37,7 +37,7 @@ $(document).ready(function() {
         });
     });
 </script>
------------------------------------------------
++-----------------------------------------------
 
   In this JavaScript function we create a data map for handling our form data, we pass a 'methodToCall' parameter to Jahia
   to use a put method instead of a post. For the name of the properties to update we get it form the id of the HTML object
@@ -45,16 +45,16 @@ $(document).ready(function() {
 
   Now the HTML code associated :
 
------------------------------------------------
++-----------------------------------------------
 <span class="label"><fmt:message key="jnt_user.j_email"/> : </span>
 <span id="j_email" class="edit">${fields['j:email']}</span>
------------------------------------------------
++-----------------------------------------------
 
 * {Rich} Text
 
   For rich text it work the same way, only the type of the editable will change :
 
------------------------------------------------
++-----------------------------------------------
 <script type="text/javascript">
 $(document).ready(function() {
      $(".ckeditorEdit").editable(function (value, settings) {
@@ -73,19 +73,19 @@ $(document).ready(function() {
         });
     });
 </script>
------------------------------------------------
++-----------------------------------------------
 
   Now the HTML for using this CKEditor in line edition :
 
------------------------------------------------
++-----------------------------------------------
 <div class="ckeditorEdit" id="j_about">${fields['j:about']}</div>
------------------------------------------------
++-----------------------------------------------
 
 * {Date} Picker
 
   For date we will use a {{{http://www.eyecon.ro/datepicker/}date picker plugin for jQuery}}. Here how we use it for Jahia.
 
------------------------------------------------
++-----------------------------------------------
 <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
 <c:if test="${not empty birthDate}">
     <fmt:formatDate value="${birthDate.date.time}" pattern="dd/MM/yyyy" var="editBirthDate"/>
@@ -126,14 +126,14 @@ $(document).ready(function() {
         });
      });
 </script>
------------------------------------------------
++-----------------------------------------------
 
   In this case the internal format for date is day/month/year, when submitting we convert that to an ISO8601
   for updating date in Jahia (This is the internal format of the JCR).
 
   HTML usage example :
 
------------------------------------------------
++-----------------------------------------------
 <jcr:nodeProperty node="${currentNode}" name="j:birthDate" var="birthDate"/>
 <c:if test="${not empty birthDate}">
     <fmt:formatDate value="${birthDate.date.time}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
@@ -143,14 +143,14 @@ $(document).ready(function() {
    <fmt:formatDate value="${now}" pattern="dd, MMMM yyyy" var="displayBirthDate"/>
 </c:if>
 <div class="dateEdit" id="j_birthDate">${displayBirthDate}</div>
-------------------------------------------------
++------------------------------------------------
 
 * {DropDown} List
 
   We will now see how to use the choicelist initializer mechanism to allow creation of custom static drop down list
   (as opposed to dynamic one that will load data from the server on demand)
 
-------------------------------------------------
++------------------------------------------------
 <jcr:propertyInitializers node="${currentNode}" name="j:title" var="titleInit"/>
 <script type="text/javascript">
     var titleMap = "{<c:forEach items="${titleInit}" varStatus="status" var="title"><c:if test="${status.index > 0}">,</c:if>'${title.value.string}':'${title.displayName}'</c:forEach>}";
@@ -172,18 +172,18 @@ $(document).ready(function() {
         });
     });
 </script>
-------------------------------------------------
++------------------------------------------------
 
   The tag <<<\<jcr:propertyInitializers/\>>>> store the list of ChoiceListValue object associated with the property to the specified var.
   We iterate over the list to create a JavaScript map that will be used for initializing our data for the dropdown list.
 
   HTML usage example :
 
-------------------------------------------------
++------------------------------------------------
 <div class="titleEdit" id="j_title">
     <jcr:nodePropertyRenderer node="${currentNode}" name="j:title" renderer="resourceBundle"/>
 </div>
-------------------------------------------------  
++------------------------------------------------  
 
 * Ajax {Upload}
   
@@ -192,7 +192,7 @@ $(document).ready(function() {
   This is a two phase submit, first we upload the selected file to the user files folder, then we get back the id
   of the file and we associate it to the property we want. Here the code doing that :
 
--------------------------------------------------
++-------------------------------------------------
 <script type="text/javascript">
 $(document).ready(function() {
         $(".imageEdit").editable('${url.base}${currentNode.path}', {
@@ -217,7 +217,7 @@ $(document).ready(function() {
         }
     });
 </script>
--------------------------------------------------
++-------------------------------------------------
 
   We see that the ajaxupload editable allow to define a callback with the data from the result of the post.
   We use those datas (list of uuids) to associate the newly created file with our profile <<<j:picture>>> property.
@@ -226,7 +226,7 @@ $(document).ready(function() {
 
   HTML usage example :
 
--------------------------------------------------
++-------------------------------------------------
 <div class="image imageEdit" id="portrait">
     <div class="itemImage itemImageRight"><jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
@@ -234,15 +234,15 @@ $(document).ready(function() {
         </c:if>
     </div>
 </div>
--------------------------------------------------
++-------------------------------------------------
 
 * Access User {Properties} From My Templates
 
   In your templates the user as a JahiaUser object is available directly under the renderContext object.
 
--------------------------------------------------
++-------------------------------------------------
 // Display username
 ${renderContext.user.username}
 // Display user firstname
 ${renderContext.user.properties['j:firstName']}
--------------------------------------------------
++-------------------------------------------------

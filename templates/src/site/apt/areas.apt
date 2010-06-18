@@ -13,7 +13,7 @@ Area Management
   As an example we will see that in the grid template for pages we use the area tag to define the places where the user
   will enter its content.
 
-------------------------------------
++------------------------------------
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <c:choose>
         <c:when test="${col.value > 8}">
@@ -41,7 +41,7 @@ Area Management
         </c:otherwise>
     </c:choose>
 </c:forEach>                 
-------------------------------------
++------------------------------------
 
   This will render a page like that in edit mode :
 
@@ -60,5 +60,5 @@ Area Management
 
 * Area type
 
-  By default an area will be a list of type jnt:contentList . If another list type is needed, the attribute areaType
+  By default an area will be a list of type jnt:contentList. If another list type is needed, the attribute areaType
   can be specified with the required node type name.

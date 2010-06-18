@@ -16,7 +16,7 @@ Building search forms
     Here is the template, used in our provided component, described in {{{./components.html#Simple} Search components}} section,
     leaving out internationalization and layout for the sake of simplicity:
 
--------------
++-------------
   1: <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
   2: 
   3: <s:form method="get">
@@ -25,7 +25,7 @@ Building search forms
   6:      <s:site value="${renderContext.site.name}" display="false"/>
   7:      <input type="submit" value="Search" title="Search"/>
   8: </s:form>
--------------
++-------------
 
   This code snippet results in an HTML form with an input field and a submit button, shown in the {{{./components.html#Simple} Simple search form}} section.
   All the form-related search tags are nested in a <<<\<s:form/\>>>> tag (lines 3 to 8).
@@ -41,7 +41,7 @@ Building search forms
     The following code is used to render an advanced form for searching site content
     (we omit resource bundles and layout stuff):
 
--------------
++-------------
   1: <s:form name="advancedSearchForm" method="get">
   2:   <fieldset>
   3:     <legend>Text search</legend>
@@ -80,7 +80,7 @@ Building search forms
   36:
   37:  <input type="submit" name="search" value="Search"/>
   38: </s:form>
--------------
++-------------
 
     The code renders the following form as a result:
     
@@ -100,16 +100,16 @@ Building search forms
     For example the site selection tag can be transformed into a multiple selection combo box
     (allows selection of multiple sites for simultaneous search) by simply adding the <<<multiple>>> attribute:
     
--------------
++-------------
   <s:site multiple="multiple"/>
--------------
++-------------
 
 * Advanced {document} search with metadata
 
     The following code is used to render an advanced form for searching through the document repository
     (we omit resource bundles and layout stuff):
 
--------------
++-------------
   1: <s:form name="advancedSearchForm" method="get">
   2:   <fieldset>
   3:     <legend>Text search</legend>
@@ -146,7 +146,7 @@ Building search forms
   34:
   35:  <input type="submit" name="search" value="Search"/>
   36: </s:form>
--------------
++-------------
 
     Following form is displayed as a result:
     
@@ -167,7 +167,7 @@ Building search forms
     
     The second tag - <<<\<s:resultIterator/\>>>> - is used to iterate over the exposed list of hits as shown in the following example:   
 
--------------
++-------------
   <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
   <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
   <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -191,6 +191,6 @@ Building search forms
       <h4><fmt:message key="search.results.no.results"/></h4>
     </c:if>
   </s:results>
--------------
++-------------
 
     The corresponding screenshot is given in the {{{./components.html#results} Search results}} section.

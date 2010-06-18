@@ -57,9 +57,9 @@ Search components
   
   We insert a new content of type <JCR query> into an area in our page and provide the following statement using JCR-SQL2 language:
   
--------------------------------
++-------------------------------
   select * from [jnt:page] as page order by page.[jcr:lastModified] desc
--------------------------------
++-------------------------------
   
   Corresponding screenshot is shown below:
   

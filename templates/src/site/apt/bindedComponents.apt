@@ -16,26 +16,26 @@ BindedComponents
   In your <<cnd>> file you definition should inherit the mixin type: <<<<jmix:bindedComponent>>>>. This mixin define a
   simple weakreference as a property.
 
-----------------------------------------------
++----------------------------------------------
 [jmix:bindedComponent] mixin
  - j:bindedComponent (weakreference)
-----------------------------------------------
++----------------------------------------------
 
   A usage example :
 
-----------------------------------------------
++----------------------------------------------
 [jnt:tagging] > jnt:content, mix:title, jmix:siteComponentContent, jmix:bindedComponent
-----------------------------------------------
++----------------------------------------------
 
     This definition only define that the tagging element has to be bound to be effective
 
   Another usage example :
 
-----------------------------------------------
++----------------------------------------------
 [jnt:calendar] > jnt:content, jmix:editorialContent, jmix:bindedComponent
  - startDateProperty (string,choicelist[linkerProps])
  - endDateProperty (string,choicelist[linkerProps])
-----------------------------------------------
++----------------------------------------------
 
     This definition extend the fact that the calendar component needs to be bound to another component and also add two
     properties that are initialized based on the list of properties available from the bound component. If I bind my calendar
@@ -50,7 +50,7 @@ BindedComponents
 
   An example from the calendar module, that fill a map with the number of node per date.
   
-------------------------------------------------
++------------------------------------------------
 <jcr:nodeProperty node="${currentNode}" name="j:bindedComponent" var="linked"/>
 
 <c:forEach items="${linked.node.nodes}" var="linkedChild" varStatus="status">
@@ -64,7 +64,7 @@ BindedComponents
         </c:otherwise>
     </c:choose>
 </c:forEach>
--------------------------------------------------
++-------------------------------------------------
 
 * How the user can define the bound between two component ?
 
@@ -75,12 +75,12 @@ BindedComponents
 
   A simple example from calendar :
 
--------------------------------------
++-------------------------------------
 <template:linker path="*"/>
--------------------------------------
++-------------------------------------
 
   A more advanced example from tagging, that define taht on the bound component we need to add a mixin type :
 
---------------------------------------
++--------------------------------------
 <template:linker path="*" mixinType="jmix:tagged"/>
---------------------------------------   
++--------------------------------------   

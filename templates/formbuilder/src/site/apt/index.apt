@@ -59,7 +59,7 @@ Jahia Form Builder Module
   (by default only country and users are available). When declaring a self populated choice list to be available to the users
   in their form you have to declare the name of the list and the list of initializers it will use and the renderer if needed.
 
-------------------------------------------
++------------------------------------------
 <bean id="formBuilderInitializer" class="org.jahia.modules.formbuilder.initializers.ChoiceListTypeInitializers">
     <property name="key" value="choicelisttypes"/>
     <property name="initializersMap">
@@ -69,5 +69,5 @@ Jahia Form Builder Module
         </map>
     </property>
 </bean>
-------------------------------------------
++------------------------------------------
   

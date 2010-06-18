@@ -9,7 +9,7 @@ User agent specifc templates
    The mapping between user agent and template types is done in the applicationContext-services.xml file, under the
    UserAgentFilter bean configuration :
 
--------------------------
++-------------------------
     <bean class="org.jahia.services.render.filter.UserAgentFilter" >
         <property name="priority" value="4" />
         <property name="applyOnModes" value="live,preview" />
@@ -20,7 +20,7 @@ User agent specifc templates
             </map>
         </property>
     </bean>
--------------------------
++-------------------------
 
   The <<<userAgentMatchingRules>>> attribute defines a list of regular expression and the associated template type
   extension. Here, all user agents matching <<<.*iPhone.*>>> and <<<.*iPod.*>>> will have an iphone template type

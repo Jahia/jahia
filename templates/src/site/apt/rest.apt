@@ -146,7 +146,7 @@ Basic Jahia REST API
 
 *** Post Example
 
------------------------------------------
++-----------------------------------------
 <form action="${url.base}${currentNode.path}/*" method="post">
     <input type="hidden" name="nodeType" value="jnt:post"/>
     <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -169,14 +169,14 @@ Basic Jahia REST API
         </p>
     </fieldset>
 </form>
------------------------------------------
++-----------------------------------------
 
    This will create a new comments in a thread of a forum. And after submission we want to redisplay the curren thread,
    this is why we used the redirectTo parameter.
 
 *** Delete Example
 
------------------------------------------
++-----------------------------------------
     <form action="${url.base}${currentNode.path}" method="post"
           id="jahia-forum-post-delete-${currentNode.UUID}">
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
@@ -187,7 +187,7 @@ Basic Jahia REST API
 
     <a title="<fmt:message key='delete.post'/>" href="#"
     onclick="document.getElementById('jahia-forum-post-delete-${currentNode.UUID}').submit();"><span><fmt:message key="delete.post"/></span>
------------------------------------------
++-----------------------------------------
 
     This example shows how to write a simple form to delete a content with a simple link.
 
@@ -246,7 +246,7 @@ Basic Jahia REST API
 
 *** HTTP GET Request (formatted for legibility) :
 
----------------------------------------
++---------------------------------------
  http://localhost:8080/cms/find/default/en
  ?q=t
  &limit=10
@@ -255,14 +255,14 @@ Basic Jahia REST API
  &escapeColon=false
  &propertyMatchRegexp=%7B%24q%7D.*
  &removeDuplicatePropValues=false
----------------------------------------
++---------------------------------------
 
  In the above example, the values are encoded so that makes a bit harder to read. Here are the unencoded values :
 
----------------------------------------
++---------------------------------------
  query = /jcr:root/sites/mySite/tags//element(*, jnt:tag)[jcr:contains(.,'{$q}*')]/@j:nodename
  propertyMatchRegexp = {$q}.*
----------------------------------------
++---------------------------------------
 
  One important thing is to now the {$q} marker that will actually be replaced with the value of the "q" request parameter
  specified in the request. This makes it easy to integrate with JQuery plugins that might use specific named request
@@ -270,7 +270,7 @@ Basic Jahia REST API
 
 *** HTTP Response :
 
----------------------------------------
++---------------------------------------
 Content-Length:1721
 Content-Type:application/json;charset=UTF-8
 Date:Fri, 26 Feb 2010 13:31:38 GMT
@@ -333,7 +333,7 @@ Server:Apache-Coyote/1.1
 		"jcr:path": "/sites/mySite/tags/tag2"
 	}
 ]
----------------------------------------
++---------------------------------------
 
  In the above JSON response, it is important to node the following properties :
 
@@ -384,14 +384,14 @@ Server:Apache-Coyote/1.1
 
 *** HTTP GET Request (formatted for legibility)
 
----------------------------------------
++---------------------------------------
 http://localhost:8080/cms/findPrincipal?principalType=users&wildcardTerm=steve
----------------------------------------
++---------------------------------------
 
 
 *** HTTP Response
 
----------------------------------------
++---------------------------------------
 [
 	{
 		"userProperties": "{j:published=true, j:nodename=sjobs, j:originWS=default, jcr:createdBy= system , j:external=false, j:firstName=Steve, jcr:primaryType=jnt:user, j:lastPublished=2010-06-16T16:13:34.094+02:00, j:email=, j:password=943+/myvMchk4TM1T11nKHx2u7g=, j:lastName=Jobs, jcr:baseVersion=164174a4-1ba0-4e3b-8143-119c9546be6c, j:lastPublishedBy= system root, jcr:created=2010-06-16T16:13:33.698+02:00, jcr:versionHistory=d17e5352-4909-48ef-94ef-e5957f741512, jcr:uuid=662cdfed-e674-4dff-85ee-dadb19243f5e, j:fullpath=/users/sjobs, jcr:isCheckedOut=true, j:checkinDate=2010-06-16T16:13:34.094+02:00, jcr:lastModified=2010-06-16T16:14:01.670+02:00, jcr:lastModifiedBy= system , j:organization=}",
@@ -432,7 +432,7 @@ http://localhost:8080/cms/findPrincipal?principalType=users&wildcardTerm=steve
 		"passwordReadOnly": false
 	}
 ]
----------------------------------------
++---------------------------------------
 
 * Debugging
 

@@ -2,9 +2,9 @@ Skins
 
 * Introduction
 
-Skins are predefined layouts that can be applied on any content object of jahia pages by authors, whatever the content particular structure.
-A same skin can be applied on a news, an article, or any other object.
-The interest for integrators is to build a collection of skins and make them accessible for authors so those authors benefit from a wider, but still correctly controlled, set of graphical options.
+ Skins are predefined layouts that can be applied on any content object of jahia pages by authors, whatever the content particular structure.
+ A same skin can be applied on a news, an article, or any other object.
+ The interest for integrators is to build a collection of skins and make them accessible for authors so those authors benefit from a wider, but still correctly controlled, set of graphical options.
  As skins are very simple (authors just choose the skin they want to apply) and doesn't involve knowledge about css and such options, they remain simple to use and explain.
 
 
@@ -15,9 +15,6 @@ The interest for integrators is to build a collection of skins and make them acc
  By adding a specific xhtml, authors can choose a different layout thanks to new css classes called in the page around the targeted object.
  For instance, with skins, it's easy to add the necessary DIVs to apply round corners around a content object, while by default the basic xhtml doesn't allow that.
 
-----------------------------------------
- ---------------------------------------
-
  Known capailities and problems:
  Skins can be designed to display some content properties from the nested object.
  Example: use the jcr:title in the skin to display it in a special layout.
@@ -27,13 +24,17 @@ The interest for integrators is to build a collection of skins and make them acc
  To avoid to display it both in module and skin, you must add in your skin css an entry to hide the title in the module.
  For that, we suggest to use the same class to display all your module titles :
 
- <h3 class="title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
++--- 
+<h3 class="title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
++--- 
 
  and in your css' skin :
 
- #bodywrapper .box2 .box2-text .title{
++--- 
+#bodywrapper .box2 .box2-text .title{
     display:none;
 }
++--- 
 
-You can find an example on jnt:mainContent node display in default module.
+ You can find an example on jnt:mainContent node display in default module.
 

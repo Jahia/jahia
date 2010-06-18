@@ -13,7 +13,7 @@ Jahia Crazy Jane - Sitemap Module
 
  Here the rule for automatically assign the jmix:sitemap option to a newly created page.
 
---------------------------------
++--------------------------------
 rule "Add sitemap mixin to page"
     salience -10
     no-loop
@@ -23,13 +23,13 @@ rule "Add sitemap mixin to page"
     then
         Add the type jmix:sitemap
 end
----------------------------------
++---------------------------------
 
  * How do I submit my sitemap to search engines like Google, Yahoo!, Microsoft ?
 
  The submission of your sitemap can be done automatically by a background job in JAHIA. This job is define inside the sitemap module.
 
-------------------------------------
++------------------------------------
 <bean id="sitemapCronTrigger" class="org.quartz.CronTrigger">
         <property name="name" value="SitemapCronTrigger"/>
         <!-- Will start the process at 4 a.m -->
@@ -55,7 +55,7 @@ end
             </map>
         </property>
     </bean>
-------------------------------------
++------------------------------------
 
   This job is define in two parts first we have the trigger. The trigger is here to define at which time we want to execute
   the job. Here we use a cron expression to define the time of execution ( here 4 A.M every day of every year).

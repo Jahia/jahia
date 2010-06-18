@@ -14,16 +14,16 @@ Retrieving activities
 
 ** HTTP Post request
 
--------------
++-------------
 http://localhost:8080/cms/render/default/en/users/sjobs.getactivities.do
 Headers:
 accept : application/json
 x-requested-with : XMLHttpRequest
--------------
++-------------
 
 ** HTTP Post Response
 
--------------
++-------------
 {
 	"count": 2,
 	"items": [
@@ -69,11 +69,11 @@ x-requested-with : XMLHttpRequest
 		}
 	]
 }
--------------
++-------------
 
 ** Example of request using JQuery :
 
--------------
++-------------
         function loadActivities() {
             $.ajax({
                 beforeSend: function(xhrObj) {
@@ -97,4 +97,4 @@ x-requested-with : XMLHttpRequest
             })
         }
 
--------------
++-------------

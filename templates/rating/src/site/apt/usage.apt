@@ -2,26 +2,26 @@ Usage of Jahia Rating Module
 
   To use this module you just have to activate the mixin jmix:rating on your object definition.
 
---------------------------------------------
++--------------------------------------------
 [jmix:rating] mixin
 - j:nbOfVotes (long) = 0  autocreated hidden
 - j:sumOfVotes (long) = 0 autocreated hidden
 - j:lastVote (long) hidden  
---------------------------------------------
++--------------------------------------------
 
   You can hardcode it inside your definition, like in the forum module post definition:
 
------------------------------------------------
++-----------------------------------------------
 [jnt:post] > jnt:content, jmix:rating, mix:title
  smallText title
  - content (string, richtext) i18n
------------------------------------------------
++-----------------------------------------------
 
   This Module define only one simple rule using the Jahia DSL language.
   For more information on rules see {{{http://www.jboss.org/drools/documentation.html} Drools Documentation}}.\
   Here is the rule created for rating:
 
------------------------------------------------
++-----------------------------------------------
 rule "Rate node"
    when
        A property j:lastVote has been set on a node
@@ -30,4 +30,4 @@ rule "Rate node"
        Increment the property j:nbOfVotes of the node
        Add the property value to the property j:sumOfVotes of the node
 end
-------------------------------------------------
++------------------------------------------------

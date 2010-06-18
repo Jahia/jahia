@@ -4,12 +4,12 @@ List Filtering
 
   The filter is defined in a JSON string.
 
----------------------------------------------------------
++---------------------------------------------------------
 sites/ACME/home/page8.html?filter={name:"jcr:created",value:"2010-04-30",op:"eq",uuid:"226a954111-3279-475b-9129-e3110736a565",format:"yyyy-MM-dd",type:"date"}
----------------------------------------------------------
++---------------------------------------------------------
 
   The filter define the <<name>> of the property on which we will filter, the type of operation to filter <<op>>.
   It defines also the <<value>> to match, and the list we want to filter <<uuid>>. Those datas are mandatory.
 
-  Optionnaly you can define the <<format>> and the <<type>> of the property you are filtering on if you do not want to
+  Optionally you can define the <<format>> and the <<type>> of the property you are filtering on if you do not want to
   filter on String.  

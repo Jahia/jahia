@@ -2573,9 +2573,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 // todo : need to find more consistent way to check i18n validity
 //                final boolean translated = objectNode.hasNode("j:translation");
                 if (jcrSessionWrapper.getLocale() != null) {
-                    for (ExtendedPropertyDefinition def : getPrimaryNodeType().getPropertyDefinitionsAsMap().values()) {
-                        def.
-                    }
 //                    if (jcrSessionWrapper.getFallbackLocale() == null && translated) {
 //                        getI18N(locale, false);
 //                    }

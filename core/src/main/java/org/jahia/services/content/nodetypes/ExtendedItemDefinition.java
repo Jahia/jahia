@@ -61,6 +61,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
     protected int selector = 0;
     private Map<String,String> selectorOptions = new HashMap<String,String>();
     private Map<Locale, String> labels = new HashMap<Locale, String>(1);
+    private boolean override = false;
 
     public ExtendedNodeType getDeclaringNodeType() {
         return declaringNodeType;
@@ -154,6 +155,13 @@ public class ExtendedItemDefinition implements ItemDefinition {
         return false;
     }
 
+    public boolean isOverride() {
+        return override;
+    }
+
+    public void setOverride(boolean override) {
+        this.override = override;
+    }
 
     protected String getResourceBundleId() {
         return ((ExtendedNodeType)getDeclaringNodeType()).getResourceBundleId();

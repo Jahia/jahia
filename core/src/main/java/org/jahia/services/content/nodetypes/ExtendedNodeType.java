@@ -32,6 +32,7 @@
 package org.jahia.services.content.nodetypes;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -173,7 +174,7 @@ public class ExtendedNodeType implements NodeType {
 
 
     public ExtendedNodeType[] getSupertypes() {
-        List<ExtendedNodeType> l = new ArrayList<ExtendedNodeType>();
+        ListOrderedSet l = new ListOrderedSet();
         boolean primaryFound = false;
         ExtendedNodeType[] d = getDeclaredSupertypes();
         for (int i = 0; i < d.length; i++) {
@@ -193,7 +194,7 @@ public class ExtendedNodeType implements NodeType {
                 logger.error("No such supertype for "+getName(),e);
             }
         }
-        return l.toArray(new ExtendedNodeType[l.size()]);
+        return new ArrayList<ExtendedNodeType>(l).toArray(new ExtendedNodeType[l.size()]);
     }
 
     public ExtendedNodeType[] getPrimarySupertypes() {
@@ -315,20 +316,14 @@ public class ExtendedNodeType implements NodeType {
 
     public List<ExtendedItemDefinition>  getItems() {
         List<ExtendedItemDefinition> l = new ArrayList<ExtendedItemDefinition>();
-
-        ExtendedNodeType[] supertypes = getSupertypes();
-        for (int i = 0; i < supertypes.length; i++) {
-            ExtendedNodeType nodeType = supertypes[i];
-            List<ExtendedItemDefinition> c = nodeType.getDeclaredItems();
-            l.addAll(c);
-        }
-
-        l.addAll(items);
-
+        l.addAll(getChildNodeDefinitionsAsMap().values());
+        l.addAll(getPropertyDefinitionsAsMap().values());
         return l;
     }
 
     public List<ExtendedItemDefinition>  getDeclaredItems() {
+        getPropertyDefinitionsAsMap();
+        getChildNodeDefinitionsAsMap();
         return Collections.unmodifiableList(items);
     }
 
@@ -336,33 +331,45 @@ public class ExtendedNodeType implements NodeType {
         if (allProperties == null) {
             allProperties = new ListOrderedMap();
 
+            allProperties.putAll(properties);
+
             ExtendedNodeType[] supertypes = getSupertypes();
-            for (int i = 0; i < supertypes.length; i++) {
+            for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
-                Map<String, ExtendedPropertyDefinition> c = nodeType.getDeclaredPropertyDefinitionsAsMap();
+                Map<String, ExtendedPropertyDefinition> c = new HashMap<String, ExtendedPropertyDefinition>(nodeType.getDeclaredPropertyDefinitionsAsMap());
+                Map<String, ExtendedPropertyDefinition> over = new HashMap<String, ExtendedPropertyDefinition>(allProperties);
+                over.keySet().retainAll(c.keySet());
+                for (ExtendedPropertyDefinition s : over.values()) {
+                    s.setOverride(true);
+                }
+                c.keySet().removeAll(over.keySet());
                 allProperties.putAll(c);
             }
-
-            allProperties.putAll(properties);
         }
 
-        return allProperties;
+        return Collections.unmodifiableMap(allProperties);
     }
 
     public Map<Integer,ExtendedPropertyDefinition> getUnstructuredPropertyDefinitions() {
         if (allUnstructuredProperties == null) {
             allUnstructuredProperties = new ListOrderedMap();
 
+            allUnstructuredProperties.putAll(unstructuredProperties);
+
             ExtendedNodeType[] supertypes = getSupertypes();
-            for (int i = 0; i < supertypes.length; i++) {
+            for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
-                Map<Integer,ExtendedPropertyDefinition> c = nodeType.getDeclaredUnstructuredPropertyDefinitions();
+                Map<Integer,ExtendedPropertyDefinition> c = new HashMap<Integer,ExtendedPropertyDefinition>(nodeType.getDeclaredUnstructuredPropertyDefinitions());
+                Map<Integer,ExtendedPropertyDefinition> over = new HashMap<Integer,ExtendedPropertyDefinition>(allUnstructuredProperties);
+                over.keySet().retainAll(c.keySet());
+                for (ExtendedPropertyDefinition s : over.values()) {
+                    s.setOverride(true);
+                }
+                c.keySet().removeAll(over.keySet());
                 allUnstructuredProperties.putAll(c);
             }
-
-            allUnstructuredProperties.putAll(unstructuredProperties);
         }
-        return allUnstructuredProperties;
+        return Collections.unmodifiableMap(allUnstructuredProperties);
     }
 
     public ExtendedPropertyDefinition[] getPropertyDefinitions() {
@@ -372,16 +379,18 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public Map<String, ExtendedPropertyDefinition> getDeclaredPropertyDefinitionsAsMap() {
+        getPropertyDefinitionsAsMap();
         return properties;
     }
 
     public Map<Integer,ExtendedPropertyDefinition> getDeclaredUnstructuredPropertyDefinitions() {
+        getUnstructuredPropertyDefinitions();
         return unstructuredProperties;
     }
 
     public ExtendedPropertyDefinition[] getDeclaredPropertyDefinitions() {
-        Collection<ExtendedPropertyDefinition> c = new ArrayList<ExtendedPropertyDefinition>(properties.values());
-        c.addAll(unstructuredProperties.values());
+        Collection<ExtendedPropertyDefinition> c = new ArrayList<ExtendedPropertyDefinition>(getDeclaredPropertyDefinitionsAsMap().values());
+        c.addAll(getDeclaredUnstructuredPropertyDefinitions().values());
         return c.toArray(new ExtendedPropertyDefinition[c.size()]);
     }
 
@@ -389,16 +398,22 @@ public class ExtendedNodeType implements NodeType {
         if (allNodes == null) {
             allNodes = new ListOrderedMap();
             ExtendedNodeType[] supertypes = getSupertypes();
-            for (int i = 0; i < supertypes.length; i++) {
+            for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
-                Map<String, ExtendedNodeDefinition> c = nodeType.getDeclaredChildNodeDefinitionsAsMap();
+                Map<String, ExtendedNodeDefinition> c = new HashMap<String, ExtendedNodeDefinition>(nodeType.getDeclaredChildNodeDefinitionsAsMap());
+                Map<String, ExtendedNodeDefinition> over = new HashMap<String, ExtendedNodeDefinition>(allNodes);
+                over.keySet().retainAll(c.keySet());
+                for (ExtendedNodeDefinition s : over.values()) {
+                    s.setOverride(true);
+                }
+                c.keySet().removeAll(over.keySet());
                 allNodes.putAll(c);
             }
 
             allNodes.putAll(nodes);
         }
 
-        return allNodes;
+        return Collections.unmodifiableMap(allNodes);
     }
 
     public Map<String,ExtendedNodeDefinition> getUnstructuredChildNodeDefinitions() {
@@ -407,13 +422,19 @@ public class ExtendedNodeType implements NodeType {
             allUnstructuredNodes.putAll(unstructuredNodes);
 
             ExtendedNodeType[] supertypes = getSupertypes();
-            for (int i = 0; i < supertypes.length; i++) {
+            for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
-                Map<String,ExtendedNodeDefinition> c = nodeType.getDeclaredUnstructuredChildNodeDefinitions();
+                Map<String,ExtendedNodeDefinition> c = new HashMap<String,ExtendedNodeDefinition>(nodeType.getDeclaredUnstructuredChildNodeDefinitions());
+                Map<String,ExtendedNodeDefinition> over = new HashMap<String,ExtendedNodeDefinition>(allUnstructuredNodes);
+                over.keySet().retainAll(c.keySet());
+                for (ExtendedNodeDefinition s : over.values()) {
+                    s.setOverride(true);
+                }
+                c.keySet().removeAll(over.keySet());
                 allUnstructuredNodes.putAll(c);
             }
         }
-        return allUnstructuredNodes;
+        return Collections.unmodifiableMap(allUnstructuredNodes);
     }
 
     public ExtendedNodeDefinition[] getChildNodeDefinitions() {
@@ -423,16 +444,18 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public Map<String, ExtendedNodeDefinition> getDeclaredChildNodeDefinitionsAsMap() {
+        getChildNodeDefinitionsAsMap();
         return nodes;
     }
 
     public Map<String,ExtendedNodeDefinition> getDeclaredUnstructuredChildNodeDefinitions() {
+        getUnstructuredChildNodeDefinitions();
         return unstructuredNodes;
     }
 
     public ExtendedNodeDefinition[] getDeclaredChildNodeDefinitions() {
-        Collection<ExtendedNodeDefinition> c = new ArrayList<ExtendedNodeDefinition>(nodes.values());
-        c.addAll(unstructuredNodes.values());
+        Collection<ExtendedNodeDefinition> c = new ArrayList<ExtendedNodeDefinition>(getDeclaredChildNodeDefinitionsAsMap().values());
+        c.addAll(getDeclaredUnstructuredChildNodeDefinitions().values());
         return c.toArray(new ExtendedNodeDefinition[c.size()]);
     }
 
@@ -706,7 +729,7 @@ public class ExtendedNodeType implements NodeType {
             ExtendedPropertyDefinition[] defs = ExtendedNodeType.this.getDeclaredPropertyDefinitions();
             List<PropertyDefinition> r = new ArrayList<PropertyDefinition>();
             for (final ExtendedPropertyDefinition def : defs) {
-                if (!def.isInternationalized()) {
+                if (!def.isInternationalized() && !def.isOverride()) {
                     r.add(new PropertyDefinition() {
                         public int getRequiredType() {
                             return def.getRequiredType();
@@ -771,6 +794,7 @@ public class ExtendedNodeType implements NodeType {
 
             List<NodeDefinition> r = new ArrayList<NodeDefinition>();
             for (final ExtendedNodeDefinition def : defs) {
+                if (!def.isOverride()) {
                     r.add(new NodeDefinition() {
                         public NodeType[] getRequiredPrimaryTypes() {
                             return def.getRequiredPrimaryTypes();
@@ -816,6 +840,7 @@ public class ExtendedNodeType implements NodeType {
                             return false;
                         }
                     });
+                }
             }
             return r.toArray(new NodeDefinition[r.size()]);
         }

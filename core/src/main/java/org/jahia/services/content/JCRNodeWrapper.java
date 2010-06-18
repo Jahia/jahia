@@ -759,6 +759,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     boolean checkValidity();
 
+    boolean checkLanguageValidity();
+
     JCRSiteNode resolveSite() throws RepositoryException;
 
 }

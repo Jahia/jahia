@@ -696,6 +696,11 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.checkValidity();
     }
 
+    public boolean checkLanguageValidity() {
+        return node.checkLanguageValidity();
+    }
+
+
     public JCRSiteNode resolveSite() throws RepositoryException {
         return node.resolveSite();
     }

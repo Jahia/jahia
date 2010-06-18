@@ -2570,21 +2570,40 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         final JCRSessionWrapper jcrSessionWrapper = getSession();
         try {
             if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName())) {
-// todo : need to find more consistent way to check i18n validity
-//                final boolean translated = objectNode.hasNode("j:translation");
                 if (jcrSessionWrapper.getLocale() != null) {
-//                    if (jcrSessionWrapper.getFallbackLocale() == null && translated) {
-//                        getI18N(locale, false);
-//                    }
-//                    if (translated) {
-//                        if (getI18N(locale).hasProperty("j:published") && !getI18N(locale).getProperty("j:published").getBoolean()) {
-//                            return false;
-//                        }
-//                    } else {
-                        if (objectNode.hasProperty("j:published") && !objectNode.getProperty("j:published").getBoolean()) {
+                    if (objectNode.hasProperty("j:published") && !objectNode.getProperty("j:published").getBoolean()) {
+                        return false;
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkLanguageValidity() {
+        final JCRSessionWrapper jcrSessionWrapper = getSession();
+        try {
+            if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName())) {
+                if (jcrSessionWrapper.getLocale() != null) {
+                    final boolean translated = objectNode.getNodes("j:translation_*").hasNext();
+                    Node i18n = null;
+                    try {
+                        i18n = getI18N(jcrSessionWrapper.getLocale(), false);
+                    } catch (ItemNotFoundException e) {
+                        if (translated) {
                             return false;
                         }
-//                    }
+                    }
+                    for (ExtendedPropertyDefinition def : getPrimaryNodeType().getPropertyDefinitionsAsMap().values()) {
+                        if (def.isInternationalized() && def.isMandatory()) {
+                            if (i18n == null || !i18n.hasProperty(def.getName()+"_"+jcrSessionWrapper.getLocale())) {
+                                return false;
+                            }
+                        }
+                    }
+
                 }
             }
         } catch (RepositoryException e) {

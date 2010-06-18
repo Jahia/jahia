@@ -41,10 +41,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -445,7 +442,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 buffer.delete(0, buffer.length());
             }
         } catch (RenderException e) {
-            logger.error(e.getMessage(), e);
+            if (!(e.getCause() instanceof AccessDeniedException)) {
+                logger.error(e.getMessage(), e);
+            }
         }
 
     }

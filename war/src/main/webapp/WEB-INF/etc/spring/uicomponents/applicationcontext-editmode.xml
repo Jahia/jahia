@@ -327,6 +327,7 @@
         </property>
         <property name="folderTypes" >
             <list>
+                <value>jnt:wrapper</value>
                 <value>jnt:template</value>
                 <value>jnt:page</value>
             </list>
@@ -346,7 +347,7 @@
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                                     <property name="nodeTypes" value="jnt:wrapper"/>
-                                    <property name="parentType" value="jnt:page"/>
+                                    <property name="parentType" value="jnt:templatesFolder"/>
                                 </bean>
                             </property>
                             <property name="titleKey" value="label.newWrapper"/>

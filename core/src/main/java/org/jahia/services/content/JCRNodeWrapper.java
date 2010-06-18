@@ -583,9 +583,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @return true if action was successful, or false if not
      * @throws RepositoryException
      */
-    boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes, boolean templateToPage) throws RepositoryException;
+    boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes) throws RepositoryException;
 
-    boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, boolean templateToPage, Map<String, List<String>> references) throws RepositoryException;
+    boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException;
 
     void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException;
 

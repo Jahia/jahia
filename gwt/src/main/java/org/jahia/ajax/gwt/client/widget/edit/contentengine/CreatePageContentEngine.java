@@ -43,10 +43,10 @@ public class CreatePageContentEngine extends CreateContentEngine {
             super.doSave(nodeName, props, langCodeProperties, mixin, newNodeACL, closeAfterSave);
         } else {
             final GWTJahiaNode template = createPageTab.getTemplate().get(0);
-            if (templateToPage) {
-                props.add(new GWTJahiaNodeProperty("j:sourceTemplate", new GWTJahiaNodePropertyValue(template.getUUID(), GWTJahiaNodePropertyType.WEAKREFERENCE)));
-            }
-            contentService.createPage(Arrays.asList(template.getPath()), parentNode.getPath(), mixin , newNodeACL, langCodeProperties, templateToPage, props, new BaseAsyncCallback() {
+//            if (templateToPage) {
+//                props.add(new GWTJahiaNodeProperty("j:sourceTemplate", new GWTJahiaNodePropertyValue(template.getUUID(), GWTJahiaNodePropertyType.WEAKREFERENCE)));
+//            }
+            contentService.createPage(template.getPath(), parentNode.getPath(), mixin , newNodeACL, langCodeProperties, templateToPage, props, new BaseAsyncCallback() {
                 public void onApplicationFailure(Throwable caught) {
                     Window.alert("error1: "+caught);
                 }

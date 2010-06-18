@@ -199,7 +199,7 @@ public class JCRSitesProvider {
 //                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
 
                                     JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + templatePackage);
-                                    defaultSite.copy(session.getNode("/sites"), siteKey, false, false);
+                                    defaultSite.copy(session.getNode("/sites"), siteKey, false);
 
                                     if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
                                         String[] skeletons = sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString().split(",");
@@ -235,8 +235,8 @@ public class JCRSitesProvider {
                                             .size()]));
                                     siteNode.setProperty("j:sourceTemplate", defaultSite);
                                     session.save();
-                                    JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                                            false);
+//                                    JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+//                                            false);
                                 }
                             }
                         } catch (IOException e) {
@@ -328,8 +328,8 @@ public class JCRSitesProvider {
                     return null;
                 }
             });
-            JCRPublicationService.getInstance().publish("/sites/"+site.getSiteKey(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                    false);
+//            JCRPublicationService.getInstance().publish("/sites/"+site.getSiteKey(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+//                    false);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

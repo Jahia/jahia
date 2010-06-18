@@ -99,7 +99,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
 
     @Override protected boolean canEdit(RenderContext renderContext, boolean templateLocked, boolean templateMode) {
         if (path != null) {
-            boolean stillInWrapper = !(((Stack) renderContext.getRequest().getAttribute("bodyWrapperStack")).isEmpty());
+            boolean stillInWrapper = false;
             return renderContext.isEditMode() && editable && (templateMode || !templateLocked) && !stillInWrapper;
         } else {
             return super.canEdit(renderContext,templateLocked,templateMode);
@@ -113,6 +113,8 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
             resource = renderContext.getAjaxResource();
         }
         node = resource.getNode();
+        renderContext.getRequest().removeAttribute("skipWrapper");
+
         if (path != null) {
             try {
                 if (!path.startsWith("/")) {
@@ -129,6 +131,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                         missingResource(renderContext, resource);
                     }
                 }
+                renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

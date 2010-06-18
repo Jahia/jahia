@@ -326,17 +326,23 @@
 [jmix:wrapper] mixin
  extends = nt:base
  itemtype = layout
- + * (jnt:wrapper)
+ - j:wrapper (weakreference) < jnt:wrapper
 
-[jnt:wrapper] > nt:base, jmix:nodenameInfo, jmix:renderable, jmix:basemetadata, jmix:publication
+[jnt:wrapper] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
  - j:key (string) mandatory
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
  + * (jnt:content)
+ + * (jnt:wrapper)
 
 [jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
 
 [jnt:mainResourceArea] > nt:base, jmix:renderableReference, jmix:siteComponentContent
  - j:areaName (string)
+ - j:filter (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
+
+[jnt:absoluteArea] > nt:base, jmix:renderableReference, jmix:siteComponentContent
+ - j:areaName (string)
+ - j:basenode (weakreference)
  - j:filter (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
 
 [jnt:currentUserDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
@@ -480,7 +486,7 @@
 
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem
  orderable
- - j:sourceTemplate (weakreference) hidden
+ - jcr:title (string) i18n mandatory
  + * (nt:base) = nt:base version
 
 [jnt:template] > jnt:page
@@ -496,6 +502,7 @@
 
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:template)
+ + * (jnt:wrapper)
 
 [jmix:autoSplitFolders] mixin extends = jnt:contentList
  - j:splitConfig (string) mandatory
@@ -505,10 +512,10 @@
 // Template studio
 //---------------------------------------------------------
 
-[jmix:templateInformation] mixin
- - j:templateLocked (boolean) hidden
- - j:templateShared (boolean) hidden
- - j:templateDeployed (boolean) hidden
+//[jmix:templateInformation] mixin
+// - j:templateLocked (boolean) hidden
+// - j:templateShared (boolean) hidden
+// - j:templateDeployed (boolean) hidden
 
 [jmix:contributeMode] mixin
  extends = jnt:contentList, jnt:folder

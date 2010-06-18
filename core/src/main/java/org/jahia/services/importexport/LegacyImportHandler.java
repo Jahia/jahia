@@ -419,13 +419,17 @@ public class LegacyImportHandler extends DefaultHandler {
             if (!parent.isCheckedOut()) {
                 parent.checkout();
             }
+//            if (template != null) {
+//                template.copy(parent, nodeName, true, true);
+//                node = parent.getNode(nodeName);
+//                node.setProperty("j:sourceTemplate", template);
+//            } else {
+            node = parent.addNode(nodeName, Constants.JAHIANT_PAGE);
             if (template != null) {
-                template.copy(parent, nodeName, true, true);
-                node = parent.getNode(nodeName);
-                node.setProperty("j:sourceTemplate", template);
-            } else {
-                node = parent.addNode(nodeName, Constants.JAHIANT_PAGE);
+                node.addMixin("jmix:wrapper");
+                node.setProperty("j:wrapper",template);
             }
+//            }
         }
         return node;
     }

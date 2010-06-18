@@ -151,61 +151,61 @@
     layout = my-portal
      
 [web_templates:home] = jnt:page
- + logo = ../sitewrapper/logo
- + banner = pagecontent/row1/col1/banner
- + promo = pagecontent/row1/col1/promo
+ + logo = logo
+ + banner = listA
+ + promo = listA/promo
    { setProperty [jmix:renderable|j:template=twoColumns] }
  + promoLarge = #skip
- + columnA_box = pagecontent/row1/col1/box
- + columnB_box = pagecontent/row1/col2
- + logoFooter = ../sitewrapper/logoFooter
- + footerContainerList = ../sitewrapper/footer
+ + columnA_box = listA
+ + columnB_box = listB
+ + logoFooter = logoFooter
+ + footerContainerList = footer
  + navLink = #navlink
 
 [web_templates:simple] = jnt:page   
- + mainColumn_box = pagecontent/row1/col1
- + maincontent = pagecontent/row1/col1
- + columnB_box = pagecontent/row1/col1
+ + mainColumn_box = listA
+ + maincontent = listA
+ + columnB_box = listA
  + navLink = #navlink
 
 [web_templates:double] = jnt:page   
- + mainColumn_box = pagecontent/row1/col1
- + maincontent = pagecontent/row1/col1
- + columnB_box = pagecontent/row1/col1
+ + mainColumn_box = listA
+ + maincontent = listA
+ + columnB_box = listA
  + navLink = #navlink
 
 [web_templates:events] = jnt:page   
- + introduction = pagecontent/row1/col1
- + events = pagecontent/row1/col1/events
- + columnB_box = pagecontent/row1/col1
+ + introduction = listA
+ + events = listA/events
+ + columnB_box = listA
  + navLink = #navlink
 
 [web_templates:publication] = jnt:page   
- + introduction = pagecontent/row1/col1
- + publication = pagecontent/row1/col1/publications
- + columnB_box = pagecontent/row1/col1 
+ + introduction = listA
+ + publication = listA/publications
+ + columnB_box = listA 
  + navLink = #navlink
 
 [web_templates:news] = jnt:page   
- + introduction = pagecontent/row1/col1
- + news = pagecontent/row1/col1
- + columnB_box = pagecontent/row1/col1
+ + introduction = listA
+ + news = listA
+ + columnB_box = listA
  + navLink = #navlink
 
 [web_templates:people] = jnt:page   
- + introduction = pagecontent/row1/col1
- + people = pagecontent/row1/col1
- + columnB_box = pagecontent/row1/col1
+ + introduction = listA
+ + people = listA
+ + columnB_box = listA
  + navLink = #navlink
 
 [web_templates:pressRelease] = jnt:page   
- + introduction = pagecontent/row1/col1
- + press = pagecontent/row1/col1
- + columnB_box = pagecontent/row1/col1
+ + introduction = listA
+ + press = listA
+ + columnB_box = listA
  + navLink = #navlink
 
 [web_templates:job] = jnt:page   
- + introduction = pagecontent/row1/col1
- + job = pagecontent/row1/col1
- + columnB_box = pagecontent/row1/col1
+ + introduction = listA
+ + job = listA
+ + columnB_box = listA
  + navLink = #navlink

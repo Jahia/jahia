@@ -47,6 +47,8 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -406,7 +408,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.copy(pathsToCopy, destinationPath, newName, false, cut, false, false, retrieveCurrentSession());
     }
 
-    public void createPage(List<String> pathsToCopy, String destinationPath, List<String> mixin,
+    public void createPage(String templatePath, String destinationPath, List<String> mixin,
                                       GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                                       boolean templateToPage, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
         try {
@@ -418,13 +420,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if (l != null) {
                 newName = contentManager.generateNameFromTitle(l);
             }
+            mixin.add("jmix:wrapper");
 
-            List<GWTJahiaNode> nodes = contentManager
-                    .copy(pathsToCopy, destinationPath, newName, false, false, false, templateToPage, retrieveCurrentSession());
-            for (GWTJahiaNode node : nodes) {
-                node.getNodeTypes().addAll(mixin);
-            }
-            saveProperties(nodes, newsProps);
+            newsProps.add(new GWTJahiaNodeProperty("j:wrapper",new GWTJahiaNodePropertyValue(navigation.getNode(templatePath, retrieveCurrentSession()), GWTJahiaNodePropertyType.WEAKREFERENCE)));
+
+            GWTJahiaNode node = contentManager.createNode(destinationPath, newName, "jnt:page", mixin, newsProps, retrieveCurrentSession());
+
+//            for (GWTJahiaNode node : nodes) {
+//                node.getNodeTypes().addAll(mixin);
+//            }
+//            saveProperties(nodes, newsProps);
 
             // save shared properties
             if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
@@ -433,14 +438,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 while (langCode.hasNext()) {
                     String currentLangCode = langCode.next();
                     List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
-                    saveProperties(nodes, properties, currentLangCode);
+                    saveProperties(Arrays.asList(node), properties, currentLangCode);
                 }
             }
 
             if (acl != null) {
-                for (GWTJahiaNode node : nodes) {
-                    setACL(node.getPath(), acl);
-                }
+                setACL(node.getPath(), acl);
             }
         } catch (Throwable e) {
             logger.error(e, e);

@@ -419,7 +419,7 @@ public class ContentManagerHelper {
                     try {
                         name = findAvailableName(targetParent, name, currentUserSession);
                         if (targetParent.isWriteable() && !targetParent.isLocked()) {
-                            final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference, templateToPage);
+                            final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
 
                             if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                                 targetParent.orderBefore(name, targetNode.getName());
@@ -460,7 +460,7 @@ public class ContentManagerHelper {
     }
 
     private JCRNodeWrapper doPaste(JCRNodeWrapper targetNode, JCRNodeWrapper node, String name, boolean cut,
-                                   boolean reference, boolean templateToPage) throws RepositoryException, JahiaException {
+                                   boolean reference) throws RepositoryException, JahiaException {
         if (cut) {
             node.checkout();
             targetNode.checkout();
@@ -489,7 +489,7 @@ public class ContentManagerHelper {
             }
 
         } else {
-            node.copy(targetNode, name, true, templateToPage);
+            node.copy(targetNode, name, true);
         }
         return targetNode.getNode(name);
     }
@@ -835,32 +835,16 @@ public class ContentManagerHelper {
                                 JCRNodeWrapper destinationNode = null;
                                 try {
                                     destinationNode = session.getNode(entry.getValue());
-                                    synchro(originalNode, destinationNode, session, false, references, pageTemplates);
+                                    synchro(originalNode, destinationNode, session, references, pageTemplates);
                                 } catch (PathNotFoundException e) {
                                     destinationNode =
                                             session.getNode(StringUtils.substringBeforeLast(entry.getValue(), "/"));
                                     originalNode.copy(destinationNode,
-                                            StringUtils.substringAfterLast(entry.getValue(), "/"), true, false);
+                                            StringUtils.substringAfterLast(entry.getValue(), "/"), false);
                                 }
                             }
                             ReferencesHelper.resolveCrossReferences(session, references);
                             session.save();
-                            for (JCRNodeWrapper pageTemplate : pageTemplates) {
-                                List<JCRNodeWrapper> pages = new ArrayList<JCRNodeWrapper>();
-                                PropertyIterator pi = pageTemplate.getWeakReferences("j:sourceTemplate");
-                                while (pi.hasNext()) {
-                                    JCRPropertyWrapper property = (JCRPropertyWrapper) pi.next();
-                                    if (property.getParent().isNodeType("jnt:page")) {
-                                        pages.add(property.getParent());
-                                    }
-                                }
-                                for (JCRNodeWrapper page : pages) {
-                                    references = new HashMap<String, List<String>>();
-                                    synchro(pageTemplate, page, session, true, references, null);
-                                    ReferencesHelper.resolveCrossReferences(session, references);
-                                    session.save();
-                                }
-                            }
                             return null;
                         }
                     });
@@ -872,7 +856,7 @@ public class ContentManagerHelper {
     }
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
-                        final boolean toPage, Map<String, List<String>> references, List<JCRNodeWrapper> pageTemplates)
+                        Map<String, List<String>> references, List<JCRNodeWrapper> pageTemplates)
             throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
@@ -880,63 +864,33 @@ public class ContentManagerHelper {
 
         session.checkout(destinationNode);
 
-        if (!source.hasProperty("j:templateDeployed")) {
-            source.checkout();
-            source.addMixin("jmix:templateInformation");
-            source.setProperty("j:templateDeployed", true);
-        }
-
         final Map<String, String> uuidMapping = session.getUuidMapping();
 
-        if (!toPage) {
-            final boolean sharedSource =
-                    source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean();
-            final boolean sharedDestination = destinationNode.hasProperty("j:templateShared") &&
-                    destinationNode.getProperty("j:templateShared").getBoolean();
-            if (!sharedSource && sharedDestination) {
-                final JCRNodeWrapper parent = destinationNode.getParent();
-                destinationNode.remove();
-                source.copy(parent, source.getName(), !toPage, false);
-                return;
-            }
-
-            try {
-                NodeType[] mixin = source.getMixinNodeTypes();
-                for (NodeType aMixin : mixin) {
-                    destinationNode.addMixin(aMixin.getName());
-                }
-            } catch (RepositoryException e) {
-                logger.error("Error adding mixin types to copy", e);
-            }
-
-            uuidMapping.put(source.getIdentifier(), destinationNode.getIdentifier());
-            if (source.hasProperty("jcr:language")) {
-                destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
-            }
-            source.copyProperties(destinationNode, references);
-        } else {
-            if (source.isNodeType("jmix:templateInformation")) {
-                destinationNode.addMixin("jmix:templateInformation");
-            }
-            if (source.hasProperty("j:templateLocked")) {
-                destinationNode.setProperty("j:templateLocked", source.getProperty("j:templateLocked").getBoolean());
-            }
-            final boolean sharedSource =
-                    source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean();
-            final boolean sharedDestination = destinationNode.hasProperty("j:templateShared") &&
-                    destinationNode.getProperty("j:templateShared").getBoolean();
-            if (sharedSource && !sharedDestination) {
-                final JCRNodeWrapper parent = destinationNode.getParent();
-                destinationNode.remove();
-                parent.clone(source, source.getName());
-                return;
-            } else if (!sharedSource && sharedDestination) {
-                final JCRNodeWrapper parent = destinationNode.getParent();
-                destinationNode.remove();
-                source.copy(parent, source.getName(), !toPage, false);
-                return;
-            }
+        final boolean sharedSource =
+                source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean();
+        final boolean sharedDestination = destinationNode.hasProperty("j:templateShared") &&
+                destinationNode.getProperty("j:templateShared").getBoolean();
+        if (!sharedSource && sharedDestination) {
+            final JCRNodeWrapper parent = destinationNode.getParent();
+            destinationNode.remove();
+            source.copy(parent, source.getName(), false);
+            return;
         }
+
+        try {
+            NodeType[] mixin = source.getMixinNodeTypes();
+            for (NodeType aMixin : mixin) {
+                destinationNode.addMixin(aMixin.getName());
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error adding mixin types to copy", e);
+        }
+
+        uuidMapping.put(source.getIdentifier(), destinationNode.getIdentifier());
+        if (source.hasProperty("jcr:language")) {
+            destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
+        }
+        source.copyProperties(destinationNode, references);
 
         NodeIterator ni = source.getNodes();
         Set<String> names = new HashSet<String>();
@@ -949,7 +903,7 @@ public class ContentManagerHelper {
                     session.save();
                     if (destinationNode.hasNode(child.getName())) {
                         JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                        synchro(child, node, session, toPage, references, pageTemplates);
+                        synchro(child, node, session, references, pageTemplates);
                     } else {
                         destinationNode
                                 .clone(session.getNodeByUUID(uuidMapping.get(child.getIdentifier())), child.getName());
@@ -957,29 +911,21 @@ public class ContentManagerHelper {
                 } else {
                     if (destinationNode.hasNode(child.getName())) {
                         JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                        synchro(child, node, session, toPage, references, pageTemplates);
+                        synchro(child, node, session, references, pageTemplates);
                     } else {
-                        if (!toPage) {
-                            destinationNode.clone(child, child.getName());
-                        } else {
-                            if (!child.hasProperty("j:templateDeployed")) {
-                                child.addMixin("jmix:templateInformation");
-                                child.setProperty("j:templateDeployed", true);
-                            }
-                            child.copy(destinationNode, child.getName(), !toPage, false);
-                        }
+                        destinationNode.clone(child, child.getName());
                     }
                 }
             } else {
                 if (destinationNode.hasNode(child.getName())) {
                     JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                    synchro(child, node, session, toPage, references, pageTemplates);
+                    synchro(child, node, session, references, pageTemplates);
                 } else {
                     if (!child.hasProperty("j:templateDeployed")) {
                         child.addMixin("jmix:templateInformation");
                         child.setProperty("j:templateDeployed", true);
                     }
-                    child.copy(destinationNode, child.getName(), !toPage, false);
+                    child.copy(destinationNode, child.getName(), false);
                 }
             }
         }
@@ -991,12 +937,6 @@ public class ContentManagerHelper {
                     oldChild.getProperty("j:templateDeployed").getBoolean()) {
                 oldChild.remove();
             }
-        }
-
-//        session.save();
-        // deploy to pages
-        if (!toPage && source.isNodeType("jnt:page")) {
-            pageTemplates.add(destinationNode);
         }
 
     }

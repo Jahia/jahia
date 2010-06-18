@@ -1457,10 +1457,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         JCRNodeWrapper node = (JCRNodeWrapper) session.getItem(dest);
         boolean sameProvider = (provider.getKey().equals(node.getProvider().getKey()));
         if (!sameProvider) {
-            copy(node, name, true, false);
+            copy(node, name, true);
             node.save();
         } else {
-            copy(node, name, true, false);
+            copy(node, name, true);
         }
         return true;
     }
@@ -1468,9 +1468,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, boolean templateToPage) throws RepositoryException {
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
         Map<String, List<String>> references = new HashMap<String, List<String>>();
-        boolean copy = copy(dest, name, allowsExternalSharedNodes, templateToPage, references);
+        boolean copy = copy(dest, name, allowsExternalSharedNodes, references);
         ReferencesHelper.resolveCrossReferences(getSession(), references);
         return copy;
     }
@@ -1478,7 +1478,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, boolean templateToPage, Map<String, List<String>> references) throws RepositoryException {
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
         JCRNodeWrapper copy = null;
         try {
             copy = (JCRNodeWrapper) session
@@ -1497,9 +1497,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 session.checkout(dest);
             }
             String typeName = getPrimaryNodeTypeName();
-            if (templateToPage && typeName.equals("jnt:template")) {
-                typeName = "jnt:page";
-            }
             copy = dest.addNode(name, typeName);
         }
 
@@ -1531,10 +1528,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 } else if (allowsExternalSharedNodes) {
                     copy.clone(source, source.getName());
                 } else {
-                    source.copy(copy, source.getName(), allowsExternalSharedNodes, false, references);
+                    source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
                 }
             } else {
-                source.copy(copy, source.getName(), allowsExternalSharedNodes, false, references);
+                source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
             }
         }
 

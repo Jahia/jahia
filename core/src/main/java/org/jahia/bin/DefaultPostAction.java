@@ -184,18 +184,18 @@ public class DefaultPostAction implements Action {
             newNode = node.addNode(nodeName, nodeType);
         }
         
-        String template = parameters.containsKey("j:sourceTemplate") ? parameters.get("j:sourceTemplate").get(0) : null;
-        if (Constants.JAHIANT_PAGE.equals(nodeType) && template != null) {
-            // we will use the provided template
-            JCRNodeWrapper templateNode = null;
-            try {
-                templateNode = session.getNodeByIdentifier(template);
-                templateNode.copy(newNode.getParent(), nodeName, true, true);
-            } catch (RepositoryException e) {
-                logger.warn("Unable to use template node '" + template + ". Skip using template for new page.", e);
-            }
-
-        }
+//        String template = parameters.containsKey("j:sourceTemplate") ? parameters.get("j:sourceTemplate").get(0) : null;
+//        if (Constants.JAHIANT_PAGE.equals(nodeType) && template != null) {
+//            // we will use the provided template
+//            JCRNodeWrapper templateNode = null;
+//            try {
+//                templateNode = session.getNodeByIdentifier(template);
+//                templateNode.copy(newNode.getParent(), nodeName, true);
+//            } catch (RepositoryException e) {
+//                logger.warn("Unable to use template node '" + template + ". Skip using template for new page.", e);
+//            }
+//
+//        }
         
         if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
             for (Object o : ((ArrayList) parameters.get(Constants.JCR_MIXINTYPES))) {

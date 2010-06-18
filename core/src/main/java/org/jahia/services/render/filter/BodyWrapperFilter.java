@@ -12,113 +12,166 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Stack;
 
 /**
  * WrapperFilter
- *
+ * <p/>
  * Looks for all registered wrappers in the resource and calls the associated scripts around the output.
  * Output is made available to the wrapper script through the "wrappedContent" request attribute.
- *
  */
 public class BodyWrapperFilter extends AbstractFilter {
     private static Logger logger = Logger.getLogger(BodyWrapperFilter.class);
 
     public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        Stack<Wrapper> wrappers = (Stack<Wrapper>) renderContext.getRequest().getAttribute("bodyWrapperStack");
-
-        if (wrappers == null) {
-            wrappers = new Stack<Wrapper>();
-            pushBodyWrappers(resource.getNode(), wrappers);
-            renderContext.getRequest().setAttribute("bodyWrapperStack", wrappers);
+        if (renderContext.getRequest().getAttribute("skipWrapper") == null) {
+        Wrapper wrapper = null;
+        Wrapper previousWrapper = null;
+        if (renderContext.getRequest().getAttribute("wrapperSet") == null) {
+            wrapper = pushBodyWrappers(resource.getNode());
+            renderContext.getRequest().setAttribute("wrapperSet", Boolean.TRUE);
+        } else {
+            previousWrapper = (Wrapper) renderContext.getRequest().getAttribute("wrapperxx");
+            if (previousWrapper != null) {
+                wrapper = previousWrapper.next;
+            }
         }
 
-        if (!wrappers.isEmpty() && !renderContext.isAjaxRequest()) {
-            Wrapper wrapper = wrappers.pop();
-
+        if (wrapper != null && !renderContext.isAjaxRequest()) {
             try {
                 JCRNodeWrapper wrapperNode = wrapper.node;
+                renderContext.getRequest().setAttribute("wrapperxx", wrapper);
+//                chain.set(renderContext.getRequest(), "wrapperxx", wrapper);
                 renderContext.getRequest().setAttribute("wrappedResource", resource);
-                Resource wrapperResource = new Resource(wrapperNode, resource.getTemplateType().equals("edit")?"html":resource.getTemplateType(), null, wrapper.template,
-                        Resource.CONFIGURATION_WRAPPER);
+                renderContext.getRequest().setAttribute("wrapperNode", wrapperNode);
+                Resource wrapperResource = new Resource(wrapperNode,
+                        resource.getTemplateType().equals("edit") ? "html" : resource.getTemplateType(), null,
+                        wrapper.template, Resource.CONFIGURATION_WRAPPER);
                 if (service.hasTemplate(wrapperNode.getPrimaryNodeType(), wrapper.template)) {
                     chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.TRUE);
                     String output = RenderService.getInstance().render(wrapperResource, renderContext);
                     if (renderContext.isEditMode()) {
-                        output = "<div jahiatype=\"wrappedContentInfo\" wrappedNode=\""+resource.getNode().getIdentifier()+"\"" +
+                        output = "<div jahiatype=\"wrappedContentInfo\" wrappedNode=\"" +
+                                resource.getNode().getIdentifier() + "\"" +
 
-                                " wrapperContent=\""+wrapperNode.getIdentifier()+"\">"+output+"</div>";
+                                " wrapperContent=\"" + wrapperNode.getIdentifier() + "\">" + output + "</div>";
                     }
+
+                    renderContext.getRequest().setAttribute("wrapperxx", previousWrapper);
+
                     return output;
                 } else {
-                    logger.warn("Cannot get wrapper "+wrapper);
+                    logger.warn("Cannot get wrapper " + wrapper);
                 }
             } catch (TemplateNotFoundException e) {
-                logger.debug("Cannot find wrapper "+wrapper,e);
+                logger.debug("Cannot find wrapper " + wrapper, e);
             } catch (RenderException e) {
-                logger.error("Cannot execute wrapper "+wrapper,e);
+                logger.error("Cannot execute wrapper " + wrapper, e);
             }
         }
-        chain.pushAttribute(renderContext.getRequest(), "inWrapper", (renderContext.isAjaxRequest())?Boolean.TRUE:Boolean.FALSE);
+        }
+        chain.pushAttribute(renderContext.getRequest(), "inWrapper",
+                (renderContext.isAjaxRequest()) ? Boolean.TRUE : Boolean.FALSE);
         return chain.doFilter(renderContext, resource);
     }
 
-    public void pushBodyWrappers(JCRNodeWrapper node, Stack<Wrapper> wrappers) {
+    public Wrapper pushBodyWrappers(JCRNodeWrapper node) {
         JCRNodeWrapper current = node;
         Set<String> foundWrappers = new HashSet<String>();
+        Wrapper wrapper = null;
         try {
             if (node.isNodeType("jnt:wrapper")) {
                 foundWrappers.add(node.getProperty("j:key").getString());
             }
             while (true) {
-//                if (current.isNodeType("jmix:wrapper")) {
-                    Query q = current.getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:wrapper] as w where ischildnode(w, ['"+current.getPath()+"'])", Query.JCR_SQL2);
+                if (current.hasProperty("j:wrapper")) {
+                    JCRNodeWrapper wrapperNode = (JCRNodeWrapper) current.getProperty("j:wrapper").getNode();
+
+                    wrapper = addWrapper(node, foundWrappers, wrapper, wrapperNode);
+
+                    Query q = current.getSession().getWorkspace().getQueryManager().createQuery(
+                            "select * from [jnt:wrapper] as w where ischildnode(w, ['" + wrapperNode.getPath() + "'])",
+                            Query.JCR_SQL2);
                     QueryResult result = q.execute();
                     NodeIterator ni = result.getNodes();
                     while (ni.hasNext()) {
-                        JCRNodeWrapper wrapper = (JCRNodeWrapper) ni.next();
-                        if (!foundWrappers.contains(wrapper.getProperty("j:key").getString())) {
-                            boolean ok = true;
-                            if (wrapper.hasProperty("j:applyOn")) {
-                                ok = false;
-                                Value[] values = wrapper.getProperty("j:applyOn").getValues();
-                                for (Value value : values) {
-                                    if (node.isNodeType(value.getString())) {
-                                        ok = true;
-                                        break;
-                                    }
-                                }
-                                if (values.length == 0) {
-                                    ok = true;
-                                }
-                            }
-                            if (ok) {
-                                wrappers.push(new Wrapper(wrapper.getProperty("j:template").getString(), wrapper));
-                                foundWrappers.add(wrapper.getProperty("j:key").getString());
-                            }
-                        }
+                        wrapper = addWrapper(node, foundWrappers, wrapper, wrapperNode);
                     }
+                }
+//
+//                NodeIterator ni = result.getNodes();
+//                while (ni.hasNext()) {
+//                    JCRNodeWrapper wrapperNode = (JCRNodeWrapper) ni.next();
+//                    if (!foundWrappers.contains(wrapperNode.getProperty("j:key").getString())) {
+//                        boolean ok = true;
+//                        if (wrapperNode.hasProperty("j:applyOn")) {
+//                            ok = false;
+//                            Value[] values = wrapperNode.getProperty("j:applyOn").getValues();
+//                            for (Value value : values) {
+//                                if (node.isNodeType(value.getString())) {
+//                                    ok = true;
+//                                    break;
+//                                }
+//                            }
+//                            if (values.length == 0) {
+//                                ok = true;
+//                            }
+//                        }
+//                        if (ok) {
+//                            wrapper = new Wrapper(wrapperNode.getProperty("j:template").getString(), wrapperNode,
+//                                    wrapper);
+//                            foundWrappers.add(wrapperNode.getProperty("j:key").getString());
+//                        }
+//                    }
 //                }
                 current = current.getParent();
             }
         } catch (ItemNotFoundException e) {
             // default
             if (!foundWrappers.contains("bodywrapper")) {
-                wrappers.push(new Wrapper("bodywrapper", node));
+                wrapper = new Wrapper("bodywrapper", node, null);
             }
-            return;
+            return wrapper;
         } catch (RepositoryException e) {
-            logger.error("Cannot find wrapper",e);
+            logger.error("Cannot find wrapper", e);
         }
+        return null;
+    }
+
+    private Wrapper addWrapper(JCRNodeWrapper node, Set<String> foundWrappers, Wrapper wrapper,
+                               JCRNodeWrapper wrapperNode) throws RepositoryException {
+        if (!foundWrappers.contains(wrapperNode.getProperty("j:key").getString())) {
+            boolean ok = true;
+            if (wrapperNode.hasProperty("j:applyOn")) {
+                ok = false;
+                Value[] values = wrapperNode.getProperty("j:applyOn").getValues();
+                for (Value value : values) {
+                    if (node.isNodeType(value.getString())) {
+                        ok = true;
+                        break;
+                    }
+                }
+                if (values.length == 0) {
+                    ok = true;
+                }
+            }
+            if (ok) {
+                wrapper = new Wrapper(wrapperNode.hasProperty("j:template") ? wrapperNode.getProperty("j:template").getString() : "default", wrapperNode,
+                        wrapper);
+                foundWrappers.add(wrapperNode.getProperty("j:key").getString());
+            }
+        }
+        return wrapper;
     }
 
     public class Wrapper {
         public String template;
         public JCRNodeWrapper node;
+        public Wrapper next;
 
-        Wrapper(String template, JCRNodeWrapper node) {
+        Wrapper(String template, JCRNodeWrapper node, Wrapper next) {
             this.template = template;
             this.node = node;
+            this.next = next;
         }
 
         @Override

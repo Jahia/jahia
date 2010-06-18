@@ -374,6 +374,7 @@ public class WorkflowService {
         args.put("workspace", stageNode.getSession().getWorkspace().getName());
         args.put("locale", stageNode.getSession().getLocale());
         args.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey));
+        args.put("user", stageNode.getSession().getUser().getUsername());
         final String processId = lookupProvider(provider).startProcess(processKey, args);
         if(logger.isDebugEnabled()) {
             logger.debug("A workflow "+processKey+" from "+provider+" has been started on node: "+stageNode.getPath()+
@@ -427,7 +428,8 @@ public class WorkflowService {
         lookupProvider(provider).assignTask(taskId, user);
     }
 
-    public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args) {
+    public void completeTask(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) {
+        args.put("user", user.getUsername());
         lookupProvider(provider).completeTask(taskId, outcome, args);
     }
 

@@ -163,7 +163,11 @@ public class WorkflowDashboardEngine extends Window {
                 final GWTJahiaWorkflowAction action = actions.get(0);
                 Label label;
                 if (action.getVariables().containsKey("jcr:title")) {
-                    label = new Label(action.getVariables().get("jcr:title").getValues().get(0).getString());
+                    String s = action.getVariables().get("jcr:title").getValues().get(0).getString();
+                    if (s == null || "".equals(s.trim())) {
+                        s = action.getName();
+                    }
+                    label = new Label(s);
                 } else {
                     label = new Label(action.getName());
                 }

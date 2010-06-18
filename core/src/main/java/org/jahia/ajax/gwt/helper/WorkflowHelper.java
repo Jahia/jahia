@@ -143,7 +143,7 @@ public class WorkflowHelper {
             JCRNodeWrapper node = session.getNode(path);
             service.assignTask(action.getId(), action.getProvider(), session.getUser());
             HashMap<String, Object> map = getVariablesMap(properties);
-            service.completeTask(action.getId(), action.getProvider(), outcome.getName(), map);
+            service.completeTask(action.getId(), action.getProvider(), outcome.getName(), map,session.getUser());
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
@@ -155,10 +155,19 @@ public class WorkflowHelper {
         for (GWTJahiaNodeProperty property : properties) {
             List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
             List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(propertyValues.size());
+            boolean toBeAdded = false;
             for (GWTJahiaNodePropertyValue value : propertyValues) {
-                values.add(new WorkflowVariable(value.getString(), value.getType()));
+                String s = value.getString();
+                if(s!=null && !"".equals(s)) {
+                    values.add(new WorkflowVariable(s, value.getType()));
+                    toBeAdded=true;
+                }
             }
-            map.put(property.getName(), values);
+            if(toBeAdded) {
+                map.put(property.getName(), values);
+            } else {
+                map.put(property.getName(),new ArrayList<WorkflowVariable>());
+            }
         }
         return map;
     }

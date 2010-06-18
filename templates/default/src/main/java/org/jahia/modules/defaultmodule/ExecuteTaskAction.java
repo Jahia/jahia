@@ -49,7 +49,7 @@ public class ExecuteTaskAction implements Action {
         String outcome = parameters.get("outcome").get(0);
 
         workflowService.assignTask(actionId, providerKey, renderContext.getUser());
-        workflowService.completeTask(actionId, providerKey, outcome, getVariablesMap(parameters));
+        workflowService.completeTask(actionId, providerKey, outcome, getVariablesMap(parameters),renderContext.getUser());
 
         return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     }

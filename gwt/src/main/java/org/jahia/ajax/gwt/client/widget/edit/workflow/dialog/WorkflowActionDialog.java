@@ -140,7 +140,7 @@ public class WorkflowActionDialog extends Window {
         commentPanel.add(formPanel);
         commentPanel.setWidth("100%");
 
-        add(commentPanel,new RowData(1, 0.75, new Margins(0)));
+        add(commentPanel,new RowData(1, 0.70, new Margins(0)));
 
         final ContentPanel actionPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
         actionPanel.setHeading(Messages.get("label.action", "Actions"));
@@ -155,7 +155,7 @@ public class WorkflowActionDialog extends Window {
                     final PropertiesEditor propertiesEditor = new PropertiesEditor(Arrays.asList(result),
                                                                                    action.getVariables(),
                             GWTJahiaItemDefinition.CONTENT);
-                    propertiesEditor.setViewInheritedItems(false);
+                    propertiesEditor.setViewInheritedItems(true);
                     propertiesEditor.renderNewFormPanel();
                     actionPanel.add(propertiesEditor);
                     generateActionButtons(propertiesEditor, action, node, dialog, actionPanel);
@@ -166,7 +166,7 @@ public class WorkflowActionDialog extends Window {
             generateActionButtons(null, action, node, dialog, actionPanel);
         }
 
-        add(actionPanel,new RowData(1, -1, new Margins(0)));
+        add(actionPanel,new RowData(1, 0.30, new Margins(0)));
     }
 
     private void displayComments(GWTJahiaWorkflowAction action, final Window dialog,

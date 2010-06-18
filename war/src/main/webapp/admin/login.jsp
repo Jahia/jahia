@@ -62,6 +62,7 @@ inputSize = 22;
       }
   }
 </script>
+<h2 class="loginlogo_community"></h2>
 <center>
 <div id="adminLogin">
 <h3 class="loginIcon"><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></h3>

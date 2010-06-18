@@ -97,15 +97,54 @@ font-family:"Courier New",Courier,monospace;
 #mainLoginLayout {
 
 }
+h2.loginlogo{
+	width:960px;
+	height:145px;
+	display:block;
+	background:url(images/andromeda/logo_jahia.png) no-repeat 50% 50% ;
+	margin:0 auto;
+	margin-top:80px;
+}
+h2.loginlogo_enterprise{
+	width:960px;
+	height:145px;
+	display:block;
+	background:url(images/andromeda/logo_jahia_enterprise.png) no-repeat 50% 50% ;
+	margin:0 auto;
+	margin-top:80px;
+}
 
+h2.loginlogo_community{
+	width:960px;
+	height:145px;
+	display:block;
+	background:url(images/andromeda/logo_jahia_community.png) no-repeat 50% 50% ;
+	margin:0 auto;
+	margin-top:80px;
+}
 #adminLogin {
-	border: 1px solid #b7cbd8;
-	background-color: #ffffff;
+	clear:both;
+	border: 1px solid #000;
+	background-color: #333;
 	margin:0 auto;
 	margin-top: 10px;
 	padding: 10px;
 	text-align: center;
 	width: 300px;
+	background:#fff url(images/andromeda/toolbar-input.png) repeat-x left top;
+    color: #000;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+	padding:10px;
+	border:1px solid #b7cbd8;
+	font-family:Arial,Verdana,Helvetica,sans-serif;
+	font-size:11px !important;
+	margin-bottom:5px;
+	margin:1em 0 0 0;
+	overflow:hidden;
+	margin:0 auto;
 }
 
 

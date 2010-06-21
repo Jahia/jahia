@@ -15,6 +15,19 @@
 /******************************************************************************
 *  boxsocial
 ******************************************************************************/
+/*boxsocial title*/
+#bodywrapper h4.boxsocial-title {
+	background:#666666 url(img/boxsocial-h4title.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
 #bodywrapper div.boxsocial {
 	position:relative;
 	clear:both;
@@ -31,9 +44,7 @@
 	height:1%;
 
 }
-#bodywrapper div.boxsocial-inner p {
-	padding:0px 0px 10px 0px;
-}
+
 #bodywrapper .boxsocial-inner .boxsocial-inner-border {
 	border:1px solid #fff;
 	height:1%;
@@ -96,11 +107,15 @@
 #bodywrapper .social-list li p {
 	padding:0;
 }
-#bodywrapper .social-list li.last {
+#bodywrapper .social-list li:last-child {
 	border-bottom-color:#fff;
 }
 #bodywrapper ul.social-list h4 {
 	border-bottom:none;
+}
+#bodywrapper ul.social-list a.social-list-remove {
+	font-size:0.9em;
+	float:right;
 }
 /******************************************************************************
 * statusUpdateForm
@@ -127,4 +142,51 @@ display:block
 }
 #bodywrapper .statusUpdateForm input.button{
 	width:auto
+}
+/******************************************************************************
+*  activitiesList
+******************************************************************************/
+
+#bodywrapper ul.activitiesList  {
+	position:relative;
+	margin:0;
+	list-style:none;
+	padding:0
+}
+#bodywrapper .activitiesList li {
+	padding:10px;
+	margin:0;
+	margin-bottom:0px;
+	list-style:none;
+	background: url(img/hr.png) repeat-x bottom left;
+}
+#bodywrapper .activitiesList li:last-child {
+	background:none;
+}
+#bodywrapper .activitiesList .itemImageLeft {
+	margin-right:20px
+}
+#bodywrapper .activitiesList .itemImageRight {
+	margin-left:20px
+}
+
+#bodywrapper .activitiesList li p {
+	padding:0;
+}
+#bodywrapper .activitiesList li.last {
+	background:none;
+}
+
+#bodywrapper .activitiesList .timestamp {
+	font-size:0.8em;
+	font-weight:normal;
+	line-height:1.2em;
+	margin-left:0.5em;
+}
+
+#bodywrapper .activitiesList h5.author {
+	display:inline;
+	margin:0;
+	padding:0;
+	font-weight:bold;
 }

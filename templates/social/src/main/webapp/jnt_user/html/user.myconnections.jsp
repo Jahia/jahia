@@ -166,9 +166,9 @@
                         activityDate.setTime(item['jcr:created']);
                         $(".activitiesList").append(
                                 "<li>"+
-                                    "<p class='message'>" + item['j:message'] + "</p> "+
-                                    "<div class='author'>" + item['jcr:createdBy'] + "</div>" +
-                                    "<div class='timestamp'>" + activityDate.toUTCString() + "</div>" +
+                                    "<h5 class='author'>" + item['jcr:createdBy'] + "</h5>" +
+                                    "<span class='timestamp'>" +  activityDate.toUTCString() + "</span>" +
+									"<p class='message'>" + item['j:message'] + "</p> "+
                                 "</li>"
                         );
 
@@ -192,22 +192,37 @@
 
 
 <div class='grid_12 alpha'><!--start grid_12-->
+<div class="boxsocial"><!--start boxsocial -->
+	<div class="boxsocialgrey boxsocialpadding16 boxsocialmarginbottom16">
+		<div class="boxsocial-inner">
+			<div class="boxsocial-inner-border">  
+                <h3><fmt:message key="userActivities" /></h3>
+            
+                <form class="statusUpdateForm" name="statusUpdateForm" action="" method="post">
+                    <textarea rows="2" cols="20" class="" onfocus="if(this.value==this.defaultValue)this.value='';"
+                           onblur="if(this.value=='')this.value=this.defaultValue;"
+                           name="statusUpdateText" id="statusUpdateText"><fmt:message key="statusUpdateDefaultText"/></textarea>
+                    <p>
+                        <input class="button" id="statusUpdateSubmit" type="submit" title="<fmt:message key='statusUpdateSubmit'/>"/>
+                    </p>
+                </form>
+			</div>
+		</div>
+	</div>
+<div class='clear'></div></div>
 
-    <h3><fmt:message key="userActivities" /></h3>
-
-    <form class="statusUpdateForm" name="statusUpdateForm" action="" method="post">
-        <textarea rows="2" cols="20" class="" onfocus="if(this.value==this.defaultValue)this.value='';"
-               onblur="if(this.value=='')this.value=this.defaultValue;"
-               name="statusUpdateText" id="statusUpdateText"><fmt:message key="statusUpdateDefaultText"/></textarea>
-        <p>
-			<input class="button" id="statusUpdateSubmit" type="submit" title="<fmt:message key='statusUpdateSubmit'/>"/>
-		</p>
-    </form>
-
+ <h4 class="boxsocial-title">Activities List</h4>
+<div class="boxsocial">
+            <div class="boxsocialpadding10 boxsocialmarginbottom16">
+                <div class="boxsocial-inner">
+                    <div class="boxsocial-inner-border"><!--start boxsocial -->
     <ul class="activitiesList">
         <li>Loading status...</li>
     </ul>
-
+			</div>
+		</div>
+	</div>
+<div class='clear'></div></div>
 </div>
 <!--stop grid_12-->
 <div class='grid_4 omega'><!--start grid_4-->

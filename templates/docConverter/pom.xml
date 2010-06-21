@@ -157,6 +157,7 @@
 			            <depends>Default Jahia Templates</depends>
                     </manifestEntries>
                 </archive>
+                <archiveClasses>true</archiveClasses>
             </configuration>
         </plugin>
             <plugin>

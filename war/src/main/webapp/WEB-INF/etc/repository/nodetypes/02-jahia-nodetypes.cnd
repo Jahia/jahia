@@ -119,8 +119,8 @@
 [jmix:publication] mixin
 
 [jnt:simpleTimebasedPublished] > mix:title, nt:base
- - startDate (date,datetimepicker[format='dd/MM/yyyy / HH:mm']) = now()
- - endDate (date,datetimepicker[format='dd/MM/yyyy / HH:mm'])
+ - startDate (date,datetimepicker[format='yyyy-MM-dd HH:mm'])
+ - endDate (date,datetimepicker[format='yyyy-MM-dd HH:mm'])
 
 //---------------------------------------------------------
 // Locks

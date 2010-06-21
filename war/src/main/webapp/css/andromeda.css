@@ -98,7 +98,7 @@ font-family:"Courier New",Courier,monospace;
 
 }
 h2.loginlogo{
-	width:960px;
+	width:100%;
 	height:145px;
 	display:block;
 	background:url(images/andromeda/logo_jahia.png) no-repeat 50% 50% ;
@@ -106,7 +106,7 @@ h2.loginlogo{
 	margin-top:80px;
 }
 h2.loginlogo_enterprise{
-	width:960px;
+	width:100%;
 	height:145px;
 	display:block;
 	background:url(images/andromeda/logo_jahia_enterprise.png) no-repeat 50% 50% ;
@@ -115,7 +115,7 @@ h2.loginlogo_enterprise{
 }
 
 h2.loginlogo_community{
-	width:960px;
+	width:100%;
 	height:145px;
 	display:block;
 	background:url(images/andromeda/logo_jahia_community.png) no-repeat 50% 50% ;

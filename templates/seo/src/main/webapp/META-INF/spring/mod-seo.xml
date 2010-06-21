@@ -8,7 +8,7 @@
                 <entry key="jcrUtils" value-ref="JCRContentUtils"/>
                 <entry key="seoService">
                     <bean class="org.jahia.modules.seo.rules.SeoService">
-                        <property name="urlManager" ref="org.jahia.services.seo.jcr.VanityUrlManager"/>
+                        <property name="urlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
                     </bean>
                 </entry>
             </map>

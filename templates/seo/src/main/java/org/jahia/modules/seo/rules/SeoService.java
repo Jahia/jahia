@@ -37,14 +37,11 @@ import javax.validation.ConstraintViolationException;
 
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.seo.VanityUrl;
-import org.jahia.services.seo.jcr.VanityUrlManager;
+import org.jahia.services.seo.jcr.VanityUrlService;
 
 /**
  * SEO service class for manipulating content URL mappings from the
@@ -56,7 +53,7 @@ public class SeoService {
 
     private static Logger logger = Logger.getLogger(SeoService.class);
 
-    private VanityUrlManager urlManager;
+    private VanityUrlService urlService;
 
     /**
      * Adds the URL mapping for the specified node and language.
@@ -74,23 +71,18 @@ public class SeoService {
             logger.debug("Adding URL mapping for node " + node.getPath() + " and locale '" + locale + "'");
         }
         final String path = node.getPath();
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                String urlToTry = url;
-                int index = 0;
-                String siteKey = JCRContentUtils.getSiteKey(path);
-                JCRNodeWrapper nodeWrapper = session.getNode(path);
-                while (true) {
-                    try {
-                        urlManager.saveVanityUrlMapping(nodeWrapper, new VanityUrl(urlToTry, siteKey, locale, isDefault, true), session);
-                        break;
-                    } catch (ConstraintViolationException ex) {
-                        urlToTry = url + "-" + (++index);
-                    }
-                }
-                return true;
+        String urlToTry = url;
+        int index = 0;
+        String siteKey = JCRContentUtils.getSiteKey(path);
+        JCRNodeWrapper nodeWrapper = node.getNode();
+        while (true) {
+            try {
+                urlService.saveVanityUrlMapping(nodeWrapper, new VanityUrl(urlToTry, siteKey, locale, isDefault, true));
+                break;
+            } catch (ConstraintViolationException ex) {
+                urlToTry = url + "-" + (++index);
             }
-        });
+        }
     }
 
     /**
@@ -106,21 +98,16 @@ public class SeoService {
         if (logger.isDebugEnabled()) {
             logger.debug("Removing URL mappings for locale '" + locale + "' from node " + node.getPath());
         }
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                urlManager.removeVanityUrlMappings(session.getNode(node.getPath()), locale, session);
-                return true;
-            }
-        });
+        urlService.removeVanityUrlMappings(node.getNode(), locale);
     }
 
     /**
-     * Injects an instance of the {@link VanityUrlManager}.
+     * Injects an instance of the {@link VanityUrlService}.
      * 
-     * @param urlManager an instance of the {@link VanityUrlManager}
+     * @param urlManager an instance of the {@link VanityUrlService}
      */
-    public void setUrlManager(VanityUrlManager urlManager) {
-        this.urlManager = urlManager;
+    public void setUrlService(VanityUrlService urlService) {
+        this.urlService = urlService;
     }
 
 }

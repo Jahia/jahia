@@ -51,6 +51,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.FileUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -198,7 +199,7 @@ public class NavigationHelper {
 //    }
 //
     public boolean matchesFilters(String nodeName, List<String> filters) {
-        if (nodeName == null || filters == null || filters.size() == 0) {
+        if (nodeName == null || CollectionUtils.isEmpty(filters)) {
             return true;
         }
         boolean matches = false;
@@ -213,7 +214,7 @@ public class NavigationHelper {
 
     public boolean matchesMimeTypeFilters(JCRNodeWrapper node, List<String> filters) {
         // no filters
-        if (filters == null || filters == null || filters.size() == 0) {
+        if (filters == null || CollectionUtils.isEmpty(filters)) {
             return true;
         }
 
@@ -227,7 +228,9 @@ public class NavigationHelper {
     }
 
     public boolean matchesNodeType(JCRNodeWrapper node, List<String> nodeTypes) {
-        if (nodeTypes == null || nodeTypes.size() == 0) {
+        // if there is only one node type in the list it is part of the query and does not need
+        // to be checked here again
+        if (nodeTypes == null || nodeTypes.size() <= 1) {
             return true;
         }
         for (String nodeType : nodeTypes) {
@@ -562,23 +565,29 @@ public class NavigationHelper {
         QueryResult qr = q.execute();
         NodeIterator ni = qr.getNodes();
         while (ni.hasNext()) {
-            JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
-            if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
-                // use for pickers
-                boolean isFile = n.isFile();
-                boolean hasNodes = false;
-                try {
-                    hasNodes = n.getNodes().hasNext();
-                } catch (RepositoryException e) {
-                    logger.error(e, e);
+            try {
+                JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
+                if (n.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                    n = n.getParent();
                 }
-                boolean matchFilter = (filtersToApply != null && mimeTypesToMatch != null && filtersToApply.size() == 0 && mimeTypesToMatch.size() == 0) ||
-                        matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n, mimeTypesToMatch);
-                if (matchFilter || hasNodes) {
-                    GWTJahiaNode node = getGWTJahiaNode(n,fields);
-                    node.setMatchFilters(matchFilter);
-                    result.add(node);
+                if (!n.isNodeType(Constants.NT_FROZENNODE) && matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
+                    // use for pickers
+                    boolean hasNodes = false;
+                    try {
+                        hasNodes = n.getNodes().hasNext();
+                    } catch (RepositoryException e) {
+                        logger.error(e, e);
+                    }
+                    boolean matchFilter = matchesFilters(n.getName(), filtersToApply)
+                            && matchesMimeTypeFilters(n, mimeTypesToMatch);
+                    if (matchFilter || hasNodes) {
+                        GWTJahiaNode node = getGWTJahiaNode(n, fields);
+                        node.setMatchFilters(matchFilter);
+                        result.add(node);
+                    }
                 }
+            } catch (Exception e) {
+                logger.warn("Error resolving search hit", e);
             }
         }
         return result;

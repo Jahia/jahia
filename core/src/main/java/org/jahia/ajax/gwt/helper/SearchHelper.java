@@ -361,6 +361,11 @@ public class SearchHelper {
             criteria.getPagePath().setIncludeChildren(true);
         }
 
+        // nodeType
+        if (gwtQuery.getNodeTypes() != null && gwtQuery.getNodeTypes().size() == 1) {
+            criteria.setNodeType(gwtQuery.getNodeTypes().get(0));
+        }        
+        
         // language
         if (gwtQuery.getLanguage() != null && gwtQuery.getLanguage().getLanguage() != null) {
             criteria.getLanguages().setValue(gwtQuery.getLanguage().getLanguage());
@@ -381,7 +386,7 @@ public class SearchHelper {
             fields.setTitle(gwtQuery.isInMetadatas());
             fields.setDescription(gwtQuery.isInMetadatas());
             fields.setKeywords(gwtQuery.isInMetadatas());
-
+            fields.setTags(gwtQuery.isInTags());
         }
 
         return jcrSearchProvider.buildQuery(criteria, session);

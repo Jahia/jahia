@@ -55,7 +55,7 @@
                                     <option value="${format.mediaType}">${format.extension}&nbsp;(${fn:escapeXml(format.name)})</option>
                                 </c:forEach>
                             </select>
-                            <input type="submit" id="submit" class="button" value="Convert" tabindex="4"/>
+                            <input type="submit" id="submit" class="button" value="<fmt:message key='label.convert'/>" tabindex="4"/>
                         </p>
                     </form>
 

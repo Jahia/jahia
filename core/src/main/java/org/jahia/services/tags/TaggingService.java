@@ -157,7 +157,7 @@ public class TaggingService {
 		});
 	}
 
-	private JCRNodeWrapper getTag(String tag, String siteKey, JCRSessionWrapper session) throws RepositoryException {
+	public JCRNodeWrapper getTag(String tag, String siteKey, JCRSessionWrapper session) throws RepositoryException {
 		JCRNodeWrapper node = null;
 		try {
 			node = session.getNode(getTagsPath(siteKey) + "/" + tag);

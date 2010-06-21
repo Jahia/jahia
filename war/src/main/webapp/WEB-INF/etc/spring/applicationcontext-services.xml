@@ -318,7 +318,10 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider" class="org.jahia.services.search.jcr.JahiaJCRSearchProvider"/>
+    <bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider" class="org.jahia.services.search.jcr.JahiaJCRSearchProvider">
+        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>    
+    </bean>
+    
 
     <bean id="GoogleAnalyticsService" class="org.jahia.services.analytics.GoogleAnalyticsService" factory-method="getInstance" />
     

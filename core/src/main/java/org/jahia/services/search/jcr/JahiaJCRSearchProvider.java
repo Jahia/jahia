@@ -56,6 +56,7 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
@@ -77,6 +78,7 @@ import org.jahia.services.search.SearchCriteria.NodeProperty;
 import org.jahia.services.search.SearchCriteria.Term;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
+import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.JahiaTools;
 
@@ -98,6 +100,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     private static Logger logger = Logger
             .getLogger(JahiaJCRSearchProvider.class);
+    
+    private TaggingService taggingService = null;
 
     /* (non-Javadoc)
      * @see org.jahia.services.search.SearchProvider#search(org.jahia.services.search.SearchCriteria, org.jahia.params.ProcessingContext)
@@ -119,11 +123,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         Row row = it.nextRow();
                         JCRNodeWrapper node = (JCRNodeWrapper) row.getNode();
                         if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
-                            try {
-                                node = node.getParent();
-                            } catch (ItemNotFoundException e) {
-                                node = null;
-                            }
+                            node = node.getParent();
                         }
                         results.add(buildHit(row, node, context));
                     } catch (Exception e) {
@@ -175,7 +175,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         return searchHit;
     }
 
-    private String buildXpathQuery(SearchCriteria params) {
+    private String buildXpathQuery(SearchCriteria params, JCRSessionWrapper session) {
         String xpathQuery = null;
 
         StringBuilder query = new StringBuilder(256);
@@ -242,7 +242,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     getNodeType(params)).append(")");
         }
 
-        query = appendConstraints(params, query);
+        query = appendConstraints(params, query, session);
         xpathQuery = query.toString();
 
         if (logger.isDebugEnabled()) {
@@ -262,10 +262,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private StringBuilder appendConstraints(SearchCriteria params,
-            StringBuilder query) {
+            StringBuilder query, JCRSessionWrapper session) {
         StringBuilder constraints = new StringBuilder(64);
 
-        addTermConstraints(params, constraints);
+        addTermConstraints(params, constraints, session);
 
         addDateAndAuthorConstraints(params, constraints);
 
@@ -475,7 +475,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private void addTermConstraints(SearchCriteria params,
-            StringBuilder constraints) {
+            StringBuilder constraints, JCRSessionWrapper session) {
 
         for (Term textSearch : params.getTerms()) {
 
@@ -504,6 +504,17 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 if (searchFields.isFilename()) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(@j:nodename, " + searchExpression + ")");
                 }
+                if (searchFields.isTags() && params.getSites().getValue() != null && getTaggingService() != null) {
+                    try {
+                        JCRNodeWrapper tag = getTaggingService().getTag(textSearch.getTerm(), params.getSites().getValue(), session);
+                        if (tag != null) {
+                            addConstraint(textSearchConstraints, "or", "@" + Constants.TAGS + "="
+                                    + stringToJCRSearchExp(tag.getIdentifier()));                            
+                        }
+                    } catch (RepositoryException e) {
+                        logger.warn("Error resolving tag for search", e);
+                    }
+                }            
                 if (textSearchConstraints.length() > 0) {
                     addConstraint(constraints, "and", "("
                             + textSearchConstraints.toString() + ")");
@@ -635,7 +646,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     public Query buildQuery(SearchCriteria criteria, JCRSessionWrapper session) throws InvalidQueryException,
             RepositoryException {
         Query query = null;
-        String xpathQuery = buildXpathQuery(criteria);
+        String xpathQuery = buildXpathQuery(criteria, session);
         if (!StringUtils.isEmpty(xpathQuery)) {
             QueryManager qm = session.getWorkspace().getQueryManager();
             query = qm.createQuery(xpathQuery, Query.XPATH);
@@ -650,6 +661,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         }
 
         return query;
+    }
+
+    public TaggingService getTaggingService() {
+        return taggingService;
+    }
+
+    public void setTaggingService(TaggingService taggingService) {
+        this.taggingService = taggingService;
     }
 
 }

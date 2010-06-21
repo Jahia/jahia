@@ -517,6 +517,8 @@ public class SearchCriteria implements Serializable {
             private boolean keywords;
 
             private boolean title;
+            
+            private boolean tags;            
 
             public boolean isSiteContent() {
                 return siteContent
@@ -543,8 +545,13 @@ public class SearchCriteria implements Serializable {
                 return title;
             }
 
+            public boolean isTags() {
+                return tags;
+            }            
+            
             public void setSiteContent(boolean content) {
                 this.siteContent = content;
+                this.tags = content;
             }
 
             public void setCustom(String custom) {
@@ -567,6 +574,9 @@ public class SearchCriteria implements Serializable {
                     if (custom.contains("keywords")) {
                         setKeywords(true);
                     }
+                    if (custom.contains("tags")) {
+                        setTags(true);
+                    }                    
                     if (custom.contains("files")) {
                         setDescription(true);
                         setFileContent(true);
@@ -596,6 +606,10 @@ public class SearchCriteria implements Serializable {
             public void setTitle(boolean title) {
                 this.title = title;
             }
+            
+            public void setTags(boolean tags) {
+                this.tags = tags;
+            }            
 
             @Override
             public String toString() {

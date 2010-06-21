@@ -44,7 +44,7 @@
               description="Do we need to display search fields options to allow user selection? [false]" %>
 <%@ attribute name="searchInSelectionOptions" required="false" type="java.lang.String"
               description="Comma separated list of fields to search in that are available for user selection.
-              This option has effect only in case the searchInAllowSelection attribute is set to true. [content,metadata]" %>
+              This option has effect only in case the searchInAllowSelection attribute is set to true. [siteContent,files]" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -61,7 +61,7 @@
 <c:set var="key" value="src_terms[${termIndex}].fields"/>
 <c:set var="searchIn" value="${functions:default(param[key], searchIn)}"/>
 <c:set var="searchInAllowSelection" value="${functions:default(searchInAllowSelection, false)}"/>
-<c:set var="searchInSelectionOptions" value="${functions:default(searchInSelectionOptions, 'content,metadata')}"/>
+<c:set var="searchInSelectionOptions" value="${functions:default(searchInSelectionOptions, 'siteContent,files')}"/>
 <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
 <c:if test="${not empty match && match != 'as_is'}">
     <c:set var="key" value="src_terms[${termIndex}].match"/>

@@ -39,7 +39,7 @@
 <%@ attribute name="value" required="false" type="java.lang.String" description="Comma separated list of fields to search in. [siteContent]" %>
 <%@ attribute name="selectionOptions" required="false" type="java.lang.String"
               description="Comma separated list of fields to search in that are available for user selection.
-              This option has effect only in case the searchInAllowSelection attribute is set to true. Possibible options: siteContent, description, fileContent, filename, keywords, title, files (a shortcut for selecting file fields at once: description, fileContent, filename, keywords, title). [siteContent,files]" %>
+              This option has effect only in case the searchInAllowSelection attribute is set to true. Possibible options: siteContent, description, fileContent, filename, keywords, title, files (a shortcut for selecting file fields at once: description, fileContent, filename, keywords, title, tags). [siteContent,files]" %>
 <%@ attribute name="appearance" required="false" type="java.lang.String"
               description="Specify the way field options will be displayed. Possible values are: checkbox and select. [checkbox]" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>

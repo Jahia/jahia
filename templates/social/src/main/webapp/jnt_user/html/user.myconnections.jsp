@@ -276,8 +276,9 @@
             <div class="thumbnail">
                 <a href="${url.base}${connectedUser.path}.html"><img src="${url.currentModule}/images/friend.png" alt="friend" border="0"/></a>
             </div>
+            <a class="social-list-remove" title="<fmt:message key="removeFriend"/>" href="#"><span><fmt:message key="removeFriend"/></span></a>
             <h4><a href="${usl.base}${connectedUser.path}.html">${userConnection.properties['j:connectedTo'].node.properties['j:firstName'].string} ${userConnection.properties['j:connectedTo'].node.properties['j:lastName'].string}</a></h4>
-            <a class="social-list-remove" href="#"><fmt:message key="removeFriend"/></a>
+            
             <div class='clear'></div>
         </li>
         </c:forEach>

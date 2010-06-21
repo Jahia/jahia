@@ -114,8 +114,14 @@
 	border-bottom:none;
 }
 #bodywrapper ul.social-list a.social-list-remove {
-	font-size:0.8em;
+	width:16px;
+	height:16px;
+	display:block;
+	background: url(img/delete.png) no-repeat top right;
 	float:right;
+}
+#bodywrapper ul.social-list a.social-list-remove span {
+display:none
 }
 /******************************************************************************
 * statusUpdateForm

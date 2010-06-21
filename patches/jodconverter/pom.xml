@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>patches</artifactId>
+        <version>6.5-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jodconverter</artifactId>
+    <name>JODConverter Jahia patches</name>
+    <packaging>jar</packaging>
+
+    <properties>
+        <jodconverter.version>3.0-beta-3</jodconverter.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+        	<groupId>org.artofsolving.jodconverter</groupId>
+        	<artifactId>jodconverter-core</artifactId>
+        	<version>${jodconverter.version}</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.artofsolving.jodconverter</groupId>
+                                    <artifactId>jodconverter-core</artifactId>
+                                    <version>${jodconverter.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>truezip-maven-plugin</artifactId>
+                <version>1.0-beta-4</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <goals>
+                          <goal>cp</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <from>${project.build.directory}/jodconverter-core-${jodconverter.version}.jar</from>
+                            <to>${project.build.directory}/jodconverter-core-${jodconverter.version}-jahia.jar</to>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>patch</id>
+                        <goals>
+                          <goal>copy</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                          <fileset>
+                            <directory>${project.build.directory}/classes</directory>
+                            <outputDirectory>${project.build.directory}/jodconverter-core-${jodconverter.version}-jahia.jar</outputDirectory>
+                          </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>

@@ -12,6 +12,7 @@
 
   <modules>
     <module>concurrent</module>
+    <module>jodconverter</module>
   </modules>
 
 </project>

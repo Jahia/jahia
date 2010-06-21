@@ -81,10 +81,7 @@
                         </div>
                         <c:if test="${currentNode.fileContent.contentType != 'application/pdf'}">
                         <div class="itemImage itemImageLeft"
-                            <c:url var="pdfLink" value="${url.toPDF}" context="/">
-                                <c:param name="id" value="${currentNode.identifier}"/>
-                            </c:url>
-                            <a href="${pdfLink}" title="${i18nDownload}&nbsp;<fmt:message key='docspace.label.asPdf'/>"><span class="icon_large pdf_large"></span></a>
+                            <a href="<c:url value='${currentNode.path}.pdf' context='${url.convert}'/>" title="${i18nDownload}&nbsp;<fmt:message key='docspace.label.asPdf'/>"><span class="icon_large pdf_large"></span></a>
                         </div>
                         </c:if>
                     </div>

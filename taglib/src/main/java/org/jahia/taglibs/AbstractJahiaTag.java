@@ -265,7 +265,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
         RenderContext ctx = getRenderContext();
         if (ctx != null) {
             Resource resource = new Resource(node, "html", null, null, Resource.CONFIGURATION_PAGE);
-            URLGenerator url = new URLGenerator(ctx, resource, JCRStoreService.getInstance());
+            URLGenerator url = new URLGenerator(ctx, resource);
             return url.getLanguages().get(langCode);
         } else {
             logger.error("Unable to get lang[" + langCode + "] link for home page");

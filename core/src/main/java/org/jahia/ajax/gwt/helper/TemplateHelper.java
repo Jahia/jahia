@@ -166,7 +166,7 @@ public class TemplateHelper {
             }
             renderContext.setMainResource(resource);
 
-            final URLGenerator urlGenerator = new URLGenerator(renderContext, resource, renderService.getStoreService());
+            final URLGenerator urlGenerator = new URLGenerator(renderContext, resource);
             if (mode == LIVE) {
                 return urlGenerator.getLive(versionNumber);
             } else if (mode == PREVIEW) {

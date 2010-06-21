@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.*;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -45,7 +44,6 @@ public class URLGenerator {
 
     private Resource resource;
     private RenderContext context;
-    private JCRStoreService jcrStoreService;
 
     private Map<String, String> languages;
 
@@ -62,12 +60,11 @@ public class URLGenerator {
     private String baseEdit;
     private String basePreview;
     private String ckeditor;
-    private String toPDF;
+    private String convert;
 
-    public URLGenerator(RenderContext context, Resource resource, JCRStoreService jcrStoreService) {
+    public URLGenerator(RenderContext context, Resource resource) {
         this.context = context;
         this.resource = resource;
-        this.jcrStoreService = jcrStoreService;
         initURL();
         if (context.getURLGenerator() == null) {
             context.setURLGenerator(this);
@@ -118,7 +115,7 @@ public class URLGenerator {
         findPrincipal = getContext() + FindPrincipal.getFindPrincipalServletPath();
         logout = getContext() + Logout.getLogoutServletPath();
         initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
-        toPDF = getContext() + ToPDFServlet.getToPDFServletPath() + "/" + resource.getWorkspace();
+        convert = getContext() + DocumentConverter.getPath() + "/" + resource.getWorkspace();
         captcha = getContext() + Captcha.getCaptchaServletPath();
         templatesPath = getContext() + "/templates";
     }
@@ -216,7 +213,6 @@ public class URLGenerator {
         if (languages == null) {
             languages = LazyMap.decorate(new HashMap(), new Transformer() {
                 public Object transform(Object lang) {
-                    String servletPath;
                     return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() + ".html";
                 }
             });
@@ -368,8 +364,8 @@ public class URLGenerator {
         return ckeditor;
     }
 
-    public String getToPDF() {
-        return toPDF;
+    public String getConvert() {
+        return convert;
     }
 
     public String getRealResource() {

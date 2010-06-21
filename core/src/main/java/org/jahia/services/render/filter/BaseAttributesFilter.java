@@ -33,7 +33,7 @@ public class BaseAttributesFilter extends AbstractFilter {
 
         if (resource.getModuleParams().get("isInclude") == null) {
             chain.pushAttribute(request, "currentNode", node);
-            chain.pushAttribute(request, "url",new URLGenerator(context, resource, service.getStoreService()));
+            chain.pushAttribute(request, "url",new URLGenerator(context, resource));
         }
 
         String out;

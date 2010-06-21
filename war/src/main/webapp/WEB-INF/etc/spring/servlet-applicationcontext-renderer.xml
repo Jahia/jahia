@@ -23,13 +23,16 @@
                 <property name="loggingService" ref="loggingService"/>
             </bean>
         </property>
+        <property name="settingsBean" ref="settingsBean" />
+        <property name="renderService" ref="RenderService" />
+        <property name="jcrSessionFactory" ref="jcrSessionFactory" />
     </bean>
 
     <bean name="rendererMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
                 <entry key="/render/**">
-                    <bean name="org.jahia.bin.Render" parent="abstractRender" />
+                    <bean name="org.jahia.bin.Render" parent="abstractRender"/>
                 </entry>
                 <entry key="/contribute/**">
                     <bean name="org.jahia.bin.Contribute" parent="abstractRender" class="org.jahia.bin.Contribute">

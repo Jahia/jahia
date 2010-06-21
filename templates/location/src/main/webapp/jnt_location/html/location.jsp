@@ -8,25 +8,25 @@
 
 
 <div class="location">
-    <h3>${currentNode.properties.title.string}</h3>
+    <h3>${fn:escapeXml(currentNode.propertiesAsString.title)}</h3>
 
-    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.street"/> : </span>
-        <span class="location-value">${currentNode.properties.street.string}</span>
+    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.street"/>: </span>
+        <span class="location-value">${fn:escapeXml(currentNode.propertiesAsString.street)}</span>
     </p>
 
-    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.zipCode"/> : </span>
-        <span class="location-value">${currentNode.properties.zipCode.string}</span>
+    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.zipCode"/>: </span>
+        <span class="location-value">${fn:escapeXml(currentNode.propertiesAsString.zipCode)}</span>
     </p>
-    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.town"/> : </span>
-        <span class="location-value">${currentNode.properties.town.string}</span>
+    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.town"/>: </span>
+        <span class="location-value">${fn:escapeXml(currentNode.propertiesAsString.town)}</span>
     </p>
-    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.country"/> : </span>
-        <span class="location-value">${currentNode.properties.country.string}</span>
+    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.country"/>: </span>
+        <span class="location-value">${fn:escapeXml(currentNode.propertiesAsString.country)}</span>
     </p>
-    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.latitude"/> : </span>
-        <span class="location-value">${currentNode.properties.latitude.string}</span>
+    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.latitude"/>: </span>
+        <span class="location-value">${fn:escapeXml(currentNode.propertiesAsString.latitude)}</span>
     </p>
-    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.longitude"/> : </span>
-        <span class="location-value">${currentNode.properties.longitude.string}</span>
+    <p class="location-item"><span class="location-label"><fmt:message key="jahia.location.longitude"/>: </span>
+        <span class="location-value">${fn:escapeXml(currentNode.propertiesAsString.longitude)}</span>
     </p>
 </div>

@@ -199,7 +199,7 @@
 
 <div class='grid_12 alpha'><!--start grid_12-->
 <div class="boxsocial"><!--start boxsocial -->
-	<div class="boxsocialgrey boxsocialpadding16 boxsocialmarginbottom16">
+	<div class="boxsocialpadding16 boxsocialmarginbottom16">
 		<div class="boxsocial-inner">
 			<div class="boxsocial-inner-border">  
                 <h3><fmt:message key="userActivities" /></h3>

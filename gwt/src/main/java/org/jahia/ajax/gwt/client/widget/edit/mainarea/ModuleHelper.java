@@ -10,6 +10,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
@@ -100,7 +101,8 @@ public class ModuleHelper {
         if (Log.isDebugEnabled()) {
             Log.debug("all pathes "+list);
         }
-        JahiaContentManagementService.App.getInstance().getNodesWithPublicationInfo(list,new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        JahiaContentManagementService.App.getInstance().getNodes(list,Arrays.asList(GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO),
+                new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> result) {
                 for (GWTJahiaNode gwtJahiaNode : result) {
                     final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());

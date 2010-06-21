@@ -79,6 +79,7 @@ public class NavigationHelper {
     private JCRVersionService jcrVersionService;
 
     private PublicationHelper publication;
+    private WorkflowHelper workflow;
 
 
     public void setJcrService(JCRStoreService jcrService) {
@@ -91,6 +92,10 @@ public class NavigationHelper {
 
     public void setPublication(PublicationHelper publication) {
         this.publication = publication;
+    }
+
+    public void setWorkflow(WorkflowHelper workflow) {
+        this.workflow = workflow;
     }
 
     public void setJcrVersionService(JCRVersionService jcrVersionService) {
@@ -766,6 +771,19 @@ public class NavigationHelper {
             try {
                 n.setPublicationInfo(publication.getPublicationInfo(node.getIdentifier(),
                         Collections.singleton(node.getSession().getLocale().toString()), false, node.getSession()));
+            } catch (UnsupportedRepositoryOperationException e) {
+                // do nothing
+                logger.debug(e.getMessage());
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            } catch (GWTJahiaServiceException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.WORKFLOW_INFO)) {
+            try {
+                n.setWorkflowInfo(workflow.getWorkflowInfo(n.getPath(), node.getSession()));
             } catch (UnsupportedRepositoryOperationException e) {
                 // do nothing
                 logger.debug(e.getMessage());

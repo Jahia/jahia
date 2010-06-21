@@ -19,7 +19,6 @@ public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializab
     public static final int MODIFIED = 2;
     public static final int NOT_PUBLISHED = 3;
     public static final int UNPUBLISHED = 4;
-    public static final int UNPUBLISHABLE = 5;
     public static final int LIVE_MODIFIED = 6;
     public static final int LIVE_ONLY = 7;
     public static final int CONFLICT = 9;

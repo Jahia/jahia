@@ -73,12 +73,9 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                     if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
                         continue;
                     }
-                    if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                    if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                         lastUnpublished = module.getNode().getPath();
-                        if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE) {
-                            addInfoLayer(module, "Never published - publish parent first", "black", "black", left, top, right, bottom, removeListener, false,
-                                    "0.7");
-                        } else if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                        if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                             addInfoLayer(module, ("Unpublished"), "black", "black", left, top, right, bottom, removeListener, false,
                                     "0.7");
                         } else {

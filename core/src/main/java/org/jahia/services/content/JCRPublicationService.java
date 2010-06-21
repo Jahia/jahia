@@ -303,9 +303,7 @@ public class JCRPublicationService extends JahiaService {
         final List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
 
         getBlockedAndReferencesList(sourceNode, toPublish, pruneSourceNodes, referencedNodes, languages, allSubTree);
-//        for (Node s : toPublish) {
-//            s.setProperty("j:publishedLanguage")
-//        }
+
         ((ArrayList) referencedNodes).removeAll(toPublish);
         for (JCRNodeWrapper node : referencedNodes) {
             try {
@@ -833,14 +831,14 @@ public class JCRPublicationService extends JahiaService {
             info.setStatus(PublicationInfo.UNPUBLISHED);
         } else if (publishedNode == null) {
             // node has not been published yet, check if parent is published
-            try {
-                liveSession.getNode(stageNode.getParent().getPath());
+//            try {
+//                liveSession.getNode(stageNode.getParent().getPath());
                 info.setStatus(PublicationInfo.NOT_PUBLISHED);
-            } catch (AccessDeniedException e) {
-                info.setStatus(PublicationInfo.UNPUBLISHABLE);
-            } catch (PathNotFoundException e) {
-                info.setStatus(PublicationInfo.UNPUBLISHABLE);
-            }
+//            } catch (AccessDeniedException e) {
+//                info.setStatus(PublicationInfo.UNPUBLISHABLE);
+//            } catch (PathNotFoundException e) {
+//                info.setStatus(PublicationInfo.UNPUBLISHABLE);
+//            }
         } else {
             if (stageNode.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
                 info.setStatus(PublicationInfo.CONFLICT);

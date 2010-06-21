@@ -87,8 +87,6 @@ class PublicationStatusWindow extends Window {
                         return Messages.getResource("label.published");
                     case GWTJahiaPublicationInfo.MODIFIED:
                         return Messages.getResource("label.modified");
-                    case GWTJahiaPublicationInfo.UNPUBLISHABLE:
-                        return Messages.getResource("org.jahia.jcr.publication.status_notyetpublished");
                     case GWTJahiaPublicationInfo.UNPUBLISHED:
                         return "Unpublished";
                     case GWTJahiaPublicationInfo.CONFLICT:

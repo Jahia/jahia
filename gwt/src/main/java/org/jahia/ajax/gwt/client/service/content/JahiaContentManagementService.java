@@ -82,14 +82,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths) throws GWTJahiaServiceException;
 
-    /**
-     * Get a node by its path if existing.
-     *
-     * @param path path o fthe node you want
-     * @return the founded node if existing
-     * @throws GWTJahiaServiceException if node does not exist
-     */
-    public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException;
+    public List<GWTJahiaNode> getNodes(List<String> path, List<String> fields) throws GWTJahiaServiceException;
 
     public GWTJahiaNode getTagNode(String tagName, boolean create) throws GWTJahiaServiceException;
 
@@ -216,8 +209,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public String getNodeURL(String path, String version, String workspace, String locale, int mode) throws GWTJahiaServiceException;
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException;
-
-    public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> list) throws GWTJahiaServiceException;
 
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 

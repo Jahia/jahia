@@ -38,6 +38,7 @@
         <property name="jcrService"  ref="JCRStoreService"/>
         <property name="jcrVersionService" ref="jcrVersionService" />
         <property name="publication" ref="PublicationHelper"/>
+        <property name="workflow" ref="WorkflowHelper"/>
     </bean>
 
     <bean name="LanguagesHelper" class="org.jahia.ajax.gwt.helper.LanguageHelper"/>

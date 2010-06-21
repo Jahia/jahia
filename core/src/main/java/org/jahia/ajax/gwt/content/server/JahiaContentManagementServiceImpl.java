@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
@@ -270,6 +271,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         return navigation.retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths,
                 getSite(), retrieveCurrentSession());
+    }
+
+    public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {
+        List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
+        for (String path : paths) {
+            try {
+                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, fields, retrieveCurrentSession());
+                list.add(gwtJahiaNode);
+            } catch (GWTJahiaServiceException e) {
+                logger.debug(e, e);
+            }
+        }
+        return list;
+
     }
 
     /**
@@ -1043,22 +1058,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
         contentManager.importContent(parentPath, fileKey);
     }
-
-    public List<GWTJahiaNode> getNodesWithPublicationInfo(List<String> paths) throws GWTJahiaServiceException {
-        List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
-        for (String path : paths) {
-            try {
-                GWTJahiaNode gwtJahiaNode = navigation.getNode(path, retrieveCurrentSession());
-                gwtJahiaNode.setPublicationInfo(getPublicationInfo(gwtJahiaNode.getUUID(), false));
-                gwtJahiaNode.setWorkflowInfo(getWorkflowInfo(gwtJahiaNode.getPath()));
-                list.add(gwtJahiaNode);
-            } catch (GWTJahiaServiceException e) {
-                logger.debug(e, e);
-            }
-        }
-        return list;
-    }
-
 
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition,
                               List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {

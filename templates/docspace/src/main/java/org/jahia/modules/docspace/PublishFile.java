@@ -48,10 +48,6 @@ public class PublishFile implements org.jahia.bin.Action {
             final Set<String> languages = Collections.singleton(resource.getLocale().toString());
             final PublicationInfo publicationInfo = service.getPublicationInfo(resource.getNode().getIdentifier(), languages,
                                                                                false, false);
-            if (publicationInfo.getStatus() == PublicationInfo.UNPUBLISHABLE) {
-                service.publish(resource.getNode().getParent().getPath(), resource.getWorkspace(),
-                                Constants.LIVE_WORKSPACE, languages, false);
-            }
             boolean publishChildren = req.getParameter("publishChildren")!=null && Boolean.valueOf(req.getParameter("publishChildren"));
             service.publish(resource.getNode().getPath(), resource.getWorkspace(), Constants.LIVE_WORKSPACE, languages,
                     publishChildren);

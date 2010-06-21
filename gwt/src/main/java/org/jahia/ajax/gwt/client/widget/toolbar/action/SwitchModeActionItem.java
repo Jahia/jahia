@@ -19,7 +19,6 @@ public class SwitchModeActionItem extends BaseActionItem {
         final String mode = getPropertyValue(getGwtToolbarItem(), "mode");
         if (mode.equalsIgnoreCase("live")) {
             if (linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
-                    || linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHABLE
                     || linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                 setEnabled(false);
             } else {

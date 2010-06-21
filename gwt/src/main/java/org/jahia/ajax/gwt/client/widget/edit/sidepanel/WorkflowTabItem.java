@@ -30,6 +30,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -125,7 +126,7 @@ public class WorkflowTabItem extends SidePanelTabItem {
             }
         }
 
-        jahiaContentManagementServiceAsync.getNodesWithPublicationInfo(list, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        jahiaContentManagementServiceAsync.getNodes(list, Arrays.asList(GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO),new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onApplicationFailure(Throwable caught) {
                 Info.display("Workflow not started", "Workflow not started");
             }

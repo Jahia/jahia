@@ -73,13 +73,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, AsyncCallback<List<GWTJahiaNode>> async);
 
-    /**
-     * Get a node by its path if existing.
-     *
-     * @param path of hte node we want
-     * @param async callback to execute
-     */
-    void getNode(String path,AsyncCallback<GWTJahiaNode> async);
+    void getNodes(List<String> paths, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
 
     void getTagNode(String tagName, boolean create,AsyncCallback<GWTJahiaNode> async);
 
@@ -206,8 +200,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getNodeURL(String path, String version,String workspace, String locale, int mode, AsyncCallback<String> async);
 
     void importContent(String parentPath, String fileKey, AsyncCallback async);
-
-    void getNodesWithPublicationInfo(List<String> list, AsyncCallback<List<GWTJahiaNode>> async);
 
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 

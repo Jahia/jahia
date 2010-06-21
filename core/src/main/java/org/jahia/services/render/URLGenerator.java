@@ -89,7 +89,7 @@ public class URLGenerator {
         contribute = baseContribute + resourcePath;
         studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templatesSet";
         ckeditor = SettingsBean.getInstance().getJahiaCkEditorDiskPath();
-        if (context.getSite() != null) {
+        if (context.getSite() != null && context.isEditMode()) {
             try {
                 if (context.getSite().hasProperty("j:sourceTemplate")) {
                     studio += "/" + context.getSite().getProperty("j:sourceTemplate").getNode().getName() + "/";

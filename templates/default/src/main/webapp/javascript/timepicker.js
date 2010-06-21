@@ -206,7 +206,8 @@ jQuery.fn.datetime = function() {
             var time = ($(obj).val() || $(this).val()).split(" ");
 
             if (time.length < 2) {
-                time = ['00-00-00','00:00:00'];
+                var now = new Date();
+                time = [now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate(),'00:00:00'];
             }
 
             $('#pickerplug').data('lastdate', time[0]);	//lastdate = time[0];

@@ -20,12 +20,15 @@
 <template:addResources type="css" resources="formbuilder.css"/>
 <template:addResources type="css" resources="ui.slider.css"/>
 <template:addResources type="css" resources="datepicker.css"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,jquery-ui.slider.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui-1.7.3.custom.min.js,jquery-ui.slider.min.js"/>
 <c:set var="dateTimePicker" value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
-<jsp:useBean id="now" class="java.util.Date"/>
+<c:if test="${not empty workflowTaskFormTask}">
+    <c:set var="now" value="${workflowTaskFormTask.variables[propertyDefinition.name][0].valueAsDate}"/>
+</c:if>
 <label class="left" for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
-<input type="text" id="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" readonly="readonly" value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+<input type="text" id="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" readonly="readonly"
+       value="<c:if test="${not empty now}"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/></c:if>"/>
 <ui:dateSelector fieldId="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" time="${dateTimePicker}">
     {dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'}
 </ui:dateSelector>

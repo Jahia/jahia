@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.data.workflow;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
 public class GWTJahiaWorkflowInfo implements Serializable {
     private List<GWTJahiaWorkflowDefinition> possibleWorkflows;
     private List<GWTJahiaWorkflowAction> availableActions;
-
+    private Date duedate;
     public GWTJahiaWorkflowInfo() {
     }
 
@@ -31,5 +32,13 @@ public class GWTJahiaWorkflowInfo implements Serializable {
 
     public void setAvailableActions(List<GWTJahiaWorkflowAction> availableActions) {
         this.availableActions = availableActions;
+    }
+
+    public Date getDuedate() {
+        return duedate;
+    }
+
+    public void setDuedate(Date duedate) {
+        this.duedate = duedate;
     }
 }

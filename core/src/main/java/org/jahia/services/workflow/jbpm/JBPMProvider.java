@@ -44,6 +44,7 @@ import org.jbpm.api.activity.ActivityBehaviour;
 import org.jbpm.api.history.HistoryComment;
 import org.jbpm.api.history.HistoryProcessInstance;
 import org.jbpm.api.history.HistoryTask;
+import org.jbpm.api.job.Job;
 import org.jbpm.api.task.Participation;
 import org.jbpm.api.task.Task;
 import org.jbpm.jpdl.internal.activity.TaskActivity;
@@ -73,6 +74,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private RepositoryService repositoryService;
     private ExecutionService executionService;
     private HistoryService historyService;
+    private ManagementService managementService;
     private Resource[] processes;
     private TaskService taskService;
     private static Map<String, String> participationRoles = new HashMap<String, String>();
@@ -115,6 +117,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         executionService = processEngine.getExecutionService();
         taskService = processEngine.getTaskService();
         historyService = processEngine.getHistoryService();
+        managementService = processEngine.getManagementService();
     }
 
     public static JBPMProvider getInstance() {
@@ -252,6 +255,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 workflow.setAvailableActions(getAvailableActions(instance.getId()));
                 final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
                 workflow.setDefinition(definition);
+                Job job = managementService.createJobQuery().timers().processInstanceId(processId).uniqueResult();
+                if(job!=null) {
+                    workflow.setDuedate(job.getDuedate());
+                }
                 workflows.add(workflow);
             }
         }

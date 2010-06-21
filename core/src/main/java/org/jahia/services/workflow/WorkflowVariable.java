@@ -32,7 +32,12 @@
  */
 package org.jahia.services.workflow;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Represents single workflow variable.
@@ -41,7 +46,10 @@ import java.io.Serializable;
  * @since : JAHIA 6.1
  *        Created : 29 avr. 2010
  */
-public class WorkflowVariable implements Serializable{
+public class WorkflowVariable implements Serializable {
+
+    private static final long serialVersionUID = 942602985046632239l;
+
     private String value;
     private int type;
 
@@ -67,5 +75,19 @@ public class WorkflowVariable implements Serializable{
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Date getValueAsDate() {
+        if (null == value || "".equals(value.trim())) {
+            return null;
+        }
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.valueOf(value));
+            return calendar.getTime();
+        } catch (NumberFormatException e) {
+            DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(value);
+            return dateTime.toDate();
+        }
     }
 }

@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.event.ScrollListener;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.util.Size;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -73,6 +74,11 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
                     allPublished = false;
                     addInfoLayer(module, "Workflow(s) started : "+current, "red", "red", left, top, right, bottom, removeListener, true,
                             "0.7");
+                }
+                else if (info.getDuedate()!=null) {
+                    allPublished = false;
+                    addInfoLayer(module, "Workflow(s) is waiting for timer.<br/>Will be triggered at : "+ DateTimeFormat.getMediumDateTimeFormat().format(info.getDuedate()), 
+                                 "red", "red", left, top, right, bottom, removeListener, true, "0.7");
                 }
             }
         }

@@ -45,7 +45,7 @@
 <c:if test="${empty requestScope['org.jahia.tags.dateSelector.resources']}">
     <template:addResources type="css" resources="${not empty theme ? theme : 'jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css'}"/>
     <template:addResources type="javascript"
-                           resources="jquery.min.js,jquery-ui.core.min.js,jquery-ui.datepicker.min.js,jquery-ui.slider.min.js"/>
+                           resources="jquery.min.js,jquery-ui-1.7.3.custom.min.js,jquery-ui.datepicker.min.js,jquery-ui.slider.min.js"/>
     <c:set var="locale" value="${renderContext.mainResource.locale}"/>
     <c:if test="${locale != 'en_US'}">
         <template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${locale.language}.js"/>

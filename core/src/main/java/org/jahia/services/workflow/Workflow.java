@@ -32,6 +32,7 @@
  */
 package org.jahia.services.workflow;
 
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -43,6 +44,7 @@ import java.util.Set;
 public class Workflow extends WorkflowBase {
     private final String id;
     private Set<WorkflowAction> availableActions;
+    private Date duedate = null;
 
     public Workflow(String name, String id, String provider) {
         super(name, provider);
@@ -59,5 +61,13 @@ public class Workflow extends WorkflowBase {
 
     public Set<WorkflowAction> getAvailableActions() {
         return availableActions;
+    }
+
+    public Date getDuedate() {
+        return duedate;
+    }
+
+    public void setDuedate(Date duedate) {
+        this.duedate = duedate;
     }
 }

@@ -58,6 +58,9 @@ public class WorkflowHelper {
 
             List<Workflow> actives = service.getActiveWorkflows(node);
             for (Workflow workflow : actives) {
+                if(workflow.getDuedate()!=null) {
+                    info.setDuedate(workflow.getDuedate());
+                }
                 for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
                     if (workflowAction instanceof WorkflowTask) {
                         WorkflowTask workflowTask = (WorkflowTask) workflowAction;

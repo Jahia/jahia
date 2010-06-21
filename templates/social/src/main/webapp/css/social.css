@@ -1,4 +1,16 @@
 /******************************************************************************
+* icon Add 
+******************************************************************************/
+#bodywrapper a.social-add {
+	width:16px;
+	height:16px;
+	display:block;
+	background: url(img/add.png) no-repeat top right;
+}
+#bodywrapper a.social-add span {
+	display:none
+}
+/******************************************************************************
 * Title  with icon h3 
 ******************************************************************************/
 #bodywrapper h3.social-title-icon {

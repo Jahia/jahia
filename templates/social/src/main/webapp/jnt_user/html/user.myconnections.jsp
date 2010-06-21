@@ -107,7 +107,7 @@
                         $("#searchUsersResult").append(
                            $("<tr/>").append( $("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])) )
                                    .append( $("<td/>").text(item.properties['j:firstName'] + " " + item.properties['j:lastName']))
-                                   .append( $("<td/>").append( $("<a/>").attr("href", "").click(function () { requestConnection('${currentNode.path}.startWorkflow.do',item['userKey']); return false; }).text("<fmt:message key='addAsFriend'/>") ) )
+                                   .append( $("<td/>").attr("align", "center").append( $("<a/>").attr("href", "").attr("class", "social-add").click(function () { requestConnection('${currentNode.path}.startWorkflow.do',item['userKey']); return false; }).append( $("<span/>").text("<fmt:message key='addAsFriend'/>") ) ) )
                         );
                         if (i == 10) return false;
                     });
@@ -274,6 +274,7 @@
         <li>
             <c:set var="connectedUser" value="${userConnection.properties['j:connectedTo'].node}" />
             <div class="thumbnail">
+
                 <a href="${url.base}${connectedUser.path}.html"><img src="${url.currentModule}/images/friend.png" alt="friend" border="0"/></a>
             </div>
             <a class="social-list-remove" title="<fmt:message key="removeFriend"/>" href="#"><span><fmt:message key="removeFriend"/></span></a>

@@ -281,7 +281,7 @@ public class DocumentConverterService implements ApplicationContextAware {
      * @return the {@link DocumentFormat} based of the extension of the
      *         specified file
      */
-    protected DocumentFormat getFormat(File file) {
+    public DocumentFormat getFormat(File file) {
         return formatRegistry.getFormatByExtension(FilenameUtils.getExtension(file.getName()));
     }
 
@@ -292,7 +292,7 @@ public class DocumentConverterService implements ApplicationContextAware {
      * @param mimeType the mimeType to detect format for
      * @return the {@link DocumentFormat} based on a mimeType
      */
-    protected DocumentFormat getFormatByMimeType(String mimeType) {
+    public DocumentFormat getFormatByMimeType(String mimeType) {
         return formatRegistry.getFormatByMediaType(mimeType);
     }
 
@@ -303,7 +303,7 @@ public class DocumentConverterService implements ApplicationContextAware {
      * @param fileName the file name to detect format for
      * @return the {@link DocumentFormat} based on a mimeType
      */
-    protected DocumentFormat getFormatByFileName(String fileName) {
+    public DocumentFormat getFormatByFileName(String fileName) {
         return formatRegistry.getFormatByExtension(FilenameUtils.getExtension(fileName));
     }
 

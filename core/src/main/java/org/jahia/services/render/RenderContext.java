@@ -67,6 +67,9 @@ public class RenderContext {
     private String servletPath;
 
     private Set<String> displayedModules = new HashSet<String>();
+    
+    private String redirect;
+    
     @SuppressWarnings("unchecked")
     private Map<String, Set<String>> staticAssets = LazyMap.decorate(new CaseInsensitiveMap(), new Factory() {
         public Object create() {
@@ -285,5 +288,19 @@ public class RenderContext {
 
     public Resource getAjaxResource() {
         return ajaxResource;
+    }
+
+    /**
+     * @return the redirect
+     */
+    public String getRedirect() {
+        return redirect;
+    }
+
+    /**
+     * @param redirect the redirect to set
+     */
+    public void setRedirect(String redirect) {
+        this.redirect = redirect;
     }
 }

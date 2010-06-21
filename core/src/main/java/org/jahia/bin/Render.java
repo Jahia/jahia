@@ -43,7 +43,6 @@ import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -118,6 +117,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
     private Action defaultPostAction;
+    
+    private SettingsBean settingsBean;
+    private RenderService renderService;
+    private JCRSessionFactory jcrSessionFactory;
 
     private Integer sessionExpiryTime = null;
 
@@ -198,46 +201,50 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                          Resource resource) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
         resp.setCharacterEncoding("UTF-8");
-        String out = RenderService.getInstance().render(resource, renderContext);
-        resp.setContentType(
-                renderContext.getContentType() != null ? renderContext.getContentType() : "text/html; charset=UTF-8");
-        Source source = new Source(out);
-        OutputDocument outputDocument = new OutputDocument(source);
-        if (renderContext.isAjaxRequest()) {
-            Element element = source.getFirstElement();
-            final EndTag tag = element.getEndTag();
-            if (tag == null ) {
-                logger.error("Couldn't find end tag for element " + element.getName() + " debugInfo=" + element.getDebugInfo() + " in markup [" + out + "]");
-            } else {
-                final String staticsAsset = RenderService.getInstance().render(new Resource(resource.getNode(), "html",
-                                                                                            "html.statics.assets",
-                                                                                            "html.statics.assets",
-                                                                                            Resource.CONFIGURATION_INCLUDE),
-                                                                               renderContext);
-                outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
-                        staticsAsset) + "\n<");
-            }
+        String out = renderService.render(resource, renderContext);
+        if (renderContext.getRedirect() != null && !resp.isCommitted()) {
+            resp.sendRedirect(renderContext.getRedirect());
         } else {
-            final List<Element> elementList = source.getAllElements(HTMLElementName.HEAD);
-            for (Element element : elementList) {
+            resp.setContentType(
+                    renderContext.getContentType() != null ? renderContext.getContentType() : "text/html; charset=UTF-8");
+            Source source = new Source(out);
+            OutputDocument outputDocument = new OutputDocument(source);
+            if (renderContext.isAjaxRequest()) {
+                Element element = source.getFirstElement();
                 final EndTag tag = element.getEndTag();
-                final String staticsAsset = RenderService.getInstance().render(new Resource(resource.getNode(), "html",
-                                                                                            "html.statics.assets",
-                                                                                            "html.statics.assets",
-                                                                                            Resource.CONFIGURATION_INCLUDE),
-                                                                               renderContext);
-                outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
-                        staticsAsset) + "\n<");
+                if (tag == null ) {
+                    logger.error("Couldn't find end tag for element " + element.getName() + " debugInfo=" + element.getDebugInfo() + " in markup [" + out + "]");
+                } else {
+                    final String staticsAsset = renderService.render(new Resource(resource.getNode(), "html",
+                                                                                                "html.statics.assets",
+                                                                                                "html.statics.assets",
+                                                                                                Resource.CONFIGURATION_INCLUDE),
+                                                                                   renderContext);
+                    outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
+                            staticsAsset) + "\n<");
+                }
+            } else {
+                final List<Element> elementList = source.getAllElements(HTMLElementName.HEAD);
+                for (Element element : elementList) {
+                    final EndTag tag = element.getEndTag();
+                    final String staticsAsset = renderService.render(new Resource(resource.getNode(), "html",
+                                                                                                "html.statics.assets",
+                                                                                                "html.statics.assets",
+                                                                                                Resource.CONFIGURATION_INCLUDE),
+                                                                                   renderContext);
+                    outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
+                            staticsAsset) + "\n<");
+                }
             }
+            PrintWriter writer = resp.getWriter();
+            out = outputDocument.toString();
+            final SourceFormatter sourceFormatter = new SourceFormatter(new Source(out));
+            sourceFormatter.setIndentString("  ");
+            out = sourceFormatter.toString();
+            resp.setContentLength(out.getBytes("UTF-8").length);
+            writer.print(out);
+            writer.close();
         }
-        PrintWriter writer = resp.getWriter();
-        out = outputDocument.toString();
-        final SourceFormatter sourceFormatter = new SourceFormatter(new Source(out));
-        sourceFormatter.setIndentString("  ");
-        out = sourceFormatter.toString();
-        resp.setContentLength(out.getBytes("UTF-8").length);
-        writer.print(out);
-        writer.close();
         String sessionID = "";
         HttpSession httpSession = req.getSession(false);
         if (httpSession != null) {
@@ -251,8 +258,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
                          URLResolver urlResolver) throws RepositoryException, IOException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
+        JCRSessionWrapper session = jcrSessionFactory.getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
         JCRNodeWrapper node = session.getNode(urlResolver.getPath());
         session.checkout(node);
         Map parameters = req.getParameterMap();
@@ -408,7 +414,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             // multipart is processed only if it's not a portlet request.
             // otherwise it's the task the portlet
             if (!isPortletRequest(req)) {
-                final String savePath = SettingsBean.getInstance().getTmpContentDiskPath();
+                final String savePath = settingsBean.getTmpContentDiskPath();
                 final File tmp = new File(savePath);
                 if (!tmp.exists()) {
                     tmp.mkdirs();
@@ -418,8 +424,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     req.setAttribute(FileUpload.FILEUPLOAD_ATTRIBUTE, fileUpload);
                     if (fileUpload.getFileItems() != null && fileUpload.getFileItems().size() > 0) {
                         JCRSessionWrapper session =
-                                JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
-                        JCRNodeWrapper userDirectory = ((JCRUser) JCRSessionFactory.getInstance().getCurrentUser())
+                                jcrSessionFactory.getCurrentUserSession(workspace, locale);
+                        JCRNodeWrapper userDirectory = ((JCRUser) jcrSessionFactory.getCurrentUser())
                                 .getNode(session); //todo ldap users
                         String target = userDirectory.getPath() + "/files";
                         boolean isTargetDirectoryDefined = fileUpload.getParameterNames().contains(TARGETDIRECTORY);
@@ -507,8 +513,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
                             URLResolver urlResolver) throws RepositoryException, IOException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                .getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
+        JCRSessionWrapper session = jcrSessionFactory.getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
         Node node = session.getNode(urlResolver.getPath());
         Node parent = node.getParent();
         node.remove();
@@ -607,15 +612,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         long startTime = System.currentTimeMillis();
 
-        final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {
             final HttpSession session = req.getSession();
 
             URLResolver urlResolver = new URLResolver(req.getPathInfo());
 
             // check permission
-            if (!hasAccess(sessionFactory.getCurrentUser(), urlResolver.getSiteKey())) {
-                if (JahiaUserManagerService.isGuest(sessionFactory.getCurrentUser())) {
+            if (!hasAccess(jcrSessionFactory.getCurrentUser(), urlResolver.getSiteKey())) {
+                if (JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                     throw new JahiaUnauthorizedException();
                 } else {
                     throw new JahiaForbiddenAccessException();
@@ -629,12 +633,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
 
             RenderContext renderContext =
-                    createRenderContext(req, resp, sessionFactory.getCurrentUser());
+                    createRenderContext(req, resp, jcrSessionFactory.getCurrentUser());
             renderContext.setLiveMode(Constants.LIVE_WORKSPACE.equals(urlResolver.getWorkspace()));
             renderContext.setPreviewMode(!renderContext.isEditMode() && !renderContext.isContributionMode() && !renderContext.isLiveMode());
 
             req.getSession().setAttribute(ParamBean.SESSION_LOCALE, urlResolver.getLocale());
-            sessionFactory.setCurrentLocale(urlResolver.getLocale());
+            jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
 
             if (method.equals(METHOD_GET)) {
                 if (!StringUtils.isEmpty(urlResolver.getRedirectUrl())) {
@@ -710,8 +714,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             }
         } catch (Exception e) {
-            List<ErrorHandler> handlers =
-                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().getErrorHandler();
+            List<ErrorHandler> handlers = templateService.getErrorHandler();
             for (ErrorHandler handler : handlers) {
                 if (handler.handle(e, req, resp)) {
                     return null;
@@ -722,8 +725,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if (logger.isInfoEnabled()) {
                 StringBuilder sb = new StringBuilder(100);
                 sb.append("Rendered [").append(req.getRequestURI());
-                if (sessionFactory.getCurrentUser() != null) {
-                    sb.append("] user=[").append(sessionFactory.getCurrentUser().getUsername());
+                if (jcrSessionFactory.getCurrentUser() != null) {
+                    sb.append("] user=[").append(jcrSessionFactory.getCurrentUser().getUsername());
                 }
                 sb.append("] ip=[").append(req.getRemoteAddr()).append("] sessionID=[")
                         .append(req.getSession(true).getId()).append("] in [")
@@ -775,5 +778,26 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     public static Set<String> getReservedParameters() {
         return reservedParameters;
+    }
+
+    /**
+     * @param settingsBean the settingsBean to set
+     */
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
+    }
+
+    /**
+     * @param renderService the renderService to set
+     */
+    public void setRenderService(RenderService renderService) {
+        this.renderService = renderService;
+    }
+
+    /**
+     * @param jcrSessionFactory the jcrSessionFactory to set
+     */
+    public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
+        this.jcrSessionFactory = jcrSessionFactory;
     }
 }

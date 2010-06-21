@@ -61,8 +61,8 @@ public class SeoService {
     /**
      * Adds the URL mapping for the specified node and language.
      * 
-     * @param node the node to remove mappings from
-     * @param locale the language code to remove mappings for
+     * @param node the node add mappings to
+     * @param locale the language code to add mappings for
      * @param url the URL for the mapping
      * @param isDefault set the new mapping as default one
      * @param drools the rule engine helper class

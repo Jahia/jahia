@@ -162,6 +162,7 @@
                             <goal>native2ascii</goal>
                         </goals>
                         <configuration>
+                            <encoding>ISO-8859-1</encoding>
                             <src>${basedir}/src/main/webapp/resources</src>
                             <addToProjectResources>false</addToProjectResources>
                         </configuration>

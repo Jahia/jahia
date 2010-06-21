@@ -1030,6 +1030,7 @@
                             <goal>native2ascii</goal>
                         </goals>
                         <configuration>
+                            <encoding>ISO-8859-1</encoding>
                             <includes>*Resources*.properties</includes>
                         </configuration>
                     </execution>

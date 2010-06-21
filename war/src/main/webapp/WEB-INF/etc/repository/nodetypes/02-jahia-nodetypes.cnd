@@ -118,22 +118,9 @@
 
 [jmix:publication] mixin
 
-[jmix:timebasedPublished] mixin
-
-[jmix:simpleTimebasedPublished] > jmix:publication, jmix:timebasedPublished mixin
- - j:startDate (date)
- - j:endDate (date)
-
- [jmix:hourlyTimebasedPublished] > jmix:publication,jmix:timebasedPublished mixin
- - j:fromHour (long)
- - j:fromMinutes (long)
- - j:toHour (long)
- - j:toMinutes (long)
-
-[jnt:hourlyTimebasedPublished] > nt:base, jmix:hourlyTimebasedPublished
-
- [jmix:dailyTimebasedPublished] > jmix:publication,jmix:timebasedPublished mixin
- + * (jnt:hourlyTimebasedPublished)
+[jnt:simpleTimebasedPublished] > mix:title, nt:base
+ - startDate (date,datetimepicker[format='dd/MM/yyyy / HH:mm']) = now()
+ - endDate (date,datetimepicker[format='dd/MM/yyyy / HH:mm'])
 
 //---------------------------------------------------------
 // Locks

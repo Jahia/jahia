@@ -1,1 +1,16 @@
 Jahia Document Converter Module
+
+* Overview
+
+  The Jahia Document Converter Service is aimed to provide transformation for documents in various formats.
+  
+  The transformation tasks are delegated to the OpenOffice service, supporting multiple
+  {{{http://artofsolving.com/opensource/jodconverter/guide/supportedformats}input/output formats}}.  
+  
+  Following sections describe service features in more details:
+
+    * {{{./configuration.html} Configuration}} - system requirements and configuration options;
+    
+    * {{{./usage.html} Usage}} - how to use the transformation service in templates.
+    
+    []

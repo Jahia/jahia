@@ -1,0 +1,7 @@
+Using document conversion service in templates
+
+* Usage in templates
+
+  Jahia exposes the document transformation API through servlet API. 
+
+

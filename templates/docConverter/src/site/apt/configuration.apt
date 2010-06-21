@@ -1,0 +1,74 @@
+Configuration
+
+* Requirements
+
+  Jahia Document Converter Service delegates conversion tasks to the OpenOffice instance,
+  either to a local one or a remote service.
+  To use the converter service you need an OpenOffice v2.0.3 or higher (the latest stable 3.x version is recommended) installed.
+  
+* {Local} OpenOffice instance
+
+  The converter service is capable of creating an OpenOffice process and using it, in case Jahia
+  and OpenOffice are located on the same machine.
+  
+  In such case converter service starts locally an instance of the OpenOffice service for processing conversion tasks.
+  The configuration in this case is as follows (snapshot of the <<<WEB-INF/etc/spring/applicationcontext-doc-converter.xml>>> file):
+
+
++------------------------
+<bean id="DocumentConverterService"
+  class="org.jahia.services.transform.DocumentConverterService"
+  init-method="start" destroy-method="stop">
+  
+    <property name="enabled" value="true"/>
+    <property name="officeManagerBeanName" value="localOfficeManagerFactory"/>
+</bean>
+
+<bean name="localOfficeManagerFactory"
+  class="org.jahia.services.transform.LocalOfficeManagerFactory"
+  lazy-init="true">
+  
+    <property name="officeHome" value="/usr/lib/openoffice"/>
+</bean>
++------------------------   
+
+  Additionally the <<<LocalOfficeManagerFactory>>> supports specifying port number,
+  template profile directory, task execution timeout, task queue timeout and maximum
+  number of tasks per process. 
+
+* {Remote} OpenOffice service
+
+  The converter service is capable of using an OpenOffice process started as a service on a remote machine.
+  
+  This connection is configured as given below (snapshot of the <<<WEB-INF/etc/spring/applicationcontext-doc-converter.xml>>> file):
+
+
++------------------------
+<bean id="DocumentConverterService"
+  class="org.jahia.services.transform.DocumentConverterService"
+  init-method="start" destroy-method="stop">
+  
+    <property name="enabled" value="true"/>
+    <property name="officeManagerBeanName" value="remoteOfficeManagerFactory"/>
+</bean>
+
+<bean name="remoteOfficeManagerFactory"
+  class="org.jahia.services.transform.RemoteOfficeManagerFactory"
+  lazy-init="true">
+
+    <property name="host" value="192.168.1.101"/>
+    <property name="portNumber" value="19001"/>
+</bean>
++------------------------   
+
+  The OpenOffice in this case should be started as a service on the <<<192.168.1.101>>> machine.
+  
+  A sample command for starting OpenOffice as a service looks like:
+
++------------------------   
+soffice -headless -accept="socket,host=192.168.1.101,port=19001;urp;" -nofirststartwizard
++------------------------   
+
+  More details can be found on the {{{http://artofsolving.com/node/10} JODConverter Web Site}},
+  including HowTo for {{{http://artofsolving.com/node/11} Creating an OpenOffice.org Service on Windows}} and
+  {{{http://artofsolving.com/node/12} Creating an OpenOffice.org Service on Unix-like systems}}.

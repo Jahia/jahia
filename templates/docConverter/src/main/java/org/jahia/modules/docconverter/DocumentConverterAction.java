@@ -1,4 +1,4 @@
-package org.jahia.modules.docConverter;
+package org.jahia.modules.docconverter;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FilenameUtils;

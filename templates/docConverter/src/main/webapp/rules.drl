@@ -1,0 +1,28 @@
+###############################################################################
+package org.jahia.modules.docconverter.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.JCRContentUtils
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global DocumentConverterRuleService documentConverterService
+global JCRContentUtils jcrUtils
+###############################################################################
+
+
+/*
+rule "Auto-convert to PDF"
+    when
+		A file content has been modified
+			- the mimetype is not application/pdf
+    then
+        Convert node to type "application/pdf" 
+end
+*/

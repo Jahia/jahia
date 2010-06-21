@@ -72,3 +72,20 @@ http://localhost:8080/cms/convert/default/shared/files/Report.doc.pdf
   The form with a table of converted document is rendered as shown below:
   
 [./images/doc-converter-component-use.png] Document conversion results
+
+* Conversions in business {rules}
+
+  It is also possible to use document conversion service directly from business rules
+  to e.g. perform automatic conversions when a document is uploaded or updated.
+  An example of a rule the <<</templates/docConverter/rules.drl>>> file, which
+  automatically creates a PDF version of the uploaded/modified document is given below:
+  
++------------------------
+rule "Auto-convert to PDF"
+  when
+    A file content has been modified
+      - the mimetype is not application/pdf
+    then
+      Convert node to type "application/pdf" 
+end
++------------------------

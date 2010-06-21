@@ -243,7 +243,7 @@ public class SettingsBean {
             tmpContentDiskPath = JahiaTools.convertContexted (getString("tmpContentDiskPath"), pathResolver);
             try {
                 File tmpContentDisk = new File(tmpContentDiskPath);
-                if (tmpContentDisk.exists()) {
+                if (!tmpContentDisk.exists()) {
                     tmpContentDisk.mkdirs();
                 }
             } catch (Exception e) {

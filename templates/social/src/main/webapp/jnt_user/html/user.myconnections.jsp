@@ -168,7 +168,7 @@
                                 "<li>"+
 								"<div class='image'>" +
 								"<div class='itemImage itemImageLeft'>" +
-								"<img src='${url.currentModule}/images/userbig.png' />" +
+								"<img src='${url.currentModule}/images/friendbig.png' />" +
 								"</div>" +
 								"</div>" +
                                 "<h5 class='author'>" + item['jcr:createdBy'] + "</h5>" +
@@ -268,13 +268,13 @@
     <jcr:sql var="userConnections"
          sql="select * from [jnt:userConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
     
-    <h3 class="social-title-icon titleIcon"><a href="#">Friends<img title="" alt="" src="${url.currentModule}/images/friends.png"/></a></h3>
+    <h3 class="social-title-icon titleIcon"><a href="#">Friends</a><a href="#"><img title="" alt="" src="${url.currentModule}/images/friends.png"/></a></h3>
     <ul class="social-list">                      
         <c:forEach items="${userConnections.nodes}" var="userConnection">
         <li>
             <c:set var="connectedUser" value="${userConnection.properties['j:connectedTo'].node}" />
             <div class="thumbnail">
-                <a href="${url.base}${connectedUser.path}.html"><img src="${url.currentModule}/images/user_32.png" alt="friend" border="0"/></a>
+                <a href="${url.base}${connectedUser.path}.html"><img src="${url.currentModule}/images/friend.png" alt="friend" border="0"/></a>
             </div>
             <h4><a href="${usl.base}${connectedUser.path}.html">${userConnection.properties['j:connectedTo'].node.properties['j:firstName'].string} ${userConnection.properties['j:connectedTo'].node.properties['j:lastName'].string}</a></h4>
             <a class="social-list-remove" href="#"><fmt:message key="removeFriend"/></a>

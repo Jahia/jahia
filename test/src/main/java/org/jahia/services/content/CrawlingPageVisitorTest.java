@@ -222,8 +222,7 @@ public class CrawlingPageVisitorTest extends TestCase {
                 Resource resource = new Resource(homeNode, "html", null, null, Resource.CONFIGURATION_PAGE);
                 renderCtx.setMainResource(resource);
                 URLGenerator urlgenerator = new URLGenerator(renderCtx,
-                        resource, ServicesRegistry.getInstance()
-                                .getJCRStoreService());
+                        resource);
                 addUrl(urls, urlgenerator.getEdit(), ctx);
                 addUrl(urls, urlgenerator.getLive(), ctx);
             }
@@ -233,8 +232,7 @@ public class CrawlingPageVisitorTest extends TestCase {
                 Resource resource = new Resource(homeNode, "html", null, null, Resource.CONFIGURATION_PAGE);
                 renderCtx.setMainResource(resource);
                 URLGenerator urlgenerator = new URLGenerator(renderCtx,
-                        resource, ServicesRegistry.getInstance()
-                                .getJCRStoreService());
+                        resource);
                 addUrl(urls, urlgenerator.getEdit(), ctx);
                 addUrl(urls, urlgenerator.getLive(), ctx);
             }

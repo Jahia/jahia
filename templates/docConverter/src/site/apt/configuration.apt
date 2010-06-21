@@ -1,7 +1,5 @@
 Configuration
 
-* Requirements
-
   Jahia Document Converter Service delegates conversion tasks to the OpenOffice instance,
   either to a local one or a remote service.
   To use the converter service you need an OpenOffice v2.0.3 or higher (the latest stable 3.x version is recommended) installed.

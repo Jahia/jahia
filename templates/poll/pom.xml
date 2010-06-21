@@ -154,9 +154,10 @@
 	                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                         <package-name>${project.name}</package-name>
                         <root-folder>poll</root-folder>
-			<depends>Jahia Static Assets</depends>
+                        <depends>Jahia Static Assets</depends>
                     </manifestEntries>
                 </archive>
+                <archiveClasses>true</archiveClasses>
             </configuration>
         </plugin>
             <plugin>

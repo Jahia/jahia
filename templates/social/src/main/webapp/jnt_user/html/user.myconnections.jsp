@@ -5,7 +5,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
-<template:addResources type="css" resources="userProfile.css"/>
+<template:addResources type="css" resources="social.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript"
@@ -189,7 +189,28 @@
 </script>
 
 
-<div class='grid_4 alpha'><!--start grid_4-->
+
+
+<div class='grid_12 alpha'><!--start grid_12-->
+
+    <h3><fmt:message key="userActivities" /></h3>
+
+    <form class="statusUpdateForm" name="statusUpdateForm" action="" method="post">
+        <textarea rows="2" cols="20" class="" onfocus="if(this.value==this.defaultValue)this.value='';"
+               onblur="if(this.value=='')this.value=this.defaultValue;"
+               name="statusUpdateText" id="statusUpdateText"><fmt:message key="statusUpdateDefaultText"/></textarea>
+        <p>
+			<input class="button" id="statusUpdateSubmit" type="submit" title="<fmt:message key='statusUpdateSubmit'/>"/>
+		</p>
+    </form>
+
+    <ul class="activitiesList">
+        <li>Loading status...</li>
+    </ul>
+
+</div>
+<!--stop grid_12-->
+<div class='grid_4 omega'><!--start grid_4-->
 
     <h3><fmt:message key="userSearch" /></h3>
 
@@ -226,8 +247,8 @@
     <jcr:sql var="userConnections"
          sql="select * from [jnt:userConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
     
-    <h3 class="user-profile-title-icon titleIcon"><a href="#">Friends<img title="" alt="" src="${url.currentModule}/images/friends.png"/></a></h3>
-    <ul class="friends-list">                      
+    <h3 class="social-title-icon titleIcon"><a href="#">Friends<img title="" alt="" src="${url.currentModule}/images/friends.png"/></a></h3>
+    <ul class="social-list">                      
         <c:forEach items="${userConnections.nodes}" var="userConnection">
         <li>
             <c:set var="connectedUser" value="${userConnection.properties['j:connectedTo'].node}" />
@@ -235,7 +256,7 @@
                 <a href="${url.base}${connectedUser.path}.html"><img src="${url.currentModule}/images/user_32.png" alt="friend" border="0"/></a>
             </div>
             <h4><a href="${usl.base}${connectedUser.path}.html">${userConnection.properties['j:connectedTo'].node.properties['j:firstName'].string} ${userConnection.properties['j:connectedTo'].node.properties['j:lastName'].string}</a></h4>
-            <a href="#"><fmt:message key="removeFriend"/></a>
+            <a class="social-list-remove" href="#"><fmt:message key="removeFriend"/></a>
             <div class='clear'></div>
         </li>
         </c:forEach>
@@ -247,24 +268,5 @@
 
 </div>
 <!--stop grid_4-->
-
-<div class='grid_12 omega'><!--start grid_12-->
-
-    <h3><fmt:message key="userActivities" /></h3>
-
-    <form name="statusUpdateForm" action="" method="post">
-        <textarea rows="2" cols="20" class="" onfocus="if(this.value==this.defaultValue)this.value='';"
-               onblur="if(this.value=='')this.value=this.defaultValue;"
-               name="statusUpdateText" id="statusUpdateText"><fmt:message key="statusUpdateDefaultText"/></textarea>
-        <input id="statusUpdateSubmit" type="submit" title="<fmt:message key='statusUpdateSubmit'/>"/>
-
-    </form>
-
-    <ul class="activitiesList">
-        <li>Loading status...</li>
-    </ul>
-
-</div>
-<!--stop grid_12-->
 
 <div class='clear'></div>

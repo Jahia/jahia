@@ -34,7 +34,7 @@ public class FacetsChoiceListInitializers implements ModuleChoiceListInitializer
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
-        final Set<ChoiceListValue> listValues = new HashSet<ChoiceListValue>();
+        final Set<ChoiceListValue> propertyNames = new HashSet<ChoiceListValue>();
         try {
             NodeTypeIterator ntr = NodeTypeRegistry.getInstance().getAllNodeTypes();
             while (ntr.hasNext()) {
@@ -45,7 +45,7 @@ public class FacetsChoiceListInitializers implements ModuleChoiceListInitializer
                         String displayName = ep.getLabel(locale);
                         displayName += nt.isMixin()?"":" (" + nt.getLabel(locale) + ")";
                         String value = ep.getDeclaringNodeType().getName() + ";" + ep.getName();
-                        listValues.add(new ChoiceListValue(displayName, new HashMap<String, Object>(),
+                        propertyNames.add(new ChoiceListValue(displayName, new HashMap<String, Object>(),
                                 new ValueImpl(value, PropertyType.STRING , false)));
                     }
                 }
@@ -53,6 +53,8 @@ public class FacetsChoiceListInitializers implements ModuleChoiceListInitializer
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return new ArrayList<ChoiceListValue>(listValues);
+        List<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>(propertyNames);
+        Collections.sort(listValues);
+        return listValues;
     }
 }

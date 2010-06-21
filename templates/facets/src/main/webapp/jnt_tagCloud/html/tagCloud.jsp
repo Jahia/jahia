@@ -18,48 +18,41 @@
 <template:addResources type="css" resources="tags.css"/>
 <c:set var="usageThreshold"
        value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
+<c:set var="numberOfTagsLimit"
+       value="${not empty currentNode.properties['limit'] ? currentNode.properties['limit'].string : 50}"/>       
 <jcr:node var="tagsRoot" path="${renderContext.site.path}/tags"/>
 <div class="tags">
     <h3><c:if
             test="${not empty currentNode.properties['jcr:title'] && not empty currentNode.properties['jcr:title'].string}"
             var="titleProvided">${fn:escapeXml(currentNode.properties['jcr:title'].string)}</c:if><c:if
             test="${not titleProvided}"><fmt:message key="tags"/></c:if></h3>
-    <%--<jcr:sql var="tags" sql="select * from [jnt:tag] as sel where ischildnode(sel,['${tagsRoot.path}']) order by sel.[j:nodename]"/>
-    <c:set var="totalUsages" value="0"/>
-    <jsp:useBean id="filteredTags" class="java.util.LinkedHashMap"/>
-    <c:forEach items="${tags.nodes}" var="tag">
-        <c:set var="count" value="${functions:length(tag.weakReferences)}"/>
-        <c:if test="${usageThreshold <= 0 || count >= usageThreshold}">
-            <c:set target="${filteredTags}" property="${tag.name}" value="${tag}"/>
-            <c:set var="totalUsages" value="${totalUsages + count}"/>
-        </c:if>
-    </c:forEach>--%>
 
     <query:definition var="listQuery" scope="request">
         <query:selector nodeTypeName="nt:base"/>
         <query:descendantNode path="${renderContext.site.path}"/>
-        <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tags&facet.mincount=1)" propertyName="j:tags"/>
+        <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tags&facet.mincount=${usageThreshold}&facet.limit=${numberOfTagsLimit}&facet.sort=true)" propertyName="j:tags"/>
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
+    
+    <jsp:useBean id="tagCloud" class="java.util.HashMap"/>
     <c:forEach items="${result.facetFields}" var="tags">
         <c:forEach items="${tags.values}" var="tag">
             <c:set var="totalUsages" value="${totalUsages + tag.count}"/>
+            <c:set target="${tagCloud}" property="${tag.name}" value="${tag.count}"/>            
         </c:forEach>
     </c:forEach>
 
-
-    <c:if test="${not empty result}">
+    <c:if test="${not empty tagCloud}">
         <ul>
-            <c:forEach items="${result.facetFields}" var="tags">
-                <c:forEach items="${tags.values}" var="tag">
-                    <c:url var="facetUrl" value="${url.mainResource}" context="/">
-                        <c:param name="N-tag"
-                                 value="${facet:encodeFacetUrlParam(facet:getFacetDrillDownUrl(tag, activeFacetsVars['N-tag']))}"/>
-                    </c:url>
-                    <jcr:node var="tagName" uuid="${tag.name}"/>
-                    <li><a href="${facetUrl}" class="tag${functions:round(10 * tag.count / totalUsages)}0"
-                           title="${tag.name} (${tag.count})">${tagName.name}</a></li>
-                </c:forEach>
+            <c:forEach items="${tagCloud}" var="tag">
+                <jcr:node var="tagName" uuid="${tag.key}"/>            
+                <c:url var="facetUrl" value="${url.base}${currentNode.properties.resultPage.node.path}.html" context="/">
+                    <c:param name="src_terms[0].term" value="${tagName.name}"/>                    
+                    <c:param name="src_terms[0].fields.tags" value="true"/>
+                    <c:param name="src_sites.values" value="${renderContext.site.siteKey}"/>
+                </c:url>
+                <li><a href="${facetUrl}" class="tag${functions:round(10 * tag.value / totalUsages)}0"
+                       title="${tagName.name} (${tag.value})">${tagName.name}</a></li>
             </c:forEach>
         </ul>
     </c:if>

@@ -166,9 +166,15 @@
                         activityDate.setTime(item['jcr:created']);
                         $(".activitiesList").append(
                                 "<li>"+
-                                    "<h5 class='author'>" + item['jcr:createdBy'] + "</h5>" +
-                                    "<span class='timestamp'>" +  activityDate.toUTCString() + "</span>" +
-									"<p class='message'>" + item['j:message'] + "</p> "+
+								"<div class='image'>" +
+								"<div class='itemImage itemImageLeft'>" +
+								"<img src='${url.currentModule}/images/userbig.png' />" +
+								"</div>" +
+								"</div>" +
+                                "<h5 class='author'>" + item['jcr:createdBy'] + "</h5>" +
+                                "<span class='timestamp'>" +  activityDate.toUTCString() + "</span>" +
+								"<p class='message'>" + item['j:message'] + "</p> "+
+								"<div class='clear'></div>" +
                                 "</li>"
                         );
 

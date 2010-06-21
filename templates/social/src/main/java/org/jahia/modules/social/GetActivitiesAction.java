@@ -1,4 +1,4 @@
-package org.jahia.module.social;
+package org.jahia.modules.social;
 
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;

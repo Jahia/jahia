@@ -566,13 +566,9 @@ public class JahiaNodeIndexer extends NodeIndexer {
             try {
                 NodeState parentNode = (NodeState) stateProvider.getItemState(node.getParentId());
                 
-                Name nodeTypeName = node.getNodeTypeName();
-                ExtendedNodeType parentNodeType = nodeTypeRegistry != null ? nodeTypeRegistry.getNodeType(namespaceRegistry
-                        .getPrefix(nodeTypeName.getNamespaceURI())
-                        + ":" + nodeTypeName.getLocalName()) : null;                
-                
                 Set<Name> parentNodePropertyNames = new HashSet<Name>(parentNode.getPropertyNames());
                 parentNodePropertyNames.removeAll(node.getPropertyNames());
+                parentNodePropertyNames.removeAll(((JahiaIndexingConfigurationImpl)indexingConfig).getExcludesFromI18NCopy());                
                 
                 for (Name propName : parentNodePropertyNames) {
                     try {

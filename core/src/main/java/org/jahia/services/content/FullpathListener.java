@@ -119,8 +119,8 @@ public class FullpathListener extends DefaultEventListener {
     }
 
     private void nodeRemoved(JCRSessionWrapper session, String path) throws RepositoryException {
-        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jmix:shareable] as node where node.[j:fullpath]= '"+path+"'", Query.JCR_SQL2);
-        QueryResult qr = q.execute();
+//        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jmix:shareable] as node where node.[j:fullpath]= "+JCRContentUtils.stringToQueryLiteral(path), Query.JCR_SQL2);
+//        QueryResult qr = q.execute();
         // todo : update shared set if removed path was in j:fullpath
     }
 

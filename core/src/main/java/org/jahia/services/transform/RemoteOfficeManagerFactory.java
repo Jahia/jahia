@@ -32,30 +32,28 @@
 
 package org.jahia.services.transform;
 
-import java.io.File;
-
-import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
+import org.artofsolving.jodconverter.office.ExternalOfficeManagerConfiguration;
 import org.artofsolving.jodconverter.office.OfficeConnectionProtocol;
 import org.artofsolving.jodconverter.office.OfficeManager;
-import org.artofsolving.jodconverter.process.ProcessManager;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
  * Factory bean for instantiating and configuring instance of the
- * {@link OfficeManager} that uses local installation of the OpenOffice.
+ * {@link OfficeManager} that is started as a service on a local or remote
+ * machine.
  * 
  * @author Sergiy Shyrkov
  */
-public class LocalOfficeManagerFactory extends AbstractFactoryBean {
+public class RemoteOfficeManagerFactory extends AbstractFactoryBean {
 
-    private DefaultOfficeManagerConfiguration cfg;
+    private ExternalOfficeManagerConfiguration cfg;
 
     /**
      * Initializes an instance of this class.
      */
-    public LocalOfficeManagerFactory() {
+    public RemoteOfficeManagerFactory() {
         super();
-        cfg = new DefaultOfficeManagerConfiguration();
+        cfg = new ExternalOfficeManagerConfiguration();
     }
 
     /*
@@ -82,51 +80,21 @@ public class LocalOfficeManagerFactory extends AbstractFactoryBean {
         return OfficeManager.class;
     }
 
-    public void setConnectionProtocol(OfficeConnectionProtocol connectionProtocol) throws NullPointerException {
-        cfg.setConnectionProtocol(connectionProtocol);
+    public void setConnectOnStart(boolean connectOnStart) {
+        cfg.setConnectOnStart(connectOnStart);
     }
 
-    public void setMaxTasksPerProcess(int maxTasksPerProcess) {
-        cfg.setMaxTasksPerProcess(maxTasksPerProcess);
-    }
-
-    public void setOfficeHome(File officeHome) throws NullPointerException, IllegalArgumentException {
-        cfg.setOfficeHome(officeHome);
-    }
-
-    public void setOfficeHome(String officeHome) throws NullPointerException, IllegalArgumentException {
-        cfg.setOfficeHome(officeHome);
+    public void setHost(String host) {
+        cfg.setHost(host);
     }
 
     public void setPipeName(String pipeName) throws NullPointerException {
         cfg.setPipeName(pipeName);
-    }
-
-    public void setPipeNames(String... pipeNames) throws NullPointerException, IllegalArgumentException {
-        cfg.setPipeNames(pipeNames);
+        cfg.setConnectionProtocol(OfficeConnectionProtocol.PIPE);
     }
 
     public void setPortNumber(int portNumber) {
         cfg.setPortNumber(portNumber);
     }
 
-    public void setPortNumbers(int... portNumbers) throws NullPointerException, IllegalArgumentException {
-        cfg.setPortNumbers(portNumbers);
-    }
-
-    public void setProcessManager(ProcessManager processManager) throws NullPointerException {
-        cfg.setProcessManager(processManager);
-    }
-
-    public void setTaskExecutionTimeout(long taskExecutionTimeout) {
-        cfg.setTaskExecutionTimeout(taskExecutionTimeout);
-    }
-
-    public void setTaskQueueTimeout(long taskQueueTimeout) {
-        cfg.setTaskQueueTimeout(taskQueueTimeout);
-    }
-
-    public void setTemplateProfileDir(File templateProfileDir) throws IllegalArgumentException {
-        cfg.setTemplateProfileDir(templateProfileDir);
-    }
 }

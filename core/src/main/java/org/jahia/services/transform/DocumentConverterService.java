@@ -131,12 +131,12 @@ public class DocumentConverterService implements ApplicationContextAware {
      * mime-types.
      * 
      * @param inputStream the source stream
-     * @param inputFileExtension the source Name
+     * @param inputMimeType the input MIME type
      * @param outputStream the destination stream
      * @param outputMimeType the output MIME type
      * @throws OfficeException in case of a conversion error
      */
-    public void convert(InputStream inputStream, String inputFileExtension, OutputStream outputStream, String outputMimeType) throws OfficeException {
+    public void convert(InputStream inputStream, String inputMimeType, OutputStream outputStream, String outputMimeType) throws OfficeException {
 
         if (!isEnabled()) {
             return;
@@ -150,9 +150,7 @@ public class DocumentConverterService implements ApplicationContextAware {
             outputFile = createTempFile();
 
             // convert inputFile to outputFile
-            convert(inputFile,
-                    formatRegistry.getFormatByExtension(inputFileExtension),
-                    outputFile, getFormatByMimeType(outputMimeType));
+            convert(inputFile, getFormatByMimeType(inputMimeType), outputFile, getFormatByMimeType(outputMimeType));
 
             // write the outputFileContent into outputStream
             writeToOutputStream(outputStream, outputFile);
@@ -184,7 +182,7 @@ public class DocumentConverterService implements ApplicationContextAware {
         File outputFile = createTempFile();
 
         // convert inputFile to outputFile
-        convert(inputFile, formatRegistry.getFormatByMediaType(inputFileMimeType), outputFile,
+        convert(inputFile, getFormatByMimeType(inputFileMimeType), outputFile,
                 getFormatByMimeType(outputMimeType));
 
         return outputFile;

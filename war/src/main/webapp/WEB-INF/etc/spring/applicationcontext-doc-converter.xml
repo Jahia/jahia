@@ -8,27 +8,31 @@
     	<!-- set this to true to enable the service -->
         <property name="enabled" value="false"/>
         <!-- contains the name of the bean that provides configured OfficeManager instance (not the reference to the bean itself) -->
-        <property name="officeManagerBeanName" value="officeManagerFactory"/>
+        <property name="officeManagerBeanName" value="localOfficeManagerFactory"/>
+        <!-- 
+        <property name="officeManagerBeanName" value="remoteOfficeManagerFactory"/>
+         -->
     </bean>
 
-    <bean name="officeManagerFactory" class="org.jahia.services.transform.LocalOfficeManagerFactory" lazy-init="true">
+    <bean name="localOfficeManagerFactory" class="org.jahia.services.transform.LocalOfficeManagerFactory" lazy-init="true">
         <property name="officeHome" value="/usr/lib/openoffice"/>
+    </bean>
+
+    <bean name="remoteOfficeManagerFactory" class="org.jahia.services.transform.RemoteOfficeManagerFactory" lazy-init="true">
+        <property name="host" value="127.0.0.1"/>
+        <property name="portNumber" value="2002"/>
+    </bean>
+
+    <bean name="DocumentConverterController" class="org.jahia.bin.DocumentConverter">
+        <property name="converterService" ref="DocumentConverterService" />
+        <property name="settingsBean" ref="settingsBean" />
     </bean>
 
     <bean name="converterMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
-                <entry key="/convert">
-                    <bean class="org.jahia.bin.DocumentConverter">
-                        <property name="converterService" ref="DocumentConverterService"/>
-                        <property name="settingsBean" ref="settingsBean" />
-                    </bean>
-                </entry>
-                <entry key="/toPDF/**">
-                    <bean class="org.jahia.bin.ToPDFServlet">
-                        <property name="converterService" ref="DocumentConverterService"/>
-                    </bean>
-                </entry>
+                <entry key="/convert" value-ref="DocumentConverterController"/>
+                <entry key="/convert/**" value-ref="DocumentConverterController"/>
             </map>
         </property>
     </bean>

@@ -320,13 +320,6 @@
 
     <div>
         <table width="100%" class="table">
-            <thead>
-            <tr>
-                <th><fmt:message key="userIcon"/></th>
-                <th><fmt:message key="userInfo"/></th>
-                <th><fmt:message key="userActions"/></th>
-            </tr>
-            </thead>
             <tbody id="searchUsersResult">
 
             </tbody>

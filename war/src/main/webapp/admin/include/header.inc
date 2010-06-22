@@ -115,5 +115,4 @@
 <body class="jahiaAdministration" ${not empty jahiaAdministrationLogin ? 'id="bodyLogin"' : ''} onunload="closeEngineWin()" onclose="closeEngineWin()">
 <div id="mainAdminLayout">
 <%if(isConfigWizard){%>
-<%@ include file="/configuration_wizard/admin_header.inc" %>
 <%}%>

@@ -368,7 +368,10 @@ Server:Apache-Coyote/1.1
 |wildcardTerm               |no           |If this parameter is specified, it will be used to search for the     |
 |                           |             |value specified in any principal property. If you prefer to search    |
 |                           |             |for specific properties, you must specify them seperately in the HTTP |
-|                           |             |request parameters.                                                   |
+|                           |             |request parameters. You can use the ${paramName} syntax to reference  |
+|                           |             |other request parameters. For example ${q} will be replaced by the    |
+|                           |             |value of a parameter called "q" if it is found. If it is not found the|
+|                           |             |marker will not be replaced.                                          |
 *---------------------------+-------------+----------------------------------------------------------------------+
 |escapeColon                |no           |If set to true, the ':' in the node property name will be replaced    |
 |                           |             | '_'.                                                                 |
@@ -377,7 +380,10 @@ Server:Apache-Coyote/1.1
 |any other parameter name   |no           |If you specify another other parameter other than the above reserved  |
 |                           |             |ones, the servlet will interpret them as property names that have to  |
 |                           |             |to be search for the specified values.                                |
-|                           |             |                                                                      |
+|                           |             |You can use the ${paramName} syntax to reference                      |
+|                           |             |other request parameters. For example ${q} will be replaced by the    |
+|                           |             |value of a parameter called "q" if it is found. If it is not found the|
+|                           |             |marker will not be replaced.                                          |
 *---------------------------+-------------+----------------------------------------------------------------------+
 
 ** Example

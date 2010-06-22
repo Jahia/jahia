@@ -2,6 +2,7 @@ package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRTemplate;
@@ -82,8 +83,30 @@ public class FindPrincipal extends HttpServlet implements Controller {
         this.jahiaSitesService = jahiaSitesService;
     }
 
+    protected String expandRequestMarkers(HttpServletRequest request, String sourceString) {
+        String result = new String(sourceString);
+        int refMarkerPos = result.indexOf("{$");
+        while (refMarkerPos >= 0) {
+            int endRefMarkerPos = result.indexOf("}", refMarkerPos);
+            if (endRefMarkerPos > 0) {
+                String refName = result.substring(refMarkerPos + 2, endRefMarkerPos);
+                String refValue = request.getParameter(refName);
+                if (refValue != null) {
+                     result = StringUtils.replace(result, "{$" + refName + "}", refValue);
+                } else {
+                    // the request parameter wasn't found, so we leave the marker as it is, simply ignoring it.
+                }
+            }
+            refMarkerPos = result.indexOf("{$", refMarkerPos + 2);
+        }
+        return result;
+    }        
+
     protected String retrieveParameter(HttpServletRequest request, HttpServletResponse response, String parameterName, boolean mandatory) throws IOException {
         String parameterValue = request.getParameter(parameterName);
+        if (!StringUtils.isEmpty(parameterValue)) {
+            parameterValue = expandRequestMarkers(request, parameterValue);
+        }
         if (mandatory) {
             if (StringUtils.isEmpty(parameterValue)) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST,

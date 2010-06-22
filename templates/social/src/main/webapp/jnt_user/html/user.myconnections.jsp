@@ -91,7 +91,7 @@
             },
             extraParams: {
                 principalType : "users",
-                wildcardTerm : "*"
+                wildcardTerm : "${q}*"
             }
         });
 

@@ -14,9 +14,10 @@
                 
                 /servlet/AxisServlet = authcBasic, roles[webServiceManager]
                 /services/* = authcBasic, roles[webServiceManager]
+                /SOAPMonitor = authcBasic, roles[webServiceManager]
                 *.jws = authcBasic, roles[webServiceManager]
                 
-                /precompileServlet/* = authcBasic, roles[templateManager]
+                /precompileServlet = authcBasic, roles[templateManager]
                 
                 /templates/**/META-INF/** = authcBasic, roles[templateManager]
                 /templates/**/WEB-INF/** = authcBasic, roles[templateManager]

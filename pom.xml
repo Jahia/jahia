@@ -324,6 +324,18 @@
                 <module>package</module>
             </modules>
         </profile>
+        <profile>
+            <id>jahia-test</id>
+            <modules>
+                <module>test</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>testJahia</id>
+            <modules>
+                <module>test</module>
+            </modules>
+        </profile>
     </profiles>
 
   <modules>
@@ -335,7 +347,6 @@
     <module>gwt</module>
     <module>templates</module>
     <module>prepackagedSites</module>
-    <module>test</module>
     <module>war</module>
   </modules>
 

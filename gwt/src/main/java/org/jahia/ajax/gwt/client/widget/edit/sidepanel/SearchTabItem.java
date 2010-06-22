@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -182,7 +183,7 @@ class SearchTabItem extends SidePanelTabItem {
      */
     private ComboBox<GWTJahiaLanguage> createLanguageSelectorField() {
         final ComboBox<GWTJahiaLanguage> combo = new ComboBox<GWTJahiaLanguage>();
-        combo.setFieldLabel("Language");
+        combo.setFieldLabel(Messages.get("label.language", "Language"));
         combo.setStore(new ListStore<GWTJahiaLanguage>());
         combo.setDisplayField("displayName");
         combo.setTemplate(getLangSwitchingTemplate());
@@ -256,6 +257,9 @@ class SearchTabItem extends SidePanelTabItem {
     private GWTJahiaSearchQuery getGWTJahiaSearchQuery() {
         GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
         gwtJahiaSearchQuery.setQuery(searchField.getValue());
+        gwtJahiaSearchQuery.setInContents(true);
+        gwtJahiaSearchQuery.setInTags(true);
+        gwtJahiaSearchQuery.setOriginSiteUuid(JahiaGWTParameters.getSiteUUID());
         gwtJahiaSearchQuery.setPages(pagePickerField.getValue());
         gwtJahiaSearchQuery.setLanguage(langPickerField.getValue());
         List<String> list = new ArrayList<String>();

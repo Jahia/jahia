@@ -503,9 +503,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 if (searchFields.isFilename()) {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(@j:nodename, " + searchExpression + ")");
                 }
-                if (searchFields.isTags() && params.getSites().getValue() != null && getTaggingService() != null) {
+                if (searchFields.isTags() && getTaggingService() != null && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)) {
                     try {
-                        JCRNodeWrapper tag = getTaggingService().getTag(textSearch.getTerm(), params.getSites().getValue(), session);
+                        JCRNodeWrapper tag = getTaggingService().getTag(textSearch.getTerm(),  params.getSites().getValue() != null ? params.getSites().getValue() : params.getOriginSiteKey(), session);
                         if (tag != null) {
                             addConstraint(textSearchConstraints, "or", "@" + Constants.TAGS + "="
                                     + stringToJCRSearchExp(tag.getIdentifier()));                            

@@ -14,10 +14,9 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeDefinition;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -31,11 +30,10 @@ import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Form for searching repository content.
  * User: ktlili
  * Date: Feb 18, 2010
  * Time: 11:17:49 AM
- * To change this template use File | Settings | File Templates.
  */
 public class ContentSearchForm extends ContentPanel {
     private TextField<String> searchField;
@@ -92,7 +90,7 @@ public class ContentSearchForm extends ContentPanel {
 
         // advanced part
         FieldSet fieldSet = new FieldSet();
-        fieldSet.setHeading(Messages.get("label_advanced", "Advanced"));
+        fieldSet.setHeading(Messages.get("label.detailed", "Advanced"));
         FormLayout layout = new FormLayout();
         layout.setLabelWidth(70);
 
@@ -157,15 +155,6 @@ public class ContentSearchForm extends ContentPanel {
     }
 
     /**
-     * Create a new date selector field
-     *
-     * @return
-     */
-    private Field createDateSelectorField() {
-        return null;
-    }
-
-    /**
      * Create new page picker field
      *
      * @return
@@ -198,7 +187,7 @@ public class ContentSearchForm extends ContentPanel {
      */
     private CheckBox createTagField() {
         CheckBox field = new CheckBox();
-        field.setFieldLabel(Messages.get("label_tag", "Tags"));
+        field.setFieldLabel(Messages.get("label.tags", "Tags"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("tag");
         field.setValue(true);
@@ -215,7 +204,7 @@ public class ContentSearchForm extends ContentPanel {
      */
     private CheckBox createMetadataField() {
         CheckBox field = new CheckBox();
-        field.setFieldLabel(Messages.get("label_metadata", "Metadata"));
+        field.setFieldLabel(Messages.get("label.metadata", "Metadata"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("metadata");
         field.setValue(true);
@@ -230,7 +219,7 @@ public class ContentSearchForm extends ContentPanel {
      */
     private CheckBox createContentField() {
         CheckBox field = new CheckBox();
-        field.setFieldLabel("Content");
+        field.setFieldLabel(Messages.get("label.content", "Content"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("content");
         field.setValue(true);
@@ -247,7 +236,7 @@ public class ContentSearchForm extends ContentPanel {
      */
     private CheckBox createFileField() {
         CheckBox field = new CheckBox();
-        field.setFieldLabel(Messages.get("label_file", "File"));
+        field.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label", "File"));
         field.setBoxLabel(field.getFieldLabel());        
         field.setName("file");
         field.setValue(true);
@@ -265,7 +254,7 @@ public class ContentSearchForm extends ContentPanel {
      */
     private ComboBox<GWTJahiaLanguage> createLanguageSelectorField() {
         final ComboBox<GWTJahiaLanguage> combo = new ComboBox<GWTJahiaLanguage>();
-        combo.setFieldLabel("Language");
+        combo.setFieldLabel(Messages.get("label.language", "Language"));
         combo.setAllowBlank(true);
         combo.setStore(new ListStore<GWTJahiaLanguage>());
         combo.setDisplayField("displayName");
@@ -325,6 +314,7 @@ public class ContentSearchForm extends ContentPanel {
         gwtJahiaSearchQuery.setFilters(config.getFilters());
         gwtJahiaSearchQuery.setNodeTypes(config.getNodeTypes());
         gwtJahiaSearchQuery.setFolderTypes(config.getFolderTypes());
+        gwtJahiaSearchQuery.setOriginSiteUuid(JahiaGWTParameters.getSiteUUID());
         return gwtJahiaSearchQuery;
     }
 

@@ -3,15 +3,13 @@ package org.jahia.ajax.gwt.client.data;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * GWT bean for search criteria.
  * User: ktlili
  * Date: Feb 16, 2010
  * Time: 4:19:05 PM
- * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaSearchQuery implements Serializable {
     private int limit;
@@ -27,6 +25,7 @@ public class GWTJahiaSearchQuery implements Serializable {
     private List<String> nodeTypes;
     private List<String> filters;
     private List<String> mimeTypes;
+    private String originSiteUuid;
     
     public int getLimit() {
         return limit;
@@ -130,5 +129,19 @@ public class GWTJahiaSearchQuery implements Serializable {
 
     public void setMimeTypes(List<String> mimeTypes) {
         this.mimeTypes = mimeTypes;
+    }
+
+    /**
+     * @return the originSiteUuid
+     */
+    public String getOriginSiteUuid() {
+        return originSiteUuid;
+    }
+
+    /**
+     * @param originSiteUuid the originSiteUuid to set
+     */
+    public void setOriginSiteUuid(String originSiteUuid) {
+        this.originSiteUuid = originSiteUuid;
     }
 }

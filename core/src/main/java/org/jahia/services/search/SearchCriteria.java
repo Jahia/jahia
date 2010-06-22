@@ -58,10 +58,6 @@ import org.jahia.utils.DateUtils;
 @SuppressWarnings("unchecked")
 public class SearchCriteria implements Serializable {
 
-    private static abstract class SerializableFactory implements Factory, Serializable {
-        
-    }
-    
     /**
      * Supports comma separated multiple values.
      * 
@@ -90,7 +86,7 @@ public class SearchCriteria implements Serializable {
         }
 
     }
-
+    
     /**
      * Holder for the criterion of date type.
      * 
@@ -486,6 +482,10 @@ public class SearchCriteria implements Serializable {
         }
     }
 
+    private static abstract class SerializableFactory implements Factory, Serializable {
+        
+    }
+
     /**
      * Single text serch criterion with a search text and match type.
      * 
@@ -506,8 +506,6 @@ public class SearchCriteria implements Serializable {
 
             private static final long serialVersionUID = 6583369520862461173L;
 
-            private boolean siteContent;
-
             private boolean description;
 
             private boolean fileContent;
@@ -516,14 +514,11 @@ public class SearchCriteria implements Serializable {
 
             private boolean keywords;
 
-            private boolean title;
-            
-            private boolean tags;            
+            private boolean siteContent;
 
-            public boolean isSiteContent() {
-                return siteContent
-                || (!fileContent && !description && !title && !filename && !keywords && !tags);
-            }
+            private boolean tags;
+            
+            private boolean title;            
 
             public boolean isDescription() {
                 return description;
@@ -541,19 +536,19 @@ public class SearchCriteria implements Serializable {
                 return keywords;
             }
 
-            public boolean isTitle() {
-                return title;
+            public boolean isSiteContent() {
+                return siteContent
+                || (!fileContent && !description && !title && !filename && !keywords && !tags);
             }
 
             public boolean isTags() {
                 return tags;
-            }            
-            
-            public void setSiteContent(boolean content) {
-                this.siteContent = content;
-                this.tags = content;
             }
 
+            public boolean isTitle() {
+                return title;
+            }            
+            
             public void setCustom(String custom) {
                 if (custom != null) {
                     if (custom.contains("siteContent")) {
@@ -603,12 +598,17 @@ public class SearchCriteria implements Serializable {
                 this.keywords = keywords;
             }
 
-            public void setTitle(boolean title) {
-                this.title = title;
+            public void setSiteContent(boolean content) {
+                this.siteContent = content;
+                this.tags = content;
             }
-            
+
             public void setTags(boolean tags) {
                 this.tags = tags;
+            }
+            
+            public void setTitle(boolean title) {
+                this.title = title;
             }            
 
             @Override
@@ -717,6 +717,8 @@ public class SearchCriteria implements Serializable {
 
     private int offset;
 
+    private String originSiteKey;
+    
     private HierarchicalValue pagePath = new HierarchicalValue();
 
     private Map<String /* nodeType */, Map<String /* propertyName */, NodeProperty>> properties = LazyMap
@@ -801,6 +803,20 @@ public class SearchCriteria implements Serializable {
      */
     public int getOffset() {
         return offset;
+    }
+
+    /**
+     * Returns the origin site key, i.e. the key of the "current" site, where
+     * the query was executed from. This value is used for example to resolve
+     * the tag by its name as tags are site-specific.
+     * 
+     * @return the originSiteKey the origin site key, i.e. the key of the
+     *         "current" site, where the query was executed from. This value is
+     *         used for example to resolve the tag by its name as tags are
+     *         site-specific.
+     */
+    public String getOriginSiteKey() {
+        return originSiteKey;
     }
 
     public HierarchicalValue getPagePath() {
@@ -930,6 +946,20 @@ public class SearchCriteria implements Serializable {
         this.offset = offset;
     }
 
+    /**
+     * Sets the origin site key, i.e. the key of the "current" site, where the
+     * query was executed from. This value is used for example to resolve the
+     * tag by its name as tags are site-specific.
+     * 
+     * @param originSiteKey the origin site key, i.e. the key of the "current"
+     *            site, where the query was executed from. This value is used
+     *            for example to resolve the tag by its name as tags are
+     *            site-specific.
+     */
+    public void setOriginSiteKey(String originSiteKey) {
+        this.originSiteKey = originSiteKey;
+    }
+
     public void setPagePath(HierarchicalValue pagePath) {
         this.pagePath = pagePath;
     }
@@ -982,7 +1012,8 @@ public class SearchCriteria implements Serializable {
                         this.getItemsPerPage()).append("sites", this.getSites())
                 .append("languages", this.getLanguages())
                 .append("limit", this.getLimit())
-                .append("offset", this.getOffset()).toString();
+                .append("offset", this.getOffset())
+                .append("originSiteKey", this.getOriginSiteKey()).toString();
     }
 
 }

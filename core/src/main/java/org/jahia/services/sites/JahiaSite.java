@@ -73,10 +73,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
     public static final String PROPERTY_ENFORCE_PASSWORD_POLICY = "enforcePasswordPolicy";
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JahiaSite.class);
-
-
     /**
      * the site id *
      */
@@ -88,7 +84,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     private String mTitle = "";
 
     /**
-     * a unique String identifier key choosed by the creator *
+     * a unique String identifier key chosen by the creator *
      */
     private String mSiteKey = "";
 
@@ -116,6 +112,8 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
     private String JCRLocalPath;
 
     private GoogleAnalyticsProfile googleAnalyticsProfil;
+    
+    private String uuid;
 
     /**
      * Constructor, the purpose of this empty constructor is to enable
@@ -513,5 +511,27 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
 
     public GoogleAnalyticsProfile getGoogleAnalyticsProfil(){
         return googleAnalyticsProfil;
+    }
+
+    /**
+     * Returns the corresponding JCR node identifier or <code>null</code> if the
+     * site is coming not from the JCR provider.
+     * 
+     * @return the the corresponding JCR node identifier or <code>null</code> if
+     *         the site is coming not from the JCR provider
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Sets the corresponding JCR node identifier or <code>null</code> if the
+     * site is coming not from the JCR provider.
+     * 
+     * @param uuid the corresponding JCR node identifier or <code>null</code> if
+     *            the site is coming not from the JCR provider
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

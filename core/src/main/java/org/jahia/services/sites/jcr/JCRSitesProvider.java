@@ -141,7 +141,7 @@ public class JCRSitesProvider {
 
     public void setDefaultSite(final JahiaSite site) {
         try {
-            jcrTemplate.doExecuteWithSystemSession(new JCRCallback() {
+            jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNode("/sites");
                     if (!node.isCheckedOut()) {
@@ -266,7 +266,7 @@ public class JCRSitesProvider {
                     JCRNodeWrapper site = sites.getNode(siteKey);
                     if (sites.hasProperty("j:defaultSite")) {
                         final JCRPropertyWrapper defaultSite = sites.getProperty("j:defaultSite");
-                        if (defaultSite.getValue().getString().equals(site.getUUID())) {
+                        if (defaultSite.getValue().getString().equals(site.getIdentifier())) {
                             defaultSite.remove();
                         }
                     }
@@ -285,7 +285,7 @@ public class JCRSitesProvider {
 
     public void updateSite(final JahiaSite site) {
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode("/sites");
                     if (!sites.isCheckedOut()) {
@@ -365,6 +365,9 @@ public class JCRSitesProvider {
         String typeUrl = node.getPropertyAsString("j:gaTypeUrl");
         boolean enabled = true;
         site.setGoogleAnalyticsProfile(typeUrl, enabled, password, login, profile, account);
+        
+        site.setUuid(node.getIdentifier());
+        
         return site;
     }
 

@@ -6,14 +6,19 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.search.jcr.JahiaJCRSearchProvider;
+import org.jahia.services.sites.JahiaSite;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
@@ -346,7 +351,7 @@ public class SearchHelper {
      * @throws RepositoryException
      * @throws InvalidQueryException
      */
-    private Query createQuery(GWTJahiaSearchQuery gwtQuery, int limit, int offset, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
+    private Query createQuery(final GWTJahiaSearchQuery gwtQuery, int limit, int offset, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
         SearchCriteria criteria = new SearchCriteria();
         if (offset > 0) {
             criteria.setOffset(offset);
@@ -387,6 +392,24 @@ public class SearchHelper {
             fields.setDescription(gwtQuery.isInMetadatas());
             fields.setKeywords(gwtQuery.isInMetadatas());
             fields.setTags(gwtQuery.isInTags());
+        }
+        
+        if (gwtQuery.getOriginSiteUuid() != null) {
+            String siteKey = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+                public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        JCRNodeWrapper nodeWrapper = session.getNodeByIdentifier(gwtQuery.getOriginSiteUuid());
+                        return nodeWrapper.getName();
+                    } catch (ItemNotFoundException e) {
+                        logger.error("Unable for find site node by UUID: " + gwtQuery.getOriginSiteUuid(), e);
+                    }
+                    return null;
+                }
+            });
+            if (siteKey != null) {
+                criteria.setOriginSiteKey(siteKey);
+            }
+            
         }
 
         return jcrSearchProvider.buildQuery(criteria, session);

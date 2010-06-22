@@ -52,5 +52,6 @@
 <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'searchForm')}"/>
 <c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
 <form ${functions:attributes(attributes)}>
+    <input type="hidden" name="src_originSiteKey" value="${renderContext.site.siteKey}"/>
     <jsp:doBody/>
 </form>

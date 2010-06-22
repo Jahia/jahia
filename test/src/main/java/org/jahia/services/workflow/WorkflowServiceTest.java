@@ -35,15 +35,16 @@ package org.jahia.services.workflow;
 import static org.junit.Assert.*;
 
 import org.apache.log4j.Logger;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.rbac.RoleIdentity;
+import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.jahia.services.rbac.jcr.RoleService;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.*;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -51,6 +52,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**
@@ -62,7 +65,7 @@ import java.util.*;
  */
 public class WorkflowServiceTest {
     private final static String TESTSITE_NAME = "jBPMWorkflowServiceTest";
-    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME + "/home/pagecontent/row1/col1";
+    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME + "/home";
     private static JahiaSite site;
     private static JahiaUser johndoe;
     private static JahiaUser johnsmoe;
@@ -113,18 +116,21 @@ public class WorkflowServiceTest {
 
     @Test
     public void testGetPossibleWorkflow() throws Exception {
-        final List<WorkflowDefinition> workflowList =  WorkflowService.getInstance().getPossibleWorkflows(stageNode, null);
+        final List<WorkflowDefinition> workflowList =  WorkflowService.getInstance().getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
     }
 
     @Test
     public void testGetActiveWorkflows() throws Exception {
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        map.put("startDate",values);
+        map.put("endDate",values);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM",
-                                                      new HashMap<String, Object>());
+        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
@@ -134,11 +140,21 @@ public class WorkflowServiceTest {
 
     @Test
     public void testSignalProcess() throws Exception {
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        map.put("startDate",values);
+        map.put("endDate",values);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish");
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final WorkflowDefinition workflow = workflowList.get(0);
-        assertNotNull("Workflow should not be null", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", emptyMap);
+        WorkflowDefinition workflow = null;
+        for (WorkflowDefinition workflowDefinition : workflowList) {
+            if ("2 Step Publication Process".equals(workflowDefinition.getName())) {
+                workflow = workflowDefinition;
+                break;
+            }
+        }
+        assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
+        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
@@ -160,16 +176,26 @@ public class WorkflowServiceTest {
         assertFalse("Available actions should not match", availableActions.equals(newAvailableActions));
         assertTrue("Available action should match between service.getActiveWorkflows and getAvailableActions",
                    newAvailableActions.equals(service.getAvailableActions(processId, "jBPM")));
+        action = newAvailableActions.iterator().next();
+        if (action instanceof WorkflowTask) {
+            service.signalProcess(processId, action.getName(), ((WorkflowTask) action).getOutcomes().contains(
+                    "accept") ? "accept" : "reject", "jBPM", emptyMap);
+        } else {
+            service.signalProcess(processId, action.getName(), "jBPM", emptyMap);
+        }
     }
 
     @Test
     public void testAssignTask() throws Exception {
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        map.put("startDate",values);
+        map.put("endDate",values);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Workflow should not be null", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM",
-                                                      new HashMap<String, Object>());
+        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
@@ -193,12 +219,15 @@ public class WorkflowServiceTest {
 
     @Test
     public void testAddParticipatingGroup() throws Exception {
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        map.put("startDate",values);
+        map.put("endDate",values);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Workflow should not be null", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,
-                                                      new HashMap<String, Object>());
+        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
@@ -221,7 +250,11 @@ public class WorkflowServiceTest {
 
     @Test
     public void testFullProcess2StepPublication() throws Exception {
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        map.put("startDate",values);
+        map.put("endDate",values);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish");
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -231,8 +264,7 @@ public class WorkflowServiceTest {
             }
         }
         assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,
-                                                      new HashMap<String, Object>());
+        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
@@ -303,14 +335,27 @@ public class WorkflowServiceTest {
             properties.setProperty("j:email", "johnsmoe@localhost.com");
             johnsmoe = userManagerService.createUser("johnsmoe", "johnsmoe", properties);
         }
-        group = groupManagerService.createGroup(site.getID(), "taskUsersGroup", null, true);
+        group = groupManagerService.createGroup(site.getID(), "taskUsersGroup", new Properties(), true);
         group.addMember(johndoe);
         group.addMember(johnsmoe);
+
+        RoleBasedAccessControlService roleService = (RoleBasedAccessControlService) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.rbac.jcr.RoleBasedAccessControlService");
+        if(roleService!=null){
+            try {
+                roleService.grantRole(group,new RoleIdentity("editor-in-chief",site.getSiteKey()));
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 
     @Test
     public void test2StepPublicationAccept() throws Exception {
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        map.put("startDate",values);
+        map.put("endDate",values);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish");
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -320,8 +365,7 @@ public class WorkflowServiceTest {
             }
         }
         assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,
-                                                      new HashMap<String, Object>());
+        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
         List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
@@ -355,7 +399,11 @@ public class WorkflowServiceTest {
 
     @Test
     public void test1StepPublicationAccept() throws Exception {
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        map.put("startDate",values);
+        map.put("endDate",values);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -365,8 +413,7 @@ public class WorkflowServiceTest {
             }
         }
         assertNotNull("Unable to find workflow process '1 Step Publication Process'", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,
-                                                      new HashMap<String, Object>());
+        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
@@ -386,7 +433,11 @@ public class WorkflowServiceTest {
 
     @Test
     public void test1StepPublicationReject() throws Exception {
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, null);
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        map.put("startDate",values);
+        map.put("endDate",values);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -396,8 +447,7 @@ public class WorkflowServiceTest {
             }
         }
         assertNotNull("Unable to find workflow process '1 Step Publication Process'", workflow);
-        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,
-                                                      new HashMap<String, Object>());
+        final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
@@ -434,4 +484,38 @@ public class WorkflowServiceTest {
         assertEquals("The workflow process should have two history task records", 2, tasks.size());
     }
 
+    @Test
+    public void testTimerStatus() throws Exception {
+        final HashMap<String, Object> map = new HashMap<String, Object>();
+        List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
+        map.put("endDate",values);
+        long scheduleTime = System.currentTimeMillis() + 1000 * 60 * 5;
+        values.add(new WorkflowVariable(String.valueOf(scheduleTime), PropertyType.STRING));
+        map.put("startDate",values);
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
+        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
+        final WorkflowDefinition workflow = workflowList.get(0);
+        assertNotNull("Workflow should not be null", workflow);
+        final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", map);
+        assertNotNull("The startup of a process should have return an id", processId);
+        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode);
+        assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
+        Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
+        assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
+        WorkflowAction action = actionSet.iterator().next();
+        assertTrue(action instanceof WorkflowTask);
+        WorkflowTask task = (WorkflowTask) action;
+        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root");
+        assertNotNull(user);
+        service.assignTask(task.getId(), "jBPM", user);
+        List<WorkflowTask> forUser = service.getTasksForUser(user);
+        assertTrue(forUser.size() > 0);
+        WorkflowTask workflowTask = forUser.get(0);
+        service.completeTask(workflowTask.getId(), "jBPM", workflowTask.getOutcomes().contains(
+                "accept") ? "accept" : "reject", map, johndoe);
+        assertTrue(service.getTasksForUser(user).size() < forUser.size());
+        List<Workflow> list = service.getActiveWorkflows(stageNode);
+        assertTrue(list.size()>0);
+        assertNotNull(list.get(0).getDuedate().getTime());
+    }
 }

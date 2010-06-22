@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.URLResolver;
@@ -20,8 +22,7 @@ import org.json.JSONObject;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
@@ -141,6 +142,89 @@ public class FindPrincipal extends HttpServlet implements Controller {
         }
         return criterias;
     }
+
+    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, String propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
+            JSONException {
+        final PropertyIterator stringMap = currentNode.getProperties();
+        JSONObject jsonObject = new JSONObject();
+        // Map<String,Object> map = new HashMap<String, Object>();
+        Set<String> matchingProperties = new HashSet<String>();
+        while (stringMap.hasNext()) {
+            JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
+            final int type = propertyWrapper.getType();
+            final String name = escapeColon ? propertyWrapper.getName().replace(":", "_") : propertyWrapper.getName();
+            if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
+                if (!propertyWrapper.isMultiple()) {
+                    jsonObject.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getUrl());
+                }
+            } else {
+                if (!propertyWrapper.isMultiple()) {
+                    jsonObject.put(name, propertyWrapper.getValue().getString());
+                    // @todo this code is duplicated for multiple values, we need to clean this up.
+                    if ((propertyMatchRegexp != null) && (propertyWrapper.getValue().getString().matches(propertyMatchRegexp))) {
+                        if (alreadyIncludedPropertyValues != null) {
+                            String nodeIdentifier = alreadyIncludedPropertyValues.get(propertyWrapper.getValue().getString());
+                            if (nodeIdentifier != null) {
+                                if (!nodeIdentifier.equals(currentNode.getIdentifier())) {
+                                    // This property value already exists and comes from another node.
+                                    return null;
+                                }
+                            } else {
+                                alreadyIncludedPropertyValues.put(propertyWrapper.getValue().getString(), currentNode.getIdentifier());
+                            }
+                        }
+                        // property starts with the propertyMatchRegexp, let's add it to the list of matching properties.
+                        matchingProperties.add(name);
+                    }
+                } else {
+                    JSONArray jsonArray = new JSONArray();
+                    Value[] propValues = propertyWrapper.getValues();
+                    for (Value propValue : propValues) {
+                        jsonArray.put(propValue.getString());
+                        if ((propertyMatchRegexp != null) && (propValue.getString().matches(propertyMatchRegexp))) {
+                            if (alreadyIncludedPropertyValues != null) {
+                                String nodeIdentifier = alreadyIncludedPropertyValues.get(propValue.getString());
+                                if (nodeIdentifier != null) {
+                                    if (!nodeIdentifier.equals(currentNode.getIdentifier())) {
+                                        // This property value already exists and comes from another node.
+                                        return null;
+                                    }
+                                } else {
+                                    alreadyIncludedPropertyValues.put(propValue.getString(), currentNode.getIdentifier());
+                                }
+                            }
+                            // property starts with the propertyMatchRegexp, let's add it to the list of matching properties.
+                            matchingProperties.add(name);
+                        }
+                    }
+                    jsonObject.put(name, jsonArray);
+                }
+            }
+        }
+        // now let's output some node information.
+        jsonObject.put("path", currentNode.getPath());
+        jsonObject.put("identifier", currentNode.getIdentifier());
+        jsonObject.put("index", currentNode.getIndex());
+        jsonObject.put("depth", currentNode.getDepth());
+        jsonObject.put("primaryNodeType", currentNode.getPrimaryNodeType().getName());
+        if (propertyMatchRegexp != null) {
+            jsonObject.put("matchingProperties", new JSONArray(matchingProperties));
+        }
+
+        // now let's output the children until we reach the depth limit.
+        if ((depthLimit - 1) > 0) {
+            final NodeIterator childNodeIterator = currentNode.getNodes();
+            JSONArray childMapList = new JSONArray();
+            while (childNodeIterator.hasNext()) {
+                Node currentChildNode = childNodeIterator.nextNode();
+                JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit - 1, escapeColon, propertyMatchRegexp, alreadyIncludedPropertyValues);
+                childMapList.put(childSerializedMap);
+            }
+            jsonObject.put("childNodes", childMapList);
+        }
+        return jsonObject;
+    }
+    
 
     private void writeUserResults(Set<Principal> users, HttpServletRequest request, HttpServletResponse response)
             throws RepositoryException, IllegalArgumentException, IOException, RenderException {

@@ -210,6 +210,10 @@
                 <j:translation_en jcr:language="en" jcr:title_en="My Connections" jcr:primaryType="jnt:translation" />
                 <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="myconnections" />
               </my-connections>
+              <my-messages jcr:primaryType="jnt:contentList">
+                <j:translation_en jcr:language="en" jcr:title_en="My Messages" jcr:primaryType="jnt:translation" />
+                <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="mymessages" />
+              </my-messages>
             </tabularList>
           </wrappercontent>
         </my-profile>

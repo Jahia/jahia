@@ -208,3 +208,66 @@ display:block
 	padding:0;
 	font-weight:bold;
 }
+
+/******************************************************************************
+*  Send Message Pop up
+******************************************************************************/
+/*Pop up*/
+#divSendMessage {
+    overflow: auto;
+	width: 500px;
+	height: 230px;
+	background-color: #eaeaea;
+}
+
+#bodywrapper #divSendMessage {
+	display: none;
+}
+/*Form Title Pop up*/
+#divSendMessage h3.boxmessage-title {
+	background:#666666 url(img/boxsocial-h4title.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
+/*Form Docspace Pop up*/
+#divSendMessage .formMessage {
+	margin:10px
+}
+#divSendMessage .formMessage fieldset {
+	border:none
+}
+#divSendMessage .formMessage legend {
+	display:none
+}
+#divSendMessage .formMessage input,
+#divSendMessage .formMessage textarea {
+	width:97%
+}
+#divSendMessage .formMessage p{
+	clear:both;
+	margin:0.5em 0;
+	padding:0px
+}
+#divSendMessage .formMessage .formMarginLeft{
+	margin:0.5em 0 0.5em 0;
+	padding:0;
+}
+#divSendMessage .formMessage label.left,
+#divSendMessage .formMessage label {
+	display:block;
+	font-weight:bold;
+
+}
+#divSendMessage .formMessage input.radio,
+#divSendMessage .formMessage input.checkbox,
+#divSendMessage .formMessage input.button,
+#divSendMessage .formMessage button {
+	width:auto;
+}

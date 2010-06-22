@@ -21,3 +21,10 @@
  - j:caption (string)
  - j:description (string)
  - j:picture (weakreference) < jmix:image
+
+[jnt:userMessage] > jnt:content, jmix:sandboxContent
+ - j:from (weakreference) < jnt:user
+ - j:to (weakreference) < jnt:user
+ - j:subject (string)
+ - j:body (string)
+ - j:read (boolean)=false

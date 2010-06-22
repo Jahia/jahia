@@ -11,4 +11,8 @@
         <property name="name" value="removefriend"/>
     </bean>
 
+    <bean class="org.jahia.modules.social.SendMessageAction">
+        <property name="name" value="sendmessage"/>
+    </bean>
+
 </beans>

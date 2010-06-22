@@ -25,6 +25,13 @@
         <c:set var="displayTab" value="${param.displayTab}"/>
     </c:otherwise>
 </c:choose>
+<script type="text/javascript" language="javascript">
+    function defaultCallback() {
+        if (typeof tabCallback == 'function') {
+            tabCallback();
+        }
+    }
+</script>
 <div id="tabs${currentNode.identifier}">
     <div class="idTabsContainer"><!--start idTabsContainer-->
 
@@ -61,7 +68,7 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <li>
-                                    <a onclick="jreplace('tabs${currentNode.identifier}', '${url.base}${currentNode.path}.html',{displayTab:'${subList.identifier}',mainResource:'${res}.html'}, '');"><span>${subList.properties['jcr:title'].string}</span></a>
+                                    <a onclick="jreplace('tabs${currentNode.identifier}', '${url.base}${currentNode.path}.html',{displayTab:'${subList.identifier}',mainResource:'${res}.html'}, 'defaultCallback()');"><span>${subList.properties['jcr:title'].string}</span></a>
                                 </li>
                                 <%--<li>
                                     <a href="${url.mainResource}?displayTab=${subList.identifier}"><span>${subList.properties['jcr:title'].string}</span></a>
@@ -78,6 +85,9 @@
             <template:area path="${displayList.path}"/>
             <div class="clear"></div>
         </div>
+        <script type="text/javascript">
+            defaultCallback();
+        </script>
     </c:if>
     <!--stop tabContainer-->
 </div>

@@ -157,7 +157,7 @@
                         <root-folder>${artifactId}</root-folder>
                     </manifestEntries>
                 </archive>
-                <archiveClasses>true</archiveClasses>
+                <archiveClasses>false</archiveClasses>
             </configuration>
         </plugin>
             <plugin>

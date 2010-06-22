@@ -182,11 +182,25 @@
   </filter>-->
 <!-- End of shindig filters -->    
 
+    <filter>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>*.html</url-pattern>
@@ -1725,96 +1739,5 @@
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>JAM monitoring report</web-resource-name>
-            <url-pattern>/monitor/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>manager</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>admin</web-resource-name>
-            <url-pattern>/precompileServlet/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>manager</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>admin</web-resource-name>   
-            <url-pattern>/viewCache/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>jahiaManager</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>admin</web-resource-name>
-            <url-pattern>/tools/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>jahiaManager</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>admin</web-resource-name>
-            <url-pattern>/servlet/AxisServlet</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>jahiaManager</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>admin</web-resource-name>
-            <url-pattern>/services/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>jahiaManager</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>admin</web-resource-name>
-            <url-pattern>*.jws</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>jahiaManager</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <login-config>
-        <auth-method>BASIC</auth-method>
-        <realm-name>Secured Jahia tools</realm-name>
-    </login-config>
-
-    <security-role>
-        <role-name>manager</role-name>
-    </security-role>
-
-    <security-role>
-        <role-name>jahiaManager</role-name>
-    </security-role>
-
-    <security-role>
-        <role-name>role1</role-name>
-    </security-role>
-    
-    <security-role>
-        <role-name>role2</role-name>
-    </security-role>
 
 </web-app>

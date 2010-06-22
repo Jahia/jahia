@@ -81,7 +81,6 @@ import org.jahia.utils.JahiaConsole;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Version;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.modifier.TomcatUsersModifier;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletConfig;
@@ -395,11 +394,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             // error while reading jahia.properties, launch JahiaConfigurationWizard...
             Jahia.runInstaller = true;
             return;
-        }
-
-        // check server type... and if it's tomcat, check the tomcat-users.xml file...
-        if (jSettings.getServer().toLowerCase().contains("tomcat")) {
-	        TomcatUsersModifier.ensureValidity();
         }
 
         // Initialize all the registered services.

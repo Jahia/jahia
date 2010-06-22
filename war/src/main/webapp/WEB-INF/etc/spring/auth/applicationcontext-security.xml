@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="filterChainDefinitions">
+            <value>
+                /monitor/* = authcBasic, roles[toolManager]
+                /viewCache/* = authcBasic, roles[toolManager]
+                /tools/* = authcBasic, roles[toolManager]
+                
+                /servlet/AxisServlet = authcBasic, roles[webServiceManager]
+                /services/* = authcBasic, roles[webServiceManager]
+                *.jws = authcBasic, roles[webServiceManager]
+                
+                /precompileServlet/* = authcBasic, roles[templateManager]
+                
+                /templates/**/META-INF/** = authcBasic, roles[templateManager]
+                /templates/**/WEB-INF/** = authcBasic, roles[templateManager]
+                /templates/**/*.cnd = authcBasic, roles[templateManager]
+                /templates/**/*.drl = authcBasic, roles[templateManager]
+                /templates/**/*.dsl = authcBasic, roles[templateManager]
+                /templates/**/*.jsp = authcBasic, roles[templateManager]
+                /templates/**/*.properties = authcBasic, roles[templateManager]
+            </value>
+        </property>
+    </bean>
+    
+    <bean name="textConfigurationRealm" class="org.jahia.services.security.shiro.SpringTextConfigurationRealm">
+        <property name="userDefinitions">
+            <value>
+                jahia=password,toolManager,webServiceManager,templateManager
+            </value>
+        </property>
+    </bean>
+    
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="textConfigurationRealm"/>
+    </bean>
+    <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+</beans>

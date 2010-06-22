@@ -85,9 +85,11 @@
             <template:area path="${displayList.path}"/>
             <div class="clear"></div>
         </div>
-        <script type="text/javascript">
-            defaultCallback();
-        </script>
+        <c:if test="${empty displayTab}">
+            <script type="text/javascript">
+                defaultCallback();
+            </script>
+        </c:if>
     </c:if>
     <!--stop tabContainer-->
 </div>

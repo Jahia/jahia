@@ -6,6 +6,8 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addResources type="css" resources="social.css"/>
+<template:addResources type="javascript" resources="jquery.fancybox-1.3.1.js"/>
+<template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript"
@@ -21,8 +23,6 @@
 <template:addResources type="javascript" resources="jquery-ui.datepicker.min.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
-<template:addResources type="javascript" resources="jquery.fancybox-1.3.1.js"/>
-<template:addResources type="css" resources="jquery.fancybox.css"/>
 
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
@@ -187,7 +187,7 @@
                 url         : '${url.base}${currentNode.path}.sendmessage.do',
                 data        : $(this).serializeArray(),
                 success     : function(data) {
-                    alert("Message send.");
+                    alert("Message sent.");
                     $.fancybox.resize();
                     $.fancybox.center();
                     $.fancybox.close();
@@ -251,7 +251,7 @@
         });
 
         loadActivities();
-
+        
     }
 
     $(document).ready(function() {

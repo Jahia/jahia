@@ -1,6 +1,5 @@
 #bodywrapper #navigation {
 	position:relative;
-	width: 940px;
 }
 #bodywrapper #navigation #navbar {
 	background-image: url('img/navbar-bg.png');

@@ -19,7 +19,7 @@
             of the web application
         </description>
         <param-name>contextConfigLocation</param-name>
-        <param-value>WEB-INF/etc/spring/**/applicationcontext-*.xml,classpath:org/jahia/config/**/applicationcontext-*.xml</param-value>
+        <param-value>WEB-INF/etc/spring/**/applicationcontext-*.xml,classpath*:org/jahia/config/**/applicationcontext-*.xml</param-value>
     </context-param>
 
     <context-param>
@@ -549,12 +549,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>Test</servlet-name>
-        <servlet-class>org.jahia.bin.TestServlet</servlet-class>
-        <load-on-startup>99</load-on-startup>
-    </servlet>
-
-    <servlet>
         <servlet-name>JahiaAdministration</servlet-name>
         <servlet-class>org.jahia.bin.JahiaAdministration</servlet-class>
         <load-on-startup>7</load-on-startup>
@@ -855,10 +849,6 @@
     <servlet-mapping>
         <servlet-name>Files</servlet-name>
         <url-pattern>/files/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Test</servlet-name>
-        <url-pattern>/test/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

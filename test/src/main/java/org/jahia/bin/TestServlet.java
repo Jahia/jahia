@@ -41,6 +41,9 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.exceptions.JahiaException;
+import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -52,6 +55,7 @@ import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -67,11 +71,14 @@ import junit.framework.TestCase;
  * Time: 4:07:40 PM
  */
 @SuppressWarnings("serial")
-public class TestServlet  extends HttpServlet {
+public class TestServlet extends HttpServlet implements Controller, ServletContextAware {
+    
     private transient static Logger logger = Logger.getLogger(TestServlet.class);
-    @Override
+    
+    private ServletContext servletContext;
+    
     @SuppressWarnings("unchecked")
-    protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
+    protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
 //    should be protected in production
 //        if (System.getProperty("org.jahia.selftest") == null) {
@@ -85,7 +92,7 @@ public class TestServlet  extends HttpServlet {
 
         try {
             // should send response wrapper !
-            ctx = pcf.getContext(httpServletRequest, httpServletResponse, getServletContext());
+            ctx = pcf.getContext(httpServletRequest, httpServletResponse, servletContext);
         } catch (JahiaException e) {
             ctx = pcf.getContext(new BasicSessionState("123"));
         }
@@ -102,8 +109,8 @@ public class TestServlet  extends HttpServlet {
         }
 
         try {
-            String pathInfo = httpServletRequest.getPathInfo();
-            if (pathInfo != null) {
+            String pathInfo = StringUtils.substringAfter(httpServletRequest.getPathInfo(), "/test");
+            if (StringUtils.isNotEmpty(pathInfo)) {
                 // Execute one test
                 String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
                 try {
@@ -175,5 +182,18 @@ public class TestServlet  extends HttpServlet {
         }
         
         return clazz;
+    }
+
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getMethod().equalsIgnoreCase("get")) {
+            handleGet(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        }
+        return null;
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }

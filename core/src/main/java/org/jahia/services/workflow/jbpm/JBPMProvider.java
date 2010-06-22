@@ -54,8 +54,8 @@ import org.jbpm.pvm.internal.model.ActivityImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 
-import java.io.File;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
@@ -144,24 +144,47 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
      */
     public void afterPropertiesSet() throws Exception {
         if (processes != null && processes.length > 0) {
+            logger.info("Found " + processes.length + " workflow processes to be deployed.");
             List<Deployment> deploymentList = repositoryService.createDeploymentQuery().list();
             for (Resource process : processes) {
-                File file = process.getFile();
+                long lastModified = 0;
+                URL processResourceUrl = process.getURL();
+                if (ResourceUtils.isJarURL(processResourceUrl)) {
+                    lastModified = ResourceUtils.getFile(ResourceUtils.extractJarFileURL(processResourceUrl))
+                            .lastModified();
+                } else {
+                    lastModified = process.getFile().lastModified();
+                }
+
                 boolean needUpdate = true;
+                boolean found = false;
+                String fileName = process.getFilename();
                 for (Deployment deployment : deploymentList) {
-                    if(deployment.getName().equals(process) && deployment.getTimestamp()<=file.lastModified()) {
-                        needUpdate = false;
-                        break;
+                    if (deployment.getName().equals(fileName)) {
+                        found = true;
+                        if (deployment.getTimestamp() >= lastModified) {
+                            needUpdate = false;
+                            break;
+                        }
                     }
                 }
                 if (needUpdate) {
+                    if (found) {
+                        logger.info("Found workflow process " + fileName + ". Updating...");
+                    } else {
+                        logger.info("Found new workflow process " + fileName + ". Deploying...");
+                    }
                     NewDeployment newDeployment = repositoryService.createDeployment();
                     newDeployment.addResourceFromInputStream(process.getFilename(), process.getInputStream());
-                    newDeployment.setTimestamp(file.lastModified());
-                    newDeployment.setName(process.getFilename());
+                    newDeployment.setTimestamp(lastModified);
+                    newDeployment.setName(fileName);
                     newDeployment.deploy();
+                    logger.info("... done");
+                } else {
+                    logger.info("Found workflow process " + fileName + ". It is up-to-date.");
                 }
             }
+            logger.info("...workflow processes deployed.");
         }
     }
 
@@ -401,8 +424,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 if (activity instanceof ActivityImpl) {
                     ActivityBehaviour activityBehaviour = ((ActivityImpl)activity).getActivityBehaviour();
                     if (activityBehaviour instanceof TaskActivity) {
-                        // check the assignation handler .. ?
-                        Object o = ((TaskActivity)activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
+                        // check the assignment handler .. ?
+                        ((TaskActivity)activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
                         results.add(activity.getName());
                     }
                 }
@@ -445,8 +468,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     ActivityBehaviour activityBehaviour = ((ActivityImpl)activity).getActivityBehaviour();
                     if (activityBehaviour instanceof UserCodeActivityBehaviour) {
 
-                        // check the assignation handler .. ?
-                        Object o = ((TaskActivity)activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
+                        // check the assignment handler .. ?
+                        ((TaskActivity)activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
                         results.add(activity.getName());
                     }
                 }

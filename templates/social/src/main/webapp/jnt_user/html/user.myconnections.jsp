@@ -91,7 +91,7 @@
             },
             extraParams: {
                 principalType : "users",
-                wildcardTerm : "${q}*"
+                wildcardTerm : "{$q}*"
             }
         });
 
@@ -164,11 +164,15 @@
                     $.each(data['activities'], function(i, item) {
                         var activityDate = new Date();
                         activityDate.setTime(item['jcr:created']);
+                        var imageURL = item['j:picture'];
+                        if (imageURL == null) {
+                            imageURL = "${url.currentModule}/images/friendbig.png";
+                        }
                         $(".activitiesList").append(
                                 "<li>"+
 								"<div class='image'>" +
 								"<div class='itemImage itemImageLeft'>" +
-								"<img src='${url.currentModule}/images/friendbig.png' />" +
+								"<img src="+imageURL+" />" +
 								"</div>" +
 								"</div>" +
                                 "<h5 class='author'>" + item['jcr:createdBy'] + "</h5>" +

@@ -125,7 +125,7 @@ public class FindPrincipal extends HttpServlet implements Controller {
         return parameterMap;
     }
 
-    protected Properties buildSearchCriterias(String wildcardTerm, Map<String, String[]> otherRequestParameters) {
+    protected Properties buildSearchCriterias(String wildcardTerm, Map<String, String[]> otherRequestParameters, HttpServletRequest request) {
         Properties criterias = new Properties();
         if (wildcardTerm != null) {
             criterias.setProperty("*", wildcardTerm);
@@ -137,7 +137,7 @@ public class FindPrincipal extends HttpServlet implements Controller {
             } else if (paramValues.length > 1) {
                 logger.warn("Parameter " + curEntry.getKey() + " has more than one value, only the first one will be used.");
             }
-            criterias.setProperty(curEntry.getKey(), paramValues[0]);
+            criterias.setProperty(curEntry.getKey(), expandRequestMarkers(request, paramValues[0]));
         }
         return criterias;
     }
@@ -199,7 +199,7 @@ public class FindPrincipal extends HttpServlet implements Controller {
             }
             String siteKey = retrieveParameter(request, response, SITEKEY_PARAMNAME, siteKeyMandatory);
             Map<String, String[]> otherRequestParameters = retrieveOtherParameters(request);
-            Properties searchCriterias = buildSearchCriterias(wildcardTerm, otherRequestParameters);
+            Properties searchCriterias = buildSearchCriterias(wildcardTerm, otherRequestParameters, request);
             if (logger.isDebugEnabled()) {
                 logger.debug("Searching for principal type " + principalType + " with criterias " + searchCriterias);
             }

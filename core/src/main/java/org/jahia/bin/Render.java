@@ -374,6 +374,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             action = defaultPostAction;
         }
         if (action == null) {
+            if (urlResolver.getPath().endsWith(".do")) {
+                logger.error("Couldn't resolve action named [" + resource.getResolvedTemplate() + "]");
+            }
             resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
         } else {
             ActionResult result = action.doExecute(req, renderContext, resource, parameters, urlResolver);

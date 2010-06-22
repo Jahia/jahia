@@ -56,7 +56,6 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;

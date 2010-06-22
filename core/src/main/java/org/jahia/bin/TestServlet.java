@@ -101,33 +101,41 @@ public class TestServlet  extends HttpServlet {
             logger.error("Error getting user", e);
         }
 
-        String pathInfo = httpServletRequest.getPathInfo();
-        if (pathInfo != null) {
-            // Execute one test
-            String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
-            try {
-                JUnitResultFormatter unitResultFormatter = new XMLJUnitResultFormatter();
-                unitResultFormatter.setOutput(httpServletResponse.getOutputStream());
-                JUnitTestRunner runner =  new JUnitTestRunner(new JUnitTest(className,false,false,false), false,false,false);
-                runner.addFormatter(unitResultFormatter);
-                runner.run();
-            } catch (Exception e) {
-                logger.error("Error executing test", e);
-            }
-        } else {
-            PrintWriter pw = httpServletResponse.getWriter();
-            // Return the lists of available tests
-            InputStream is = getClass().getClassLoader().getResourceAsStream("Test.properties");
-            
-            if (is != null) {
-                List<String> lines = IOUtils.readLines(is);
-                IOUtils.closeQuietly(is);
-                for (String line : lines) {
-                    Class<?> c = getTestClass(line);
-                    if (c != null) {
-                        pw.println(c.getName());
+        try {
+            String pathInfo = httpServletRequest.getPathInfo();
+            if (pathInfo != null) {
+                // Execute one test
+                String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
+                try {
+                    JUnitResultFormatter unitResultFormatter = new XMLJUnitResultFormatter();
+                    unitResultFormatter.setOutput(httpServletResponse.getOutputStream());
+                    JUnitTestRunner runner =  new JUnitTestRunner(new JUnitTest(className,false,false,false), false,false,false);
+                    runner.addFormatter(unitResultFormatter);
+                    runner.run();
+                } catch (Exception e) {
+                    logger.error("Error executing test", e);
+                }
+            } else {
+                PrintWriter pw = httpServletResponse.getWriter();
+                // Return the lists of available tests
+                InputStream is = getClass().getClassLoader().getResourceAsStream("Test.properties");
+
+                if (is != null) {
+                    List<String> lines = IOUtils.readLines(is);
+                    IOUtils.closeQuietly(is);
+                    for (String line : lines) {
+                        Class<?> c = getTestClass(line);
+                        if (c != null) {
+                            pw.println(c.getName());
+                        }
                     }
                 }
+            }
+        } finally {
+            try {
+                ctx.setUserGuest();
+            } catch (JahiaException e) {
+                logger.error(e.getMessage(), e);
             }
         }
 

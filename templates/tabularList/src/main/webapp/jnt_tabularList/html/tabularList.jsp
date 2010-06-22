@@ -25,13 +25,6 @@
         <c:set var="displayTab" value="${param.displayTab}"/>
     </c:otherwise>
 </c:choose>
-<script type="text/javascript" language="javascript">
-    function defaultCallback() {
-        if (typeof tabCallback == 'function') {
-            tabCallback();
-        }
-    }
-</script>
 <div id="tabs${currentNode.identifier}">
     <div class="idTabsContainer"><!--start idTabsContainer-->
 
@@ -80,6 +73,13 @@
             </c:forEach>
         </ul>
     </div>
+    <script type="text/javascript" language="javascript">
+        function defaultCallback() {
+            if (typeof tabCallback == 'function') {
+                tabCallback();
+            }
+        }
+    </script>
     <c:if test="${not empty displayList}">
         <div class="tabContainer"><!--start tabContainer-->
             <template:area path="${displayList.path}"/>

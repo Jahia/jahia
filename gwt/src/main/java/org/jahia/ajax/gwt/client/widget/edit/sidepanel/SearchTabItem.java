@@ -81,7 +81,7 @@ class SearchTabItem extends SidePanelTabItem {
         ok.setIconStyle("gwt-toolbar-icon-savedSearch");
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.search());
         final Button drag = new Button(Messages.getResource("org.jahia.jcr.edit.drag.label"));
-        EditModeDragSource querySource = new EditModeDragSource(drag) {
+        new EditModeDragSource(drag) {
             @Override
             protected void onDragStart(DNDEvent e) {
                 e.setCancelled(false);
@@ -135,8 +135,8 @@ class SearchTabItem extends SidePanelTabItem {
         contentStore = new ListStore<GWTJahiaNode>(loader);
 
         List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
-        columnNames.add(new GWTColumn("icon","icon",40));
-        columnNames.add(new GWTColumn("displayName",Messages.getResource("label.name"),200));
+        columnNames.add(new GWTColumn("icon",Messages.get("label.icon", ""),40));
+        columnNames.add(new GWTColumn("displayName",Messages.get("label.name", "Name"),200));
         final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
         columnConfigList.init();
 
@@ -160,15 +160,6 @@ class SearchTabItem extends SidePanelTabItem {
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
         displayGridSource.addDNDListener(editLinker.getDndListener());
-    }
-
-    /**
-     * Create a new date selector field
-     *
-     * @return
-     */
-    private Field createDateSelectorField() {
-        return null;
     }
 
     /**
@@ -216,7 +207,7 @@ class SearchTabItem extends SidePanelTabItem {
     private ComboBox<GWTJahiaNodeType> createNodeSelector() {
         // create a definition for j:node
         final ComboBox<GWTJahiaNodeType> combo = new ComboBox<GWTJahiaNodeType>();
-        combo.setFieldLabel("nodetype");
+        combo.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.nodes.label", "Node type"));
         combo.setStore(new ListStore<GWTJahiaNodeType>());
         combo.setDisplayField("label");
         combo.setValueField("name");

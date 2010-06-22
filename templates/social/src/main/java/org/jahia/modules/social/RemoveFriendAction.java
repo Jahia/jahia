@@ -54,3 +54,4 @@ public class RemoveFriendAction implements Action {
 
         return new ActionResult(HttpServletResponse.SC_OK, null, results);
     }
+}

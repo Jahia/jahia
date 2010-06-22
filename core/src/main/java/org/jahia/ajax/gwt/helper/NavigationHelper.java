@@ -39,7 +39,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -74,17 +73,12 @@ public class NavigationHelper {
     public final static String SAVED_OPEN_PATHS = "org.jahia.contentmanager.savedopenpaths.";
     public final static String SELECTED_PATH = "org.jahia.contentmanager.selectedpath.";
 
-    private JCRStoreService jcrService;
     private JCRSessionFactory sessionFactory;
     private JCRVersionService jcrVersionService;
 
     private PublicationHelper publication;
     private WorkflowHelper workflow;
 
-
-    public void setJcrService(JCRStoreService jcrService) {
-        this.jcrService = jcrService;
-    }
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -204,7 +198,7 @@ public class NavigationHelper {
 //    }
 //
     public boolean matchesFilters(String nodeName, List<String> filters) {
-        if (nodeName == null || CollectionUtils.isEmpty(filters)) {
+        if (CollectionUtils.isEmpty(filters)) {
             return true;
         }
         boolean matches = false;
@@ -219,7 +213,7 @@ public class NavigationHelper {
 
     public boolean matchesMimeTypeFilters(JCRNodeWrapper node, List<String> filters) {
         // no filters
-        if (filters == null || CollectionUtils.isEmpty(filters)) {
+        if (CollectionUtils.isEmpty(filters)) {
             return true;
         }
 
@@ -233,9 +227,7 @@ public class NavigationHelper {
     }
 
     public boolean matchesNodeType(JCRNodeWrapper node, List<String> nodeTypes) {
-        // if there is only one node type in the list it is part of the query and does not need
-        // to be checked here again
-        if (nodeTypes == null || nodeTypes.size() <= 1) {
+        if (CollectionUtils.isEmpty(nodeTypes)) {
             return true;
         }
         for (String nodeType : nodeTypes) {
@@ -575,7 +567,7 @@ public class NavigationHelper {
                 if (n.isNodeType(Constants.JAHIANT_TRANSLATION)) {
                     n = n.getParent();
                 }
-                if (!n.isNodeType(Constants.NT_FROZENNODE) && matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
+                if (!n.isNodeType(Constants.NT_FROZENNODE) && (CollectionUtils.isEmpty(nodeTypesToApply) || nodeTypesToApply.size() == 1 || matchesNodeType(n, nodeTypesToApply)) && n.isVisible()) {
                     // use for pickers
                     boolean hasNodes = false;
                     try {

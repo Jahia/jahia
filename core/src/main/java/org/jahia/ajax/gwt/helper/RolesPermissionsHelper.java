@@ -8,18 +8,20 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.PermissionIdentity;
+import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.rbac.jcr.PermissionImpl;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.rbac.jcr.RoleImpl;
 import org.jahia.services.rbac.jcr.RoleService;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Roles and permission GWT helper class.
@@ -35,7 +37,6 @@ public class RolesPermissionsHelper {
     private RoleBasedAccessControlService rbacService;
     private RoleService roleService;
     private JahiaUserManagerService userManagerService;
-    private JahiaSitesService sitesService;
 
     /**
      * Grants the specified permissions to a role.
@@ -81,19 +82,34 @@ public class RolesPermissionsHelper {
         final List<GWTJahiaPermission> permissions = new LinkedList<GWTJahiaPermission>();
         try {
             long timer = System.currentTimeMillis();
-            // site permission
-            if (site != null) {
-                for (PermissionImpl permission : roleService.getPermissions(site.getSiteKey())) {
+            if (!user.isRoot() && !JahiaUserManagerService.isGuest(user)) {
+                Set<PermissionImpl> foundPermissions = new HashSet<PermissionImpl>();
+                timer = System.currentTimeMillis();
+                Set<Role> roles = rbacService.getRoles(user);
+                for (Role roleId : roles) {
+                    Set<PermissionImpl> rolePermissions = roleService.getRole(roleId).getPermissions();
+                    for (PermissionImpl perm : rolePermissions) {
+                        if (!foundPermissions.contains(perm)) {
+                            foundPermissions.add(perm);
+                            permissions.add(toPermission(perm));
+                        }
+                    }
+                }
+            } else {
+                // site permission
+                if (site != null) {
+                    for (PermissionImpl permission : roleService.getPermissions(site.getSiteKey())) {
+                        if (user.isPermitted(permission)) {
+                            permissions.add(toPermission(permission));
+                        }
+                    }
+                }
+    
+                // server permission
+                for (PermissionImpl permission : roleService.getPermissions(null)) {
                     if (user.isPermitted(permission)) {
                         permissions.add(toPermission(permission));
                     }
-                }
-            }
-
-            // server permission
-            for (PermissionImpl permission : roleService.getPermissions(null)) {
-                if (user.isPermitted(permission)) {
-                    permissions.add(toPermission(permission));
                 }
             }
             logger.info("Checking user granted permissions took " + (System.currentTimeMillis() - timer) + " ms");
@@ -328,7 +344,6 @@ public class RolesPermissionsHelper {
     }
 
     public void removeRoleToPrincipal(GWTJahiaRole role, boolean isGroup, String principalKey) throws GWTJahiaServiceException {
-        // TODO Auto-generated method stub
         JahiaPrincipal p = lookupPrincipal(principalKey, isGroup);
         if (p != null) {
             try {

@@ -206,9 +206,8 @@
             'transitionIn'       : 'none',
             'transitionOut'      : 'none',
             'centerOnScroll'     : true,
-            'onStart'            : function() {
-                var userKey = $(this).attr('id');
-                alert("this="+ $(this).localName + " userKey="+userKey);
+            'onStart'            : function(selectedArray, selectedIndex, selectedOpts) {
+                var userKey = $(selectedArray).attr('userKey');
                 $('#destinationUserKey').val(userKey);
             }, 
             'onClosed'           : function() {
@@ -343,7 +342,7 @@
                     <a href="${url.base}${connectedToUser.path}.html"><img src="${url.currentModule}/images/friend.png"
                                                                          alt="friend" border="0"/></a>
                 </div>
-                <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" id="${connectedToUser.properties['j:nodename'].string}"
+                <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" userKey="${connectedToUser.properties['j:nodename'].string}"
                    href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
                 <a class="social-list-remove" title="<fmt:message key="removeFriend"/>" href="#"><span><fmt:message
                         key="removeFriend"/></span></a>

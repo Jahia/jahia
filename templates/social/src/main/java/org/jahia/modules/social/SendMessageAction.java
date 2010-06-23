@@ -86,12 +86,13 @@ public class SendMessageAction implements Action {
                     session.checkout(toUser);
                     destinationInboxNode = toUser.addNode("inboundMessages", "jnt:contentList");
                 }
-                JCRNodeWrapper sendMessageNode = destinationInboxNode.addNode(fromUser.getName() + "to" + toUser.getName(), "jnt:userMessage");
-                sendMessageNode.setProperty("j:from", fromUser);
-                sendMessageNode.setProperty("j:to", toUser);
-                sendMessageNode.setProperty("j:subject", subject);
-                sendMessageNode.setProperty("j:body", body);
-                sendMessageNode.setProperty("j:read", false);
+                String destinationInboxNodeName = JCRContentUtils.findAvailableNodeName(destinationInboxNode, fromUser.getName() + "_to_" + toUser.getName());
+                JCRNodeWrapper destinationMessageNode = destinationInboxNode.addNode(destinationInboxNodeName, "jnt:userMessage");
+                destinationMessageNode.setProperty("j:from", fromUser);
+                destinationMessageNode.setProperty("j:to", toUser);
+                destinationMessageNode.setProperty("j:subject", subject);
+                destinationMessageNode.setProperty("j:body", body);
+                destinationMessageNode.setProperty("j:read", false);
 
                 JCRNodeWrapper sentMessagesBoxNode = null;
                 try {
@@ -101,12 +102,13 @@ public class SendMessageAction implements Action {
                     session.checkout(fromUser);
                     sentMessagesBoxNode = fromUser.addNode("sentMessages", "jnt:contentList");
                 }
-                JCRNodeWrapper destinationMessageNode = sentMessagesBoxNode.addNode(fromUser.getName() + "to" + toUser.getName(), "jnt:userMessage");
-                destinationMessageNode.setProperty("j:from", fromUser);
-                destinationMessageNode.setProperty("j:to", toUser);
-                destinationMessageNode.setProperty("j:subject", subject);
-                destinationMessageNode.setProperty("j:body", body);
-                destinationMessageNode.setProperty("j:read", false);
+                String sentMessagesBoxNodeName = JCRContentUtils.findAvailableNodeName(sentMessagesBoxNode, fromUser.getName() + "_to_" + toUser.getName());
+                JCRNodeWrapper sentMessageNode = sentMessagesBoxNode.addNode(sentMessagesBoxNodeName, "jnt:userMessage");
+                sentMessageNode.setProperty("j:from", fromUser);
+                sentMessageNode.setProperty("j:to", toUser);
+                sentMessageNode.setProperty("j:subject", subject);
+                sentMessageNode.setProperty("j:body", body);
+                sentMessageNode.setProperty("j:read", false);
 
                 session.save();
                 return true;

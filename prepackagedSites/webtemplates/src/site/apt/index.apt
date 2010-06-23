@@ -24,7 +24,7 @@ Jahia Migration - 6.0 to 6.5
 
   An export file can be  :
 
-    * Either a site export - a zip containing a <site.properties> file, one or <export_[lang].xml> files containing the
+    * Either a site export - a zip containing a <site.properties> file, one or more <export_[lang].xml> files containing the
       site data, <users.xml>, <categories.xml> and <sitePermissions.xml> files
 
     * Or a global export - a zip containing multiple site exports, with <export.properties> file and
@@ -68,7 +68,7 @@ Jahia Migration - 6.0 to 6.5
 
   The following grammar defines the notation for the mapping definition used in definitions.map:
 
-----------------------------------------------------
++----------------------------------------------------
 NodeTypeMappingDef ::= '[' NodeTypeName ']' '=' NodeTypeMapping
                   {ActionDef}
                   {PropertyMappingDef | ChildNodeMappingDef}
@@ -110,7 +110,7 @@ ChildNodeMappingDef ::=  '+' NodeName '=' ChildNodeMapping
                   {ActionDef}
 				  
 ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'		
-----------------------------------------------------
++----------------------------------------------------
 
   The following sections show some of the most used mappings in detail:
   
@@ -121,20 +121,20 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   
   For example:
   
-------------------------------------------------------  
++------------------------------------------------------  
 [jnt:mainContentContainer] = jnt:mainContent
-------------------------------------------------------
++------------------------------------------------------
   
   This line may then be followed by actions and/or field or container list definition mappings (see next sections for
   more info). 
   
   Example with actions:
  
-------------------------------------------------------  
++------------------------------------------------------  
 [web_templates:introductionContainer] = jnt:bigText
  { addMixin jmix:renderable }
  { setProperty [j:template=introduction] }
-------------------------------------------------------
++------------------------------------------------------
   
   This definition does not only map to the new standard definition name, but it also automatically on the target
   object adds a mixin node type (jmix:renderable) and sets the property j:template to the value 'introduction'. 
@@ -146,22 +146,22 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   Similar to the container definition mapping, page definitions should now be mapped to the standard jnt:page
   node type: 
   
-------------------------------------------------------
++------------------------------------------------------
 [web_templates:home] = jnt:page  
-------------------------------------------------------
++------------------------------------------------------
 
   and then followed by the container list definition mappings like described below.
 
   You can either set the new template name, like this:
   
-------------------------------------------------------
++------------------------------------------------------
 [web_templates:home] = jnt:page  
  { setProperty [j:template=Home] }
-------------------------------------------------------
++------------------------------------------------------
   
   Alternatively you can make all template mappings at one place in the definition mapping for jnt:page, like this:
   
-------------------------------------------------------  
++------------------------------------------------------  
 [jnt:page] = jnt:page
  - jahia:template = j:template
     Home = default
@@ -173,7 +173,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
     people = simple
     press = simple    
     job = simple
-------------------------------------------------------
++------------------------------------------------------
 
   This example shows that when the node type name is unchanged, the left and the right side of the node type definition
   can be the same. What changed is the property field name (from jahia:template to j:template) and the possible values,
@@ -192,20 +192,20 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   
   For instance:
   
-------------------------------------------------------  
++------------------------------------------------------  
 [web_templates:home] = jnt:page
  + logo = ../wrapperContent/logo
  + banner = pagecontent/row1/col1/banner
-------------------------------------------------------
++------------------------------------------------------
 
   The list previously named logo is now no longer underneath the page, but as you can define relative paths, the mapping 
   shows that it is moved to a different place in the content hierarchy. Concretely we go to the parent node of the home page 
   and then to its sub-node called 'wrapperContent' and again another sub-node called 'logo'. These nodes may already exist 
   or they will be created using the jnt:contentList node type. You can also specify an alternative nodeType in brackets, e.g.
 
-------------------------------------------------------  
++------------------------------------------------------  
 + mainColumn_box = maincontent(jnt:row)  
-------------------------------------------------------  
++------------------------------------------------------  
   
 *** Field definition mapping
 
@@ -214,11 +214,11 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   
   For example:
   
-------------------------------------------------------  
++------------------------------------------------------  
 [jnt:mainContentContainer] = jnt:mainContent
  - mainContentBody = body
  - mainContentTitle = mix:title|jcr:title
-------------------------------------------------------
++------------------------------------------------------
  
   For standard Jahia metadata fields the mapping rules are already internally hardcoded so they do not need to be extra 
   specified.
@@ -240,22 +240,22 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   
   For example the following rule will transform the "Spain" value from web_templates:jobContainer.country to "ES" value :
 
-------------------------------------------------------
++------------------------------------------------------
 [web_templates:jobContainer] = jnt:job
  - country = country
    Spain = ES
-------------------------------------------------------
++------------------------------------------------------
 
   Combined the field mapping, it allows to do some complex stuff, like assigning a specific template to a node based on
   a field value :
   
-------------------------------------------------------
++------------------------------------------------------
 [web_templates:fileContainer] = jnt:fileReference
  - file = j:node 
  - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
    true = details
    false = link
-------------------------------------------------------
++------------------------------------------------------
 
   Here the value fileDisplayDetails, which was defining the way the file is rendered, is replaced by the template
   property, and the values true and false are mapped to the template name to assign.
@@ -269,7 +269,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 
   For example, the following structure :
 
--------------------------------------------------------
++-------------------------------------------------------
 +boxList
   +FilesBox
     -titleA
@@ -287,11 +287,11 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
        -textA
       +textContainer2
        -textB
--------------------------------------------------------
++-------------------------------------------------------
 
   Will be mapped by default to :
 
--------------------------------------------------------
++-------------------------------------------------------
 +boxList
   +fileContainer1
     -titleA
@@ -309,16 +309,16 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
     -titleB
     -skinB
     -textB
--------------------------------------------------------
++-------------------------------------------------------
 
   This is done with the following mapping: 
   
--------------------------------------------------------  
++-------------------------------------------------------  
 [jnt:box] = jnt:box
  - boxTitle = mix:title|jcr:title
  - skin = jmix:skinnable|j:skin
    resourceKey(skins.box2) = skins.box2
--------------------------------------------------------
++-------------------------------------------------------
      
   If a different behavior is required for a specific box, the type can be mapped as any other standard type.
 
@@ -327,10 +327,10 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   JCR 2.0 adds a new feature for shareable nodes, whereas before only node references were supported. For 
   instance you could map fileContainer objects to directly use the files as shareable nodes, like this: 
    
--------------------------------------------------------  
++-------------------------------------------------------  
 [web_templates:fileContainer] = #shareable
  + file = #shareableSource
--------------------------------------------------------
++-------------------------------------------------------
 
   The problem with this is, that it only works for single-language sites as shareable file nodes can't be
   language dependent. That is why the above mapping is just commented in the packaged definitions.map.
@@ -350,11 +350,11 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   
   For instance: 
 
--------------------------------------------------------  
++-------------------------------------------------------  
 [web_templates:home] = jnt:page
  { addNode maincontent(jnt:row) [column=2col124] } 
  + logo = logo(jnt:contentList)    
-------------------------------------------------------- 
++------------------------------------------------------- 
   
   When a node of type web_templates:home is imported it will be now rather mapped to the type jnt:page and 
   there will also be a new node named 'maincontent' of type jnt:row added to this page node and on this 
@@ -371,32 +371,32 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 
   With this action you can specify to add a mixin type to a created node.
 
--------------------------------------------------------  
++-------------------------------------------------------  
 [web_templates:introductionContainer] = jnt:bigText
    { addMixin jmix:renderable }
    { setProperty [j:template=introduction] } 
--------------------------------------------------------
++-------------------------------------------------------
 
   The above example will map an introductionContainer to jnt:bigText and will add the mixin node type 
   jmix:renderable and then also set the j:template property. As setProperty also allows to directly 
   specify a mixin type, the following statement would actually do the same as the above example:
   
--------------------------------------------------------  
++-------------------------------------------------------  
 [web_templates:introductionContainer] = jnt:bigText
    { setProperty [jmix:renderable|j:template=introduction] } 
--------------------------------------------------------  
++-------------------------------------------------------  
   
   [[3]] Set property action 
   
   With the last available action you can specify to set properties on the node matched with the 
   mapping above the action definition. 
 
--------------------------------------------------------
++-------------------------------------------------------
 [web_templates:home] = jnt:page
  ...
  + promo = pagecontent/row1/col1/promo
    { setProperty [jmix:renderable|j:template=twoColumns] }
--------------------------------------------------------
++-------------------------------------------------------
 
   This example will add a mixin and set a property on the promo node.    
 
@@ -412,13 +412,13 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   
   Here are some examples we use: 
 
--------------------------------------------------------
++-------------------------------------------------------
 [web_templates:bottomLinksContainer] = #skip
 
 [web_templates:home] = jnt:page
  ...
  + promoLarge = #skip
--------------------------------------------------------
++-------------------------------------------------------
   
   In Jahia 6.5 the navigation menu component is implemented very different to Jahia 6.0, where new
   pages were created directly via the navigation menu. In Jahia 6.5 page creation is no longer done
@@ -429,10 +429,10 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   identify such navigation link objects, which will not be imported, but the direct pages they
   point to, will be imported.  
   
--------------------------------------------------------
++-------------------------------------------------------
 [jnt:navLink] = #navlink
  - navLink = #navlink
-------------------------------------------------------- 
++------------------------------------------------------- 
 
 *** Example
 
@@ -440,7 +440,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 
   Here is some standard mapping that can be used for any site using these standard types :
 
-+----------------------------------------------------+
++----------------------------------------------------
 ## Box
 
 [jnt:box] = jnt:box
@@ -504,5 +504,5 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
  + logoFooter = ../wrapperContent/logoFooter 
  + footerContainerList = ../wrapperContent/footer 
  
-+----------------------------------------------------+
++----------------------------------------------------
 

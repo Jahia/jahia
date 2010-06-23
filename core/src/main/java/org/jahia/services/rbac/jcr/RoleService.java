@@ -45,7 +45,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.Role;
-import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Service for managing roles and permissions.
@@ -338,9 +337,5 @@ public class RoleService {
      */
     public void setRoleManager(RoleManager roleManager) {
         this.roleManager = roleManager;
-    }
-
-    public List<RoleImpl> getRoles(JahiaUser user) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 }

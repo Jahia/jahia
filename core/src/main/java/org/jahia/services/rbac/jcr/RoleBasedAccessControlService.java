@@ -110,7 +110,7 @@ public class RoleBasedAccessControlService {
      *         membership; an empty set is returned if this principal has no
      *         roles assigned
      */
-    public Set<Role> getRoles(final JahiaBasePrincipal principal) {
+    public Set<Role> getRoles(final JahiaPrincipal principal) {
         EnforcementPolicyResult result = policy.enforce(principal);
         if (result.isApplied()) {
             return Collections.emptySet();

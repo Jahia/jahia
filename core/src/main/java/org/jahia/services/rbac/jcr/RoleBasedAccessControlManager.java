@@ -634,7 +634,7 @@ public class RoleBasedAccessControlManager {
      *         roles assigned
      * @throws RepositoryException in case of an error
      */
-    public Set<Role> getRoles(JahiaBasePrincipal principal, JCRSessionWrapper session) throws RepositoryException {
+    public Set<Role> getRoles(JahiaPrincipal principal, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper principalNode = getPrincipalNode(principal, session);
         if (principalNode == null) {
             logger.warn("Principal node not found for principal: " + principal + ". Skip checking roles.");

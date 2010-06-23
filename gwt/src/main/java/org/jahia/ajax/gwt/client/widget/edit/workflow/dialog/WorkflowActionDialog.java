@@ -84,7 +84,8 @@ public class WorkflowActionDialog extends Window {
                 + Messages.get("label.for", "for") + " node: " + node.getDisplayName());
         setWidth(800);
         setHeight(600);
-        setLayout(new RowLayout(Style.Orientation.VERTICAL));
+        setLayout(new FlowLayout());
+        setScrollMode(Style.Scroll.AUTOY);
         setFrame(true);
         final ContentPanel commentPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
         commentPanel.setHeading(Messages.get("label.comments", "Comments"));
@@ -95,8 +96,7 @@ public class WorkflowActionDialog extends Window {
         final Window dialog = this;
 
         final LayoutContainer commentsContainer = new LayoutContainer(new RowLayout(Style.Orientation.VERTICAL));
-        commentsContainer.setHeight(260);
-        commentsContainer.setScrollMode(Style.Scroll.AUTOY);
+        commentsContainer.setScrollMode(Style.Scroll.NONE);
         commentsContainer.setBorders(false);
         displayComments(action, dialog, commentsContainer);
 
@@ -140,7 +140,6 @@ public class WorkflowActionDialog extends Window {
         commentPanel.add(formPanel);
         commentPanel.setWidth("100%");
 
-        add(commentPanel,new RowData(1, 0.70, new Margins(0)));
 
         final ContentPanel actionPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
         actionPanel.setHeading(Messages.get("label.action", "Actions"));
@@ -166,7 +165,8 @@ public class WorkflowActionDialog extends Window {
             generateActionButtons(null, action, node, dialog, actionPanel);
         }
 
-        add(actionPanel,new RowData(1, 0.30, new Margins(0)));
+        add(actionPanel);
+        add(commentPanel);
     }
 
     private void displayComments(GWTJahiaWorkflowAction action, final Window dialog,

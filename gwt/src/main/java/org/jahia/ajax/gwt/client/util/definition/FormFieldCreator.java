@@ -368,7 +368,7 @@ public class FormFieldCreator {
                     case GWTJahiaNodePropertyType.PATH:
                     case GWTJahiaNodePropertyType.URI:
                     case GWTJahiaNodePropertyType.UNDEFINED:
-                        field.setValue(join(values));
+                        if (values.get(0).getString() != null) { field.setValue(join(values)); }
                         break;
                     case GWTJahiaNodePropertyType.REFERENCE:
                     case GWTJahiaNodePropertyType.WEAKREFERENCE:

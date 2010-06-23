@@ -125,6 +125,7 @@
 #bodywrapper ul.social-list h4 {
 	border-bottom:none;
 }
+/*Social list actions*/
 #bodywrapper ul.social-list a.social-list-remove {
 	width:16px;
 	height:16px;
@@ -133,6 +134,17 @@
 	float:right;
 }
 #bodywrapper ul.social-list a.social-list-remove span {
+display:none
+}
+#bodywrapper ul.social-list a.social-list-sendmessage {
+	width:16px;
+	height:16px;
+	display:block;
+	background: url(img/send-message.png) no-repeat top right;
+	float:right;
+	margin-left:4px;
+}
+#bodywrapper ul.social-list a.social-list-sendmessage span {
 display:none
 }
 /******************************************************************************

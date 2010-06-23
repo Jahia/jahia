@@ -208,7 +208,7 @@
             'centerOnScroll'     : true,
             'onStart'            : function() {
                 var userKey = $(this).attr('id');
-                alert(userKey);
+                alert("this="+ $(this).localName + " userKey="+userKey);
                 $('#destinationUserKey').val(userKey);
             }, 
             'onClosed'           : function() {
@@ -233,7 +233,9 @@
             },
             extraParams: {
                 principalType : "users",
-                wildcardTerm : "{$q}*"
+                wildcardTerm : "{$q}*",
+                propertyMatchRegexp : "{$q}.*",
+                removeDuplicatePropValues : "true"                
             }
         });
         $("#searchUsersSubmit").click(function() {

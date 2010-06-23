@@ -6,7 +6,24 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="social.css"/>
 
-<div class='grid_12 alpha'><!--start grid_12-->
+<script type="text/javascript">
+
+    function tabCallback() {
+
+        $(".messageDetailLink").click(function() {
+            $.ajax({
+                url: $(this).attr('urlToMessage'),
+                type : 'get',
+                success : function (data) {
+                    $(".social-message-detail").html(data);
+                }
+            });
+        });
+    
+    }
+</script>
+
+<div class='grid_8 alpha'><!--start grid_12-->
 
     <jcr:sql var="receivedMessages"
              sql="select * from [jnt:userMessage] as uC where isdescendantnode(uC,['${currentNode.path}/inboundMessages'])"/>
@@ -17,65 +34,20 @@
     <ul class="social-list">
         <c:forEach items="${receivedMessages.nodes}" var="userMessage">
             <li>
-                <c:set var="fromUser" value="${userMessage.properties['j:from'].node}"/>
-                <div class="messageSenderImage">
-                    <a href="${url.base}${fromUser.path}.html"><img src="${url.currentModule}/images/friend.png"
-                                                                         alt="friend" border="0"/></a>
-                </div>
-                <div class="messageSenderName">
-                    <a href="${usl.base}${fromUser.path}.html">${fromUser.properties['j:firstName'].string} ${fromUser.properties['j:lastName'].string}</a>
-                </div>
-                <h2>${userMessage.properties['j:subject'].string}</h2>
-                <p>${userMessage.properties['j:body'].string}</p>
-                <ul class="messageActionList">
-                    <li><a class="messageActionReply" title="<fmt:message key="replyToMessage"/>" id="showSendMessage"
-                   href="#divSendMessage"><span><fmt:message key="replyToMessage"/></span></a></li>
-                   <li><a class="messageActionDelete" title="<fmt:message key="deleteMessage"/>" href="#"><span><fmt:message
-                        key="deleteMessage"/></span></a></li>
-                </ul>
-                <div class='clear'></div>
+                <template:module path="${userMessage.path}" />
             </li>
         </c:forEach>
     </ul>
 
 </div>
 <!--stop grid_12-->
-<div class='grid_4 omega'><!--start grid_4-->
+<div class='grid_8 omega'><!--start grid_4-->
 
-    <h3><fmt:message key="userSearch"/></h3>
-
-    <form method="get" class="simplesearchform" action="">
-
-        <jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
-        <c:if test="${not empty title.string}">
-            <label for="searchUsersTerm">${fn:escapeXml(title.string)}:&nbsp;</label>
-        </c:if>
-        <fmt:message key='userSearch' var="startSearching"/>
-        <input type="text" id="searchUsersTerm" value="${startSearching}"
-               onfocus="if(this.value==this.defaultValue)this.value='';"
-               onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
-        <input class="searchsubmit" id="searchUsersSubmit" type="submit" title="<fmt:message key='search.submit'/>"/>
-
-    </form>
-    <br class="clear"/>
-
-    <div>
-        <table width="100%" class="table">
-            <thead>
-            <tr>
-                <th><fmt:message key="userIcon"/></th>
-                <th><fmt:message key="userInfo"/></th>
-                <th><fmt:message key="userActions"/></th>
-            </tr>
-            </thead>
-            <tbody id="searchUsersResult">
-
-            </tbody>
-        </table>
+    <div id="socialMessageDetail" class="social-message-detail">
+        
     </div>
 
     <div class='clear'></div>
-
 
 </div>
 <!--stop grid_4-->

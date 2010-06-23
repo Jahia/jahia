@@ -12,7 +12,7 @@
              sql="select * from [jnt:userMessage] as uC where isdescendantnode(uC,['${currentNode.path}/inboundMessages'])"/>
 
     <h3 class="social-title-icon titleIcon"><a href="#"><fmt:message key="receivedMessages"/></a><a href="#"><img title="" alt=""
-                                                                                    src="${url.currentModule}/images/friends.png"/></a>
+                                                                                    src="${url.currentModule}/images/mailbox.png"/></a>
     </h3>
     <ul class="social-list">
         <c:forEach items="${receivedMessages.nodes}" var="userMessage">

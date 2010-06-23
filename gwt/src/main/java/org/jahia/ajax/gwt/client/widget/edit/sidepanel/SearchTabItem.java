@@ -170,7 +170,7 @@ class SearchTabItem extends SidePanelTabItem {
      */
     private ContentPickerField createPageSelectorField() {
         ContentPickerField field = new ContentPickerField(Messages.get("label.pagePicker", "Page picker"),
-                Messages.get("picker_link_selection", "Selected page"), null, "/", null, null,
+                Messages.get("label.selectedPage", "Selected page"), null, "/", null, null,
                 ManagerConfigurationFactory.PAGEPICKER, false);
         field.setFieldLabel(Messages.get("label.pagePicker", "Pages"));
         return field;

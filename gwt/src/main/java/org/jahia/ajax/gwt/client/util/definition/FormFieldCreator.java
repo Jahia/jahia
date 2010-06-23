@@ -246,7 +246,7 @@ public class FormFieldCreator {
             // case of page piker
             if (nodeDefinition.getRequiredPrimaryTypes()[0].equals("jmix:link")) {
                 field = new ContentPickerField(Messages.get("label.pagePicker", "Page picker"),
-                        Messages.get("picker_link_selection", "Selected page"), definition.getSelectorOptions(),
+                        Messages.get("label.selectedPage", "Selected page"), definition.getSelectorOptions(),
                         definition.getSelectorOptions().get("folder") != null ?
                                 definition.getSelectorOptions().get("folder") : "/",
                         getSelectorOptionAsList(definition, "filters"), null, ManagerConfigurationFactory.LINKPICKER,

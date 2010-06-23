@@ -299,7 +299,7 @@ public class EditActions {
 
             final TextArea comments = new TextArea();
             comments.setName("comments");
-            comments.setFieldLabel(Messages.getResource("org.jahia.jcr.publication.publicationComments"));
+            comments.setFieldLabel(Messages.getResource("label.comments"));
             form.add(comments);
 
             final Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {

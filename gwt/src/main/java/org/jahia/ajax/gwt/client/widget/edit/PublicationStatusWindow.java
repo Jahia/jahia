@@ -54,13 +54,13 @@ class PublicationStatusWindow extends Window {
 
         comments = new TextArea();
         comments.setWidth(750);
-        comments.setFieldLabel(Messages.getResource("org.jahia.jcr.publication.publicationComments"));
+        comments.setFieldLabel(Messages.getResource("label.comments"));
 
         VerticalPanel commentsPanel = new VerticalPanel();
         TableData d = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
         d.setMargin(5);
         commentsPanel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);
-        commentsPanel.add(new Label(Messages.get("org.jahia.jcr.publication.publicationComments", "Comments")), d);
+        commentsPanel.add(new Label(Messages.get("label.comments", "Comments")), d);
         commentsPanel.add(comments, d);
         commentsPanel.setHeight(70);
         commentsPanel.setWidth("100%");

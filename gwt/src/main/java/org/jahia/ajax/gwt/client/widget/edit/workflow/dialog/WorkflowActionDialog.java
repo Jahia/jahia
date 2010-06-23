@@ -87,7 +87,7 @@ public class WorkflowActionDialog extends Window {
         setLayout(new RowLayout(Style.Orientation.VERTICAL));
         setFrame(true);
         final ContentPanel commentPanel = new ContentPanel(new RowLayout(Style.Orientation.VERTICAL));
-        commentPanel.setHeading(Messages.get("org.jahia.jcr.publication.publicationComments", "Comments"));
+        commentPanel.setHeading(Messages.get("label.comments", "Comments"));
         commentPanel.setBorders(false);
         commentPanel.setCollapsible(false);
         commentPanel.setTitleCollapse(false);

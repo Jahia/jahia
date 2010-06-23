@@ -91,7 +91,7 @@
         <li class="dex-TabBarItem tabExit">
             <div>
                 <div>
-          <span class="tab-icon ico-site">
+          <span class="tab-icon ico-studio">
             <a href='<%=Jahia.getContextPath() + "/cms/studio/default/en/templatesSet/templates-intranet/home.html" %>'>Exit to Studio</a>
           </span>
                 </div>

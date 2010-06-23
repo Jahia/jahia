@@ -5,6 +5,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
@@ -51,6 +52,14 @@ public class CKEditor extends Component {
     public CKEditor(CKEditorConfig config) {
         if (config == null) {
             config = new CKEditorConfig();
+            String site = JahiaGWTParameters.getSiteKey();
+            if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/full", site)) {
+                config.setToolbarSet("Full");
+            } else if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/basic", site)) {
+                config.setToolbarSet("Basic");
+            } else {
+                config.setToolbarSet("Light");
+            }
         }
         this.config = config;
 
@@ -162,7 +171,8 @@ public class CKEditor extends Component {
         var config = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::config;
         var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId,{
             width : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getWidth()(),
-            height : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getHeight()()
+            height : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getHeight()(),
+            toolbar : config.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig::getToolbarSet()()
         });
 
         return oCKeditor;

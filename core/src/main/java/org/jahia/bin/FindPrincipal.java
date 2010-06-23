@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRTemplate;
@@ -12,10 +14,9 @@ import org.jahia.services.render.RenderException;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.*;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.*;
 
@@ -52,6 +54,8 @@ public class FindPrincipal extends HttpServlet implements Controller {
     private static final String WILDCARDTERM_PARAMNAME = "wildcardTerm";
     private static final String ESCAPECOLON_PARAMNAME = "escapeColon";
     private static final String SITEKEY_PARAMNAME = "siteKey";
+    private static final String PROPERTYMATCHREGEXP_PARAMNAME = "propertyMatchRexexp";
+    private static final String REMOVEDUPLICATEPROPVALUES_PARAMNAME = "removeDuplicatePropValues";
 
     private static final Set<String> RESERVED_PARAMETERNAMES = new HashSet<String>();
 
@@ -60,6 +64,8 @@ public class FindPrincipal extends HttpServlet implements Controller {
         RESERVED_PARAMETERNAMES.add(WILDCARDTERM_PARAMNAME);
         RESERVED_PARAMETERNAMES.add(ESCAPECOLON_PARAMNAME);
         RESERVED_PARAMETERNAMES.add(SITEKEY_PARAMNAME);
+        RESERVED_PARAMETERNAMES.add(PROPERTYMATCHREGEXP_PARAMNAME);
+        RESERVED_PARAMETERNAMES.add(REMOVEDUPLICATEPROPVALUES_PARAMNAME);
     }
 
     private JahiaUserManagerService jahiaUserManagerService;
@@ -143,99 +149,49 @@ public class FindPrincipal extends HttpServlet implements Controller {
         return criterias;
     }
 
-    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, String propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
-            JSONException {
-        final PropertyIterator stringMap = currentNode.getProperties();
-        JSONObject jsonObject = new JSONObject();
-        // Map<String,Object> map = new HashMap<String, Object>();
-        Set<String> matchingProperties = new HashSet<String>();
-        while (stringMap.hasNext()) {
-            JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
-            final int type = propertyWrapper.getType();
-            final String name = escapeColon ? propertyWrapper.getName().replace(":", "_") : propertyWrapper.getName();
-            if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
-                if (!propertyWrapper.isMultiple()) {
-                    jsonObject.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getUrl());
-                }
-            } else {
-                if (!propertyWrapper.isMultiple()) {
-                    jsonObject.put(name, propertyWrapper.getValue().getString());
-                    // @todo this code is duplicated for multiple values, we need to clean this up.
-                    if ((propertyMatchRegexp != null) && (propertyWrapper.getValue().getString().matches(propertyMatchRegexp))) {
-                        if (alreadyIncludedPropertyValues != null) {
-                            String nodeIdentifier = alreadyIncludedPropertyValues.get(propertyWrapper.getValue().getString());
-                            if (nodeIdentifier != null) {
-                                if (!nodeIdentifier.equals(currentNode.getIdentifier())) {
-                                    // This property value already exists and comes from another node.
-                                    return null;
-                                }
-                            } else {
-                                alreadyIncludedPropertyValues.put(propertyWrapper.getValue().getString(), currentNode.getIdentifier());
-                            }
-                        }
-                        // property starts with the propertyMatchRegexp, let's add it to the list of matching properties.
-                        matchingProperties.add(name);
-                    }
-                } else {
-                    JSONArray jsonArray = new JSONArray();
-                    Value[] propValues = propertyWrapper.getValues();
-                    for (Value propValue : propValues) {
-                        jsonArray.put(propValue.getString());
-                        if ((propertyMatchRegexp != null) && (propValue.getString().matches(propertyMatchRegexp))) {
-                            if (alreadyIncludedPropertyValues != null) {
-                                String nodeIdentifier = alreadyIncludedPropertyValues.get(propValue.getString());
-                                if (nodeIdentifier != null) {
-                                    if (!nodeIdentifier.equals(currentNode.getIdentifier())) {
-                                        // This property value already exists and comes from another node.
-                                        return null;
-                                    }
-                                } else {
-                                    alreadyIncludedPropertyValues.put(propValue.getString(), currentNode.getIdentifier());
-                                }
-                            }
-                            // property starts with the propertyMatchRegexp, let's add it to the list of matching properties.
-                            matchingProperties.add(name);
-                        }
-                    }
-                    jsonObject.put(name, jsonArray);
-                }
-            }
-        }
-        // now let's output some node information.
-        jsonObject.put("path", currentNode.getPath());
-        jsonObject.put("identifier", currentNode.getIdentifier());
-        jsonObject.put("index", currentNode.getIndex());
-        jsonObject.put("depth", currentNode.getDepth());
-        jsonObject.put("primaryNodeType", currentNode.getPrimaryNodeType().getName());
-        if (propertyMatchRegexp != null) {
-            jsonObject.put("matchingProperties", new JSONArray(matchingProperties));
-        }
-
-        // now let's output the children until we reach the depth limit.
-        if ((depthLimit - 1) > 0) {
-            final NodeIterator childNodeIterator = currentNode.getNodes();
-            JSONArray childMapList = new JSONArray();
-            while (childNodeIterator.hasNext()) {
-                Node currentChildNode = childNodeIterator.nextNode();
-                JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit - 1, escapeColon, propertyMatchRegexp, alreadyIncludedPropertyValues);
-                childMapList.put(childSerializedMap);
-            }
-            jsonObject.put("childNodes", childMapList);
-        }
-        return jsonObject;
-    }
-    
-
-    private void writeUserResults(Set<Principal> users, HttpServletRequest request, HttpServletResponse response)
-            throws RepositoryException, IllegalArgumentException, IOException, RenderException {
+    private void writeUserResults(Set<Principal> users, HttpServletRequest request, HttpServletResponse response, String propertyMatchRegexp, boolean removeDuplicatePropValues)
+            throws RepositoryException, IllegalArgumentException, IOException, RenderException, JSONException {
         response.setContentType("application/json; charset=UTF-8");
         boolean escape = Boolean.valueOf(StringUtils.defaultIfEmpty(request.getParameter("escapeColon"), String
                 .valueOf(defaultEscapeColon)));
 
         JSONArray results = new JSONArray();
 
+        Map<String, String> alreadyIncludedPropertyValues = null;
+        if (removeDuplicatePropValues) {
+            alreadyIncludedPropertyValues = new HashMap<String, String>();
+        }
+
         for (Principal principal : users) {
             JSONObject jsonPrincipal = new JSONObject(principal);
+            if (principal instanceof JahiaUser) {
+                JahiaUser jahiaUser = (JahiaUser) principal;
+                Properties userProperties = jahiaUser.getProperties();
+                Set<String> matchingProperties = new HashSet<String>();
+                for (Map.Entry curPropertyEntry : userProperties.entrySet()) {
+                    String curPropertyName = (String) curPropertyEntry.getKey();
+                    String curPropertyValue = (String) curPropertyEntry.getValue();
+                    if ((propertyMatchRegexp != null) && (curPropertyValue.matches(propertyMatchRegexp))) {
+                        if (alreadyIncludedPropertyValues != null) {
+                            String nodeIdentifier = alreadyIncludedPropertyValues.get(curPropertyValue);
+                            if (nodeIdentifier != null) {
+                                if (!nodeIdentifier.equals(jahiaUser.getUserKey())) {
+                                    // This property value already exists and comes from another node.
+                                    break;
+                                }
+                            } else {
+                                alreadyIncludedPropertyValues.put(curPropertyValue, jahiaUser.getUserKey());
+                            }
+                        }
+                        // property starts with the propertyMatchRegexp, let's add it to the list of matching properties.
+                        matchingProperties.add(curPropertyName);
+                    }
+
+                }
+                if (propertyMatchRegexp != null) {
+                    jsonPrincipal.put("matchingProperties", new JSONArray(matchingProperties));
+                }
+            }
             results.put(jsonPrincipal);
         }
 
@@ -246,16 +202,47 @@ public class FindPrincipal extends HttpServlet implements Controller {
         }
     }
 
-    private void writeGroupResults(Set<JahiaGroup> groups, HttpServletRequest request, HttpServletResponse response)
-            throws RepositoryException, IllegalArgumentException, IOException, RenderException {
+    private void writeGroupResults(Set<JahiaGroup> groups, HttpServletRequest request, HttpServletResponse response, String propertyMatchRegexp, boolean removeDuplicatePropValues)
+            throws RepositoryException, IllegalArgumentException, IOException, RenderException, JSONException {
         response.setContentType("application/json; charset=UTF-8");
         boolean escape = Boolean.valueOf(StringUtils.defaultIfEmpty(request.getParameter("escapeColon"), String
                 .valueOf(defaultEscapeColon)));
 
         JSONArray results = new JSONArray();
 
+        Map<String, String> alreadyIncludedPropertyValues = null;
+        if (removeDuplicatePropValues) {
+            alreadyIncludedPropertyValues = new HashMap<String, String>();
+        }
+
         for (JahiaGroup jahiaGroup : groups) {
             JSONObject jsonGroup = new JSONObject(jahiaGroup);
+            Properties userProperties = jahiaGroup.getProperties();
+            Set<String> matchingProperties = new HashSet<String>();
+            for (Map.Entry curPropertyEntry : userProperties.entrySet()) {
+                String curPropertyName = (String) curPropertyEntry.getKey();
+                String curPropertyValue = (String) curPropertyEntry.getValue();
+                if ((propertyMatchRegexp != null) && (curPropertyValue.matches(propertyMatchRegexp))) {
+                    if (alreadyIncludedPropertyValues != null) {
+                        String nodeIdentifier = alreadyIncludedPropertyValues.get(curPropertyValue);
+                        if (nodeIdentifier != null) {
+                            if (!nodeIdentifier.equals(jahiaGroup.getGroupKey())) {
+                                // This property value already exists and comes from another node.
+                                break;
+                            }
+                        } else {
+                            alreadyIncludedPropertyValues.put(curPropertyValue, jahiaGroup.getGroupKey());
+                        }
+                    }
+                    // property starts with the propertyMatchRegexp, let's add it to the list of matching properties.
+                    matchingProperties.add(curPropertyName);
+                }
+
+            }
+            if (propertyMatchRegexp != null) {
+                jsonGroup.put("matchingProperties", new JSONArray(matchingProperties));
+            }
+
             results.put(jsonGroup);
         }
 
@@ -277,6 +264,12 @@ public class FindPrincipal extends HttpServlet implements Controller {
             }
             String wildcardTerm = retrieveParameter(request, response, WILDCARDTERM_PARAMNAME, false);
             String escapeColonStr = retrieveParameter(request, response, ESCAPECOLON_PARAMNAME, false);
+            String propertyMatchRegExp = retrieveParameter(request, response, PROPERTYMATCHREGEXP_PARAMNAME, false);
+            String removeDuplicatePropValuesStr = retrieveParameter(request, response, REMOVEDUPLICATEPROPVALUES_PARAMNAME, false);
+            boolean removeDuplicatePropValues = false;
+            if (removeDuplicatePropValuesStr != null) {
+                removeDuplicatePropValues = Boolean.parseBoolean(removeDuplicatePropValuesStr);
+            }
             boolean siteKeyMandatory = false;
             if ("groups".equals(principalType)) {
                 siteKeyMandatory = true;
@@ -290,7 +283,7 @@ public class FindPrincipal extends HttpServlet implements Controller {
 
             if ("users".equals(principalType)) {
                 Set<Principal> result = jahiaUserManagerService.searchUsers(searchCriterias);
-                writeUserResults(result, request, response);
+                writeUserResults(result, request, response, propertyMatchRegExp, removeDuplicatePropValues);
             } else if ("groups".equals(principalType)) {
                 if (siteKey == null) {
                     logger.error("Site key is mandatory for group searching and is missing in request, aborting searching...");
@@ -306,13 +299,16 @@ public class FindPrincipal extends HttpServlet implements Controller {
                     return;
                 }
                 Set<JahiaGroup> result = jahiaGroupManagerService.searchGroups(site.getID(), searchCriterias);
-                writeGroupResults(result, request, response);
+                writeGroupResults(result, request, response, propertyMatchRegExp, removeDuplicatePropValues);
             } else {
                 logger.error("Principal type value " + principalType + " is invalid, aborting searching...");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
 
+        } catch (JSONException jsone) {
+            logger.error("JSON serialization error ", jsone);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, jsone.getMessage());
         } catch (IllegalArgumentException e) {
             logger.error("Invalid argument", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

@@ -373,8 +373,17 @@ Server:Apache-Coyote/1.1
 |                           |             |value of a parameter called "q" if it is found. If it is not found the|
 |                           |             |marker will not be replaced.                                          |
 *---------------------------+-------------+----------------------------------------------------------------------+
-|escapeColon                |no           |If set to true, the ':' in the node property name will be replaced    |
-|                           |             | '_'.                                                                 |
+|propertyMatchRexexp        |no           |The value you specify here will be used to match properties in the    |
+|                           |             |result set, and will build a matchingProperties JSON list that will   |
+|                           |             |let you known which properties have matched. This is especially useful|
+|                           |             |when using fulltext search, since the JCR doesn't indicate which      |
+|                           |             |property has matched the criteria. The value you specify must comply  |
+|                           |             |with the JDK Pattern Regexp syntax.                                   |
+*---------------------------+-------------+----------------------------------------------------------------------+
+|removeDuplicatePropValues  |no           |If activated, it will filter the matched properties (that were        |
+|                           |             |matched using the propertyMatchRegexp above parameter) to make sure   |
+|                           |             |only one node per property value is returned. This is useful when     |
+|                           |             |building unique list of property values for auto-completion.          |
 |                           |             |Defaults to false.                                                    |
 *---------------------------+-------------+----------------------------------------------------------------------+
 |any other parameter name   |no           |If you specify another other parameter other than the above reserved  |

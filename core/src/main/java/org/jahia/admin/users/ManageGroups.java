@@ -327,7 +327,7 @@ public class ManageGroups extends AbstractAdministrationModule {
                     + getMessage("org.jahia.admin.users.ManageGroups.onlyCharacters.label");
             return false;
         } else if (gMgr.groupExists (jahiaSite.getID(), groupName)) {
-          groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
+          groupMessage = getMessage("label.group");
           groupMessage += " [" + groupName + "] ";
           groupMessage += getMessage("org.jahia.admin.groupMessage.alreadyExist.label");
             return false;
@@ -339,7 +339,7 @@ public class ManageGroups extends AbstractAdministrationModule {
           groupMessage += " " + groupName;
             return false;
         } else {
-          groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
+          groupMessage = getMessage("label.group");
           groupMessage += " [" + groupName + "] ";
           groupMessage += getMessage("message.successfully.created");
           isError = false;
@@ -517,9 +517,9 @@ public class ManageGroups extends AbstractAdministrationModule {
                 grp.removeMember(jahiaUser);
             }
         }
-        groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
+        groupMessage = getMessage("label.group");
         groupMessage += " [" + groupName + "] ";
-        groupMessage += getMessage("org.jahia.admin.groupMessage.updated.label");
+        groupMessage += getMessage("message.successfully.updated");
         isError = false;
 
         return true;
@@ -625,7 +625,7 @@ public class ManageGroups extends AbstractAdministrationModule {
             return false;
         }
         else if (gMgr.groupExists (jahiaSite.getID(), groupName)) {
-          groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
+          groupMessage = getMessage("label.group");
           groupMessage += " [" + groupName + "] ";
           groupMessage += getMessage("org.jahia.admin.groupMessage.alreadyExist.label");
             return false;
@@ -638,7 +638,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         }
         else {
             JahiaGroup theNewGroup = gMgr.lookupGroup(jahiaSite.getID(), groupName);
-            groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
+            groupMessage = getMessage("label.group");
             groupMessage += " [" + groupName + "] ";
             groupMessage += getMessage("message.successfully.created");
             isError = false;
@@ -710,7 +710,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         if ((groupName == null) || ("".equals(groupName))) {
             groupMessage = getMessage("org.jahia.admin.groupMessage.cannotRemoved.label");
             groupMessage += " [" + groupName + "] ";
-            groupMessage += getMessage("org.jahia.admin.groupMessage.group.label");
+            groupMessage += getMessage("label.group");
         }
 
         JahiaGroup theGroup = (JahiaGroup)gMgr.lookupGroup(jahiaSite.getID(), groupName);
@@ -725,7 +725,7 @@ public class ManageGroups extends AbstractAdministrationModule {
             JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
             groupMessage = getMessage("org.jahia.admin.groupMessage.cannotRemoved.label");
             groupMessage += " [" + groupName + "] ";
-            groupMessage += getMessage("org.jahia.admin.groupMessage.group.label");
+            groupMessage += getMessage("label.group");
         }
 
         if (groupMessage.equals("")) {
@@ -740,11 +740,11 @@ public class ManageGroups extends AbstractAdministrationModule {
             if (!gMgr.deleteGroup(theGroup)) {
               groupMessage = getMessage("org.jahia.admin.groupMessage.cannotRemoved.label");
               groupMessage += " [" + groupName + "] ";
-              groupMessage += getMessage("org.jahia.admin.groupMessage.group.label");
+              groupMessage += getMessage("label.group");
             } else {
-              groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
+              groupMessage = getMessage("label.group");
               groupMessage += " [" + groupName + "] ";
-              groupMessage += getMessage("org.jahia.admin.groupMessage.removed.label");
+              groupMessage += getMessage("message.successfully.removed");
               isError = false;
 
             }

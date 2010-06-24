@@ -383,7 +383,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             JahiaUser user = userManager.lookupUser(username);
             String url = JahiaAdministration.composeActionURL(request,response,"users","&sub=processRegister&userSelected=" + user.getUserKey());
 
-            userMessage = getMessage("label.nextStep");
+            userMessage = getMessage("label.user");
             userMessage += " [" + username + "] ";
             userMessage += getMessage("org.jahia.admin.userMessage.alreadyExist.label") + " ";
             userMessage += getMessage("org.jahia.admin.userMessage.onAnotherSite.label") + ".";
@@ -442,7 +442,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             return false;
         } else {
             usr = userManager.lookupUser(username);
-            userMessage = getMessage("label.nextStep");
+            userMessage = getMessage("label.user");
             userMessage += " [" + username + "] ";
             userMessage += getMessage("message.successfully.created");
             isError = false;
@@ -635,9 +635,9 @@ public class ManageUsers extends AbstractAdministrationModule {
                         .parseInt(homePageParam) : -1);
 
         if (!isSuperAdminProp) {
-            userMessage = getMessage("label.nextStep");
+            userMessage = getMessage("label.user");
             userMessage += " [" + username + "] ";
-            userMessage += getMessage("org.jahia.admin.userMessage.updated.label");
+            userMessage += getMessage("message.successfully.updated");
             isError = false;
         }
 
@@ -720,7 +720,7 @@ public class ManageUsers extends AbstractAdministrationModule {
                 JahiaUser currentUser = (JahiaUser)session.getAttribute(ProcessingContext.SESSION_USER);
                 if (!user.getUserKey().equals(currentUser.getUserKey())) {
                     userManager.deleteUser(user);
-                    userMessage = getMessage("label.nextStep");
+                    userMessage = getMessage("label.user");
                     userMessage += " [" + userName + "] ";
                     userMessage += getMessage("org.jahia.admin.userMessage.removed.label");
                     isError = false;

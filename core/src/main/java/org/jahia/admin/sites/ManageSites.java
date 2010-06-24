@@ -748,7 +748,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 lookupUser(adminUsername);
 
         if (currentUser != null) {
-            warningMsg = getMessage("label.nextStep");
+            warningMsg = getMessage("label.user");
             warningMsg += " [" + adminUsername + "] ";
             warningMsg += 
                     getMessage("org.jahia.admin.userMessage.alreadyExist.label") +

@@ -325,7 +325,7 @@ public class VanityUrlManager {
             // does not exist yet
             session.checkout(contentNode);
 
-            vanityUrlNode = contentNode.addNode(VANITYURLMAPPINGS_NODE + contentNode.getNodes(VANITYURLMAPPINGS_NODE+"*").getSize() + 1,
+            vanityUrlNode = contentNode.addNode(VANITYURLMAPPINGS_NODE + (contentNode.getNodes(VANITYURLMAPPINGS_NODE+"*").getSize() + 1),
                     JAHIANT_VANITYURL);
         } else if (vanityUrlNode.getProperty(PROPERTY_ACTIVE).getBoolean() == vanityUrl
                 .isActive()
@@ -552,7 +552,7 @@ public class VanityUrlManager {
 
             for (VanityUrl vanityUrl : toAdd) {
                 JCRNodeWrapper vanityUrlNode = contentNode.addNode(
-                        VANITYURLMAPPINGS_NODE+ contentNode.getNodes(VANITYURLMAPPINGS_NODE+"*").getSize(), JAHIANT_VANITYURL);
+                        VANITYURLMAPPINGS_NODE+ (contentNode.getNodes(VANITYURLMAPPINGS_NODE+"*").getSize() +1), JAHIANT_VANITYURL);
 
                 vanityUrlNode.setProperty(PROPERTY_URL, vanityUrl.getUrl());
                 vanityUrlNode

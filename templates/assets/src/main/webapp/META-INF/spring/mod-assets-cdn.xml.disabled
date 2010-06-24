@@ -11,14 +11,14 @@
                     value="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"/>
 
                 <entry key="/templates/assets/javascript/jquery-ui.core.min.js"
-                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"/>
+                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.3/jquery-ui.min.js"/>
                 <entry key="/templates/assets/javascript/jquery-ui.datepicker.min.js"
-                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"/>
+                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.3/jquery-ui.min.js"/>
                 <entry key="/templates/assets/javascript/jquery-ui.slider.min.js"
-                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"/>
+                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.3/jquery-ui.min.js"/>
 
                 <entry key="/templates/assets/css/jquery-ui.smoothness.css"
-                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css"/>
+                    value="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.3/themes/smoothness/jquery-ui.css"/>
             </map>
         </property>
     </bean>

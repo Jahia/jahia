@@ -163,6 +163,8 @@ function jreplace(id,url,params,callback) {
         var links = $('head > link');
         $("#"+id).html(data);
         links.reloadCSS();
-        eval(callback);
+        if (typeof callback != 'undefined') {
+            eval(callback);
+        }
     });
 }

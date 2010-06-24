@@ -38,7 +38,6 @@ import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -80,7 +79,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
     private String gaLogin = "";
     private String gaPassword = "";
     private String trackedUrls = "";
-    private String jahiaProfileName = "";
     boolean trackingEnabled = false;
 
     /**
@@ -90,15 +88,10 @@ public class ManageAnalytics extends AbstractAdministrationModule {
     public void service(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
         coreLicense = Jahia.getCoreLicense();
         if (coreLicense == null) {
             // set request attributes...
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label", jParams.getLocale());
+            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
@@ -122,12 +115,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                                        HttpServletResponse response,
                                        HttpSession session)
             throws Exception {
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
-
         String operation = request.getParameter("sub");
 
 
@@ -158,8 +145,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
             }
 
         } else {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.generalError",
-                    jParams.getLocale());
+            String dspMsg = getMessage("message.generalError");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -210,7 +196,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
             gaPassword = StringUtils.left(JahiaTools.getStrParameter(request, "gaPassword", "").trim(), 100);
             trackingEnabled = Boolean.valueOf(request.getParameter("trackingEnabled") != null);
             trackedUrls = StringUtils.left(JahiaTools.getStrParameter(request, "trackedUrls", "").trim(), 100);
-            jahiaProfileName = StringUtils.left(JahiaTools.getStrParameter(request, "jahiaGAprofile", "").trim(), 100);
 
             // set as request attribute
             request.setAttribute("gaUserAccount", gaUserAccount);
@@ -317,9 +302,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
             GoogleAnalyticsProfile googleAnalyticsProfile = site.getGoogleAnalytics();
             if (googleAnalyticsProfile != null) {
                 String profile = googleAnalyticsProfile.getProfile();
-
-                // get tracking enabled value
-                boolean newTrackingEnabled = request.getParameter(profile + "TrackingEnabled") != null;
 
                 // get tracked rl
                 String newTrackedUrls = "virtual";

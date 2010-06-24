@@ -80,7 +80,6 @@ import org.jahia.services.usermanager.*;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -141,9 +140,8 @@ public class ManageSites extends AbstractAdministrationModule {
         coreLicense = Jahia.getCoreLicense();
         if (coreLicense == null) {
             // set request attributes...
-            String dspMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
-                            jParams.getLocale());
+            String dspMsg = 
+                    getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
@@ -265,9 +263,8 @@ public class ManageSites extends AbstractAdministrationModule {
             }
         } catch (JahiaException ex) {
             logger.error("Error while retrieving site list", ex);
-            jahiaDisplayMessage = JahiaResourceBundle
-                    .getJahiaInternalResource("message.generalError",
-                            jParams.getLocale());
+            jahiaDisplayMessage = 
+                    getMessage("message.generalError");
         }
         // set request attributes...
         request.setAttribute("jahiaDisplayMessage", jahiaDisplayMessage);
@@ -382,9 +379,8 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (JahiaException je) {
             logger.error("Error while retrieving number of site in database", je);
             // set request attributes...
-            jahiaDisplayMessage = JahiaResourceBundle
-                    .getJahiaInternalResource("message.generalError",
-                            jParams.getLocale());
+            jahiaDisplayMessage = 
+                    getMessage("message.generalError");
             request.setAttribute("jahiaDisplayMessage", jahiaDisplayMessage);
             // redirect...
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "sites_management.jsp");
@@ -432,40 +428,32 @@ public class ManageSites extends AbstractAdministrationModule {
             if (siteTitle != null && (siteTitle.length() > 0) && siteServerName != null &&
                     (siteServerName.length() > 0) && siteKey != null && (siteKey.length() > 0)) {
                 if (!JahiaTools.isAlphaValid(siteKey)) {
-                    warningMsg = JahiaResourceBundle
-                            .getJahiaInternalResource("org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label",
-                                    jParams.getLocale());
+                    warningMsg = 
+                            getMessage("org.jahia.admin.warningMsg.onlyLettersDigitsUnderscore.label");
                 } else if (siteKey.equals("site")) {
-                    warningMsg = JahiaResourceBundle
-                            .getJahiaInternalResource("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label",
-                                    jParams.getLocale());
+                    warningMsg = 
+                            getMessage("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label");
                 } else if (!isServerNameValid(siteServerName)) {
-                    warningMsg = JahiaResourceBundle
-                            .getJahiaInternalResource("org.jahia.admin.warningMsg.invalidServerName.label",
-                                    jParams.getLocale());
+                    warningMsg = 
+                            getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                 } else if (siteServerName.equals("default")) {
-                    warningMsg = JahiaResourceBundle
-                            .getJahiaInternalResource("org.jahia.admin.warningMsg.chooseAnotherServerName.label",
-                                    jParams.getLocale());
+                    warningMsg = 
+                            getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                 } else if (siteServerName.equals("localhost")) {
-                    warningMsg = JahiaResourceBundle
-                            .getJahiaInternalResource("org.jahia.admin.warningMsg.chooseAnotherServerName.label",
-                                    jParams.getLocale());
+                    warningMsg = 
+                            getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                 } else if (sMgr.getSite(siteServerName) != null) {
-                    warningMsg = JahiaResourceBundle
-                            .getJahiaInternalResource("org.jahia.admin.warningMsg.chooseAnotherServerName.label",
-                                    jParams.getLocale());
+                    warningMsg = 
+                            getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                 } else if (sMgr.getSiteByKey(siteKey) != null) {
-                    warningMsg = JahiaResourceBundle
-                            .getJahiaInternalResource("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label",
-                                    jParams.getLocale());
+                    warningMsg = 
+                            getMessage("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label");
                 } else {
                     processError = false;
                 }
             } else {
-                warningMsg = JahiaResourceBundle
-                        .getJahiaInternalResource("org.jahia.admin.warningMsg.completeRequestInfo.label",
-                                jParams.getLocale());
+                warningMsg = 
+                        getMessage("org.jahia.admin.warningMsg.completeRequestInfo.label");
             }
 
             if (!processError) {
@@ -506,9 +494,8 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
             }
         } catch (JahiaException ex) {
-            warningMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
-                            jParams.getLocale());
+            warningMsg = 
+                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
             request.setAttribute("warningMsg", warningMsg);
             displayAdd(request, response, session);
         } finally {
@@ -761,27 +748,26 @@ public class ManageSites extends AbstractAdministrationModule {
                 lookupUser(adminUsername);
 
         if (currentUser != null) {
-            warningMsg = JahiaResourceBundle.getJahiaInternalResource("label.nextStep", jParams.getLocale());
+            warningMsg = getMessage("label.nextStep");
             warningMsg += " [" + adminUsername + "] ";
-            warningMsg += JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.userMessage.alreadyExist.label", jParams.getLocale()) +
+            warningMsg += 
+                    getMessage("org.jahia.admin.userMessage.alreadyExist.label") +
                     " ";
-            warningMsg += JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.userMessage.onAnotherSite.label", jParams.getLocale()) +
+            warningMsg += 
+                    getMessage("org.jahia.admin.userMessage.onAnotherSite.label") +
                     ".";
         } else if (adminUsername.length() == 0) {
-            warningMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.userMessage.specifyUserName.label", jParams.getLocale());
+            warningMsg = 
+                    getMessage("org.jahia.admin.userMessage.specifyUserName.label");
         } else if (!adminPassword.equals(adminConfirm)) {
-            warningMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.confirmPasswdBeSame.label",
-                            jParams.getLocale());
+            warningMsg = 
+                    getMessage("org.jahia.admin.JahiaDisplayMessage.confirmPasswdBeSame.label");
         } else if (adminPassword.length() == 0) {
-            warningMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.userMessage.specifyPassword.label", jParams.getLocale());
+            warningMsg = 
+                    getMessage("org.jahia.admin.userMessage.specifyPassword.label");
         } else if (!userManager.isUsernameSyntaxCorrect(adminUsername)) {
-            warningMsg = StringUtils.capitalize(JahiaResourceBundle.getJahiaInternalResource(
-                    "org.jahia.admin.users.ManageUsers.onlyCharacters.label", jParams.getLocale()));
+            warningMsg = StringUtils.capitalize(getMessage(
+                    "org.jahia.admin.users.ManageUsers.onlyCharacters.label"));
         } else {
             JahiaPasswordPolicyService pwdPolicyService =
                     ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
@@ -963,9 +949,8 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
                 sMgr.updateSite(site);
             } else {
-                warningMsg = JahiaResourceBundle
-                        .getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
-                                jParams.getLocale());
+                warningMsg = 
+                        getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
                 request.setAttribute("warningMsg", warningMsg);
 
                 if (currentSite != null) {
@@ -989,9 +974,8 @@ public class ManageSites extends AbstractAdministrationModule {
 
             logger.error("Error while adding site", ex);
 
-            warningMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
-                            jParams.getLocale());
+            warningMsg = 
+                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
             request.setAttribute("warningMsg", warningMsg);
             return false;
         }
@@ -1024,9 +1008,8 @@ public class ManageSites extends AbstractAdministrationModule {
 
         if (adminSelected == null) {     // it's only the choice of site... display user list.
             request.setAttribute("selectedSite", siteID);
-            String jahiaDisplayMessage = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.chooseUserInList.label",
-                            jParams.getLocale());
+            String jahiaDisplayMessage = 
+                    getMessage("org.jahia.admin.JahiaDisplayMessage.chooseUserInList.label");
             request.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             displaySelectExistantAdmin(request, response, session);
         } else {
@@ -1231,11 +1214,10 @@ public class ManageSites extends AbstractAdministrationModule {
             // redirect...
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_edit.jsp");
         } catch (Exception e) {
-            logger.error("Error while dislaying site edition UI", e);
+            logger.error("Error while displaying site edition UI", e);
             // redirect to list...
-            String jahiaDisplayMessage = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.processingError.label",
-                            jParams.getLocale());
+            String jahiaDisplayMessage = 
+                    getMessage("org.jahia.admin.JahiaDisplayMessage.processingError.label");
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             displayList(request, response, session);
 
@@ -1339,9 +1321,8 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (Exception e) {
             logger.error("Error while displaying new site values", e);
             // redirect to list...
-            String jahiaDisplayMessage = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.processingError.label",
-                            jParams.getLocale());
+            String jahiaDisplayMessage = 
+                    getMessage("org.jahia.admin.JahiaDisplayMessage.processingError.label");
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             displayList(request, response, session);
 
@@ -1404,22 +1385,19 @@ public class ManageSites extends AbstractAdministrationModule {
             if (siteTitle != null && (siteTitle.trim().length() > 0) && siteServerName != null &&
                     (siteServerName.trim().length() > 0)) {
                 if (!isServerNameValid(siteServerName)) {
-                    warningMsg = JahiaResourceBundle
-                            .getJahiaInternalResource("org.jahia.admin.warningMsg.invalidServerName.label",
-                                    jParams.getLocale());
+                    warningMsg = 
+                            getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                     processError = true;
                 } else if (!site.getServerName().equals(siteServerName)) {
                     if (sMgr.getSite(siteServerName) != null) {
-                        warningMsg = JahiaResourceBundle
-                                .getJahiaInternalResource("org.jahia.admin.warningMsg.chooseAnotherServerName.label",
-                                        jParams.getLocale());
+                        warningMsg = 
+                                getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                         processError = true;
                     }
                 }
             } else {
-                warningMsg = JahiaResourceBundle
-                        .getJahiaInternalResource("org.jahia.admin.warningMsg.completeRequestInfo.label",
-                                jParams.getLocale());
+                warningMsg = 
+                        getMessage("org.jahia.admin.warningMsg.completeRequestInfo.label");
             }
 
             if (!processError) {
@@ -1454,9 +1432,8 @@ public class ManageSites extends AbstractAdministrationModule {
             }
         } catch (JahiaException ex) {
             logger.warn("Error while processing site edition", ex);
-            warningMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
-                            jParams.getLocale());
+            warningMsg = 
+                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
             request.setAttribute("warningMsg", warningMsg);
             displayEdit(request, response, session);
         }
@@ -1529,8 +1506,8 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (Exception e) {
             logger.error("Error while display site delete UI", e);
             // redirect to list...
-            String jahiaDisplayMessage = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.warningMsg..processingError.label", jParams.getLocale());
+            String jahiaDisplayMessage = 
+                    getMessage("org.jahia.admin.warningMsg..processingError.label");
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             displayList(request, response, session);
         } finally {
@@ -1571,9 +1548,8 @@ public class ManageSites extends AbstractAdministrationModule {
             displayList(request, response, session);
         } catch (JahiaException ex) {
             logger.error("Error while processing site deletion", ex);
-            String warningMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
-                            jParams.getLocale());
+            String warningMsg = 
+                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
             request.setAttribute("warningMsg", warningMsg);
             displayEdit(request, response, session);
         }
@@ -1660,9 +1636,8 @@ public class ManageSites extends AbstractAdministrationModule {
             displayList(request, response, session);
         } catch (JahiaException ex) {
             logger.error("Error while deleting multiple sites", ex);
-            String warningMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
-                            jParams.getLocale());
+            String warningMsg = 
+                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
             request.setAttribute("warningMsg", warningMsg);
             displayEdit(request, response, session);
         }
@@ -1755,14 +1730,14 @@ public class ManageSites extends AbstractAdministrationModule {
                 JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "import_choose.jsp");
                 return;
             } else {
-                request.setAttribute("warningMsg", JahiaResourceBundle.getJahiaInternalResource(
-                        "org.jahia.admin.site.ManageSites.multipleimport.noValidSite", jParams.getLocale()));
+                request.setAttribute("warningMsg", getMessage(
+                        "org.jahia.admin.site.ManageSites.multipleimport.noValidSite"));
             }
         } else {
             final String msg = fileUpload.getFileNames().size() == 0 && StringUtils.isBlank(importPath) ?
                     "org.jahia.admin.site.ManageSites.multipleimport.noFile" :
                     "org.jahia.admin.site.ManageSites.multipleimport.noValidSite";
-            request.setAttribute("warningMsg", JahiaResourceBundle.getJahiaInternalResource(msg, jParams.getLocale()));
+            request.setAttribute("warningMsg", getMessage(msg));
         }
 
         displayList(request, response, session);

@@ -31,10 +31,9 @@
  */
 package org.jahia.admin.roles;
 
+import static org.jahia.bin.JahiaAdministration.JSP_PATH;
+
 import org.jahia.bin.JahiaAdministration;
-import org.jahia.params.ProcessingContext;
-import org.jahia.data.JahiaData;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.admin.AbstractAdministrationModule;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,14 +49,6 @@ import java.io.IOException;
  * Copyright (C) Jahia Inc.
  */
 public class ManageServerRoles extends AbstractAdministrationModule {
-
-    /**
-     * logging
-     */
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ManageServerRoles.class);
-
-    private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
 
     /**
      * This method is used like a dispatcher for user requests.
@@ -87,17 +78,10 @@ public class ManageServerRoles extends AbstractAdministrationModule {
                                     HttpSession session)
             throws IOException, ServletException {
 
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
-
         try {
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "permissions/server_permissions.jsp");
         } catch (Exception je) {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.generalError",
-                    jParams.getLocale());
+            String dspMsg = getMessage("message.generalError");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,

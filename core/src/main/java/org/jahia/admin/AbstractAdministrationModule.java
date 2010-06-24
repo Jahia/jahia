@@ -221,8 +221,6 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     }
     
     public static String getMessage(String key) {
-        return JahiaResourceBundle
-                .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label", Jahia
-                        .getThreadParamBean().getUILocale());
+        return JahiaResourceBundle.getJahiaInternalResource(key, Jahia.getThreadParamBean().getUILocale());
     }
 }

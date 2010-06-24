@@ -59,7 +59,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.maven.plugin.deployers.ServerDeploymentInterface;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -97,16 +96,10 @@ public class ManageComponents extends AbstractAdministrationModule {
                         HttpServletResponse response)
             throws Exception {
 
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
         coreLicense = Jahia.getCoreLicense();
         if (coreLicense == null) {
             // set request attributes...
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicense.label",
-                    jParams.getUILocale());
+            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicense.label");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
@@ -136,12 +129,6 @@ public class ManageComponents extends AbstractAdministrationModule {
         user = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
         site = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
 
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
-
         if (site != null && user != null) {
             // set the new site id to administer...
             request.setAttribute("site", site);
@@ -157,8 +144,7 @@ public class ManageComponents extends AbstractAdministrationModule {
             }
 
         } else {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.generalError",
-                    jParams.getUILocale());
+            String dspMsg = getMessage("message.generalError");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -225,7 +211,7 @@ public class ManageComponents extends AbstractAdministrationModule {
         }
 
         if (!doDeploy && !doPrepare) {
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.components.ManageComponents.deploy.help", jParams.getUILocale());
+            String dspMsg = getMessage("org.jahia.admin.components.ManageComponents.deploy.help");
             response.getWriter().print(dspMsg);
             return;
         }
@@ -254,17 +240,17 @@ public class ManageComponents extends AbstractAdministrationModule {
 
                         if (doPrepare && !doDeploy) {
                             String url = JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=getPreparedWar&war=" + URLEncoder.encode(fileName, "UTF-8") + "&file=" + generatedFile.getName());
-                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletReady", jParams.getUILocale());
-                            response.getWriter().append(dspMsg).append("<br/><br/>").append(JahiaResourceBundle.getJahiaInternalResource("label.download", jParams.getUILocale())).append(":&nbsp;<a href='").append(url).append("'>").append(fileName).append("</a>");
+                            String dspMsg = getMessage("message.portletReady");
+                            response.getWriter().append(dspMsg).append("<br/><br/>").append(getMessage("label.download")).append(":&nbsp;<a href='").append(url).append("'>").append(fileName).append("</a>");
                         } else {
-                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.portletDeployed", jParams.getUILocale());
+                            String dspMsg = getMessage("message.portletDeployed");
                             response.getWriter().print(dspMsg);
                         }
 
 
                     }
                 } catch (Exception e) {
-                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.generalError", jParams.getUILocale());
+                    String dspMsg = getMessage("message.generalError");
                     response.getWriter().print(dspMsg);
                     logger.error(e, e);
                 } finally {

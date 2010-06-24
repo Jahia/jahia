@@ -45,7 +45,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -92,9 +91,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         coreLicense = Jahia.getCoreLicense();
         if (coreLicense == null) {
             // set request attributes...
-            String dspMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
-                            getLocale(request, jParams));
+            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
@@ -102,11 +99,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         }
         userRequestDispatcher(request, response, request.getSession());
     } // end constructor
-
-    private Locale getLocale(HttpServletRequest request, ProcessingContext jParams) {
-        return jParams != null ? jParams.getLocale() : request.getLocale();
-    }
-
 
     //-------------------------------------------------------------------------
 
@@ -120,12 +112,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
      */
     private void userRequestDispatcher(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws Exception {
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        ProcessingContext jParams = null;
-        if (jData != null) {
-            jParams = jData.getProcessingContext();
-        }
-
         String operation = request.getParameter("sub");
 
         sReg = ServicesRegistry.getInstance();
@@ -136,7 +122,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
 
         if (site != null && user != null && sReg != null) {
 
-            // set the new site id to administrate...
+            // set the new site id to administer...
             request.setAttribute("site", site);
 
             if (operation.equals("display")) {
@@ -150,9 +136,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             }
 
         } else {
-            String dspMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("message.generalError",
-                            getLocale(request, jParams));
+            String dspMsg = getMessage("message.generalError");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "menu.jsp");
         }
@@ -226,9 +210,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         // languages. This is a two step process that requires a
         // confirmation by the user.
         if (request.getParameter("jahiaDisplayMessage") != null) {
-            String dspMsg = JahiaResourceBundle
-                    .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                            getLocale(request, jParams));
+            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.changeCommitted.label");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
         }
         if (flushCache) {

@@ -47,14 +47,12 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.apache.struts.util.RequestUtils;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.services.mail.MailSettings;
@@ -162,8 +160,7 @@ public class ManageServer extends AbstractAdministrationModule {
         MailSettingsValidationResult result = MailServiceImpl.validateSettings(cfg, true);
         if (!result.isSuccess()) {
             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage",
-                    JahiaResourceBundle.getJahiaInternalResource(
-                            result.getMessageKey(), jParams.getLocale()));
+                    getMessage(result.getMessageKey()));
         } else {
             storeSettings(cfg, jParams, request);
         }
@@ -208,10 +205,8 @@ public class ManageServer extends AbstractAdministrationModule {
         try {
             mailSrv.stop();
             mailSrv.start();
-            request.setAttribute("jahiaDisplayInfo", JahiaResourceBundle
-                    .getJahiaInternalResource(
-                            "org.jahia.admin.warningMsg.changSaved.label",
-                            jParams.getLocale()));
+            request.setAttribute("jahiaDisplayInfo", getMessage(
+                            "org.jahia.admin.warningMsg.changSaved.label"));
         } catch (JahiaException e) {
             logger
                     .error(
@@ -221,10 +216,7 @@ public class ManageServer extends AbstractAdministrationModule {
             request
                     .setAttribute(
                             "jahiaDisplayMessage",
-                            JahiaResourceBundle
-                                    .getJahiaInternalResource(
-                                            "org.jahia.admin.JahiaDisplayMessage.restartJahiaAfterChange.label",
-                                            jParams.getLocale()));
+                            getMessage("org.jahia.admin.JahiaDisplayMessage.restartJahiaAfterChange.label"));
         }
     }
 }

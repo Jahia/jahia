@@ -43,7 +43,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -58,19 +57,14 @@ import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.JahiaTools;
 import org.jahia.admin.AbstractAdministrationModule;
 
@@ -318,47 +312,36 @@ public class ManageGroups extends AbstractAdministrationModule {
     {
         String groupName = (String)request.getParameter("groupName").trim();
         if (groupName.length() == 0) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.specifyGroupName.label",
-                                             jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.specifyGroupName.label");
             return false;
         }
         // Does the introduced groupName contain some errors ?
         if (groupName.length() == 0) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.specifyGroupName.label",
-                                             jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.specifyGroupName.label");
             return false;
         } else if (!ServicesRegistry.getInstance().getJahiaGroupManagerService()
 		        .isGroupNameSyntaxCorrect(groupName)) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource(
-                    "org.jahia.admin.users.ManageGroups.groupName.label",
-                    jParams.getLocale())
+          groupMessage = getMessage(
+                    "org.jahia.admin.users.ManageGroups.groupName.label")
                     + ": "
-                    + JahiaResourceBundle
-                            .getJahiaInternalResource(
-                                    "org.jahia.admin.users.ManageGroups.onlyCharacters.label",
-                                    jParams.getLocale());
+                    + getMessage("org.jahia.admin.users.ManageGroups.onlyCharacters.label");
             return false;
         } else if (gMgr.groupExists (jahiaSite.getID(), groupName)) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
-              jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
           groupMessage += " [" + groupName + "] ";
-          groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.alreadyExist.label",
-              jParams.getLocale());
+          groupMessage += getMessage("org.jahia.admin.groupMessage.alreadyExist.label");
             return false;
         }
         // try to create the new group...
         JahiaGroup grp = createGroup(session, groupName);
         if (grp == null) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.unableCreateGroup.label",
-              jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.unableCreateGroup.label");
           groupMessage += " " + groupName;
             return false;
         } else {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
-              jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
           groupMessage += " [" + groupName + "] ";
-          groupMessage += JahiaResourceBundle.getJahiaInternalResource("message.successfully.created",
-             jParams.getLocale());
+          groupMessage += getMessage("message.successfully.created");
           isError = false;
         }
         // Lookup for home page settings and set it.
@@ -389,8 +372,7 @@ public class ManageGroups extends AbstractAdministrationModule {
             groupToEdit = (String)session.getAttribute("selectedGroup");
         }
         if (groupToEdit == null || "null".equals(groupToEdit)) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.selectGroup.label",
-              jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.selectGroup.label");
             displayGroupList(request, response, session);
             return;
         }
@@ -535,11 +517,9 @@ public class ManageGroups extends AbstractAdministrationModule {
                 grp.removeMember(jahiaUser);
             }
         }
-        groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
-            jParams.getLocale());
+        groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
         groupMessage += " [" + groupName + "] ";
-        groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.updated.label",
-            jParams.getLocale());
+        groupMessage += getMessage("org.jahia.admin.groupMessage.updated.label");
         isError = false;
 
         return true;
@@ -561,8 +541,7 @@ public class ManageGroups extends AbstractAdministrationModule {
     {
         String selectedGroup = request.getParameter("selectedGroup");
         if (selectedGroup == null) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.selectGroup.label",
-              jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.selectGroup.label");
             displayGroupList(request, response, session);
         }
         else {
@@ -636,43 +615,32 @@ public class ManageGroups extends AbstractAdministrationModule {
         String sourceGroupName = (String)session.getAttribute("selectedGroup");
         // Does the introduced groupName contain some errors ?
         if (groupName.length() == 0) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.specifyGroupName.label",
-              jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.specifyGroupName.label");
             return false;
         } else if (!ServicesRegistry.getInstance().getJahiaGroupManagerService()
 		        .isGroupNameSyntaxCorrect(groupName)) {
-            groupMessage = JahiaResourceBundle.getJahiaInternalResource(
-                    "org.jahia.admin.users.ManageGroups.groupName.label",
-                    jParams.getLocale())
+            groupMessage = getMessage("org.jahia.admin.users.ManageGroups.groupName.label")
                     + ": "
-                    + JahiaResourceBundle
-                            .getJahiaInternalResource(
-                                    "org.jahia.admin.users.ManageGroups.onlyCharacters.label",
-                                    jParams.getLocale());
+                    + getMessage("org.jahia.admin.users.ManageGroups.onlyCharacters.label");
             return false;
         }
         else if (gMgr.groupExists (jahiaSite.getID(), groupName)) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
-              jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
           groupMessage += " [" + groupName + "] ";
-          groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.alreadyExist.label",
-              jParams.getLocale());
+          groupMessage += getMessage("org.jahia.admin.groupMessage.alreadyExist.label");
             return false;
         }
 
         // Try to create the new group
         if (createGroup(session, groupName) == null) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.unableCreateGroup.label",
-              jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.unableCreateGroup.label");
             return false;
         }
         else {
             JahiaGroup theNewGroup = gMgr.lookupGroup(jahiaSite.getID(), groupName);
-            groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
-                jParams.getLocale());
+            groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
             groupMessage += " [" + groupName + "] ";
-            groupMessage += JahiaResourceBundle.getJahiaInternalResource("message.successfully.created",
-                jParams.getLocale());
+            groupMessage += getMessage("message.successfully.created");
             isError = false;
             Set sourceGroupMembers = getGroupMembers(sourceGroupName, jahiaSite.getID());
             Iterator it = sourceGroupMembers.iterator();
@@ -705,8 +673,7 @@ public class ManageGroups extends AbstractAdministrationModule {
     {
         String selectedGroup = request.getParameter("selectedGroup");
         if (selectedGroup == null) {
-          groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.selectGroup.label",
-              jParams.getLocale());
+          groupMessage = getMessage("org.jahia.admin.groupMessage.selectGroup.label");
             displayGroupList(request, response, session);
         }
         else {
@@ -741,11 +708,9 @@ public class ManageGroups extends AbstractAdministrationModule {
         String groupName = (String) request.getParameter("groupName");
         // first let's do a quick sanity check on the group name.
         if ((groupName == null) || ("".equals(groupName))) {
-            groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.cannotRemoved.label",
-                jParams.getLocale());
+            groupMessage = getMessage("org.jahia.admin.groupMessage.cannotRemoved.label");
             groupMessage += " [" + groupName + "] ";
-            groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
-                jParams.getLocale());
+            groupMessage += getMessage("org.jahia.admin.groupMessage.group.label");
         }
 
         JahiaGroup theGroup = (JahiaGroup)gMgr.lookupGroup(jahiaSite.getID(), groupName);
@@ -758,11 +723,9 @@ public class ManageGroups extends AbstractAdministrationModule {
         if (JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME.equals(groupName) ||
             JahiaGroupManagerService.USERS_GROUPNAME.equals(groupName) ||
             JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
-            groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.cannotRemoved.label",
-                jParams.getLocale());
+            groupMessage = getMessage("org.jahia.admin.groupMessage.cannotRemoved.label");
             groupMessage += " [" + groupName + "] ";
-            groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
-                jParams.getLocale());
+            groupMessage += getMessage("org.jahia.admin.groupMessage.group.label");
         }
 
         if (groupMessage.equals("")) {
@@ -775,17 +738,13 @@ public class ManageGroups extends AbstractAdministrationModule {
 
             // delete group...
             if (!gMgr.deleteGroup(theGroup)) {
-              groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.cannotRemoved.label",
-                  jParams.getLocale());
+              groupMessage = getMessage("org.jahia.admin.groupMessage.cannotRemoved.label");
               groupMessage += " [" + groupName + "] ";
-              groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
-                  jParams.getLocale());
+              groupMessage += getMessage("org.jahia.admin.groupMessage.group.label");
             } else {
-              groupMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.group.label",
-                  jParams.getLocale());
+              groupMessage = getMessage("org.jahia.admin.groupMessage.group.label");
               groupMessage += " [" + groupName + "] ";
-              groupMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.groupMessage.removed.label",
-                  jParams.getLocale());
+              groupMessage += getMessage("org.jahia.admin.groupMessage.removed.label");
               isError = false;
 
             }

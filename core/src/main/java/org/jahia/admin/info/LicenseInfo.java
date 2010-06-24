@@ -51,7 +51,6 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.security.license.LicenseManager;
 import org.jahia.security.license.LicensePackage;
@@ -101,8 +100,7 @@ public class LicenseInfo extends AbstractAdministrationModule {
         coreLicense = Jahia.getCoreLicense();
         if ( coreLicense == null ){
             // set request attributes...
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
-                                               jParams!=null?jParams.getLocale():request.getLocale());
+            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label");
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect( request, response, request.getSession(), JSP_PATH + "menu.jsp" );
@@ -136,10 +134,7 @@ public class LicenseInfo extends AbstractAdministrationModule {
         if (sReg != null) {
 
             try {
-                String unlimited = JahiaResourceBundle
-                        .getJahiaInternalResource(
-                                "org.jahia.admin.status.ManageStatus.unlimited.label",
-                                jParams.getLocale(), "unlimited");
+                String unlimited = getMessage("org.jahia.admin.status.ManageStatus.unlimited.label");
                 int nbCurrentSites     = sReg.getJahiaSitesService().getNbSites();
                 int nbMaxSites         = Jahia.getSiteLimit();
                 int nbCurrentUsers     = sReg.getJahiaUserManagerService().getNbUsers();
@@ -179,15 +174,13 @@ public class LicenseInfo extends AbstractAdministrationModule {
             } catch (JahiaException je) {
                 logger.debug("Error while retrieving license information", je);
 
-                String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.jahiaServicesProblem.label",
-                                                   jParams!=null?jParams.getLocale():req.getLocale());
+                String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.jahiaServicesProblem.label");
                 sess.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                 JahiaAdministration.displayMenu( req, res, sess );   // back to menu in case of problems with the Managers...
             }
 
         } else {
-          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.noServicesRegistry.label",
-                                             jParams!=null?jParams.getLocale():req.getLocale());
+          String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.noServicesRegistry.label");
           sess.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
             JahiaAdministration.displayMenu( req, res, sess );   // back to menu in case of problems with the Managers...
         }

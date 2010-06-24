@@ -6,10 +6,10 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addResources type="css" resources="social.css"/>
-<template:addResources type="javascript" resources="jquery.fancybox-1.3.1.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
+<template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxQueue.js" />
@@ -170,7 +170,6 @@
         $('.timestamp').cuteTime({ refresh: 60000 });
     }
 
-
     function tabCallback() {
 
         $("#sendMessage").submit(function() {
@@ -255,10 +254,17 @@
         
     }
 
+<c:if test="${not renderContext.ajaxRequest}">
     $(document).ready(function() {
+        tabCallback();        
     });
+</c:if>
 </script>
-
+<c:if test="${renderContext.ajaxRequest}">
+    <template:addResources type="inlinejavascript">
+        tabCallback();        
+    </template:addResources>
+</c:if>
 
 <div class='grid_12 alpha'><!--start grid_12-->
     <div class="boxsocial"><!--start boxsocial -->

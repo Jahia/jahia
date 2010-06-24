@@ -42,7 +42,9 @@ configToPermissionMapping.put("sitemanager", "site-manager");
 configToPermissionMapping.put("tagmanager", "tag-manager");
 configToPermissionMapping.put("workflowmanager", "workflow-manager");
 %><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
+%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" 
 %><%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" 
+%><%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" 
 %><%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %><%
     if (request.getParameter("site") != null && request.getParameter("conf") != null && configToPermissionMapping.containsKey(request.getParameter("conf"))) {
         pageContext.setAttribute("permission", "managers/" + configToPermissionMapping.get(request.getParameter("conf")));
@@ -53,13 +55,13 @@ configToPermissionMapping.put("workflowmanager", "workflow-manager");
         </c:if>
         <%
     }
-%>
+%><utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title><internal:message key="label.${param.conf}"/></title>
+    <title><fmt:message key="label.${param.conf}"/></title>
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>

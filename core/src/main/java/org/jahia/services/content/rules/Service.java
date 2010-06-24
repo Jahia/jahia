@@ -663,9 +663,13 @@ public class Service extends JahiaService {
         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
         final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
         jcrSessionWrapper.save();
+        Set<String> languages = null;
+        if (jcrSessionWrapper.getLocale() != null) {
+            languages = Collections.singleton(jcrSessionWrapper.getLocale().toString());
+        }
         JCRPublicationService.getInstance().publish(nodeWrapper.getPath(), jcrSessionWrapper.getWorkspace().getName(),
                                                     Constants.LIVE_WORKSPACE,
-                                                    Collections.singleton(jcrSessionWrapper.getLocale().toString()),
+                                                    languages,
                 false);
     }
 

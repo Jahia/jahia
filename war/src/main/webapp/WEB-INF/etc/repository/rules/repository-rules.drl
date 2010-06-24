@@ -24,6 +24,17 @@ rule "Test type"
         Add the type jmix:test
 end
 
+rule "publish user"
+    when
+       A new node is created
+		- the node has the type jnt:user
+		- its name is not guest
+		- its name is not root
+    then
+        Publish the node
+end
+
+
 // These 2 rules show how to take some actions based on the user properties
 
 /*
@@ -100,7 +111,7 @@ end
 
 rule "Image update"
     salience 25
-#Rebuild thumbnail for an updated image and update height/width 
+#Rebuild thumbnail for an updated image and update height/width
     when
         A file content has been modified
              - the mimetype matches image/.*
@@ -110,7 +121,7 @@ rule "Image update"
         Set the property j:width of the node with the width of the image
         Set the property j:height of the node with the height of the image
         Log "Image updated " + node.getPath()
-end        
+end
 
 rule "Profile Image update"
     salience 25

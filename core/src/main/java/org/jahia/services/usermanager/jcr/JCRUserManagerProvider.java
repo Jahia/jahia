@@ -154,8 +154,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                         userNode.setProperty(key, (String) entry.getValue());
                     }
                     jcrSessionWrapper.save();
-                    publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                            true);
+                    // Use rules instead to publish the user
+                   /* publicationService.publish(userNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                            true);*/
                     return new JCRUser(userNode.getIdentifier(), jcrTemplate);
                 }
             });

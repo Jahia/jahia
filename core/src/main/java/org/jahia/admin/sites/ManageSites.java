@@ -2026,7 +2026,7 @@ public class ManageSites extends AbstractAdministrationModule {
                                         .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
                                                 (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                                 defaultLocale, tpl, "fileImport", file,
-                                                (String) infos.get("importFileName"), true, false, (String) infos.get("originatingJahiaRelease"), jParams);
+                                                (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"), jParams);
 
 //                                createSite(jParams.getUser(), (String) infos.get("sitetitle"),
 //                                        (String) infos.get("siteservername"), (String) infos.get("sitekey"), "", false, jParams.getLocale(), tpl, "fileImport", file, (String) infos.get("importFileName"),true);

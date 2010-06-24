@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css,jquery.treeview.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.treeview.min.js"/>
-<c:set var="pageNode" value="${jcr:getParentOfType(currentNode, 'jnt:page')}"/>
+<c:set var="pageNode" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}"/>
 <c:if test="${jcr:hasPermission(pageNode, 'write')}">
     <div class="boxdocspace">
         <div class="boxdocspacegrey boxdocspacepadding16 boxdocspacemarginbottom16">

@@ -7,9 +7,9 @@
 [jnt:docspaceFormCreation] > jnt:content, jmix:siteComponentContent
 
 [jnt:lastDocspaceDoc] > jnt:content, jmix:queryContent
- - startNode (weakreference) mandatory
+ - startNode (weakreference)
 
 [jnt:lastDocspace] > jnt:content, jmix:queryContent
- - startNode (weakreference) mandatory
+ - startNode (weakreference)
 
-[jnt:displayVersion] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent  
+[jnt:displayVersion] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent

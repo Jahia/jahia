@@ -14,6 +14,9 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="docspace.css,files.css,toggle-docspace.css"/>
 <c:set var="startNode" value="${currentNode.properties.startNode.node}"/>
+<c:if test="${empty startNode}">
+    <c:set var="startNode" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}"/>
+</c:if>
 <h4 class="boxdocspace-title"><fmt:message key="docspace.label.docspace.last.document"/></h4>
 <ul class="docspacelist">
     <jcr:sql var="result"

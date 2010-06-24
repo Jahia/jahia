@@ -19,7 +19,7 @@
         $("#docspaceTree").treeview();
     });
 </script>
-<c:set var="pageNode" value="${jcr:getParentOfType(currentNode, 'jnt:page')}"/>
+<c:set var="pageNode" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}"/>
 <h4 class="boxdocspace-title2"><fmt:message key="docspace.label.docspace.title"/></h4>
 <div class="boxdocspace"><!--start boxdocspace -->
     <div class="boxdocspacepadding16 boxdocspacemarginbottom16">

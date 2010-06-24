@@ -64,8 +64,8 @@
               <col2 jcr:primaryType="jnt:contentList">
                 <docspaceFormCreation jcr:primaryType="jnt:docspaceFormCreation" />
                 <contentList jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
-                  <lastDocspace startNode="/templatesSet/templates-intranet/templates/docspace" jcr:primaryType="jnt:lastDocspace" />
-                  <lastDocspaceDoc startNode="/templatesSet/templates-intranet/templates/docspace" jcr:primaryType="jnt:lastDocspaceDoc" />
+                  <lastDocspace jcr:primaryType="jnt:lastDocspace" />
+                  <lastDocspaceDoc jcr:primaryType="jnt:lastDocspaceDoc" />
                 </contentList>
               </col2>
             </row>
@@ -78,19 +78,19 @@
                     <mainResourceDisplay-1 jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="updateFile" />
                     <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                       <j:translation_en j:skin="skins.box2" jcr:language="en" jcr:title_en="Document History" jcr:primaryType="jnt:translation" />
-                      <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper-1/wrappercontent/row/col1/mainResourceDisplay-1" />
-                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper-1/wrappercontent/row/col1/mainResourceDisplay-1" />
+                      <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1" />
+                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1" />
                     </document-history>
                   </col1>
                   <col2 jcr:primaryType="jnt:contentList">
-                    <displayVersion jcr:primaryType="jnt:displayVersion" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper-1/wrappercontent/row/col1/mainResourceDisplay" />
+                    <displayVersion jcr:primaryType="jnt:displayVersion" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
                     <extras j:skin="skins.box5style2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                       <j:translation_en j:skin="skins.box5style2" jcr:title_en="Extras" jcr:language="en" jcr:primaryType="jnt:translation" />
-                      <rateable jcr:primaryType="jnt:rateable" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper-1/wrappercontent/row/col1/mainResourceDisplay-1" />
-                      <tag-this-document jcr:primaryType="jnt:tagging" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper-1/wrappercontent/row/col1/mainResourceDisplay-1">
+                      <rateable jcr:primaryType="jnt:rateable" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1" />
+                      <tag-this-document jcr:primaryType="jnt:tagging" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1">
                         <j:translation_en jcr:title_en="Tag This Document" jcr:language="en" jcr:primaryType="jnt:translation" />
                       </tag-this-document>
-                      <tag-this-document-1 jcr:mixinTypes="jmix:renderable" j:template="addtag" jcr:primaryType="jnt:tagging" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper-1/wrappercontent/row/col1/mainResourceDisplay-1">
+                      <tag-this-document-1 jcr:mixinTypes="jmix:renderable" j:template="addtag" jcr:primaryType="jnt:tagging" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1">
                         <j:translation_en jcr:language="en" jcr:title_en="Tag this document" j:template="addtag" jcr:primaryType="jnt:translation" />
                       </tag-this-document-1>
                     </extras>
@@ -105,9 +105,9 @@
                     <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="docspace.detail" />
                   </col1>
                   <col2 jcr:primaryType="jnt:contentList">
-                    <aclUsers jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper/wrappercontent/row/col1/mainResourceDisplay" />
-                    <aclUsers-1 jcr:mixinTypes="jmix:renderable" j:template="add" jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/wrapper/wrappercontent/row/col1/mainResourceDisplay" />
-                    <lastDocspace startNode="/templatesSet/templates-intranet/templates/docspace" jcr:primaryType="jnt:lastDocspace" />
+                    <aclUsers jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
+                    <aclUsers-1 jcr:mixinTypes="jmix:renderable" j:template="add" jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templatesSet/templates-intranet/templates/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
+                    <lastDocspace jcr:primaryType="jnt:lastDocspace" />
                   </col2>
                 </row>
                 <row-1 column="1col16" jcr:primaryType="jnt:row">

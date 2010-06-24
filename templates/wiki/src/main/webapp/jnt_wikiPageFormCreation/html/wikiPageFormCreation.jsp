@@ -17,7 +17,7 @@
 <c:if test="${not empty param.newPageName}">
     <c:set var="pageName" value="${param['newPageName']}"/>
 </c:if>
-<c:set var="pageNode" value="${jcr:getParentOfType(currentNode, 'jnt:page')}"/>
+<c:set var="pageNode" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}"/>
 <c:if test="${jcr:isNodeType(renderContext.mainResource.node,'jnt:wikiPage')}">
     <c:set var="pageNode" value="${renderContext.mainResource.node}"/>
 </c:if>

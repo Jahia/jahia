@@ -98,9 +98,8 @@ public class TemplateNodeFilter extends AbstractFilter {
                     }
                     current = wrapperNode;
                 } else {
-                    if (!current.isNodeType("jnt:wrapper")) {
                         current = current.getParent();
-                    } else {
+                    if (current.isNodeType("jnt:templatesFolder")) {
                         current = null;
                     }
                 }

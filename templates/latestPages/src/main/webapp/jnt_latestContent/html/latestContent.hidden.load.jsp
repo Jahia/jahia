@@ -18,14 +18,18 @@
 <%-- Get parameters of the module --%>
 <jcr:nodeProperty node="${currentNode}" name='j:nbOfResult' var="nbOfResult"/>
 <c:set var="startNode" value="${currentNode.properties.startNode.node}"/>
+<c:if test="${empty startNode}">
+    <c:set var="startNode" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}"/>
+</c:if>
 <jcr:nodeProperty node="${currentNode}" name='j:criteria' var="criteria"/>
 <jcr:nodeProperty node="${currentNode}" name='j:type' var="type"/>
 
 <%-- Execute the query, depending on the selected mode --%>
+<c:if test="${not empty startNode}">
 <jcr:sql var="result"
          sql="SELECT * FROM [${type.string}] AS page WHERE ISDESCENDANTNODE(page,'${startNode.path}') ORDER BY [jcr:${criteria.string}] DESC"
          limit="${nbOfResult.long}"/>
-
+</c:if>
 <%-- Debug message --%>
 <%-- <p>Debug > Nb of result from query (Criteria : ${criteria.string} - Nb of result : ${nbOfResult.long} - Mode : ${mode.string}) : ${fn:length(result.nodes)}</p>  --%>
 

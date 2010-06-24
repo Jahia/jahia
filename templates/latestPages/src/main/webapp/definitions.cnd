@@ -8,5 +8,5 @@
 [jnt:latestContent] > jnt:content, jmix:list, jmix:queryContent
 - j:type (string, choicelist[nodetypes=nt:base,resourceBundle])
 - j:nbOfResult (long) = 0  autocreated
-- startNode (weakreference) mandatory
+- startNode (weakreference)
 - j:criteria (string,choicelist[resourceBundle]) = 'created' < 'created','lastModified'

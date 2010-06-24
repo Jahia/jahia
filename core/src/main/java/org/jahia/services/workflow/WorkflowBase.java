@@ -42,7 +42,9 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * @author Sergiy Shyrkov
  */
 class WorkflowBase implements Serializable {
-
+    
+    private static final long serialVersionUID = -2880063315607195952L;
+    
     private final String name;
 
     private final String provider;

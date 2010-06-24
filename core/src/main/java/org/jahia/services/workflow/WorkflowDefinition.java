@@ -40,6 +40,9 @@ package org.jahia.services.workflow;
  *        Created : 4 févr. 2010
  */
 public class WorkflowDefinition extends WorkflowBase {
+
+    private static final long serialVersionUID = 3356236148908996978L;
+    
     private final String key;
     private String formResourceName;
 

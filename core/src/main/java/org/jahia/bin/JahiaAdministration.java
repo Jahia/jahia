@@ -175,12 +175,20 @@ public class JahiaAdministration extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        process(req, resp);
+        try {
+            process(req, resp);
+        } finally {
+            Jahia.setThreadParamBean(null);
+        }
     }
     
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        process(req, resp);
+        try {
+            process(req, resp);
+        } finally {
+            Jahia.setThreadParamBean(null);
+        }
     }
     
     /**
@@ -192,7 +200,6 @@ public class JahiaAdministration extends HttpServlet {
     private void process(HttpServletRequest request,
                         HttpServletResponse response) throws IOException,
             ServletException {
-        logger.debug("-- service --");
         if (logger.isDebugEnabled()) {
             logger.debug("--[ " + request.getMethod() + " Request Start URI='" +
                     request.getRequestURI() + "' query='" +

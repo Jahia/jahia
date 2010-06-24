@@ -32,11 +32,13 @@
 package org.jahia.admin;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
  * Base implementation of the Jahia administration module.
@@ -216,5 +218,11 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
 
     public void setIconSmall(String iconSmall) {
         this.iconSmall = iconSmall;
+    }
+    
+    public static String getMessage(String key) {
+        return JahiaResourceBundle
+                .getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label", Jahia
+                        .getThreadParamBean().getUILocale());
     }
 }

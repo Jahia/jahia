@@ -23,25 +23,33 @@
     }
 </script>
 
-<div class='grid_8 alpha'><!--start grid_12-->
+<div class='grid_8 alpha'><!--start grid_8-->
 
     <jcr:sql var="receivedMessages"
              sql="select * from [jnt:userMessage] as uC where isdescendantnode(uC,['${currentNode.path}/inboundMessages'])"/>
 
-    <h3 class="social-title-icon titleIcon"><a href="#"><fmt:message key="receivedMessages"/></a><a href="#"><img title="" alt=""
-                                                                                    src="${url.currentModule}/images/mailbox.png"/></a>
+    <h3 class="social-title-icon titleIcon"><fmt:message key="receivedMessages"/><img title="" alt=""
+                                                                                    src="${url.currentModule}/images/mailbox.png"/>
     </h3>
-    <ul class="social-list">
-        <c:forEach items="${receivedMessages.nodes}" var="userMessage">
-            <li>
-                <template:module path="${userMessage.path}" />
-            </li>
-        </c:forEach>
-    </ul>
-
+<div class="boxsocial"><!--start boxsocial -->
+    <div class=" boxsocialmarginbottom16">
+        <div class="boxsocial-inner">
+            <div class="boxsocial-inner-border">
+                <ul class="userMessagesList">
+                    <c:forEach items="${receivedMessages.nodes}" var="userMessage">
+                        <li>
+                            <template:module path="${userMessage.path}" />
+                        </li>
+                    </c:forEach>
+                </ul>
+			</div>
+		</div>
+	</div>
+	<div class='clear'></div>
 </div>
-<!--stop grid_12-->
-<div class='grid_8 omega'><!--start grid_4-->
+
+</div><!--stop grid_18-->
+<div class='grid_8 omega'><!--start grid_8-->
 
     <div id="socialMessageDetail" class="social-message-detail">
         
@@ -50,7 +58,7 @@
     <div class='clear'></div>
 
 </div>
-<!--stop grid_4-->
+<!--stop grid_8-->
 
 <div class='clear'></div>
 

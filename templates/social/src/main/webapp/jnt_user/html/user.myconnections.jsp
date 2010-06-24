@@ -348,10 +348,10 @@
                     <a href="${url.base}${connectedToUser.path}.html"><img src="${url.currentModule}/images/friend.png"
                                                                          alt="friend" border="0"/></a>
                 </div>
-                <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" userKey="${connectedToUser.properties['j:nodename'].string}"
-                   href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
                 <a class="social-list-remove" title="<fmt:message key="removeFriend"/>" href="#"><span><fmt:message
                         key="removeFriend"/></span></a>
+                <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" userKey="${connectedToUser.properties['j:nodename'].string}"
+                   href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
                 <h4>
                     <a href="${usl.base}${connectedToUser.path}.html">${connectedToUser.properties['j:firstName'].string} ${connectedToUser.properties['j:lastName'].string}</a>
                 </h4>

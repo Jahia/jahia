@@ -132,9 +132,10 @@
 	display:block;
 	background: url(img/delete.png) no-repeat top right;
 	float:right;
+	margin-left:4px;
 }
 #bodywrapper ul.social-list a.social-list-remove span {
-display:none
+	display:none
 }
 #bodywrapper ul.social-list a.social-list-sendmessage {
 	width:16px;
@@ -145,7 +146,7 @@ display:none
 	margin-left:4px;
 }
 #bodywrapper ul.social-list a.social-list-sendmessage span {
-display:none
+	display:none
 }
 /******************************************************************************
 * statusUpdateForm
@@ -219,6 +220,92 @@ display:block
 	margin:0;
 	padding:0;
 	font-weight:bold;
+}
+/******************************************************************************
+*  Users Messages list
+******************************************************************************/
+
+#bodywrapper ul.userMessagesList  {
+	position:relative;
+	margin:0;
+	list-style:none;
+	padding:0;
+}
+#bodywrapper .userMessagesList li {
+	padding:10px;
+	margin:0;
+	margin-bottom:0px;
+	list-style:none;
+	background: url(img/hr.png) repeat-x bottom left;
+}
+#bodywrapper .userMessagesList li:last-child {
+	background:none;
+}
+#bodywrapper .userMessagesList .itemImageLeft,
+#bodywrapper .userMessagesDetail .itemImageLeft {
+	margin-right:20px
+}
+#bodywrapper .userMessagesList .itemImageRight,
+#bodywrapper .userMessagesDetail .itemImageRight {
+	margin-left:20px
+}
+
+#bodywrapper .userMessagesList li p,
+#bodywrapper .userMessagesDetail p {
+	padding:0;
+}
+#bodywrapper .userMessagesList li.last {
+	background:none;
+}
+
+#bodywrapper .userMessagesList .timestamp,
+#bodywrapper .userMessagesDetail .timestamp {
+	font-size:0.8em;
+	font-weight:normal;
+	line-height:1.2em;
+	margin-left:0.5em;
+}
+
+#bodywrapper .userMessagesList h5.messageSenderName,
+#bodywrapper .userMessagesDetail h5.messageSenderName {
+	display:inline;
+	margin:0;
+	padding:0;
+	font-weight:bold;
+}
+
+#bodywrapper ul.messageActionList {
+	padding:0;
+	margin:0;
+	float:right;
+} 
+#bodywrapper ul.messageActionList li{
+	display:inline;
+	background:none;
+	padding:0;
+	margin:0;
+} 
+#bodywrapper ul.messageActionList a.messageActionReply {
+	width:16px;
+	height:16px;
+	display:block;
+	background: url(img/reply-message.png) no-repeat top right;
+	float:right;
+	margin-left:4px;
+}
+#bodywrapper ul.messageActionList a.messageActionReply span {
+	display:none
+}
+#bodywrapper ul.messageActionList a.messageActionDelete {
+	width:16px;
+	height:16px;
+	display:block;
+	background: url(img/delete.png) no-repeat top right;
+	float:right;
+	margin-left:4px;
+}
+#bodywrapper ul.messageActionList a.messageActionDelete span {
+	display:none
 }
 
 /******************************************************************************

@@ -44,7 +44,7 @@ public class NewWikiPageHandler implements ErrorHandler {
             try {
                 JCRNodeWrapper parent = session.getNode(parentPath);
                 JCRNodeWrapper parentOfType = JCRContentUtils.getParentOfType(parent, "jnt:page");
-                NodeIterator nodeIterator = JCRContentUtils.getChildrenOfType(parentOfType, "jnt:wrapper");
+                NodeIterator nodeIterator = JCRContentUtils.getChildrenOfType(parentOfType, "jnt:template");
                 NodeIterator iterator = JCRContentUtils.getDescendantNodes(parentOfType, "jnt:wikiPageFormCreation");
                 boolean searchForExistingPages = false;
                 JCRNodeWrapper pageForSearch = parentOfType;

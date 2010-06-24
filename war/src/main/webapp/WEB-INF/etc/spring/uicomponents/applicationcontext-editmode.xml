@@ -38,7 +38,6 @@
                             <property name="icon" value="newAction"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.NewTemplate"/>
                                     <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
                                 </list>
@@ -122,18 +121,6 @@
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                             <value>createPage,$site/edit-mode/create-page</value>
                             <value>template,$site/edit-mode/template</value>
-                            <value>options,$site/edit-mode/options</value>
-                            <value>rights,$site/edit-mode/rights</value>
-                        </list>
-                    </property>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="jnt:template"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>createPage,$site/edit-mode/create-page</value>
-                            <value>template,$site/edit-mode/template</value>
-                            <value>layout,$site/edit-mode/layout</value>
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
                         </list>
@@ -327,7 +314,6 @@
         </property>
         <property name="folderTypes" >
             <list>
-                <value>jnt:wrapper</value>
                 <value>jnt:template</value>
                 <value>jnt:page</value>
             </list>
@@ -342,16 +328,15 @@
                   class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.Item.NewTemplate"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                    <property name="nodeTypes" value="jnt:wrapper"/>
-                                    <property name="parentType" value="jnt:templatesFolder"/>
+                                    <property name="nodeTypes" value="jnt:template"/>
+                                    <property name="parentTypes" value="jnt:templatesFolder jnt:template"/>
                                 </bean>
                             </property>
-                            <property name="titleKey" value="label.newWrapper"/>
-                            <property name="icon" value="newWrapper"/>
+                            <property name="titleKey" value="label.newTemplate"/>
+                            <property name="icon" value="newTemplate"/>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
@@ -420,7 +405,7 @@
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                                     <property name="nodeTypes" value="jnt:navMenuNodeLink"/>
-                                    <property name="parentType" value="jnt:page"/>
+                                    <property name="parentTypes" value="jnt:page"/>
                                 </bean>
                             </property>
                             <property name="titleKey" value="label.newInternalLink"/>
@@ -430,7 +415,7 @@
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                                     <property name="nodeTypes" value="jnt:navMenuExternalLink"/>
-                                    <property name="parentType" value="jnt:page"/>
+                                    <property name="parentTypes" value="jnt:page"/>
                                 </bean>
                             </property>
                             <property name="titleKey" value="label.newExternalLink"/>

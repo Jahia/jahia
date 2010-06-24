@@ -19,8 +19,7 @@ public class NewPageActionItem extends BaseActionItem {
         if (linker != null) {
             GWTJahiaNode node = linker.getMainNode();
             if (node != null) {
-                if (node.getNodeTypes().contains("jnt:page") || node.getNodeTypes().contains("jnt:virtualsite") ||
-                        node.getNodeTypes().contains("jnt:template")) {
+                if (node.getNodeTypes().contains("jnt:page") || node.getNodeTypes().contains("jnt:virtualsite")) {
                     setEnabled(node.isWriteable() && !node.isLocked());
                 } else {
                     setEnabled(false);

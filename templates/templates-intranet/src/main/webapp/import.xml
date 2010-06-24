@@ -1,21 +1,21 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0">
   <templatesSet>
-    <templates-intranet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled jmix:wrapper"  j:wrapper="/templatesSet/templates-intranet/templates/sitewrapper" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-intranet" priority="0.5">
-      <contents jcr:mixinTypes="jmix:wrapper" jcr:primaryType="jnt:contentList">
+    <templates-intranet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled jmix:hasTemplateNode"  j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-intranet" priority="0.5">
+      <contents jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:contentList">
         <site_components jcr:primaryType="jnt:contentList">
           <login-to-jahia jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:loginForm">
             <j:translation_en jcr:title_en="Login to Jahia" jcr:language="en" jcr:primaryType="jnt:translation" />
           </login-to-jahia>
         </site_components>
       </contents>
-      <files jcr:mixinTypes="jmix:wrapper" jcr:primaryType="jnt:folder" />
-      <mashups jcr:mixinTypes="jmix:wrapper" jcr:primaryType="jnt:portletList" />
+      <files jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:folder" />
+      <mashups jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder" />
-      <home jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/templatesSet/templates-intranet/templates/home" j:template="default" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+      <home jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/home" j:template="default" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
         <j:translation_en jcr:language="en" jcr:title_en="Home" jcr:primaryType="jnt:translation" />
       </home>
       <templates jcr:primaryType="jnt:templatesFolder">
-          <home jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-intranet/templates/sitewrapper">
+          <home jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row1 column="2col106" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList" >
@@ -28,7 +28,7 @@
               </row1>
             </wrappercontent>
           </home>
-        <simple jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-intranet/templates/sitewrapper">
+        <simple jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="2col124" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
@@ -40,7 +40,7 @@
             </row1>
           </wrappercontent>
         </simple>
-        <double jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-intranet/templates/sitewrapper">
+        <double jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="3col664" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
@@ -55,7 +55,7 @@
             </row1>
           </wrappercontent>
         </double>
-        <docspace jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-intranet/templates/sitewrapper">
+        <docspace jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col88" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
@@ -70,7 +70,7 @@
               </col2>
             </row>
           </wrappercontent>
-            <file jcr:primaryType="jnt:wrapper" j:key="fileWrapper" j:applyOn="jnt:file">
+            <file jcr:primaryType="jnt:template" j:applyOn="jnt:file">
               <wrappercontent jcr:primaryType="jnt:contentList">
                 <row column="2col124" jcr:primaryType="jnt:row">
                   <col1 jcr:primaryType="jnt:contentList">
@@ -98,7 +98,7 @@
                 </row>
               </wrappercontent>
             </file>
-            <folder jcr:primaryType="jnt:wrapper" j:key="folderWrapper" j:applyOn="jnt:folder">
+            <folder jcr:primaryType="jnt:template" j:applyOn="jnt:folder">
               <wrappercontent jcr:primaryType="jnt:contentList">
                 <row column="2col124" jcr:primaryType="jnt:row">
                   <col1 jcr:primaryType="jnt:contentList">
@@ -118,7 +118,7 @@
               </wrappercontent>
             </folder>
         </docspace>
-          <wiki jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-intranet/templates/sitewrapper" jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page">
+          <wiki jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper" jcr:primaryType="jnt:template" j:applyOn="jnt:page">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <tabs jcr:primaryType="jnt:tabularList">
               <last-pages jcr:primaryType="jnt:contentList">
@@ -133,7 +133,7 @@
               </create-new-page>
             </tabs>
           </wrappercontent>
-          <wrapper jcr:primaryType="jnt:wrapper" j:key="wikiPageWrapper" j:applyOn="jnt:wikiPage">
+          <wrapper jcr:primaryType="jnt:template" j:applyOn="jnt:wikiPage">
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row column="2col124" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
@@ -157,7 +157,7 @@
             </wrappercontent>
           </wrapper>
         </wiki>
-        <forum jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-intranet/templates/sitewrapper">
+        <forum jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col124" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
@@ -166,7 +166,7 @@
               <col2 jcr:primaryType="jnt:contentList" />
             </row>
           </wrappercontent>
-            <wrapper jcr:primaryType="jnt:wrapper" j:key="forumWrapper" j:applyOn="jnt:topic jnt:thread">
+            <wrapper jcr:primaryType="jnt:template"  j:applyOn="jnt:topic jnt:thread">
               <wrappercontent jcr:primaryType="jnt:contentList">
                 <row column="2col124" jcr:primaryType="jnt:row">
                   <col1 jcr:primaryType="jnt:contentList">
@@ -179,7 +179,7 @@
               </wrappercontent>
             </wrapper>
         </forum>
-        <my-profile jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-intranet/templates/sitewrapper">
+        <my-profile jcr:primaryType="jnt:template"  j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <tabularList jcr:primaryType="jnt:tabularList">
               <my-profile jcr:primaryType="jnt:contentList">
@@ -217,7 +217,7 @@
             </tabularList>
           </wrappercontent>
         </my-profile>
-        <events jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-intranet/templates/sitewrapper">
+        <events jcr:primaryType="jnt:template"  j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col106" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
@@ -236,7 +236,7 @@
             </row>
           </wrappercontent>
         </events>
-          <sitewrapper  j:template="intranet.bodywrapper" jcr:primaryType="jnt:wrapper" jcr:mixinTypes="jmix:renderable" j:key="bodywrapper">
+          <sitewrapper  j:template="intranet.bodywrapper" jcr:primaryType="jnt:template" jcr:mixinTypes="jmix:renderable" >
             <logo jcr:primaryType="jnt:contentList" >
                 <logo j:areaName="logo" j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>
             </logo>
@@ -256,7 +256,7 @@
             <pagetitle jcr:primaryType="jnt:contentList" />
           </sitewrapper>
       </templates>
-      <search-results jcr:mixinTypes="jmix:sitemap jmix:wrapper"  j:wrapper="/templatesSet/templates-intranet/templates/simple" j:template="default" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
+      <search-results jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode"  j:templateNode="/templatesSet/templates-intranet/templates/simple" j:template="default" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" priority="0.5">
         <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Search results" />
         <pagecontent jcr:primaryType="jnt:contentList">
           <row1 column="1col16" jcr:primaryType="jnt:row">

@@ -431,9 +431,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if (l != null) {
                 newName = contentManager.generateNameFromTitle(l);
             }
-            mixin.add("jmix:wrapper");
+            mixin.add("jmix:hasTemplateNode");
 
-            newsProps.add(new GWTJahiaNodeProperty("j:wrapper",new GWTJahiaNodePropertyValue(navigation.getNode(templatePath, retrieveCurrentSession()), GWTJahiaNodePropertyType.WEAKREFERENCE)));
+            newsProps.add(new GWTJahiaNodeProperty("j:templateNode",new GWTJahiaNodePropertyValue(navigation.getNode(templatePath, retrieveCurrentSession()), GWTJahiaNodePropertyType.WEAKREFERENCE)));
 
             GWTJahiaNode node = contentManager.createNode(destinationPath, newName, "jnt:page", mixin, newsProps, retrieveCurrentSession());
 
@@ -1389,7 +1389,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             try {
                 while (true) {
                     Query q = current.getSession().getWorkspace().getQueryManager().createQuery(
-                            "select * from [jnt:wrapper] as w where ischildnode(w, [" + current.getPath() + "])",
+                            "select * from [jnt:template] as w where ischildnode(w, [" + current.getPath() + "])",
                             Query.JCR_SQL2);
                     QueryResult result = q.execute();
                     NodeIterator ni = result.getNodes();

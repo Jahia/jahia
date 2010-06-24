@@ -311,16 +311,15 @@
  itemtype = layout
  - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
 
-[jmix:wrapper] mixin
+[jmix:hasTemplateNode] mixin
  extends = nt:base
  itemtype = layout
- - j:wrapper (weakreference) < jnt:wrapper
+ - j:templateNode (weakreference) < jnt:template
 
-[jnt:wrapper] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
- - j:key (string) mandatory
+[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
  + * (jnt:content)
- + * (jnt:wrapper)
+ + * (jnt:template)
 
 [jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
 
@@ -477,8 +476,6 @@
  - jcr:title (string) i18n mandatory
  + * (nt:base) = nt:base version
 
-[jnt:template] > jnt:page
-
 [jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
 
 [jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list
@@ -490,7 +487,6 @@
 
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:template)
- + * (jnt:wrapper)
 
 [jmix:autoSplitFolders] mixin extends = jnt:contentList
  - j:splitConfig (string) mandatory

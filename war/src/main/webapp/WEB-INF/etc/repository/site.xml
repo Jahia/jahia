@@ -4,9 +4,9 @@
            xmlns:j="http://www.jahia.org/jahia/1.0"
            xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <files jcr:primaryType="jnt:folder" jcr:mixinTypes="jmix:wrapper"/>
+    <files jcr:primaryType="jnt:folder" />
 
-    <mashups jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:wrapper"/>
+    <mashups jcr:primaryType="jnt:portletList" />
 
     <groups jcr:primaryType="jnt:groupsFolder">
         <guest jcr:primaryType="jnt:group" j:hidden="false">
@@ -20,7 +20,7 @@
         </administrators>
     </groups>    
 
-    <contents jcr:primaryType="jnt:contentList" jcr:mixinTypes="jmix:wrapper"/>
+    <contents jcr:primaryType="jnt:contentList" />
 
     <themes jcr:primaryType="jnt:folder"/>
 

@@ -4,7 +4,7 @@
          xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
 	<sites>
         <ACME xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" j:title="Web Site for ACME" jcr:created="2010-06-24T14:57:04.062+02:00" changefreq="monthly" j:installedModules="templates-web" jcr:lastModifiedBy=" system " j:languages="fr en" jcr:createdBy=" system " j:description="" j:mixLanguage="false" j:defaultLanguage="fr" j:mandatoryLanguages="fr en" jcr:mixinTypes="jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" j:sourceTemplate="/templatesSet/templates-web" jcr:lastModified="2010-06-24T14:57:31.365+02:00" priority="0.5" j:serverName="localhost">
-          <contents jcr:mixinTypes="jmix:wrapper" jcr:created="2010-06-24T14:57:04.075+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:07.381+02:00">
+          <contents jcr:mixinTypes="jmix:hasTemplateNode" jcr:created="2010-06-24T14:57:04.075+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:07.381+02:00">
             <site_components jcr:created="2010-06-24T14:57:04.076+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:04.916+02:00">
               <simple-search result="/sites/ACME/search-results" jcr:mixinTypes="jmix:shareable" jcr:created="2010-06-24T14:57:04.078+02:00" jcr:primaryType="jnt:simpleSearchForm" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:07.381+02:00">
                 <j:translation_en jcr:lastModifiedBy=" system " jcr:title_en="Simple search" jcr:language="en" jcr:lastModified="2010-06-24T14:57:07.381+02:00" jcr:primaryType="jnt:translation" />
@@ -12,7 +12,7 @@
               <side-menu j:menuType="primary" jcr:mixinTypes="jmix:shareable" j:maxDepth="3" jcr:created="2010-06-24T14:57:04.081+02:00" jcr:primaryType="jnt:navMenu" j:baselineNode="/sites/ACME/home" j:startLevel="1" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:styleName="navigationN2" jcr:lastModified="2010-06-24T14:57:07.381+02:00" />
             </site_components>
           </contents>
-          <files jcr:mixinTypes="jmix:wrapper" jcr:created="2010-06-24T14:57:04.084+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:23.602+02:00">
+          <files jcr:mixinTypes="jmix:hasTemplateNode" jcr:created="2010-06-24T14:57:04.084+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:23.602+02:00">
             <PDF jcr:mixinTypes="jmix:test" jcr:created="2009-05-19T17:13:09.429+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:23.602+02:00">
               <Publications jcr:mixinTypes="jmix:test" jcr:created="2009-05-19T17:13:09.432+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:23.602+02:00">
                 <ACME_WP_BuildingFirstClassHotelUS.pdf jcr:title="ACME_WP_BuildingFirstClassHotelUS" j:subject="" jcr:mixinTypes="jmix:keywords mix:title jmix:document" j:appName="Mac OS X 10.5.6 Quartz PDFContext" jcr:created="2009-05-19T17:13:09.434+02:00" jcr:primaryType="jnt:file" jcr:lastModifiedBy="root" jcr:createdBy="root" j:keywords="" jcr:lastModified="2010-06-24T14:57:23.602+02:00">
@@ -267,7 +267,7 @@
               </Photos>
             </Pictures>
           </files>
-          <mashups jcr:mixinTypes="jmix:wrapper" jcr:created="2010-06-24T14:57:04.085+02:00" jcr:primaryType="jnt:portletList" jcr:lastModifiedBy="root" jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:23.602+02:00">
+          <mashups jcr:mixinTypes="jmix:hasTemplateNode" jcr:created="2010-06-24T14:57:04.085+02:00" jcr:primaryType="jnt:portletList" jcr:lastModifiedBy="root" jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:23.602+02:00">
             <RSS_x0020_News jcr:mixinTypes="jmix:test" jcr:created="2009-05-19T17:13:18.779+02:00" jcr:primaryType="jnt:portletList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:23.602+02:00">
               <CNN_x0020__x0028_c_x0029__x0020_Hot_x0020_Topics_x0020_RSS jcr:description="CNN.com delivers up-to-the-minute news and information on the latest top stories, weather, entertainment, politics and more." j:expirationTime="0" jcr:title="CNN (c) Hot Topics RSS" jcr:created="2010-06-24T14:57:16.308+02:00" jcr:primaryType="jnt:rssPortlet" jcr:lastModifiedBy="root" jcr:createdBy="root" j:application="$context/rss!JahiaRSSPortlet" jcr:lastModified="2010-06-24T14:57:23.602+02:00" url="http://rss.cnn.com/rss/edition.rss">
                 <thumbnail jcr:lastModifiedBy="root" jcr:mimeType="image/gif" jcr:lastModified="2009-01-28T16:17:11.899+01:00" jcr:primaryType="jnt:resource" />
@@ -314,7 +314,7 @@
             </Google_x0020_Gadgets>
           </mashups>
           <themes jcr:created="2010-06-24T14:57:04.087+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:04.916+02:00" />
-          <home jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:template="default" j:wrapper="/sites/ACME/templates/home" jcr:created="2010-06-24T14:57:04.092+02:00" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:45.240+02:00" priority="0.5">
+          <home jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:template="default" j:templateNode="/sites/ACME/templates/home" jcr:created="2010-06-24T14:57:04.092+02:00" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:45.240+02:00" priority="0.5">
             <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="ACME Home" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
             <logo jcr:created="2010-06-24T14:57:32.053+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:18:28.000+02:00">
               <imageReference_5 j:node="/sites/ACME/files/Pictures/Logo/logoACME.jpg" jcr:created="2010-06-24T14:57:32.055+02:00" jcr:primaryType="jnt:imageReference" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:45.240+02:00" />
@@ -398,7 +398,7 @@
               <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="Home" jcr:language="en" jcr:lastModified="2010-06-24T14:57:48.965+02:00" jcr:primaryType="jnt:translation" />
               <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:48.965+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Accueil" />
             </link_6>
-            <activities jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.140+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+            <activities jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.140+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
               <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="Activities" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
               <listA jcr:created="2010-06-24T14:57:32.141+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                 <mainContent_7 jcr:created="2010-06-24T14:57:32.142+02:00" jcr:primaryType="jnt:mainContent" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -410,7 +410,7 @@
                   <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" body_fr="&lt;BODY&gt;  &lt;P&gt;Les projets  de génie civil couvrent la majeur partie des activités du groupe. Même si le bâtiment et la construction reste les valeurs fondamentales de notre entreprise, le génie civil prend une part de plus en plus importante depuis ces dernières années.&lt;/P&gt;  &lt;P&gt;Afin de poursuivre sur ce rythme de croissance, ACME s'est engagée dans une stratégie de diversification de ses activités par des investissements stratégiques dans des entreprises qui apportent une valeur ajoutée à l'entreprise et qui permettent d’adresser les besoins de ses clients avec une solution plus complète.&lt;/P&gt;  &lt;P&gt;En paralelle, la société  cherche à élargir on activité en réalisant des investissements majeurs en recherche et développement.&lt;/P&gt; &lt;/BODY&gt; " jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Les activités du groupe ACME en quelques mots ..." />
                 </mainContent_8>
               </listA>
-              <construction-and-civil-engineeri jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.150+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+              <construction-and-civil-engineeri jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.150+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="Construction and Civil engineering" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
                 <listA jcr:created="2010-06-24T14:57:32.151+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                   <mainContent_9 jcr:created="2010-06-24T14:57:32.152+02:00" jcr:primaryType="jnt:mainContent" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -420,7 +420,7 @@
                 </listA>
                 <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Construction et projets civils d’infrastructure" />
               </construction-and-civil-engineeri>
-              <research-and-innovation jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.157+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+              <research-and-innovation jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.157+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="Research and Innovation" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
                 <listA jcr:created="2010-06-24T14:57:32.158+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                   <mainContent_10 jcr:created="2010-06-24T14:57:32.159+02:00" jcr:primaryType="jnt:mainContent" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -432,7 +432,7 @@
               </research-and-innovation>
               <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Activités" />
             </activities>
-            <events jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/events" jcr:created="2010-06-24T14:57:32.165+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+            <events jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/events" jcr:created="2010-06-24T14:57:32.165+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
               <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="Events" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
               <listA jcr:created="2010-06-24T14:57:32.166+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                 <bigText_11 jcr:mixinTypes="jmix:renderable" j:template="introduction" jcr:created="2010-06-24T14:57:32.168+02:00" jcr:primaryType="jnt:bigText" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -464,7 +464,7 @@
               </listA>
               <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Evènements" />
             </events>
-            <publications jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.332+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+            <publications jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.332+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
               <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="Publications" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
               <listA jcr:created="2010-06-24T14:57:32.333+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                 <bigText_17 jcr:mixinTypes="jmix:renderable" j:template="introduction" jcr:created="2010-06-24T14:57:32.335+02:00" jcr:primaryType="jnt:bigText" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -486,7 +486,7 @@
                   </publication_20>
                 </publications>
               </listA>
-              <_x0032_008-publications jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.394+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+              <_x0032_008-publications jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.394+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="2008 Publications" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
                 <listA jcr:created="2010-06-24T14:57:32.395+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                   <publications jcr:created="2010-06-24T14:57:32.396+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
@@ -518,7 +518,7 @@
                 </listA>
                 <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Publications - 2008" />
               </_x0032_008-publications>
-              <_x0032_007-publications jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.416+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+              <_x0032_007-publications jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.416+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="2007 Publications" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
                 <listA jcr:created="2010-06-24T14:57:32.416+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                   <publications jcr:created="2010-06-24T14:57:32.418+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
@@ -552,7 +552,7 @@
               </_x0032_007-publications>
               <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Publications" />
             </publications>
-            <news jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.444+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+            <news jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.444+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
               <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="News" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
               <listA jcr:created="2010-06-24T14:57:32.445+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                 <news_33 jcr:mixinTypes="jmix:vanityUrlMapped jmix:categorized" image="/sites/ACME/files/Pictures/GenericPictures/illustration10.jpg" jcr:created="2010-06-24T14:57:32.446+02:00" jcr:primaryType="jnt:news" jcr:lastModifiedBy="root" j:defaultCategory="/categories/business" jcr:createdBy="root" date="2009-01-13T16:52:00.000+01:00" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -580,7 +580,7 @@
                   <j:vanityUrlMapping11 j:url="/news/nouvel-hotel-5-etoiles-a-hong-kong-construit-par-acme-international" jcr:created="2010-06-24T14:57:47.423+02:00" jcr:primaryType="jnt:vanityUrl" jcr:lastModifiedBy="root" j:active="true" jcr:language="fr" jcr:createdBy="root" j:default="true" jcr:lastModified="2010-06-24T14:57:47.423+02:00" />
                 </news_36>
               </listA>
-              <news-archives-2008 jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.504+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+              <news-archives-2008 jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.504+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="News Archives (2008)" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
                 <listA jcr:created="2010-06-24T14:57:32.505+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                   <news_37 jcr:mixinTypes="jmix:vanityUrlMapped" image="/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:created="2010-06-24T14:57:32.507+02:00" jcr:primaryType="jnt:news" jcr:lastModifiedBy="root" jcr:createdBy="root" date="2008-06-18T00:00:00.000+02:00" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -610,7 +610,7 @@
                 </listA>
                 <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Archives (2008)" />
               </news-archives-2008>
-              <news-archives-2007 jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.526+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+              <news-archives-2007 jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.526+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="News Archives (2007)" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
                 <listA jcr:created="2010-06-24T14:57:32.528+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                   <news_41 jcr:mixinTypes="jmix:vanityUrlMapped" image="/sites/ACME/files/Pictures/GenericPictures/defaultAcmePic.gif" jcr:created="2010-06-24T14:57:32.530+02:00" jcr:primaryType="jnt:news" jcr:lastModifiedBy="root" jcr:createdBy="root" date="2007-06-18T00:00:00.000+02:00" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -642,7 +642,7 @@
               </news-archives-2007>
               <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Actualités" />
             </news>
-            <about-us jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.559+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+            <about-us jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.559+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
               <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="About Us" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
               <listA jcr:created="2010-06-24T14:57:32.560+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                 <mainContent_45 jcr:created="2010-06-24T14:57:32.563+02:00" jcr:primaryType="jnt:mainContent" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -654,7 +654,7 @@
                   <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" body_fr="&lt;p&gt;Acme r&amp;eacute;unit un ensemble sans &amp;eacute;quivalent de comp&amp;eacute;tences dans les m&amp;eacute;tiers&amp;nbsp; du b&amp;acirc;timent et du g&amp;eacute;nie civil.&lt;/p&gt; &lt;p&gt;Acme est acteur europ&amp;eacute;en majeur qui b&amp;eacute;n&amp;eacute;ficie d&amp;rsquo;une expertise solide dans les domaines de la construction civile et de la mise l&amp;rsquo;infrastructures urbaines.&lt;/p&gt; &lt;p&gt;Fond&amp;eacute;e en 1950, l'entreprise fonde sa croissance sur ses succ&amp;egrave;s internationaux, la formation et le d&amp;eacute;veloppement personnel de ses collaborateurs et l'acquisition d'entreprises dans les m&amp;eacute;tiers qui lui sont proches.&lt;/p&gt; &lt;p&gt;Le groupe propose &amp;agrave; ses clients une impressionante couverture des solutions requises pour les m&amp;eacute;tiers de la construction et la mise en oeuvre d'infrastructures.&lt;/p&gt; " jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="ACME en quelques mots..." />
                 </mainContent_46>
               </listA>
-              <management-team jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.569+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+              <management-team jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.569+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="Management Team" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
                 <listA jcr:created="2010-06-24T14:57:32.570+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                   <people_47 picture="/sites/ACME/files/Pictures/GenericPictures/ACME_MGT_Thumbnail.jpg" firstname="John" email="john@acmeinternational.com" jcr:created="2010-06-24T14:57:32.571+02:00" cellular="-" jcr:primaryType="jnt:people" lastname="Builder" jcr:lastModifiedBy="root" telephone="-" fax="-" jcr:createdBy="root" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -668,7 +668,7 @@
                 </listA>
                 <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Dirigeants" />
               </management-team>
-              <press-release jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.580+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+              <press-release jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.580+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="Press Release" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
                 <listA jcr:created="2010-06-24T14:57:32.581+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                   <press_49 jcr:created="2010-06-24T14:57:32.585+02:00" jcr:primaryType="jnt:press" jcr:lastModifiedBy="root" jcr:createdBy="root" date="2009-01-29T00:00:00.000+01:00" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
@@ -702,7 +702,7 @@
                 </listA>
                 <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Communiqués" />
               </press-release>
-              <jobs jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.604+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+              <jobs jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:32.604+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="Jobs" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
                 <listA jcr:created="2010-06-24T14:57:32.605+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:44.000+02:00">
                   <job_56 reference="none" jcr:created="2010-06-24T14:57:32.607+02:00" jcr:primaryType="jnt:job" jcr:lastModifiedBy="root" jcr:createdBy="root" town="Barcelona" jcr:lastModified="2010-06-24T14:57:45.240+02:00" country="ES">
@@ -718,7 +718,7 @@
               </jobs>
               <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Société" />
             </about-us>
-            <my-portal jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:wrapper="/sites/ACME/templates/my-portal" jcr:created="2010-06-24T14:57:32.617+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
+            <my-portal jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/my-portal" jcr:created="2010-06-24T14:57:32.617+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-06-24T14:57:45.240+02:00">
               <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="My Portal" jcr:language="en" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" />
               <columnA_box jcr:created="2010-06-24T14:57:32.618+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T17:13:43.000+02:00" />
               <introduction jcr:created="2010-06-24T14:57:32.619+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2009-05-19T18:11:23.000+02:00">
@@ -733,7 +733,7 @@
             <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-06-24T14:57:45.240+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Accueil" />
           </home>
           <templates jcr:created="2010-06-24T14:57:04.097+02:00" jcr:primaryType="jnt:templatesFolder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:06.766+02:00">
-            <home jcr:mixinTypes="jmix:wrapper" j:wrapper="/sites/ACME/templates/sitewrapper" jcr:created="2010-06-24T14:57:04.098+02:00" jcr:primaryType="jnt:wrapper" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:key="template" j:applyOn="jnt:page" jcr:lastModified="2010-06-24T14:57:07.381+02:00">
+            <home jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/sitewrapper" jcr:created="2010-06-24T14:57:04.098+02:00" jcr:primaryType="jnt:template" jcr:lastModifiedBy=" system " jcr:createdBy=" system "  j:applyOn="jnt:page" jcr:lastModified="2010-06-24T14:57:07.381+02:00">
               <wrappercontent jcr:created="2010-06-24T14:57:04.100+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:04.916+02:00">
                 <row column="2col115" jcr:created="2010-06-24T14:57:04.102+02:00" jcr:primaryType="jnt:row" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:04.916+02:00">
                   <col1 jcr:created="2010-06-24T14:57:04.103+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:04.916+02:00">
@@ -746,7 +746,7 @@
                 </row>
               </wrappercontent>
             </home>
-            <my-portal jcr:mixinTypes="jmix:wrapper" j:wrapper="/sites/ACME/templates/sitewrapper" jcr:created="2010-06-24T14:57:05.280+02:00" jcr:primaryType="jnt:wrapper" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:key="template" j:applyOn="jnt:page" jcr:lastModified="2010-06-24T14:57:07.381+02:00">
+            <my-portal jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/sitewrapper" jcr:created="2010-06-24T14:57:05.280+02:00" jcr:primaryType="jnt:template" jcr:lastModifiedBy=" system " jcr:createdBy=" system "  j:applyOn="jnt:page" jcr:lastModified="2010-06-24T14:57:07.381+02:00">
               <wrappercontent jcr:created="2010-06-24T14:57:05.282+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:05.715+02:00">
                 <my-portal jcr:created="2010-06-24T14:57:05.283+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:05.715+02:00">
                   <j:translation_en jcr:lastModifiedBy=" system " jcr:title_en="My Portal" jcr:language="en" jcr:lastModified="2010-06-24T14:57:05.715+02:00" jcr:primaryType="jnt:translation" />
@@ -754,7 +754,7 @@
                 </my-portal>
               </wrappercontent>
             </my-portal>
-            <events jcr:mixinTypes="jmix:wrapper" j:wrapper="/sites/ACME/templates/sitewrapper" jcr:created="2010-06-24T14:57:05.286+02:00" jcr:primaryType="jnt:wrapper" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:key="template" j:applyOn="jnt:page" jcr:lastModified="2010-06-24T14:57:07.381+02:00">
+            <events jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/sitewrapper" jcr:created="2010-06-24T14:57:05.286+02:00" jcr:primaryType="jnt:template" jcr:lastModifiedBy=" system " jcr:createdBy=" system "  j:applyOn="jnt:page" jcr:lastModified="2010-06-24T14:57:07.381+02:00">
               <wrappercontent jcr:created="2010-06-24T14:57:05.288+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:05.715+02:00">
                 <row1 column="2col115" jcr:created="2010-06-24T14:57:05.290+02:00" jcr:primaryType="jnt:row" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:05.715+02:00">
                   <col1 jcr:created="2010-06-24T14:57:05.291+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:05.715+02:00">
@@ -773,7 +773,7 @@
                 </row1>
               </wrappercontent>
             </events>
-            <simple jcr:mixinTypes="jmix:wrapper" j:wrapper="/sites/ACME/templates/sitewrapper" jcr:created="2010-06-24T14:57:05.874+02:00" jcr:primaryType="jnt:wrapper" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:key="template" j:applyOn="jnt:page" jcr:lastModified="2010-06-24T14:57:07.381+02:00">
+            <simple jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/sites/ACME/templates/sitewrapper" jcr:created="2010-06-24T14:57:05.874+02:00" jcr:primaryType="jnt:template" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:applyOn="jnt:page" jcr:lastModified="2010-06-24T14:57:07.381+02:00">
               <wrappercontent jcr:created="2010-06-24T14:57:05.876+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:06.188+02:00">
                 <row column="2col115" jcr:created="2010-06-24T14:57:05.877+02:00" jcr:primaryType="jnt:row" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:06.188+02:00">
                   <col1 jcr:created="2010-06-24T14:57:05.878+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:06.188+02:00">
@@ -787,7 +787,7 @@
                 </row>
               </wrappercontent>
             </simple>
-            <sitewrapper jcr:mixinTypes="jmix:renderable" j:template="web.bodywrapper" jcr:created="2010-06-24T14:57:06.304+02:00" jcr:primaryType="jnt:wrapper" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:key="bodywrapper" jcr:lastModified="2010-06-24T14:57:06.766+02:00">
+            <sitewrapper jcr:mixinTypes="jmix:renderable" j:template="web.bodywrapper" jcr:created="2010-06-24T14:57:06.304+02:00" jcr:primaryType="jnt:template" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:06.766+02:00">
               <header jcr:created="2010-06-24T14:57:06.306+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:06.766+02:00">
                 <shortcuts jcr:mixinTypes="jmix:renderable jmix:shareable" j:template="inline" jcr:created="2010-06-24T14:57:06.307+02:00" jcr:primaryType="jnt:shortcuts" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:06.766+02:00" />
               </header>
@@ -831,7 +831,7 @@
               <GRANT_r_publisher j:privileges="review" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
             </nt_base_jBPM_1-step-publication>
           </workflowrules>
-          <search-results jcr:mixinTypes="jmix:sitemap jmix:wrapper" j:template="default" j:wrapper="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:06.317+02:00" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:07.381+02:00" priority="0.5">
+          <search-results jcr:mixinTypes="jmix:sitemap jmix:hasTemplateNode" j:template="default" j:templateNode="/sites/ACME/templates/simple" jcr:created="2010-06-24T14:57:06.317+02:00" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:07.381+02:00" priority="0.5">
             <j:translation_en j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly" jcr:lastModifiedBy=" system " jcr:language="en" jcr:title_en="Search results" jcr:lastModified="2010-06-24T14:57:07.381+02:00" priority="0.5" />
             <listA jcr:created="2010-06-24T14:57:06.321+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-06-24T14:57:07.381+02:00">
               <simple-search j:share="/sites/ACME/contents/site_components/simple-search" />

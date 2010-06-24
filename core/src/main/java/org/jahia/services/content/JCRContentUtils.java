@@ -509,7 +509,7 @@ public final class JCRContentUtils {
     public static NodeIterator getChildrenOfType(JCRNodeWrapper node, String type) {
         NodeIterator children = null;
         if (type.contains(",")) {
-            String[] typesToCheck = type.split(type, ',');
+            String[] typesToCheck = type.split(",");
             List<Node> matchingChildren = new LinkedList<Node>();
             try {
                 for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {

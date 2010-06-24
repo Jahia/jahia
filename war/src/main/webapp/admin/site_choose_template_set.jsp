@@ -33,7 +33,7 @@
 --%>
 <%@page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
 <%@include file="/admin/include/header.inc" %>
-<%@page import="org.jahia.params.ProcessingContext,org.jahia.utils.LanguageCodeConverters" %>
+<%@page import="org.jahia.bin.Jahia,org.jahia.utils.LanguageCodeConverters" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.Locale" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -41,7 +41,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     Locale selectedLocale = (Locale) request.getAttribute("selectedLocale");
-    Locale currentLocale = (Locale) request.getAttribute("currentLocale");
+    Locale currentLocale = Jahia.getThreadParamBean().getUILocale();
     stretcherToOpen = 0;
 %>
 

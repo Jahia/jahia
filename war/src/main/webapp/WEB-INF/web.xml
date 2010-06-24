@@ -174,12 +174,12 @@
 
             </param-value>
         </init-param>
-    </filter>
+    </filter>-->
 
   <filter>
     <filter-name>authFilter</filter-name>
     <filter-class>org.apache.shindig.auth.AuthenticationServletFilter</filter-class>
-  </filter>-->
+  </filter>
 <!-- End of shindig filters -->    
 
     <filter>
@@ -304,7 +304,7 @@
         <filter-name>JSecurityFilter</filter-name>
         <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
-
+   -->
     <filter-mapping>
       <filter-name>authFilter</filter-name>
       <url-pattern>/social/*</url-pattern>
@@ -328,7 +328,7 @@
     <filter-mapping>
       <filter-name>authFilter</filter-name>
       <url-pattern>/gadgets/api/rest/*</url-pattern>
-    </filter-mapping>-->
+    </filter-mapping>
 <!-- End of Shindig filter mappings -->    
 
     <listener>

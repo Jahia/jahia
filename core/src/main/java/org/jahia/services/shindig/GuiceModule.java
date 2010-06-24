@@ -1,6 +1,19 @@
 package org.jahia.services.shindig;
 
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Names;
+import org.apache.shindig.auth.AnonymousAuthenticationHandler;
+import org.apache.shindig.auth.AuthenticationHandler;
+import org.apache.shindig.common.servlet.ParameterFetcher;
+import org.apache.shindig.protocol.DataServiceServletFetcher;
+import org.apache.shindig.protocol.conversion.BeanConverter;
+import org.apache.shindig.protocol.conversion.BeanJsonConverter;
+import org.apache.shindig.protocol.conversion.BeanXStreamConverter;
+import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
 import org.apache.shindig.social.core.config.SocialApiGuiceModule;
+import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
+import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
+import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.spi.ActivityService;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
@@ -12,6 +25,7 @@ import org.apache.shindig.social.sample.service.SampleContainerHandler;
 import org.springframework.context.ApplicationContext;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -29,7 +43,27 @@ public class GuiceModule extends SocialApiGuiceModule {
 
     @Override
     protected void configure() {
-      super.configure();
+        bind(ParameterFetcher.class).annotatedWith(Names.named("DataServiceServlet"))
+            .to(DataServiceServletFetcher.class);
+
+        bind(Boolean.class)
+            .annotatedWith(Names.named(AnonymousAuthenticationHandler.ALLOW_UNAUTHENTICATED))
+            .toInstance(Boolean.TRUE);
+        bind(XStreamConfiguration.class).to(XStream081Configuration.class);
+        bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.xml")).to(
+            BeanXStreamConverter.class);
+        bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.json")).to(
+            BeanJsonConverter.class);
+        bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
+            BeanXStreamAtomConverter.class);
+
+        bind(new TypeLiteral<List<AuthenticationHandler>>(){}).toProvider(
+            JahiaAuthenticationHandlerProvider.class);
+
+        bind(new TypeLiteral<Set<Object>>(){}).annotatedWith(Names.named("org.apache.shindig.social.handlers"))
+            .toInstance(getHandlers());
+
+        bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes")).toInstance(60L);
 
       // Get spring application context
       ApplicationContext applicationContext = SpringContextSingleton.getInstance().getContext();

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.apache.log4j.Logger;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.DataCollection;
@@ -17,6 +18,7 @@ import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.spi.*;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaUser;
@@ -24,6 +26,8 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 
 import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.concurrent.Future;
@@ -37,6 +41,8 @@ import java.util.concurrent.Future;
  */
 public class JahiaShindigService implements PersonService, ActivityService, AppDataService, MessageService {
 
+    private static Logger logger = Logger.getLogger(JahiaShindigService.class);
+    
     private static final Comparator<Person> NAME_COMPARATOR = new Comparator<Person>() {
       public int compare(Person person, Person person1) {
         String name = person.getName().getFormatted();
@@ -116,7 +122,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
     private Person loadPerson(String userKey, Set<String> fields) {
         try {
-            JahiaUser jahiaUser = jahiaUserManagerService.lookupUser(userKey);
+            JahiaUser jahiaUser = jahiaUserManagerService.lookupUserByKey(userKey);
             if (jahiaUser == null) {
                 return null;
             }
@@ -171,13 +177,14 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
         return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Map<String, Object>>() {
             public Map<String, Object> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 Map<String, Object> appData = null;
-                Node userNode = session.getNode("/users/" + id);
+                String name = id.split("}")[1];
+                Node userNode = session.getNode("/users/" + name);
                 Node appDataFolderNode;
                 if (!userNode.hasNode("appdata")) {
                     appDataFolderNode = userNode.addNode("appdata", Constants.NT_FOLDER);
                     session.save();
                 } else {
-                    appDataFolderNode = session.getNode("/users/" + id + "/appdata");
+                    appDataFolderNode = session.getNode("/users/" + name + "/appdata");
                 }
                 if (appDataFolderNode != null) {
                     if (fields.contains(Person.Field.APP_DATA.toString())) {
@@ -248,25 +255,19 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
       case friends:
           jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
               public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                  Node userNode = session.getNode("/users/" + userId);
-                  Node usersFolderNode;
-                  if (!userNode.hasNode("friends")) {
-                      usersFolderNode = userNode.addNode("friends", Constants.NT_FOLDER);
-                      session.save();
-                  } else {
-                      usersFolderNode = session.getNode("/users/" + userId + "/friends");
-                  }
-                  Node members = usersFolderNode.getNode("j:members");
-                  if (members != null) {
-                      NodeIterator iterator = members.getNodes();
-                      while (iterator.hasNext()) {
-                          Node member = (Node) iterator.next();
-                          if (member.isNodeType(Constants.JAHIANT_MEMBER)) {
-                              JahiaUser jahiaUser = jahiaUserManagerService.lookupUser(member.getName());
-                              if (jahiaUser != null) {
-                                  returnVal.add(member.getName());
-                              }
-                          }
+                  String userName = userId.split("}")[1];
+
+                  Node userNode = session.getNode("/users/" + userName);
+                  Query myConnectionsQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:userConnection] as uC where isdescendantnode(uC,['"+userNode.getPath()+"'])", Query.JCR_SQL2);
+                  QueryResult myConnectionsResult = myConnectionsQuery.execute();
+
+                  NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();
+                  while (myConnectionsIterator.hasNext()) {
+                      JCRNodeWrapper myConnectionNode = (JCRNodeWrapper) myConnectionsIterator.nextNode();
+                      JCRNodeWrapper connectedToNode = (JCRNodeWrapper) myConnectionNode.getProperty("j:connectedTo").getNode();
+                      JahiaUser jahiaUser = jahiaUserManagerService.lookupUser(connectedToNode.getName());
+                      if (jahiaUser != null) {
+                          returnVal.add(jahiaUser.getUserKey());
                       }
                   }
                   return null;

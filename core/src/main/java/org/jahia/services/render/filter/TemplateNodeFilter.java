@@ -94,11 +94,15 @@ public class TemplateNodeFilter extends AbstractFilter {
                     QueryResult result = q.execute();
                     NodeIterator ni = result.getNodes();
                     while (ni.hasNext()) {
-                        wrapper = addWrapper(node, foundWrappers, wrapper, wrapperNode);
+                        wrapper = addWrapper(node, foundWrappers, wrapper, (JCRNodeWrapper) ni.nextNode());
                     }
                     current = wrapperNode;
                 } else {
-                    current = null;
+                    if (!current.isNodeType("jnt:wrapper")) {
+                        current = current.getParent();
+                    } else {
+                        current = null;
+                    }
                 }
 //
 //                NodeIterator ni = result.getNodes();

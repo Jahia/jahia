@@ -9,10 +9,17 @@
  - j:connectedFrom (weakreference) < jnt:user
  - j:connectedTo (weakreference) < jnt:user
  - j:type (string)
+
+[jnt:userActivityMediaItem] > jnt:content, jmix:sandboxContent
+ - j:type (string)
+ - j:mimeType (string)
+ - j:data (weakreference, file) < jnt:file
  
 [jnt:userActivity] > jnt:content, jmix:sandboxContent
  - j:from (weakreference) < jnt:user
  - j:message (string)
+ - j:appID (string)
+ - j:priority (double) = 0
  - j:link (string)
  - j:icon (weakreference) < jmix:image
  - j:attribution (string)
@@ -21,6 +28,7 @@
  - j:caption (string)
  - j:description (string)
  - j:picture (weakreference) < jmix:image
+ + * (jnt:userActivityMediaItem)
 
 [jnt:userMessage] > jnt:content, jmix:sandboxContent
  - j:from (weakreference) < jnt:user

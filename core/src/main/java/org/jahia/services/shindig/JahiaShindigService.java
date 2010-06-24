@@ -42,15 +42,15 @@ import java.util.concurrent.Future;
 public class JahiaShindigService implements PersonService, ActivityService, AppDataService, MessageService {
 
     private static Logger logger = Logger.getLogger(JahiaShindigService.class);
-    
+
     private static final Comparator<Person> NAME_COMPARATOR = new Comparator<Person>() {
-      public int compare(Person person, Person person1) {
-        String name = person.getName().getFormatted();
-        String name1 = person1.getName().getFormatted();
-        return name.compareTo(name1);
-      }
+        public int compare(Person person, Person person1) {
+            String name = person.getName().getFormatted();
+            String name1 = person1.getName().getFormatted();
+            return name.compareTo(name1);
+        }
     };
-        
+
     private JahiaUserManagerService jahiaUserManagerService;
     private JCRTemplate jcrTemplate;
 
@@ -64,11 +64,11 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
     /**
      * Returns a list of people that correspond to the passed in person ids.
      *
-     * @param userIds A set of users
-     * @param groupId The group
+     * @param userIds           A set of users
+     * @param groupId           The group
      * @param collectionOptions How to filter, sort and paginate the collection being fetched
-     * @param fields The profile details to fetch. Empty set implies all
-     * @param token The gadget token @return a list of people.
+     * @param fields            The profile details to fetch. Empty set implies all
+     * @param token             The gadget token @return a list of people.
      */
     public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds, GroupId groupId, CollectionOptions collectionOptions, Set<String> fields, SecurityToken token) throws ProtocolException {
         try {
@@ -76,21 +76,21 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
             Set<String> idSet = getIdSet(userIds, groupId, token);
 
-            for (String id: idSet) {
+            for (String id : idSet) {
                 result.add(loadPerson(id, fields));
             }
 
             if (GroupId.Type.self == groupId.getType() && result.isEmpty()) {
-              throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "Person not found");
+                throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "Person not found");
             }
 
             // We can pretend that by default the people are in top friends order
             if (collectionOptions.getSortBy().equals(Person.Field.NAME.toString())) {
-              Collections.sort(result, NAME_COMPARATOR);
+                Collections.sort(result, NAME_COMPARATOR);
             }
 
             if (collectionOptions.getSortOrder() == SortOrder.descending) {
-              Collections.reverse(result);
+                Collections.reverse(result);
             }
 
             // TODO: The samplecontainer doesn't really have the concept of HAS_APP so
@@ -101,8 +101,8 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
             result = result.subList(collectionOptions.getFirst(), Math.min(last, totalSize));
 
             return ImmediateFuture.newInstance(new RestfulCollection<Person>(result, collectionOptions.getFirst(),
-                totalSize));
-        } catch (RepositoryException re){
+                    totalSize));
+        } catch (RepositoryException re) {
             throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, re.getMessage(), re);
         }
     }
@@ -110,9 +110,9 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
     /**
      * Returns a person that corresponds to the passed in person id.
      *
-     * @param id The id of the person to fetch.
+     * @param id     The id of the person to fetch.
      * @param fields The fields to fetch.
-     * @param token The gadget token
+     * @param token  The gadget token
      * @return a list of people.
      */
     public Future<Person> getPerson(UserId id, Set<String> fields, SecurityToken token) throws ProtocolException {
@@ -139,12 +139,74 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
     /* -- ACTIVITY SERVICE IMPLEMENTATION -- */
 
-    public Future<RestfulCollection<Activity>> getActivities(Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields, CollectionOptions options, SecurityToken token) throws ProtocolException {
-        return null;
+    public Future<RestfulCollection<Activity>> getActivities(Set<UserId> userIds, GroupId groupId, final String appId, Set<String> fields, CollectionOptions options, SecurityToken token) throws ProtocolException {
+        final List<Activity> result = Lists.newArrayList();
+        try {
+            Set<String> idSet = getIdSet(userIds, groupId, token);
+            for (final String id : idSet) {
+
+                jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+
+                        Node userNode = getUsersNode(session, id);
+                        // now let's retrieve the activities for the user.
+                        Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:userActivity] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
+                        myConnectionActivitiesQuery.setLimit(100);
+                        QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
+
+                        NodeIterator myConnectionActivitiesIterator = myConnectionActivitiesResult.getNodes();
+                        while (myConnectionActivitiesIterator.hasNext()) {
+                            JCRNodeWrapper currentActivityNode = ((JCRNodeWrapper) myConnectionActivitiesIterator.nextNode());
+                            JahiaActivityImpl activityImpl = new JahiaActivityImpl(currentActivityNode);
+                            if (appId == null || (activityImpl.getAppId() == null)) {
+                                result.add(new JahiaActivityImpl(currentActivityNode));
+                            } else if (activityImpl.getAppId().equals(appId)) {
+                                result.add(new JahiaActivityImpl(currentActivityNode));
+                            }
+                        }
+                        return null;
+                    }
+                });
+            }
+            return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result));
+        } catch (RepositoryException re) {
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, re.getMessage(),
+                    re);
+        }
     }
 
-    public Future<RestfulCollection<Activity>> getActivities(UserId userId, GroupId groupId, String appId, Set<String> fields, CollectionOptions options, Set<String> activityIds, SecurityToken token) throws ProtocolException {
-        return null;
+    public Future<RestfulCollection<Activity>> getActivities(UserId userId, GroupId groupId, final String appId, Set<String> fields, CollectionOptions options, Set<String> activityIds, SecurityToken token) throws ProtocolException {
+        final List<Activity> result = Lists.newArrayList();
+        try {
+            final String userKey = userId.getUserId(token);
+
+            jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+
+                    Node userNode = getUsersNode(session, userKey);
+                    // now let's retrieve the activities for the user.
+                    Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:userActivity] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
+                    myConnectionActivitiesQuery.setLimit(100);
+                    QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
+
+                    NodeIterator myConnectionActivitiesIterator = myConnectionActivitiesResult.getNodes();
+                    while (myConnectionActivitiesIterator.hasNext()) {
+                        JCRNodeWrapper currentActivityNode = ((JCRNodeWrapper) myConnectionActivitiesIterator.nextNode());
+                        JahiaActivityImpl activityImpl = new JahiaActivityImpl(currentActivityNode);
+                        if (appId == null || (activityImpl.getAppId() == null)) {
+                            result.add(new JahiaActivityImpl(currentActivityNode));
+                        } else if (activityImpl.getAppId().equals(appId)) {
+                            result.add(new JahiaActivityImpl(currentActivityNode));
+                        }
+                    }
+                    return null;
+                }
+            });
+            return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result));
+        } catch (RepositoryException re) {
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, re.getMessage(),
+                    re);
+        }
     }
 
     public Future<Activity> getActivity(UserId userId, GroupId groupId, String appId, Set<String> fields, String activityId, SecurityToken token) throws ProtocolException {
@@ -173,18 +235,31 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
         return null;
     }
 
+    private String getUserNameFromKey(String userKey) {
+        if (userKey.indexOf("}") >= 0) {
+            return userKey.split("}")[1];
+        } else {
+            return userKey;
+        }
+    }
+
+    private Node getUsersNode(Session session, String userKey) throws RepositoryException {
+        String name = getUserNameFromKey(userKey);
+        Node userNode = session.getNode("/users/" + name);
+        return userNode;
+    }
+
     private Map<String, Object> getPersonAppData(final String id, final Set<String> fields) throws RepositoryException {
         return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Map<String, Object>>() {
             public Map<String, Object> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 Map<String, Object> appData = null;
-                String name = id.split("}")[1];
-                Node userNode = session.getNode("/users/" + name);
+                Node userNode = getUsersNode(session, id);
                 Node appDataFolderNode;
                 if (!userNode.hasNode("appdata")) {
-                    appDataFolderNode = userNode.addNode("appdata", Constants.NT_FOLDER);
+                    appDataFolderNode = userNode.addNode("appdata", Constants.JAHIANT_CONTENTLIST);
                     session.save();
                 } else {
-                    appDataFolderNode = session.getNode("/users/" + name + "/appdata");
+                    appDataFolderNode = userNode.getNode("/users/appdata");
                 }
                 if (appDataFolderNode != null) {
                     if (fields.contains(Person.Field.APP_DATA.toString())) {
@@ -219,13 +294,14 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
     /**
      * This will load all the properties from the JCR into the Person object, using introspection to find property
      * and convert them appropriately.
+     *
      * @param jahiaUser the JahiaUser to use to create the Shindig Person.
      */
     private JahiaPersonImpl loadPersonPropertiesFromJCR(final JahiaUser jahiaUser) throws RepositoryException {
         return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JahiaPersonImpl>() {
             public JahiaPersonImpl doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JahiaPersonImpl jahiaPersonImpl = new JahiaPersonImpl(jahiaUser);
-                String name = jahiaUser.getUserKey().split("}")[1];
+                String name = getUserNameFromKey(jahiaUser.getUserKey());
                 Node usersFolderNode = session.getNode("/users/" + name);
                 JCRUser jcrUser = null;
                 if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
@@ -243,56 +319,56 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
      * Get the set of user id's from a user and group
      */
     private Set<String> getIdSet(UserId user, GroupId group, SecurityToken token) throws RepositoryException {
-      final String userId = user.getUserId(token);
+        final String userId = user.getUserId(token);
 
-      if (group == null) {
-        return ImmutableSortedSet.of(userId);
-      }
+        if (group == null) {
+            return ImmutableSortedSet.of(userId);
+        }
 
-      final Set<String> returnVal = Sets.newLinkedHashSet();
-      switch (group.getType()) {
-      case all:
-      case friends:
-          jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
-              public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                  String userName = userId.split("}")[1];
+        final Set<String> returnVal = Sets.newLinkedHashSet();
+        switch (group.getType()) {
+            case all:
+            case friends:
+                jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        String userName = getUserNameFromKey(userId);
 
-                  Node userNode = session.getNode("/users/" + userName);
-                  Query myConnectionsQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:userConnection] as uC where isdescendantnode(uC,['"+userNode.getPath()+"'])", Query.JCR_SQL2);
-                  QueryResult myConnectionsResult = myConnectionsQuery.execute();
+                        Node userNode = session.getNode("/users/" + userName);
+                        Query myConnectionsQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:userConnection] as uC where isdescendantnode(uC,['" + userNode.getPath() + "'])", Query.JCR_SQL2);
+                        QueryResult myConnectionsResult = myConnectionsQuery.execute();
 
-                  NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();
-                  while (myConnectionsIterator.hasNext()) {
-                      JCRNodeWrapper myConnectionNode = (JCRNodeWrapper) myConnectionsIterator.nextNode();
-                      JCRNodeWrapper connectedToNode = (JCRNodeWrapper) myConnectionNode.getProperty("j:connectedTo").getNode();
-                      JahiaUser jahiaUser = jahiaUserManagerService.lookupUser(connectedToNode.getName());
-                      if (jahiaUser != null) {
-                          returnVal.add(jahiaUser.getUserKey());
-                      }
-                  }
-                  return null;
-              }
-          });
-          break;
-      case groupId:
-        break;
-      case self:
-        returnVal.add(userId);
-        break;
-      }
-      return returnVal;
+                        NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();
+                        while (myConnectionsIterator.hasNext()) {
+                            JCRNodeWrapper myConnectionNode = (JCRNodeWrapper) myConnectionsIterator.nextNode();
+                            JCRNodeWrapper connectedToNode = (JCRNodeWrapper) myConnectionNode.getProperty("j:connectedTo").getNode();
+                            JahiaUser jahiaUser = jahiaUserManagerService.lookupUser(connectedToNode.getName());
+                            if (jahiaUser != null) {
+                                returnVal.add(jahiaUser.getUserKey());
+                            }
+                        }
+                        return null;
+                    }
+                });
+                break;
+            case groupId:
+                break;
+            case self:
+                returnVal.add(userId);
+                break;
+        }
+        return returnVal;
     }
 
     /**
      * Get the set of user id's for a set of users and a group
      */
     private Set<String> getIdSet(Set<UserId> users, GroupId group, SecurityToken token)
-        throws RepositoryException {
-      Set<String> ids = Sets.newLinkedHashSet();
-      for (UserId user : users) {
-        ids.addAll(getIdSet(user, group, token));
-      }
-      return ids;
+            throws RepositoryException {
+        Set<String> ids = Sets.newLinkedHashSet();
+        for (UserId user : users) {
+            ids.addAll(getIdSet(user, group, token));
+        }
+        return ids;
     }
 
     /* -- APPDATA SERVICE IMPLEMENTATION -- */
@@ -328,5 +404,16 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
     public Future<Void> modifyMessage(UserId userId, String msgCollId, String messageId, Message message, SecurityToken token) throws ProtocolException {
         return null;
     }
-    
+
+    /*
+    private <T> T filterFields(JSONObject object, Set<String> fields, Class<T> clz)
+            throws JSONException {
+        if (!fields.isEmpty()) {
+            // Create a copy with just the specified fields
+            object = new JSONObject(object, fields.toArray(new String[fields.size()]));
+        }
+        return converter.convertToObject(object.toString(), clz);
+    }
+    */
+
 }

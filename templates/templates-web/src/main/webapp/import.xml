@@ -50,7 +50,7 @@
                 <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-web/templates/event/wrappercontent/row1/col1/mainResourceArea" />
                 <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templatesSet/templates-web/templates/event/wrappercontent/row1/col1/mainResourceArea">
                   <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
-                    <j:translation_en mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:translation" missing="false" facet="type" jcr:language="en" label_en="Type" offset="0" limit="100" />
+                    <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" label_en="Type" />
                   </fieldFacet>
                 </facets>
               </col2>
@@ -93,11 +93,11 @@
         </sitewrapper>
       </templates>
       <search-results jcr:mixinTypes="jmix:wrapper jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:wrapper="/templatesSet/templates-web/templates/simple" priority="0.5">
-        <j:translation_en j:template="default" jcr:primaryType="jnt:translation" changefreq="monthly" jcr:language="en" jcr:title_en="Search results" priority="0.5" />
+        <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Search results" />
           <listA jcr:primaryType="jnt:contentList">
                <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
                <results autoSuggest="true" pageSize="10" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
-                 <j:translation_en autoSuggest="true" pageSize="10" jcr:primaryType="jnt:translation" jcr:title_en="Results" autoSuggestHitCount="2" jcr:language="en" autoSuggestMinimumHitCount="2" />
+                 <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="Results" jcr:language="en"  />
                </results>
           </listA>
       </search-results>

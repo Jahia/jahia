@@ -150,7 +150,7 @@
             <% } %>
             <div class="head headtop">
                 <div class="object-title">
-                     <internal:message key="org.jahia.createSite.button"/>
+                     <fmt:message key="org.jahia.createSite.button"/>
                 </div>
 <%if(!isConfigWizard){%>
     <div  class="object-shared">
@@ -331,7 +331,7 @@ if (!isConfigWizard) {
         <span class="dex-PushButton"> 
             <span class="first-child">
             <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processtemplatesetchoice&selectTmplSet="+selectedTmplSet+"&languageList="+selectedLocale)%>' onclick="showWorkInProgress(); return true;">
-                <internal:message key="org.jahia.back.button"/>
+                <fmt:message key="org.jahia.back.button"/>
             </a>
             </span> 
         </span>
@@ -339,7 +339,7 @@ if (!isConfigWizard) {
         <span class="dex-PushButton"> 
             <span class="first-child">                  
              <a class="ico-ok" href="javascript:sendForm();" onclick="showWorkInProgress(); return true;">
-                <internal:message key="org.jahia.createSite.button"/>
+                <fmt:message key="org.jahia.createSite.button"/>
             </a>
             </span> 
         </span>

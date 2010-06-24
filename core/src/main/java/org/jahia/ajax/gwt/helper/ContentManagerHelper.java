@@ -834,13 +834,12 @@ public class ContentManagerHelper {
                     .doExecuteWithSystemSession(currentUserSession.getUser().getUsername(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             HashMap<String, List<String>> references = new HashMap<String, List<String>>();
-                            List<JCRNodeWrapper> pageTemplates = new ArrayList<JCRNodeWrapper>();
                             for (Map.Entry<String, String> entry : pathsToSyncronize.entrySet()) {
                                 JCRNodeWrapper originalNode = session.getNode(entry.getKey());
                                 JCRNodeWrapper destinationNode = null;
                                 try {
                                     destinationNode = session.getNode(entry.getValue());
-                                    synchro(originalNode, destinationNode, session, references, pageTemplates);
+                                    synchro(originalNode, destinationNode, session, references);
                                 } catch (PathNotFoundException e) {
                                     destinationNode =
                                             session.getNode(StringUtils.substringBeforeLast(entry.getValue(), "/"));
@@ -861,7 +860,7 @@ public class ContentManagerHelper {
     }
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
-                        Map<String, List<String>> references, List<JCRNodeWrapper> pageTemplates)
+                        Map<String, List<String>> references)
             throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
@@ -871,79 +870,88 @@ public class ContentManagerHelper {
 
         final Map<String, String> uuidMapping = session.getUuidMapping();
 
-        final boolean sharedSource =
-                source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean();
-        final boolean sharedDestination = destinationNode.hasProperty("j:templateShared") &&
-                destinationNode.getProperty("j:templateShared").getBoolean();
-        if (!sharedSource && sharedDestination) {
-            final JCRNodeWrapper parent = destinationNode.getParent();
-            destinationNode.remove();
-            source.copy(parent, source.getName(), false);
-            return;
-        }
-
-        try {
-            NodeType[] mixin = source.getMixinNodeTypes();
-            for (NodeType aMixin : mixin) {
-                destinationNode.addMixin(aMixin.getName());
-            }
-        } catch (RepositoryException e) {
-            logger.error("Error adding mixin types to copy", e);
+        NodeType[] mixin = source.getMixinNodeTypes();
+        for (NodeType aMixin : mixin) {
+            destinationNode.addMixin(aMixin.getName());
         }
 
         uuidMapping.put(source.getIdentifier(), destinationNode.getIdentifier());
         if (source.hasProperty("jcr:language")) {
             destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
         }
-        source.copyProperties(destinationNode, references);
 
-        NodeIterator ni = source.getNodes();
+        PropertyIterator props = source.getProperties();
+
         Set<String> names = new HashSet<String>();
-        while (ni.hasNext()) {
-            JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
-            names.add(child.getName());
-            if ((child.hasProperty("j:templateShared") && child.getProperty("j:templateShared").getBoolean())) {
-                if (uuidMapping.containsKey(child.getIdentifier())) {
-                    // ugly save because to make node really shareable
-                    session.save();
-                    if (destinationNode.hasNode(child.getName())) {
-                        JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                        synchro(child, node, session, references, pageTemplates);
-                    } else {
-                        destinationNode
-                                .clone(session.getNodeByUUID(uuidMapping.get(child.getIdentifier())), child.getName());
+        while (props.hasNext()) {
+            Property property = props.nextProperty();
+            names.add(property.getName());
+            try {
+                if (!property.getDefinition().isProtected() && !Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
+                    if (property.getType() == PropertyType.REFERENCE || property.getType() == PropertyType.WEAKREFERENCE) {
+                        if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                            Value[] values = property.getValues();
+                            for (Value value : values) {
+                                keepReference(destinationNode, references, property, value.getString());
+                            }
+                        } else {
+                            keepReference(destinationNode, references, property, property.getValue().getString());
+                        }
                     }
-                } else {
-                    if (destinationNode.hasNode(child.getName())) {
-                        JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                        synchro(child, node, session, references, pageTemplates);
+                    if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                        destinationNode.setProperty(property.getName(), property.getValues());
                     } else {
-                        destinationNode.clone(child, child.getName());
+                        destinationNode.setProperty(property.getName(), property.getValue());
                     }
                 }
-            } else {
-                if (destinationNode.hasNode(child.getName())) {
-                    JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                    synchro(child, node, session, references, pageTemplates);
-                } else {
-                    if (!child.hasProperty("j:templateDeployed")) {
-                        child.addMixin("jmix:templateInformation");
-                        child.setProperty("j:templateDeployed", true);
-                    }
-                    child.copy(destinationNode, child.getName(), false);
-                }
+            } catch (Exception e) {
+                logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
             }
         }
-        ni = destinationNode.getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
-            if (!names.contains(oldChild.getName()) && !oldChild.hasProperty("j:sourceTemplate") &&
-                    oldChild.hasProperty("j:templateDeployed") &&
-                    oldChild.getProperty("j:templateDeployed").getBoolean()) {
+
+        PropertyIterator pi = destinationNode.getProperties();
+        while (pi.hasNext()) {
+            JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
+            if (!names.contains(oldChild.getName())) {
                 oldChild.remove();
             }
         }
 
+        mixin = destinationNode.getMixinNodeTypes();
+        for (NodeType aMixin : mixin) {
+            if (!source.isNodeType(aMixin.getName())) {
+                destinationNode.removeMixin(aMixin.getName());
+            }
+        }
+
+        NodeIterator ni = source.getNodes();
+        names.clear();
+        while (ni.hasNext()) {
+            JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+            names.add(child.getName());
+
+                if (destinationNode.hasNode(child.getName())) {
+                    JCRNodeWrapper node = destinationNode.getNode(child.getName());
+                    synchro(child, node, session, references);
+                } else {
+                    child.copy(destinationNode, child.getName(), false);
+                }
+        }
+        ni = destinationNode.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
+            if (!names.contains(oldChild.getName())) {
+                oldChild.remove();
+            }
+        }
+
+    }
+
+    private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property, String value) throws RepositoryException {
+        if (!references.containsKey(value)) {
+            references.put(value, new ArrayList<String>());
+        }
+        references.get(value).add(destinationNode.getIdentifier() + "/" + property.getName());
     }
 
 

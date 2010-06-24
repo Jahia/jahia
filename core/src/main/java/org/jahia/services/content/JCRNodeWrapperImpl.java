@@ -1520,7 +1520,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         NodeIterator ni = getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
-            if (source.isNodeType("mix:shareable") || (source.hasProperty("j:templateShared") && source.getProperty("j:templateShared").getBoolean())) {
+            if (source.isNodeType("mix:shareable")) {
                 if (uuidMapping.containsKey(source.getIdentifier())) {
                     // ugly save because to make node really shareable
                     session.save();

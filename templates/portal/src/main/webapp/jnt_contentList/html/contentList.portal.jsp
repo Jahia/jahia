@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:forEach items="${currentNode.children}" var="subchild">
+<c:forEach items="${currentNode.nodes}" var="subchild">
     <li class="widget color-box" id="${subchild.path}">
         <div class="widget-head">
             <h3><jcr:nodeProperty node="${subchild}" name='jcr:title'/></h3>

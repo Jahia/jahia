@@ -1,18 +1,18 @@
 package org.jahia.services.content.decorator;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.NodeIteratorImpl;
 
-import javax.jcr.*;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Sep 25, 2009
  * Time: 3:07:24 PM
- * To change this template use File | Settings | File Templates.
  */
 public class JCRPlaceholderNode extends JCRNodeDecorator {
     public JCRPlaceholderNode(JCRNodeWrapper node) {
@@ -36,16 +36,11 @@ public class JCRPlaceholderNode extends JCRNodeDecorator {
 
     @Override
     public NodeIterator getNodes(String s) throws RepositoryException {
-        return new NodeIteratorImpl(new ArrayList().iterator(), 0);
+        return NodeIteratorImpl.EMPTY;
     }
 
     @Override
     public NodeIterator getNodes() throws RepositoryException {
-        return new NodeIteratorImpl(new ArrayList().iterator(), 0);
-    }
-
-    @Override
-    public List<JCRNodeWrapper> getEditableChildren() {
-        return new ArrayList<JCRNodeWrapper>();
+        return NodeIteratorImpl.EMPTY;
     }
 }

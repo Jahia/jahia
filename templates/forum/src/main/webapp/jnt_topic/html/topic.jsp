@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jcr:sql var="numberOfPostsQuery"
          sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
@@ -22,7 +23,7 @@
                 <div class="forum-post-icon"><a title="<fmt:message key="create.new.thread"/>" href="#"><span/><fmt:message key="create.new.thread"/></a></div>
             </div>
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)} <fmt:message key="threads"/>
+                ${functions:length(currentNode.nodes)} <fmt:message key="threads"/>
             </div>
 
         </div>
@@ -42,7 +43,7 @@
 
 
             <ul class="forum-list forums">
-                <c:forEach items="${currentNode.children}" var="thread" varStatus="status">
+                <c:forEach items="${currentNode.nodes}" var="thread" varStatus="status">
                     <li class="row">
                         <template:module node="${thread}" template="summary"/>
                     </li>
@@ -54,7 +55,7 @@
         <template:module node="${currentNode}" template="newThreadForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)} <fmt:message key="threads"/>
+                ${functions:length(currentNode.nodes)} <fmt:message key="threads"/>
             </div>
         </div>
         <span><fmt:message key="total.threads"/>: ${numberOfThreads}</span>

@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <template:addResources type="css" resources="forum.css"/>
 <script type="text/javascript">
     function jahiaForumQuote(targetId, quotedText) {
@@ -30,7 +31,7 @@
 
                 <fieldset>
                     <p class="field">
-                        <input value="<c:if test="${not empty currentNode.children}"> Re:</c:if>${currentNode.propertiesAsString['threadSubject']}" type="text" size="35" id="forum_site" name="jcr:title"
+                        <input value="<c:if test="${functions:length(currentNode.nodes) > 0}"> Re:</c:if>${currentNode.propertiesAsString['threadSubject']}" type="text" size="35" id="forum_site" name="jcr:title"
                                tabindex="1"/>
                     </p>
 

@@ -42,7 +42,7 @@
         <link>${url.base}${currentNode.path}.rss</link>
         <description>${fn:escapeXml(currentNode.name)}</description>
         <generator>Jahia <%= Jahia.VERSION + "." + Jahia.getPatchNumber() + " r" + Jahia.getBuildNumber() %>, http://www.jahia.org</generator>
-        <c:forEach items="${currentNode.children}" var="child">
+        <c:forEach items="${currentNode.nodes}" var="child">
         	<template:module templateType="rss" template="item" node="${child}" editable="false"/>
         </c:forEach>
     </channel>

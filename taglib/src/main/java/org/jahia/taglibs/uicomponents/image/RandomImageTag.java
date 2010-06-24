@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -135,8 +136,9 @@ public class RandomImageTag extends AbstractJCRTag {
         JCRNodeWrapper node = getJCRSession().getNode(webdavpath);
 
         List<JCRNodeWrapper> images = new ArrayList<JCRNodeWrapper>();
-        for (JCRNodeWrapper thefile : node.getChildren()) {
-            //we dont list binaries files not image and not valid (with access denied)
+        for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
+            JCRNodeWrapper thefile = (JCRNodeWrapper) iterator.nextNode();
+            //we don't list binaries files not image and not valid (with access denied)
             if (thefile.getName().toLowerCase().endsWith("jpg") || thefile.getName().toLowerCase().endsWith("gif")
                     || thefile.getName().toLowerCase().endsWith("png") || thefile.getName().toLowerCase().endsWith("bmp")) {
                 images.add(thefile);

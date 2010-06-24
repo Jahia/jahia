@@ -424,18 +424,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     Map<String,String> getThumbnailUrls();
 
     /**
-     * @see #getNodes()
-     * @deprecated Use getNodes()
-     */
-    List<JCRNodeWrapper> getChildren();
-
-    /**
-     * Get all child nodes and a JCRPlaceHolderNode holden the current node
-     * @return a list with all child nodes and a JCRPlaceHolderNode holden the current node
-     */
-    List<JCRNodeWrapper> getEditableChildren();
-
-    /**
      * Check the j:hidden property which controls whether the node is visible or not
      * @return true if the node is visible
      */

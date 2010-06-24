@@ -33,7 +33,7 @@
     Category : <select name="categorykey" onchange="javascript:replace('${currentNode.UUID}','${url.current}?categorykey='+document.forms.filter.categorykey.value)"/>
     <c:if test="${empty param.categorykey}"><option selected value="">All</option></c:if>
     <c:if test="${not empty param.categorykey}"><option value="">All</option></c:if>
-    <c:forEach items="${category.children}" var="cat">
+    <c:forEach items="${category.nodes}" var="cat">
         <c:if test="${jcr:isNodeType(cat, 'jnt:category')}">
             <jcr:nodeProperty node="${cat}" name="jcr:title" var="catTitle" />
             <c:if test="${cat.name eq param.categorykey}"> <option selected value="${cat.name}">${catTitle.string}</option> </c:if>

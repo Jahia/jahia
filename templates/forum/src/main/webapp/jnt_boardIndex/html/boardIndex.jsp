@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="forum.css"/>
 <jcr:sql var="numberOfPostsQuery"
@@ -27,7 +28,7 @@
                         <div class="boardDescription"><jcr:nodeProperty node="${currentNode}" name="boardDescription"/></div>
                         
                         </dt>
-                    <dd class="topics">${fn:length(currentNode.children)}<dfn>Topics</dfn></dd>
+                    <dd class="topics">${functions:length(currentNode.nodes)}<dfn>Topics</dfn></dd>
                     <dd class="posts">${numberOfPosts} <dfn>Posts</dfn></dd>
                     <dd class="lastpost"><c:if test="${numberOfPosts > 0}">
                         <span>

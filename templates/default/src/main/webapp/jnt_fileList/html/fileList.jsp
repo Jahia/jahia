@@ -7,7 +7,7 @@
 <jcr:nodeProperty node="${currentNode}" name="folder" var="folder"/>
 <template:addResources type="css" resources="fileList.css"/>
 <ul class="filesList">
-<c:forEach items="${folder.node.children}" var="subchild">
+<c:forEach items="${folder.node.nodes}" var="subchild">
 <li>
     <template:module node="${subchild}" template="link" />
 </li>

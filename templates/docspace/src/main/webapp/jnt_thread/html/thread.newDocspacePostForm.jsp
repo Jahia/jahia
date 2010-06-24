@@ -31,7 +31,7 @@
 
                         <p>
                             <label for="commenttitle"><fmt:message key="docspace.label.title"/> </label>
-                            <input value="<c:if test="${not empty currentNode.children}"> Re:</c:if>${currentNode.propertiesAsString['threadSubject']}"
+                            <input value="<c:if test="${not empty currentNode.nodes}"> Re:</c:if>${currentNode.propertiesAsString['threadSubject']}"
                                    type="text" size="35" id="forum_site" name="jcr:title" id="commenttitle"
                                    tabindex="1"/>
                         </p>

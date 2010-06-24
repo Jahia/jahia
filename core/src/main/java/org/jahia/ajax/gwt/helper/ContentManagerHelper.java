@@ -692,13 +692,18 @@ public class ContentManagerHelper {
     }
 
     private boolean getRecursedLocksAndFileUsages(JCRNodeWrapper nodeToDelete, List<String> lockedNodes,
-                                                  String username) {
-        for (JCRNodeWrapper child : nodeToDelete.getChildren()) {
-            getRecursedLocksAndFileUsages(child, lockedNodes, username);
-            if (lockedNodes.size() >= 10) {
-                // do not check further
-                return true;
+                                                  String username) throws GWTJahiaServiceException {
+        try {
+            for (NodeIterator iterator = nodeToDelete.getNodes(); iterator.hasNext();) {
+                JCRNodeWrapper child = (JCRNodeWrapper) iterator.next();
+                getRecursedLocksAndFileUsages(child, lockedNodes, username);
+                if (lockedNodes.size() >= 10) {
+                    // do not check further
+                    return true;
+                }
             }
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
         }
         if (nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(username)) {
             lockedNodes.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")

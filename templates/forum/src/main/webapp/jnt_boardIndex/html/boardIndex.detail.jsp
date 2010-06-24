@@ -1,9 +1,10 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <template:addResources type="css" resources="forum.css"/>
 <jcr:sql var="numberOfPostsQuery"
          sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
@@ -22,7 +23,7 @@
                 <div class="forum-post-icon"><a title="Post a new topic" href="#"><span/>Post a new topic</a></div>
             </div>
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)} topics
+                ${functions:length(currentNode.nodes)} topics
             </div>
 
         </div>
@@ -42,7 +43,7 @@
 
 
             <ul class="forum-list forums">
-                <c:forEach items="${currentNode.children}" var="topic" varStatus="status">
+                <c:forEach items="${currentNode.nodes}" var="topic" varStatus="status">
                     <li class="row">
                         <template:module node="${topic}" template="summary"/>
                     </li>
@@ -54,7 +55,7 @@
         <template:module node="${currentNode}" template="newTopicForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)} topics
+                ${functions:length(currentNode.nodes)} topics
             </div>
         </div>
         <span>Total Threads : ${numberOfThreads}</span>

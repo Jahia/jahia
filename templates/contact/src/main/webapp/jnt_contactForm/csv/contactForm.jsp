@@ -5,7 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:set target="${renderContext}" property="contentType" value="text/csv;charset=UTF-8"/>
-<c:forEach items="${currentNode.children}" var="subchild" varStatus="status" end="20">
+<c:forEach items="${currentNode.nodes}" var="subchild" varStatus="status" end="20">
 <c:if test="${status.first}">
 <template:module node="${subchild}" template="headers"/><% out.println(); %>
 </c:if>

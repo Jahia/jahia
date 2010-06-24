@@ -93,7 +93,7 @@
             }, "json");
         }
     </script>
-    <c:forEach items="${phones.children}" var="phone" varStatus="status">
+    <c:forEach items="${phones.nodes}" var="phone" varStatus="status">
         <script type="text/javascript">
             $(document).ready(function() {
                 $(".phoneNumber${status.index}").editable(function (value, settings) {
@@ -138,7 +138,7 @@
             }, "json");
         }
     </script>
-    <c:forEach items="${addresses.children}" var="address" varStatus="status">
+    <c:forEach items="${addresses.nodes}" var="address" varStatus="status">
         <script type="text/javascript">
             $(document).ready(function() {
                 $(".address${status.index}").editable(function (value, settings) {

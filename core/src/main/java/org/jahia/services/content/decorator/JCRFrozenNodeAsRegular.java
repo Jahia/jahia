@@ -123,17 +123,6 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
     }
 
     @Override
-    public List<JCRNodeWrapper> getChildren() {
-        List<JCRNodeWrapper> childEntries = null;
-        try {
-            childEntries = internalGetChildren();
-        } catch (RepositoryException re) {
-            logger.error("Error while retrieving children of node", re);
-        }
-        return childEntries;
-    }
-
-    @Override
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
         return super.getPropertiesAsString();
     }

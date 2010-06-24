@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="forum.css"/>
 <jcr:jqom var="topics">
@@ -16,6 +17,6 @@
 
 <ul>
 <c:forEach items="${topics.nodes}" var="topic">
-    <li><a href="${url.base}${topic.path}.html"><jcr:nodeProperty node="${topic}" name="topicSubject"/> (${fn:length(topic.children)} threads)</a></li>
+    <li><a href="${url.base}${topic.path}.html"><jcr:nodeProperty node="${topic}" name="topicSubject"/> (${functions:length(topic.nodes)} threads)</a></li>
 </c:forEach>
 </ul>

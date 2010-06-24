@@ -41,19 +41,15 @@ import javax.jcr.*;
 import javax.jcr.version.VersionException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.beans.PropertyDescriptor;
 import java.io.InputStream;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Dec 8, 2008
  * Time: 2:19:40 PM
- * To change this template use File | Settings | File Templates.
  */
 public class JCRMountPointNode extends JCRNodeDecorator {
     public JCRMountPointNode(JCRNodeWrapper node) {
@@ -69,15 +65,6 @@ public class JCRMountPointNode extends JCRNodeDecorator {
             getProvider().getSessionFactory().getDynamicMountPoints().remove(getPath());
             return false;
         }
-    }
-
-    public List<JCRNodeWrapper> getChildren() {
-        try {
-            return getRootNode().getChildren();
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<JCRNodeWrapper>();
     }
 
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {

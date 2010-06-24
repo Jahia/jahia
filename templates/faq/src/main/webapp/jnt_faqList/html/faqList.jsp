@@ -8,7 +8,7 @@
 <div class="summary faqSummary">
     <h3>Summary</h3>
     <ol>
-        <c:forEach items="${currentNode.children}" var="subchild">
+        <c:forEach items="${currentNode.nodes}" var="subchild">
             <li><template:module node="${subchild}" template="summary" /></li>
         </c:forEach>
     </ol>
@@ -20,7 +20,7 @@
 <div class="faqList">
     <h3>Answers</h3>
     <ol>
-        <c:forEach items="${currentNode.children}" var="subchild">
+        <c:forEach items="${currentNode.nodes}" var="subchild">
             <li><template:module node="${subchild}"/></li>
         </c:forEach>
         <c:if test="${renderContext.editMode}">

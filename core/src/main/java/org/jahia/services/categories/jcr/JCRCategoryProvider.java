@@ -33,9 +33,7 @@ package org.jahia.services.categories.jcr;
 
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryBean;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -108,8 +106,8 @@ public class JCRCategoryProvider {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getCurrentUserSession();
             rootNodeWrapper = jcrSessionWrapper.getNode( "/categories");
-            for (JCRNodeWrapper rootCategoryNode : rootNodeWrapper
-                    .getChildren()) {
+            for (NodeIterator it = rootNodeWrapper.getNodes(); it.hasNext();) {
+                JCRNodeWrapper rootCategoryNode = (JCRNodeWrapper) it.nextNode(); 
                 if (rootCategoryNode.isNodeType(Constants.JAHIANT_CATEGORY)) {
                     rootCategories.add(new Category(
                             createCategoryBeanFromNode(rootCategoryNode)));
@@ -516,8 +514,8 @@ public class JCRCategoryProvider {
                     .getCurrentUserSession();
             JCRNodeWrapper parentNodeWrapper = getParentNode(parentCategory,
                     jcrSessionWrapper);
-            for (JCRNodeWrapper rootCategoryNode : parentNodeWrapper
-                    .getChildren()) {
+            for (NodeIterator iterator = parentNodeWrapper.getNodes(); iterator.hasNext();) {
+                JCRNodeWrapper rootCategoryNode = (JCRNodeWrapper) iterator.nextNode();
                 if (rootCategoryNode.isNodeType(Constants.JAHIANT_CATEGORY)) {
                     rootCategories.add(new Category(
                             createCategoryBeanFromNode(rootCategoryNode)));

@@ -33,7 +33,7 @@ function addRSSWidget() {
 <div class="left">
 <h3>Add Portal Components</h3>
 <ul class="panellist">
-    <c:forEach items="${widgets.children}" var="node" varStatus="status">
+    <c:forEach items="${widgets.nodes}" var="node" varStatus="status">
         <li>
             <div onclick="addWidget('${node.path}','${node.name}')">
                 <span><jcr:nodeProperty node="${node}" name="jcr:title" var="title"/><c:if

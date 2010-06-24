@@ -33,16 +33,15 @@ package org.jahia.services.content.decorator;
 
 import org.jahia.services.content.JCRNodeWrapper;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
  * User: jahia
  * Date: 18 mars 2009
  * Time: 16:38:46
- * To change this template use File | Settings | File Templates.
  */
 public class JCRLayoutNode extends JCRNodeDecorator {
     public JCRLayoutNode(JCRNodeWrapper node) {
@@ -50,15 +49,12 @@ public class JCRLayoutNode extends JCRNodeDecorator {
     }
 
     public List<JCRLayoutItemNode> getLayoutItems() throws RepositoryException {
-        List<JCRNodeWrapper> nodeWrappers = getChildren();
-        if (nodeWrappers != null) {
-            List<JCRLayoutItemNode> nodes = new ArrayList<JCRLayoutItemNode>();
-            for (JCRNodeWrapper n : nodeWrappers) {
-                nodes.add(new JCRLayoutItemNode(n));
-            }
-            return nodes;
+        List<JCRLayoutItemNode> nodes = new ArrayList<JCRLayoutItemNode>();
+        for (NodeIterator iterator = getNodes(); iterator.hasNext();) {
+            nodes.add(new JCRLayoutItemNode((JCRNodeWrapper) iterator.nextNode()));
         }
-        return new ArrayList<JCRLayoutItemNode>();
+        
+        return nodes;
     }
 
     public boolean isLiveDraggable() throws RepositoryException {

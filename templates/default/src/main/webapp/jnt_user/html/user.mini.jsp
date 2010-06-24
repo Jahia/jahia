@@ -13,7 +13,7 @@
 </c:forEach>
 
 <jcr:node var="addresses" path="${currentNode.path}/j:addresses"/>
-<c:forEach items="${addresses.children}" var="address" varStatus="status">
+<c:forEach items="${addresses.nodes}" var="address" varStatus="status">
     <jcr:nodeProperty node="${address}" name="j:country" var="country"/>
 </c:forEach>
 <div>

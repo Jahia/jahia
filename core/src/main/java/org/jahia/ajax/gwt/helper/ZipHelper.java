@@ -42,11 +42,11 @@ import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipOutputStream;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -127,10 +127,13 @@ public class ZipHelper {
         if (!file.isFile()) {
             anEntry = new org.jahia.utils.zip.ZipEntry(relativePath + "/");
             zout.putNextEntry(anEntry);
-            List l = file.getChildren();
-            for (final Iterator iterator = l.iterator(); iterator.hasNext();) {
-                final JCRNodeWrapper fileNode = (JCRNodeWrapper) iterator.next();
-                zipFileEntry(fileNode, zout, buffer, rootDir);
+            try {
+                for (final NodeIterator iterator = file.getNodes(); iterator.hasNext();) {
+                    final JCRNodeWrapper fileNode = (JCRNodeWrapper) iterator.next();
+                    zipFileEntry(fileNode, zout, buffer, rootDir);
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
             }
         } else {
             final InputStream is = file.getFileContent().downloadFile();

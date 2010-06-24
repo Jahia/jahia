@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
@@ -35,7 +36,7 @@
                         key="new.post"/></a></div>
             </div>
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)}&nbsp;<fmt:message key="posts"/>
+                ${functions:length(currentNode.nodes)}&nbsp;<fmt:message key="posts"/>
             </div>
 
         </div>
@@ -55,7 +56,7 @@
         <template:include template="newPostForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
-                ${fn:length(currentNode.children)}&nbsp;<fmt:message key="posts"/>
+                ${functions:length(currentNode.nodes)}&nbsp;<fmt:message key="posts"/>
             </div>
 
         </div>

@@ -15,17 +15,8 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="pagetagging.css"/>
 <template:addResources type="css" resources="tagged.css"/>
-<c:set var="bindedComponent" value="${currentNode.properties['j:bindedComponent'].node}"/>
+<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
 <c:if test="${not empty bindedComponent}">
-    <c:choose>
-        <c:when test="${jcr:isNodeType(bindedComponent, 'jnt:mainResourceDisplay')}">
-            <c:set var="bindedComponent" value="${renderContext.mainResource.node}"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="bindedComponent" value="${bindedComponent}"/>
-        </c:otherwise>
-    </c:choose>
-
     <div class="tagthispage">
 
         <jcr:nodeProperty node="${bindedComponent}" name="j:tags" var="assignedTags"/>

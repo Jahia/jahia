@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -13,17 +14,8 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="commentable.css"/>
-<c:set var="bindedComponent" value="${currentNode.properties['j:bindedComponent'].node}"/>
+<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
 <c:if test="${not empty bindedComponent}">
-    <c:choose>
-        <c:when test="${jcr:isNodeType(bindedComponent, 'jnt:mainResourceDisplay')}">
-            <c:set var="bindedComponent" value="${renderContext.mainResource.node}"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="bindedComponent" value="${bindedComponent}"/>
-        </c:otherwise>
-    </c:choose>
-
     <a name="addComments"></a>
 
     <form action="${url.base}${bindedComponent.path}.addComment.do" method="post">

@@ -3,7 +3,8 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -22,16 +23,8 @@
 
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
-<c:set var="bindedComponent" value="${currentNode.properties['j:bindedComponent'].node}"/>
+<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
 <c:if test="${not empty bindedComponent}">
-    <c:choose>
-        <c:when test="${jcr:isNodeType(bindedComponent, 'jnt:mainResourceDisplay')}">
-            <c:set var="bindedComponent" value="${renderContext.mainResource.node}"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="bindedComponent" value="${bindedComponent}"/>
-        </c:otherwise>
-    </c:choose>
     <c:set value="${jcr:hasPermission(bindedComponent, 'write')}" var="hasWriteAccess"/>
     <h4 class="boxdocspace-title"><fmt:message key="docspace.label.document.version.tile"/></h4>
     <ul class="docspacelist docspacelistversion">

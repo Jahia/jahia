@@ -176,7 +176,7 @@
 
 [web_templates:events] = jnt:page   
  + introduction = listA
- + events = listA/events
+ + events = events
  + columnB_box = listA
  + navLink = #navlink
 

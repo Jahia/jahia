@@ -42,13 +42,14 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="2col115" jcr:primaryType="jnt:row" >
               <col1  jcr:primaryType="jnt:contentList">
-                <mainResourceArea j:areaName="events" j:filter="jnt:event" jcr:primaryType="jnt:mainResourceArea" />
+                <mainResourceArea j:areaName="listA" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                <mainResourceArea-1 j:areaName="events" j:filter="jnt:event" jcr:primaryType="jnt:mainResourceArea" />                
               </col1>
               <col2 jcr:primaryType="jnt:contentList">
                 <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
                 <side-menu j:share="/templatesSet/templates-web/contents/site_components/side-menu" />
-                <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-web/templates/event/wrappercontent/row1/col1/mainResourceArea" />
-                <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templatesSet/templates-web/templates/event/wrappercontent/row1/col1/mainResourceArea">
+                <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-web/templates/events/wrappercontent/row1/col1/mainResourceArea-1" />
+                <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templatesSet/templates-web/templates/events/wrappercontent/row1/col1/mainResourceArea-1">
                   <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
                     <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" label_en="Type" />
                   </fieldFacet>

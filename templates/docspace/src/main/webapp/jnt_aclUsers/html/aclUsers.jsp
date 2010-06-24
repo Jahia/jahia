@@ -3,7 +3,8 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -24,16 +25,8 @@
 <template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
-<c:set var="bindedComponent" value="${currentNode.properties['j:bindedComponent'].node}"/>
-<c:if test="${not empty bindedComponent}">
-    <c:choose>
-        <c:when test="${jcr:isNodeType(bindedComponent, 'jnt:mainResourceDisplay')}">
-            <c:set var="aclNode" value="${renderContext.mainResource.node}"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="aclNode" value="${bindedComponent}"/>
-        </c:otherwise>
-    </c:choose>
+<c:set var="aclNode" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
+<c:if test="${not empty aclNode}">
     <ul class="docspacelist docspacelistusers">
         <c:forEach items="${aclNode.aclEntries}" var="acls">
             <li>

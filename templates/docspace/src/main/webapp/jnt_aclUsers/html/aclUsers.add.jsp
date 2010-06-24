@@ -37,9 +37,10 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <c:if test="${jcr:hasPermission(currentNode, 'write')}">
-    <c:set var="bindedComponent" value="${currentNode.properties['j:bindedComponent'].node}"/>
-    <c:if test="${not empty bindedComponent}">
+    <c:set var="aclNode" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
+    <c:if test="${not empty aclNode}">
         <template:addResources type="css" resources="jquery.autocomplete.css"/>
         <template:addResources type="css" resources="thickbox.css"/>
         <template:addResources type="css" resources="searchusers.css"/>
@@ -88,14 +89,6 @@
                 });
             });
         </script>
-        <c:choose>
-            <c:when test="${jcr:isNodeType(bindedComponent, 'jnt:mainResourceDisplay')}">
-                <c:set var="aclNode" value="${renderContext.mainResource.node}"/>
-            </c:when>
-            <c:otherwise>
-                <c:set var="aclNode" value="${bindedComponent}"/>
-            </c:otherwise>
-        </c:choose>
         <form method="post" action="${url.base}${aclNode.path}.setAcl.do" class="userssearchform">
 
             <jcr:nodeProperty name="jcr:title" node="${aclNode}" var="title"/>

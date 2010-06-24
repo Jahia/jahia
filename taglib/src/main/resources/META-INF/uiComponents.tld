@@ -405,6 +405,17 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    
+    <function>
+        <description>Get the binded component node</description>
+        <name>getBindedComponent</name>
+        <function-class>org.jahia.taglibs.uicomponents.Functions</function-class>
+        <function-signature>org.jahia.services.content.JCRNodeWrapper getBindedComponent(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.render.RenderContext)
+        </function-signature>
+        <example>
+            ${facet:getAppliedFacetFilters(facet:decodeFacetUrlParam(param[facetParamVarName])[facetParamVarName])}
+        </example>
+    </function>    
 
     <tag-file>
         <description>

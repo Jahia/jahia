@@ -6,4 +6,4 @@
  - j:active (boolean) nofulltext
 
 [jmix:vanityUrlMapped] mixin
- + j:vanityUrlMapping (jnt:vanityUrl) multiple
+ + * (jnt:vanityUrl)

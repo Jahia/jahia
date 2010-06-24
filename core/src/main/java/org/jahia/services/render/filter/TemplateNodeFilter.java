@@ -19,8 +19,8 @@ import java.util.Set;
  * Looks for all registered wrappers in the resource and calls the associated scripts around the output.
  * Output is made available to the wrapper script through the "wrappedContent" request attribute.
  */
-public class BodyWrapperFilter extends AbstractFilter {
-    private static Logger logger = Logger.getLogger(BodyWrapperFilter.class);
+public class TemplateNodeFilter extends AbstractFilter {
+    private static Logger logger = Logger.getLogger(TemplateNodeFilter.class);
 
     public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (renderContext.getRequest().getAttribute("skipWrapper") == null) {
@@ -50,10 +50,10 @@ public class BodyWrapperFilter extends AbstractFilter {
                     chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.TRUE);
                     String output = RenderService.getInstance().render(wrapperResource, renderContext);
                     if (renderContext.isEditMode()) {
-                        output = "<div jahiatype=\"wrappedContentInfo\" wrappedNode=\"" +
+                        output = "<div jahiatype=\"linkedContentInfo\" linkedNode=\"" +
                                 resource.getNode().getIdentifier() + "\"" +
 
-                                " wrapperContent=\"" + wrapperNode.getIdentifier() + "\">" + output + "</div>";
+                                " node=\"" + wrapperNode.getIdentifier() + "\" type=\"template\">" + output + "</div>";
                     }
 
                     renderContext.getRequest().setAttribute("wrapperxx", previousWrapper);
@@ -82,7 +82,7 @@ public class BodyWrapperFilter extends AbstractFilter {
             if (node.isNodeType("jnt:wrapper")) {
                 foundWrappers.add(node.getProperty("j:key").getString());
             }
-            while (true) {
+            while (current != null) {
                 if (current.hasProperty("j:wrapper")) {
                     JCRNodeWrapper wrapperNode = (JCRNodeWrapper) current.getProperty("j:wrapper").getNode();
 
@@ -96,6 +96,9 @@ public class BodyWrapperFilter extends AbstractFilter {
                     while (ni.hasNext()) {
                         wrapper = addWrapper(node, foundWrappers, wrapper, wrapperNode);
                     }
+                    current = wrapperNode;
+                } else {
+                    current = null;
                 }
 //
 //                NodeIterator ni = result.getNodes();
@@ -123,18 +126,16 @@ public class BodyWrapperFilter extends AbstractFilter {
 //                        }
 //                    }
 //                }
-                current = current.getParent();
             }
         } catch (ItemNotFoundException e) {
             // default
             if (!foundWrappers.contains("bodywrapper")) {
                 wrapper = new Wrapper("bodywrapper", node, null);
             }
-            return wrapper;
         } catch (RepositoryException e) {
             logger.error("Cannot find wrapper", e);
         }
-        return null;
+        return wrapper;
     }
 
     private Wrapper addWrapper(JCRNodeWrapper node, Set<String> foundWrappers, Wrapper wrapper,

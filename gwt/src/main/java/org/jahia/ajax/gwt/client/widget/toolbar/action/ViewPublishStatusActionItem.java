@@ -82,6 +82,9 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                             addInfoLayer(module, "Never published", "black", "black", left, top, right, bottom, removeListener, false,
                                     "0.7");
                         }
+                    } else if (info.getStatus() == GWTJahiaPublicationInfo.LOCKED) {
+                        addInfoLayer(module, "Locked", "red", "red", left, top, right, bottom, removeListener, true,
+                                "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
                         addInfoLayer(module, "Modified", "red", "red", left, top, right, bottom, removeListener, true,
                                 "0.7");

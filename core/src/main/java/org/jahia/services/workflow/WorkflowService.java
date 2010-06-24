@@ -369,15 +369,21 @@ public class WorkflowService {
      * @param args      Map of args for the process
      */
     public String startProcess(JCRNodeWrapper stageNode, String processKey, String provider, Map<String, Object> args)
+        throws RepositoryException {
+        return startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), processKey, provider,args);
+    }
+
+    public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider, Map<String, Object> args)
             throws RepositoryException {
-        args.put("nodeId", stageNode.getIdentifier());
-        args.put("workspace", stageNode.getSession().getWorkspace().getName());
-        args.put("locale", stageNode.getSession().getLocale());
+        args.put("nodeId", nodeIds.iterator().next());
+        args.put("nodeIds", nodeIds);
+        args.put("workspace", session.getWorkspace().getName());
+        args.put("locale", session.getLocale());
         args.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey));
-        args.put("user", stageNode.getSession().getUser().getUsername());
+        args.put("user", session.getUser().getUsername());
         final String processId = lookupProvider(provider).startProcess(processKey, args);
         if(logger.isDebugEnabled()) {
-            logger.debug("A workflow "+processKey+" from "+provider+" has been started on node: "+stageNode.getPath()+
+            logger.debug("A workflow "+processKey+" from "+provider+" has been started on nodes: "+nodeIds+
                          " from workspace "+args.get("workspace")+" in locale "+args.get("locale")+ " with id "+processId);
         }
         return processId;
@@ -613,4 +619,94 @@ public class WorkflowService {
         WorkflowDefinition definition = providers.get(provider).getWorkflowDefinitionByKey(wfKey);
         addWorkflowRule(node,nodeType,definition,task,principal);
     }
+
+    public Map<String, List<String[]>> getWorkflowRules(JCRNodeWrapper objectNode) {
+        try {
+            Map<String, List<String[]>> permissions = new HashMap<String, List<String[]>>();
+            Map<String, List<String[]>> inheritedPerms = new HashMap<String, List<String[]>>();
+
+            recurseonRules(permissions, inheritedPerms, objectNode);
+            for (Map.Entry<String,List<String[]>> s : inheritedPerms.entrySet()) {
+                if (permissions.containsKey(s.getKey())) {
+                    List<String[]> l = permissions.get(s.getKey());
+                    l.addAll(s.getValue());
+                } else {
+                    permissions.put(s.getKey(), s.getValue());
+                }
+            }
+            return permissions;
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+
+    private void recurseonRules(Map<String, List<String[]>> results, Map<String, List<String[]>> inherited, Node n) throws RepositoryException {
+        try {
+            Map<String, List<String[]>> current = results;
+            while (true) {
+                if (n.hasNode("j:workflowRules")) {
+                    Node wfRules = n.getNode("j:workflowRules");
+                    NodeIterator rules = wfRules.getNodes();
+                    while (rules.hasNext()) {
+                        Node rule = rules.nextNode();
+                        NodeIterator aces = rule.getNodes();
+                        Map<String, List<String[]>> localResults = new HashMap<String, List<String[]>>();
+                        while (aces.hasNext()) {
+                            Node ace = aces.nextNode();
+                            if (ace.isNodeType("jnt:ace")) {
+                                String principal = ace.getProperty("j:principal").getString();
+                                String type = ace.getProperty("j:aceType").getString();
+                                Value[] privileges = ace.getProperty("j:privileges").getValues();
+
+                                if (!current.containsKey(principal)) {
+                                    List<String[]> p = localResults.get(principal);
+                                    if (p == null) {
+                                        p = new ArrayList<String[]>();
+                                        localResults.put(principal, p);
+                                    }
+                                    for (Value privilege : privileges) {
+                                        p.add(new String[]{n.getPath(), type, privilege.getString(), rule.getProperty("j:workflow").getString(), rule.getProperty("j:nodeType").getString()});
+                                    }
+                                }
+                            }
+                        }
+                        current.putAll(localResults);
+                        if (rule.hasProperty("j:inherit") && !rule.getProperty("j:inherit").getBoolean()) {
+                            return;
+                        }
+                    }
+                }
+                n = n.getParent();
+                current = inherited;
+            }
+        } catch (ItemNotFoundException e) {
+            logger.debug(e);
+        }
+    }
+
+
+//    public List<WorkflowRule> getWorkflowRules(final JCRNodeWrapper node, final JCRSessionWrapper session) throws RepositoryException {
+//        JCRNodeWrapper rules = null;
+//        JCRNodeWrapper nodeWrapper = node;
+//        while (rules==null) {
+//            try {
+//                rules = nodeWrapper.getNode("workflowrules");
+//            } catch (RepositoryException e) {
+//                nodeWrapper = nodeWrapper.getParent();
+//            }
+//        }
+//        List<JCRNodeWrapper> rulesList = new ArrayList<JCRNodeWrapper>();
+//        NodeIterator ni = rules.getNodes();
+//        while (ni.hasNext()) {
+//            JCRNodeWrapper rule = (JCRNodeWrapper) ni.next();
+//            WorkflowRule r = new WorkflowRule();
+//
+//            rulesList.add(rule);
+//        }
+//        return rulesList;
+//    }
+//
+
 }

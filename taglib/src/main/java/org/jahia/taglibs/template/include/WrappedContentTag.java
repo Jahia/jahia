@@ -42,6 +42,7 @@ import org.jahia.services.render.Resource;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.util.Stack;
 
@@ -63,7 +64,11 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
 
     @Override
     protected String getModuleType() throws RepositoryException {
-        return "area";
+//        if (!path.startsWith("/")) {
+            return "area";
+//        } else {
+//            return "absolutearea";
+//        }
     }
 
     @Override
@@ -136,5 +141,31 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                 logger.error(e.getMessage(), e);
             }
         }
+    }
+
+    @Override protected void printModuleStart(String type, boolean templateLocked, boolean templateShared,
+                                              boolean templateDeployed, boolean parentLocked, String path,
+                                              String resolvedTemplate, String scriptInfo)
+            throws RepositoryException, IOException {
+
+        if (this.path.startsWith("/")) {
+            RenderContext context = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+            pageContext.getOut().print("<div jahiatype=\"linkedContentInfo\" linkedNode=\"" +
+                                context.getMainResource().getNode().getIdentifier() + "\"" +
+                                " node=\"" + node.getIdentifier() + "\" type=\"absolute\">");
+        }
+
+        super.printModuleStart(type, templateLocked, templateShared, templateDeployed, parentLocked, path,
+                resolvedTemplate,
+                scriptInfo);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override protected void printModuleEnd() throws IOException {
+        super.printModuleEnd();
+
+        if (path.startsWith("/")) {
+            pageContext.getOut().print("</div>");
+        }
+
     }
 }

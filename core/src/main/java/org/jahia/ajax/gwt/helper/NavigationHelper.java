@@ -761,8 +761,8 @@ public class NavigationHelper {
 
         if (fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
             try {
-                n.setPublicationInfo(publication.getPublicationInfo(node.getIdentifier(),
-                        Collections.singleton(node.getSession().getLocale().toString()), false, node.getSession()));
+                n.setPublicationInfo(publication.getSimplePublicationInfo(node.getIdentifier(),
+                        Collections.singleton(node.getSession().getLocale().toString()), node.getSession()));
             } catch (UnsupportedRepositoryOperationException e) {
                 // do nothing
                 logger.debug(e.getMessage());

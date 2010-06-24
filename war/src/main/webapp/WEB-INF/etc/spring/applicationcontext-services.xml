@@ -243,7 +243,7 @@
                             <property name="loggingService" ref="loggingService"/>
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>
                         </bean>
-                        <bean class="org.jahia.services.render.filter.BodyWrapperFilter" >
+                        <bean class="org.jahia.services.render.filter.TemplateNodeFilter" >
                             <property name="priority" value="17" />
                             <property name="applyOnConfigurations" value="wrappedcontent,page,gwt"/>
                         </bean>

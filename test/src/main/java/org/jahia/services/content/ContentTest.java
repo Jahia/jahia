@@ -330,7 +330,7 @@ public class ContentTest extends TestCase {
             session.save();
 
             if (testFile.isNodeType("jmix:lockable")) {
-                boolean result = testFile.lockAndStoreToken();
+                boolean result = testFile.lockAndStoreToken("user");
                 testFile.save();
 
                 assertTrue("lockAndStoreToken returned false", result);

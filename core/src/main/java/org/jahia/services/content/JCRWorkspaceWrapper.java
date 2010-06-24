@@ -341,14 +341,14 @@ public class JCRWorkspaceWrapper implements Workspace {
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNode(absPath);
-                    if (!node.getRealNode().isLocked()) {
+                    if (!node.getRealNode().isLocked() || session.isSystem()) {
                         versionManager.checkout(node.getRealNode().getPath());
                     }
 
                     if (session.getLocale() != null) {
                         try {
                             final Node i18n = node.getI18N(session.getLocale());
-                            if (!i18n.isLocked()) {
+                            if (!i18n.isLocked() || session.isSystem()) {
                                 versionManager.checkout(i18n.getPath());
                             }
                         } catch (ItemNotFoundException e) {

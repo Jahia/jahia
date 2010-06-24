@@ -15,7 +15,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 */
 public class PublishActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        EditActions.publish(linker);
+        EditActions.publish(linker, false);
     }
 
     /**

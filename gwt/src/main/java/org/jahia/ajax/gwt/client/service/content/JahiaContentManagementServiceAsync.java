@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryIt
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -224,18 +225,10 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     /**
      * Get the publication status information for a particular path.
      *
-     * @param uuid uuid to get publication info from
-     * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
-     */
-    void getPublicationInfo(String uuid, boolean includeReferences, AsyncCallback<GWTJahiaPublicationInfo> async);
-
-    /**
-     * Get the publication status information for a particular path.
-     *
      * @param uuids uuids to get publication info from
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
-    void getPublicationInfo(List<String> uuids, boolean includeReferences, AsyncCallback<Map<String,GWTJahiaPublicationInfo>> async);
+    void getPublicationInfo(List<String> uuids, boolean allSubTree, AsyncCallback<List<GWTJahiaPublicationInfo>> async);
 
     /**
      * Get higthligthed

@@ -13,17 +13,20 @@ import java.util.*;
  * Time: 12:00:28 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializable {
+public class GWTJahiaPublicationInfo extends BaseModel implements Serializable {
 
     public static final int PUBLISHED = 1;
-    public static final int MODIFIED = 2;
-    public static final int NOT_PUBLISHED = 3;
-    public static final int UNPUBLISHED = 4;
-    public static final int LIVE_MODIFIED = 6;
-    public static final int LIVE_ONLY = 7;
+    public static final int LOCKED = 2;
+    public static final int MODIFIED = 3;
+    public static final int NOT_PUBLISHED = 4;
+    public static final int UNPUBLISHED = 5;
+    public static final int LIVE_MODIFIED = 7;
+    public static final int LIVE_ONLY = 8;
     public static final int CONFLICT = 9;
 
     private Set<Integer> subnodesStatus = new HashSet<Integer>();
+
+    private List<GWTJahiaPublicationInfo> subnodes = new ArrayList<GWTJahiaPublicationInfo>();
 
     public GWTJahiaPublicationInfo() {
     }
@@ -40,6 +43,14 @@ public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializab
 
     public void setTitle(String path) {
         set("title", path);
+    }
+
+    public String getNodetype() {
+        return get("nodetype");
+    }
+
+    public void setNodetype(String nodetype) {
+        set("nodetype", nodetype);
     }
 
     public String getPath() {
@@ -62,8 +73,8 @@ public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializab
         return subnodesStatus;
     }
 
-    public void addSubnodesStatus(Integer status) {
-        subnodesStatus.add(status);
+    public void setSubnodesStatus(Set<Integer> subnodesStatus) {
+        this.subnodesStatus = subnodesStatus;
     }
 
     public Boolean isCanPublish() {
@@ -73,5 +84,14 @@ public class GWTJahiaPublicationInfo extends BaseTreeModel implements Serializab
     public void setCanPublish(Boolean canPublish) {
         set("canPublish", canPublish);
     }
+
+    public void addSubnode(GWTJahiaPublicationInfo subnode) {
+        subnodes.add(subnode);
+    }
+
+    public List<GWTJahiaPublicationInfo> getSubnodes() {
+        return subnodes;
+    }
+
 
 }

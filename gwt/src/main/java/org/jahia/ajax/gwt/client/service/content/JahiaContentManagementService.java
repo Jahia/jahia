@@ -56,6 +56,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -229,20 +230,12 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public void unpublish(List<String> path) throws GWTJahiaServiceException;
 
     /**
-     * Get the publication status information for a particular path.
-     *
-     * @param uuid path to get publication info from
-     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
-     */
-    public GWTJahiaPublicationInfo getPublicationInfo(String uuid, boolean includeReferences) throws GWTJahiaServiceException;
-
-    /**
      * Get the publication status information for multiple pathes.
      *
      * @param uuids path to get publication info from
      * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      */
-    public Map<String, GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean includeReferences) throws GWTJahiaServiceException;
+    public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree) throws GWTJahiaServiceException;
 
 
     public String getHighlighted(String original, String amendment) throws GWTJahiaServiceException;

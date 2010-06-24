@@ -67,153 +67,87 @@ public class JCRPublicationService extends JahiaService {
         return instance;
     }
 
-    /**
-     * Search in all sub nodes and properties the referenced nodes and get the list of nodes where the publication
-     * should stop ( currently sub pages, sub folders and sub files ).
-     *
-     * @param start          The root node where to start the search
-     * @param toPublish      Empty list, will be filled with the list of sub nodes that will be part of the publication
-     * @param pruneNodes     Empty list, will be filled with the list of sub nodes that should not be part of the publication
-     * @param referencedNode Empty list, will be filled with the list of nodes referenced in the sub tree
-     * @param languages      Languages list to publish, or null for all languages
-     * @param allSubTree     Do not prune on sub nodes, includes all sub tree
-     */
-    private void getBlockedAndReferencesList(JCRNodeWrapper start, List<JCRNodeWrapper> toPublish, List<JCRNodeWrapper> pruneNodes, List<JCRNodeWrapper> referencedNode, Set<String> languages, boolean allSubTree) throws RepositoryException {
-        toPublish.add(start);
-        String lang = null;
-        if (start.isNodeType("jnt:translation")) {
-            lang = start.getProperty("jcr:language").getString();
-        }
-
-        PropertyIterator pi = start.getProperties();
-        while (pi.hasNext()) {
-            Property p = pi.nextProperty();
-            PropertyDefinition definition = p.getDefinition();
-            if (lang != null && p.getName().endsWith("_" + lang)) {
-                String name = p.getName().substring(0, p.getName().length() - lang.length() - 1);
-                definition = ((JCRNodeWrapper) start.getParent()).getApplicablePropertyDefinition(name);
-            }
-            if (definition!=null &&
-                (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE)
-                && !p.getName().startsWith("jcr:")) {
-                if (definition.isMultiple()) {
-                    Value[] vs = p.getValues();
-                    for (Value v : vs) {
-                        try {
-                            JCRNodeWrapper ref = start.getSession().getNodeByUUID(v.getString());
-                            if (!referencedNode.contains(ref)) {
-                                if (!ref.isNodeType("jnt:page")) {
-                                    referencedNode.add(ref);
-                                }
-                            }
-                        } catch (ItemNotFoundException e) {
-                            if (definition.getRequiredType() == PropertyType.REFERENCE) {
-                                logger.warn("Cannot get reference " + v.getString());
-                            } else {
-                                logger.debug("Cannot get reference " + v.getString());
-                            }
-
-                        }
-                    }
-                } else {
-                    try {
-                        JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
-                        if (!referencedNode.contains(ref)) {
-                            if (!ref.isNodeType("jnt:page")) {
-                                referencedNode.add(ref);
-                            }
-                        }
-                    } catch (ItemNotFoundException e) {
-                        logger.warn("Cannot get reference " + p.getString());
-                    }
-                }
-            }
-        }
-        NodeIterator ni = start.getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
-            if (!allSubTree && hasIndependantPublication(n)) {
-                pruneNodes.add(n);
-            } else if (languages != null && n.isNodeType("mix:language")) {
-                String translationLanguage = n.getProperty("jcr:language").getString();
-                if (languages.contains(translationLanguage)) {
-                    getBlockedAndReferencesList(n, toPublish, pruneNodes, referencedNode, languages, allSubTree);
-                } else {
-                    pruneNodes.add(n);
-                }
-            } else if (n.isNodeType("jmix:lastPublished")) {
-                getBlockedAndReferencesList(n, toPublish, pruneNodes, referencedNode, languages, allSubTree);
-            }
-        }
-    }
-
     public boolean hasIndependantPublication(JCRNodeWrapper node) throws RepositoryException {
         return node.isNodeType("jmix:publication"); // todo : do we want to add this as a configurable in admin ?
                                                     // currently it has to be set in definitions files
     }
 
-    public void lockForPublication(final String path, final String workspace, final Set<String> languages, final boolean allSubTree) throws RepositoryException {
+    public void lockForPublication(final List<PublicationInfo> publicationInfo, final String workspace, final String key) throws RepositoryException {
         JCRTemplate.getInstance().doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getUsername(), workspace, null,new JCRCallback() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper n = session.getNode(path);
-                ArrayList<JCRNodeWrapper> toLock = new ArrayList<JCRNodeWrapper>();
-                ArrayList<JCRNodeWrapper> prune = new ArrayList<JCRNodeWrapper>();
-                ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
-                getBlockedAndReferencesList(n, toLock, prune, references, languages, allSubTree);
-                for (JCRNodeWrapper node : toLock) {
-                    if (node.isLockable() && !node.isLocked()) {
-                        node.lockAndStoreToken();
-                    }
-                }
-                for (JCRNodeWrapper reference : references) {
-                    JCRNodeWrapper ref = session.getNode(reference.getPath());
-                    if (ref.isLockable() && !ref.isLocked()) {
-                        ref.lockAndStoreToken();
-                    }
+                for (PublicationInfo info : publicationInfo) {
+                    doLock(info, session, key);
                 }
                 return null;
             }
         });
     }
 
-    public List<String> unlockForPublication(final String path, final String workspace, final Set<String> languages,
-                                             final boolean allSubTree, final boolean ignoreTranslations) throws RepositoryException {
-        final List<String> toRelock = new ArrayList<String>();
+    private void doLock(PublicationInfo publicationInfo, JCRSessionWrapper session, String key) throws RepositoryException {
+        JCRNodeWrapper node = session.getNodeByUUID(publicationInfo.getRoot().getUuid());
+        if (!node.isNodeType("jmix:publication")) {
+            if (!node.isCheckedOut()) {
+                node.checkout();
+            }
+            node.addMixin("jmix:publication");
+            session.save();
+        }
+
+        for (String uuid : publicationInfo.getAllUuids()) {
+            node = session.getNodeByUUID(uuid);
+            if (node.isLockable()) {
+                node.lockAndStoreToken(key);
+            }
+        }
+        for (PublicationInfo tree : publicationInfo.getAllReferences()) {
+            for (String uuid : tree.getAllUuids()) {
+                node = session.getNodeByUUID(uuid);
+                if (node.isLockable()) {
+                    node.lockAndStoreToken(key);
+                }
+            }
+        }
+    }
+
+    public void unlockForPublication(final List<PublicationInfo> publicationInfo, final String workspace, final String key) throws RepositoryException {
+//        final List<String> toRelock = new ArrayList<String>();
         JCRTemplate.getInstance().doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getUsername(), workspace, null,new JCRCallback() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper n = session.getNode(path);
-                ArrayList<JCRNodeWrapper> toUnlock = new ArrayList<JCRNodeWrapper>();
-                ArrayList<JCRNodeWrapper> prune = new ArrayList<JCRNodeWrapper>();
-                ArrayList<JCRNodeWrapper> references = new ArrayList<JCRNodeWrapper>();
-                getBlockedAndReferencesList(n, toUnlock, prune, references, languages, allSubTree);
-                Collections.reverse(toUnlock);
-                for (JCRNodeWrapper node : toUnlock) {
-                    if (node.isLocked()) {
-                        try {
-                            node.unlock(ignoreTranslations);
-                            if (!node.getLockedLocales().isEmpty()) {
-                                toRelock.add(node.getUUID());
-                            }
-                        } catch (LockException e) {
-                        }
-                    }
-                }
-                for (JCRNodeWrapper reference : references) {
-                    JCRNodeWrapper ref = session.getNode(reference.getPath());
-                    if (ref.isLocked()) {
-                        try {
-                            ref.unlock(ignoreTranslations);
-                            if (!ref.getLockedLocales().isEmpty()) {
-                                toRelock.add(ref.getUUID());
-                            }
-                        } catch (LockException e) {
-                        }
-                    }
+//                Collections.reverse(toUnlock);
+                for (PublicationInfo info : publicationInfo) {
+                    doUnlock(info, session, key);
                 }
                 return null;
             }
         });
-        return toRelock;
+//        return toRelock;
+    }
+
+    private void doUnlock(PublicationInfo publicationInfo, JCRSessionWrapper session, String key) throws RepositoryException {
+        List<String> allUuids = publicationInfo.getAllUuids();
+        Collections.reverse(allUuids);
+        for (String uuid : allUuids) {
+            JCRNodeWrapper node = session.getNodeByUUID(uuid);
+            if (node.isLocked()) {
+                try {
+                    node.unlock(key);
+                } catch (LockException e) {
+                }
+            }
+        }
+        for (PublicationInfo tree : publicationInfo.getAllReferences()) {
+            allUuids = tree.getAllUuids();
+            Collections.reverse(allUuids);
+            for (String uuid : allUuids) {
+                JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                if (node.isLocked()) {
+                    try {
+                        node.unlock(key);
+                    } catch (LockException e) {
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -228,9 +162,13 @@ public class JCRPublicationService extends JahiaService {
      * @param allSubTree
      * @throws javax.jcr.RepositoryException in case of error
      */
-    public void publish(final String path, final String sourceWorkspace, final String destinationWorkspace, final Set<String> languages,
+    public void publish(final String uuid, final String sourceWorkspace, final String destinationWorkspace, final Set<String> languages,
                         final boolean allSubTree) throws RepositoryException {
-        final List<String> l = unlockForPublication(path, sourceWorkspace, languages, allSubTree, true);
+        List<PublicationInfo> tree = getPublicationInfo(uuid, languages, true, true, allSubTree, sourceWorkspace, destinationWorkspace);
+        publish(tree, sourceWorkspace, destinationWorkspace);
+    }
+
+    public void publish(final List<PublicationInfo> publicationInfos, final String sourceWorkspace, final String destinationWorkspace) throws RepositoryException {
         final String username;
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
@@ -238,41 +176,39 @@ public class JCRPublicationService extends JahiaService {
         } else {
             username = null;
         }
-        JCRTemplate.getInstance().doExecute(false, username, sourceWorkspace, null,  new JCRCallback() {
+        JCRTemplate.getInstance().doExecute(true, username, sourceWorkspace, null,  new JCRCallback() {
             public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
                 JCRTemplate.getInstance().doExecute(true, username, destinationWorkspace, new JCRCallback() {
                     public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
-                        JCRNodeWrapper n = sourceSession.getNode(path);
+                        for (PublicationInfo publicationInfo : publicationInfos) {
+                            JCRNodeWrapper n = sourceSession.getNodeByUUID(publicationInfo.getRoot().getUuid());
 
-                        for (ExtendedNodeType type : n.getMixinNodeTypes()) {
-                            if (type.getName().equals("jmix:publication")) {
-                                if (!n.isCheckedOut()) {
-                                    n.checkout();
+                            for (ExtendedNodeType type : n.getMixinNodeTypes()) {
+                                if (type.getName().equals("jmix:publication")) {
+                                    if (!n.isCheckedOut()) {
+                                        n.checkout();
+                                    }
+                                    n.removeMixin("jmix:publication");
+                                    sourceSession.save();
                                 }
-                                n.removeMixin("jmix:publication");
-                                sourceSession.save();
                             }
+
+                            publish(publicationInfo, sourceSession, destinationSession, new HashSet<String>());
                         }
-
-                        publish(n, destinationSession, languages, allSubTree, new HashSet<String>());
-
                         return null;
                     }
                 });
-                
-                for (String s : l) {
-                    sourceSession.getNodeByUUID(s).lockAndStoreToken();
-                }
 
                 return null;
             }
         });
     }
 
-    private void publish(final JCRNodeWrapper sourceNode, JCRSessionWrapper destinationSession, Set<String> languages,
-                         boolean allSubTree, Set<String> paths) throws RepositoryException {
+    private void publish(final PublicationInfo publicationInfo, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession, Set<String> uuids) throws RepositoryException {
         final Calendar calendar = new GregorianCalendar();
-        paths.add(sourceNode.getPath());
+        uuids.add(publicationInfo.getRoot().getUuid());
+
+        final JCRNodeWrapper sourceNode = sourceSession.getNodeByUUID(publicationInfo.getRoot().getUuid());
 
         final String destinationWorkspace = destinationSession.getWorkspace().getName();
 
@@ -298,22 +234,23 @@ public class JCRPublicationService extends JahiaService {
             }
         }
 
-        final List<JCRNodeWrapper> pruneSourceNodes = new ArrayList<JCRNodeWrapper>();
-        final List<JCRNodeWrapper> referencedNodes = new ArrayList<JCRNodeWrapper>();
-        final List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
+        final List<String> uuidsToPublish = publicationInfo.getAllUuids();
 
-        getBlockedAndReferencesList(sourceNode, toPublish, pruneSourceNodes, referencedNodes, languages, allSubTree);
-
-        ((ArrayList) referencedNodes).removeAll(toPublish);
-        for (JCRNodeWrapper node : referencedNodes) {
+        for (PublicationInfo subtree : publicationInfo.getAllReferences()) {
             try {
-                if (!paths.contains(node.getPath())) {
-                    publish(node, destinationSession, languages, false, paths);
+                if (!uuids.contains(subtree.getRoot().getUuid()) && !uuidsToPublish.contains(subtree.getRoot().getUuid()) ) {
+                    publish(subtree, sourceSession, destinationSession, uuids);
                 }
             } catch (Exception e) {
-                logger.warn("Cannot publish node at : " + node.getPath(),e);
+                logger.warn("Cannot publish node at : " + subtree.getRoot().getUuid(),e);
             }
         }
+
+        List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
+        for (String uuid : uuidsToPublish) {
+            toPublish.add(sourceSession.getNodeByUUID(uuid));
+        }
+
         if (destinationSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
                 if (!jcrNodeWrapper.hasProperty("j:published") || !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
@@ -335,23 +272,23 @@ public class JCRPublicationService extends JahiaService {
             destinationSession.save();
         }
 
-        final List<String> prunedSourcePath = new ArrayList<String>();
-        for (JCRNodeWrapper node : pruneSourceNodes) {
-            prunedSourcePath.add(node.getIdentifier());
-        }
+//        final List<String> prunedSourcePath = new ArrayList<String>();
+//        for (JCRNodeWrapper node : pruneSourceNodes) {
+//            prunedSourcePath.add(node.getIdentifier());
+//        }
 
         try {
             JCRNodeWrapper destNode = destinationSession.getNode(sourceNode.getPath());
-            ArrayList<JCRNodeWrapper> pruneDestNodes = new ArrayList<JCRNodeWrapper>();
-            getBlockedAndReferencesList(destNode, new ArrayList<JCRNodeWrapper>(), pruneDestNodes, new ArrayList<JCRNodeWrapper>(), languages, allSubTree);
-            final List<String> prunedDestPath = new ArrayList<String>();
-            for (JCRNodeWrapper node : pruneDestNodes) {
-                prunedDestPath.add(node.getPath());
-            }
+//            ArrayList<JCRNodeWrapper> pruneDestNodes = new ArrayList<JCRNodeWrapper>();
+//            getBlockedAndReferencesList(destNode, new ArrayList<JCRNodeWrapper>(), pruneDestNodes, new ArrayList<JCRNodeWrapper>(), languages, allSubTree);
+//            final List<String> prunedDestPath = new ArrayList<String>();
+//            for (JCRNodeWrapper node : pruneDestNodes) {
+//                prunedDestPath.add(node.getPath());
+//            }
 
-            mergeToDestinationWorkspace(toPublish, prunedSourcePath, prunedDestPath, sourceNode.getSession(), destinationSession, calendar);
+            mergeToDestinationWorkspace(toPublish, uuidsToPublish, sourceNode.getSession(), destinationSession, calendar);
         } catch (PathNotFoundException e) {
-            cloneToDestinationWorkspace(toPublish.iterator().next(), prunedSourcePath, sourceNode.getSession(), destinationSession, calendar);
+            cloneToDestinationWorkspace(toPublish.iterator().next(), uuidsToPublish, sourceNode.getSession(), destinationSession, calendar);
         }
     }
 
@@ -367,7 +304,7 @@ public class JCRPublicationService extends JahiaService {
         checkin(destinationSession, destinationSession.getNode(path), destinationSession.getWorkspace().getVersionManager(), calendar);
     }
 
-    void mergeToDestinationWorkspace(final List<JCRNodeWrapper> toPublish, final List<String> prunedSourcePath, final List<String> prunedDestPath, final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession, Calendar calendar) throws RepositoryException {
+    void mergeToDestinationWorkspace(final List<JCRNodeWrapper> toPublish, final List<String> uuidsToPublish,final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession, Calendar calendar) throws RepositoryException {
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
@@ -424,7 +361,7 @@ public class JCRPublicationService extends JahiaService {
 
                 // Item exists at "destinationPath" in live space, update it
 
-                Node destinationNode = destinationSession.getNode(destinationPath); // Live node exists - merge live node from source space
+                JCRNodeWrapper destinationNode = destinationSession.getNode(destinationPath); // Live node exists - merge live node from source space
 
                 // force conflict
                 destinationNode.checkout();
@@ -438,6 +375,7 @@ public class JCRPublicationService extends JahiaService {
                 if (destinationNode.isNodeType("mix:versionable") && destinationNode.isCheckedOut() && !destinationNode.hasProperty("jcr:mergeFailed")) {
                     destinationVersionManager.checkin(destinationPath);
                 }
+                destinationSession.save();
                 NodeIterator ni = destinationVersionManager.merge(destinationPath, node.getSession().getWorkspace().getName(), true, true);
 
                 if (ni.hasNext()) {
@@ -448,7 +386,7 @@ public class JCRPublicationService extends JahiaService {
                         JCRNodeWrapper destNode = destinationSession.getNode(failed.getPath());
 
                         ConflictResolver resolver = new ConflictResolver(node, destNode);
-                        resolver.setPrunedSourcePath(prunedSourcePath);
+                        resolver.setUuidsToPublish(uuidsToPublish);
                         try {
                             resolver.applyDifferences();
 
@@ -462,7 +400,7 @@ public class JCRPublicationService extends JahiaService {
                         }
                     }
 //                    if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
-                    recurseCheckin(destinationSession, destinationNode, prunedDestPath, destinationVersionManager, calendar);
+                    recurseCheckin(destinationSession, destinationNode, uuidsToPublish, destinationVersionManager, calendar);
 //                        node.update(destinationSession.getWorkspace().getName()); // do not update live in reverse publish
 //                    }
                 }
@@ -488,22 +426,22 @@ public class JCRPublicationService extends JahiaService {
 
             } catch (ItemNotFoundException e) {
                 // Item does not exist yet in live space
-                JCRNodeWrapper destinationNode = doClone(node, prunedSourcePath, sourceSession, destinationSession);
+                JCRNodeWrapper destinationNode = doClone(node, uuidsToPublish, sourceSession, destinationSession);
                 destinationVersionManager.checkin(node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName()));
                 recurseCheckin(destinationSession, destinationNode, null, destinationVersionManager, calendar);
             }
         }
     }
 
-    void cloneToDestinationWorkspace(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession, Calendar calendar) throws RepositoryException {
+    void cloneToDestinationWorkspace(JCRNodeWrapper sourceNode, List<String> uuidsToPublish, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession, Calendar calendar) throws RepositoryException {
         final VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
 
-        recurseSetPublicationDate(sourceNode, pruneNodes, calendar, sourceSession.getUserID());
+        recurseSetPublicationDate(sourceNode, uuidsToPublish, calendar, sourceSession.getUserID());
         sourceSession.save();
         checkin(sourceSession, sourceNode, sourceVersionManager, calendar);
-        recurseCheckin(sourceSession, sourceNode, pruneNodes, sourceVersionManager, calendar);
+        recurseCheckin(sourceSession, sourceNode, uuidsToPublish, sourceVersionManager, calendar);
 
-        JCRNodeWrapper destinationNode = doClone(sourceNode, pruneNodes, sourceSession, destinationSession);
+        JCRNodeWrapper destinationNode = doClone(sourceNode, uuidsToPublish, sourceSession, destinationSession);
 
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
         if (sourceNode.getParent().isVersioned()) {
@@ -512,7 +450,7 @@ public class JCRPublicationService extends JahiaService {
         recurseCheckin(destinationSession, destinationNode, null, destinationVersionManager, calendar);
     }
 
-    JCRNodeWrapper doClone(JCRNodeWrapper sourceNode, List<String> pruneNodes, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
+    JCRNodeWrapper doClone(JCRNodeWrapper sourceNode, List<String> uuidsToPublish, JCRSessionWrapper sourceSession, JCRSessionWrapper destinationSession) throws RepositoryException {
         JCRNodeWrapper parent = sourceNode.getParent();
 //                destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
 
@@ -602,20 +540,20 @@ public class JCRPublicationService extends JahiaService {
             JahiaAccessManager.setDeniedPaths(null);
         }
         JCRNodeWrapper destinationNode = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
-        if (pruneNodes != null && sourceNode.getNodes().hasNext()) {
+        if (uuidsToPublish != null && sourceNode.getNodes().hasNext()) {
             NodeIterator it = sourceNode.getNodes();
             while (it.hasNext()) {
                 JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
-                if (!pruneNodes.contains(nodeWrapper.getIdentifier()) && nodeWrapper.isVersioned()) {
+                if (uuidsToPublish.contains(nodeWrapper.getIdentifier()) && nodeWrapper.isVersioned()) {
                     try {
                         // Check if the child has a corresponding path - if not, clone it
                         nodeWrapper.getCorrespondingNodePath(destinationWorkspaceName);
                         // Check if parent node has a child with that name - if not, clone it (shareable)
                         if (!destinationNode.hasNode(nodeWrapper.getName())) {
-                            doClone(nodeWrapper, pruneNodes, sourceSession, destinationSession);
+                            doClone(nodeWrapper, uuidsToPublish, sourceSession, destinationSession);
                         }
                     } catch (ItemNotFoundException e) {
-                        doClone(nodeWrapper, pruneNodes, sourceSession, destinationSession);
+                        doClone(nodeWrapper, uuidsToPublish, sourceSession, destinationSession);
                     }
                 }
             }
@@ -652,7 +590,7 @@ public class JCRPublicationService extends JahiaService {
         return oldPath;
     }
 
-    private void recurseSetPublicationDate(Node node, List<String> prune, Calendar c, String userID) throws RepositoryException {
+    private void recurseSetPublicationDate(Node node, List<String> uuidsToPublish, Calendar c, String userID) throws RepositoryException {
         if (node.isNodeType("jmix:lastPublished")) {
             if (!node.isCheckedOut()) {
                 node.checkout();
@@ -663,27 +601,27 @@ public class JCRPublicationService extends JahiaService {
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
             Node sub = ni.nextNode();
-            if (prune == null || !prune.contains(sub.getIdentifier())) {
-                recurseSetPublicationDate(sub, prune, c, userID);
+            if (uuidsToPublish == null || uuidsToPublish.contains(sub.getIdentifier())) {
+                recurseSetPublicationDate(sub, uuidsToPublish, c, userID);
             }
         }
     }
 
-    private void checkin(Session session, Node node, VersionManager versionManager, Calendar calendar) throws RepositoryException {
+    private void checkin(Session session, JCRNodeWrapper node, VersionManager versionManager, Calendar calendar) throws RepositoryException {
         jcrVersionService.setNodeCheckinDate(node, calendar);
         session.save();
         versionManager.checkin(node.getPath());
     }
 
-    private void recurseCheckin(Session session, Node node, List<String> prune, VersionManager versionManager, Calendar calendar) throws RepositoryException {
+    private void recurseCheckin(Session session, JCRNodeWrapper node, List<String> uuidsToPublish, VersionManager versionManager, Calendar calendar) throws RepositoryException {
         if (node.isNodeType("mix:versionable") && node.isCheckedOut() && !node.hasProperty("jcr:mergeFailed")) {
             checkin(session, node, versionManager, calendar);
         }
         NodeIterator ni = node.getNodes();
         while (ni.hasNext()) {
-            Node sub = ni.nextNode();
-            if (prune == null || !prune.contains(sub.getIdentifier())) {
-                recurseCheckin(session, sub, prune, versionManager, calendar);
+            JCRNodeWrapper sub = (JCRNodeWrapper) ni.nextNode();
+            if (uuidsToPublish == null || uuidsToPublish.contains(sub.getIdentifier())) {
+                recurseCheckin(session, sub, uuidsToPublish, versionManager, calendar);
             }
         }
     }
@@ -746,21 +684,27 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    /**
-     * Gets the publication info for the current node and if acquired also for referenced nodes and subnodes.
-     * The returned <code>PublicationInfo</code> has the publication info for the current node (NOT_PUBLISHED, PUBLISHED, MODIFIED, UNPUBLISHABLE)
-     * and if requested you will be able to get the infos also for the subnodes and the referenced nodes.
-     * As language dependent data is always stored in subnodes you need to set includesSubnodes to true, if you also specify a list of languages.
-     *
-     * @param uuid               The uuid of the node to get publication info
-     * @param languages          Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
-     * @param includesReferences If true include info for referenced nodes
-     * @param includesSubnodes   If true include info for subnodes
-     * @return the <code>PublicationInfo</code> for the requested node(s)
-     * @throws RepositoryException
-     */
-    public PublicationInfo getPublicationInfo(String uuid, Set<String> languages, boolean includesReferences, boolean includesSubnodes) throws RepositoryException {
-        return getPublicationInfo(uuid, languages, includesReferences, includesSubnodes, new HashSet<String>());
+    public List<PublicationInfo> getPublicationInfos(List<String> uuids, Set<String> languages, boolean includesReferences, boolean includesSubnodes, boolean allsubtree,
+                                              final String sourceWorkspace, final String destinationWorkspace)  throws RepositoryException {
+        List<PublicationInfo> infos = new ArrayList<PublicationInfo>();
+
+        List<String> allUuids = new ArrayList<String>();
+
+        for (String uuid : uuids) {
+            if (!allUuids.contains(uuid)) {
+                final List<PublicationInfo> publicationInfos = getPublicationInfo(uuid, languages, includesReferences, includesSubnodes, allsubtree, sourceWorkspace, destinationWorkspace);
+                for (PublicationInfo publicationInfo : publicationInfos) {
+                    if (publicationInfo.needPublication()) {
+                        infos.add(publicationInfo);
+                        allUuids.addAll(publicationInfo.getAllUuids());
+                    }
+                }
+            }
+        }
+        for (PublicationInfo info : infos) {
+            info.clearInternalAndPublishedReferences(uuids);
+        }
+        return infos;
     }
 
     /**
@@ -773,99 +717,87 @@ public class JCRPublicationService extends JahiaService {
      * @param languages          Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
      * @param includesReferences If true include info for referenced nodes
      * @param includesSubnodes   If true include info for subnodes
+     * @return the <code>PublicationInfo</code> for the requested node(s)
+     * @throws RepositoryException
+     */
+    public List<PublicationInfo> getPublicationInfo(String uuid, Set<String> languages, boolean includesReferences, boolean includesSubnodes, boolean allsubtree,
+                                              final String sourceWorkspace, final String destinationWorkspace) throws RepositoryException {
+        final JCRSessionWrapper sourceSession = JCRSessionFactory.getInstance().getCurrentUserSession(sourceWorkspace);
+        final JCRSessionWrapper destinationSession = JCRSessionFactory.getInstance().getCurrentUserSession(destinationWorkspace);
+
+        JCRNodeWrapper stageNode = sourceSession.getNodeByUUID(uuid);
+        List<PublicationInfo> infos = new ArrayList<PublicationInfo>();
+        PublicationInfo tree = new PublicationInfo(uuid, stageNode.getPath());
+        infos.add(tree);
+        getPublicationInfo(stageNode, tree.getRoot(), languages, includesReferences, includesSubnodes, allsubtree,
+                sourceSession, destinationSession, new HashSet<String>(), infos);
+        return infos;
+    }
+
+
+    /**
+     * Gets the publication info for the current node and if acquired also for referenced nodes and subnodes.
+     * The returned <code>PublicationInfo</code> has the publication info for the current node (NOT_PUBLISHED, PUBLISHED, MODIFIED, UNPUBLISHABLE)
+     * and if requested you will be able to get the infos also for the subnodes and the referenced nodes.
+     * As language dependent data is always stored in subnodes you need to set includesSubnodes to true, if you also specify a list of languages.
+     *
+     * @param languages          Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
+     * @param includesReferences If true include info for referenced nodes
+     * @param includesSubnodes   If true include info for subnodes
+     * @param sourceSession
+     * @param destinationSession
      * @param uuids              a Set of uuids, which don't need to be checked or have already been checked
      * @return the <code>PublicationInfo</code> for the requested node(s)
      * @throws RepositoryException
      */
-    private PublicationInfo getPublicationInfo(String uuid, Set<String> languages, boolean includesReferences, boolean includesSubnodes, Set<String> uuids)
+    private void getPublicationInfo(JCRNodeWrapper node, PublicationInfo.PublicationNode info, Set<String> languages,
+                                    boolean includesReferences, boolean includesSubnodes, boolean allsubtree, final JCRSessionWrapper sourceSession,
+                                    final JCRSessionWrapper destinationSession, Set<String> uuids, List<PublicationInfo> infos)
             throws RepositoryException {
-        uuids.add(uuid);
-
-        JCRSessionWrapper session = getSessionFactory().getCurrentUserSession();
-        JCRSessionWrapper liveSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
-        PublicationInfo info = new PublicationInfo();
-
-        JCRNodeWrapper stageNode = null;
-        try {
-            stageNode = session.getNodeByUUID(uuid);
-        } catch (ItemNotFoundException e) {
-            stageNode = liveSession.getNodeByUUID(uuid);
-            info.setPath(stageNode.getPath());
-            info.setStatus(PublicationInfo.LIVE_ONLY);
-            return info;
+        if (uuids.contains(info.getUuid())) {
+            return;
         }
-        info.setPath(stageNode.getPath());
+        uuids.add(info.getUuid());
+
+//        JCRNodeWrapper stageNode = null;
+//        try {
+//            stageNode = sourceSession.getNodeByUUID(info.getUuid());
+//        } catch (ItemNotFoundException e) {
+//            stageNode = destinationSession.getNodeByUUID(info.getUuid());
+//            info.setPath(stageNode.getPath());
+//            info.setStatus(PublicationInfo.LIVE_ONLY);
+//            return;
+//        }
+//        info.setPath(stageNode.getPath());
         JCRNodeWrapper publishedNode = null;
         try {
-            publishedNode = liveSession.getNode(stageNode.getCorrespondingNodePath(liveSession.getWorkspace().getName()));
+            publishedNode = destinationSession.getNode(node.getCorrespondingNodePath(destinationSession.getWorkspace().getName()));
         } catch (ItemNotFoundException e) {
             if (logger.isDebugEnabled()) {
-                logger.debug("No live node for staging node " + stageNode.getPath());
+                logger.debug("No live node for staging node " + node.getPath());
             }
         }
 
-        if (includesReferences || includesSubnodes) {
-            List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
-            List<JCRNodeWrapper> blocked = new ArrayList<JCRNodeWrapper>();
-            List<JCRNodeWrapper> referencedNodes = new ArrayList<JCRNodeWrapper>();
-
-            getBlockedAndReferencesList(stageNode, toPublish, blocked, referencedNodes, languages, false);
-
-            if (includesReferences) {
-                for (JCRNodeWrapper referencedNode : referencedNodes) {
-                    if (!uuids.contains(referencedNode.getIdentifier())) {
-                        info.addReference(referencedNode.getPath(), getPublicationInfo(referencedNode.getIdentifier(), languages, true, false, uuids));
-                    }
-                }
-            }
-            if (includesSubnodes) {
-                toPublish.remove(0);
-                for (JCRNodeWrapper sub : toPublish) {
-                    if (!uuids.contains(sub.getIdentifier())) {
-                        info.addSubnode(sub.getPath(), getPublicationInfo(sub.getIdentifier(), languages, false, false, uuids));
-                    }
-                }
-            }
-        }
-        if (stageNode.hasProperty("j:published") && !stageNode.getProperty("j:published").getBoolean()) {
+        if (node.hasProperty("j:published") && !node.getProperty("j:published").getBoolean()) {
             info.setStatus(PublicationInfo.UNPUBLISHED);
         } else if (publishedNode == null) {
-            // node has not been published yet, check if parent is published
-//            try {
-//                liveSession.getNode(stageNode.getParent().getPath());
                 info.setStatus(PublicationInfo.NOT_PUBLISHED);
-//            } catch (AccessDeniedException e) {
-//                info.setStatus(PublicationInfo.UNPUBLISHABLE);
-//            } catch (PathNotFoundException e) {
-//                info.setStatus(PublicationInfo.UNPUBLISHABLE);
-//            }
         } else {
-            if (stageNode.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
+            if (node.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
                 info.setStatus(PublicationInfo.CONFLICT);
-            } else if (stageNode.getLastModifiedAsDate() == null) {
-                logger.error("Null modifieddate for staged node " + stageNode.getPath());
+            } else if (node.getLastModifiedAsDate() == null) {
+                logger.error("Null modifieddate for staged node " + node.getPath());
                 info.setStatus(PublicationInfo.MODIFIED);
             } else {
-                Date modProp = stageNode.getLastModifiedAsDate();
-                Date pubProp = stageNode.getLastPublishedAsDate();
+                Date modProp = node.getLastModifiedAsDate();
+                Date pubProp = node.getLastPublishedAsDate();
                 Date liveModProp = publishedNode.getLastModifiedAsDate();
                 if (modProp == null || pubProp == null || liveModProp == null) {
-                    logger.warn(uuid + " : Some property is null : "+modProp + "/"+pubProp + "/"+ liveModProp);
+                    logger.warn(info.getUuid() + " : Some property is null : "+modProp + "/"+pubProp + "/"+ liveModProp);
                     info.setStatus(PublicationInfo.MODIFIED);
                 } else {
                     long mod = modProp.getTime();
                     long pub = pubProp.getTime();
-//                    long liveMod = liveModProp.getTime();
-//                    if (publishedNode.isCheckedOut()) {
-//                        info.setStatus(PublicationInfo.LIVE_MODIFIED);
-//                    } else if (stageNode.isCheckedOut()) {
-//                        info.setStatus(PublicationInfo.MODIFIED);
-//                    } else {
-//                        info.setStatus(PublicationInfo.PUBLISHED);
-//                    }
-//                    if (liveMod > pub) {
-//                        info.setStatus(PublicationInfo.LIVE_MODIFIED);
-//                    } else 
                     if (mod > pub) {
                         info.setStatus(PublicationInfo.MODIFIED);
                     } else {
@@ -877,7 +809,78 @@ public class JCRPublicationService extends JahiaService {
         // todo : performance problem on permission check
 //        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
         info.setCanPublish(true);
-        return info;
+
+        if (includesReferences || includesSubnodes) {
+            String lang = null;
+            if (node.isNodeType("jnt:translation")) {
+                lang = node.getProperty("jcr:language").getString();
+            }
+
+            PropertyIterator pi = node.getProperties();
+            while (pi.hasNext()) {
+                Property p = pi.nextProperty();
+                PropertyDefinition definition = p.getDefinition();
+                if (lang != null && p.getName().endsWith("_" + lang)) {
+                    String name = p.getName().substring(0, p.getName().length() - lang.length() - 1);
+                    definition = ((JCRNodeWrapper) node.getParent()).getApplicablePropertyDefinition(name);
+                }
+                if (includesReferences && definition!=null &&
+                    (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE)
+                    && !p.getName().startsWith("jcr:")) {
+                    if (definition.isMultiple()) {
+                        Value[] vs = p.getValues();
+                        for (Value v : vs) {
+                            try {
+                                JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
+//                            if (!referencedNode.contains(ref)) {
+                                    if (!ref.isNodeType("jnt:page")) {
+                                        getPublicationInfo(ref, info.addReference(ref.getUUID(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
+                                    }
+//                            }
+                            } catch (ItemNotFoundException e) {
+                                if (definition.getRequiredType() == PropertyType.REFERENCE) {
+                                    logger.warn("Cannot get reference " + v.getString());
+                                } else {
+                                    logger.debug("Cannot get reference " + v.getString());
+                                }
+
+                            }
+                        }
+                    } else {
+                        try {
+                            JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
+//                        if (!referencedNode.contains(ref)) {
+                                if (!ref.isNodeType("jnt:page")) {
+                                    getPublicationInfo(ref, info.addReference(ref.getUUID(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
+                                }
+//                        }
+                        } catch (ItemNotFoundException e) {
+                            logger.warn("Cannot get reference " + p.getString());
+                        }
+                    }
+                }
+            }
+            NodeIterator ni = node.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
+                PublicationInfo.PublicationNode subinfo = info;
+                if (allsubtree && hasIndependantPublication(n)) {
+                    PublicationInfo newinfo = new PublicationInfo(n.getUUID(), n.getPath());
+                    infos.add(newinfo);
+                    subinfo = newinfo.getRoot();
+                }
+                if (allsubtree || !hasIndependantPublication(n)) {
+                    if (languages != null && n.isNodeType("mix:language")) {
+                        String translationLanguage = n.getProperty("jcr:language").getString();
+                        if (languages.contains(translationLanguage)) {
+                            getPublicationInfo(n, subinfo.addChild(n.getUUID(), n.getPath()), languages, includesReferences, includesSubnodes, allsubtree, sourceSession, destinationSession, uuids, infos);
+                        }
+                    } else if (n.isNodeType("jmix:lastPublished")) {
+                        getPublicationInfo(n, subinfo.addChild(n.getUUID(), n.getPath()), languages, includesReferences, includesSubnodes, allsubtree, sourceSession, destinationSession, uuids, infos);
+                    }
+                }
+            }
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0">
   <templatesSet>
-    <templates-web xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled jmix:wrapper" j:wrapper="/templatesSet/templates-web/templates/sitewrapper" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5">
+    <templates-web xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5">
       <contents jcr:primaryType="jnt:contentList">
         <site_components  jcr:primaryType="jnt:contentList">
           <simple-search result="/templatesSet/templates-web/search-results" jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" >
@@ -17,7 +17,7 @@
         <j:translation_en jcr:language="en" jcr:title_en="Home" jcr:primaryType="jnt:translation" />
       </home>
       <templates jcr:primaryType="jnt:templatesFolder">
-        <home jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page">
+        <home jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-web/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col115" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
@@ -30,7 +30,7 @@
             </row>
           </wrappercontent>
         </home>
-        <my-portal jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page">
+        <my-portal jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-web/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <my-portal jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:title_en="My Portal" jcr:language="en" jcr:primaryType="jnt:translation" />
@@ -38,7 +38,7 @@
             </my-portal>
           </wrappercontent>
         </my-portal>
-        <events jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page">
+        <events jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-web/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="2col115" jcr:primaryType="jnt:row" >
               <col1  jcr:primaryType="jnt:contentList">
@@ -57,7 +57,7 @@
             </row1>
           </wrappercontent>
         </events>
-        <simple jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page">
+        <simple jcr:primaryType="jnt:wrapper" j:key="template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:wrapper" j:wrapper="/templatesSet/templates-web/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col115" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">

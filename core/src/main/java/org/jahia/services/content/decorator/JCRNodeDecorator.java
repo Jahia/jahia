@@ -268,8 +268,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
 
-    public boolean lockAndStoreToken() throws RepositoryException  {
-        return node.lockAndStoreToken();
+    public boolean lockAndStoreToken(String type) throws RepositoryException  {
+        return node.lockAndStoreToken("user");
     }
 
     public String getLockOwner() {
@@ -592,6 +592,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         node.unlock();
     }
 
+    public void unlock(String type) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+        node.unlock(type);
+    }
+
     public boolean holdsLock() throws RepositoryException {
         return node.holdsLock();
     }
@@ -606,10 +610,6 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean isLocked() {
         return node.isLocked();
-    }
-
-    public void unlock(boolean ignoreTranslations) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
-        node.unlock(ignoreTranslations);
     }
 
     public boolean isLockable() {

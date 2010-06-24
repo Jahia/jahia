@@ -128,7 +128,8 @@
 
 [jmix:lockable] > mix:lockable mixin
  - j:locktoken (string) protected indexed=no hidden
-
+ - j:lockTypes (string) multiple indexed=no hidden
+ 
 //---------------------------------------------------------
 // Workflow
 //---------------------------------------------------------
@@ -498,11 +499,6 @@
 //---------------------------------------------------------
 // Template studio
 //---------------------------------------------------------
-
-//[jmix:templateInformation] mixin
-// - j:templateLocked (boolean) hidden
-// - j:templateShared (boolean) hidden
-// - j:templateDeployed (boolean) hidden
 
 [jmix:contributeMode] mixin
  extends = jnt:contentList, jnt:folder

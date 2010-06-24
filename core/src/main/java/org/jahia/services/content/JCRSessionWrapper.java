@@ -695,6 +695,7 @@ public class JCRSessionWrapper implements Session {
                 if (!versionManager.isCheckedOut(absPath)) {
                     versionManager.checkout(absPath);
                 }
+                return;
             }
         }
     }

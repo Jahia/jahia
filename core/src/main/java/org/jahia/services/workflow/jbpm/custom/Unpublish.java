@@ -11,10 +11,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Publish custom activity for jBPM workflow
@@ -27,7 +24,7 @@ public class Unpublish implements ExternalActivityBehaviour {
     private transient static Logger logger = Logger.getLogger(Unpublish.class);
 
     public void execute(ActivityExecution execution) throws Exception {
-        String id = (String) execution.getVariable("nodeId");
+        List<String> ids = (List<String>) execution.getVariable("nodeIds");
         String workspace = (String) execution.getVariable("workspace");
         Locale locale = (Locale) execution.getVariable("locale");
 
@@ -37,9 +34,11 @@ public class Unpublish implements ExternalActivityBehaviour {
         JahiaUser user = userMgr.lookupUser(username);
         JahiaUser currentUser = sessionFactory.getCurrentUser();
         sessionFactory.setCurrentUser(user);
-        JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNodeByUUID(id);
-        logger.info("Launching unpublication of node " + node.getPath() + " at " + (new Date()).toString());
-        JCRPublicationService.getInstance().unpublish(node.getPath(), Collections.singleton(locale.toString()));
+        for (String id : ids) {
+            JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNodeByUUID(id);
+            logger.info("Launching unpublication of node " + node.getPath() + " at " + (new Date()).toString());
+            JCRPublicationService.getInstance().unpublish(node.getPath(), Collections.singleton(locale.toString()));
+        }
         sessionFactory.setCurrentUser(currentUser);
         execution.takeDefaultTransition();
     }

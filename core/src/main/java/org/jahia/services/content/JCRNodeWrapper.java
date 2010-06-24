@@ -593,8 +593,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Get a lock on this node and store the lock token
      * @see #lock(boolean, boolean)
      * @return true if action was successful, or false if not
+     * @param type
      */
-    boolean lockAndStoreToken() throws RepositoryException ;
+    boolean lockAndStoreToken(String type) throws RepositoryException ;
 
     /**
      * Get the name of the user who locked the node
@@ -607,7 +608,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     boolean isLocked();    
     
-    void unlock(boolean ignoreTranslations) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
+    void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
+
+    void unlock(String type) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
 
     /**
      * Adds the mix:versionable mixin type to a file node

@@ -2,9 +2,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
@@ -14,7 +12,6 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -25,7 +22,6 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
 * Window, displaying the current publication status.
@@ -39,12 +35,14 @@ class PublicationStatusWindow extends Window {
     protected Button noWorkflow;
     protected Button cancel;
     protected TextArea comments;
+    protected boolean allSubTree;
 
-    PublicationStatusWindow(final Linker linker, final Map<String, GWTJahiaPublicationInfo> infos) {
+    PublicationStatusWindow(final Linker linker, final List<String> uuids, final List<GWTJahiaPublicationInfo> infos,
+                            boolean allSubTree) {
         setLayout(new BorderLayout());
 
         this.linker = linker;
-
+        this.allSubTree = allSubTree;
         setScrollMode(Style.Scroll.NONE);
         setHeading("Publish");
         setSize(800, 500);
@@ -67,13 +65,9 @@ class PublicationStatusWindow extends Window {
 
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("title",Messages.getResource("label.path"),600);
-        column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
-            @Override
-            public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore listStore, Grid grid) {
-                return model.get(property);
-            }
-        });
+        ColumnConfig column = new ColumnConfig("title",Messages.getResource("label.path"),450);
+        configs.add(column);
+        column = new ColumnConfig("nodetype",Messages.getResource("label.nodetype"),150);
         configs.add(column);
 
         column = new ColumnConfig("status",Messages.getResource("org.jahia.jcr.publication.currentStatus"),150);
@@ -83,6 +77,8 @@ class PublicationStatusWindow extends Window {
                 switch (model.getStatus()) {
                     case GWTJahiaPublicationInfo.NOT_PUBLISHED:
                         return Messages.getResource("org.jahia.jcr.publication.status_notyetpublished");
+                    case GWTJahiaPublicationInfo.LOCKED:
+                        return Messages.getResource("label.locked");
                     case GWTJahiaPublicationInfo.PUBLISHED:
                         return Messages.getResource("label.published");
                     case GWTJahiaPublicationInfo.MODIFIED:
@@ -110,41 +106,51 @@ class PublicationStatusWindow extends Window {
         configs.add(column);
         GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
 
-        final ArrayList<String> uuids = new ArrayList<String>();
-        for (Map.Entry<String, GWTJahiaPublicationInfo> entry : infos.entrySet()) {
-            final GWTJahiaPublicationInfo info = entry.getValue();
-            if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
-                info.set("mainTitle", info.getTitle());
-                store.add(info);
-                if (!uuids.contains(entry.getKey())) {
-                    uuids.add(entry.getKey());
-                }
-            }
-            for (ModelData data : info.getChildren()) {
-                GWTJahiaPublicationInfo subInfo = (GWTJahiaPublicationInfo) data;
-                if (subInfo.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
-                    subInfo.set("mainTitle", info.getTitle());
-                    store.add(subInfo);
-                    if (!uuids.contains(entry.getKey())) {
-                        uuids.add(entry.getKey());
-                    }
-                }
-            }
-        }
+//        final ArrayList<String> includedUuids = new ArrayList<String>();
+//        for (String uuid : uuids) {
+//            final GWTJahiaPublicationInfo info = infos.get(uuid);
+//            if (info != null) {
+//                String title = info.getTitle();
+//                if (ModuleHelper.getLinkedContentInfoType().get(uuid) != null) {
+//                    title = ModuleHelper.getLinkedContentInfoType().get(uuid) + " : "  + title;
+//                }
+//
+//                if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
+//                    info.set("mainTitle", title);
+//                    store.add(info);
+//                    if (!includedUuids.contains(uuid)) {
+//                        includedUuids.add(uuid);
+//                    }
+//                }
+//                for (ModelData data : info.getSubnodes()) {
+//                    GWTJahiaPublicationInfo subInfo = (GWTJahiaPublicationInfo) data;
+//                    if (subInfo.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
+//                        subInfo.set("mainTitle", title);
+//                        store.add(subInfo);
+//                        if (!includedUuids.contains(uuid)) {
+//                            includedUuids.add(uuid);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        store.add(infos);
         store.groupBy("mainTitle");
         final ColumnModel cm = new ColumnModel(configs);
 
-        final Grid<GWTJahiaPublicationInfo> grid = new Grid<GWTJahiaPublicationInfo>(store, cm) {
-
-            @Override
-            protected void afterRenderView() {
-                super.afterRenderView();
-                getSelectionModel().selectAll();
-            }
-
-        };
+        final Grid<GWTJahiaPublicationInfo> grid = new Grid<GWTJahiaPublicationInfo>(store, cm);
         grid.setStripeRows(true);
         grid.setBorders(true);
+//        checkboxSelectionModel.addListener(Events.BeforeSelect, new Listener() {
+//            public void handleEvent(BaseEvent be) {
+//                final SelectionEvent<GWTJahiaPublicationInfo> selectionEvent = (SelectionEvent<GWTJahiaPublicationInfo>) be;
+//                if (selectionEvent.getModel().getStatus() == GWTJahiaPublicationInfo.LOCKED) {
+//                    selectionEvent.setCancelled(true);
+//                    excluded.add(selectionEvent.getModel().getPath());
+//                }
+//            }
+//        });
+//        grid.addPlugin(checkboxSelectionModel);
 
         GroupingView view = new GroupingView();
         view.setShowGroupedColumn(false);
@@ -155,7 +161,7 @@ class PublicationStatusWindow extends Window {
                 String f = config.getHeader();
                 String l = data.models.size() == 1 ? Messages.get("label.item", "Item") : Messages.get("label.items", "Items");  
                 String v = config.getRenderer() != null ? config.getRenderer().render(data.models.get(0), null,null,0,0,null,null).toString() : data.group;
-                return f + ": " + v + " (" + data.models.size() + " " + l + ")";
+                return v + " (" + data.models.size() + " " + l + ")";
             }
         });
         grid.setView(view);
@@ -189,11 +195,13 @@ class PublicationStatusWindow extends Window {
     }
 
     private class ButtonEventSelectionListener extends SelectionListener<ButtonEvent> {
-        private ArrayList<String> uuids;
+        private List<String> uuids;
+        private List<String> excluded;
         protected boolean workflow;
 
-        public ButtonEventSelectionListener(ArrayList<String> uuids, boolean workflow) {
+        public ButtonEventSelectionListener(List<String> uuids, boolean workflow) {
             this.uuids = uuids;
+            this.excluded = excluded;
             this.workflow = workflow;
         }
 
@@ -204,7 +212,7 @@ class PublicationStatusWindow extends Window {
             }
             cancel.setEnabled(false);
             JahiaContentManagementService
-                    .App.getInstance().publish(uuids, false, comments.getValue(), workflow, false, new BaseAsyncCallback() {
+                    .App.getInstance().publish(uuids, allSubTree, comments.getValue(), workflow, false, new BaseAsyncCallback() {
                 public void onApplicationFailure(Throwable caught) {
                     Log.error("Cannot publish", caught);
                     com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());

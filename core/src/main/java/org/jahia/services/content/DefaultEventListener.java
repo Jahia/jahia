@@ -65,6 +65,7 @@ public abstract class DefaultEventListener implements EventListener {
         propertiesToIgnore.add(Constants.JCR_LOCKOWNER);
         propertiesToIgnore.add(Constants.JCR_LOCKISDEEP);
         propertiesToIgnore.add(Constants.LOCKTOKEN);
+        propertiesToIgnore.add(Constants.LOCKTYPES);
         propertiesToIgnore.add(Constants.JCR_ISCHECKEDOUT);
         propertiesToIgnore.add(Constants.JCR_VERSIONHISTORY);
         propertiesToIgnore.add(Constants.JCR_PREDECESSORS);

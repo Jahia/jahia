@@ -1,6 +1,8 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -18,6 +20,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -81,13 +84,17 @@ public class WorkflowHelper {
                                 Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>(map.size());
                                 for (Map.Entry<String, Object> entry : map.entrySet()) {
                                     if (entry.getValue() instanceof List) {
-                                        List<WorkflowVariable> variable = (List<WorkflowVariable>) entry.getValue();
+                                        List variable = (List) entry.getValue();
                                         GWTJahiaNodeProperty value = new GWTJahiaNodeProperty();
                                         value.setName(entry.getKey());
-                                        for (WorkflowVariable workflowVariable : variable) {
-                                            value.setValue(new GWTJahiaNodePropertyValue(workflowVariable.getValue(), workflowVariable.getType()));
+                                        for (Object workflowVariable : variable) {
+                                            if (workflowVariable instanceof WorkflowVariable) {
+                                                value.setValue(new GWTJahiaNodePropertyValue(((WorkflowVariable)workflowVariable).getValue(), ((WorkflowVariable)workflowVariable).getType()));
+                                            }
                                         }
-                                        properties.put(entry.getKey(), value);
+                                        if (value.getValues() != null) {
+                                            properties.put(entry.getKey(), value);
+                                        }
                                     }
                                 }
                                 action.setVariables(properties);

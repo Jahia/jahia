@@ -3,16 +3,13 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 
 import java.util.*;
@@ -31,7 +28,8 @@ public class ModuleHelper {
 
     private static Map<String, List<String>> children;
     private static Map<String, GWTJahiaNodeType> nodeTypes;
-    private static Map<String, List<String>> wrappedContentInfo;
+    private static Map<String, List<String>> linkedContentInfo;
+    private static Map<String, String> linkedContentInfoType;
 
     public static void initAllModules(final MainModule m, HTML html) {
         long start = System.currentTimeMillis();
@@ -44,11 +42,12 @@ public class ModuleHelper {
         modulesByPath.get(m.getPath()).add(m);
         modulesById.put(m.getModuleId(), m);
 
-        wrappedContentInfo = new HashMap<String, List<String>>();
+        linkedContentInfo = new HashMap<String, List<String>>();
+        linkedContentInfoType = new HashMap<String, String>();
 
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
 
-        Set<String> allNodetypes = new HashSet<String>();
+//        Set<String> allNodetypes = new HashSet<String>();
 
         for (Element divElement : el) {
             String jahiatype = DOM.getElementAttribute(divElement, JahiaType.JAHIA_TYPE);
@@ -63,17 +62,21 @@ public class ModuleHelper {
                 String scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
                 Module module = null;
                 if (type.equals("area")) {
-                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, referenceTypes, templateInfo, m);
+                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
+                            referenceTypes, templateInfo, m);
                 } else if (type.equals("list")) {
-                    module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, referenceTypes, templateInfo, m);
+                    module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
+                            referenceTypes, templateInfo, m);
                 } else if (type.equals("existingNode")) {
-                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, referenceTypes, templateInfo, m);
+                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
+                            referenceTypes, templateInfo, m);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, nodetypes, referenceTypes, m);
                 } else if (type.equals("linker")) {
-                    module = new LinkerModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes, referenceTypes, templateInfo, m);
+                    module = new LinkerModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
+                            referenceTypes, templateInfo, m);
                 }
-                allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
+//                allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
                 if (module != null) {
                     if (!modulesByPath.containsKey(path)) {
                         modulesByPath.put(path, new ArrayList<Module>());
@@ -82,13 +85,16 @@ public class ModuleHelper {
                     modulesByPath.get(path).add(module);
                     modulesById.put(id, module);
                 }
-            } if ("wrappedContentInfo".equals(jahiatype)) {
-                String wrappedNode = DOM.getElementAttribute(divElement, "wrappedNode");
-                String wrapperContent = DOM.getElementAttribute(divElement, "wrapperContent");
-                if (!wrappedContentInfo.containsKey(wrappedNode)) {
-                    wrappedContentInfo.put(wrappedNode, new ArrayList<String>());
+            }
+            if ("linkedContentInfo".equals(jahiatype)) {
+                String linkedNode = DOM.getElementAttribute(divElement, "linkedNode");
+                String node = DOM.getElementAttribute(divElement, "node");
+                String type = DOM.getElementAttribute(divElement, "type");
+                if (!linkedContentInfo.containsKey(linkedNode)) {
+                    linkedContentInfo.put(linkedNode, new ArrayList<String>());
                 }
-                wrappedContentInfo.get(wrappedNode).add(wrapperContent);
+                linkedContentInfo.get(linkedNode).add(node);
+                linkedContentInfoType.put(node, type);
             }
         }
 
@@ -99,26 +105,27 @@ public class ModuleHelper {
             }
         }
         if (Log.isDebugEnabled()) {
-            Log.debug("all pathes "+list);
+            Log.debug("all pathes " + list);
         }
-        JahiaContentManagementService.App.getInstance().getNodes(list,Arrays.asList(GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO),
-                new BaseAsyncCallback<List<GWTJahiaNode>>() {
-            public void onSuccess(List<GWTJahiaNode> result) {
-                for (GWTJahiaNode gwtJahiaNode : result) {
-                    final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
-                    if (moduleList != null) {
-                        for (Module module : moduleList) {
-                            module.setNode(gwtJahiaNode);
-                        }
-                    }
-                }
-                m.getEditLinker().handleNewModuleSelection();
-            }
+        JahiaContentManagementService.App.getInstance()
+                .getNodes(list, Arrays.asList(GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO),
+                        new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                            public void onSuccess(List<GWTJahiaNode> result) {
+                                for (GWTJahiaNode gwtJahiaNode : result) {
+                                    final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
+                                    if (moduleList != null) {
+                                        for (Module module : moduleList) {
+                                            module.setNode(gwtJahiaNode);
+                                        }
+                                    }
+                                }
+                                m.getEditLinker().handleNewModuleSelection();
+                            }
 
-            public void onApplicationFailure(Throwable caught) {
-                Log.error("Unable to get node with publication info due to:",caught);
-            }
-        });
+                            public void onApplicationFailure(Throwable caught) {
+                                Log.error("Unable to get node with publication info due to:", caught);
+                            }
+                        });
 //        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
 //            public void onSuccess(List<GWTJahiaNodeType> result) {
 //                nodeTypes = new HashMap<String, GWTJahiaNodeType>();
@@ -131,7 +138,7 @@ public class ModuleHelper {
 //                Log.error("Unable to get nodetypes :",caught);
 //            }
 //        });
-        Log.info("Parsing : "+(System.currentTimeMillis() - start));
+        Log.info("Parsing : " + (System.currentTimeMillis() - start));
     }
 
     public static void buildTree(Module module) {
@@ -161,7 +168,7 @@ public class ModuleHelper {
                 }
             }
         }
-        Log.info("Build tree : "+(System.currentTimeMillis() - start));
+        Log.info("Build tree : " + (System.currentTimeMillis() - start));
     }
 
     public static Map<Element, Module> parse(Module module, Module parent) {
@@ -203,7 +210,7 @@ public class ModuleHelper {
             DOM.appendChild(divElement, moduleElement);
 
         }
-        Log.info("Move : "+(System.currentTimeMillis() - start));
+        Log.info("Move : " + (System.currentTimeMillis() - start));
     }
 
     public static List<Module> getModules() {
@@ -218,7 +225,7 @@ public class ModuleHelper {
             String link = DOM.getElementAttribute(element, "href");
             if (link.startsWith(baseUrl)) {
                 String path = link.substring(baseUrl.length());
-                String template = path.substring(path.indexOf('.')+1);
+                String template = path.substring(path.indexOf('.') + 1);
                 if (template.contains(".")) {
                     template = template.substring(0, template.lastIndexOf('.'));
                 } else {
@@ -226,21 +233,22 @@ public class ModuleHelper {
                 }
                 String params = "";
                 if (path.indexOf('?') > 0) {
-                    params = path.substring(path.indexOf('?')+1);
-                    path = path.substring(0,path.indexOf('?')); 
+                    params = path.substring(path.indexOf('?') + 1);
+                    path = path.substring(0, path.indexOf('?'));
                 }
                 if (path.indexOf('.') > -1) {
-                    path = path.substring(0,path.indexOf('.'));
+                    path = path.substring(0, path.indexOf('.'));
                 }
-                DOM.setElementAttribute(element,"href","#");
+                DOM.setElementAttribute(element, "href", "#");
                 if (template == null) {
-                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"',null,'"+params+"')");
+                    DOM.setElementAttribute(element, "onclick", "window.goTo('" + path + "',null,'" + params + "')");
                 } else {
-                    DOM.setElementAttribute(element,"onclick","window.goTo('"+path+"','"+template+"','"+params+"')");
+                    DOM.setElementAttribute(element, "onclick",
+                            "window.goTo('" + path + "','" + template + "','" + params + "')");
                 }
             }
         }
-        Log.info("Transform links : "+(System.currentTimeMillis() - start));
+        Log.info("Transform links : " + (System.currentTimeMillis() - start));
     }
 
     public static List<Element> getAllLinks(Element parent) {
@@ -259,7 +267,11 @@ public class ModuleHelper {
         return list;
     }
 
-    public static Map<String, List<String>> getWrappedContentInfo() {
-        return wrappedContentInfo;
+    public static Map<String, List<String>> getLinkedContentInfo() {
+        return linkedContentInfo;
+    }
+
+    public static Map<String, String> getLinkedContentInfoType() {
+        return linkedContentInfoType;
     }
 }

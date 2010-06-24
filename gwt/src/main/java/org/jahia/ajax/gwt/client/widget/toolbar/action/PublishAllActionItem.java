@@ -1,4 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -14,6 +15,18 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 */
 public class PublishAllActionItem extends PublishActionItem {
     public void onComponentSelection() {
-        EditActions.publishAll(linker);
+        EditActions.publish(linker, true);
     }
+
+    public void handleNewLinkerSelection() {
+        GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
+        if (gwtJahiaNode == null) {
+            gwtJahiaNode = linker.getMainNode();
+        }
+        if (gwtJahiaNode != null) {
+            GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
+            updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
+        }
+    }
+
 }

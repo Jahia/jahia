@@ -7,6 +7,7 @@ import org.jbpm.api.listener.EventListenerExecution;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
 
 import javax.jcr.RepositoryException;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -24,7 +25,7 @@ public class JBPMListener implements EventListener {
     }
 
     public void notify(EventListenerExecution execution) throws Exception {
-        final String id = (String) execution.getVariable("nodeId");
+        final List<String> ids = (List<String>) execution.getVariable("nodeIds");
         String workspace = (String) execution.getVariable("workspace");
         Locale locale = (Locale) execution.getVariable("locale");
 
@@ -33,12 +34,14 @@ public class JBPMListener implements EventListener {
 
         JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, locale, new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                final JCRNodeWrapper node = session.getNodeByUUID(id);
-                if (Execution.STATE_ACTIVE_ROOT.equals(executionState)) {
-                    provider.getWorkflowService().addProcessId(node, provider.getKey(), executionId);
+                for (String id : ids) {
+                    final JCRNodeWrapper node = session.getNodeByUUID(id);
+                    if (Execution.STATE_ACTIVE_ROOT.equals(executionState)) {
+                        provider.getWorkflowService().addProcessId(node, provider.getKey(), executionId);
         
-                } else if (Execution.STATE_ENDED.equals(executionState)) {
-                    provider.getWorkflowService().removeProcessId(node, provider.getKey(), executionId);
+                    } else if (Execution.STATE_ENDED.equals(executionState)) {
+                        provider.getWorkflowService().removeProcessId(node, provider.getKey(), executionId);
+                    }
                 }
                 return true;
             }

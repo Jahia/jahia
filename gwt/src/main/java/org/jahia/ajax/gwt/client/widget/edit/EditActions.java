@@ -23,14 +23,16 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.*;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.TranslateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * User: toto
@@ -47,17 +49,19 @@ public class EditActions {
      */
     public static void createPage(final Linker linker, final String type) {
         if (linker.getMainNode() != null) {
-            JahiaContentDefinitionService.App.getInstance().getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                public void onApplicationFailure(Throwable throwable) {
-                    Log.error("", throwable);
-                    com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
-                }
+            JahiaContentDefinitionService.App.getInstance()
+                    .getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
+                        public void onApplicationFailure(Throwable throwable) {
+                            Log.error("", throwable);
+                            com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
+                        }
 
-                public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                    new CreatePageContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null, type.equals("jnt:page")).show();
+                        public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
+                            new CreatePageContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null,
+                                    type.equals("jnt:page")).show();
 //                    new ContentTypeWindow(linker, linker.getMainNode(), gwtJahiaNodeType,true).show();
-                }
-            });
+                        }
+                    });
         }
     }
 
@@ -68,46 +72,49 @@ public class EditActions {
      */
     public static void createContent(final Linker linker, final String type) {
         if (linker.getMainNode() != null) {
-            JahiaContentDefinitionService.App.getInstance().getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                public void onApplicationFailure(Throwable throwable) {
-                    Log.error("", throwable);
-                    com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
-                }
+            JahiaContentDefinitionService.App.getInstance()
+                    .getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
+                        public void onApplicationFailure(Throwable throwable) {
+                            Log.error("", throwable);
+                            com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
+                        }
 
-                public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                    new CreateContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null).show();
-                }
-            });
+                        public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
+                            new CreateContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null).show();
+                        }
+                    });
         }
     }
 
-        /**
+    /**
      * Switch mode
      *
      * @param linker
      */
-    public static void switchMode(final Linker linker,final int mode) {
+    public static void switchMode(final Linker linker, final int mode) {
         if (linker.getMainNode() != null) {
             String path = linker.getMainNode().getPath();
             String locale = JahiaGWTParameters.getUILanguage();
-            JahiaContentManagementService.App.getInstance().getNodeURL(path,  locale, mode, new BaseAsyncCallback<String>() {
-                public void onSuccess(String url) {
-                    com.google.gwt.user.client.Window.open(url,"mode"+mode,"");
-                }
+            JahiaContentManagementService.App.getInstance()
+                    .getNodeURL(path, locale, mode, new BaseAsyncCallback<String>() {
+                        public void onSuccess(String url) {
+                            com.google.gwt.user.client.Window.open(url, "mode" + mode, "");
+                        }
 
-            });
+                    });
         }
 
     }
 
     /**
      * Show compare engine
+     *
      * @param linker
      */
     public static void showCompare(final Linker linker) {
         if (linker.getSelectedNode() != null) {
             String locale = JahiaGWTParameters.getUILanguage();
-            new CompareEngine(linker.getSelectedNode(),locale,linker).show();
+            new CompareEngine(linker.getSelectedNode(), locale, linker).show();
         }
 
     }
@@ -127,6 +134,7 @@ public class EditActions {
 
     /**
      * Show translate engine
+     *
      * @param linker
      */
     public static void showTranslateEngine(Linker linker) {
@@ -136,7 +144,6 @@ public class EditActions {
     }
 
     /**
-     *
      * @param linker
      */
     public static void showWorkflowDashboard(Linker linker) {
@@ -150,8 +157,9 @@ public class EditActions {
      * Publish selected content
      *
      * @param linker
+     * @param allSubTree
      */
-    public static void publish(final Linker linker) {
+    public static void publish(final Linker linker, final boolean allSubTree) {
         List<GWTJahiaNode> selectedNodes = linker.getSelectedNodes();
         if (selectedNodes.isEmpty()) {
             selectedNodes = new ArrayList<GWTJahiaNode>();
@@ -159,25 +167,24 @@ public class EditActions {
         }
         if (!selectedNodes.isEmpty()) {
             final List<GWTJahiaNode> s = new ArrayList<GWTJahiaNode>();
-            List<String> uuids = new ArrayList<String>();
+            final List<String> uuids = new ArrayList<String>();
             for (GWTJahiaNode selectedNode : selectedNodes) {
-                if (ModuleHelper.getWrappedContentInfo().containsKey(selectedNode.getUUID())) {
-                    uuids.addAll(ModuleHelper.getWrappedContentInfo().get(selectedNode.getUUID()));
-                }
                 uuids.add(selectedNode.getUUID());
+//                if (ModuleHelper.getLinkedContentInfo().containsKey(selectedNode.getUUID())) {
+//                    uuids.addAll(ModuleHelper.getLinkedContentInfo().get(selectedNode.getUUID()));
+//                }
             }
 
-            JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, true,
-                    new BaseAsyncCallback<Map<String,GWTJahiaPublicationInfo>>() {
-                        public void onSuccess(Map<String,GWTJahiaPublicationInfo> result) {
-                            new PublicationStatusWindow(linker, result).show();
+            JahiaContentManagementService.App.getInstance()
+                    .getPublicationInfo(uuids, allSubTree, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
+                        public void onSuccess(List<GWTJahiaPublicationInfo> result) {
+                            new PublicationStatusWindow(linker, uuids, result, allSubTree).show();
                         }
 
                         public void onApplicationFailure(Throwable caught) {
                             com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
                         }
-                    }
-            );
+                    });
         }
     }
 
@@ -194,32 +201,17 @@ public class EditActions {
         if (selectedNode != null) {
             final GWTJahiaNode s = selectedNode;
 
-            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), false, "", false, true, new BaseAsyncCallback() {
-                public void onApplicationFailure(Throwable caught) {
-                    Log.error("Cannot publish", caught);
-                    com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
-                }
-
-                public void onSuccess(Object result) {
-                    Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
-                    linker.refresh(EditLinker.REFRESH_ALL);
-                }
-            });
-        }
-    }
-
-    /**
-     * Publish all content under selected node
-     *
-     * @param linker
-     */
-    public static void publishAll(final Linker linker) {
-        GWTJahiaNode selectedNode = linker.getSelectedNode();
-        if (selectedNode == null) {
-            selectedNode = linker.getMainNode();
-        }
-        if (selectedNode != null) {
-            new PublishAllConfirmWindow(linker, selectedNode).show();
+//            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), false, "", false, true, new BaseAsyncCallback() {
+//                public void onApplicationFailure(Throwable caught) {
+//                    Log.error("Cannot publish", caught);
+//                    com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
+//                }
+//
+//                public void onSuccess(Object result) {
+//                    Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
+//                    linker.refresh(EditLinker.REFRESH_ALL);
+//                }
+//            });
         }
     }
 
@@ -234,17 +226,19 @@ public class EditActions {
             selectedNode = linker.getMainNode();
         }
         if (selectedNode != null) {
-            JahiaContentManagementService.App.getInstance().unpublish(Arrays.asList(selectedNode.getPath()), new BaseAsyncCallback() {
-                public void onApplicationFailure(Throwable caught) {
-                    Log.error("Cannot publish", caught);
-                    com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
-                }
+            JahiaContentManagementService.App.getInstance()
+                    .unpublish(Arrays.asList(selectedNode.getPath()), new BaseAsyncCallback() {
+                        public void onApplicationFailure(Throwable caught) {
+                            Log.error("Cannot publish", caught);
+                            com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
+                        }
 
-                public void onSuccess(Object result) {
-                    Info.display(Messages.getResource("label.content.unpublished"), Messages.getResource("label.content.unpublished"));
-                    linker.refresh(EditLinker.REFRESH_ALL);
-                }
-            });
+                        public void onSuccess(Object result) {
+                            Info.display(Messages.getResource("label.content.unpublished"),
+                                    Messages.getResource("label.content.unpublished"));
+                            linker.refresh(EditLinker.REFRESH_ALL);
+                        }
+                    });
         }
     }
 
@@ -256,7 +250,8 @@ public class EditActions {
      */
     public static void delete(final Linker linker) {
         if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
-            MessageBox.confirm("", Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.remove.label", "Do you really want to continue?"), new Listener<MessageBoxEvent>() {
+            MessageBox.confirm("", Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.remove.label",
+                    "Do you really want to continue?"), new Listener<MessageBoxEvent>() {
                 public void handleEvent(MessageBoxEvent be) {
                     if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
                         List<String> paths = new ArrayList<String>();
@@ -302,11 +297,12 @@ public class EditActions {
             comments.setFieldLabel(Messages.getResource("label.comments"));
             form.add(comments);
 
-            final Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent event) {
-                    hide();
-                }
-            });
+            final Button cancel =
+                    new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
+                        public void componentSelected(ButtonEvent event) {
+                            hide();
+                        }
+                    });
             final Button ok = new Button(Messages.getResource("label.publish"));
             SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
@@ -314,21 +310,21 @@ public class EditActions {
                     cancel.setEnabled(false);
                     List<String> toPublish = new ArrayList<String>();
                     toPublish.add(selectedNode.getUUID());
-                    toPublish.addAll(ModuleHelper.getWrappedContentInfo().get(selectedNode.getUUID()));
+                    toPublish.addAll(ModuleHelper.getLinkedContentInfo().get(selectedNode.getUUID()));
 
-                    JahiaContentManagementService.App.getInstance().publish(toPublish, true, comments.getValue(), false,  false, new BaseAsyncCallback() {
-                        public void onApplicationFailure(Throwable caught) {
-                            Log.error("Cannot publish", caught);
-                            com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
-                            hide();
-                        }
-
-                        public void onSuccess(Object result) {
-                            Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
-                            linker.refresh(EditLinker.REFRESH_ALL);
-                            hide();
-                        }
-                    });
+//                    JahiaContentManagementService.App.getInstance().publish(toPublish, true, comments.getValue(), false,  false, new BaseAsyncCallback() {
+//                        public void onApplicationFailure(Throwable caught) {
+//                            Log.error("Cannot publish", caught);
+//                            com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
+//                            hide();
+//                        }
+//
+//                        public void onSuccess(Object result) {
+//                            Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
+//                            linker.refresh(EditLinker.REFRESH_ALL);
+//                            hide();
+//                        }
+//                    });
 
                 }
             };

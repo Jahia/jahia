@@ -23,7 +23,7 @@ public class ConflictResolver {
 
 
     private static List<String> ignore = Arrays.asList(Constants.JCR_UUID, Constants.JCR_PRIMARYTYPE, Constants.JCR_MIXINTYPES, Constants.JCR_FROZENUUID, Constants.JCR_FROZENPRIMARYTYPE, Constants.JCR_FROZENMIXINTYPES,
-            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS, Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE);
+            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS, Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, Constants.LOCKTOKEN, Constants.LOCKTYPES, "jcr:lockOwner", "jcr:lockIsDeep");
     
     // Constants.JCR_LASTMODIFIED, "jcr:lastModifiedBy",
     // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");
@@ -34,7 +34,7 @@ public class ConflictResolver {
     private Calendar sourceDate = null;
     private Calendar targetDate = null;
 
-    private List<String> prunedSourcePath;
+    private List<String> uuidsToPublish;
 
     private List<Diff> differences;
     private List<Diff> resolvedDifferences;
@@ -52,8 +52,8 @@ public class ConflictResolver {
         }
     }
 
-    public void setPrunedSourcePath(List<String> prunedSourcePath) {
-        this.prunedSourcePath = prunedSourcePath;
+    public void setUuidsToPublish(List<String> uuidsToPublish) {
+        this.uuidsToPublish = uuidsToPublish;
     }
 
     public List<Diff> getDifferences() {
@@ -380,11 +380,11 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (prunedSourcePath.contains(targetNode.getPath() + "/" + newName)) {
+            if (!uuidsToPublish.contains(uuid)) {
                 return true;
             }
             targetNode.getSession().save();
-            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), prunedSourcePath, sourceNode.getSession(), targetNode.getSession());
+            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), uuidsToPublish, sourceNode.getSession(), targetNode.getSession());
             return true;
         }
 

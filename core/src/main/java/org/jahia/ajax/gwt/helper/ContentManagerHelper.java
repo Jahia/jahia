@@ -744,7 +744,7 @@ public class ContentManagerHelper {
             } else {
                 if (locked) {
                     try {
-                        if (!node.lockAndStoreToken()) {
+                        if (!node.lockAndStoreToken("user")) {
                             missedPaths
                                     .add(new StringBuilder(node.getName()).append(": repository exception").toString());
                         }

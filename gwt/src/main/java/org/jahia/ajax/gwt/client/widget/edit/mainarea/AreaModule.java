@@ -13,7 +13,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class AreaModule extends SimpleModule {
 
-    public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String referenceType, String templateInfo, MainModule mainModule) {
+    public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String referenceType, String templateInfo,
+                      MainModule mainModule) {
         super(id, path, template, scriptInfo, nodeTypes, referenceType, templateInfo, mainModule);
         hasDragDrop = false;
         head = new Header();

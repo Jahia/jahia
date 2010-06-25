@@ -91,31 +91,22 @@ function sendForm(){
 
       -->
 </script>
-<%if(!isConfigWizard){%>
 <div id="topTitle">
     <h1>Jahia</h1>
     <h2 class="edit">
-        <%if(!isConfigWizard){%>
         <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
-        <%}else{%>
-        <internal:message key="org.jahia.createSite.siteFactory"/>
-        <%}%>
     </h2>
 </div>
-<% } %>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
 <tbody>
-<%if(!isConfigWizard){%>
 <tr>
     <td style="vertical-align: top;" align="left">
         <%@include file="/admin/include/tab_menu.inc"%>
     </td>
 </tr>
-<% } %>
 <tr>
 <td style="vertical-align: top;" align="left" height="100%">
-<%if(!isConfigWizard){%>
 <div class="dex-TabPanelBottom">
 <div class="tabContent">
 <jsp:include page="/admin/include/left_menu.jsp">
@@ -123,11 +114,6 @@ function sendForm(){
 </jsp:include>
 
 <div id="content" class="fit">
-        <% } else { %>
-    <div class="dex-TabPanelBottom-full">
-
-        <div id="content" class="full">
-            <% } %>
             <div class="head">
                 <div class="object-title">
                     <fmt:message key="label.virtualSitesManagement.configwizard.variables"/>
@@ -136,13 +122,10 @@ function sendForm(){
             <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
                 <thead>
                 <tr>
-                    <% if(!isConfigWizard){%>
                     <th<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> width="5%">&nbsp;</th>
                     <th width="95%">
                         <fmt:message key="label.name"/>
                     </th>
-
-                    <% } %>
 
                 </tr>
                 </thead>
@@ -316,16 +299,9 @@ function sendForm(){
               <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="label.backToMenu"/></a>
             </span>
           </span><%} %>
-    <%if(isConfigWizard){ %>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><internal:message key="org.jahia.back.button"/></a>
-            </span>
-          </span>
-    <%} %>
-          <span class="dex-PushButton">
-            <span class="first-child">
-              <a class="ico-next" href='javascript:sendForm();'><internal:message key="label.nextStep"/></a>
+              <a class="ico-ok" href='javascript:sendForm();'><fmt:message key="label.doImport"/></a>
             </span>
           </span>
 </div>

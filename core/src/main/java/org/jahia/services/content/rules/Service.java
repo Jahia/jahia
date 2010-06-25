@@ -667,7 +667,7 @@ public class Service extends JahiaService {
         if (jcrSessionWrapper.getLocale() != null) {
             languages = Collections.singleton(jcrSessionWrapper.getLocale().toString());
         }
-        JCRPublicationService.getInstance().publish(nodeWrapper.getPath(), jcrSessionWrapper.getWorkspace().getName(),
+        JCRPublicationService.getInstance().publish(nodeWrapper.getIdentifier(), jcrSessionWrapper.getWorkspace().getName(),
                                                     Constants.LIVE_WORKSPACE,
                                                     languages,
                 false);

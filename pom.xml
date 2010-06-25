@@ -32,6 +32,7 @@
     <lucene.version>2.4.1</lucene.version>
     <jbpm.version>4.3</jbpm.version>
     <hibernate.version>3.3.2.GA</hibernate.version>
+    <apache.tika.version>0.7</apache.tika.version>
     <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
 
     <driver.derby.version>10.5.3.0_1</driver.derby.version>

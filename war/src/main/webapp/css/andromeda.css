@@ -311,7 +311,7 @@ br.clearFloat{
   padding: 2px 0 0 25px;
 }
 
-.dex-license-wrapper {
+.dex-license-wrapper, .dex-langbar-wrapper {
   margin: 0;
   padding: 0;
   position: relative;
@@ -321,7 +321,7 @@ br.clearFloat{
   background: url(images/andromeda/bkg-tab.png) 0 -192px;
 }
 
-.dex-license-wrapper li {
+.dex-license-wrapper li, .dex-langbar-wrapper li {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -333,6 +333,9 @@ br.clearFloat{
   zoom: 1;
   height: 32px;
   color: #333333;
+}
+.dex-langbar-wrapper select {
+  margin-bottom: 16px !important;
 }
 
 /**

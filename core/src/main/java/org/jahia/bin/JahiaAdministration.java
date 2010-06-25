@@ -76,6 +76,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.LicenseManager;
 import org.jahia.services.pages.ContentPage;
@@ -344,6 +345,12 @@ public class JahiaAdministration extends HttpServlet {
                 }
 
                 if (accessGranted) {
+                    if(request.getParameter("switchUiLocale") != null) {
+                        Locale uiLocale = LanguageCodeConverters.languageCodeToLocale(request.getParameter("switchUiLocale"));
+                        jParams.setUILocale(uiLocale);
+                        jParams.getSessionState().setAttribute(ProcessingContext.SESSION_UI_LOCALE, uiLocale);        
+                        jParams.getUser().setProperty("preferredLanguage", uiLocale.toString());
+                    }
 
                     AdministrationModulesRegistry modulesRegistry = (AdministrationModulesRegistry) SpringContextSingleton.getInstance().getContext().getBean("administrationModulesRegistry");
                     AdministrationModule currentModule = modulesRegistry.getServerAdministrationModule(operation);

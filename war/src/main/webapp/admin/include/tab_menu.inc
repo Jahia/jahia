@@ -31,11 +31,14 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@page import="org.jahia.params.ParamBean,
+<%@page import="java.util.Locale,
+                    org.jahia.params.ParamBean,
                     org.jahia.params.ProcessingContext,
                     org.jahia.services.sites.JahiaSite,
                     org.jahia.services.sites.JahiaSitesService,
-                    org.jahia.registries.ServicesRegistry" 
+                    org.jahia.registries.ServicesRegistry,
+                    org.jahia.utils.LanguageCodeConverters,
+                    org.jahia.services.preferences.user.UserPreferencesHelper" 
 %><%
     JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
     JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
@@ -59,7 +62,7 @@
     Integer daysLeft = (Integer) request.getAttribute("daysLeft");
 %>
 <div class="dex-TabBar">
-    <ul class="dex-TabBarItem-wrapper" style="width: 90%;">
+    <ul class="dex-TabBarItem-wrapper" style="width: 80%;">
         <li class="dex-TabBarFirst">
             <div>
                 &nbsp;
@@ -117,6 +120,32 @@
             <div>
                 &nbsp;
             </div>
+        </li>
+    </ul>
+    <ul class="dex-langbar-wrapper" style="width: 10%;">
+        <li>
+            <%
+            String userLocale = UserPreferencesHelper.getPreferredLocale(jData.getProcessingContext().getUser(), theSite).toString();
+            %>
+            <script type="text/javascript">
+                function doSwitchLanguage(lang) {
+                    var url = window.location.href;
+                    if (url.indexOf('switchUiLocale=') != -1) {
+                        url = url.replace(/switchUiLocale=..(_..)?/, 'switchUiLocale=' + lang);
+                    } else {
+                        url = url + (url.indexOf('?') == -1 ? '?' : '&') + 'switchUiLocale=' + lang;
+                    }
+                    window.location.href = url;
+                }
+            </script>
+            <select name="preferredLanguage" onchange="doSwitchLanguage(this.value)">
+            <%
+                for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted()) {%>
+            <option value="<%=theLocale.toString() %>"
+                    <% if (theLocale.toString().equals(userLocale)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(theLocale) %>
+            </option>
+            <% } %>
+            </select>
         </li>
     </ul>
     <!-- License expiration message -->

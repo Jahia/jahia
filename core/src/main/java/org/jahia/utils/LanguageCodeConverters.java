@@ -342,4 +342,12 @@ public class LanguageCodeConverters {
         }
         return new LinkedList<Locale>(sortedLocales.values());
     }
+    public static List<Locale> getAvailableBundleLocalesSorted() {
+        Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
+        for (Locale locale : getAvailableBundleLocales(
+                JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES, null)) {
+            sortedLocales.put(locale.getDisplayName(locale), locale);
+        }
+        return new LinkedList<Locale>(sortedLocales.values());
+    }
 }

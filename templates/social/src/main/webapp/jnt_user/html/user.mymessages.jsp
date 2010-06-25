@@ -5,6 +5,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="social.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
 
 <script type="text/javascript">
 
@@ -16,12 +17,25 @@
                 type : 'get',
                 success : function (data) {
                     $(".social-message-detail").html(data);
+                    $('.timestamp').cuteTime({ refresh: 60000 });
                 }
             });
         });
-    
+
+        $('.timestamp').cuteTime({ refresh: 60000 });
+        
     }
+    <c:if test="${not renderContext.ajaxRequest}">
+    $(document).ready(function() {
+        tabCallback();
+    });
+    </c:if>
 </script>
+<c:if test="${renderContext.ajaxRequest}">
+    <template:addResources type="inlinejavascript">
+        tabCallback();
+    </template:addResources>
+</c:if>
 
 <div class='grid_8 alpha'><!--start grid_8-->
 

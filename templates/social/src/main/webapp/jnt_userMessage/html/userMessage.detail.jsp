@@ -24,7 +24,8 @@
                 </div>
                 <h5 class="messageSenderName">
                     <a href="${usl.base}${fromUser.path}.html">${fromUser.properties['j:firstName'].string} ${fromUser.properties['j:lastName'].string}</a>
-                </h5><span class="timestamp" data-timestamp="Thu, 24 Jun 2010 10:56:41 GMT">25 minutes ago</span>
+                </h5><jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/><span class="timestamp"><fmt:formatDate
+value="${lastModified.time}" pattern="yyyy/MM/dd HH:mm"/></span>
                 <h5>${currentNode.properties['j:subject'].string}</h5>
                 <p>${currentNode.properties['j:body'].string}</p>
 

@@ -106,29 +106,12 @@
     function closeWindowAndReloadParent() {
         //close
         self.close();
-        // reload opener  without confirm post data box
-        //window.opener.location.href = opener.location.href ;
-        // window.opener.document.mainForm.sub.value='edit';
-        //window.opener.document.mainForm.submit();
     }
 </script>
 <%}%>
 
 <script language="javascript">
     window.onunload = closeEngineWin;
-    function homePageSelected(pid, url, title) {
-        var titleElement = document.getElementById('homePageLabel');
-        titleElement.removeChild(titleElement.firstChild);
-        titleElement.appendChild(document.createTextNode(title));
-        return true;
-    }
-    function homePageRemoved() {
-        document.getElementById('homePageID').value = '';
-        var titleElement = document.getElementById('homePageLabel');
-        titleElement.removeChild(titleElement.firstChild);
-        titleElement.appendChild(document.createTextNode('${noneLabel}'));
-        return true;
-    }
 </script>
 
 <!-- Administration page position -->
@@ -195,11 +178,6 @@
 <!-- Edit user -->
     <span style="padding: 5px 5px 5px 20px;display: block">
     <p><fmt:message key="org.jahia.admin.users.ManageUsers.pleaseOk.label"/></p>
-    <p><fmt:message key="org.jahia.admin.users.ManageUsers.noteThat.label"/>&nbsp;:</p>
-    <ul>
-        <li><fmt:message key="org.jahia.admin.users.ManageUsers.removeSpace.label"/></li>
-        <li><fmt:message key="org.jahia.admin.users.ManageUsers.inputMaxCharacter.label"/></li>
-    </ul>
     </span>
 <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable" width="100%">
 <tr>
@@ -332,34 +310,6 @@
                size="40" maxlength="255"
                value='<%=JahiaTools.nnString(passwdConfirm)%>'>
         &nbsp;<span class="text2"><fmt:message key="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
-    </td>
-</tr>
-<% } %>
-<% if (isSuperAdminProp == null) {%>
-<tr style="height: 35px; vertical-align: top;">
-    <td align="right">
-        <fmt:message key="org.jahia.admin.homePage.label"/>&nbsp;
-    </td>
-    <td>
-        <b id="homePageLabel">${not empty homePageLabel ? homePageLabel : noneLabel}</b>
-        <input type="hidden" name="homePageID" id="homePageID" value="${homePageID}">
-        <% if (!jUser.isRoot()) { %>
-        <br/>
-        <span class="dex-PushButton">
-            <span class="first-child">
-                <c:set var="label"><fmt:message key='org.jahia.admin.select.label' /></c:set>
-                <c:set var="title"><fmt:message key='org.jahia.admin.users.ManageUsers.setHomePage.label'/></c:set>
-                <%--
-                <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" class="ico-home-add" label="${label}" title="${title}"/>
-                --%>
-            </span>
-        </span>
-        <span class="dex-PushButton">
-            <span class="first-child">
-                <a href="#remove" class="ico-delete" onclick="homePageRemoved(); return false;"><fmt:message key="org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroupToNone.label"/></a>
-            </span>
-        </span>
-        <% } %>
     </td>
 </tr>
 <% } %>

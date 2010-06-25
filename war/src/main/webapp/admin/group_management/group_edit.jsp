@@ -113,20 +113,6 @@
         //alert(uDetailurl);
         window.open(uDetailurl, "mywindow", params);
     }
-
-    function homePageSelected(pid, url, title) {
-        var titleElement = document.getElementById('homePageLabel');
-        titleElement.removeChild(titleElement.firstChild);
-        titleElement.appendChild(document.createTextNode(title));
-        return true;
-    }
-    function homePageRemoved() {
-    	document.getElementById('homePageID').value = ''; 
-        var titleElement = document.getElementById('homePageLabel');
-        titleElement.removeChild(titleElement.firstChild);
-        titleElement.appendChild(document.createTextNode('${noneLabel}'));
-        return true;
-    }
 </script>
 <div id="topTitle">
     <h1>Jahia</h1>
@@ -194,29 +180,6 @@
                                                 <!-- This hidden field is here when one will decide that a group name can be changed --><input
                                                     type="hidden" name="groupName" value="<%=groupName%>"><!-- This hidden field can be changed to 'update' so that we keep the edited data without confirming changes --><input
                                                     type="hidden" name="actionType" value="save"/><b><%=groupName %></b>
-                                            </td>
-                                        </tr>
-                                        <tr style="vertical-align: top">
-                                            <td>
-                                                <fmt:message key="org.jahia.admin.homePage.label"/>&nbsp;
-                                            </td>
-                                            <td>
-                                                <b id="homePageLabel">${not empty homePageLabel ? homePageLabel : noneLabel}</b>
-                                                <input type="hidden" name="homePageID" id="homePageID" value="${homePageID}">
-                                                <br/>
-                                                <span class="dex-PushButton">
-                                                    <span class="first-child">
-                                                        <c:set var="label"><fmt:message key='org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroup.label'/></c:set>
-                                                        <%-- 
-                                                        <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" label="${label}" title="${label}" class="ico-home-add"/>
-                                                        --%>
-                                                    </span>
-                                                </span>
-                                                <span class="dex-PushButton">
-                                                    <span class="first-child">
-                                                        <a href="#remove" class="ico-delete" onclick="homePageRemoved(); return false;"><fmt:message key="org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroupToNone.label"/></a>
-                                                    </span>
-                                                </span>
                                             </td>
                                         </tr>
                                         <% if (jParams.getUser().isPermitted(new PermissionIdentity("password-policy", "global", null))) { %>

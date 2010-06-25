@@ -98,13 +98,17 @@
 
     <div id="topfooter"><!--start topfooter-->
         <div class="container container_16"> <!--start container_16-->
-            <template:area path="topfooter" nodeTypes="jnt:row" />
+			<div class="grid_16">
+            	<template:area path="topfooter" nodeTypes="jnt:row" />
+			<div class="clear"></div></div>
         <div class="clear"></div></div> <!--stop container_16-->
     <div class="clear"></div></div><!--stop topfooter-->
 
     <div id="bottomfooter"><!--start bottomfooter-->
         <div class="container container_16"> <!--start container_16-->
-            <template:area path="footer" nodeTypes="jnt:row" />
+			<div class="grid_16">
+                 <template:area path="footer" nodeTypes="jnt:row" />
+			<div class="clear"></div></div>       
         <div class="clear"></div></div> <!--stop container_16-->
     </div>
     <!--stop bottomfooter-->

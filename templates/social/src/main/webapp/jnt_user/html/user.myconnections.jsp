@@ -233,6 +233,7 @@
                 principalType : "users",
                 wildcardTerm : "{$q}*",
                 propertyMatchRegexp : "{$q}.*",
+                includeCriteriaNames : "*",
                 removeDuplicatePropValues : "true"                
             }
         });

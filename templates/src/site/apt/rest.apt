@@ -386,13 +386,19 @@ Server:Apache-Coyote/1.1
 |                           |             |building unique list of property values for auto-completion.          |
 |                           |             |Defaults to false.                                                    |
 *---------------------------+-------------+----------------------------------------------------------------------+
+|includeCriteriaNames       |no           |A comma seperated list of parameter names that should be used to      |
+|                           |             |create the criterias for the search.                                  |
+*---------------------------+-------------+----------------------------------------------------------------------+
 |any other parameter name   |no           |If you specify another other parameter other than the above reserved  |
 |                           |             |ones, the servlet will interpret them as property names that have to  |
 |                           |             |to be search for the specified values.                                |
 |                           |             |You can use the {$paramName} syntax to reference                      |
 |                           |             |other request parameters. For example {$q} will be replaced by the    |
 |                           |             |value of a parameter called "q" if it is found. If it is not found the|
-|                           |             |marker will not be replaced.                                          |
+|                           |             |marker will not be replaced. By default the servlet will use all the  |
+|                           |             |other found parameter names, which might not be what you expect. You  |
+|                           |             |should use the includeCriteriaNames to specify which criterias should |
+|                           |             |be used                                                               |
 *---------------------------+-------------+----------------------------------------------------------------------+
 
 ** Example

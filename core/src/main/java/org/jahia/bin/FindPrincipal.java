@@ -56,6 +56,7 @@ public class FindPrincipal extends HttpServlet implements Controller {
     private static final String SITEKEY_PARAMNAME = "siteKey";
     private static final String PROPERTYMATCHREGEXP_PARAMNAME = "propertyMatchRexexp";
     private static final String REMOVEDUPLICATEPROPVALUES_PARAMNAME = "removeDuplicatePropValues";
+    private static final String INCLUDECRITERIANAMES_PARAMNAME = "includeCriteriaNames";
 
     private static final Set<String> RESERVED_PARAMETERNAMES = new HashSet<String>();
 
@@ -66,6 +67,7 @@ public class FindPrincipal extends HttpServlet implements Controller {
         RESERVED_PARAMETERNAMES.add(SITEKEY_PARAMNAME);
         RESERVED_PARAMETERNAMES.add(PROPERTYMATCHREGEXP_PARAMNAME);
         RESERVED_PARAMETERNAMES.add(REMOVEDUPLICATEPROPVALUES_PARAMNAME);
+        RESERVED_PARAMETERNAMES.add(INCLUDECRITERIANAMES_PARAMNAME);
     }
 
     private JahiaUserManagerService jahiaUserManagerService;
@@ -124,7 +126,7 @@ public class FindPrincipal extends HttpServlet implements Controller {
         return parameterValue;
     }
 
-    protected Map<String, String[]> retrieveOtherParameters(HttpServletRequest request) {
+    protected Map<String, String[]> retrieveOtherParameters(HttpServletRequest request) throws IOException {
         Map<String, String[]> parameterMap = new HashMap<String, String[]>(request.getParameterMap());
         for (String reservedParameterName : RESERVED_PARAMETERNAMES) {
             parameterMap.remove(reservedParameterName);
@@ -132,17 +134,37 @@ public class FindPrincipal extends HttpServlet implements Controller {
         return parameterMap;
     }
 
-    protected Properties buildSearchCriterias(String wildcardTerm, Map<String, String[]> otherRequestParameters, HttpServletRequest request) {
+    protected Properties buildSearchCriterias(String wildcardTerm, Map<String, String[]> otherRequestParameters, HttpServletRequest request, HttpServletResponse response) throws IOException {
         Properties criterias = new Properties();
         if (wildcardTerm != null) {
             criterias.setProperty("*", wildcardTerm);
         }
+        String includeCriteriaNames = retrieveParameter(request, response, INCLUDECRITERIANAMES_PARAMNAME, false);
+        Set<String> criteriasToInclude = new HashSet<String>();
+        if (includeCriteriaNames != null) {
+            if (includeCriteriaNames.indexOf(",") >= 0) {
+                String[] criteriaNamesArray = includeCriteriaNames.split(",");
+                List<String> criteriaNamesList = Arrays.asList(criteriaNamesArray);
+                criteriasToInclude.addAll(criteriaNamesList);
+            } else {
+                criteriasToInclude.add(includeCriteriaNames);
+            }
+        }
+
         for (Map.Entry<String, String[]> curEntry : otherRequestParameters.entrySet()) {
             String[] paramValues = curEntry.getValue();
+            if (criteriasToInclude.size() > 0) {
+                if (!criteriasToInclude.contains(curEntry.getKey())) {
+                    logger.debug("Ignoring parameter with name " + curEntry.getKey() + " since it wasn't specified in the include criteria name list");
+                    continue;
+                }
+            }
             if (paramValues.length < 1) {
                 logger.warn("Parameter " + curEntry.getKey() + " has invalid value(s), ignoring it.");
+                continue;
             } else if (paramValues.length > 1) {
                 logger.warn("Parameter " + curEntry.getKey() + " has more than one value, only the first one will be used.");
+                continue;
             }
             criterias.setProperty(curEntry.getKey(), expandRequestMarkers(request, paramValues[0]));
         }
@@ -276,7 +298,7 @@ public class FindPrincipal extends HttpServlet implements Controller {
             }
             String siteKey = retrieveParameter(request, response, SITEKEY_PARAMNAME, siteKeyMandatory);
             Map<String, String[]> otherRequestParameters = retrieveOtherParameters(request);
-            Properties searchCriterias = buildSearchCriterias(wildcardTerm, otherRequestParameters, request);
+            Properties searchCriterias = buildSearchCriterias(wildcardTerm, otherRequestParameters, request, response);
             if (logger.isDebugEnabled()) {
                 logger.debug("Searching for principal type " + principalType + " with criterias " + searchCriterias);
             }
